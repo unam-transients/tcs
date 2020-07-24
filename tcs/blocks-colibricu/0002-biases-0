@@ -1,0 +1,22 @@
+// $Id$
+{
+  "project": {
+    "identifier": "0002",
+    "name": "biases"
+  },
+  "identifier": "0",
+  "visits": [
+    {
+      "identifier": "0",
+      "name": "biases",
+      "targetcoordinates": {
+        "type": "idle"
+      },
+      "command": "biasesvisit",
+      "estimatedduration": "2m"
+    }
+  ],
+  "constraints": {
+    "maxskybrightness": "civiltwilight"
+  }
+}

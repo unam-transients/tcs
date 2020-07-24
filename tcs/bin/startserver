@@ -1,0 +1,187 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: startserver 3613 2020-06-20 20:21:43Z Alan $
+
+########################################################################
+
+# Copyright © 2010, 2011, 2012, 2013, 2014, 2016, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
+
+program=$(basename "$0")
+
+usageerror () {
+  echo 1>&2 "usage: $program [--] servername [...]"
+  echo 1>&2 "usage: $program [-d] [--] servername"
+  echo 1>&2 "usage: $program [-a] [--]"
+  exit 1
+}
+
+host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
+case "$host" in
+ratiroan-services)
+  allargs="log 1 html gcntan"
+  ;;
+ratiroan-control)
+  allargs="cryostat sensors power weather 1 target 1 moon sun 1 covers dome inclinometers secondary shutters 1 mount 1 nefinder sefinder 1 guider 1 telescope instrument 1 executor scheduler supervisor"
+  ;;
+ratiroan-detectors)
+  allargs="C0 C1"
+  ;;
+ratiroan-tcs-a)
+  allargs="C2 C3"
+  ;;
+coatlioan-control)
+  allargs="sensors power weather 1 target 1 moon sun 1 secondary enclosure mount 1 telescope instrument 1 executor scheduler supervisor"
+  ;;
+coatlioan-services)
+  allargs="log 1 html gcntan"
+  ;;
+coatlioan-a0)
+  allargs=""
+  ;;
+coatlioan-c0)
+  allargs="lights heater"
+  ;;
+coatlioan-e1)
+  allargs="C0"
+  ;;
+ddotioan-control)
+  allargs="sensors power weather 1 target 1 moon sun 1 enclosure mount 1 telescope instrument 1 executor scheduler supervisor"
+  ;;
+ddotioan-services)
+  allargs="log 1 html gcntan"
+  ;;
+ddotioan-a0)
+  allargs=""
+  ;;
+ddotioan-c0)
+  allargs="lights heater"
+  ;;
+ddotioan-d1)
+  allargs="C0"
+  ;;
+ddotioan-e1)
+  allargs="C1"
+  ;;
+ddotioan-d2)
+  allargs="C2"
+  ;;
+ddotioan-e2)
+  allargs="C3"
+  ;;
+ddotioan-d3)
+  allargs="C4"
+  ;;
+ddotioan-e3)
+  allargs="C5"
+  ;;
+colibricito-control)
+  allargs="log 2 html 1 target 1 moon sun weather 1 plc 1 enclosure mount lights C0 1 telescope instrument 1 executor scheduler supervisor"
+  ;;
+colibricu-services)
+  allargs="log 1 html"
+  ;;
+colibricu-control)
+  allargs="sensors power weather 1 target 1 moon sun 1 telescope instrument 1 executor scheduler"
+  ;;
+colibricu-detectors)
+  allargs="C0 C1"
+  ;;
+esac
+
+optstring=ad
+all=false
+debug=false
+if ! getopt -qQ -- "$optstring" "$@"
+then
+  usageerror
+fi
+eval set -- "$(getopt -- "$optstring" "$@")"
+while test "$1" != "--"
+do
+  case "$1" in
+  -a)
+    all=true
+    shift 1
+    ;;
+  -d)
+    debug=true
+    shift 1
+    ;;
+  *)
+    usageerror
+    ;;
+  esac
+done
+shift
+
+if $all && $debug
+then
+  usageerror
+elif $all && test $# != 0
+then
+  usageerror
+elif ! $all && test $# = 0
+then
+  usageerror
+elif $debug && test $# != 1
+then
+  usageerror
+fi
+
+if $all
+then
+  set -- $allargs
+fi
+
+for arg in "$@"
+do
+  case $arg in
+  [0-9]*)
+    sleep $arg
+    ;;
+  *)
+    server=${arg}
+    fullserver=${server}server
+    pids=$(pgrep -u root -f $fullserver)
+    if test -z "$pids"
+    then
+      if which $fullserver >/dev/null
+      then
+        if $debug
+        then
+          TCSLOGTOSTDERR=true $fullserver
+        else
+          nohup $fullserver >/dev/null 2>&1 &
+          printf '%5d   %s\n' $! $arg
+        fi
+      else
+        echo 1>&2 "$program: error: invalid server \"$server\"."
+        exit 1
+      fi
+    fi
+    ;;
+  esac
+done
+
+exit 0

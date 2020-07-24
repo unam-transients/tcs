@@ -1,0 +1,90 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: cleanfiles 3521 2020-03-15 18:23:43Z Alan $
+
+########################################################################
+
+# Copyright © 2014, 2015, 2016, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
+
+case $(hostname) in
+tcs-a)
+  find /data1/H*/FSRamp -mindepth 1 -maxdepth 1 -mtime +4 | sudo -u nrbutler xargs -r rm -rf
+  find /data2/H*/FSRamp -mindepth 1 -maxdepth 1 -mtime +4 | sudo -u nrbutler xargs -r rm -rf
+  if cd /usr/local/var/tcs
+  then
+    find /usr/local/var/tcs -name "*.fits" -mtime +2 | xargs -r rm -f
+  fi
+  if cd /usr/local/var/tcs/alerts
+  then
+    find . -type f | cpio --quiet -pdu ../oldalerts
+    find . -type f -mtime +0 | xargs -r rm -f
+  fi
+  if cd /usr/local/var/archive
+  then
+    find . -type f -mtime +7 | xargs -r rm -f
+    find . -type d -empty | xargs -r rmdir
+  fi
+  if cd /usr/local/var/www/main/quickredux
+  then
+    find . -type f -mtime +7 | xargs -r rm -rf
+    find . -type d -empty | xargs -r rmdir
+  fi
+  if cd /usr/local/var/www/main/redux
+  then
+    find . -type d -mtime +7 -name "version*" | xargs -r rm -rf
+    find . -type d -mtime +7 -name "v*_C*_*"  | xargs -r rm -rf
+    find . -type d -empty | xargs -r rmdir
+  fi
+  find /usr/local/var/tcs -name "*.tmp" -delete
+  find /usr/local/var/tcs -name ".DS_Store" -delete
+  find /usr/local/var/tcs -type f -name ".*" -mtime +2 -delete
+  find /usr/local/var/tcs -type d -empty | xargs -r rmdir
+  ;;
+tcs-b)
+  find /usr/local/var/tcs -name "*.jpg"       -mtime +4 | xargs -r rm -f
+  find /usr/local/var/tcs -name "label"       -mtime +4 | xargs -r rm -f
+  find /usr/local/var/tcs -name "label-small" -mtime +4 | xargs -r rm -f
+  find /usr/local/var/tcs -name "*.fits"      -mtime +4 | xargs -r rm -f
+  find /usr/local/var/tcs -name "*.log"       -mtime +4 | xargs -r rm -f
+  find /usr/local/var/tcs -name "*.wcs"       -mtime +4 | xargs -r rm -f
+  find /usr/local/var/tcs -name "*.axy"       -mtime +4 | xargs -r rm -f
+  find /usr/local/var/tcs -name "*.sxy"       -mtime +4 | xargs -r rm -f
+  find /usr/local/var/tcs -name "*.xy"        -mtime +4 | xargs -r rm -f
+  find /usr/local/var/tcs -name "*.fits"      -mtime +4 | xargs -r rm -f
+  find /usr/local/var/tcs -name "debug.txt"   -mtime +4 | xargs -r rm -f
+  find /usr/local/var/tcs -name "*.tmp" -delete
+  find /usr/local/var/tcs -name ".DS_Store" -delete
+  find /usr/local/var/tcs -type f -name ".*" -mtime +2 -delete
+  find /usr/local/var/tcs -type d -empty | xargs -r rmdir
+  ;;
+*)
+  cd /usr/local/var/tcs
+  find . -type f -mtime +4 -regex './[^/]*/log/debug.*\.txt' -delete
+  find . -type f -mtime +4 -regex './[^/]*/webcam/.*' -delete
+  find . -type f -mtime +4 -regex './[^/]*/.*finder/.*' -delete
+  find . -type l -mtime +4 -delete
+  find . -type d -empty -delete
+  ;;
+esac
+

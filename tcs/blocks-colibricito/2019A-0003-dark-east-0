@@ -1,0 +1,30 @@
+proposal::setidentifier "2019A-0003"
+visit::setidentifier "0"
+visit::setname "darks"
+block::settotalexposures 0
+visit::settargetcoordinates fixed -3h +30d
+
+proc SELECTABLE {args} {
+  return [expr {
+    [withintelescopepointinglimits] && 
+    [maxskybrightness "nauticaltwilight"] &&
+    [onfavoredsideforswift]
+  }]
+}
+
+proc EXECUTE {args} {
+
+  move
+  
+  setbinning 1
+  movefilterwheel "w"
+
+  set i 0
+  while {$i < 5} { 
+    expose dark 60
+    analyze levels
+    incr i
+  }
+
+  return true
+}

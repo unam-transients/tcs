@@ -1,0 +1,234 @@
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: Makefile.in 3540 2020-05-11 18:06:24Z Alan $
+
+########################################################################
+
+# Copyright © 2009, 2010, 2011, 2012, 2013, 2016, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+include ../Makefile.prolog
+
+installs			:=	astrometry.so detectordummy.so
+
+INSTALL_DIR			:=	$(prefix)/lib
+
+CLEAN_FILES			+=	*.o *.so
+MAINTAINER_CLEAN_FILES		+=	*wrap.cxx
+
+########################################################################
+
+installs_project_test		:=	\
+	detectorfli.so			\
+	focuserfli.so			\
+	filterwheelfli.so
+
+installs_project_ratir		:=	\
+	detectorfli.so			\
+	focuserfli.so			\
+	filterwheelfli.so		\
+	detectorh2rg.so
+
+installs_project_ratiroan	:=	\
+	detectorfli.so			\
+	focuserfli.so			\
+	filterwheelfli.so		\
+	detectorsi.so			\
+
+installs_project_coatlioan	:=	\
+	detectorfli.so			\
+	filterwheelfli.so
+
+installs_project_ddotioan	:=	\
+	detectorfli.so			\
+	filterwheelfli.so
+
+installs_project_ddoticu	:=	\
+	detectorfli.so			\
+	filterwheelfli.so
+
+installs_project_colibricito	:=	\
+	detectorqsi.so			\
+	filterwheelqsi.so
+	
+installs_project_colibricu	:=	\
+	detectorqsi.so			\
+	detectorfli.so			\
+	detectorsi.so			\
+	detectordummy.so		\
+	filterwheelnull.so		\
+	filterwheelfli.so		\
+	filterwheelqsi.so
+
+########################################################################
+
+DEFS				:=	@DEFS@
+
+CXX				:=	@CXX@
+CXXFLAGS			:=	@CXXFLAGS@ -Wall -fPIC -I../include -I/usr/local/include -I/usr/include/tcl8.6
+CXXSOFLAGS			:=	-shared
+
+F77				:=	@F77@
+F77FLAGS			:=	-O -g -Wall -fPIC
+F77SOFLAGS			:=	-shared
+FLIBS				:=	@FLIBS@
+
+LD				:=	@CXX@
+LDFLAGS				:=
+LDSOFLAGS			:=	-shared
+LIBS				:=	@LIBS@
+
+SWIG				:=	swig
+SWIGFLAGS			:=	-tcl -namespace
+SWIGLIBS			:=	-L@TCL_LIBDIR@ -ltcl@TCL_VERSION@
+
+.SUFFIXES			:
+.SUFFIXES			:	.i .cxx .f .o
+%.cxx				:	%.i
+	$(SWIG) $(SWIGFLAGS) -c++ -o $@ $<
+%.o				:	%.c
+	$(CC) $(CFLAGS) $(DEFS) -c $<
+%.o				:	%.cxx
+	$(CXX) $(CXXFLAGS) $(DEFS) -c $<
+%.o				:	%.f
+	$(F77) $(F77FLAGS) -c $<
+
+########################################################################
+
+detectorwrap.cxx		:	detectorwrap.i \
+					detector.h
+detectorwrap.o			:	detectorwrap.cxx \
+					detector.h
+detector.o			:	detector.cxx \
+					detector.h
+
+detectordummy.o			:	detectordummy.cxx \
+					detector.h
+detectordummy.so		:	detectorwrap.o \
+					detector.o \
+					detectordummy.o
+	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o detectordummy.so \
+	  detectorwrap.o detector.o detectordummy.o \
+	  $(LIBS) $(SWIGLIBS)
+
+detectorfli.o			:	detectorfli.cxx \
+					detector.h
+detectorfli.so			:	detectorwrap.o \
+					detector.o \
+					detectorfli.o
+	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o detectorfli.so \
+	  detectorwrap.o detector.o detectorfli.o \
+	  $(LIBS) $(SWIGLIBS)
+
+detectorh2rg.o			:	detectorh2rg.cxx \
+					detector.h
+detectorh2rg.so			:	detectorwrap.o \
+					detector.o \
+					detectorh2rg.o
+	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o detectorh2rg.so \
+	  detectorwrap.o detector.o detectorh2rg.o \
+	  -lcfitsio $(LIBS) $(SWIGLIBS)
+
+detectorqsi.o			:	detectorqsi.cxx \
+					detector.h
+detectorqsi.so			:	detectorwrap.o \
+					detector.o \
+					detectorqsi.o
+	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o detectorqsi.so \
+	  detectorwrap.o detector.o detectorqsi.o \
+	  -lqsiapi -lftdi1 $(LIBS) $(SWIGLIBS)
+
+detectorsi.o			:	detectorsi.cxx \
+					detector.h
+detectorsi.so			:	detectorwrap.o \
+					detector.o \
+					detectorsi.o
+	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o detectorsi.so \
+	  detectorwrap.o detector.o detectorsi.o \
+	  $(LIBS) $(SWIGLIBS)
+
+########################################################################
+
+focuserwrap.cxx			:	focuserwrap.i \
+					focuser.h
+focuserfli.o			:	focuserfli.cxx \
+					focuser.h
+focuserfli.so			:	focuserwrap.o \
+					focusergeneric.o \
+					focuserfli.o
+	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o focuserfli.so \
+	  focuserwrap.o focusergeneric.o focuserfli.o \
+	  $(LIBS) $(SWIGLIBS)
+
+########################################################################
+
+filterwheelwrap.cxx		:	filterwheelwrap.i \
+					filterwheel.h
+filterwheelwrap.o		:	filterwheelwrap.cxx \
+					filterwheel.h
+filterwheel.o			:	filterwheel.cxx \
+					filterwheel.h
+
+filterwheelnull.o		:	filterwheelnull.cxx \
+					filterwheel.h
+filterwheelnull.so		:	filterwheelwrap.o \
+					filterwheel.o \
+					filterwheelnull.o
+	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o filterwheelnull.so \
+	  filterwheelwrap.o filterwheel.o filterwheelnull.o \
+	  $(LIBS) $(SWIGLIBS)
+
+filterwheelqsi.o		:	filterwheelqsi.cxx \
+					filterwheel.h \
+					detector.h
+filterwheelqsi.so		:	filterwheelwrap.o \
+					filterwheel.o \
+					filterwheelqsi.o
+	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o filterwheelqsi.so \
+	  filterwheelwrap.o filterwheel.o filterwheelqsi.o detector.o detectorqsi.o \
+	  -lqsiapi -lftdi1 $(LIBS) $(SWIGLIBS)
+
+filterwheelfli.o		:	filterwheelfli.cxx \
+					filterwheel.h
+filterwheelfli.so		:	filterwheelwrap.o \
+					filterwheel.o \
+					filterwheelfli.o
+	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o filterwheelfli.so \
+	  filterwheelwrap.o filterwheel.o filterwheelfli.o \
+	  $(LIBS) $(SWIGLIBS)
+
+########################################################################
+
+astrometrywrap.cxx		:	astrometrywrap.i \
+					astrometry.h
+astrometrywrap.o		:	astrometrywrap.cxx \
+					astrometry.h
+astrometry.o			:	astrometry.cxx \
+					astrometry.h
+slalib.o			:	slalib.f
+astrometry.so			:	astrometrywrap.o \
+					astrometry.o \
+					slalib.o
+	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o astrometry.so \
+	  astrometrywrap.o astrometry.o slalib.o \
+	  $(LIBS) $(SWIGLIBS) $(FLIBS)
+
+########################################################################
+
+include ../Makefile.epilog

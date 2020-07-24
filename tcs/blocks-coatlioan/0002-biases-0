@@ -1,0 +1,11 @@
+proposal::setidentifier "[utcclock::semester]-0002"
+block::setidentifier "0"
+visit::setidentifier "0"
+visit::setname "biases"
+block::settotalexposures 0
+visit::settargetcoordinates zenith
+
+constraints::setmaxskybrightness "civiltwilight"
+constraints::setmustbeonfavoredsideforswift true
+
+visit::setcommand "biasesvisit"

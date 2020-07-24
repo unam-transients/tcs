@@ -1,0 +1,134 @@
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: Makefile.epilog.in 3536 2020-04-03 19:19:10Z Alan $
+
+########################################################################
+
+# Copyright © 2009, 2011, 2016, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+all				:	all-subdirs \
+					all-here \
+					$(EXTRA_ALLS)
+
+install				:	install-subdirs \
+					install-here \
+					$(EXTRA_INSTALLS)
+
+clean           		:       clean-subdirs \
+					clean-here \
+					$(EXTRA_CLEANS)
+
+distclean           		:       distclean-subdirs \
+					distclean-here \
+					$(EXTRA_DISTCLEANS)
+
+maintainer-clean		:	maintainer-clean-subdirs \
+					maintainer-clean-here
+
+reconfigure			:       reconfigure-subdirs \
+					reconfigure-here
+
+all-subdirs     		:
+	@for subdir in $(subdirs) ; do $(MAKE) -C $$subdir all || exit $$? ; done
+
+install-subdirs     		:
+	@for subdir in $(subdirs) ; do $(MAKE) -C $$subdir install || exit $$? ; done
+
+clean-subdirs  			:
+	@for subdir in $(subdirs) ; do $(MAKE) -C $$subdir clean || exit $$? ; done
+
+distclean-subdirs  			:
+	@for subdir in $(subdirs) ; do $(MAKE) -C $$subdir distclean || exit $$? ; done
+
+maintainer-clean-subdirs	:
+	@for subdir in $(subdirs) ; do $(MAKE) -C $$subdir maintainer-clean || exit $$? ; done
+
+reconfigure-subdirs	:
+	@for subdir in $(subdirs); do $(MAKE) -C $$subdir reconfigure  || exit $$? ; done
+
+########################################################################
+
+all-here			:	$(installbins) $(installbins_@PROJECT@) $(installs) $(installs_project_@PROJECT@)
+
+install-here			:	all-here
+	if test ! -z "$(installbins)" ; \
+	then \
+	  sudo mkdir -p $(INSTALL_DIR) ; \
+	  sudo install $(installbins) $(INSTALL_DIR) ; \
+	fi
+	if test ! -z "$(installbins_project_@PROJECT@)" ;  \
+	then \
+	  sudo mkdir -p $(INSTALL_DIR); \
+	  for install in $(installbins_project_@PROJECT@) ; \
+	  do \
+	    sudo install $$install $(INSTALL_DIR)/$$(echo $$install | sed 's/-project-@PROJECT@//') ; \
+	  done ; \
+	fi
+	if test ! -z "$(installs)" ; \
+	then \
+	  sudo mkdir -p $(INSTALL_DIR) ; \
+	  for install in $(installs) ; \
+	  do \
+	    if test -d $$install ; \
+	    then \
+	      sudo install -d -m u=rwX,go=rX $$install $(INSTALL_DIR)/$$install ; \
+	    else \
+	      sudo install -m u=rw,go=r $$install $(INSTALL_DIR)/$$(dirname $$install)/ ; \
+	    fi; \
+	  done; \
+	fi
+	if test ! -z "$(installs_project_@PROJECT@)" ; then \
+	  sudo mkdir -p $(INSTALL_DIR); \
+	  for install in $(installs_project_@PROJECT@) ; \
+	  do \
+	    if test -d $$install ; \
+	    then \
+	      sudo install -d -m u=rwX,go=rX $$install $(INSTALL_DIR)/$$(echo $$install | sed 's/-project-@PROJECT@//') ; \
+	    else \
+	      sudo install -m u=rw,go=r $$install $(INSTALL_DIR)/$$(dirname $$install)/$$(echo $$install | sed 's/-project-@PROJECT@//') ; \
+	    fi; \
+	  done; \
+	fi
+
+clean-here			:
+	rm -rf $(CLEAN_FILES)
+
+distclean-here			:	clean-here
+	rm -rf autom4te.cache config.log config.status Makefile $(DISTCLEAN_FILES)
+
+maintainer-clean-here		:	distclean-here
+	rm -rf configure $(MAINTAINER_CLEAN_FILES)
+
+########################################################################
+
+# See "Automatic Remaking" in the autoconf manual.
+
+reconfigure-here		:       Makefile
+
+Makefile			:	Makefile.in config.status
+	./config.status
+
+config.status			:	configure
+	./config.status --recheck
+
+configure			:	configure.ac
+	autoconf
+
+########################################################################

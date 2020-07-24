@@ -1,0 +1,120 @@
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: config.tcl 3601 2020-06-11 03:20:53Z Alan $
+
+########################################################################
+
+# Copyright © 2009, 2010, 2011, 2012, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+package require "utcclock"
+package require "fromjson"
+package require "log"
+
+package provide "config" 0.0
+
+namespace eval "config" {
+
+  variable svnid {$Id}
+
+  ######################################################################
+
+  variable defaultvaluedict [dict create]
+  variable valuedict        [dict create]
+
+  proc setdefaultvalue {args} {
+    set value [lindex $args end]
+    set keys [lrange $args 0 end-1]
+    variable defaultvaluedict
+    eval dict set defaultvaluedict $keys {$value}
+  }
+
+  proc setvalue {args} {
+    set value [lindex $args end]
+    set keys [lrange $args 0 end-1]
+    variable valuedict
+    eval dict set valuedict $keys {$value}
+  }
+
+  proc getvalue {args} {
+
+    variable valuedict
+    variable defaultvaluedict
+
+    set keys $args
+
+    if {[eval dict exists {$valuedict} $keys]} {
+      set where "setvalue"
+      set value [eval dict get {$valuedict} $keys]
+    } elseif {[eval dict exists {$defaultvaluedict} $keys]} {
+      set where "setdefaultvalue"
+      set value [eval dict get {$defaultvaluedict} $keys]
+    } else {
+      error "invalid configuration key \"$keys\"."
+    }
+
+    log::debug "configuration value $keys is \"$value\" (from $where)."
+
+    return $value
+  }
+  
+  proc setvarvalue {args} {
+    
+    set value [lindex $args end]
+    set keys [lrange $args 0 end-1]
+
+    eval setvalue $keys {$value}
+
+    set keys [join [lrange $args 0 end-1] " "]
+
+    set varconfigfile [file join [directories::var] "config.tcl"]
+    
+    set channel [open $varconfigfile "a"]
+    set timestamp [utcclock::format now]
+    puts $channel "\n# $timestamp\nconfig::setvalue $keys $value"
+    close $channel
+    
+  }
+  
+  ######################################################################
+
+  set etcconfigfile [file join [directories::etc] "config-defaults.json"]
+  if {[file exists $etcconfigfile]} {
+    if {[catch {set defaultvaluedict [fromjson::readfile $etcconfigfile]} message]} {
+      log::fatalerror "error reading \"$etcconfigfile\": $message."
+    }
+  }
+
+  set etcconfigfile [file join [directories::etc] "config.json"]
+  if {[file exists $etcconfigfile]} {
+    if {[catch {set valuedict [fromjson::readfile $etcconfigfile]} message]} {
+      log::fatalerror "error reading \"$etcconfigfile\": $message."
+    }
+  }
+
+  set varconfigfile [file join [directories::var] "config.tcl"]
+  if {[file exists $varconfigfile]} {
+    if {[catch {source $varconfigfile} message]} {
+      log::fatalerror "error reading \"$varconfigfile\": $message."
+    }
+  }
+
+  ######################################################################
+
+}

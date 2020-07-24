@@ -1,0 +1,57 @@
+proposal::setidentifier "2019A-2001"
+block::setidentifier "0"
+visit::setidentifier "0"
+visit::setname "Mrk119 (Diego Hernandez)"
+block::settotalexposures 0
+visit::settargetcoordinates equatorial 09:25:12.84 +52:17:10.38 2000
+
+proc SELECTABLE {args} {
+  return [expr {
+    [withintelescopepointinglimits] && 
+    [maxskybrightness "bright"] &&
+    [maxairmass 1.5] &&
+    [minmoonseparation "15d"] &&
+    [maxfocusdelay 1200]
+  }]
+}
+
+proc EXECUTE {args} {
+
+  set exposuretime       60
+  set exposuresperdither 2
+  set filters {BV}
+  
+  executor::setsecondaryoffset 0
+  executor::track
+
+  executor::setreadmode "1MHz"
+  executor::setwindow "default"
+  executor::setbinning 2
+
+  executor::waituntiltracking
+
+  foreach {eastoffset northoffset} {
+      0as   0as
+    +60as +60as
+    +60as -60as
+    -60as -60as
+    -60as +60as
+      0as -60as
+    +60as   0as
+      0as +60as
+    -60as   0as
+  } {
+    executor::offset $eastoffset $northoffset "default"
+    executor::waituntiltracking
+    foreach filter $filters {
+      executor::movefilterwheel $filter
+      set i 0
+      while {$i < $exposuresperdither} {
+        executor::expose object $exposuretime
+        incr i
+      }
+    }
+  }
+
+  return true
+}

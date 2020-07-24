@@ -1,0 +1,149 @@
+<!----------------------------------------------------------------------
+
+This file is part of the UNAM telescope control system.
+
+$Id: interface-project-colibricu.html 3613 2020-06-20 20:21:43Z Alan $
+
+------------------------------------------------------------------------
+
+Copyright © 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+
+Permission to use, copy, modify, and distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+
+----------------------------------------------------------------------->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<link rel="stylesheet" href="style.css" type="text/css"/>
+<title>COLIBRÍ/CU</title>
+</head>
+
+<body>
+
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="config.js"></script>
+<script type="text/javascript" src="tcs.js"></script>
+<script language="javascript">
+$(function () {
+  confirmrequest = true;
+  refreshimage({
+    "C0-small"       : "instrument/C0/latest-small.jpg",
+  });
+  newcomponent("summary", "Summary");
+});
+</script>
+
+<div id="header">
+
+<div id="images">
+<a href="C0.html"><img src="blank.png" alt="C0" id="C0-small" class="instrument-small"/></a>
+</div>
+
+<div id="navigation">
+<a href="/">Home</a> |
+<a href="" onclick='newcomponent("info"         , "Info"         ); return false;'>Info</a> | 
+<a href="" onclick='newcomponent("summary"      , "Summary"      ); return false;'>Summary</a> | 
+<a href="" onclick='newcomponent("warning"      , "Warning"      ); return false;'>Warning</a> |
+<a href="" onclick='newcomponent("error"        , "Error"        ); return false;'>Error</a>
+</br>
+<a href="" onclick='newcomponent("C0"           , "C0"           ); return false;'>C0</a> | 
+<a href="" onclick='newcomponent("C1"           , "C1"           ); return false;'>C1</a> | 
+<a href="" onclick='newcomponent("C2"           , "C2"           ); return false;'>C2</a> | 
+<a href="" onclick='newcomponent("C3"           , "C3"           ); return false;'>C3</a> | 
+<a href="" onclick='newcomponent("executor"     , "Executor"     ); return false;'>Executor</a> |
+<a href="" onclick='newcomponent("html"         , "HTML"         ); return false;'>HTML</a> |
+<a href="" onclick='newcomponent("instrument"   , "Instrument"   ); return false;'>Instrument</a> | 
+<a href="" onclick='newcomponent("moon"         , "Moon"         ); return false;'>Moon</a> |
+<a href="" onclick='newcomponent("power"        , "Power"        ); return false;'>Power</a> |
+<a href="" onclick='newcomponent("scheduler"    , "Scheduler"    ); return false;'>Scheduler</a> | 
+<a href="" onclick='newcomponent("sensors"      , "Sensors"      ); return false;'>Sensors</a> | 
+<a href="" onclick='newcomponent("sun"          , "Sun"          ); return false;'>Sun</a> |
+<a href="" onclick='newcomponent("target"       , "Target"       ); return false;'>Target</a> |
+<a href="" onclick='newcomponent("telescope"    , "Telescope"    ); return false;'>Telescope</a> |
+<a href="" onclick='newcomponent("weather"      , "Weather"      ); return false;'>Weather</a>
+</div>
+
+<div id="title">
+<h1>COLIBRÍ/CU</h1>
+</div>
+
+</div>
+
+<div id="contents">
+
+<div id="controls">
+
+<table class="control">
+<tr><th class="control full" align="center">Supervisor</th></tr>
+<tr>
+<td class="control">
+<form id="supervisor-enable">
+<input type="submit" value="Enable"/>
+</form>
+</td>
+</tr>
+<tr>
+<td class="control">
+<form id="supervisor-open">
+<input type="submit" value="Open"/>
+</form>
+</td>
+</tr>
+<tr>
+<td class="control">
+<form id="supervisor-close">
+<input type="submit" value="Close"/>
+</form>
+</td>
+</tr>
+<tr>
+<td class="control">
+<form id="supervisor-emergencyclose">
+<input type="submit" value="Emergency Close"/>
+</form>
+</td>
+</tr>
+</table>
+
+<table class="control">
+<tr><th class="control full" align="center">Lights</th></tr>
+<tr>
+<td class="control">
+<form id="executor-switchlightson">
+<input type="submit" value="Switch On"/>
+</form>
+</td>
+</tr>
+<tr>
+<td class="control">
+<form id="executor-switchlightsoff">
+<input type="submit" value="Switch Off"/>
+</form>
+</td>
+</tr>
+</table>
+
+</div>
+
+<div id="status"></div>
+<div id="log"></div>
+
+</div>
+
+</body>
+
+</html>

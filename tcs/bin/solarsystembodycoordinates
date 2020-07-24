@@ -1,0 +1,126 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: solarsystembodycoordinates 3373 2019-10-30 15:09:02Z Alan $
+
+########################################################################
+
+# Copyright © 2013, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
+
+program=$(basename "$0")
+
+usageerror () {
+  echo 1>&2 "usage: $program [-p prefix] [--] number jd"
+  exit 1
+}
+
+optstring=p:
+prefix=/usr/local
+if ! getopt -qQ -- "$optstring" "$@"
+then
+  usageerror
+fi
+eval set -- "$(getopt -q -- "$optstring" "$@")"
+while test "$1" != "--"
+do
+  case "$1" in
+  -p)
+    prefix="$2"
+    shift 2
+    ;;
+  *)
+    usageerror
+    ;;
+  esac
+done
+shift
+if test $# != 2
+then
+  usageerror
+fi
+
+file="$1"
+jd="$2"
+
+cd $prefix/share/tcs/solarsystembodycoordinates
+
+
+if test ! -r "$file"
+then
+  echo 1>&2 "error: unable to read the ephemeris for the minor planet \"$file\"."
+  exit 1
+fi
+
+sed '1,/^\$\$SOE/d;/^\$\$EOE/,$d' "$file" | tee /tmp/foo |
+awk -v jd="$jd" '
+BEGIN {
+  pi = 4.0 * atan2(1.0, 1.0);
+}
+function cosd(x) {
+  return cos(x * pi / 180.0);
+}
+{
+  jd1 = $3;
+  alpha1 = $5;
+  delta1 = $6;
+}
+NR == 1 {
+  if (jd < jd1) {
+    printf("error: the requested JD is before the first entry in the ephemeris.\n");
+    exit(1);
+  }
+}
+NR > 1 && jd0 <= jd && jd <= jd1 {
+  if (alpha0 > 350.0 && alpha1 < 10.0) {
+    alpha1 += 360.0;
+  }
+  if (alpha0 < 10.0 && alpha1 > 350.0) {
+    alpha0 += 360.0;
+  }
+  dalpha = alpha1 - alpha0;
+  ddelta = delta1 - delta0;
+  dt     = jd1 - jd0;
+  f = (jd - jd0) / dt;
+  alpha = alpha0 * (1.0 - f) + alpha1 * f;
+  delta = delta0 * (1.0 - f) + delta1 * f;
+  alpharate = dalpha / dt * 3600.0 / 84600.0 * cosd(delta);
+  deltarate = ddelta / dt * 3600.0 / 84000.0;
+  if (alpha < 0)
+    alpha += 360;
+  if (alpha >= 360)
+    alpha -= 360;
+  printf("%.5fd %.5fd 2000.0 %.5fas %.5fas\n", alpha, delta, alpharate, deltarate);
+  exit(0);
+}
+{
+  jd0    = jd1;
+  alpha0 = alpha1;
+  delta0 = delta1;
+}
+END {
+  if (jd > jd1) {
+    printf("error: the requested JD is after the last entry in the ephemeris.\n");
+    exit(1);
+  }
+}
+' 

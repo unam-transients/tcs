@@ -1,0 +1,107 @@
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+########################################################################
+
+# Copyright © 2013 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+proposal::setidentifier "2019B-1000"
+block::setidentifier 1
+visit::setidentifier 0
+visit::setname "M31 (Watson)"
+block::settotalexposures 0
+visit::settargetcoordinates equatorial 00:43:00 +41:16:00 2000
+block::setexpectedduration "40m"
+
+constraints::setmaxfocusdelay    3600
+constraints::setmaxairmass       1.5
+constraints::setmaxskybrightness "astronomicaltwilight"
+
+proc EXECUTE {alertfile} {
+
+  set executor::pointingdetectors C3
+
+  set focusexposuretime 5
+
+  set proposalidentifier [proposal::identifier]
+
+  # First refocus.
+  
+  log::info "refocusing."
+
+  proposal::setidentifier "2019A-0012"
+  executor::track
+  executor::setwindow "1kx1k"
+  executor::setbinning 2
+  executor::waituntiltracking
+  executor::focus 10000 1000 false $focusexposuretime
+  executor::setbinning 1
+  executor::focus 5000 500 true $focusexposuretime
+  executor::setfocused
+  
+  # Then correct pointing
+
+  log::info "correcting pointing."
+  executor::setwindow "6kx6k"
+  executor::setbinning 1
+  executor::correctpointing $focusexposuretime
+
+  log::info "observing target."
+
+  proposal::setidentifier $proposalidentifier
+
+  executor::setwindow "default"
+
+  set exposuretime       60
+  set exposuresperdither 2
+  set binning            1
+
+  executor::setbinning $binning
+  log::info [format "%.0f second exposures with binning of %d." $exposuretime $binning]
+  log::info [format "%d exposures per dither." $exposuresperdither]
+
+  set dithers {
+    +0.0d +0.0d
+    +0.1d +0.1d
+    -0.1d -0.1d
+    +0.1d -0.1d
+    -0.1d +0.1d
+    +0.1d +0.0d
+    -0.1d +0.0d
+    +0.0d +0.1d
+    +0.0d -0.1d
+  } 
+  
+  set lastalpha ""
+  set lastdelta ""
+  set lastequinox ""
+  
+  foreach {eastoffset northoffset} $dithers {
+    log::info "offset by $eastoffset E and $northoffset W."    
+    executor::offset $eastoffset $northoffset
+    executor::waituntiltracking
+    set i 0
+    while {$i < $exposuresperdither} {
+      executor::expose object $exposuretime
+      incr i
+    }
+  }
+
+  return true
+}

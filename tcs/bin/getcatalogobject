@@ -1,0 +1,85 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: getcatalogobject 3550 2020-05-22 17:22:28Z Alan $
+
+########################################################################
+
+# Copyright © 2010, 2011, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
+
+program=$(basename "$0")
+
+usageerror () {
+  echo 1>&2 "usage: $program [-d catalogdir] [--] catalogname objectname"
+  exit 1
+}
+
+optstring="d:"
+catalogdir=/usr/local/share/tcs/catalog
+if ! getopt -qQ -- "$optstring" "$@"
+then
+  usageerror
+fi
+eval set -- "$(getopt -- "$optstring" "$@")"
+while test "$1" != "--"
+do
+  case "$1" in
+  -d)
+    catalogdir="$2"
+    shift 2
+    ;;
+  *)
+    usageerror
+    ;;
+  esac
+done
+shift
+if test $# != 2
+then
+  usageerror
+fi
+catalogname="$1"
+objectname="$2"
+
+if test -e "$catalogname"
+then
+  catalogpath="$catalogname"
+elif test -e "$catalogdir"/"$catalogname"
+then
+  catalogpath="$catalogdir"/"$catalogname"
+else
+  echo 1>&2 "error: unable to find catalog \"$catalogname\"."
+  exit 1
+fi
+
+expand "$catalogpath" |
+sed "
+/^ *#/d
+/^ *$objectname /{
+  s/^ *$objectname *//
+  q
+}
+d
+"
+
+exit 0

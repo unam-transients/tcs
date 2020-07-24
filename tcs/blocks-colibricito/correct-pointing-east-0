@@ -1,0 +1,28 @@
+proposal::setidentifier "2019A-0006";
+visit::setidentifier "0"
+visit::setname "pointing correction in east"
+block::settotalexposures 0
+visit::settargetcoordinates fixed -1h +30d 2000
+
+proc SELECTABLE {args} {
+  return [expr {
+    [maxfocusdelay 1800] &&
+    [withintelescopepointinglimits] && 
+    [maxskybrightness "nauticaltwilight"] &&
+    [minmoonseparation "15d"] 
+  }]
+}
+
+proc EXECUTE {args} {
+
+  tracktopocentric
+
+  setbinning 1
+  movefilterwheel "w"
+
+  waituntiltracking
+
+  correctpointing C0 60
+
+  return true
+}

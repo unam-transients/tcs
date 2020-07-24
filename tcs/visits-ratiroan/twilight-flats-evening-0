@@ -1,0 +1,43 @@
+proposal::setidentifier "2017A-0001"
+visit::setidentifier "0"
+visit::setname "evening flats"
+block::settotalexposures 0
+visit::settargetcoordinates fixed -3h 30d
+
+proc SELECTABLE {args} {
+  return [expr {
+    [withintelescopepointinglimits] && 
+    [minsunzenithdistance "80d"] &&
+    [maxskybrightness "daylight"] &&
+    [minskybrightness "civiltwilight"]
+  }]
+}
+
+#    "BB"  3000
+#    "BV"  3000
+#    "BR"  3000
+
+proc EXECUTE {args} {
+
+  setsecondaryoffset 0
+  setbinning 1
+  setreadmode 1MHz
+  move
+
+  # Take flats in each filter until the count rate in C0 drops below the limit.
+  foreach {filter limit} {
+    "BI"  3000
+    "W"   3000
+  } {
+    movefilterwheel $filter
+    while {true} {
+      expose flat 10
+      analyze levels
+      if {[exposureaverage C0] < $limit} {
+        break
+      }
+    }
+  }
+
+  return true
+}

@@ -1,0 +1,11 @@
+proposal::setidentifier "[utcclock::semester]-0003"
+block::setidentifier "0"
+visit::setidentifier "0"
+visit::setname "darks"
+block::settotalexposures 0
+visit::settargetcoordinates fixed -3h 30d
+
+constraints::setmaxskybrightness "nauticaltwilight"
+constraints::setmustbeonfavoredsideforswift true
+
+visit::setcommand "darksvisit"

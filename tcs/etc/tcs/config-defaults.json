@@ -1,0 +1,122 @@
+////////////////////////////////////////////////////////////////////////
+
+// This file is part of the UNAM telescope control system.
+
+// $Id: config-defaults.json 3611 2020-06-11 21:19:38Z Alan $
+
+////////////////////////////////////////////////////////////////////////
+
+// Copyright © 2020 Alan M. Watson <alan@astro.unam.mx>
+//
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
+//
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+// WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+// AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+// DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+// PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+// TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+// PERFORMANCE OF THIS SOFTWARE.
+
+////////////////////////////////////////////////////////////////////////
+
+{
+  "C0": {
+    "filterwheelinitialposition": "0",
+    "filterwheelidleposition": "0",
+    "allowedfilterwheelpositionerror": "0",
+    "allowedfocuserpositionerror": "0"
+  },
+  "C1": {
+    "filterwheelinitialposition": "0",
+    "filterwheelidleposition": "0",
+    "allowedfilterwheelpositionerror": "0",
+    "allowedfocuserpositionerror": "0"
+  },
+  "C2": {
+    "filterwheelinitialposition": "0",
+    "filterwheelidleposition": "0",
+    "allowedfilterwheelpositionerror": "0",
+    "allowedfocuserpositionerror": "0"
+  },
+  "C3": {
+    "filterwheelinitialposition": "0",
+    "filterwheelidleposition": "0",
+    "allowedfilterwheelpositionerror": "0",
+    "allowedfocuserpositionerror": "0"
+  },
+  "C4": {
+    "filterwheelinitialposition": "0",
+    "filterwheelidleposition": "0",
+    "allowedfilterwheelpositionerror": "0",
+    "allowedfocuserpositionerror": "0"
+  },
+  "C5": {
+    "filterwheelinitialposition": "0",
+    "filterwheelidleposition": "0",
+    "allowedfilterwheelpositionerror": "0",
+    "allowedfocuserpositionerror": "0"
+  },
+  "dome": {
+    "allowedazimutherror": "3d",
+    "parkedazimuth": "0d",
+    "trackinganticipation": "1d"
+  },
+  "executor": {
+    "type": ""
+  },
+  "finder": {
+    "allowedfilterwheelpositionerror": "0",
+    "allowedfocuserpositionerror": "0"
+  },
+  "html": {
+    "servers": []
+  },
+  "scheduler": {
+    "offsethours": "0"
+  },
+  "secondary": {
+    "allowedzerror": "0",
+    "dzdT": "0",
+    "dzddelta": "0",
+    "dzdha": "0",
+    "dzdzenithdistance": "0",
+    "dztweak": "0",
+    "temperaturesensor": "",
+    "zdeadzonewidth": "0"
+  },
+  "sensors": {
+    "sensors": [],
+    "lognames": []
+  },
+  "supervisor": {
+    "humiditysensor": "",
+    "withplc": false
+  },
+  "swift": {
+    "pointingsource": "gcntan"
+  },
+  "target": {
+    "easthalimit": "-12h",
+    "westhalimit": "+12h",
+    "northdeltalimit": "+90d",
+    "southdeltalimit": "-90d",
+    "minzenithdistancelimit": "0d",
+    "maxzenithdistancelimit": "90d",
+    "idledelta": "0d",
+    "idleha": "0h",
+    "pointingapertures": {
+      "default": [ "0", "0" ]
+    }
+  },
+  "telescope": {
+    "closeexplicitly": true,
+    "finders": ""
+  },
+  "weather": {
+    "windaveragespeedlimit": ""
+  }
+}

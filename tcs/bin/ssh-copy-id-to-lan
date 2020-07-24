@@ -1,0 +1,51 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: ssh-copy-id-to-lan 3373 2019-10-30 15:09:02Z Alan $
+
+########################################################################
+
+# Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+program=$(basename "$0")
+
+host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
+case "$host" in
+coatlioan-access)
+  user=coatli
+  hosts="services control c0 d0 f0 f1"
+  ;;
+ddotioan-access)
+  user=ddoti
+  hosts="services control c0 d0 d1 d2 d3 e0 e1 e2 e3"
+  ;;
+*)
+  echo 1>&2 "error: $program: unrecognized host: $host"
+  exit
+esac
+
+for host in $hosts
+do
+  echo "$program: attempting to copy ssh id to $user@$host."
+  ssh-copy-id $user@$host
+  echo "$program: done."
+done
+

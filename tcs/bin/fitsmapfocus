@@ -1,0 +1,122 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: fitsmapfocus 3373 2019-10-30 15:09:02Z Alan $
+
+########################################################################
+
+# Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
+
+program=$(basename "$0")
+
+usageerror () {
+  echo 1>&2 "usage: $program [-N N] [-B B] [--] fitsfile ..."
+  exit 1
+}
+
+N=4
+B=1
+optstring=N:B:
+if ! getopt -qQ -- "$optstring" "$@"
+then
+  usageerror
+fi
+eval set -- "$(getopt -q -- "$optstring" "$@")"
+while test "$1" != "--"
+do
+  case "$1" in
+  -N)
+    N=$2
+    shift 2
+    ;;
+  -B)
+    B=$2
+    shift 2
+    ;;
+  *)
+    usageerror
+    ;;
+  esac
+done
+shift
+if test $# = 0
+then
+  usageerror
+fi
+
+(
+  awk -v N=$N -v B=$B '
+  BEGIN {
+    M = int(6 * 1024 / N);
+    for (iy = N - 1; iy >= 0; --iy) {
+      for (ix = 0; ix < N; ++ix) {
+        sx = ix * M;
+        nx = M;
+        sy = 54 + iy * M;
+        ny = M;
+        sx = int(sx / B);
+        sy = int(sy / B);
+        nx = int(nx / B);
+        ny = int(ny / B)
+        printf("[%d:%d,%d:%d]\n", sx + 1, sx + nx, sy + 1, sy + ny)
+      }
+    }
+  }
+  ' /dev/null
+) |
+while read section 
+do
+  echo $section $($HOME/svn/tcs/bin/fitsfocus -z SFCPS -s $section "$@" | sed '/:/d')
+done |
+awk -v N=$N '
+BEGIN {
+  i = 0;
+  n = 0;
+}
+{
+  printf("%24s", $1);
+  z[i] = $2;
+  if (z[i] != "") {
+     printf(" %5d %5.2f", $2, $3);
+    s += z[i];
+    ++n;
+  }
+  printf("\n");
+  ++i;
+}
+END {
+  zmean = s / n;
+  printf("%24s %5.0f\n", "mean", zmean);
+  for (i = 0; i < n; ++i) {
+    if (z[i] != "")
+      printf("%+5.0f", z[i] - zmean);
+    else
+      printf("     ");
+    if (i % N == N - 1)
+      printf("\n");
+    else
+      printf("  ");
+  }
+}'
+
+exit 0

@@ -1,0 +1,29 @@
+proposal::setidentifier "2019A-0003"
+visit::setidentifier "0"
+visit::setname "darks"
+block::settotalexposures 0
+visit::settargetcoordinates zenith
+
+proc SELECTABLE {args} {
+  return [expr {
+    [withintelescopepointinglimits] && 
+    [maxskybrightness "nauticaltwilight"]
+  }]
+}
+
+proc EXECUTE {args} {
+
+  move
+  
+  setbinning 1
+  movefilterwheel "w"
+
+  set i 0
+  while {$i < 5} { 
+    expose dark 60
+    analyze levels
+    incr i
+  }
+
+  return true
+}

@@ -1,0 +1,13 @@
+proposal::setidentifier "[utcclock::semester]-0014"
+block::setidentifier "0"
+visit::setidentifier "0"
+visit::setname "apertures in east"
+block::settotalexposures 0
+visit::settargetcoordinates equatorial 07:39:18.11950 +05:13:29.9552 2000
+
+constraints::setmaxskybrightness "astronomicaltwilight"
+constraints::setminha -12h
+constraints::setmaxha 0h
+constraints::setmaxfocusdelay 3600
+
+visit::setcommand "aperturesvisit"

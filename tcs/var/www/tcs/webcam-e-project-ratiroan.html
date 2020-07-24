@@ -1,0 +1,95 @@
+<!----------------------------------------------------------------------
+
+This file is part of the UNAM telescope control system.
+
+$Id: webcam-e-project-ratiroan.html 3373 2019-10-30 15:09:02Z Alan $
+
+------------------------------------------------------------------------
+
+Copyright © 2012, 2013, 2014, 2016, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+
+Permission to use, copy, modify, and distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+
+----------------------------------------------------------------------->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<link rel="stylesheet" href="style.css" type="text/css"/>
+<title>RATIR/OAN: Webcam E</title>
+</head>
+
+<body>
+
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="config.js"></script>
+<script type="text/javascript" src="tcs.js"></script>
+
+<div id="header">
+
+<div id="images">
+<a href="allsky.html"  ><img src="blank.png" alt="All-Sky Camera" id="allsky-small"   class="allsky-small"    /></a>
+<a href="webcam-a.html"><img src="blank.png" alt="Webcam A"       id="webcam-a-small" class="webcam-small"    /></a>
+<a href="webcam-b.html"><img src="blank.png" alt="Webcam B"       id="webcam-b-small" class="webcam-small"    /></a>
+<a href="webcam-c.html"><img src="blank.png" alt="Webcam C"       id="webcam-c-small" class="webcam-small"    /></a>
+<a href="webcam-d.html"><img src="blank.png" alt="Webcam D"       id="webcam-d-small" class="webcam-small"    /></a>
+<a href="webcam-e.html"><img src="blank.png" alt="Webcam E"       id="webcam-e-small" class="webcam-small"    /></a>
+</div>
+<div id="images">
+<a href="nefinder.html"><img src="blank.png" alt="NE Finder"      id="nefinder-small" class="finder-small"    /></a>
+<a href="sefinder.html"><img src="blank.png" alt="SE Finder"      id="sefinder-small" class="finder-small"    /></a>
+<a href="C0.html"      ><img src="blank.png" alt="C0"             id="C0-small"       class="instrument-small"/></a>
+<a href="C1.html"      ><img src="blank.png" alt="C1"             id="C1-small"       class="instrument-small"/></a>
+<a href="C2.html"      ><img src="blank.png" alt="C2"             id="C2-small"       class="instrument-small"/></a>
+<a href="C3.html"      ><img src="blank.png" alt="C3"             id="C3-small"       class="instrument-small"/></a>
+</div>
+
+<div id="navigation">
+<a href="/">Home</a> | <a href="interface.html">Interface</a>
+</div>
+
+<div id="title">
+<h1>RATIR/OAN: Webcam E (SE 84-cm Telescope)</h1>
+</div>
+</div>
+
+<div id="contents">
+<div id="webcam"><img src="blank.png" alt="Webcam E" id="webcam" class="webcam"/></div>
+</div>
+
+<script language="javascript">
+$(function () {
+  refreshimage({
+    "webcam-a-small" : "webcam/a/latest-small.jpg",
+    "webcam-b-small" : "webcam/b/latest-small.jpg",
+    "webcam-c-small" : "webcam/c/latest-small.jpg",
+    "webcam-d-small" : "webcam/d/latest-small.jpg",
+    "webcam-e-small" : "webcam/e/latest-small.jpg",
+    "nefinder-small" : "finder/nefinder/latest-small.jpg",
+    "sefinder-small" : "finder/sefinder/latest-small.jpg",
+    "C0-small"       : "instrument/C0/latest-small.jpg",
+    "C1-small"       : "instrument/C1/latest-small.jpg",
+    "C2-small"       : "instrument/C2/latest-small.jpg",
+    "C3-small"       : "instrument/C3/latest-small.jpg",
+    "allsky-small"   : "webcam/allsky/latest-small.jpg",
+    "webcam"         : "webcam/e/latest.jpg"
+  });
+});
+</script>
+
+</body>
+
+</html>

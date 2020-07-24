@@ -1,0 +1,114 @@
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: Makefile.in 3444 2020-02-23 16:53:46Z Alan $
+
+########################################################################
+
+# Copyright © 2011, 2012, 2013, 2014, 2016, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+include ../../../Makefile.prolog
+
+installs			:=	\
+	.htaccess			\
+	blank.png			\
+	C1.html                 	\
+	C2.html                 	\
+	C3.html                 	\
+	C4.html                 	\
+	cgi.tcl				\
+	jquery.js			\
+	operator-extended.html		\
+	plots.sh                	\
+	style.css			\
+	tcs.js
+	
+installbins			:=	\
+	request.cgi			\
+
+
+installs_project_ratiroan	:=		\
+	allsky-project-ratiroan.html      	\
+	C0-project-ratiroan.html       		\
+	C1-project-ratiroan.html       		\
+	C2-project-ratiroan.html       		\
+	C3-project-ratiroan.html       		\
+	config-project-ratiroan.js		\
+	interface-project-ratiroan.html		\
+	nefinder-project-ratiroan.html		\
+	sefinder-project-ratiroan.html		\
+	webcam-a-project-ratiroan.html		\
+	webcam-b-project-ratiroan.html		\
+	webcam-c-project-ratiroan.html		\
+	webcam-d-project-ratiroan.html		\
+	webcam-e-project-ratiroan.html
+
+installs_project_coatlioan	:=		\
+	allsky-project-coatlioan.html		\
+	C0-project-coatlioan.html       	\
+	config-project-coatlioan.js		\
+	interface-project-coatlioan.html	\
+	webcam-a-project-coatlioan.html		\
+	webcam-b-project-coatlioan.html		\
+	webcam-c-project-coatlioan.html		\
+	webcam-cz-project-coatlioan.html
+
+installs_project_ddotioan	:=		\
+	allsky-project-ddotioan.html		\
+	C0-project-ddotioan.html  	     	\
+	C1-project-ddotioan.html  	     	\
+	C2-project-ddotioan.html  	     	\
+	C3-project-ddotioan.html  	     	\
+	C4-project-ddotioan.html  	     	\
+	C5-project-ddotioan.html  	     	\
+	config-project-ddotioan.js		\
+	interface-project-ddotioan.html		\
+	webcam-a-project-ddotioan.html		\
+	webcam-b-project-ddotioan.html		\
+	webcam-c-project-ddotioan.html		\
+	webcam-cz-project-ddotioan.html
+
+installs_project_colibricu	:=		\
+	C0-project-colibricu.html  	     	\
+	config-project-colibricu.js		\
+	interface-project-colibricu.html	\
+
+installs_project_colibricito	:=		\
+	allsky-project-colibricito.html		\
+	C0-project-colibricito.html  	     	\
+	config-project-colibricito.js		\
+	interface-project-colibricito.html	\
+	webcam-a-project-colibricito.html	\
+	webcam-b-project-colibricito.html	\
+	webcam-c-project-colibricito.html	\
+
+EXTRA_INSTALLS			:=	\
+	install-webcam-link
+
+INSTALL_DIR			:=	$(prefix)/var/www/tcs/
+
+include ../../../Makefile.epilog
+
+install-crontab			:
+	sudo -u www-data crontab <crontab
+
+install-webcam-link		:
+	sudo mkdir -p $(INSTALL_DIR)
+	sudo rm -f $(INSTALL_DIR)/webcam
+	sudo ln -s $(prefix)/var/tcs/latest/webcam $(INSTALL_DIR)

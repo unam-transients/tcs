@@ -1,0 +1,191 @@
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: Makefile.in 7 2009-06-25 14:34:38Z alan $
+
+########################################################################
+
+# Copyright © 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+include ../Makefile.prolog
+
+prefix		:=	@prefix@
+
+########################################################################
+
+installbins			:= 		\
+	allskyimageserver 			\
+	checkhalt                               \
+	checkreboot                             \
+	checkrestart                            \
+	checkfocus 				\
+	cleanfiles 				\
+	dailyrestart 				\
+	domeserver 				\
+	emergencystop 				\
+	executorserver 				\
+	fansserver 				\
+	finderimageserver 			\
+	fitschpix 				\
+	fitsdatawindow                          \
+	fitsdonuts 				\
+	fitsfocus				\
+	fitsfwhm 				\
+	fitsmapfocus				\
+	fitssoftgain 				\
+	fitssolvewcs 				\
+	fitssplice 				\
+	fitpsf 					\
+	fitsheader 				\
+	fitsheadervalue 			\
+	fitsmean 				\
+	fitswcsvalue 				\
+	getblockfiles				\
+	getcatalogobject 			\
+	gcntanserver 				\
+	gcntantest				\
+	guiderserver 				\
+	gpio	 				\
+	haltsoon				\
+	heaterserver 				\
+	htmlserver				\
+	instrumentdataserver			\
+	instrumentserver			\
+	lightsserver				\
+	logsensors				\
+	logserver				\
+	lvcskymapfindpeak			\
+	makesummarylog				\
+	moonserver				\
+	mountserver				\
+	newpgrp					\
+	owsensorsserver				\
+	powerserver 				\
+	rebootsoon                              \
+	request					\
+	restartserver				\
+	restartsoon				\
+	schedulerserver				\
+	sendpushover				\
+	sensorsserver				\
+	shuttersserver				\
+	solarsystembodycoordinates		\
+	ssh-copy-id-to-lan			\
+	startserver 				\
+	stopserver 				\
+	supervisorserver 			\
+	submitgcnnotice 			\
+	sunserver 				\
+	targetserver 				\
+	tcs 					\
+	telescopeserver 			\
+	updatelocalsensorsfiles 		\
+	updateowsensorsfiles 			\
+	updatesensorsfiles 			\
+	updatevarlatestlink 			\
+	weatherserver 				\
+	webcamimageserver
+
+installbins_project_test	:=		\
+	C0server
+	
+installbins_project_ratiroan	:=		\
+	C0server				\
+	C1server				\
+	C2server				\
+	C3server				\
+	coversserver-project-ratiroan		\
+	cryostatserver-project-ratiroan		\
+	finderdataserver                        \
+	h2rgexpose-project-ratiroan		\
+	inclinometersserver-project-ratiroan	\
+	instrumentimageserver			\
+	nefinderserver-project-ratiroan		\
+	secondaryserver				\
+	sefinderserver-project-ratiroan		\
+	updateweatherfiles-oan
+
+installbins_project_coatlioan	:=		\
+	C0server				\
+	C1server				\
+	coversserver-project-coatlioan		\
+	enclosureserver				\
+	instrumentimageserver			\
+	secondaryserver				\
+	updateweatherfiles-oan
+
+installbins_project_ddotioan	:=		\
+	C0server				\
+	C1server				\
+	C2server				\
+	C3server				\
+	C4server				\
+	C5server				\
+	enclosureserver				\
+	instrumentimageserver			\
+	updateweatherfiles-oan
+	
+installbins_project_colibricu	:=		\
+	C0server				\
+	C1server				\
+	C2server				\
+	C3server				\
+	instrumentimageserver			\
+	updateweatherfiles-oan
+	
+installbins_project_ddoticu	:=		\
+	C0server
+	
+installbins_project_colibricito	:=		\
+	C0server				\
+	enclosureserver				\
+	instrumentimageserver			\
+	plcserver-project-colibricito		\
+	updateweatherfiles-satino
+
+CLEAN_FILES			:=	*.o newpgrp
+
+INSTALL_DIR			:=	$(prefix)/bin
+
+########################################################################
+
+CC		:=	@CC@
+CFLAGS		:=	@CFLAGS@ -Wall -fPIC -I$(prefix)/include -I/usr/local/include -I
+
+LDFLAGS		:=	-L$(prefix)/lib -L/usr/local/lib
+LIBS		:=	-lcfitsio -lfftw3 -lm
+
+newpgrp		:	newpgrp.c
+	$(CC) $(CFLAGS) $(LDFLAGS) -o newpgrp newpgrp.c $(LIBS)
+
+fitpsf          :       fitpsf.c
+	$(CC) $(CFLAGS) $(LDFLAGS) -o fitpsf fitpsf.c $(LIBS)
+
+fitschpix       :       fitschpix.c
+	$(CC) $(CFLAGS) $(LDFLAGS) -o fitschpix fitschpix.c $(LIBS)
+
+fitssoftgain          :       fitssoftgain.c
+	$(CC) $(CFLAGS) $(LDFLAGS) -o fitssoftgain fitssoftgain.c $(LIBS)
+
+fitsmean        :       fitsmean.c
+	$(CC) $(CFLAGS) $(LDFLAGS) -o fitsmean fitsmean.c $(LIBS)
+
+########################################################################
+
+include ../Makefile.epilog

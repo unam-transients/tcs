@@ -1,0 +1,244 @@
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: ratiroan.txt 3531 2020-03-30 21:59:18Z Alan $
+
+########################################################################
+
+# Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+rack-ibb
+
+set ipaddress 10.0.1.4
+set subnet 255.255.255.0
+set gateway 10.0.1.1
+set ipmode static
+get network
+
+set time server 129.6.15.29
+set time zone 0
+set time usents yes
+get time
+
+add user ratir
+set user ratir password ratir ratir
+set user ratir role admin
+set user ratir device #1 outlet all yes
+set user ratir device #2 outlet all yes
+get user ratir
+
+set device 1
+set device #1 name rack-ibb-a
+set device #2 name rack-ibb-b
+get devices
+
+set device #1 outlet 1 name tcs-b
+set device #1 outlet 2 name tcs-b
+set device #1 outlet 3 name -
+set device #1 outlet 4 name hallway-lights
+set device #1 outlet 5 name k3
+set device #1 outlet 6 name irpc
+set device #1 outlet 7 name science-ccd-pump
+set device #1 outlet 8 name finder-ccd-pump
+get device #1
+
+set device #2 outlet 1 name firewall
+set device #2 outlet 2 name control
+set device #2 outlet 3 name services
+set device #2 outlet 4 name detectors
+set device #2 outlet 5 name tcs-a
+set device #2 outlet 6 name tcs-a
+set device #2 outlet 7 name -
+set device #2 outlet 8 name machine-room-owhub
+get device #2
+
+########################################################################
+
+dome-ibb
+
+set ipaddress 192.168.0.130
+set subnet 255.255.255.0
+set gateway 192.168.0.254
+set ipmode static
+get network
+
+set time server 129.6.15.29
+set time zone 0
+set time usents yes
+get time
+
+add user ratir
+set user ratir password ratir ratir
+set user ratir role admin
+set user ratir device #1 outlet all yes
+set user ratir device #2 outlet all yes
+get user ratir
+
+set device 1
+set device #1 name dome-ibb-a
+set device #2 name dome-ibb-b
+get devices
+
+set device #1 outlet 1 name unknown-relay
+set device #1 outlet 2 name dome-fans
+set device #1 outlet 3 name compressor
+set device #1 outlet 4 name compressor-fan
+set device #1 outlet 5 name shutters
+set device #1 outlet 6 name secondary
+set device #1 outlet 7 name ni-controller
+set device #1 outlet 8 name dome-owhub
+get device #1
+
+set device #2 outlet 1 name inclinometers/covers
+set device #2 outlet 2 name dome-webcam-sw0
+set device #2 outlet 3 name dome-sw0
+set device #2 outlet 4 name dome
+set device #2 outlet 5 name vacuum-pump
+set device #2 outlet 6 name dome-lights
+set device #2 outlet 7 name -
+set device #2 outlet 8 name alarm-bell
+get device #2
+
+########################################################################
+
+dome-cabinet-ibb
+
+set ipaddress 192.168.0.128
+set subnet 255.255.255.0
+set gateway 192.168.0.254
+set ipmode static
+get network
+
+set time server 129.6.15.29
+set time zone 0
+set time usents yes
+get time
+
+add user ratir
+set user ratir password ratir ratir
+set user ratir role admin
+set user ratir device #1 outlet all yes
+get user ratir
+
+set device 1
+set device #1 name dome-cabinet-ibb-a
+
+set device #1 outlet 1 name -
+set device #1 outlet 2 name cryostat
+set device #1 outlet 3 name -
+set device #1 outlet 4 name -
+set device #1 outlet 5 name mount-adapter
+set device #1 outlet 6 name mount-motors
+set device #1 outlet 7 name mount
+set device #1 outlet 8 name -
+get device #1
+
+########################################################################
+
+telescope-ibb
+
+set ipaddress 192.168.0.126
+set subnet 255.255.255.0
+set gateway 192.168.0.254
+set ipmode static
+get network
+
+set time server 129.6.15.29
+set time zone 0
+set time usents yes
+get time
+
+add user ratir
+set user ratir password ratir ratir
+set user ratir role admin
+set user ratir device #1 outlet all yes
+set user ratir device #2 outlet all yes
+get user ratir
+
+set device 1
+set device #1 name telescope-ibb-a
+set device #2 name telescope-ibb-b
+get devices
+
+set device #1 outlet 1 name pressure-sensor
+set device #1 outlet 2 name pressure-sensor-rex
+set device #1 outlet 3 name -
+set device #1 outlet 4 name -
+set device #1 outlet 5 name -
+set device #1 outlet 6 name -
+set device #1 outlet 7 name -
+set device #1 outlet 8 name -
+get device #1
+
+set device #2 outlet 1 name nefinder-focuser
+set device #2 outlet 2 name -
+set device #2 outlet 3 name sefinder-focuser
+set device #2 outlet 4 name finder-usb-rex
+set device #2 outlet 5 name -
+set device #2 outlet 6 name nefinder-ccd
+set device #2 outlet 7 name sefinder-ccd
+set device #2 outlet 8 name telescope-owhub
+get device #2
+
+########################################################################
+
+instrument-ibb
+
+set ipaddress 192.168.0.129
+set subnet 255.255.255.0
+set gateway 192.168.0.254
+set ipmode static
+get network
+
+set time server 129.6.15.29
+set time zone 0
+set time usents yes
+get time
+
+add user ratir
+set user ratir password ratir ratir
+set user ratir role admin
+set user ratir device #1 outlet all yes
+set user ratir device #2 outlet all yes
+get user ratir
+
+set device 1
+set device #1 name instrument-ibb-a
+set device #2 name instrument-ibb-b
+get devices
+
+set device #1 outlet 1 name C23-detectors
+set device #1 outlet 2 name C23-usb-rex
+set device #1 outlet 3 name -
+set device #1 outlet 4 name -
+set device #1 outlet 5 name -
+set device #1 outlet 6 name -
+set device #1 outlet 7 name -
+set device #1 outlet 8 name - 
+get device #1
+
+set device #2 outlet 1 name C0-ccd
+set device #2 outlet 2 name C1-ccd
+set device #2 outlet 3 name -
+set device #2 outlet 4 name C0-filter-wheel
+set device #2 outlet 5 name C01-usb-rex
+set device #2 outlet 6 name C0-focuser
+set device #2 outlet 7 name -
+set device #2 outlet 8 name C1-focuser
+get device #2

@@ -1,0 +1,83 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: sefinderserver-project-ratiroan 3575 2020-05-23 19:47:32Z Alan $
+
+########################################################################
+
+# Copyright © 2010, 2011, 2012, 2016, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+#\
+umask 0; PATH=/usr/local/opt/tcl-tk/bin:$PATH exec tclsh8.6 -encoding "utf-8" "$0" ${1+"$@"}
+
+source [file join [file dirname [info script]] ".." "lib" "tcs" "packages.tcl"]
+
+package require "server"
+server::start {
+
+  config::setdefaultvalue "sefinder" "telescopedescription"        "SE C8-A XLT Finder"
+  config::setdefaultvalue "sefinder" "detectortype"                "fli"
+  config::setdefaultvalue "sefinder" "detectoridentifier"          "ML0702510"
+  config::setdefaultvalue "sefinder" "detectorwidth"               0.68d
+  config::setdefaultvalue "sefinder" "detectorinitialreadmode"     "5MHz"
+  config::setdefaultvalue "sefinder" "detectorinitialsoftwaregain" 8
+  config::setdefaultvalue "sefinder" "detectorinitialbinning"      2
+  config::setdefaultvalue "sefinder" "detectorfullunbinneddatawindow" { sx 46 sy 34 nx 2184 ny 1472 }
+  config::setdefaultvalue "sefinder" "detectorfullunbinnedbiaswindow" { sx 12 sy 34 nx   34 ny 1472 }
+  config::setdefaultvalue "sefinder" "coolersettemperature"        -30
+  config::setdefaultvalue "sefinder" "filterwheeltype"             "null"
+  config::setdefaultvalue "sefinder" "filterwheelidentifier"       "null"
+  config::setdefaultvalue "sefinder" "filterwheelinitialposition"  0
+  config::setdefaultvalue "sefinder" "focusertype"                 "fli"
+  config::setdefaultvalue "sefinder" "focuseridentifier"           "DF0080209"
+  config::setdefaultvalue "sefinder" "focuserinitialposition"      1000
+  config::setdefaultvalue "sefinder" "defaultfocusexposuretime"    1.0
+  config::setdefaultvalue "sefinder" "defaultfocusrange"           600
+  config::setdefaultvalue "sefinder" "defaultfocusstep"            25
+  config::setdefaultvalue "sefinder" "pointingmodelparameters"     {}
+  config::setdefaultvalue "sefinder" "isstandalone"                false
+
+  config::setdefaultvalue "finder" "identifier"                     "sefinder"
+  config::setdefaultvalue "finder" "telescopedescription"           [config::getvalue "sefinder" "telescopedescription"          ]  
+  config::setdefaultvalue "finder" "detectortype"                   [config::getvalue "sefinder" "detectortype"                  ]
+  config::setdefaultvalue "finder" "detectoridentifier"             [config::getvalue "sefinder" "detectoridentifier"            ]
+  config::setdefaultvalue "finder" "detectorwidth"                  [config::getvalue "sefinder" "detectorwidth"                 ]
+  config::setdefaultvalue "finder" "detectorinitialreadmode"        [config::getvalue "sefinder" "detectorinitialreadmode"       ]
+  config::setdefaultvalue "finder" "detectorinitialsoftwaregain"    [config::getvalue "sefinder" "detectorinitialsoftwaregain"   ]
+  config::setdefaultvalue "finder" "detectorinitialbinning"         [config::getvalue "sefinder" "detectorinitialbinning"        ]
+  config::setdefaultvalue "finder" "detectorfullunbinneddatawindow" [config::getvalue "sefinder" "detectorfullunbinneddatawindow"]
+  config::setdefaultvalue "finder" "detectorfullunbinnedbiaswindow" [config::getvalue "sefinder" "detectorfullunbinnedbiaswindow"]
+  config::setdefaultvalue "finder" "coolersettemperature"           [config::getvalue "sefinder" "coolersettemperature"          ]
+  config::setdefaultvalue "finder" "filterwheeltype"                [config::getvalue "sefinder" "filterwheeltype"               ]
+  config::setdefaultvalue "finder" "filterwheelidentifier"          [config::getvalue "sefinder" "filterwheelidentifier"         ]
+  config::setdefaultvalue "finder" "filterwheelinitialposition"     [config::getvalue "sefinder" "filterwheelinitialposition"    ]
+  config::setdefaultvalue "finder" "focusertype"                    [config::getvalue "sefinder" "focusertype"                   ]
+  config::setdefaultvalue "finder" "focuseridentifier"              [config::getvalue "sefinder" "focuseridentifier"             ]
+  config::setdefaultvalue "finder" "focuserinitialposition"         [config::getvalue "sefinder" "focuserinitialposition"        ]
+  config::setdefaultvalue "finder" "defaultfocusexposuretime"       [config::getvalue "sefinder" "defaultfocusexposuretime"      ]
+  config::setdefaultvalue "finder" "defaultfocusrange"              [config::getvalue "sefinder" "defaultfocusrange"             ]
+  config::setdefaultvalue "finder" "defaultfocusstep"               [config::getvalue "sefinder" "defaultfocusstep"              ]
+  config::setdefaultvalue "finder" "pointingmodelparameters"        [config::getvalue "sefinder" "pointingmodelparameters"       ]
+  config::setdefaultvalue "finder" "isstandalone"                   [config::getvalue "sefinder" "isstandalone"                  ]
+
+  package require finderserver
+  finderserver::start
+}

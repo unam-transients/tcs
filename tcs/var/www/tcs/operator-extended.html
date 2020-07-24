@@ -1,0 +1,341 @@
+<!----------------------------------------------------------------------
+
+This file is part of the UNAM telescope control system.
+
+$Id: operator-extended.html 3600 2020-06-11 00:18:39Z Alan $
+
+------------------------------------------------------------------------
+
+Copyright © 2011, 2012, 2013, 2014, 2016, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+
+Permission to use, copy, modify, and distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+
+----------------------------------------------------------------------->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<link rel="stylesheet" href="style.css" type="text/css"/>
+<title>TCS: Summary</title>
+</head>
+
+<body>
+
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="config.js"></script>
+<script type="text/javascript" src="tcs.js"></script>
+<script language="javascript">
+$(function () {
+  confirmrequest = false;
+  refreshimage({
+    "webcam-a-small": "webcam/a/latest-small.jpg",
+    "webcam-b-small": "webcam/b/latest-small.jpg",
+    "webcam-c-small": "webcam/c/latest-small.jpg",
+    "webcam-d-small": "webcam/d/latest-small.jpg",
+    "webcam-e-small": "webcam/e/latest-small.jpg",
+    "nefinder-small": "nefinder-small.jpg",
+    "sefinder-small": "sefinder-small.jpg",
+    "C0-small"      : "../C0-small.jpg",
+    "C1-small"      : "../C1-small.jpg",
+    "C2-small"      : "../C2-small.jpg",
+    "C3-small"      : "../C3-small.jpg",
+    "allsky-small"  : "webcam/allsky/latest-small.jpg"
+  });
+  refreshstatus("summary");
+  refreshlog("summary");
+});
+</script>
+
+<div id="header">
+
+<div id="images">
+<a href="webcam-a.html"><img src="blank.png" alt="Webcam A"       id="webcam-a-small" class="webcam-small"    /></a>
+<a href="webcam-b.html"><img src="blank.png" alt="Webcam B"       id="webcam-b-small" class="webcam-small"    /></a>
+<a href="webcam-c.html"><img src="blank.png" alt="Webcam C"       id="webcam-c-small" class="webcam-small"    /></a>
+<a href="webcam-d.html"><img src="blank.png" alt="Webcam D"       id="webcam-d-small" class="webcam-small"    /></a>
+<a href="webcam-e.html"><img src="blank.png" alt="Webcam E"       id="webcam-e-small" class="webcam-wide-small"    /></a>
+</div>
+<div id="images">
+<a href="allsky.html"  ><img src="blank.png" alt="All-Sky Camera" id="allsky-small"   class="allsky-small"    /></a>
+<a href="nefinder.html"><img src="blank.png" alt="NE Finder"      id="nefinder-small" class="finder-small"    /></a>
+<a href="sefinder.html"><img src="blank.png" alt="SE Finder"      id="sefinder-small" class="finder-small"    /></a>
+<a href="C0.html"      ><img src="blank.png" alt="C0"             id="C0-small"       class="instrument-small"/></a>
+<a href="C1.html"      ><img src="blank.png" alt="C1"             id="C1-small"       class="instrument-small"/></a>
+<a href="C2.html"      ><img src="blank.png" alt="C2"             id="C2-small"       class="instrument-small"/></a>
+<a href="C3.html"      ><img src="blank.png" alt="C3"             id="C3-small"       class="instrument-small"/></a>
+</div>
+
+<div id="navigation">
+<a href="/">Home</a> |
+<a href="" onclick='newcomponent("summary"      , "Summary"      ); return false;'>Summary</a> | 
+<a href="" onclick='newcomponent("C0"           , "C0"           ); return false;'>C0</a> | 
+<a href="" onclick='newcomponent("C1"           , "C1"           ); return false;'>C1</a> | 
+<a href="" onclick='newcomponent("C2"           , "C2"           ); return false;'>C2</a> | 
+<a href="" onclick='newcomponent("C3"           , "C3"           ); return false;'>C3</a> | 
+<a href="" onclick='newcomponent("covers"       , "Covers"       ); return false;'>Covers</a> | 
+<a href="" onclick='newcomponent("cryostat"     , "Cryostat"     ); return false;'>Cryostat</a> |
+<a href="" onclick='newcomponent("dome"         , "Dome"         ); return false;'>Dome</a> | 
+<a href="" onclick='newcomponent("executor"     , "Executor"     ); return false;'>Executor</a> | 
+<a href="" onclick='newcomponent("gcntan"       , "GCN/TAN"      ); return false;'>GCN/TAN</a> | 
+<a href="" onclick='newcomponent("guider"       , "Guider"       ); return false;'>Guider</a> | 
+<a href="" onclick='newcomponent("status"       , "Status"       ); return false;'>Status</a> |
+<a href="" onclick='newcomponent("ibb"          , "iBB"          ); return false;'>iBB</a> |
+<a href="" onclick='newcomponent("inclinometers", "Inclinometers"); return false;'>Inclinometers</a> | 
+<a href="" onclick='newcomponent("instrument"   , "Instrument"   ); return false;'>Instrument</a> | 
+<a href="" onclick='newcomponent("moon"         , "Moon"         ); return false;'>Moon</a> |
+<a href="" onclick='newcomponent("mount"        , "Mount"        ); return false;'>Mount</a> | 
+<a href="" onclick='newcomponent("nefinder"     , "NE Finder"    ); return false;'>NE Finder</a> | 
+<a href="" onclick='newcomponent("owsensors"    , "OW Sensors"   ); return false;'>OW Sensors</a> | 
+<a href="" onclick='newcomponent("secondary"    , "Secondary"    ); return false;'>Secondary</a> | 
+<a href="" onclick='newcomponent("selector"     , "Selector"     ); return false;'>Selector</a> | 
+<a href="" onclick='newcomponent("sefinder"     , "SE Finder"    ); return false;'>SE Finder</a> | 
+<a href="" onclick='newcomponent("shutters"     , "Shutters"     ); return false;'>Shutters</a> | 
+<a href="" onclick='newcomponent("sun"          , "Sun"          ); return false;'>Sun</a> |
+<a href="" onclick='newcomponent("supervisor"   , "Supervisor"   ); return false;'>Supervisor</a> |
+<a href="" onclick='newcomponent("target"       , "Target"       ); return false;'>Target</a> | 
+<a href="" onclick='newcomponent("telescope"    , "Telescope"    ); return false;'>Telescope</a> | 
+<a href="" onclick='newcomponent("temperatures" , "Temperatures" ); return false;'>Temperatures</a> | 
+<a href="" onclick='newcomponent("weather"      , "Weather"      ); return false;'>Weather</a>
+</div>
+
+<div id="title">
+<h1>RATIR/OAN: Summary</h1>
+</div>
+
+</div>
+
+<div id="contents">
+
+<div id="controls">
+
+<table class="control">
+
+<tr><th class="control emergency" colspan="2" align="center">Emergency</th></tr>
+<tr>
+<td class="control">
+<form id="emergencystop">
+<input type="submit" value="Stop" id="emergencystop" class="emergency"/>
+</form>
+</td>
+<td class="control">
+<form id="emergencyclose">
+<input type="submit" value="Close" id="emergencyclose" class="emergency"/>
+</form>
+</td>
+</tr>
+</table>
+
+<table class="control">
+<tr><th class="control full" colspan="2" align="center">Supervisor</th></tr>
+<tr>
+<td class="control">
+<form id="supervisor-enable">
+<input type="submit" value="Enable"/>
+</form>
+</td>
+<td class="control">
+<form id="supervisor-disable">
+<input type="submit" value="Disable"/>
+</form>
+</td>
+</tr>
+<tr>
+<td class="control">
+<form id="supervisor-open">
+<input type="submit" value="Open"/>
+</form>
+</td>
+<td class="control">
+<form id="supervisor-close">
+<input type="submit" value="Close"/>
+</form>
+</td>
+</tr>
+</table>
+
+</table>
+<table class="control">
+<tr><th class="control full" colspan="2" align="center">Lights</th></tr>
+<tr>
+<td class="control">
+<form id="executor-switchlightson">
+<input type="submit" value="Switch On"/>
+</form>
+</td>
+<td class="control">
+<form id="executor-switchlightsoff">
+<input type="submit" value="Switch Off"/>
+</form>
+</td>
+</tr>
+</table>
+
+<table class="control">
+<tr><th class="control full" colspan="2" align="center">Selector</th></tr>
+<tr>
+<td class="control">
+<form id="selector-enable">
+<input type="submit" value="Enable"/>
+</form>
+</td>
+<td class="control">
+<form id="selector-disable">
+<input type="submit" value="Disable"/>
+</form>
+</td>
+</tr>
+
+<table class="control">
+<tr><th class="control full" colspan="2" align="center">Telescope</th></tr>
+<tr>
+<td class="control">
+<form id="telescope-initialize">
+<input type="submit" value="Initialize"/>
+</form>
+</td>
+<td class="control">
+<form id="telescope-reset">
+<input type="submit" value="Reset"/>
+</form>
+</td>
+</tr>
+
+<tr>
+<td class="control">
+<form id="telescope-open">
+<input type="submit" value="Open"/>
+</form>
+</td>
+<td class="control">
+<form id="telescope-close">
+<input type="submit" value="Close"/>
+</form>
+</td>
+</tr>
+
+<tr>
+<td class="control">
+<form id="telescope-movetoidle">
+<input type="submit" value="Move To Zenith"/>
+</form>
+</td>
+<td class="control">
+<form id="telescope-stop">
+<input type="submit" value="Stop"/>
+</form>
+</td>
+</tr>
+
+<tr>
+<form id="telescope-move">
+<td class="control">
+<input type="submit" value="Move"/>
+</td>
+<td class="control">
+<input type="text" id="move-args" class="text args"/>
+</td>
+</form>
+</tr>
+
+<tr>
+<form id="telescope-track">
+<td class="control">
+<input type="submit" value="Track"/>
+</td>
+<td class="control">
+<input type="text" id="track-args" class="text args"/>
+</td>
+</form>
+</tr>
+
+<tr>
+<form id="telescope-trackcatalogobject">
+<td class="control">
+<input type="submit" value="Track Catalog Object"/>
+</td>
+<td class="control">
+<input type="text" id="trackcatalogobject-args" class="text args"/>
+</td>
+</form>
+</tr>
+
+<tr>
+<form id="telescope-tracktopocentric">
+<td class="control">
+<input type="submit" value="Track Topocentric"/>
+</td>
+<td class="control">
+<input type="text" id="tracktopocentric-args" class="text args"/>
+</td>
+</form>
+</tr>
+
+<tr>
+<form id="telescope-offset">
+<td class="control">
+<input type="submit" value="Offset"/>
+</td>
+<td class="control">
+<input type="text" id="offset-args" class="text args"/>
+</td>
+</form>
+</tr>
+
+<tr>
+<form id="telescope-movesecondary">
+<td class="control">
+<input type="submit" value="Move Secondary"/>
+</td>
+<td class="control">
+<input type="text" id="movesecondary-args" class="text args"/>
+</td>
+</form>
+</tr>
+
+<tr>
+<form id="telescope-focusfinders">
+<td class="control">
+<input type="submit" value="Focus Finders"/>
+</td>
+<td class="control">
+<input type="text" id="focusfinders-args" class="text args"/>
+</td>
+</form>
+</tr>
+
+<tr>
+<form id="telescope-other">
+<td class="control">
+<input type="submit" value="Other"/>
+</td>
+<td class="control">
+<input type="text" id="other-request" class="text request"/>
+</td>
+</form>
+</tr>
+
+</table>
+
+</div>
+
+<div id="status"></div>
+<div id="log"></div>
+
+</div>
+
+</body>
+
+</html>

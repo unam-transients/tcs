@@ -1,0 +1,12 @@
+proposal::setidentifier "[utcclock::semester]-0001"
+block::setidentifier "0"
+visit::setidentifier "0"
+visit::setname "twilight flats -- bright"
+block::settotalexposures 0
+visit::settargetcoordinates fixed +3h +45d
+
+constraints::setminmoondistance "30d"
+constraints::setmaxskybrightness "daylight"
+constraints::setminskybrightness "civiltwilight"
+
+visit::setcommand "twilightflatsbrightvisit"

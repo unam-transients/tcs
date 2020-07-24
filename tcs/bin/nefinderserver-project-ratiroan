@@ -1,0 +1,83 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: nefinderserver-project-ratiroan 3575 2020-05-23 19:47:32Z Alan $
+
+########################################################################
+
+# Copyright © 2010, 2011, 2012, 2016, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+#\
+umask 0; PATH=/usr/local/opt/tcl-tk/bin:$PATH exec tclsh8.6 -encoding "utf-8" "$0" ${1+"$@"}
+
+source [file join [file dirname [info script]] ".." "lib" "tcs" "packages.tcl"]
+
+package require "server"
+server::start {
+
+  config::setdefaultvalue "nefinder" "telescopedescription"           "NE C8-A XLT Finder"
+  config::setdefaultvalue "nefinder" "detectortype"                   "fli"
+  config::setdefaultvalue "nefinder" "detectoridentifier"             "ML0503709"
+  config::setdefaultvalue "nefinder" "detectorwidth"                  0.68d
+  config::setdefaultvalue "nefinder" "detectorinitialreadmode"        "5MHz"
+  config::setdefaultvalue "nefinder" "detectorinitialsoftwaregain"    8
+  config::setdefaultvalue "nefinder" "detectorinitialbinning"         2
+  config::setdefaultvalue "nefinder" "detectorfullunbinneddatawindow" { sx 46 sy 34 nx 2184 ny 1472 }
+  config::setdefaultvalue "nefinder" "detectorfullunbinnedbiaswindow" { sx 12 sy 34 nx   34 ny 1472 }
+  config::setdefaultvalue "nefinder" "coolersettemperature"           -30
+  config::setdefaultvalue "nefinder" "filterwheeltype"                "null"
+  config::setdefaultvalue "nefinder" "filterwheelidentifier"          "null"
+  config::setdefaultvalue "nefinder" "filterwheelinitialposition"     0
+  config::setdefaultvalue "nefinder" "focusertype"                    "fli"
+  config::setdefaultvalue "nefinder" "focuseridentifier"              "DF0101910"
+  config::setdefaultvalue "nefinder" "focuserinitialposition"         1000
+  config::setdefaultvalue "nefinder" "defaultfocusexposuretime"       1.0
+  config::setdefaultvalue "nefinder" "defaultfocusrange"              600
+  config::setdefaultvalue "nefinder" "defaultfocusstep"               25
+  config::setdefaultvalue "nefinder" "pointingmodelparameters"        {}
+  config::setdefaultvalue "nefinder" "isstandalone"                   false
+
+  config::setdefaultvalue "finder" "identifier"                     "nefinder"
+  config::setdefaultvalue "finder" "telescopedescription"           [config::getvalue nefindertelescopedescription          ]  
+  config::setdefaultvalue "finder" "detectortype"                   [config::getvalue nefinderdetectortype                  ]
+  config::setdefaultvalue "finder" "detectoridentifier"             [config::getvalue nefinderdetectoridentifier            ]
+  config::setdefaultvalue "finder" "detectorwidth"                  [config::getvalue nefinderdetectorwidth                 ]
+  config::setdefaultvalue "finder" "detectorinitialreadmode"        [config::getvalue nefinderdetectorinitialreadmode       ]
+  config::setdefaultvalue "finder" "detectorinitialsoftwaregain"    [config::getvalue nefinderdetectorinitialsoftwaregain   ]
+  config::setdefaultvalue "finder" "detectorinitialbinning"         [config::getvalue nefinderdetectorinitialbinning        ]
+  config::setdefaultvalue "finder" "detectorfullunbinneddatawindow" [config::getvalue nefinderdetectorfullunbinneddatawindow]
+  config::setdefaultvalue "finder" "detectorfullunbinnedbiaswindow" [config::getvalue nefinderdetectorfullunbinnedbiaswindow]
+  config::setdefaultvalue "finder" "coolersettemperature"           [config::getvalue nefindercoolersettemperature          ]
+  config::setdefaultvalue "finder" "filterwheeltype"                [config::getvalue nefinderfilterwheeltype               ]
+  config::setdefaultvalue "finder" "filterwheelidentifier"          [config::getvalue nefinderfilterwheelidentifier         ]
+  config::setdefaultvalue "finder" "filterwheelinitialposition"     [config::getvalue nefinderfilterwheelinitialposition    ]
+  config::setdefaultvalue "finder" "focusertype"                    [config::getvalue nefinderfocusertype                   ]
+  config::setdefaultvalue "finder" "focuseridentifier"              [config::getvalue nefinderfocuseridentifier             ]
+  config::setdefaultvalue "finder" "focuserinitialposition"         [config::getvalue nefinderfocuserinitialposition        ]
+  config::setdefaultvalue "finder" "defaultfocusexposuretime"       [config::getvalue nefinderdefaultfocusexposuretime      ]
+  config::setdefaultvalue "finder" "defaultfocusrange"              [config::getvalue nefinderdefaultfocusrange             ]
+  config::setdefaultvalue "finder" "defaultfocusstep"               [config::getvalue nefinderdefaultfocusstep              ]
+  config::setdefaultvalue "finder" "pointingmodelparameters"        [config::getvalue nefinderpointingmodelparameters       ]
+  config::setdefaultvalue "finder" "isstandalone"                   [config::getvalue nefinderisstandalone                  ]
+
+  package require finderserver
+  finderserver::start
+}

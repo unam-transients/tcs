@@ -1,0 +1,868 @@
+////////////////////////////////////////////////////////////////////////
+
+// This file is part of the UNAM telescope control system.
+
+// $Id: config-project-colibricu.json 3617 2020-06-22 20:04:16Z Alan $
+
+////////////////////////////////////////////////////////////////////////
+
+// Copyright © 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+/
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
+/
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+// WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+// AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+// DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+// PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+// TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+// PERFORMANCE OF THIS SOFTWARE.
+
+////////////////////////////////////////////////////////////////////////
+
+    // The DDRAGO CFW-14-5 filter wheels are:
+    // FW0011318 -- firmware serial number "CFW-14-5"
+    // FW0021318 -- firmware serial number "FW0021318"
+    // FW0031318 -- firmware serial number "FW0031318"
+
+{
+  "site": {
+    "longitude": "-99:10:40",
+    "latitude": "+19:19:33.0",
+    "altitude": "2280.0",
+    "civiltimezone": "America/Mexico_City"
+  },
+  "html": {
+    "servers": [
+      "executor",
+      "instrument",
+      "moon",
+      "power",
+      "scheduler",
+      "sensors",
+      "sun",
+      "target",
+      "telescope"
+    ]
+  },
+  "target": {
+    "minzenithdistancelimit": "1d",
+    "maxzenithdistancelimit": "85d",
+    "idleha": "0h",
+    "idledelta": "0d"
+  },
+  "scheduler": {},
+  "executor": {},
+  "telescope": {
+    "type": "dummy",
+    "idleha": "0h",
+    "idledelta": "0d"
+  },
+  "safetyswitch": {
+    "type": "none"
+  },
+  "power": {
+    "hosts": {
+      "pdu1": {
+        "type": "ibootpdu",
+        "outlets": "8",
+        "inlets": "1"
+      },
+      "pdu2": {
+        "type": "ibootpdu",
+        "outlets": "8",
+        "inlets": "1"
+      },
+      "pdu3": {
+        "type": "ibootpdu",
+        "outlets": "8",
+        "inlets": "1"
+      }
+    },
+    "outletgroupaddresses": {
+      "access"              : [[ "pdu2", "a", "5"]],
+      "services"            : [[ "pdu1", "a", "4"]],
+      "control"             : [[ "pdu1", "a", "3"]],
+      "detectors"           : [[ "pdu1", "a", "2"]],
+      "blue"                : [[ "pdu1", "a", "1"]],
+      "blue-service-cabinet": [[ "pdu1", "a", "7"]],
+      "close-electronics"   : [[ "pdu1", "a", "8"]],
+      "sparelinux"          : [[ "pdu1", "a", "5"]],
+      "sparewindows"        : [[ "pdu1", "a", "6"]]
+    }
+  },
+  "instrument": {
+    "detectors": [
+      "C0"
+    ],
+    "idlefilterwheelpositions": [
+      "w"
+    ],
+    "pointingdetectors": [
+      "C1"
+    ],
+    "outletgroups": []
+  },
+  "C0": {
+    "telescopedescription": "COLIBRI/CU laboratory",
+    "detectortype": "si",
+    "detectoridentifier": "sparewindows:2055",
+    "detectorpixelscale": "0.381as",
+    "detectorinitialreadmode": "0",
+    "detectorinitialsoftwaregain": 1,
+    "detectorinitialbinning": 1,
+    "detectorwindows": {
+      "initial": "default",
+      "default": "4kx4k",
+      "center": "1kx1k",
+      "1kx1k": {
+        "sx": 1586,
+        "sy": 1544,
+        "nx": 1024,
+        "ny": 1024
+      },
+      "2kx2k": {
+        "sx": 1074,
+        "sy": 1032,
+        "nx": 2048,
+        "ny": 2048
+      },
+      "4kx4k": {
+        "sx": 2,
+        "sy": 0,
+        "nx": 4192,
+        "ny": 4112
+      }
+    },
+    "detectorfullunbinneddatawindow": {
+      "sx": 50,
+      "sy": 0,
+      "nx": 4096,
+      "ny": 4112
+    },
+    "detectorfullunbinnedbiaswindow": {
+      "sx": 0,
+      "sy": 0,
+      "nx": 50,
+      "ny": 4112
+    },
+    "cooleropensetting": "off",
+    "coolerclosedsetting": "off",
+    "temperaturelimit": 40,
+//    "filterwheeltype": "fli",
+//    "filterwheelidentifier": "CFW-14-5",
+//    "filterwheelinitialposition": 0,
+//    "filterlist": [
+//      "g",
+//      "r",
+//      "i",
+//      "z",
+//      "y"
+//    ],
+    "filterwheeltype": "null",
+    "filterwheelidentifier": "null",
+    "filterlist": [ "w" ],
+    "focusertype": "null",
+    "focuseridentifier": "null",
+    "focuserinitialposition": 0,
+    "focuserbacklashoffset": 0,
+    "focusercorrectionmodel": {},
+    "pointingmodelparameters": {},
+    "isstandalone": false,
+    "fitsfwhmargs": {
+      "1": "-m",
+      "2": "-A",
+      "4": "-A",
+      "8": "-A",
+      "16": "-A"
+    }
+  },
+  "C1": {
+    "telescopedescription": "COLIBRI/CU laboratory",
+    "detectortype": "dummy",
+    "detectoridentifier": "",
+    "detectorpixelscale": "0.381as",
+    "detectorinitialreadmode": "",
+    "detectorinitialsoftwaregain": 1,
+    "detectorinitialbinning": 1,
+    "detectorwindows": {
+      "initial": "default",
+      "default": "4kx4k",
+      "center": "1kx1k",
+      "1kx1k": {
+        "sx": 0,
+        "sy": 0,
+        "nx": 1024,
+        "ny": 1024
+      },
+      "2kx2k": {
+        "sx": 1024,
+        "sy": 1024,
+        "nx": 2048,
+        "ny": 2048
+      },
+      "4kx4k": {
+        "sx": 1536,
+        "sy": 1536,
+        "nx": 4096,
+        "ny": 4096
+      }
+    },
+    "detectorfullunbinneddatawindow": {
+      "sx": 0,
+      "sy": 0,
+      "nx": 4096,
+      "ny": 4096
+    },
+    "detectorfullunbinnedbiaswindow": {
+      "sx": 0,
+      "sy": 0,
+      "nx": 0,
+      "ny": 0
+    },
+    "cooleropensetting": "off",
+    "coolerclosedsetting": "off",
+    "temperaturelimit": 40,
+    "filterwheeltype": "null",
+    "filterwheelidentifier": "null",
+    "filterwheelinitialposition": 0,
+    "filterlist": [
+      "w"
+    ],
+    "focusertype": "null",
+    "focuseridentifier": "null",
+    "focuserinitialposition": 0,
+    "focuserbacklashoffset": 0,
+    "focusercorrectionmodel": {},
+    "pointingmodelparameters": {},
+    "isstandalone": false,
+    "fitsfwhmargs": {
+      "1": "-m",
+      "2": "-A",
+      "4": "-A",
+      "8": "-A",
+      "16": "-A"
+    }
+  },
+  "C2": {
+    "telescopedescription": "COLIBRI/CU laboratory",
+    "detectortype": "fli",
+    "detectoridentifier": "ML0032515",
+    "detectorpixelscale": "0.381as",
+    "detectorinitialreadmode": "",
+    "detectorinitialsoftwaregain": 1,
+    "detectorinitialbinning": 1,
+    "detectorwindows": {
+      "initial": "default",
+      "default": "4kx4k",
+      "center": "1kx1k",
+      "1kx1k": {
+        "sx": 0,
+        "sy": 0,
+        "nx": 4152,
+        "ny": 4128
+      },
+      "2kx2k": {
+        "sx": 1061,
+        "sy": 1047,
+        "nx": 2048,
+        "ny": 2048
+      },
+      "4kx4k": {
+        "sx": 1573,
+        "sy": 1559,
+        "nx": 1024,
+        "ny": 1024
+      }
+    },
+    "detectorfullunbinneddatawindow": {
+      "sx": 37,
+      "sy": 23,
+      "nx": 4096,
+      "ny": 4096
+    },
+    "detectorfullunbinnedbiaswindow": {
+      "sx": 16,
+      "sy": 23,
+      "nx": 16,
+      "ny": 4096
+    },
+    "cooleropensetting": "0",
+    "coolerclosedsetting": "following",
+    "temperaturelimit": 40,
+    "filterwheeltype": "null",
+    "filterwheelidentifier": "null",
+    "filterwheelinitialposition": 0,
+    "filterlist": [
+      "w"
+    ],
+    "focusertype": "null",
+    "focuseridentifier": "null",
+    "focuserinitialposition": 0,
+    "focuserbacklashoffset": 0,
+    "focusercorrectionmodel": {},
+    "pointingmodelparameters": {},
+    "isstandalone": false,
+    "fitsfwhmargs": {
+      "1": "-m",
+      "2": "-A",
+      "4": "-A",
+      "8": "-A",
+      "16": "-A"
+    }
+  },
+  "C3": {
+    "telescopedescription": "COLIBRI/CU laboratory",
+    "detectortype": "qsi",
+    "detectoridentifier": "00502146",
+    "detectorpixelscale": "1.38as",
+    "detectorinitialreadmode": "",
+    "detectorinitialsoftwaregain": 4,
+    "detectorinitialbinning": 1,
+    "detectorwindows": {
+      "initial": "default",
+      "default": "768x512",
+      "center": "256x256",
+      "768x512": {
+        "sx": 0,
+        "sy": 0,
+        "nx": 800,
+        "ny": 512
+      },
+      "512x512": {
+        "sx": 128,
+        "sy": 0,
+        "nx": 512,
+        "ny": 512
+      },
+      "256x256": {
+        "sx": 256,
+        "sy": 128,
+        "nx": 256,
+        "ny": 256
+      }
+    },
+    "detectorfullunbinneddatawindow": {
+      "sx": 0,
+      "sy": 0,
+      "nx": 768,
+      "ny": 512
+    },
+    "detectorfullunbinnedbiaswindow": {
+      "sx": 784,
+      "sy": 0,
+      "nx": 16,
+      "ny": 512
+    },
+    "cooleropensetting": "0",
+    "coolerclosedsetting": "off",
+    "temperaturelimit": 40,
+    "filterwheeltype": "fli",
+    "filterwheelidentifier": "CFW-14-5",
+    "filterwheelinitialposition": 0,
+    "filterlist": [
+      "w"
+    ],
+    "focusertype": "null",
+    "focuseridentifier": "null",
+    "focuserinitialposition": 0,
+    "focuserbacklashoffset": 0,
+    "focusercorrectionmodel": {},
+    "pointingmodelparameters": {},
+    "isstandalone": false,
+    "fitsfwhmargs": {
+      "1": "-m",
+      "2": "-A",
+      "4": "-A",
+      "8": "-A",
+      "16": "-A"
+    }
+  },
+  "fitsheader": {
+    "servers": [
+      "target",
+      "sun",
+      "moon",
+      "sensors",
+      "weather"
+    ]
+  },
+  "swift": {
+    "pointingsource": "none"
+  },
+  "sensors": {
+    "lognames": [
+      "control-room-temperature",
+      "control-room-humidity",
+      "ddraguito-electronics-temperature",
+      "ddraguito-electronics-humidity",
+      "ddraguito-external-temperature",
+      "ddraguito-external-humidity",
+      "ddraguito-external-pressure",
+      "ddraguito-external-light-level",
+      "ddraguito-internal-temperature",
+      "ddraguito-internal-humidity",
+      "ddraguito-26.BCB01A020000-temperature",
+      "ddraguito-26.BCB01A020000-humidity",
+      "ddraguito-26.FAAE1A020000-temperature",
+      "ddraguito-26.FAAE1A020000-humidity",
+      "ddraguito-26.EEB51A020000-temperature",
+      "ddraguito-26.EEB51A020000-humidity",
+      "ddraguito-26.FE7D1A020000-temperature",
+      "ddraguito-26.FE7D1A020000-humidity",
+      "ddraguito-26.E9AE1A020000-temperature",
+      "ddraguito-26.E9AE1A020000-humidity",
+      "ddraguito-26.15971A020000-temperature",
+      "ddraguito-26.15971A020000-humidity",
+      "ddraguito-26.477E1A020000-temperature",
+      "ddraguito-26.477E1A020000-humidity"
+    ],
+    "sensors": {
+      // control-room          = 26.F3961A020000
+      // ddraguito-electronics = 26.FE7D1A020000
+      // ddraguito-external    = 7E.983100001000
+      // ddraguito-internal    = 26.477E1A020000
+      // benchmark             = 26.E9AE1A020000
+      "control-room-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.F3961A020000/temperature",
+        "keyword": "CRTM",
+        "prettyname": "control room temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.F3961A020000",
+        "firmware": ""
+      },
+      "ddraguito-electronics-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors/ow/26.FE7D1A020000/temperature",
+        "keyword": "DETM",
+        "prettyname": "ddraguito electronics temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.FE7D1A020000",
+        "firmware": ""
+      },
+      "ddraguito-external-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors/ow/7E.983100001000/EDS0068/temperature",
+        "keyword": "DXTM",
+        "prettyname": "ddraguito external temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "EDS OW-ENV-THPL",
+        "identifier": "7E.983100001000",
+        "firmware": ""
+      },
+      "ddraguito-internal-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors/ow/26.477E1A020000/temperature",
+        "keyword": "DITM",
+        "prettyname": "ddraguito internal temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.477E1A020000",
+        "firmware": ""
+      },
+      "control-room-humidity": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.F3961A020000/HIH4000/humidity",
+        "keyword": "CRHM",
+        "prettyname": "control room relative humidity",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.F3961A020000",
+        "firmware": ""
+      },
+      "ddraguito-electronics-humidity": {
+        "file": "/usr/local/var/tcs/sensors/detectors/ow/26.FE7D1A020000/HIH4000/humidity",
+        "keyword": "DEHM",
+        "prettyname": "ddraguito electronics relative humidity",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.FE7D1A020000",
+        "firmware": ""
+      },
+      "ddraguito-external-humidity": {
+        "file": "/usr/local/var/tcs/sensors/detectors/ow/7E.983100001000/EDS0068/humidity",
+        "keyword": "DXHM",
+        "prettyname": "ddraguito external relative humidity",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "EDS OW-ENV-THPL",
+        "identifier": "7E.983100001000",
+        "firmware": ""
+      },
+      "ddraguito-internal-humidity": {
+        "file": "/usr/local/var/tcs/sensors/detectors/ow/26.477E1A020000/HIH4000/humidity",
+        "keyword": "DIHM",
+        "prettyname": "ddraguito internal relative humidity",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.477E1A020000",
+        "firmware": ""
+      },
+      "ddraguito-external-light-level": {
+        "file": "/usr/local/var/tcs/sensors/detectors/ow/7E.983100001000/EDS0068/light",
+        "keyword": "DXLL",
+        "prettyname": "ddraguito external light level",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "lx",
+        "model": "EDS OW-ENV-THPL",
+        "identifier": "7E.983100001000",
+        "firmware": ""
+      },
+      "ddraguito-external-pressure": {
+        "file": "/usr/local/var/tcs/sensors/detectors/ow/7E.983100001000/EDS0068/pressure",
+        "keyword": "DXPR",
+        "prettyname": "ddraguito external pressure",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "mbar",
+        "model": "EDS OW-ENV-THPL",
+        "identifier": "7E.983100001000",
+        "firmware": ""
+      },
+
+      "ddraguito-26.BCB01A020000-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors/ow/26.BCB01A020000/temperature",
+        "keyword": "",
+        "prettyname": "26.BCB01A020000 temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.BCB01A020000",
+        "firmware": ""
+      },
+      "ddraguito-26.BCB01A020000-humidity": {
+        "file": "/usr/local/var/tcs/sensors/detectors/ow/26.BCB01A020000/HIH4000/humidity",
+        "keyword": "",
+        "prettyname": "26.BCB01A020000 humidity",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.BCB01A020000",
+        "firmware": ""
+      },
+
+      "ddraguito-26.FAAE1A020000-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors/ow/26.FAAE1A020000/temperature",
+        "keyword": "",
+        "prettyname": "26.FAAE1A020000 temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.FAAE1A020000",
+        "firmware": ""
+      },
+      "ddraguito-26.FAAE1A020000-humidity": {
+        "file": "/usr/local/var/tcs/sensors/detectors/ow/26.FAAE1A020000/HIH4000/humidity",
+        "keyword": "",
+        "prettyname": "26.FAAE1A020000 humidity",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.FAAE1A020000",
+        "firmware": ""
+      },
+
+      "ddraguito-26.EEB51A020000-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors/ow/26.EEB51A020000/temperature",
+        "keyword": "",
+        "prettyname": "26.EEB51A020000 temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.EEB51A020000",
+        "firmware": ""
+      },
+      "ddraguito-26.EEB51A020000-humidity": {
+        "file": "/usr/local/var/tcs/sensors/detectors/ow/26.EEB51A020000/HIH4000/humidity",
+        "keyword": "",
+        "prettyname": "26.EEB51A020000 humidity",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.EEB51A020000",
+        "firmware": ""
+      },
+
+      "ddraguito-26.FE7D1A020000-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors/ow/26.FE7D1A020000/temperature",
+        "keyword": "",
+        "prettyname": "26.FE7D1A020000 temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.FE7D1A020000",
+        "firmware": ""
+      },
+      "ddraguito-26.FE7D1A020000-humidity": {
+        "file": "/usr/local/var/tcs/sensors/detectors/ow/26.FE7D1A020000/HIH4000/humidity",
+        "keyword": "",
+        "prettyname": "26.FE7D1A020000 humidity",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.FE7D1A020000",
+        "firmware": ""
+      },
+
+      "ddraguito-26.E9AE1A020000-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors/ow/26.E9AE1A020000/temperature",
+        "keyword": "",
+        "prettyname": "26.E9AE1A020000 temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.E9AE1A020000",
+        "firmware": ""
+      },
+      "ddraguito-26.E9AE1A020000-humidity": {
+        "file": "/usr/local/var/tcs/sensors/detectors/ow/26.E9AE1A020000/HIH4000/humidity",
+        "keyword": "",
+        "prettyname": "26.E9AE1A020000 humidity",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.E9AE1A020000",
+        "firmware": ""
+      },
+
+      "ddraguito-26.15971A020000-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors/ow/26.15971A020000/temperature",
+        "keyword": "",
+        "prettyname": "26.15971A020000 temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.15971A020000",
+        "firmware": ""
+      },
+      "ddraguito-26.15971A020000-humidity": {
+        "file": "/usr/local/var/tcs/sensors/detectors/ow/26.15971A020000/HIH4000/humidity",
+        "keyword": "",
+        "prettyname": "26.15971A020000 humidity",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.15971A020000",
+        "firmware": ""
+      },
+
+      "ddraguito-26.477E1A020000-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors/ow/26.477E1A020000/temperature",
+        "keyword": "",
+        "prettyname": "26.477E1A020000 temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.477E1A020000",
+        "firmware": ""
+      },
+      "ddraguito-26.477E1A020000-humidity": {
+        "file": "/usr/local/var/tcs/sensors/detectors/ow/26.477E1A020000/HIH4000/humidity",
+        "keyword": "",
+        "prettyname": "26.477E1A020000 humidity",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.477E1A020000",
+        "firmware": ""
+      },
+
+      "host-services-load": {
+        "file": "/usr/local/var/tcs/sensors/services/load",
+        "keyword": "",
+        "prettyname": "load on host services",
+        "group": "host-services",
+        "type": "float",
+        "unit": "processes",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-control-load": {
+        "file": "/usr/local/var/tcs/sensors/control/load",
+        "keyword": "",
+        "prettyname": "load on host control",
+        "group": "host-control",
+        "type": "float",
+        "unit": "processes",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-detectors-load": {
+        "file": "/usr/local/var/tcs/sensors/detectors/load",
+        "keyword": "",
+        "prettyname": "load on host detectors",
+        "group": "host-detectors",
+        "type": "float",
+        "unit": "processes",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-services-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/services/disk-space-used",
+        "keyword": "",
+        "prettyname": "disk space used on host services",
+        "group": "host-services",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-control-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/control/disk-space-used",
+        "keyword": "",
+        "prettyname": "disk space used on host control",
+        "group": "host-control",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-detectors-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/detectors/disk-space-used",
+        "keyword": "",
+        "prettyname": "disk space used on host detectors",
+        "group": "host-detectors",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "pdu1-current": {
+        "file": "/usr/local/var/tcs/sensors/control/pdu1-current",
+        "keyword": "",
+        "prettyname": "inlet current for PDU1",
+        "group": "power",
+        "type": "float",
+        "unit": "A",
+        "model": "iBoot-PDU8-C20",
+        "identifier": "38:d2:69:92:82:8d",
+        "firmware": "1.03.12212017"
+      },      
+      "pdu2-current": {
+        "file": "/usr/local/var/tcs/sensors/control/pdu2-current",
+        "keyword": "",
+        "prettyname": "inlet current for PDU2",
+        "group": "power",
+        "type": "float",
+        "unit": "A",
+        "model": "iBoot-PDU8-C20",
+        "identifier": "38:d2:69:9a:aa:0c",
+        "firmware": "1.03.12212017"
+      },      
+      "pdu3-current": {
+        "file": "/usr/local/var/tcs/sensors/control/pdu3-current",
+        "keyword": "",
+        "prettyname": "inlet current for PDU3",
+        "group": "power",
+        "type": "float",
+        "unit": "A",
+        "model": "iBoot-PDU8-C20",
+        "firmware": "1.03.12212017",
+        "identifier": "38:d2:69:9f:1b:7b"
+      },      
+      "C0-detector-detector-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-detector-temperature",
+        "keyword": "",
+        "prettyname": "C0 detector temperature",
+        "group": "detector-C0",
+        "type": "float",
+        "unit": "C",
+        "model": "SI 1100",
+        "identifier": "167",
+        "firmware": ""
+      },
+      "C0-detector-housing-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-housing-temperature",
+        "keyword": "",
+        "prettyname": "C0 housing temperature",
+        "group": "detector-C0",
+        "type": "float",
+        "unit": "C",
+        "model": "SI 1100",
+        "identifier": "167",
+        "firmware": ""
+      },
+      "C0-detector-cooler-set-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-cooler-set-temperature",
+        "keyword": "",
+        "prettyname": "C0 cooler set temperature",
+        "group": "detector-C0",
+        "type": "float",
+        "unit": "C",
+        "model": "SI 1100",
+        "identifier": "167",
+        "firmware": ""
+      },
+      "C0-detector-cooler-power": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-cooler-power",
+        "keyword": "",
+        "prettyname": "C0 relative cooler power",
+        "group": "detector-C0",
+        "type": "float",
+        "unit": "",
+        "model": "SI 1100",
+        "identifier": "167",
+        "firmware": ""
+      },
+      "C0-detector-cooler-state": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-cooler-state",
+        "keyword": "",
+        "prettyname": "C0 cooler state",
+        "group": "detector-C0",
+        "type": "string",
+        "unit": "",
+        "model": "SI 1100",
+        "identifier": "167",
+        "firmware": ""
+      },
+      "C0-filter-wheel-position": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C0-filter-wheel-position",
+        "keyword": "",
+        "prettyname": "C0 filter wheel position",
+        "group": "detector-C0",
+        "type": "integer",
+        "unit": "",
+        "model": "FLI CFW-14-5",
+        "identifier": "FW0021318",
+        "firmware": ""
+      }
+    }
+  }
+}

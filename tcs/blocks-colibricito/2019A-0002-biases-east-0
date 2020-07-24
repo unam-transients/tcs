@@ -1,0 +1,34 @@
+proposal::setidentifier "2019A-0002"
+visit::setname "biases"
+block::settotalexposures 0
+visit::settargetcoordinates fixed -3h +30d
+
+proc SELECTABLE {args} {
+  return [expr {
+    [withintelescopepointinglimits] && 
+    [maxskybrightness "civiltwilight"] &&
+    [onfavoredsideforswift]
+  }]
+}
+
+proc EXECUTE {args} {
+
+  move
+
+  movefilterwheel "w"
+  
+  foreach {binning visitidentifier} {
+    1 0
+  } { 
+    setbinning $binning
+    visit::setidentifier $visitidentifier
+    set i 0
+    while {$i < 20} {
+      expose bias 0
+      analyze levels
+      incr i
+    }
+  }
+
+  return true
+}

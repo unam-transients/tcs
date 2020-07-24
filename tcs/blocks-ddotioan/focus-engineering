@@ -1,0 +1,31 @@
+proposal::setidentifier "[utcclock::semester]-0000"
+block::setidentifier 0
+visit::setidentifier 0
+visit::setname "focusing at +1h 45d for engineering"
+block::settotalexposures 0
+visit::settargetcoordinates fixed +1h 45d 2000
+
+proc EXECUTE {args} {
+
+  set exposuretime 5
+
+  track
+  setwindow "2kx2k"
+  setreadmode 16MHz
+  setbinning 4
+  waituntiltracking
+  focus 12000 1200 false $exposuretime
+  setwindow "1kx1k"
+  setbinning 2
+  focus 8000 800 false $exposuretime
+  setbinning 1
+  focus 4000 400 true $exposuretime
+  setfocused
+
+  log::info "taking tilt witness."
+  setwindow "6kx6k"
+  setbinning 1
+  expose object $exposuretime
+
+  return false
+}
