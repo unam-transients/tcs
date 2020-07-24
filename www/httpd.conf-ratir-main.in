@@ -1,0 +1,156 @@
+########################################################################
+
+# This file is part of the UNAM RATIR/RATTEL software.
+
+# $Id: httpd.conf-ratir-main.in 3442 2020-02-23 05:00:24Z Alan $
+
+########################################################################
+
+# Copyright © 2011, 2012, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+ServerName ratir.astrossp.unam.mx
+
+<VirtualHost *:80>
+
+  ServerName ratir.astrossp.unam.mx
+  ServerAdmin alan@astro.unam.mx
+
+  DocumentRoot @prefix@/var/www/
+
+  <Directory />
+    Options FollowSymLinks
+    AllowOverride None
+  </Directory>
+
+  <Directory @prefix@/var/www/>
+    Options Indexes FollowSymLinks MultiViews
+    AllowOverride All
+  </Directory>
+    
+  <Location />
+    Order Deny,Allow
+    Allow from All
+  </Location>
+    
+  <LocationMatch ^/(tcs|nagios3|ibb)/>
+    AuthType Basic
+    AuthName "OAN/SPM RATIR Web Site"
+    AuthUserFile @prefix@/etc/htpasswd/ratir
+    Require valid-user
+    Deny from All
+    Allow from 132.248.4
+    Allow from 192.168
+    Allow from 127.0.0
+    Allow from ::1
+  </LocationMatch>
+
+  ############################################################
+
+  <Location /tcs/>
+    ProxyPass         http://tcs-b/tcs/
+    ProxyPassReverse  /
+  </Location>
+  
+  ############################################################
+  
+  # This overrides the logout action in the iBB web interfaces, making
+  # the logout button return us to the home page.
+  Redirect permanent /logout.cgi /
+  
+  <Location /ibb/control-room-ibb/>
+    ProxyPass         http://control-room-ibb/
+    ProxyPassReverse  /
+  </Location>
+
+  <Location /ibb/tcs-cabinet-ibb/>
+    ProxyPass         http://tcs-cabinet-ibb/
+    ProxyPassReverse  /
+  </Location>
+
+  <Location /ibb/ics-cabinet-ibb/>
+    ProxyPass         http://ics-cabinet-ibb/
+    ProxyPassReverse  /
+  </Location>
+
+  <Location /ibb/dome-ibb/>
+    ProxyPass         http://dome-ibb/
+    ProxyPassReverse  /
+  </Location>
+
+  <Location /ibb/dome-cabinet-ibb/>
+    ProxyPass         http://dome-cabinet-ibb/
+    ProxyPassReverse  /
+  </Location>
+
+  <Location /ibb/telescope-ibb/>
+    ProxyPass         http://telescope-ibb/
+    ProxyPassReverse  /
+  </Location>
+
+  <Location /ibb/instrument-ibb/>
+    ProxyPass         http://instrument-ibb/
+    ProxyPassReverse  /
+  </Location>
+  
+  ############################################################
+
+  <Location /webcam/webcam-a/>
+    ProxyPass         http://webcam-a/
+    ProxyPassReverse  /
+  </Location>
+  
+  <Location /webcam/webcam-b/>
+    ProxyPass         http://webcam-b/
+    ProxyPassReverse  /
+  </Location>
+  
+  <Location /webcam/webcam-c/>
+    ProxyPass         http://webcam-c/
+    ProxyPassReverse  /
+  </Location>
+  
+  <Location /webcam/webcam-d/>
+    ProxyPass         http://webcam-d/
+    ProxyPassReverse  /
+  </Location>
+  
+  ############################################################
+  
+  ScriptAlias /cgi-bin/nagios3      /usr/lib/cgi-bin/nagios3
+  ScriptAlias /nagios3/cgi-bin      /usr/lib/cgi-bin/nagios3
+  Alias       /nagios3/stylesheets  /etc/nagios3/stylesheets
+  Alias       /nagios3              /usr/share/nagios3/htdocs
+
+  <DirectoryMatch (/usr/share/nagios3/htdocs|/usr/lib/cgi-bin/nagios3|/etc/nagios3/stylesheets)>
+	  Options +ExecCGI
+	  AddHandler cgi-script cgi
+	  Options FollowSymLinks
+	  DirectoryIndex index.html
+	  AuthName "OAN/SPM RATIR Web Site"
+	  AuthType Basic
+	  AuthUserFile @prefix@/etc/htpasswd/ratir
+	  require valid-user
+  </DirectoryMatch>
+
+  ############################################################
+
+  ErrorLog /var/log/apache2/error.log
+  LogLevel warn
+  CustomLog /var/log/apache2/access.log combined
+
+</VirtualHost>

@@ -1,0 +1,80 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: check_cryostat_pressure 3558 2020-05-22 18:41:08Z Alan $
+
+########################################################################
+
+# Copyright © 2014, 2016, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+#\
+umask 0; PATH=/usr/local/opt/tcl-tk/bin:$PATH exec tclsh8.6 -encoding "utf-8" "$0" ${1+"$@"}
+
+
+proc checkpressure {} {
+
+  set filename "/var/cryostat/log.txt"
+  set format "%*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %f"
+  
+#  set filename "/usr/local/var/ratir/cryostat.log"
+#  set format "PRESS %*s UTC () %f"
+  
+  set channel [open "|/usr/bin/tail -1 $filename" "r"]
+  set line [gets $channel]
+  close $channel
+
+  if {[scan $line $format pressure] != 1} {
+    return [list 1 "unknown"]
+  }
+
+  set pressure [format "%.1e" $pressure]
+
+  set when [file mtime $filename]
+  set now [clock seconds]
+  if {$now - $when > 120} {
+    return [list 1 "stale"]
+  } elseif {$pressure >= 1e-4} {
+    return [list 1 "$pressure mbar"]
+  } elseif {$pressure >= 5e-3} {
+    return [list 2 "$pressure mbar"]
+  } else {
+    return [list 0 "$pressure mbar"]
+  }
+}
+
+set result     [checkpressure]
+set status     [lindex $result 0]
+set message    [lindex $result 1]
+
+switch $status {
+  0 {
+    set statustext "OK"
+  }
+  1 {
+    set statustext "WARNING"
+  }
+  2 {
+    set statustext "CRITICAL"
+  }
+}
+
+puts "CRYOSTAT PRESSURE $statustext - $message."
+exit $status

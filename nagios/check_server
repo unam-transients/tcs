@@ -1,0 +1,67 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: check_server 3373 2019-10-30 15:09:02Z Alan $
+
+########################################################################
+
+# Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+server="$1"
+
+request "$server" status 2>&1 |
+while read line
+do
+  key=$(echo "$line" | sed 's/ .*//')
+  value=$(echo "$line" | sed 's/[^ ]* *//')
+  if test "$key" = "error:"
+  then
+    echo "SERVER CRITICAL - $server - no response."
+    exit 2
+  elif test "$key" = "status"
+  then
+    if test "$value" = "starting"
+    then
+      echo "SERVER WARNING - $server - status is \"$value\"."
+      exit 1
+    elif test "$value" != "ok"
+    then
+      echo "SERVER CRITICAL - $server - status is \"$value\"."
+      exit 2
+    fi
+  elif test "$key" = "activity"
+  then
+    if test "$value" = "starting"
+    then
+      echo "SERVER WARNING - $server - activity is \"$value\"."
+      exit 1
+    elif test "$value" = "error"
+    then
+      echo "SERVER CRITICAL - $server - activity is \"$value\"."
+      exit 2
+    else
+      echo "SERVER OK - $server."
+      exit 0
+    fi
+  fi
+done
+exit $?
+
