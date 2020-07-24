@@ -1,0 +1,10 @@
+Guide
+Guide Output
+configure
+config.log
+config.status
+Makefile
+Makefile.epilog
+Makefile.prolog
+autom4te.cache
+*_wrap.cxx

@@ -1,0 +1,82 @@
+\documentclass[landscape]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[utf8]{inputenc}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.13}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{fullpage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{amsmath,amsfonts,amssymb}
+\renewcommand{\baselinestretch}{1.0}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{\medskipamount}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{newtxtext,newtxmath}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\pagestyle{empty}
+
+\begin{center}
+\begin{tikzpicture}
+\small
+\begin{axis}[
+   width=20cm,
+   xmin=-200,
+   xmax=+200,
+   xtick={-180,-150,-120,-90,-60,-30,0,+30,+60,+90,+120,+150,+180},
+   xlabel={$h$ (degree) or $\Delta x$ (arcsec)},
+   minor x tick num=3,
+   height=8.5cm,
+   ymin=-70,
+   ymax=+100,
+   ytick={-60,-30,0,+30,+60,+90},
+   minor y tick num=3,
+   ylabel={$\delta$ (degree) or $\Delta y$ (arcsec)},
+]
+\addplot [
+  quiver={
+    u=\thisrowno{2},
+    v=\thisrowno{3},
+    scale arrows=1,
+  },
+  -stealth,
+] table [
+  x index=0,
+  y index=1,
+]  {residuals-0.dat};
+\addplot [
+  quiver={
+    u=\thisrowno{2},
+    v=\thisrowno{3},
+    scale arrows=1,
+  },
+  -stealth,
+] table [
+  x index=0,
+  y index=1,
+]  {residuals-180.dat};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+\end{document}

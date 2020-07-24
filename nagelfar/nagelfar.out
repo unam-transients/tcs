@@ -1,0 +1,13 @@
+Checking file ./nagelfar/header
+Checking file ./tcs/lib/tcs/server.tcl
+./tcs/lib/tcs/server.tcl: Line  35: E Unknown subcommand "coroutine" to "info"
+./tcs/lib/tcs/server.tcl: Line  84: W Found constant "status" which is also a variable.
+./tcs/lib/tcs/server.tcl: Line  85: W Found constant "status" which is also a variable.
+./tcs/lib/tcs/server.tcl: Line 122: W Found constant "activity" which is also a variable.
+./tcs/lib/tcs/server.tcl: Line 247: W Unknown command "::server::activitycommandcoroutine"
+./tcs/lib/tcs/server.tcl: Line 268: W Unknown command "coroutine"
+./tcs/lib/tcs/server.tcl: Line 426: E Wrong number of arguments (3) to "catch"
+                                      Argument 2 at line 442
+                                      Argument 3 at line 442
+./tcs/lib/tcs/server.tcl: Line 438: W Unknown command "coroutine"
+./tcs/lib/tcs/server.tcl: Line 443: E Unknown variable "options"

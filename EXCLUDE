@@ -1,0 +1,4 @@
+EXCLUDE
+.DS_Store
+.svn
+Guide*
