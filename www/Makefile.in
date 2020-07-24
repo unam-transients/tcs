@@ -1,0 +1,147 @@
+########################################################################
+
+# This file is part of the UNAM RATIR/RATTEL software.
+
+# $Id: Makefile.in 3442 2020-02-23 05:00:24Z Alan $
+
+########################################################################
+
+# Copyright © 2011, 2012, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+prefix						:=	@prefix@
+SITE						:=	@SITE@
+
+########################################################################
+
+all						:	all-$(SITE)
+
+install						:	all install-$(SITE)
+
+########################################################################
+
+.SUFFIXES:  .md .html
+.md.html			:
+	./make-html "$*".md >"$*".html
+	
+########################################################################
+
+all-ratir-main					:	docs-ratir-main/index.html	\
+							docs-ratir-main/engineering.html
+docs-ratir-main/index.html			:	docs-ratir-main/index.md
+docs-ratir-main/engineering.html		:	docs-ratir-main/engineering.md
+
+install-ratir-main				:	install-linux
+
+clean-ratir-main				:
+	-rm -f docs-ratir-main/*.html
+
+########################################################################
+
+all-ratir-tcs					:
+
+install-ratir-tcs				:	install-linux
+
+clean-ratir-tcs					:
+	-rm -f docs-ratir-tcs/*.html
+
+########################################################################
+
+all-ratiroan-services				:	docs-ratiroan-services/index.html		\
+							docs-ratiroan-services/documentation.html
+docs-ratiroan-services/index.html		:	docs-ratiroan-services/index.md
+docs-ratiroan-services/documentation.html	:	docs-ratiroan-services/documentation.md
+
+install-ratiroan-services			:	install-linux
+
+clean-ratiroan-services				:
+	-rm -f docs-ratiroan-services/*.html
+	
+########################################################################
+
+all-coatlioan-services				:	docs-coatlioan-services/index.html		\
+							docs-coatlioan-services/documentation.html
+docs-coatlioan-services/index.html		:	docs-coatlioan-services/index.md
+docs-coatlioan-services/documentation.html	:	docs-coatlioan-services/documentation.md
+
+install-coatlioan-services			:	install-linux
+
+clean-coatlioan-services			:
+	-rm -f docs-coatlioan-services/*.html
+	
+########################################################################
+
+all-ddotioan-services				:	docs-ddotioan-services/index.html		\
+							docs-ddotioan-services/documentation.html
+docs-ddotioan-services/index.html		:	docs-ddotioan-services/index.md
+docs-ddotioan-services/documentation.html	:	docs-ddotioan-services/documentation.md
+
+install-ddotioan-services			:	install-linux
+
+clean-ddotioan-services				:
+	-rm -f docs-ddotioan-services/*.html
+	
+########################################################################
+
+all-colibricu-services				:	docs-colibricu-services/index.html		\
+							docs-colibricu-services/documentation.html
+docs-colibricu-services/index.html		:	docs-colibricu-services/index.md
+docs-colibricu-services/documentation.html	:	docs-colibricu-services/documentation.md
+
+install-colibricu-services			:	install-linux
+
+clean-colibricu-services				:
+	-rm -f docs-colibricu-services/*.html
+	
+########################################################################
+
+all-colibricito-control				:	docs-colibricito-control/index.html
+docs-colibricito-control/index.html		:	docs-colibricito-control/index.md
+
+install-colibricito-control			:	install-linux
+
+clean-colibricito-control				:
+	-rm -f docs-ddotioan-services/*.html
+	
+########################################################################
+
+install-macos					:
+	sudo mkdir -p $(prefix)/var/www/
+	sudo cp -r style.css docs-@SITE@/. $(prefix)/var/www/
+	sudo cp httpd.conf-@SITE@ /etc/apache2/httpd.conf
+	sudo apachectl restart
+
+########################################################################
+
+install-linux					:
+	sudo mkdir -p $(prefix)/var/www/
+	sudo cp -r style.css docs-@SITE@/. $(prefix)/var/www/.
+	sudo rm -f /etc/apache2/sites-enabled/*
+	sudo cp httpd.conf-@SITE@ /etc/apache2/sites-enabled/httpd.conf
+	sudo a2enmod xml2enc proxy proxy_http proxy_html headers cgi
+	sudo service apache2 restart
+	sudo chmod -R go+w $(prefix)/var/www/
+	sudo chown -R www-data:www-data $(prefix)/var/www/
+
+########################################################################
+
+clean						:	clean-@SITE@
+
+distclean					:
+	-rm -rf configure autom4te.cache config.log config.status
+	-rf -rf site-ratir-main site-ratir-tcs
+	-rm -rf Makefile

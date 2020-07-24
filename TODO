@@ -1,0 +1,34 @@
+$Id: TODO 3538 2020-04-23 20:31:00Z Alan $
+
+* Get lights server working for ratiroan. This is used by the executor
+(and could be used by the telescope).
+
+* Implement prolog/epilog in the instruments.
+
+* Timings of ratiroan requests. More generally, make the log messages
+uniform.
+
+* Factor code from the telescope servers into telescope.tcl.
+
+* Move the finder code in telescope.tcl into guider.tcl.
+
+* Switch dome-fans for ratiroan.
+
+* Detab and remove trailing spaces.
+
+* Version at the start of each line in the various sensor files used for
+plots.
+
+* Plots for ddotioan and coatlioan.
+
+* Add dome RH for ratioan.
+
+* Mount /data1 and /data2 in the C2/C3 servers when they start.
+
+* Adopt one uniform means of selecting telescope-dependent packages. For
+example, the telescopeX and executorX packages do this differently.
+
+* For ratiroan, opentocool should move the dome to the east. Open should
+occur in time to take flats at sunset.
+
+* Interrupt the executor to close immediately even if opening?

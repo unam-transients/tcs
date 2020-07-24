@@ -1,0 +1,75 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: check_chiller_current 3558 2020-05-22 18:41:08Z Alan $
+
+########################################################################
+
+# Copyright © 2014, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+#\
+umask 0; PATH=/usr/local/opt/tcl-tk/bin:$PATH exec tclsh8.6 -encoding "utf-8" "$0" ${1+"$@"}
+
+
+########################################################################
+
+proc checkcurrent {filename criticalmin warningmin warningmax criticalmax} {
+
+  set channel [open $filename "r"]
+  set line [gets $channel]
+  close $channel
+
+  if {[scan $line "%f" VAD] != 1} {
+    return [list 1 "unknown"]
+  }
+
+  set current [format "%.1f" [expr {$VAD / 3.78 * 20.0}]]
+
+  if {$current < $criticalmin || $current > $criticalmax} {
+    return [list 2 "$current A"]
+  } elseif {$current < $warningmin || $current > $warningmax} {
+    return [list 1 "$current A"]
+  } else {
+    return [list 0 "$current A"]
+  }
+  
+}
+
+########################################################################
+
+set result      [checkcurrent /var/ow/26.54A940010000/VAD 6.0 7.0 11.0 12.0]
+set status      [lindex $result 0]
+set message     [lindex $result 1]
+
+switch $status {
+  0 {
+    set statustext "OK"
+  }
+  1 {
+    set statustext "WARNING"
+  }
+  2 {
+    set statustext "CRITICAL"
+  }
+}
+
+puts "CHILLER CURRENT $statustext - $message."
+exit $status

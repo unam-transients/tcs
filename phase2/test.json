@@ -1,0 +1,19 @@
+[
+{
+ "languageversion"    : "20140929",
+ "proposalidentifier" : "2014B-0000",
+ "visitidentifier"    : "0",
+ "preparationdate"    : "20140929",
+ "targetcoordinates"  : {
+   "type"             : "equatorial",
+   "alpha"            : "12:06:03.00",
+   "delta"            : "+47:29:33.2",
+   "equinox"          : 2000
+ },
+ "secondaryoffset"    : -200,
+ "repeatexposures"    : 40,
+ "exposures"          : [
+   ["ricenter",   "0as", "0as", "finder", "r", 60, 60, 0, "none"]
+ ]
+}
+]

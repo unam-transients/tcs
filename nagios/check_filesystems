@@ -1,0 +1,69 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: check_filesystems 3558 2020-05-22 18:41:08Z Alan $
+
+########################################################################
+
+# Copyright © 2012, 2013, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+#\
+umask 0; PATH=/usr/local/opt/tcl-tk/bin:$PATH exec tclsh8.6 -encoding "utf-8" "$0" ${1+"$@"}
+
+set channel [open "|/bin/df -P | sed \"1d;/^none/d;/archive0/d\"" "r"]
+
+set status 0
+set message "using"
+while {true} {
+  set line [gets $channel]
+  if {[string equal $line ""]} {
+    break
+  }
+  puts stderr $line
+  set size [lindex $line 1]
+  set used [lindex $line 2]
+  set name [lindex $line 5]
+  set used [expr {double($used) / double($size)}]
+  set message [format "%s %.0f%% of %s," $message [expr {$used * 100}] $name]
+  if {$used >= 0.9} {
+    set status [expr {max(2,$status)}]
+  } elseif {$used >= 0.8} {
+    set status [expr {max(1,$status)}]
+  }
+}
+
+set message [regsub {,$} $message ""]
+set message [regsub {, ([^,]*)$} $message ", and \\1"]
+
+switch $status {
+	0 {
+		set statustext "OK"
+	}
+	1 {
+		set statustext "WARNING"
+	}
+	2 {
+		set statustext "CRITICAL"
+	}
+}
+
+puts "FILESYSTEMS $statustext - $message."
+exit $status

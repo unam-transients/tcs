@@ -1,0 +1,1145 @@
+#!/bin/sh
+
+########################################################################
+
+# $Id: phase2 3557 2020-05-22 18:23:30Z Alan $
+
+########################################################################
+
+# Copyright © 2011-2012 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+#\
+umask 0; exec tclsh -encoding utf-8 "$0" ${1+"$@"}
+
+################################################################################
+
+proc message {message} {
+  global verbose
+  if {$verbose} {
+    puts stderr "info: $message"
+  }
+}
+
+################################################################################
+
+package require "json"
+
+proc readjsonobject {channel} {
+  set text ""
+  while {![eof $channel]} {
+    set line [gets $channel]
+    if {[regexp {^[ \t]*//} $line]} {
+      set line ""
+    }
+    set text "$text$line\n"
+  }
+  if {[catch {set value [json::json2dict $text]} message]} {
+    error "invalid input file syntax: $message"
+  }
+  return $value
+}
+
+################################################################################
+
+proc isoneof {value values} {
+  if {[lsearch -exact $values $value] == -1} {
+    return false
+  } else {
+    return true
+  }
+}
+
+################################################################################
+
+proc normalizedouble {context value} {
+  if {![string is double -strict $value]} {
+    error "$context: invalid double value \"$value\"."
+  }
+  return $value
+}
+
+proc normalizeinteger {context value} {
+  if {[string match "0*" $value] && ![string equal $value "0"]} {
+    error "$context: invalid integer value \"$value\"."
+  }
+  if {![string is integer -strict $value]} {
+    error "$context: invalid integer value \"$value\"."
+  }
+  return $value
+}
+
+################################################################################
+
+# Dates must be written in IS0-8601 basic date or basic combined date
+# and time format (see http://en.wikipedia.org/wiki/ISO_8601). The time
+# zone is understood to be UTC; an explicit time zone must not be
+# specified. The precision must not be specified more finely than
+# seconds
+
+proc monthdays {month year} {
+  if {
+    $month == 4 ||
+    $month == 6 ||
+    $month == 9 ||
+    $month == 11
+  } {
+    return 30
+  } elseif {
+    $month != 2
+  } {
+    return 31
+  } elseif {
+    $year % 4 == 0 && ($year % 100 != 0 || $year % 400 == 0)
+  } {
+    return 29
+  } else {
+    return 28
+  }
+}
+
+proc normalizedate {context value {yearsoffset 0}} {
+  if {
+    ![regexp {^[0-9]{8}$} $value] &&
+    ![regexp {^[0-9]{8}T[0-9]{2}$} $value] &&
+    ![regexp {^[0-9]{8}T[0-9]{4}$} $value] &&
+    ![regexp {^[0-9]{8}T[0-9]{6}$} $value]
+  } {
+    error "$context: invalid date."
+  }
+  set seconds 0
+  set minutes 0
+  set hours 0
+  scan $value "%4d%2d%2dT%2d%2d%2d" years months days hours minutes seconds
+  set years [expr {$years + $yearsoffset}]
+  if {
+    $months < 1 ||
+    $months > 12 ||
+    $days < 1 ||
+    $days > [monthdays $months $years] ||
+    $hours < 0 ||
+    $hours > 24 ||
+    ($hours == 24 && $minutes != 0 && $seconds != 0) ||
+    $minutes < 0 ||
+    $minutes >= 60 ||
+    $seconds < 0 ||
+    $seconds >= 60
+  } {
+    error "$context: invalid date."
+  }
+  return [format "%04d%02d%02dT%02d%02d%02d" $years $months $days $hours $minutes $seconds]
+}
+
+################################################################################
+
+set pi [expr {4.0 * atan(1.0)}]
+
+proc degtorad {deg} {
+  global pi
+  expr {$deg * ($pi / 180.0)}
+}
+
+proc radtodeg {rad} {
+  global pi
+  expr {$rad * (180.0 / $pi)}
+}
+
+proc hrtorad {hr} {
+  global pi
+  expr {$hr * ($pi / 12.0)}
+}
+
+proc radtohr {rad} {
+  global pi
+  expr {$rad * (12.0 / $pi)}
+}
+
+proc arcmintorad {arcmin} {
+  global pi
+  expr {$arcmin * ($pi / 180.0) / 60.0}   
+}
+
+proc radtoarcmin {rad} {
+  global pi
+  expr {$rad * (180.0 / $pi) * 60.0}
+}
+  
+proc arcsectorad {arcsec} {
+  global pi
+  expr {$arcsec * ($pi / 180.0) / 60.0 / 60.0}    
+}
+
+proc radtoarcsec {rad} {
+  global pi
+  expr {$rad * (180.0 / $pi) * 60.0 * 60.0}
+}
+
+proc normalizeangle {angle {sexagesimalformat none}} {
+  global pi
+  if {![regexp {^[0-9.a-z:+-]+$} $angle]} {
+    error "invalid angle: \"$angle\"."    
+  }
+  if {[string is double -strict $angle]} {
+    return [expr {$angle * $pi / 180.0}]
+  } elseif {[scan $angle "%f%\[a-z\]+" value unit] == 2} {
+    switch $unit {
+      "r" {
+        set newangle $value
+      }
+      "d" {
+        set newangle [expr {$value * $pi / 180.0}]
+      }
+      "am" {
+        set newangle [expr {$value * $pi / 180.0 / 60.0}]
+      }
+      "as" {
+        set newangle [expr {$value * $pi / 180.0 / 60.0 / 60.0}]
+      }
+      "h" {
+        set newangle [expr {$value * $pi / 180.0 * 15.0}]
+      }
+      "m" {
+        set newangle [expr {$value * $pi / 180.0 * 15.0 / 60.0}]
+      }
+      "s" {
+        set newangle [expr {$value * $pi / 180.0 * 15.0 / 60.0 / 60.0}]
+      }
+      default {
+        error "invalid angle: \"$angle\"."
+      }
+    }
+  } elseif {[string equal $sexagesimalformat "hms"]} {
+    set newangle [hmstorad $angle]
+  } elseif {[string equal $sexagesimalformat "dms"]} {
+    set newangle [dmstorad $angle]
+  } else {
+    error "invalid angle: \"$angle\"."
+  }
+  return $newangle
+}
+  
+proc sexagesimaltodouble {sexagesimal} {
+  if {[scan $sexagesimal "%d%*\[^0-9\]%d%*\[^0-9\]%f%c" d0 d1 d2 more] != 3} {
+    error "invalid sexagesimal angle: \"$sexagesimal\"."      
+  }
+  if {$d1 < 0 || $d1 >= 60 || $d2 < 0 || $d2 >= 60} {
+    error "invalid sexagesimal angle: \"$sexagesimal\"."
+  }
+  set d [expr {($d2 / 60.0 + $d1) / 60.0 + abs($d0)}]
+  scan $sexagesimal "%1s" sign
+  if {[string equal $sign "-"]} {
+    set d [expr {-$d}]
+  }
+  return $d
+}
+
+proc dmstodeg {dms} {
+  sexagesimaltodouble $dms
+}
+
+proc dmstorad {dms} {
+  degtorad [dmstodeg $dms]
+}
+
+proc hmstodeg {hms} {
+  expr {15.0 * [dmstodeg $hms]}
+}
+
+proc hmstorad {hms} {
+  expr {15.0 * [dmstorad $hms]}
+}
+
+proc normalizealpha {context alpha} {
+  global pi
+  if {
+      [catch {normalizeangle $alpha hms} newalpha] ||
+      $newalpha < 0 ||
+      $newalpha >= [expr {2 * $pi}]
+  } {
+    error "$context: invalid alpha: \"$alpha\"."
+  }
+  return $newalpha
+}
+
+proc normalizedelta {context delta} {
+  global pi
+  if {
+      [catch {normalizeangle $delta dms} newdelta] ||
+      $newdelta < [expr {-($pi)}] ||
+      $newdelta > [expr {$pi}]
+  } {
+    error "$context: invalid delta: \"$delta\"."
+  }
+  return $newdelta
+}
+
+proc normalizeha {context ha} {
+  global pi
+  if {
+      [catch {normalizeangle $ha hms} newha] ||
+      $newha < [expr {-2 * $pi}] ||
+      $newha >= [expr {+2 * $pi}]
+  } {
+    error "$context: invalid ha: \"$ha\"."
+  }
+  return $newha
+}
+
+proc normalizeoffset {context offset} {
+  if {
+      [catch {normalizeangle $offset dms} newoffset] ||
+      $newoffset < -3600 ||
+      $newoffset > +3600
+  } {
+    error "$context: invalid offset: \"$offset\"."
+  }
+  return $newoffset
+}
+
+proc normalizeseparation {context separation} {
+  global pi
+  if {
+      [catch {normalizeangle $separation} newseparation] ||
+      $newseparation < 0 ||
+      $newseparation > [expr {2 * $pi}]
+  } {
+    error "$context: invalid separation: \"$newseparation\"."
+  }
+  return $newseparation
+}
+
+proc fold {x min max} {
+  while {$x >= $max} {
+    set x [expr {$x - ($max - $min)}]
+  }
+  while {$x < $min} {
+    set x [expr {$x + ($max - $min)}]
+  }
+  return $x
+}
+
+proc foldradpositive {x} {
+  global pi
+  fold $x 0 [expr {2 * $pi}]
+}
+
+proc foldradsymmetric {x} {
+  global pi
+  fold $x [expr {-$pi}] $pi
+}
+
+proc doubletosexagesimal {d precision min max withsign {separator ":"}} {
+  set d [fold $d $min $max]
+  set d0 [expr {abs($d)}]
+  set i0 [expr {int($d0)}]
+  set d1 [expr {($d0 - $i0) * 60.0}]
+  set i1 [expr {int($d1)}]
+  set d2 [expr {($d1 - $i1) * 60.0}]
+  set i2 [expr {int(floor($d2))}]
+  set f2 [expr {$d2 - $i2}]
+  set fscale  [expr {pow(10,$precision)}]
+  set fdigits [expr {int(round($f2 * $fscale))}]
+  if {$fdigits == $fscale} {
+    set i2 [expr {$i2 + 1}]
+    set fdigits 0
+  }
+  if {$i2 == 60} {
+    set i1 [expr {$i1 + 1}]
+    set i2 0
+  }
+  if {$i1 == 60} {
+    set i0 [expr {$i0 + 1}]
+    set i1 0
+  }
+  if {$d >= 0} {
+    if {$i0 < $min} {
+      set i0 [expr {$i0 + ($max - $min)}]
+      set d  [expr {$d  + ($max - $min)}]
+    } elseif {$i0 >= $max} {
+      set i0 [expr {$i0 - ($max - $min)}]
+      set d  [expr {$d  - ($max - $min)}]
+    }
+  } else {
+    if {-$i0 < $min} {
+      set i0 [expr {$i0 - ($max - $min)}]
+      set d  [expr {$d  + ($max - $min)}]
+    } elseif {-$i0 >= $max} {
+      set i0 [expr {$i0 + ($max - $min)}]
+      set d  [expr {$d  - ($max - $min)}]
+    }
+  }
+  if {$min < 0 && $d < 0} {
+    set sign "-"
+  } elseif {$withsign} {
+    set sign "+"
+  } else {
+    set sign ""
+  }
+  if {$precision == 0} {
+    set ftext ""
+  } else {
+    set ftext [format ".%0*d" $precision $fdigits]
+  }
+  format "%s%02d%s%02d%s%02d%s" $sign $i0 $separator $i1 $separator $i2 $ftext
+}
+
+proc degtodms {deg precision withsign {separator ":"}} {
+  if {$withsign} {
+    doubletosexagesimal $deg $precision -180 +180 $withsign $separator
+  } else {
+    doubletosexagesimal $deg $precision    0 +360 $withsign $separator
+  }
+}
+
+proc radtodms {rad precision withsign {separator ":"}} {
+  degtodms [radtodeg $rad] $precision $withsign $separator
+}
+
+proc degtohms {deg precision withsign {separator ":"}} {
+  set hr [expr {$deg / 15.0}]
+  if {$withsign} {
+    doubletosexagesimal $hr $precision -12 +12 $withsign $separator
+  } else {
+    doubletosexagesimal $hr $precision   0 +24 $withsign $separator
+  }
+}
+
+proc radtohms {rad precision withsign {separator ":"}} {
+  degtohms [radtodeg $rad] $precision $withsign $separator
+}
+
+################################################################################
+
+proc checkobligatorynames {context names obligatorynames} {
+  foreach name $obligatorynames {
+    if {![isoneof $name $obligatorynames]} {
+      error "$context: there must be a pair named \"$name\"."
+    }
+  }  
+}
+
+proc checkvalidnames {context names validnames} {
+  foreach name $names {
+    if {![isoneof $name $validnames] == -1} {
+      error "$context: there is an invalid pair named \"$name\"."
+    }
+  }
+}
+
+################################################################################
+
+proc normalizelanguageversion {context visitdescription languageversion} {
+  message "$context: checking \"$languageversion\"."
+  if {![isoneof $languageversion {
+    20120606
+    20120615
+    20120805
+    20120808
+    20130706
+    20130721
+    20130819
+    20140326
+    20140929
+  }]} {
+    error "$context: invalid language version \"$languageversion\"."
+  }
+  return $languageversion
+}
+
+proc normalizeproposalidentifier {context visitdescription proposalidentifier} {
+  message "$context: checking \"$proposalidentifier\"."
+  return $proposalidentifier
+}
+
+proc normalizevisitidentifier {context visitdescription visitidentifier} {
+  message "$context: checking \"$visitidentifier\"."
+  set visitidentifier [normalizeinteger $context $visitidentifier]
+  if {$visitidentifier < 0} {
+    error "$context: invalid visit identifier value \"$visitidentifier\"."
+  }
+  return $visitidentifier
+}
+
+proc normalizeobjectname {context visitdescription objectname} {
+  message "$context: checking \"$objectname\"."
+  return $objectname
+}
+
+proc defaultobjectname {context visitdescription} {
+  set defaultvalue ""
+  message "$context: using default value \"$defaultvalue\"."
+  return $defaultvalue
+}
+
+proc normalizevisitname {context visitdescription visitname} {
+  message "$context: checking \"$visitname\"."
+  return $visitname
+}
+
+proc defaultvisitname {context visitdescription} {
+  set defaultvalue ""
+  message "$context: using default value \"$defaultvalue\"."
+  return $defaultvalue
+}
+
+proc normalizepreparationdate {context visitdescription preparationdate} {
+  message "$context: checking \"$preparationdate\"."
+  return [normalizedate $context $preparationdate]
+}
+
+proc normalizepointingcorrection {context visitdescription pointingcorrection} {
+  message "$context: checking \"$pointingcorrection\"."
+  if {![isoneof $pointingcorrection {
+    none
+    map
+    finder
+  }]} {
+    error "$context: invalid pointing correction value \"$pointingcorrection\"."
+  }
+  return $pointingcorrection
+}
+
+proc defaultpointingcorrection {context visitdescription} {
+  set defaultvalue "finder"
+  message "$context: using default value \"$defaultvalue\"."
+  return $defaultvalue
+}
+
+proc normalizetargetcoordinatestype {context visitdescription type} {
+  message "$context: checking \"$type\"."
+  if {![isoneof $type {
+    equatorial
+    solarsystembody
+  }]} {
+    error "$context: invalid type value \"$type\"."
+  }
+  return $type
+}
+
+proc normalizetargetcoordinatesalpha {context visitdescription alpha} {
+  message "$context: checking \"$alpha\"."
+  return [normalizealpha $context $alpha]
+}
+
+proc normalizetargetcoordinatesdelta {context visitdescription delta} {
+  message "$context: checking \"$delta\"."
+  return [normalizedelta $context $delta]
+}
+
+proc normalizetargetcoordinatesequinox {context visitdescription equinox} {
+  set equinox [string trim $equinox]
+  message "$context: checking \"$equinox\"."
+  return [normalizedouble $context $equinox]
+}
+
+proc normalizetargetcoordinatesnumber {context visitdescription number} {
+  set number [string trim $number]
+  message "$context: checking \"$number\"."
+  return [normalizeinteger $context $number]
+}
+
+proc normalizetargetcoordinatesname {context visitdescription name} {
+  set number [string trim $name]
+  message "$context: checking \"$name\"."
+  return [string tolower [string map {" " "-"} $name]]
+}
+
+proc normalizetargetcoordinates {context visitdescription targetcoordinates} {
+  set newtargetcoordinates {}
+  message "$context: determining target coordinates type."
+  checkobligatorynames $context [dict keys $targetcoordinates] {type}
+  set type [dict get $targetcoordinates type]
+  if {[string equal $type "equatorial"]} {
+    message "$context: checking obligatory pairs are present."
+    checkobligatorynames $context [dict keys $targetcoordinates] {type alpha delta equinox}
+    message "$context: checking all pairs have valid names."
+    checkvalidnames $context [dict keys $targetcoordinates] {type alpha delta equinox}
+    foreach name {type alpha delta equinox} {
+      set value [dict get $targetcoordinates $name]
+      dict set newtargetcoordinates $name [normalizetargetcoordinates$name "$context: $name" $visitdescription $value]
+    }
+  } elseif {[string equal $type "solarsystembody"]} {
+    message "$context: checking obligatory pairs are present."
+    checkobligatorynames $context [dict keys $targetcoordinates] {type}
+    message "$context: checking all pairs have valid names."
+    checkvalidnames $context [dict keys $targetcoordinates] {type number name}
+    if {[dict exists $targetcoordinates number] && [dict exists $targetcoordinates name]} {
+      error "$context: only one of \"number\" or \"name\" can be specified."
+    }
+    foreach key {type number name} {
+      if {[dict exists $targetcoordinates $key]} {
+        set value [dict get $targetcoordinates $key]
+        dict set newtargetcoordinates $key [normalizetargetcoordinates$key "$context: $key" $visitdescription $value]
+      }
+    }
+  }
+  return $newtargetcoordinates
+}
+
+proc normalizeconstraintsmaxskybrightness {context visitdescription maxskybrightness} {
+  message "$context: checking \"$maxskybrightness\"."
+  if {![isoneof $maxskybrightness {
+    civiltwilight
+    nauticaltwilight
+    astronomicaltwilight
+    bright
+    grey
+    dark
+  }]} {
+    error "$context: invalid make sky brightness value \"$maxskybrightness\"."
+  }
+  return $maxskybrightness
+}
+
+proc defaultconstraintsmaxskybrightness {context visitdescription} {
+  set defaultvalue "bright"
+  message "$context: using default value \"$defaultvalue\"."
+  return $defaultvalue
+}
+
+proc normalizeconstraintsskytransparency {context visitdescription skytransparency} {
+  message "$context: checking \"$skytransparency\"."
+  if {![isoneof $skytransparency {
+    any
+    probablyphotometric
+  }]} {
+    error "$context: invalid sky transparency value \"$skytransparency\"."
+  }
+  return $skytransparency
+}
+
+proc defaultconstraintsskytransparency {context visitdescription} {
+  set defaultvalue "any"
+  message "$context: using default value \"$defaultvalue\"."
+  return $defaultvalue
+}
+
+proc normalizeconstraintsmindate {context visitdescription mindate} {
+  message "$context: checking \"$mindate\"."
+  return [normalizedate $context $mindate]
+}
+
+proc defaultconstraintsmindate {context visitdescription} {
+  set defaultvalue [dict get $visitdescription preparationdate]
+  message "$context: using default value \"$defaultvalue\"."
+  return $defaultvalue  
+}
+
+proc normalizeconstraintsmaxdate {context visitdescription maxdate} {
+  message "$context: checking \"$maxdate\"."
+  return [normalizedate $context $maxdate]
+}
+
+proc defaultconstraintsmaxdate {context visitdescription} {
+  # Default is one year after preparation date, taking leap years into account.
+  set preparationdate [dict get $visitdescription preparationdate]
+  set rest ""
+  scan $preparationdate "%4d%2d%2d%s" years months days rest
+  incr years
+  if {$months == 2 && $days == 29} {
+    set days 28
+  }
+  set defaultvalue "[format "%04d%02d%02d" $years $months $days]$rest"
+  message "$context: using default value \"$defaultvalue\"."
+  return $defaultvalue  
+}
+
+proc normalizeconstraintsminairmass {context visitdescription minairmass} {
+  message "$context: checking \"$minairmass\"."
+  return [normalizedouble $context $minairmass]
+}
+
+proc defaultconstraintsminairmass {context visitdescription} {
+  set defaultvalue 1
+  message "$context: using default value \"$defaultvalue\"."
+  return $defaultvalue  
+}
+
+proc normalizeconstraintsmaxairmass {context visitdescription maxairmass} {
+  message "$context: checking \"$maxairmass\"."
+  return [normalizedouble $context $maxairmass]
+}
+
+proc defaultconstraintsmaxairmass {context visitdescription} {
+  set defaultvalue 2
+  message "$context: using default value \"$defaultvalue\"."
+  return $defaultvalue  
+}
+
+proc normalizeconstraintsminha {context visitdescription minha} {
+  message "$context: checking \"$minha\"."
+  return [normalizeha $context $minha]
+}
+
+proc defaultconstraintsminha {context visitdescription} {
+  set defaultvalue "-5.5h"
+  message "$context: using default value \"$defaultvalue\"."
+  return $defaultvalue  
+}
+
+proc normalizeconstraintsmaxha {context visitdescription maxha} {
+  message "$context: checking \"$maxha\"."
+  return [normalizeha $context $maxha]
+}
+
+proc defaultconstraintsmaxha {context visitdescription} {
+  set defaultvalue "+5.5h"
+  message "$context: using default value \"$defaultvalue\"."
+  return $defaultvalue  
+}
+
+proc normalizeconstraintsminmoonseparation {context visitdescription minmoonseparation} {
+  message "$context: checking \"$minmoonseparation\"."
+  return [normalizeseparation $context $minmoonseparation]
+}
+
+proc defaultconstraintsminmoonseparation {context visitdescription} {
+  set defaultvalue "15d"
+  message "$context: using default value \"$defaultvalue\"."
+  return $defaultvalue  
+}
+
+proc normalizeconstraintsmaxmoonseparation {context visitdescription maxmoonseparation} {
+  message "$context: checking \"$maxmoonseparation\"."
+  return [normalizeseparation $context $maxmoonseparation]
+}
+
+proc defaultconstraintsmaxmoonseparation {context visitdescription} {
+  set defaultvalue "180d"
+  message "$context: using default value \"$defaultvalue\"."
+  return $defaultvalue  
+}
+
+proc normalizeconstraints {context visitdescription constraints} {
+  set obligatorynames {
+  }
+  set validnames [concat $obligatorynames {
+    maxskybrightness
+    skytransparency
+    mindate
+    maxdate
+    minairmass
+    maxairmass
+    minha
+    maxha
+    minmoonseparation
+    maxmoonseparation
+  }]
+  message "$context: checking obligatory pairs are present."
+  checkobligatorynames $context [dict keys $constraints] $obligatorynames
+  message "$context: checking all pairs have valid names."
+  checkvalidnames $context [dict keys $constraints] $validnames
+  set newconstraints {}
+  foreach name $validnames {
+    if {[dict exists $constraints $name]} {
+      set value [dict get $constraints $name]
+    } else {
+      set value [defaultconstraints$name "$context: $name" $visitdescription]
+    }
+    dict set newconstraints $name [normalizeconstraints$name "$context: $name" $visitdescription $value]
+  }
+  return $newconstraints
+}
+
+proc defaultconstraints {context visitdescription} {
+  set defaultvalue ""
+  message "$context: using default value \"$defaultvalue\"."
+  return $defaultvalue
+}
+
+proc normalizerepeatexposures {context visitdescription repeatexposures} {
+  message "$context: checking \"$repeatexposures\"."
+  set repeatexposures [normalizeinteger $context $repeatexposures]
+  if {$repeatexposures < 1} {
+    error "$context: invalid repeat exposures value \"$repeatexposures\"."
+  }
+  return $repeatexposures
+}
+
+proc defaultrepeatexposures {context visitdescription} {
+  set defaultvalue 1
+  message "$context: using default value \"$defaultvalue\"."
+  return $defaultvalue
+}
+
+proc normalizesecondaryoffset {context visitdescription secondaryoffset} {
+  message "$context: checking \"$secondaryoffset\"."
+  set secondaryoffset [normalizeinteger $context $secondaryoffset]
+  return $secondaryoffset
+}
+
+proc defaultsecondaryoffset {context visitdescription} {
+  set defaultvalue 0
+  message "$context: using default value \"$defaultvalue\"."
+  return $defaultvalue
+}
+
+proc normalizeaperture {context visitdescription aperture} {
+  message "$context: checking \"$aperture\"."
+  if {![isoneof $aperture {
+    nefinder
+    sefinder
+    rcenter
+    icenter
+    ricenter
+    riZJcenter
+    riYHcenter
+    ZJcenter
+    YHcenter
+    zcenter
+  }]} {
+    error "$context: invalid aperture value \"$aperture\"."
+  }
+  return $aperture
+}
+
+proc normalizeeastoffset {context visitdescription eastoffset} {
+  message "$context: checking \"$eastoffset\"."
+  return [normalizeoffset $context $eastoffset]
+}
+
+proc normalizenorthoffset {context visitdescription northoffset} {
+  message "$context: checking \"$northoffset\"."
+  return [normalizeoffset $context $northoffset]
+}
+
+proc normalizeguidingmode {context visitdescription guidingmode} {
+  message "$context: checking \"$guidingmode\"."
+  if {![isoneof $guidingmode {
+    none
+    finder
+    r C0
+    i C1
+  }]} {
+    error "$context: invalid guiding mode value \"$guidingmode\"."
+  }
+  if {[string equal $guidingmode "r"]} {
+    set guidingmode C0
+  }
+  if {[string equal $guidingmode "i"]} {
+    set guidingmode C1
+  }
+  return $guidingmode
+}
+
+set validfilterlist {
+  u g r
+  BU BB BV
+  Su Sv Sb Sy
+  Cn Cw
+  Gi
+  4270/38
+  4772/44
+  5016/51
+  5050/50
+  6459/102 
+  6573/15
+  6580/19
+  6630/40
+  6690/91
+}
+
+proc normalizefilter {context visitdescription filter} {
+  message "$context: checking \"$filter\"."
+  global validfilterlist
+  if {![isoneof $filter $validfilterlist]} {
+    error "$context: invalid filter value \"$filter\"."
+  }
+  return $filter
+}
+
+proc normalizeexposuretime {context visitdescription exposuretime} {
+  set equinox [string trim $exposuretime]
+  message "$context: checking \"$exposuretime\"."
+  if {![string equal $exposuretime "none"]} {
+    set exposuretime [normalizedouble $context $exposuretime]
+    if {$exposuretime < 0 || $exposuretime > 3600} {
+      error "$context: invalid exposure time value \"$exposuretime\"."
+    }
+  }
+  return $exposuretime
+}
+
+proc normalizeexposure {context visitdescription exposure} {
+  if {[llength $exposure] != 9} {
+    error "$context: invalid exposure syntax."
+  }
+  set newexposure [list \
+    [normalizeaperture     "$context: aperture"        $visitdescription [lindex $exposure 0]] \
+    [normalizeeastoffset   "$context: eastoffset"      $visitdescription [lindex $exposure 1]] \
+    [normalizenorthoffset  "$context: northoffset"     $visitdescription [lindex $exposure 2]] \
+    [normalizeguidingmode  "$context: guidingmode"     $visitdescription [lindex $exposure 3]] \
+    [normalizefilter       "$context: filter"          $visitdescription [lindex $exposure 4]] \
+    [normalizeexposuretime "$context: C0-exposuretime" $visitdescription [lindex $exposure 5]] \
+    [normalizeexposuretime "$context: C1-exposuretime" $visitdescription [lindex $exposure 6]] \
+    [normalizeexposuretime "$context: C2-exposuretime" $visitdescription [lindex $exposure 7]] \
+    [normalizeexposuretime "$context: C3-exposuretime" $visitdescription [lindex $exposure 8]] \
+  ]
+  set guidingmode   [lindex $newexposure 3]
+  set filter        [lindex $newexposure 4]
+  set C0exposuretime [lindex $newexposure 5]
+  set C1exposuretime [lindex $newexposure 6]
+  if {[string equal $guidingmode "C0"] && ![string equal $filter "r"]} {
+    error "$context: the \"r\" filter must be selected for guiding mode \"C0\"."
+  }
+  if {[string equal $guidingmode "C0"] && ![string equal $C0exposuretime "none"]} {
+    error "$context: the C0 exposure time must \"none\" for guiding mode \"C0\"."
+  }
+  if {[string equal $guidingmode "C1"] && ![string equal $C1exposuretime "none"]} {
+    error "$context: the C1 exposure time must \"none\" for guiding mode \"C1\"."
+  }
+  return $newexposure
+}
+
+proc normalizeexposures {context visitdescription exposures} {
+  if {[llength $exposures] == 0} {
+    error "there must be at least one exposure."
+  }
+  set exposurenumber 1
+  set newexposures {}
+  foreach exposure $exposures {
+    lappend newexposures [normalizeexposure "$context: exposure $exposurenumber" $visitdescription $exposure]
+    incr exposurenumber
+  }
+  return $newexposures
+}
+
+proc normalizevisitdescription {context visitdescription} {
+  message "$context: checking."
+  set obligatorynames {
+    languageversion
+    proposalidentifier
+    visitidentifier
+    preparationdate
+    pointingcorrection
+    targetcoordinates
+    exposures
+  }
+  set validnames [concat $obligatorynames {
+    objectname
+    visitname
+    constraints
+    repeatexposures
+    secondaryoffset
+  }]
+  message "$context: checking obligatory pairs are present."
+  checkobligatorynames $context [dict keys $visitdescription] $obligatorynames
+  message "$context: checking all pairs have valid names."
+  checkvalidnames $context [dict keys $visitdescription] $validnames
+  set newvisitdescription {}
+  foreach name $validnames {
+    if {[dict exists $visitdescription $name]} {
+      set value [dict get $visitdescription $name]
+    } else {
+      set value [default$name "$context: $name" $visitdescription]
+    }
+    dict set newvisitdescription $name [normalize$name "$context: $name" $visitdescription $value]
+  }
+  return $newvisitdescription
+}
+
+proc normalizevisitdescriptions {visitdescriptions} {
+  if {[llength $visitdescriptions] == 0} {
+    error "there must be at least one visit description."
+  }
+  set newvisitdescriptions {}
+  set i 1
+  foreach visitdescription $visitdescriptions {
+    set context "visit description $i"
+    lappend newvisitdescriptions [normalizevisitdescription $context $visitdescription]
+  }
+  return $newvisitdescriptions
+}
+
+################################################################################
+
+proc emitvisitdescription {visitdescription} {
+
+  set filename "[dict get $visitdescription proposalidentifier]-[dict get $visitdescription visitidentifier]"
+  message "writing \"$filename\"."
+  set channel [open $filename "w"]
+
+  puts $channel {# Visit file produced by: $Id: phase2 3557 2020-05-22 18:23:30Z Alan $}
+  puts $channel ""
+
+  puts $channel "proposal::setidentifier \"[dict get $visitdescription proposalidentifier]\""
+  puts $channel "visit::setidentifier    \"[dict get $visitdescription visitidentifier]\""
+  puts $channel "visit::setname          \"[dict get $visitdescription visitname]\""
+  set targetcoordinates [dict get $visitdescription targetcoordinates]
+  set type [dict get $targetcoordinates type]
+  if {[string equal $type "equatorial"]} {
+    set alpha   [radtohms [dict get $targetcoordinates alpha] 2 false]
+    set delta   [radtodms [dict get $targetcoordinates delta] 1 true]
+    set equinox [dict get $targetcoordinates equinox]
+    puts $channel "visit::settargetcoordinates $type $alpha $delta $equinox"
+  } elseif {[string equal $type "solarsystembody"]} {
+    if {[dict exists $targetcoordinates number]} {
+      set number [dict get $targetcoordinates number]
+      puts $channel "visit::settargetcoordinates $type $number"
+    } else {
+      set name [dict get $targetcoordinates name]
+      puts $channel "visit::settargetcoordinates $type $name"
+    }
+  }
+
+  puts $channel ""
+
+  set constraints [dict get $visitdescription constraints]
+  puts $channel "proc SELECTABLE \{args\} \{"
+  puts $channel "  return \[expr \{"
+  puts $channel "    \[maxfocusdelay 3600\] &&"
+  puts $channel "    \[withintelescopepointinglimits\] &&"
+  puts $channel "    \[maxskybrightness [dict get $constraints maxskybrightness]\] &&"
+  puts $channel "    \[minairmass [format "%.3f" [dict get $constraints minairmass]]\] &&"
+  puts $channel "    \[maxairmass [format "%.3f" [dict get $constraints maxairmass]]\] &&"
+  puts $channel "    \[minha [radtohms [dict get $constraints minha] 0 true]\] &&"
+  puts $channel "    \[maxha [radtohms [dict get $constraints maxha] 0 true]\] &&"
+  puts $channel "    \[mindate [dict get $constraints mindate]\] &&"
+  puts $channel "    \[maxdate [dict get $constraints maxdate]\] &&" 
+  puts $channel "    \[minmoonseparation [format "%.1fd" [radtodeg [dict get $constraints minmoonseparation]]]\] &&"
+  puts $channel "    \[maxmoonseparation [format "%.1fd" [radtodeg [dict get $constraints maxmoonseparation]]]\]"
+  puts $channel "  \}\]"
+  puts $channel "\}"
+  puts $channel ""
+  puts $channel "proc EXECUTE \{args\} \{"
+  puts $channel "  setsecondaryoffset [dict get $visitdescription secondaryoffset]"
+  puts $channel "  track ricenter 0as 0as [dict get $visitdescription pointingcorrection]"
+  puts $channel "  set i 0"
+  puts $channel "  while \{\$i < [dict get $visitdescription repeatexposures]\} \{"
+  set oldfilter ""
+  foreach exposure [dict get $visitdescription exposures] {
+    set filter [lindex $exposure 4]
+    if {![string equal $filter $oldfilter]} {
+      puts $channel "    movefilterwheel $filter"
+    }
+    set oldfilter $filter
+    puts $channel "    offset [lindex $exposure 0] [format "%+.1fas" [radtoarcsec [lindex $exposure 1]]] [format "%+.1fas" [radtoarcsec [lindex $exposure 2]]] [lindex $exposure 3]"
+    set C0exptime [lindex $exposure 5]
+    set C1exptime [lindex $exposure 6]
+    set C2exptime [lindex $exposure 7]
+    set C3exptime [lindex $exposure 8]
+    if {[string equal $C2exptime "none"]} {
+      set C2nreads 0
+    } elseif {$C2exptime < 10} {
+      set C2nreads 1
+    } else {
+      set C2nreads 4
+    }
+    if {[string equal $C3exptime "none"]} {
+      set C3nreads 0
+    } elseif {$C3exptime < 10} {
+      set C3nreads 1
+    } else {
+      set C3nreads 4
+    }
+    puts $channel "    exposeobject $C0exptime $C1exptime $C2exptime $C3exptime $C2nreads $C3nreads"
+    incr exposurenumber
+  }
+  puts $channel "    incr i"
+  puts $channel "  \}"
+  puts $channel "  return true"
+  puts $channel "\}"
+  close $channel
+  return
+
+  emitstringpair "    " preparationdate    [dict get $visitdescription preparationdate   ] ","
+  emitstringpair "    " objectname         [dict get $visitdescription objectname        ] ","
+
+  puts "    \"constraints\": \{"
+  puts "    \},"
+  emitintegerpair "    " repeatexposures [dict get $visitdescription repeatexposures] ","
+  emitintegerpair "    " secondaryoffset [dict get $visitdescription secondaryoffset] ","
+  emitexposures 
+}
+
+proc emitvisitdescriptions {visitdescriptions} {
+  foreach visitdescription $visitdescriptions {
+    emitvisitdescription $visitdescription
+  }
+}
+
+################################################################################
+
+set verbose false
+set emit    false
+
+proc help {} {
+  puts stderr {usage: phase2 [-?|--help] [-V|--version] [-v|--verbose] [-e|--emit]}
+}
+
+if {[file exists "./config.tcl"]} {
+  source "./config.tcl"
+}
+
+foreach arg $argv {
+  switch $arg {
+    "-?" -
+    "--help" {
+      help
+      exit 0
+    }
+    "-V" - 
+    "--version" {
+      puts stderr {$Id: phase2 3557 2020-05-22 18:23:30Z Alan $}
+      exit 0
+    }
+    "-v" -
+    "--verbose" {
+      global verbose
+      set verbose true
+    }
+    "-e" - 
+    "--emit" {
+      global emit
+      set emit true
+    }
+    default {
+      puts stderr "error: unexpected argument \"$arg\"."
+      help
+      exit 1
+    }
+  }
+}
+
+if {$verbose} {
+  message {$Id: phase2 3557 2020-05-22 18:23:30Z Alan $}
+}
+
+if {[catch {
+  set visitdescriptions [readjsonobject stdin]
+} message]} {
+  puts stderr "error: input is not a valid JSON object: $message"
+  exit 1
+}
+
+if {[catch {
+  set visitdescriptions [normalizevisitdescriptions $visitdescriptions]
+} message]} {
+  puts stderr "error: $message"
+  exit 1
+}
+
+if {$emit} {
+  if {[catch {
+    emitvisitdescriptions $visitdescriptions
+  } message]} {
+    puts stderr "internal error: $message"
+    exit 1
+  }
+}
+
+

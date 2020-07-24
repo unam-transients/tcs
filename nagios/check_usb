@@ -1,0 +1,106 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: check_usb 3373 2019-10-30 15:09:02Z Alan $
+
+########################################################################
+
+# Copyright © 2011, 2012, 2016, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+program=$(basename "$0")
+
+usageerror () {
+  echo "usage: $program [-v] [-s speed] [--] serial ..."
+  exit 3
+}
+
+speed=""
+
+optstring="vs:"
+if ! getopt -qQ -- "$optstring" "$@"
+then
+  usageerror
+fi
+eval set -- "$(getopt -- "$optstring" "$@")"
+while test "$1" != "--"
+do
+  case "$1" in
+  -s)
+    speed="$2"
+    shift 2
+    ;;
+  -v)
+    shift
+    ;;
+  *)
+    usageerror
+    ;;
+  esac
+done
+shift
+case "$#" in
+0)
+  usageerror
+  ;;
+esac
+
+for serial in "$@"
+do
+  for dir in /sys/bus/usb/devices/*
+  do
+    if grep -Fx "$serial" $dir/serial >/dev/null
+    then
+      break
+    fi
+  done
+  if ! grep -Fx "$serial" $dir/serial >/dev/null
+  then
+    echo "USB CRITICAL - $serial is not present."
+    exit 2
+  fi
+done
+
+if test ! -z "$speed"
+then
+  for serial in "$@"
+  do
+    for dir in /sys/bus/usb/devices/*
+    do
+      if grep -Fx "$serial" $dir/serial >/dev/null
+      then
+        break
+      fi
+    done
+    if ! grep -Fx "$speed" $dir/speed >/dev/null
+    then
+      echo "USB WARNING - $serial - $(cat $dir/speed) Mb/s."
+      exit 1
+    fi
+  done
+fi
+
+if test -z "$speed"
+then
+  echo "USB OK - $@."
+else
+  echo "USB OK - $@ - $(cat $dir/speed) Mb/s."
+fi
+exit 0
