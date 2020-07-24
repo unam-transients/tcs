@@ -1,0 +1,176 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: make-log-files 3373 2019-10-30 15:09:02Z Alan $
+
+########################################################################
+
+# Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+script_prefix=$(cd $(dirname "$0"); pwd)
+archive_prefix=${archive_prefix:-/mnt/storage/archive}
+
+mkdir -p $archive_prefix/public
+mkdir -p $archive_prefix/log
+
+cd $archive_prefix/public
+
+(
+  cd $archive_prefix/date
+  find . -type d -mindepth 1 -maxdepth 1 |
+  sort |
+  while read date
+  do
+    if test ! -e ../log/$date.csv
+    then
+      echo 1>&2 $date.csv does not exist.
+      echo $date
+    elif test $(find $date -name "*C[0123]?.fits.txt" | wc -l) != $(wc -l < ../log/$date.csv)
+    then
+      echo 1>&2 $date.csv not right length.
+      echo $date
+    elif test $(find $date -name "*C[0123]?.fits.txt" -newer ../log/$date.csv | wc -l) != 0
+    then
+      echo 1>&2 $date.csv too old.
+      echo $date
+    fi
+  done |
+  while read date
+  do
+    echo 1>&2 rebuilding $date.csv.
+    find $date -name "*C[0123]?.fits.txt" |
+    xargs sh $script_prefix/make-log-csv-entry >../log/$date.csv
+  done
+)
+
+find $archive_prefix/log -name "*.csv" |
+xargs cat >log.csv-$$-tmp 
+
+exit
+
+|
+awk -F, '
+  {
+    printf("%23s %s %6d %s %s %-6s %8.3f %-8s %9.5f %+10.5f %+10.5f %.3f %-5s\n",
+      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13);
+  }
+' >log.txt-$$-tmp
+
+install -CpS log.csv-$$-tmp log.csv
+install -CpS log.txt-$$-tmp log.txt
+
+rm -f log-*-tmp
+rm -f log.*-tmp
+rm -f files-*-txt
+rm -f files-*-csv
+
+exit
+
+awk -F, '
+
+BEGIN {
+  lastdate               = "";
+  lastproposalidentifier = "";
+  lastvisitidentifier    = "";
+  lastbase               = "";
+}
+
+NF == 13 {
+
+  date                  = $1;
+  proposalidentifier    = $2;
+  visitidentifier       = $3;
+
+  hhmmss = substr($4, 10, 6) + 0;
+  if (hhmmss > lasthhmmss + 2) {
+    totalexposures += 1;
+    chargedexposuretime = 0;
+    if (exposuretime["C3"] != 0) {
+      chargedexposuretime = exposuretime["C3"]; 
+    } else if (exposuretime["C2"] != 0) {
+      chargedexposuretime = exposuretime["C2"]; 
+    } else if (exposuretime["C1"] != 0) {
+      chargedexposuretime = exposuretime["C1"]; 
+    } else if (exposuretime["C0"] != 0) {
+      chargedexposuretime = exposuretime["C0"]; 
+    }
+    totalchargedexposuretime += chargedexposuretime;
+    delete exposuretime;
+  }
+  lasthhmmss = hhmmss;
+
+  if (date == "" || proposalidentifier == "" || visitidentifier == "")
+    next;  
+
+  if (proposalidentifier != lastproposalidentifier || visitidentifier != lastvisitidentifier) {
+    if (lastdate != "") {
+      printf("%s,%s,%s,%d,%.0f,%d,%.0f,%d,%.0f,%d,%.0f,%d,%.0f\n", \
+        lastdate, lastproposalidentifier, lastvisitidentifier, \
+        totalexposures, totalchargedexposuretime, \
+        channelexposures["C0"], channelexposuretime["C0"], \
+        channelexposures["C1"], channelexposuretime["C1"], \
+        channelexposures["C2"], channelexposuretime["C2"], \
+        channelexposures["C3"], channelexposuretime["C3"])
+    }
+    printf("%s,", date);
+    totalexposures           = 0;
+    totalchargedexposuretime = 0;
+    delete channelexposures;
+    delete channelexposuretime;
+  }
+
+  channel               = $5;
+  exposuretime[channel] = $7;
+
+  channelexposures[channel]    += 1;
+  channelexposuretime[channel] += exposuretime[channel];
+
+  lastdate               = date;
+  lastproposalidentifier = proposalidentifier;
+  lastvisitidentifier    = visitidentifier;
+
+}
+
+END {
+    totalexposures           += 1;
+    totalchargedexposuretime += chargedexposuretime;
+    printf("%s,%s,%s,%d,%.0f,%d,%.0f,%d,%.0f,%d,%.0f,%d,%.0f\n", \
+      lastdate, lastproposalidentifier, lastvisitidentifier, \
+      totalexposures, totalchargedexposuretime, \
+      channelexposures["C0"], channelexposuretime["C0"], \
+      channelexposures["C1"], channelexposuretime["C1"], \
+      channelexposures["C2"], channelexposuretime["C2"], \
+      channelexposures["C3"], channelexposuretime["C3"])
+}
+
+' log.csv |
+tee summary.csv-$$-tmp |
+awk -F, '
+{
+  printf("%s %s %s %6d %4d %5d %4d %5d %4d %5d %4d %5d %4d %5d\n", \
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14);
+}
+' >summary.txt-$$-tmp
+
+install -CpS summary.csv-$$-tmp summary.csv
+install -CpS summary.txt-$$-tmp summary.txt
+
+rm summary*-tmp

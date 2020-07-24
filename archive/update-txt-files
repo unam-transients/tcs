@@ -1,0 +1,61 @@
+#!/bin/bash
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: update-txt-files 3373 2019-10-30 15:09:02Z Alan $
+
+########################################################################
+
+# Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+# We need bash for <$(...)
+
+archive_prefix=${archive_prefix:-/mnt/storage/archive}
+
+cd $archive_prefix/date
+
+(
+  # Make a list of too small .txt files.
+  find -s . -name "*.txt" -size 0
+  # Make a list of missing .txt files corresponding to .bz2 files.
+  diff <(find -s . -name "*C[0123]?.fits.txt") <(find -s . -name "*C[0123]?.fits.bz2" | sed 's/bz2/txt/') | awk '$1 == ">" { print $2; }'
+) | 
+while read txt
+do
+  bz2=$(echo $txt | sed 's/txt$/bz2/')
+  if ! bunzip2 -t $bz2 2>&-
+  then
+    echo $bz2 is bad.
+    rm -f $txt
+    mv $bz2 $bz2-bad
+  elif test "$(bunzip2 -c $bz2 | fold -80 | sed 's/ *$//;/^END$/q' | tail -1)" != "END"
+  then
+    echo $bz2 is incomplete.
+    rm -f $txt-$$-tmp
+    rm -f $txt
+    mv $bz2 $bz2-incomplete
+  else
+    echo updating $txt
+    bunzip2 -c $bz2 | fold -80 | sed 's/ *$//;/^END$/q' >$txt-$$-tmp
+    mv $txt-$$-tmp $txt
+  fi
+done
+
+find . -name "*-tmp" | xargs rm -f

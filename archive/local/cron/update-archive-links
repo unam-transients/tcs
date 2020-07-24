@@ -1,0 +1,63 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: update-archive-links 3373 2019-10-30 15:09:02Z Alan $
+
+########################################################################
+
+# Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+case $(hostname | sed 's/\..*//') in
+transientsoan-nas)
+  archivedir=/mnt/volume/archive-ratir
+  ;;
+*)
+  archivedir=/mnt/storage/archive
+  ;;
+esac
+
+mkdir -p $archivedir/proposal/
+cd $archivedir/date/
+for date in */
+do
+  cd $archivedir/date/$date
+  find . -print | cpio -pdl --quiet $archivedir/proposal/
+done
+
+mkdir -p $archivedir/public
+cd $archivedir/proposal/
+(
+  find . -name "*.fits.txt" -print 
+  find . -path "./2012A-0???/*" -name "*.fits.bz2" -print
+  find . -name "2012*.fits.bz2" -print
+  find . -name "2013*.fits.bz2" -print
+  find . -name "20140[1234]*.fits.bz2" -print
+) | 
+sort -u |
+grep -v 2015B-1006 |
+cpio -pdl --quiet $archivedir/public
+
+cd $archivedir/proposal/
+for proposal in *-[123456789]*
+do
+  cd $archivedir/proposal/$proposal
+  find . -print | cpio -pdl --quiet $archivedir/pi/$proposal/$proposal
+done
