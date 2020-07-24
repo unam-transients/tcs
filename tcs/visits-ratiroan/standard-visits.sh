@@ -1,0 +1,11 @@
+#sh all-visits.sh $1 correct-pointing-east a
+#sh all-visits.sh $1 correct-pointing-west a
+sh all-visits.sh $1 sdss-standard-low-airmass l
+sh all-visits.sh $1 sdss-standard-medium-airmass l
+sh all-visits.sh $1 sdss-standard-high-airmass l
+sh all-visits.sh $1 focus n
+sh all-visits.sh $1 refocus o
+sh all-visits.sh $1 donut a
+sh all-visits.sh $1 twilight-flats-evening p
+sh all-visits.sh $1 biases q
+sh all-visits.sh $1 dark r

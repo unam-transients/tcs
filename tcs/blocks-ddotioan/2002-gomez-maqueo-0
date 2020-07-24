@@ -1,0 +1,12 @@
+proposal::setidentifier "[utcclock::semester]-2002"
+block::setidentifier "0"
+visit::setidentifier "0"
+visit::setname "Gomez Maqueo: HAT-P-29b"
+block::settotalexposures 0
+visit::settargetcoordinates equatorial 02:20:31.46 +51:46:43.6 2000
+
+constraints::setmaxskybrightness "astronomicaltwilight"
+constraints::setmaxairmass 1.5
+constraints::setmaxfocusdelay 3600
+
+visit::setcommand "gridvisit 1 9 2 60"

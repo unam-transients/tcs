@@ -1,0 +1,48 @@
+////////////////////////////////////////////////////////////////////////
+
+// This file is part of the UNAM telescope control system.
+
+// $Id: servers-project-coatlioan.json 3613 2020-06-20 20:21:43Z Alan $
+
+////////////////////////////////////////////////////////////////////////
+
+// Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
+//
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the
+// above copyright notice and this permission notice appear in all
+// copies.
+//
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+// WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+// AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+// DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+// PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+// TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+// PERFORMANCE OF THIS SOFTWARE.
+
+////////////////////////////////////////////////////////////////////////
+
+{
+  "C0"         : { "host" : "e1"      , "port" : 5000 },
+  "enclosure"  : { "host" : "control" , "port" : 5007 },
+  "executor"   : { "host" : "control" , "port" : 5008 },
+  "gcntan"     : { "host" : "services", "port" : 5009 },
+  "heater"     : { "host" : "c0"      , "port" : 5010 },
+  "html"       : { "host" : "services", "port" : 5011 },
+  "instrument" : { "host" : "control" , "port" : 5012 },
+  "lights"     : { "host" : "c0"      , "port" : 5013 },
+  "log"        : { "host" : "services", "port" : 5014 },
+  "moon"       : { "host" : "control" , "port" : 5015 },
+  "mount"      : { "host" : "control" , "port" : 5016 },
+  "power"      : { "host" : "control" , "port" : 5017 },
+  "secondary"  : { "host" : "control" , "port" : 5018 },
+  "selector"   : { "host" : "control" , "port" : 5019 },
+  "sensors"    : { "host" : "control" , "port" : 5020 },
+  "sun"        : { "host" : "control" , "port" : 5021 },
+  "supervisor" : { "host" : "control" , "port" : 5022 },
+  "target"     : { "host" : "control" , "port" : 5023 },
+  "telescope"  : { "host" : "control" , "port" : 5024 },
+  "weather"    : { "host" : "control" , "port" : 5025 }
+}

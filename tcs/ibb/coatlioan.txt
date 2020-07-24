@@ -1,0 +1,90 @@
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: coatlioan.txt 3373 2019-10-30 15:09:02Z Alan $
+
+########################################################################
+
+# Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+ibb-127
+
+set ipaddress 10.0.1.5
+set subnet 255.255.255.0
+set gateway 10.0.1.1
+set ipmode static
+get network
+
+set time server 129.6.15.29
+set time zone 0
+set time usents yes
+get time
+
+add user coatli
+set user coatli password coatli coatli
+set user coatli role admin
+set user coatli device #1 outlet all yes
+get user coatli
+
+set device 1
+set device #1 name ibb-127-a
+get devices
+
+set device #1 outlet 1 name platform
+set device #1 outlet 2 name access
+set device #1 outlet 3 name instrument
+set device #1 outlet 4 name mount
+set device #1 outlet 5 name firewall
+set device #1 outlet 6 name services
+set device #1 outlet 7 name control
+set device #1 outlet 8 name serial
+get device #1
+
+ibb-220
+
+set ipaddress 10.0.1.4
+set subnet 255.255.255.0
+set gateway 10.0.1.1
+set ipmode static
+get network
+
+set time server 129.6.15.29
+set time zone 0
+set time usents yes
+get time
+
+add user coatli
+set user coatli password coatli coatli
+set user coatli role admin
+set user coatli device #1 outlet all yes
+get user coatli
+
+set device 1
+set device #1 name ibb-220-a
+get devices
+
+set device #1 outlet 1 name enclosure
+set device #1 outlet 2 name secondary
+set device #1 outlet 3 name -
+set device #1 outlet 4 name -
+set device #1 outlet 5 name -
+set device #1 outlet 6 name -
+set device #1 outlet 7 name -
+set device #1 outlet 8 name -
+get device #1

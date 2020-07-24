@@ -1,0 +1,278 @@
+////////////////////////////////////////////////////////////////////////
+
+// This file is part of the UNAM telescope control system.
+
+// $Id: config-project-colibricito.json 3613 2020-06-20 20:21:43Z Alan $
+
+////////////////////////////////////////////////////////////////////////
+
+// Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
+//
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
+//
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+// WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+// AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+// DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+// PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+// TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+// PERFORMANCE OF THIS SOFTWARE.
+
+////////////////////////////////////////////////////////////////////////
+
+{
+  "C0": {
+    "telescopedescription": "OHP COLIBRICITO 127-mm f/10",
+    "detectortype": "qsi",
+    "detectoridentifier": "502157",
+    "detectorpixelscale": "1.38as",
+    "detectorinitialreadmode": "",
+    "detectorinitialsoftwaregain": "4",
+    "detectorinitialwindow": {
+      "sx": 0,
+      "sy": 0,
+      "nx": 800,
+      "ny": 512
+    },
+    "detectorinitialbinning": "1",
+    "detectorfullunbinneddatawindow": {
+      "sx": 0,
+      "sy": 0,
+      "nx": 768,
+      "ny": 512
+    },
+    "detectorfullunbinnedbiaswindow": {
+      "sx": 784,
+      "sy": 0,
+      "nx": 16,
+      "ny": 512
+    },
+    "cooleropensetting": "-20",
+    "coolerclosedsetting": "off",
+    "temperaturelimit": "40",
+    "filterwheeltype": "null",
+    "filterwheelidentifier": "null",
+    "filterlist": [
+      "w"
+    ],
+    "focusertype": "null",
+    "focuseridentifier": "null",
+    "focuserinitialposition": "0",
+    "ccdfocuserbacklashoffset": "0",
+    "pointingmodelparameters": {},
+    "isstandalone": "false",
+    "fitsfwhmargs": {}
+  },
+  "html": {
+    "servers": [
+      "enclosure",
+      "executor",
+      "gcntan",
+      "instrument",
+      "lights",
+      "moon",
+      "mount",
+      "plc",
+      "scheduler",
+      "supervisor",
+      "sun",
+      "target",
+      "telescope",
+      "weather"
+    ]
+  },
+  "site": {
+    "longitude": "+5.712393d",
+    "latitude": "+43.932081d",
+    "altitude": "650.0",
+    "civiltimezone": "Europe/Marseille"
+  },
+  "target": {
+    "maxzenithdistancelimit": "85d",
+    "idleha": "0h",
+    "idledelta": "45d",
+    "pointingapertures": {
+      "default": [
+        "+0.0am",
+        "+0.0am"
+      ],
+      "C0center": [
+        "+0.0am",
+        "+0.0am"
+      ]
+    }
+  },
+  "weather": {
+    "windaveragespeedlimit": "30"
+  }
+}
+
+//    "parkedha": "+5.5h",
+//    "parkeddelta": "85d"
+//
+//
+//
+//    "mounttype": "ntm",
+//
+//    "mounthapark": "8h",
+//    "mountdeltapark": "-50d",
+//    "mounthaunpark": "12h",
+//    "mountdeltaunpark": "135d",
+//
+//    "mountsouthdeltalimit": "-90:00:00",
+//    "mountnorthdeltalimit": "+90:00:00",
+//    "mounteasthalimit": "-12:00:00",
+//    "mountwesthalimit": "+12:00:00",
+//    "mountzenithdistancelimit": "90d",
+//    "mountmeridianhalimit": "+00:00:00",
+//    "mountpolardeltalimit": "+50d",
+//
+//    "lightstype": "plc",
+//    "enclosuretype": "plc",
+//    "supervisorwithplc": "true",
+//    "telescopecloseexplicitly": "false",
+//
+//    "scheduleroffsethours": "-12",
+//
+// // From 201812-03-coatli-g.
+//
+//    "mountpointingmodelparameters0": "{",
+//   IH 0.00511023208743729
+//   ID 0.00015102501636352926
+//   CH 0.0025579773447744042
+//   NP 0.0015127205450567215
+//   MA 0.0013246721407741055
+//   ME -0.001355998577643627
+//   TF 0.0007160068840826565
+//   HHSH 0.0001508875582183821
+//   HHCH 0.0005781715970568868
+//   HDSD -0.000579742920791973
+//   HDCD -0.00026804692193108706
+// }
+//
+//    "mountpointingmodelparameters180": "{",
+//   IH 0.005914786566419403
+//   ID 0.000812931323187774
+//   CH -0.002404633438530503
+//   NP -0.0016244528258176887
+//   MA 0.0011427260219634477
+//   ME -0.001340425458721166
+//   TF 0.0008744768963598989
+//   HHSH 6.592913555339595e-05
+//   HHCH -0.0009159434515409755
+//   HDSD -0.0007673982991257127
+//   HDCD -0.0002680891785282194
+// }
+//
+
+//    "fitsheaderservers": "{",
+//   executor
+//   target
+//   mount
+//   sun
+//   moon
+//   weather
+// }
+//
+//    "finders": "{}",
+//    "instrumentdetectors": "{ "C0" }",
+//    "instrumentidlefilterwheelpositions": "{ "w" }",
+//    "instrumentoutletgroups": "{}",
+//
+//
+//    "ibbhostsdict": "{",
+//   "ibb-220"  8
+//   "ibb-127"  8
+// }
+//
+//    "ibboutletgroupaddressesdict": "{",
+//   "firewall"            {{ibb-127 a 4}}
+//   "access"              {{ibb-127 a 2}}
+//   "services"            {{ibb-127 a 6}}
+//   "control"             {{ibb-127 a 7}}
+//   "rack"                {{ibb-127 a 5}}
+//   "serial"              {{ibb-127 a 8}}
+//   "enclosure"           {{ibb-220 a 1}}
+//   "secondary"           {{ibb-220 a 2}}
+//   "platform"            {{ibb-127 a 1}}
+//   "instrument"          {{ibb-127 a 3}}
+// }
+//
+//
+//    "ibbextraoutletgroupaddressesdict": "{",
+// }
+//
+//    "emergencystopdefaultoutletgroups": "{",
+//   "enclosure"
+// }
+//
+//    "owsensorsdict": "{",
+//
+//   shed-temperature              { file /usr/local/var/tcs/ow/control/26.0FC8CF000000/temperature keyword SHTM }
+//   rack-temperature              { file /usr/local/var/tcs/ow/control/26.4EBD40010000/temperature keyword RCTM }
+//   enclosure-temperature         { file /usr/local/var/tcs/ow/c0/26.F897E1010000/temperature keyword ENTM }
+//   box-c-temperature             { file /usr/local/var/tcs/ow/c0/26.DFB040010000/temperature keyword BCTM }
+//   box-d-temperature             { file /usr/local/var/tcs/ow/d0/26.68A740010000/temperature keyword BDTM }
+//   box-f-temperature             { file /usr/local/var/tcs/ow/f0/26.44A040010000/temperature keyword BFTM }
+//
+//   shed-humidity                 { file /usr/local/var/tcs/ow/control/26.0FC8CF000000/HIH4000/humidity keyword SHHM }
+//   enclosure-humidity            { file /usr/local/var/tcs/ow/c0/26.F897E1010000/HIH4000/humidity keyword ENHM }
+//   box-c-humidity                { file /usr/local/var/tcs/ow/c0/26.DFB040010000/HIH4000/humidity keyword BCHM }
+//   box-d-humidity                { file /usr/local/var/tcs/ow/d0/26.68A740010000/HIH4000/humidity keyword BDHM }
+//   box-f-humidity                { file /usr/local/var/tcs/ow/f0/26.44A040010000/HIH4000/humidity keyword BFHM }
+//
+//   shed-light-level              { file /usr/local/var/tcs/ow/control/26.389840010000/VAD keyword SHLL }
+//   enclosure-light-level         { file /usr/local/var/tcs/ow/c0/26.47A740010000/VAD keyword ENLL }
+//
+// }
+//
+//    "owsensorslognames": "{",
+//
+//   shed-temperature
+//   enclosure-temperature
+//   box-a-temperature
+//   box-c-temperature
+//   box-d-temperature
+//   box-f-temperature
+//
+//   shed-humidity
+//   enclosure-humidity
+//   box-a-humidity
+//   box-c-humidity
+//   box-d-humidity
+//   box-f-humidity
+//
+//   shed-light-level
+//   enclosure-light-level
+//
+// }
+//
+//    "safetyswitchtype": "plc",
+//    "executortype": "colibricito",
+//    "telescopetype": "colibricito",
+//
+//    "gcntanswiftalertprojectidentifier": "2019A-1000",
+//    "gcntanfermialertprojectidentifier": "2019A-1001",
+//    "gcntanserverpacketport": "5358",
+//
+//    "C0serveraddr": "control"",
+//    "enclosureserveraddr": "control",
+//    "executorserveraddr": "control",
+//    "gcntanserveraddr": "control",
+//    "htmlserveraddr": "control",
+//    "instrumentserveraddr": "control",
+//    "lightsserveraddr": "control",
+//    "logserveraddr": "control",
+//    "moonserveraddr": "control",
+//    "mountserveraddr": "control",
+//    "plcserveraddr": "control",
+//    "schedulerserveraddr": "control",
+//    "sunserveraddr": "control",
+//    "supervisorserveraddr": "control",
+//    "targetserveraddr": "control",
+//    "telescopeserveraddr": "control",
+//    "weatherserveraddr": "control",
+//

@@ -1,0 +1,48 @@
+proposal::setidentifier "2019A-2000"
+block::setidentifier "3"
+visit::setidentifier "0"
+visit::setname "SA110 (Diego Hernandez)"
+block::settotalexposures 1
+visit::settargetcoordinates equatorial 18:42:47.62 +00:05:34.94 2000
+
+proc SELECTABLE {args} {
+  return [expr {
+    [withintelescopepointinglimits] && 
+    [maxskybrightness "astronomicaltwilight"] &&
+    [minmoonseparation "15d"] &&
+    [maxfocusdelay 1200]
+  }]
+}
+
+proc EXECUTE {args} {
+
+  set exposuretime       60
+  set exposuresperdither 2
+  set filters {BV}
+  
+  executor::setsecondaryoffset 0
+  executor::track
+
+  executor::setreadmode 1MHz
+  executor::setwindow "default"
+  executor::setbinning 1
+
+  executor::waituntiltracking
+
+  foreach {eastoffset northoffset} {
+      0as   0as
+  } {
+    executor::offset $eastoffset $northoffset "default"
+    executor::waituntiltracking
+    foreach filter $filters {
+      executor::movefilterwheel $filter
+      set i 0
+      while {$i < $exposuresperdither} {
+        executor::expose object $exposuretime
+        incr i
+      }
+    }
+  }
+
+  return true
+}

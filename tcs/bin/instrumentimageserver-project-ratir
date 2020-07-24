@@ -1,0 +1,137 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: instrumentimageserver-project-ratir 3373 2019-10-30 15:09:02Z Alan $
+
+########################################################################
+
+# Copyright © 2013, 2014, 2016, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
+
+program=$(basename "$0")
+
+usageerror () {
+  echo 1>&2 "usage: $program [-p prefix] [--]"
+  exit 1
+}
+
+optstring=p:
+prefix=/usr/local
+if ! getopt -qQ -- "$optstring" "$@"
+then
+  usageerror
+fi
+eval set -- "$(getopt -q -- "$optstring" "$@")"
+while test "$1" != "--"
+do
+  case "$1" in
+  -p)
+    prefix="$2"
+    shift 2
+    ;;
+  *)
+    usageerror
+    ;;
+  esac
+done
+shift
+if test $# != 0
+then
+  usageerror
+fi
+
+if convert -list font | grep 'Font: Verdana$' >/dev/null
+then
+  fontargs="-pointsize 10 -font Verdana"
+elif convert -list font | grep -s 'Font: fixed$' >/dev/null
+then
+  fontargs="-pointsize 10 -font fixed"
+else
+  fontargs="-pointsize 10"
+fi
+
+cd $prefix/var/www/
+
+while true
+do
+  
+  for camera in C0 C1 C2 C3
+  do
+  
+    fits=$prefix/var/images/test/latest$camera.fits
+    if test -f $fits
+    then
+    
+      case $camera in
+      C0|C1)
+        mappingoptions="-shave 8x16"
+        scaleoptions="-scale 512x512"
+        thumbnailscaleoptions="-scale 90x90"
+        ;;
+      C2)
+        mappingoptions="-shave 4x4 -rotate 90"
+        scaleoptions="-scale 512x512"
+        thumbnailscaleoptions="-scale 90x90"
+        ;;
+      C3)
+        mappingoptions="-shave 4x4 -rotate 90 -flip"
+        scaleoptions="-scale 512x512"
+        thumbnailscaleoptions="-scale 90x90"
+        ;;
+      esac
+
+      cp $fits $camera.fits
+      
+      dateandtime=$(fitsheadervalue SDATE $camera.fits | sed 's/T/ /')
+      date=$(date -u --date "$dateandtime" +"%Y-%m-%d")
+      time=$(date -u --date "$dateandtime" +"%H:%M:%S")
+      compactdate=$(date -u --date "$dateandtime" +"%Y%m%d")
+      compacttime=$(date -u --date "$dateandtime" +"%H%M%S")
+      compactdateandtime=$(date -u --date "$dateandtime" +"%Y%m%dT%H%M%S")
+  
+      convert $mappingoptions $scaleoptions $camera.fits $camera.tif
+
+      convert \
+        -quality 75 \
+        -normalize -negate \
+        -gravity southeast -fill white -undercolor black $fontargs -annotate +1+0 "$camera $date $time UTC" \
+        $camera.tif $camera-new.jpg
+        
+      convert $thumbnailscaleoptions $camera.tif $camera.tif
+      convert \
+        -quality 75 \
+        -normalize -negate \
+        -gravity southeast -fill white -undercolor black $fontargs -annotate +1+0 "$camera $time" \
+        $camera.tif $camera-small-new.jpg
+
+      rm $camera.tif
+      
+      mv $camera-new.jpg $camera.jpg
+      mv $camera-small-new.jpg $camera-small.jpg
+      
+    fi
+    
+  done
+  
+  sleep 1
+  
+done

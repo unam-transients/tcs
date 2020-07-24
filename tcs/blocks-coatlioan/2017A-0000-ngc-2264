@@ -1,0 +1,55 @@
+proposal::setidentifier "2017A-0000"
+visit::setidentifier "0"
+visit::setname "NGC 2264"
+block::settotalexposures 0
+visit::settargetcoordinates equatorial 06:31:54.0 +04:56:00.0 2000
+
+proc SELECTABLE {args} {
+  return [expr {
+    [withintelescopepointinglimits] && 
+    [maxskybrightness "nauticaltwilight"] &&
+    [maxfocusdelay 1200] &&
+    [maxairmass 1.5] &&
+    [minmoonseparation "15d"]
+  }]
+}
+
+proc EXECUTE {args} {
+
+  set exposuretime       60
+  set exposuresperdither 1
+  set filters            {w}
+  
+  executor::setsecondaryoffset 0
+  executor::track
+
+  executor::setreadmode 1MHz
+  executor::setwindow "default"
+  executor::setbinning 2
+
+  executor::waituntiltracking
+
+  foreach {alphaoffset deltaoffset} {
+      0as   0as
+      0as +30as
+      0as -30as
+    +30as   0as
+    -30as   0as
+  } {
+
+    executor::offset $alphaoffset $deltaoffset "default"
+    executor::waituntiltracking
+
+    foreach filter $filters {
+      movefilterwheel $filter
+      set i 0
+      while {$i < $exposuresperdither} {
+        executor::expose object $exposuretime
+        incr i
+      }
+    }
+
+  }
+
+  return false
+}

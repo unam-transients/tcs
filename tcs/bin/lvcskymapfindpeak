@@ -1,0 +1,65 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: lvcskymapfindpeak 3416 2020-02-01 23:28:03Z Alan $
+
+########################################################################
+
+# Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+url="$1"
+
+dir="/tmp/lvcskymapfindpeak-$$"
+mkdir -p "$dir"
+cd "$dir"
+
+wget -q "$url"
+file=$(echo "$url" | sed 's/.*\///')
+if test ! -f $file
+then
+  echo 1>&2 "error: unable to download $url."
+  exit 1
+fi
+
+ligo-skymap-flatten $file flattened.fits >log 2>&1
+if test ! -f flattened.fits
+then
+  echo 1>&2 "error: unable to flatten skymap."
+  exit 1
+fi
+
+export PYTHONPATH=/usr/local/lib/python36.zip:/usr/local/lib/python3.6:/usr/local/lib/python3.6/lib-dynload:/usr/local/lib/python3.6/site-packages
+
+python3.6 <<EOF 2>log
+import astropy.utils.data                                               
+import numpy as np 
+import healpy as hp                                                     
+prob = hp.read_map('flattened.fits', verbose=0)                                            
+npix = len(prob)                                                        
+nside = hp.npix2nside(npix)                                             
+ipixmax=np.argmax(prob)                                                 
+alpha, delta = hp.pix2ang(nside, ipixmax, lonlat=True)  
+print(alpha,delta,2000.0)
+EOF
+
+rm -rf "$dir"
+
+exit 0

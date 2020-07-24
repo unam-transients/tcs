@@ -1,0 +1,81 @@
+proposal::setidentifier "2019A-0001"
+visit::setidentifier "0"
+block::setidentifier "0"
+visit::setname "twilight flats"
+block::settotalexposures 0
+visit::settargetcoordinates fixed -3h 30d
+
+proc SELECTABLE {args} {
+  return [expr {
+    [withintelescopepointinglimits] && 
+    [minmoonseparation "45d"] &&
+    [maxskybrightness "civiltwilight"] &&
+    [minskybrightness "civiltwilight"]
+  }]
+}
+
+proc EXECUTE {args} {
+
+  move
+
+  setbinning 1
+  
+  set maxlevel 7000
+  set minlevel 2000
+  set targetlevel 4000
+  
+  set minexposuretime 10
+  set maxexposuretime 20
+
+  log::info "twilight flats: starting."
+
+#    "BV" 2 7
+#    "BI" 4 7
+#    "BR" 3 7
+#    "BB" 1 7
+#    "w"  0 15
+  foreach {filter visitidentifier targetngood} {
+    "w"  0 15
+  } {
+    log::info "twilight flats: starting with filter $filter."
+    visit::setidentifier $visitidentifier
+    movefilterwheel $filter
+    set exposuretime $minexposuretime
+    set ngood 0
+    set mingoodlevel $maxlevel
+    set maxgoodlevel $minlevel
+    while {true} {
+      expose flat $exposuretime
+      analyze levels
+      set level [exposureaverage C0]
+      log::info [format "twilight flats: level is %.1f DN in filter $filter in $exposuretime seconds." $level]
+      if {$level > $maxlevel} {
+        log::info "twilight flats: level is too bright."
+      } elseif {$level < $minlevel} {
+        log::info "twilight flats: level is too faint."
+        if {$exposuretime == $maxexposuretime} {
+          break
+        }
+      } else {
+        log::info "twilight flats: level is good."
+        incr ngood
+        set mingoodlevel [expr {min($level,$mingoodlevel)}]
+        set maxgoodlevel [expr {max($level,$maxgoodlevel)}]
+        if {$ngood == $targetngood} {
+          break
+        }
+      }
+      set exposuretime [expr {min($maxexposuretime,max($minexposuretime,int($exposuretime * $targetlevel / $level)))}]
+    }
+    log::info "twilight flats: finished with filter $filter."
+    if {$ngood == 0} {
+      log::summary [format "twilight flats: $ngood good flats with filter $filter."]
+    } else {
+      log::summary [format "twilight flats: $ngood good flats with filter $filter (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
+    }
+  }
+
+  log::info "twilight flats: finished."
+
+  return true
+}

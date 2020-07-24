@@ -1,0 +1,29 @@
+# test
+
+proposal::setidentifier "2017A-0000"
+visit::setidentifier "0"
+visit::setname "test"
+block::settotalexposures 0
+#visit::settargetcoordinates equatorial 21:01:02.534 +24:56:30.99 2000
+#visit::settargetcoordinates topocentric -1h +25d
+#visit::settargetcoordinates zenith
+visit::settargetcoordinates fixed -3h +30d
+
+
+proc SELECTABLE {args} {
+  return [expr {
+    [withintelescopepointinglimits]
+  }]
+}
+
+proc EXECUTE {args} {
+  setsecondaryoffset 0
+
+  #track
+  #tracktopocentric
+  #waituntiltracking
+  
+  move
+  
+  return false
+}

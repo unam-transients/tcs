@@ -1,0 +1,122 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: gpio 3373 2019-10-30 15:09:02Z Alan $
+
+########################################################################
+
+# Copyright © 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
+
+program=$(basename "$0")
+
+usageerror () {
+  echo 1>&2 "usage: $program [-p prefix] -i"
+  echo 1>&2 "usage: $program [-p prefix] name [on|off]"
+  exit 1
+}
+
+optstring=p:i
+prefix=/usr/local
+init=false
+if ! getopt -qQ -- "$optstring" "$@"
+then
+  usageerror
+fi
+eval set -- "$(getopt -q -- "$optstring" "$@")"
+while test "$1" != "--"
+do
+  case "$1" in
+  -p)
+    prefix="$2"
+    shift 2
+    ;;
+  -i)
+    init=true
+    shift
+    ;;
+  *)
+    usageerror
+    ;;
+  esac
+done
+shift
+if $init && test $# != 0
+then
+  usageerror
+elif ! $init && test $# != 1 && test $# != 2
+then
+  usageerror
+fi
+
+if $init
+then
+  # 481 must be last as it is enable.
+  for gpio in 480 483 482 472 473 475 476 481
+  do
+    echo $gpio >/sys/class/gpio/export
+    echo out >/sys/class/gpio/gpio$gpio/direction
+    echo 0 >/sys/class/gpio/gpio$gpio/value
+  done
+  exit 0
+fi
+
+name="$1"
+value="$2"
+host=$(uname -n | tr A-Z a-z | sed 's/\..*//')
+case $name:$host in
+472:*|473:*|475:*|476:*|480:*|481:*|482:*|483:*)
+  gpio=$name
+  ;;
+enclosure-lights:coatlioan-c0|enclosure-lights:ddotioan-c0|telescope-fans:ddotioan-d0|telescope-fans:ddotioan-e0)
+  gpio=481
+  ;;
+enclosure-heater:coatlioan-c0|enclosure-heater:ddotioan-c0)
+  gpio=476
+  ;;
+*)
+  echo 1>&2 "error: invalid name \"$name\"."
+  exit 1
+  ;;
+esac
+if test $# = 1
+then
+  if test $(cat /sys/class/gpio/gpio$gpio/value) = 0
+  then
+    echo "off"
+  else
+    echo "on"
+  fi
+else
+  if test "$value" = "off"
+  then
+    echo 0 >/sys/class/gpio/gpio$gpio/value
+  elif test "$value" = "on"
+  then
+    echo 1 >/sys/class/gpio/gpio$gpio/value
+  else
+    echo 1>&2 "$program: invalid value \"$value\"."
+    exit 1
+  fi
+fi
+
+exit 0

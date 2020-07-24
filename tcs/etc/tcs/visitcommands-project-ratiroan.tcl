@@ -1,0 +1,409 @@
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Idvisit: alertvisit-project-ddotioan 3388 2019-11-01 19:50:09Z Alan $
+
+########################################################################
+
+# Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+proc alertvisit {alertfile} {
+
+  log::summary "alertvisit: starting."
+  
+  if {[string equal "" [alert::eventtimestamp]]} {
+    log::info [format "alertvisit: no event timestamp."]
+  } else {  
+    log::info [format "alertvisit: event timestamp is %s." [utcclock::format [alert::eventtimestamp]]]
+  }
+  if {[string equal "" [alert::alerttimestamp]]} {
+    log::info [format "alertvisit: no alert timestamp."]
+  } else {  
+    log::info [format "alertvisit: alert timestamp is %s." [utcclock::format [alert::alerttimestamp]]]
+  }
+  
+  set filters {"r"}
+  set alertdelay [alert::delay]
+  log::summary [format "alertvisit: alert delay is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
+  set exposuretime       60
+  set exposuresperdither 1
+  
+  executor::setsecondaryoffset 0
+  executor::setguidingmode "none"
+  executor::setpointingmode "finder"
+
+  executor::executor::track
+
+  executor::executor::setwindow  "default"
+  executor::setbinning 2 2 1 1
+  executor::executor::movefilterwheel [lindex $filters 0]
+
+  executor::executor::waituntiltracking
+
+  set lastalpha       [visit::alpha]
+  set lastdelta       [visit::delta]
+  set lastequinox     [visit::equinox]
+  set lasteastoffset  [astrometry::parseangle "0as"]
+  set lastnorthoffset [astrometry::parseangle "0as"]
+  set lastaperture    "default"
+  
+  set exposuretype firstalertobject
+  
+  foreach {aperture eastoffset northoffset} {
+    riZJcenter -10as -30as
+    riYHcenter -10as -30as
+    riYHcenter -10as   0as
+    riZJcenter -10as   0as
+    riZJcenter -10as +30as
+    riYHcenter -10as +30as
+    riYHcenter  +0as -15as
+    riZJcenter  +0as -15as
+    riZJcenter  +0as +15as
+    riYHcenter  +0as +15as
+    riYHcenter +10as -30as
+    riZJcenter +10as -30as
+    riZJcenter +10as   0as
+    riYHcenter +10as   0as
+    riYHcenter +10as +30as
+    riZJcenter +10as +30as
+  } {
+  
+    log::info "alertvisit: dithering $eastoffset E and $northoffset N about aperture $aperture."    
+
+    if {[file exists $alertfile]} {
+      if {[catch {source $alertfile} message]} {
+        log::error "alertvisit: error while loading alert file \"$alertfile\"visit: $message"
+        return false
+      }
+      executor::updatedata
+    }
+
+    if {![alert::enabled]} {
+      log::summary "alertvisit: the alert is no longer enabled."
+      return false
+    }
+
+    set alpha   [visit::alpha]
+    set delta   [visit::delta]
+    set equinox [visit::equinox]
+
+    set eastoffset  [astrometry::parseangle $eastoffset]
+    set northoffset [astrometry::parseangle $northoffset]
+
+    if {$alpha != $lastalpha || $delta != $lastdelta || $equinox != $lastequinox} {
+      log::summary "alertvisit: the coordinates have been updated."
+      executor::track $eastoffset $northoffset $aperture
+      executor::executor::waituntiltracking
+    } elseif {$eastoffset != $lasteastoffset || $northoffset != $lastnorthoffset || ![string equal $aperture $lastaperture]} {
+      executor::offset $eastoffset $northoffset $aperture
+      executor::executor::waituntiltracking
+    }
+
+    set lastalpha       $alpha
+    set lastdelta       $delta
+    set lastequinox     $equinox
+    set lasteastoffset  $eastoffset
+    set lastnorthoffset $northoffset
+    set lastaperture    $aperture
+    
+    foreach filter $filters {
+      executor::executor::movefilterwheel $filter
+      set i 0
+      while {$i < $exposuresperdither} {
+        executor::executor::expose $exposuretype 80 80 60 60
+        set exposuretype object
+        incr i
+      }
+    }
+
+  }
+
+  log::summary "alertvisit: finished."
+
+  return false
+}
+
+########################################################################
+
+proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime filters} {
+
+  log::summary "gridvisit: starting."
+
+  executor::executor::setsecondaryoffset 0
+  executor::executor::track
+
+  executor::setreadmode 1MHz
+  executor::executor::setwindow "default"
+  executor::executor::setbinning 2 2 1 1
+
+  executor::executor::waituntiltracking
+  
+  switch $gridpoints {
+    4 {
+      set dithers {
+        +30as +30as
+        -30as -30as
+        +30as -30as
+        -30as +30as
+      }
+    }
+    5 {
+      set dithers {
+          0as   0as
+        +30as +30as
+        -30as -30as
+        +30as -30as
+        -30as +30as
+      }
+    }
+    8 {
+      set dithers {
+        +30as +30as
+        -30as -30as
+        +30as -30as
+        -30as +30as
+        +30as   0as
+        -30as   0as
+          0as +30as
+          0as -30as
+      }
+    }
+    9 {
+      set dithers {
+          0as   0as
+        +30as +30as
+        -30as -30as
+        +30as -30as
+        -30as +30as
+        +30as   0as
+        -30as   0as
+          0as +30as
+          0as -30as
+      }
+    }
+  }
+
+  set gridrepeat 0
+  while {$gridrepeat < $gridrepeats} {
+    foreach {eastoffset northoffset} $dithers {
+      executor::offset $eastoffset $northoffset "default"
+      executor::executor::waituntiltracking
+      foreach filter $filters {
+        executor::executor::movefilterwheel $filter
+        set exposure 0
+        while {$exposure < $exposuresperdither} {
+          executor::executor::expose object $exposuretime
+          incr exposure
+        }
+      }
+    }
+    incr gridrepeat
+  }
+
+  log::summary "gridvisit: finished."
+  return true
+}
+
+
+########################################################################
+
+proc initialfocusvisit {ALPHA DELTA alpha delta} {
+
+  log::summary "initialfocusvisit: starting."
+  
+  executor::setsecondaryoffset 0
+  
+  executor::setguidingmode "none"
+  executor::setpointingmode "none"
+
+  log::summary "initialfocusvisit: moving to brighter star."
+  visit::settargetcoordinates equatorial $ALPHA $DELTA 2000
+  executor::track
+  executor::waituntiltracking
+  
+  log::summary "initialfocusvisit: focusing finders."
+  executor::focusfinders 1
+  executor::setpointingmode "finder"
+  
+  executor::track
+  executor::waituntiltracking
+  executor::setwindow "default"
+  executor::setbinning 8 8 1 1
+  log::summary "initialfocusvisit: focusing C1 with binning 8."
+  executor::focussecondary C1 1 1000 100 false
+  log::summary "initialfocusvisit: focusing C1 with binning 4."
+  executor::setbinning 4 4 1 1
+  executor::focussecondary C1 1 500 50 false
+
+  log::summary "initialfocusvisit: moving to fainter star."
+  visit::settargetcoordinates equatorial $alpha $delta 2000
+  executor::track
+  executor::waituntiltracking
+
+  log::summary "initialfocusvisit: correcting pointing."
+  executor::correctpointing 30
+  
+  executor::track
+  executor::waituntiltracking
+  executor::setbinning 2 2 1 1
+  log::summary "initialfocusvisit: focusing C1 with binning 2."
+  executor::focussecondary C1 4 250 25 true
+
+  executor::setfocused
+
+  log::summary "initialfocusvisit: finished."
+
+  return false
+}
+
+########################################################################
+
+proc focusvisit {} {
+
+  log::summary "focusvisit: starting."
+
+  executor::setsecondaryoffset 0
+  executor::setguidingmode "none"
+  executor::setpointingmode "finder"
+
+  executor::track
+  executor::setwindow "default"
+  executor::setbinning 4 4 1 1
+  executor::waituntiltracking
+  log::summary "focusvisit: focusing with binning 4."
+  executor::focussecondary C1 1 500 50 false
+  executor::setbinning 2 2 1 1
+  log::summary "focusvisit: focusing with binning 2."
+  executor::focussecondary C1 4 250 25 true
+  executor::setfocused
+
+  log::summary "focusvisit: finished."
+  return false
+}
+
+########################################################################
+
+proc twilightflatsbrightvisit {} {
+
+  log::summary "twilightflatsbrightvisit: starting."
+
+  executor::setsecondaryoffset 0
+  executor::move
+
+  set maxlevel 20000
+  set minlevel 5000
+  
+  set exposuretime 10
+
+#    "BV" 2 7
+#    "BI" 4 7
+#    "BR" 3 7
+#    "BB" 1 7
+#    "w"  0 15
+  foreach {filter visitidentifier targetngood} {
+    "u" 0 7
+    "r" 2 7
+    "g" 1 7
+  } {
+    log::info "twilightflatsbrightvisit: starting with filter $filter."
+    visit::setidentifier $visitidentifier
+    executor::movefilterwheel $filter
+    set ngood 0
+    set mingoodlevel $maxlevel
+    set maxgoodlevel $minlevel
+    while {true} {
+      executor::expose flat $exposuretime
+      executor::analyze levels
+      set level [executor::exposureaverage C0]
+      log::info [format "twilightflatsbrightvisit: level is %.1f DN in filter $filter in $exposuretime seconds." $level]
+      if {$level > $maxlevel} {
+        log::info "twilightflatsbrightvisit: level is too bright."
+      } elseif {$level < $minlevel} {
+        log::info "twilightflatsbrightvisit: level is too faint."
+        break
+      } else {
+        log::info "twilightflatsbrightvisit: level is good."
+        incr ngood
+        set mingoodlevel [expr {min($level,$mingoodlevel)}]
+        set maxgoodlevel [expr {max($level,$maxgoodlevel)}]
+        if {$ngood == $targetngood} {
+          break
+        }
+      }
+    }
+    log::info "twilightflatsbrightvisit: finished with filter $filter."
+    if {$ngood == 0} {
+      log::summary [format "twilightflatsbrightvisit: $ngood good flats with filter $filter."]
+    } else {
+      log::summary [format "twilightflatsbrightvisit: $ngood good flats with filter $filter (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
+    }
+  }
+
+  log::summary "twilightflatsvisit: finished."
+
+  return true
+}
+
+proc twilightflatsfaintvisit {} {
+  log::summary "twilightflatsfaintvisit: starting."
+  executor::setsecondaryoffset 0
+  executor::move
+  executor::movefilterwheel "r"
+  set i 0
+  while {$i < 20} {
+    executor::expose flat none none 10 10
+    incr i
+  }
+  log::summary "twilightflatsfaintvisit: finished."
+  return true
+}
+
+########################################################################
+
+proc biasesvisit {} {
+  log::summary "biasesvisit: starting."
+  executor::setsecondaryoffset 0
+  executor::move
+  executor::movefilterwheel "r"
+  set i 0
+  while {$i < 20} {
+    executor::expose bias 0 0 none none
+    incr i
+  }
+  log::summary "biasesvisit: finished."
+  return true
+}
+
+########################################################################
+
+proc darksvisit {} {
+  log::summary "darksvisit: starting."
+  executor::setsecondaryoffset 0
+  executor::move
+  executor::movefilterwheel "r"
+  set i 0
+  while {$i < 20} {
+    executor::expose dark 60 60 none none
+    incr i
+  }
+  log::summary "darksvisit: finished."
+  return true
+}
+
+########################################################################

@@ -1,0 +1,46 @@
+ibb-127
+
+set ipaddress 10.0.1.11
+set subnet 255.255.255.0
+set gateway 10.0.1.1
+set ipmode static
+get network
+
+set time server 129.6.15.29
+set time zone 0
+set time usents yes
+get time
+
+set device 1
+set device #1 name ibb-127-a
+set unit 1CC9 device 2
+set device #2 name ibb-127-b
+get devices
+
+
+add user transients
+set user transients password transients transients
+set user transients role admin
+set user transients device #1 outlet all yes
+set user transients device #2 outlet all yes
+get user transients
+
+set device #1 outlet 1 name nas
+set device #1 outlet 2 name ratir
+set device #1 outlet 3 name spare-access
+set device #1 outlet 4 name firewall
+set device #1 outlet 5 name access
+set device #1 outlet 6 name coatli
+set device #1 outlet 7 name spare-linux
+set device #1 outlet 8 name ddoti
+get device #1
+
+set device #2 outlet 1 name nas
+set device #2 outlet 2 name ratir
+set device #2 outlet 3 name -
+set device #2 outlet 4 name services
+set device #2 outlet 5 name spare-firewall
+set device #2 outlet 6 name coatli
+set device #2 outlet 7 name -
+set device #2 outlet 8 name ddoti
+get device #2

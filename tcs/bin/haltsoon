@@ -1,0 +1,73 @@
+#!/bin/sh
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: haltsoon 3515 2020-03-11 23:09:12Z Alan $
+
+########################################################################
+
+# Copyright © 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+export PATH=/usr/bin:/bin:/usr/sbin:/sbin
+
+program=$(basename "$0")
+
+prefix=$(cd $(dirname "$0")/..; pwd)
+
+host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
+case $host in
+*-services|colibricito-control)
+  ;;
+*)
+  echo 1>&2 "$program: error: must run on the services host." 
+  exit 1
+  ;;
+esac
+
+mkdir -p "$prefix"/var/tcs/halt
+cd "$prefix"/var/tcs/halt
+
+if test $# = 0
+then
+  case "$host" in
+  coatlioan-services)
+    set services control c0 d0 e0 e1
+    ;;
+  ddotioan-services)
+    set services control c0 d0 d1 d2 d3 e0 e1 e2 e3
+    ;;
+  ratiroan-services)
+    set services control detectors tcs-a
+    ;;
+  colibricito-*)
+    set control
+    ;;
+  *)
+    echo 2>&1 "$program: error: unknown host."
+    exit 1
+    ;;
+  esac
+fi
+
+for host in "$@"
+do
+  touch "$host"
+done
+
+exit 0

@@ -1,0 +1,177 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: fitssolvewcs 3562 2020-05-22 20:04:34Z Alan $
+
+########################################################################
+
+# Copyright © 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
+
+program=$(basename "$0")
+
+usageerror () {
+  echo 1>&2 "usage: $program [-c] [-f] [-w width] [-e etcdir] [-t cpulimit] [--] fitsfile"
+  exit 1
+}
+
+optstring=bce:ft:w:
+cpulimit=unlimited
+clean=false
+blind=false
+force=false
+width=""
+etcdir=/usr/local/etc/tcs
+if ! getopt -qQ -- "$optstring" "$@"
+then
+  usageerror
+fi
+eval set -- "$(getopt -q -- "$optstring" "$@")"
+while test "$1" != "--"
+do
+  case "$1" in
+  -b)
+    blind=true
+    shift 1
+    ;;
+  -c)
+    clean=true
+    shift 1
+    ;;
+  -e)
+    etcdir="$2"
+    shift 2
+    ;;
+  -f)
+    force=true
+    shift 1
+    ;;
+  -t)
+    cpulimit="$2"
+    shift 2
+    ;;
+  -w)
+    width="$2"
+    shift 2
+    ;;
+  *)
+    usageerror
+    ;;
+  esac
+done
+shift
+if test $# != 1
+then
+  usageerror
+fi
+
+ulimit -t "$cpulimit"
+
+fitsfile="$1"
+dirname="$(dirname "$fitsfile")"
+basename="$(basename "$fitsfile" .fits)"
+logfile="$dirname"/"$basename".log
+wcsfile="$dirname"/"$basename".wcs
+xyfile="$dirname"/"$basename".xy
+sortedxyfile="$dirname"/"$basename".sxy
+
+if $force
+then
+  rm -f "$wcsfile"
+fi
+
+naxis1=$(fitsheadervalue NAXIS1 "$fitsfile")
+naxis2=$(fitsheadervalue NAXIS2 "$fitsfile")
+
+if test ! -f "$wcsfile"
+then
+  rm -f "$logfile"
+  exec 3>&1 4>&2 1>"$logfile" 2>&1
+  set -x
+  time sextractor \
+    -c "$etcdir"/fitssolvewcs.sex \
+    -PARAMETERS_NAME "$etcdir"/fitssolvewcs.param \
+    -FILTER_NAME "$etcdir"/fitssolvewcs.conv \
+    -CATALOG_NAME "$xyfile" \
+    "$fitsfile"
+  tabsort MAG_AUTO "$xyfile" "$sortedxyfile"
+  sextractorargs="--width $naxis1 --height $naxis2 --x-column X_IMAGE --y-column Y_IMAGE $sortedxyfile"
+  if test -z "$width"
+  then
+    width=$(fitsheadervalue SDTWD "$fitsfile")
+  fi
+  if $blind || test -z "$width"
+  then
+    scaleargs=""
+  else
+    scalelow=$(echo $width | awk '{ print 0.95 * $1 * 60; }')
+    scalehigh=$(echo $width | awk '{ print 1.05 * $1 * 60; }')
+    scaleargs="--scale-low=$scalelow --scale-high=$scalehigh --scale-units=arcminwidth"
+  fi
+  alpha=$(fitsheadervalue STRSTRA "$fitsfile")
+  delta=$(fitsheadervalue STRSTDE "$fitsfile")  
+  if $blind || test -z "$alpha" || test -z "$delta"
+  then
+    coordinateargs=""
+  else
+    coordinateargs="--ra=$alpha --dec=$delta --radius=10"
+  fi
+  for runargs in \
+    "--backend-config "$etcdir"/fitssolvewcs.cfg-a --depth 1-10 $coordinateargs" \
+    "--backend-config "$etcdir"/fitssolvewcs.cfg-b --depth 1-50 $coordinateargs" \
+    "--backend-config "$etcdir"/fitssolvewcs.cfg-a --depth 1-10" \
+    "--backend-config "$etcdir"/fitssolvewcs.cfg-b --depth 1-50"
+  do
+    if test ! -e "$wcsfile"
+    then
+      time solve-field --overwrite \
+        $scaleargs \
+        --new-fits none --corr none --match none --rdls none --index-xyls none --solved none \
+        --no-plots --no-verify --uniformize 0 --no-remove-lines \
+        $runargs $sextractorargs 2>&1 | 
+      sed '/^Field 1 did not solve\.$/q'
+    fi
+  done
+  set +x
+  exec 1>&3 2>&4
+fi
+
+if $clean
+then
+  for suffix in -indx.xyls .match .new .rdls .axy .corr .solved .xy .sxy
+  do
+    rm -f "$dirname"/"$basename"$suffix
+  done
+fi
+
+if test ! -f "$wcsfile"
+then
+  echo ""
+  exit 1
+else
+  IFS=" " set -- $(fitsdatawindow "$fitsfile")
+  cpix1=$(echo $* | awk '{ print $1 + $3 / 2 + 1; }')
+  cpix2=$(echo $* | awk '{ print $2 + $4 / 2 + 1; }')
+  fitswcsvalue -- $cpix1 $cpix2 "$wcsfile" || exit 1
+fi
+
+exit 0

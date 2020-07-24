@@ -1,0 +1,144 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: instrumentimageserver 3373 2019-10-30 15:09:02Z Alan $
+
+########################################################################
+
+# Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
+
+program=$(basename "$0")
+
+usageerror () {
+  echo 1>&2 "usage: $program [-p prefix] [--] camera [host]"
+  exit 1
+}
+
+optstring=p:
+prefix=/usr/local
+if ! getopt -qQ -- "$optstring" "$@"
+then
+  usageerror
+fi
+eval set -- "$(getopt -q -- "$optstring" "$@")"
+while test "$1" != "--"
+do
+  case "$1" in
+  -p)
+    prefix="$2"
+    shift 2
+    ;;
+  *)
+    usageerror
+    ;;
+  esac
+done
+shift
+case $# in
+1)
+  camera="$1"
+  host=""
+  ;;
+2)
+  camera="$1"
+  host="$2"
+  ;;
+*)
+  usageerror
+  ;;
+esac
+
+if convert -list font | grep 'Font: Verdana$' >/dev/null
+then
+  fontargs="-pointsize 10 -font Verdana"
+elif convert -list font | grep -s 'Font: fixed$' >/dev/null
+then
+  fontargs="-pointsize 10 -font fixed"
+else
+  fontargs="-pointsize 10"
+fi
+
+dir="$prefix/var/www/tcs/instrument/$camera"
+mkdir -p "$dir"
+cd "$dir"
+
+while true
+do
+
+  if test -z "$host"
+  then
+    ln -f $prefix/var/tcs/$camera/latest.fits .
+  else
+    rsync --timeout=10 rsync://$host/tcs/$camera/latest.fits . 2>/dev/null
+  fi
+  
+  if test -f latest.fits && (test ! -f previous.fits || ! cmp -s latest.fits previous.fits)
+  then
+  
+    IFS=" " set -- $(fitsdatawindow latest.fits)
+    sx=$1
+    sy=$2
+    nx=$3
+    ny=$4
+    crop="${nx}x${ny}+${sx}+${sy}"
+
+    cx=$(expr $nx / 2)
+    cy=$(expr $ny / 2)
+    cr=$(expr $ny / 40)
+    cw=$(expr $ny / 400 + 1)
+
+    dateandtime=$(fitsheadervalue SDATE latest.fits | sed 's/T/ /')
+    date=$(date -u --date "$dateandtime" +"%Y-%m-%d")
+    time=$(date -u --date "$dateandtime" +"%H:%M:%S")
+    compactdate=$(date -u --date "$dateandtime" +"%Y%m%d")
+    compacttime=$(date -u --date "$dateandtime" +"%H%M%S")
+    compactdateandtime=$(date -u --date "$dateandtime" +"%Y%m%dT%H%M%S")
+  
+    convert \
+      -normalize -negate \
+      -crop $crop \
+      latest.fits latest.png
+
+    convert \
+      -fill none -stroke red -strokewidth $cw -draw "circle $cx,$cy $cx,$(expr $cy + $cr)" \
+      -scale x384 \
+      -gravity southeast -fill white -undercolor black $fontargs -stroke none -annotate +1+0 "$camera $date $time" \
+      -quality 85 \
+      latest.png latest-new.jpg
+        
+    convert \
+      -scale x90 \
+      -gravity southeast -fill white -undercolor black $fontargs -annotate +1+0 "$camera $time" \
+      -quality 75 \
+      latest.png latest-small-new.jpg
+
+    mv latest-new.jpg latest.jpg
+    mv latest-small-new.jpg latest-small.jpg
+
+    ln -f latest.fits previous.fits
+      
+  fi
+    
+  sleep 5
+  
+done

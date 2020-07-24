@@ -1,0 +1,308 @@
+////////////////////////////////////////////////////////////////////////
+
+// This file is part of the UNAM telescope control system.
+
+// $Id: config-project-coatlioan.json 3613 2020-06-20 20:21:43Z Alan $
+
+////////////////////////////////////////////////////////////////////////
+
+// Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+//
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
+//
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+// WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+// AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+// DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+// PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+// TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+// PERFORMANCE OF THIS SOFTWARE.
+
+////////////////////////////////////////////////////////////////////////
+
+{
+  "C0": {
+    "telescopedescription": "OAN/SPM COATLI 50-cm f/8",
+    "detectortype": "fli",
+    "detectoridentifier": "ML0053812",
+    "detectorpixelscale": "0.34as",
+    "detectorinitialreadmode": "1MHz",
+    "detectorinitialsoftwaregain": "8",
+    "detectorinitialbinning": "1",
+    "detectorwindows": {
+      "initial": "default",
+      "default": "full",
+      "1kx1k": {
+        "sx": 626,
+        "sy": 258,
+        "nx": 1024,
+        "ny": 1024
+      }
+    },
+    "detectorfullunbinneddatawindow": {
+      "sx": 46,
+      "sy": 34,
+      "nx": 2184,
+      "ny": 1472
+    },
+    "detectorfullunbinnedbiaswindow": {
+      "sx": 4,
+      "sy": 34,
+      "nx": 36,
+      "ny": 1472
+    },
+    "cooleropensetting": "-30",
+    "coolerclosedsetting": "following",
+    "temperaturelimit": "40",
+    "filterwheeltype": "fli",
+    "filterwheelidentifier": "CFW-1-5-001",
+    "filterlist": [
+      "w",
+      "BB",
+      "BV",
+      "BR",
+      "BI"
+    ],
+    "filterwheelidleposition": "w",
+    "focusertype": "null",
+    "focuseridentifier": "null",
+    "focuserinitialposition": "0",
+    "focuserbacklashoffset": "0",
+    "focusercorrectionmodel": {},
+    "pointingmodelparameters": {},
+    "isstandalone": "false",
+    "fitsfwhmargs": {}
+  },
+  "html": {
+    "servers": [
+      "enclosure",
+      "executor",
+      "gcntan",
+      "heater",
+      "instrument",
+      "lights",
+      "moon",
+      "mount",
+      "power",
+      "scheduler",
+      "secondary",
+      "sensors",
+      "sun",
+      "supervisor",
+      "target",
+      "telescope",
+      "weather"
+    ]
+  },
+  "target": {
+    "maxzenithdistancelimit": "85d",
+    "idleha": "0h",
+    "idledelta": "30d",
+    "pointingapertures": {
+      "default": [
+        "+0.0am",
+        "+0.0am"
+      ],
+      "C0center": [
+        "+0.0am",
+        "+0.0am"
+      ]
+    }
+  },
+  "secondary": {
+    "type": "optec",
+    "controllerhost": "serial",
+    "controllerport": "10002",
+    "initialz0": "3500",
+    "minz": "0",
+    "maxz": "7000",
+    "allowedzerror": "1",
+    "zdeadzonewidth": "5",
+    "dztweak": "-25",
+    "dzdT": "-9.26",
+    "temperaturesensor": "enclosure-temperature"
+  },
+  "site": {
+    "latitude": "+31:02:43.0",
+    "longitude": "-115:28:00",
+    "altitude": "2790.0",
+    "civiltimezone": "America/Tijuana"
+  },
+  "weather": {
+    "windaveragespeedlimit": "20"
+  }
+}
+
+//
+//
+//
+//    "mounttype": "ntm",
+//
+//    "mounthapark": "12h",
+//    "mountdeltapark": "60d",
+//    "mounthaunpark": "12h",
+//    "mountdeltaunpark": "150d",
+//    "mountaxisdhacorrection": "1.16as",
+//    "mountsouthdeltalimit": "-90:00:00",
+//    "mountnorthdeltalimit": "+90:00:00",
+//    "mounteasthalimit": "-12:00:00",
+//    "mountwesthalimit": "+12:00:00",
+//    "mountzenithdistancelimit": "90d",
+//    "mountmeridianhalimit": "+00:30:00",
+//    "mountpolardeltalimit": "+65d",
+//
+// // From 201812-03-coatli-g.
+//
+//    "mountpointingmodelparameters0": "{",
+//   IH -0.0047074467568086805
+//   ID -0.0006618650923221631
+//   CH -0.0013811582112297114
+//   NP -0.0003649609463357323
+//   MA -8.107187723873346e-05
+//   ME 9.736141424008034e-05
+//   TF -0.00014833918077742815
+//   HHSH -0.00032356320972907527
+//   HHCH 0.00026459521657681986
+//   HDSD -0.00018171280583113204
+//   HDCD -0.0001394768131429088
+// }
+//
+//    "mountpointingmodelparameters180": "{",
+//   IH -0.005243483878157062
+//   ID 0.0012134831766377348
+//   CH 0.001405515667754249
+//   NP 0.00026902975803691823
+//   MA -5.939026506712456e-06
+//   ME -1.1410919291664726e-05
+//   TF -9.215452732261461e-05
+//   HHSH -0.00035014949261470566
+//   HHCH -0.00036314151358259825
+//   HDSD -0.0003567316493432653
+//   HDCD -0.00023831058571033273
+// }
+//
+//
+//    "fitsheaderservers": "{",
+//   executor
+//   target
+//   mount
+//   secondary
+//   sun
+//   moon
+//   sensors
+//   weather
+// }
+//
+//    "finders": "{}",
+//    "instrumentdetectors": "{ "C0" }",
+//    "instrumentidlefilterwheelpositions": "{ "w" }",
+//    "instrumentpointingdetectors": "{ "C0" }",
+//    "instrumentoutletgroups": "{}",
+//
+//
+//    "ibbhostsdict": "{",
+//   "ibb-220"  8
+//   "ibb-127"  8
+// }
+//
+//    "ibboutletgroupaddressesdict": "{",
+//   "firewall"            {{ibb-127 a 5}}
+//   "access"              {{ibb-127 a 2}}
+//   "services"            {{ibb-127 a 6}}
+//   "control"             {{ibb-127 a 7}}
+//   "mount"               {{ibb-127 a 4}}
+//   "serial"              {{ibb-127 a 8}}
+//   "enclosure"           {{ibb-220 a 1}}
+//   "secondary"           {{ibb-220 a 2}}
+//   "platform"            {{ibb-127 a 1}}
+//   "instrument"          {{ibb-127 a 3}}
+// }
+//
+//
+//    "ibbextraoutletgroupaddressesdict": "{",
+// }
+//
+//    "emergencystopdefaultoutletgroups": "{",
+//   "enclosure"
+// }
+//
+//    "sensorsdict": "{",
+//
+//   shed-temperature                   { file /usr/local/var/tcs/sensors/control/ow/26.0FC8CF000000/temperature      keyword SHTM prettyname "shed temperature"            group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-TH" identifier "26.0FC8CF000000" firmware "" }
+//   rack-temperature                   { file /usr/local/var/tcs/sensors/control/ow/26.4EBD40010000/temperature      keyword RCTM prettyname "rack temperature"            group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-TH" identifier "26.4EBD40010000" firmware "" }
+//   enclosure-temperature              { file /usr/local/var/tcs/sensors/c0/ow/26.F897E1010000/temperature           keyword ENTM prettyname "enclosure temperature"       group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-TH" identifier "26.F897E1010000" firmware "" }
+//   box-c-temperature                  { file /usr/local/var/tcs/sensors/c0/ow/26.DFB040010000/temperature           keyword BCTM prettyname "box C temperature"           group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-TH" identifier "26.3E9840010000" firmware "" }
+//   box-d-temperature                  { file /usr/local/var/tcs/sensors/d0/ow/26.68A740010000/temperature           keyword BDTM prettyname "box D temperature"           group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-TH" identifier "26.68A740010000" firmware "" }
+//   box-e-temperature                  { file /usr/local/var/tcs/sensors/e0/ow/26.44A040010000/temperature           keyword BETM prettyname "box E temperature"           group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-TH" identifier "26.44A040010000" firmware "" }
+//
+//   shed-humidity                      { file /usr/local/var/tcs/sensors/control/ow/26.0FC8CF000000/HIH4000/humidity keyword SHHM prettyname "shed relative humidity"      group "environmental-sensors" type "float" unit ""  model "iButtonLink MS-TH" identifier "26.0FC8CF000000" firmware "" }
+//   enclosure-humidity                 { file /usr/local/var/tcs/sensors/c0/ow/26.F897E1010000/HIH4000/humidity      keyword ENHM prettyname "enclosure relative humidity" group "environmental-sensors" type "float" unit ""  model "iButtonLink MS-TH" identifier "26.F897E1010000" firmware "" }
+//   box-c-humidity                     { file /usr/local/var/tcs/sensors/c0/ow/26.DFB040010000/HIH4000/humidity      keyword BCHM prettyname "box C relative humidity"     group "environmental-sensors" type "float" unit ""  model "iButtonLink MS-TH" identifier "26.DFB040010000" firmware "" }
+//   box-d-humidity                     { file /usr/local/var/tcs/sensors/d0/ow/26.68A740010000/HIH4000/humidity      keyword BDHM prettyname "box D relative humidity"     group "environmental-sensors" type "float" unit ""  model "iButtonLink MS-TH" identifier "26.68A740010000" firmware "" }
+//   box-e-humidity                     { file /usr/local/var/tcs/sensors/e0/ow/26.44A040010000/HIH4000/humidity      keyword BEHM prettyname "box E relative humidity"     group "environmental-sensors" type "float" unit ""  model "iButtonLink MS-TH" identifier "26.44A040010000" firmware "" }
+//
+//   shed-light-level                   { file /usr/local/var/tcs/sensors/control/ow/26.389840010000/VAD              keyword SHLL prettyname "shed light level"            group "environmental-sensors" type "float" unit ""  model "iButtonLink MS-TL" identifier "26.389840010000" firmware "" }
+//   enclosure-light-level              { file /usr/local/var/tcs/sensors/c0/ow/26.47A740010000/VAD                   keyword ENLL prettyname "enclosure light level"       group "environmental-sensors" type "float" unit ""  model "iButtonLink MS-TL" identifier "26.47A740010000" firmware "" }
+//
+//   host-services-load                 { file /usr/local/var/tcs/sensors/services/load                               keyword ""   prettyname "load on host services"                     group "host-services" type "float" unit "processes" model "" identifier "" firmware "" }
+//   host-control-load                  { file /usr/local/var/tcs/sensors/control/load                                keyword ""   prettyname "load on host control"                      group "host-control"  type "float" unit "processes" model "" identifier "" firmware "" }
+//   host-c0-load                       { file /usr/local/var/tcs/sensors/c0/load                                     keyword ""   prettyname "load on host c0"                           group "host-c0"       type "float" unit "processes" model "" identifier "" firmware "" }
+//   host-d0-load                       { file /usr/local/var/tcs/sensors/d0/load                                     keyword ""   prettyname "load on host d0"                           group "host-d0"       type "float" unit "processes" model "" identifier "" firmware "" }
+//   host-e0-load                       { file /usr/local/var/tcs/sensors/e0/load                                     keyword ""   prettyname "load on host e0"                           group "host-e0"       type "float" unit "processes" model "" identifier "" firmware "" }
+//   host-e1-load                       { file /usr/local/var/tcs/sensors/e1/load                                     keyword ""   prettyname "load on host e1"                           group "host-e1"       type "float" unit "processes" model "" identifier "" firmware "" }
+//
+//   host-services-disk-space-used      { file /usr/local/var/tcs/sensors/services/disk-space-used                    keyword ""   prettyname "relative disk space used on host services" group "host-services" type "float" unit "" model "" identifier "" firmware "" }
+//   host-control-disk-space-used       { file /usr/local/var/tcs/sensors/control/disk-space-used                     keyword ""   prettyname "relative disk space used on host control"  group "host-control"  type "float" unit "" model "" identifier "" firmware "" }
+//   host-c0-disk-space-used            { file /usr/local/var/tcs/sensors/c0/disk-space-used                          keyword ""   prettyname "relative disk space used on host c0"       group "host-c0"       type "float" unit "" model "" identifier "" firmware "" }
+//   host-d0-disk-space-used            { file /usr/local/var/tcs/sensors/d0/disk-space-used                          keyword ""   prettyname "relative disk space used on host d0"       group "host-d0"       type "float" unit "" model "" identifier "" firmware "" }
+//   host-e0-disk-space-used            { file /usr/local/var/tcs/sensors/e0/disk-space-used                          keyword ""   prettyname "relative disk space used on host e0"       group "host-e0"       type "float" unit "" model "" identifier "" firmware "" }
+//   host-e1-disk-space-used            { file /usr/local/var/tcs/sensors/e1/disk-space-used                          keyword ""   prettyname "relative disk space used on host e1"       group "host-e1"       type "float" unit "" model "" identifier "" firmware "" }
+//
+//   C0-detector-detector-temperature   { file /usr/local/var/tcs/sensors/e1/C0-detector-detector-temperature         keyword ""   prettyname "C0 detector temperature"   group "detector-C0" type "float"   unit "C" model "FLI ML3200"  identifier "ML0053812"   firmware "" }
+//   C0-detector-housing-temperature    { file /usr/local/var/tcs/sensors/e1/C0-detector-housing-temperature          keyword ""   prettyname "C0 housing temperature"    group "detector-C0" type "float"   unit "C" model "FLI ML3200"  identifier "ML0053812"   firmware "" }
+//   C0-detector-cooler-set-temperature { file /usr/local/var/tcs/sensors/e1/C0-detector-cooler-set-temperature       keyword ""   prettyname "C0 cooler set temperature" group "detector-C0" type "float"   unit "C" model "FLI ML3200"  identifier "ML0053812"   firmware "" }
+//   C0-detector-cooler-power           { file /usr/local/var/tcs/sensors/e1/C0-detector-cooler-power                 keyword ""   prettyname "C0 relative cooler power"  group "detector-C0" type "float"   unit ""  model "FLI ML3200"  identifier "ML0053812"   firmware "" }
+//   C0-detector-cooler-state           { file /usr/local/var/tcs/sensors/e1/C0-detector-cooler-state                 keyword ""   prettyname "C0 cooler state"           group "detector-C0" type "string"  unit ""  model "FLI ML3200"  identifier "ML0053812"   firmware "" }
+//   C0-filter-wheel-position           { file /usr/local/var/tcs/sensors/e1/C0-filter-wheel-position                 keyword ""   prettyname "C0 filter wheel position"  group "detector-C0" type "integer" unit ""  model "FLI CFW-1-5" identifier "CFW-1-5-001" firmware "" }
+//
+// }
+//
+//    "sensorslognames": "{",
+//
+//   shed-temperature
+//   enclosure-temperature
+//   box-a-temperature
+//   box-c-temperature
+//   box-d-temperature
+//   box-e-temperature
+//
+//   shed-humidity
+//   enclosure-humidity
+//   box-a-humidity
+//   box-c-humidity
+//   box-d-humidity
+//   box-e-humidity
+//
+//   shed-light-level
+//   enclosure-light-level
+//
+// }
+//
+//    "lightsgpiopath": "/sys/class/gpio/gpio481/value",
+//    "heatergpiopath": "/sys/class/gpio/gpio476/value",
+//
+//    "safetyswitchtype": "arts",
+//    "lightstype": "gpio",
+//    "enclosuretype": "arts",
+//    "executortype": "coatlioan",
+//    "telescopetype": "coatlioan",
+//    "telescopecloseexplicitly": "true",
+//    "supervisorinternalhumiditysensor": "enclosure-humidity",
+//
+//    "gcntanswiftalertproposalnumber": "1000",
+//    "gcntanfermialertproposalnumber": "1001",
+//    "gcntanlvcalertproposalnumber": "1002",
+//    "gcntanserverpacketport": "5349",

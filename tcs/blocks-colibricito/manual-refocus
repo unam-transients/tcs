@@ -1,0 +1,35 @@
+proposal::setidentifier "2017A-0004"
+visit::setidentifier "24"
+visit::setname "manual focusing"
+block::settotalexposures 0
+visit::settargetcoordinates equatorial 20:34:44.24 +60:11:35.90 2000
+
+proc SELECTABLE {args} {
+  return [expr {
+    [minfocusdelay 600] &&
+    [withintelescopepointinglimits] && 
+    [maxskybrightness "nauticaltwilight"] &&
+    [minha "-03:00:00"] &&
+    [maxha "+01:00:00"] &&
+    [minmoonseparation "15d"]
+  }]
+}
+
+proc EXECUTE {args} {
+
+  track
+
+  setreadmode 6MHz
+  setbinning 4
+  movefilterwheel "BI"
+
+  waituntiltracking
+
+  focussecondary C0 5 250 25 false
+  setbinning 2
+  focussecondary C0 10 100 10 true
+
+  setfocused
+
+  return false
+}

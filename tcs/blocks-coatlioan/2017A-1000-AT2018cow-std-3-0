@@ -1,0 +1,58 @@
+proposal::setidentifier "2017A-1000"
+block::setidentifier "3"
+visit::setidentifier "0"
+visit::setname "AT2018cow standard -- SA113 SF1"
+block::settotalexposures 0
+visit::settargetcoordinates equatorial 21:40:52.9 +00:24:49 2000
+
+proc SELECTABLE {args} {
+  return [expr {
+    [withintelescopepointinglimits] && 
+    [maxskybrightness "nauticaltwilight"] &&
+    [minairmass 1.0] &&
+    [maxairmass 1.5] &&
+    [minmoonseparation "15d"] &&
+    [maxfocusdelay 1200]
+  }]
+}
+
+proc EXECUTE {args} {
+
+  set exposuretime       30
+  set exposuresperdither 1
+  set filters            {BB BV BR BI w}
+  
+  executor::setsecondaryoffset 0
+  executor::track
+
+  executor::setreadmode 1MHz
+  executor::setwindow "default"
+  executor::setbinning 2
+
+  executor::waituntiltracking
+
+  foreach {eastoffset northoffset} {
+      0as   0as
+    +30as +30as
+    +30as -30as
+    -30as -30as
+    -30as +30as
+      0as -30as
+    +30as   0as
+      0as +30as
+    -30as   0as
+  } {
+    executor::offset $eastoffset $northoffset "default"
+    executor::waituntiltracking
+    foreach filter $filters {
+      executor::movefilterwheel $filter
+      set i 0
+      while {$i < $exposuresperdither} {
+        executor::expose object $exposuretime
+        incr i
+      }
+    }
+  }
+
+  return true
+}

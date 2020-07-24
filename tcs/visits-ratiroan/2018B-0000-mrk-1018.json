@@ -1,0 +1,46 @@
+[{
+   "languageversion"    : "20120808",
+   "proposalidentifier" : "2018B-0000",
+   "visitidentifier"    : "0",
+   "preparationdate"    : "20180829T000000",
+   "objectname"         : "Mrk 1018",
+   "visitname"          : "Mk 1018 ugriZYJH",
+   "pointingcorrection" : "finder",
+   "constraints"        : {
+     "maxskybrightness" : "astronomicaltwilight",
+     "maxairmass"       : "1.5"
+   },
+   "targetcoordinates"  : {
+     "type"             : "equatorial",
+     "alpha"            : "02:06:15.990",
+     "delta"            : "-00:17:29.20",
+     "equinox"          : 2000
+   },
+   "repeatexposures"    : 1,
+   "exposures"          : [
+     ["riZJcenter", "-10as", "-30as", "finder", "r", 10, 10, 10, 10],
+     ["riYHcenter", "-10as", "-30as", "finder", "g", 10, 10, 10, 10],
+     ["riYHcenter", "+10as", "+30as", "finder", "u", 10, 10, 10, 10],
+     ["riZJcenter", "+10as", "+30as", "finder", "u", 10, 10, 10, 10],
+     ["riZJcenter", "+10as", "-30as", "finder", "g", 10, 10, 10, 10],
+     ["riYHcenter", "+10as", "-30as", "finder", "r", 10, 10, 10, 10],
+     ["riZJcenter", "-10as", "+30as", "finder", "r", 10, 10, 10, 10],
+     ["riYHcenter", "-10as", "+30as", "finder", "g", 10, 10, 10, 10],
+     ["riYHcenter", "-10as",   "0as", "finder", "u", 10, 10, 10, 10],
+     ["riZJcenter", "-10as",   "0as", "finder", "u", 10, 10, 10, 10],
+     ["riZJcenter", "+10as",   "0as", "finder", "g", 10, 10, 10, 10],
+     ["riYHcenter", "+10as",   "0as", "finder", "r", 10, 10, 10, 10],
+     ["riZJcenter",   "0as", "+15as", "finder", "r", 10, 10, 10, 10],
+     ["riYHcenter",   "0as", "+15as", "finder", "g", 10, 10, 10, 10],
+     ["riYHcenter",   "0as", "-15as", "finder", "u", 10, 10, 10, 10],
+     ["riZJcenter",   "0as", "-15as", "finder", "u", 10, 10, 10, 10],
+     ["riZJcenter", "-10as", "+15as", "finder", "g", 10, 10, 10, 10],
+     ["riYHcenter", "-10as", "+15as", "finder", "r", 10, 10, 10, 10],
+     ["riZJcenter", "-10as", "-15as", "finder", "r", 10, 10, 10, 10],
+     ["riYHcenter", "-10as", "-15as", "finder", "g", 10, 10, 10, 10],
+     ["riYHcenter", "+10as", "+15as", "finder", "u", 10, 10, 10, 10],
+     ["riZJcenter", "+10as", "+15as", "finder", "u", 10, 10, 10, 10],
+     ["riZJcenter", "+10as", "-15as", "finder", "g", 10, 10, 10, 10],
+     ["riYHcenter", "+10as", "-15as", "finder", "r", 10, 10, 10, 10]
+   ]
+}]

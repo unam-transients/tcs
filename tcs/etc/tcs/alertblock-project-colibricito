@@ -1,0 +1,139 @@
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: alertblock-project-colibricito 3388 2019-11-01 19:50:09Z Alan $
+
+########################################################################
+
+# Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+block::settotalexposures 0
+block::setexpectedduration 40m
+
+constraints::setmaxfocusdelay       3600
+constraints::setmaxskybrightness    "nauticaltwilight"
+constraints::setmaxalertuncertainty "15am"
+
+proc EXECUTE {alertfile} {
+
+  log::info "alertblock: starting."
+  
+  if {[string equal "" [alert::eventtimestamp]]} {
+    log::info [format "alertblock: no event timestamp."]
+  } else {  
+    log::info [format "alertblock: event timestamp is %s." [utcclock::format [alert::eventtimestamp]]]
+  }
+  if {[string equal "" [alert::alerttimestamp]]} {
+    log::info [format "alertblock: no alert timestamp."]
+  } else {  
+    log::info [format "alertblock: alert timestamp is %s." [utcclock::format [alert::alerttimestamp]]]
+  }
+  
+  set alertdelay [alert::delay]
+  log::summary [format "alertblock: alert delay is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
+  if {$alertdelay < 1800} {
+    set binning            1
+    set exposuretime       30
+    set exposuresperdither 2
+  } else {
+    set binning            1
+    set exposuretime       60
+    set exposuresperdither 1
+  }
+  log::info [format "alertblock: taking %.0fs exposures with binning of %d." $exposuretime $binning]
+  log::info [format "alertblock: taking %d exposures per dither." $exposuresperdither]
+  
+  executor::setsecondaryoffset 0
+  executor::track
+
+  executor::setbinning $binning
+  executor::movefilterwheel "w"
+
+  executor::waituntiltracking
+
+  set lastalpha       [visit::alpha]
+  set lastdelta       [visit::delta]
+  set lastequinox     [visit::equinox]
+  set lasteastoffset  [astrometry::parseangle "0as"]
+  set lastnorthoffset [astrometry::parseangle "0as"]
+  
+  set exposuretype firstalertobject
+  
+  foreach {eastoffset northoffset} {
+      0as   0as
+    +30as +30as
+    +30as -30as
+    -30as -30as
+    -30as +30as
+      0as -30as
+    +30as   0as
+      0as +30as
+    -30as   0as
+  } {
+  
+    log::info "alertblock: dithering $eastoffset E and $northoffset N."    
+
+    if {[file exists $alertfile]} {
+      if {[catch {source $alertfile} message]} {
+        log::error "alertblock: error while loading alert file \"$alertfile\": $message"
+        return false
+      }
+      executor::updatevisitdata
+    }
+
+    if {![alert::enabled]} {
+      log::info "alertblock: the alert is no longer enabled."
+      return false
+    }
+
+    set alpha   [visit::alpha]
+    set delta   [visit::delta]
+    set equinox [visit::equinox]
+
+    set eastoffset  [astrometry::parseangle $eastoffset]
+    set northoffset [astrometry::parseangle $northoffset]
+
+    if {$alpha != $lastalpha || $delta != $lastdelta || $equinox != $lastequinox} {
+      log::info "alertblock: the coordinates have been updated."
+      executor::track $eastoffset $northoffset "default"
+      executor::waituntiltracking
+    } elseif {$eastoffset != $lasteastoffset || $northoffset != $lastnorthoffset} {
+      executor::offset $eastoffset $northoffset "default"
+      executor::waituntiltracking
+    }
+
+    set lastalpha       $alpha
+    set lastdelta       $delta
+    set lastequinox     $equinox
+    set lasteastoffset $eastoffset
+    set lastnorthoffset $northoffset
+    
+    set i 0
+    while {$i < $exposuresperdither} {
+      executor::expose $exposuretype $exposuretime
+      set exposuretype object
+      incr i
+    }
+
+  }
+
+  log::info "alertblock: end of exposure sequence."
+
+  return false
+}

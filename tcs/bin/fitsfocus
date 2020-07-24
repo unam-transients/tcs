@@ -1,0 +1,187 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: fitsfwhm 3016 2017-12-07 05:25:27Z alan $
+
+########################################################################
+
+# Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
+
+program=$(basename "$0")
+
+usageerror () {
+  echo 1>&2 "usage: $program [-z keyword] [-e etcdir] [-s section] [-S saturationlevel] [-m] [-A] [-w wisdom] [--] fitsfile ..."
+  exit 1
+}
+
+optstring=e:s:S:mAw:z:
+fitsfwhmopts=""
+zkeyword="SRQZ0"
+if ! getopt -qQ -- "$optstring" "$@"
+then
+  usageerror
+fi
+eval set -- "$(getopt -q -- "$optstring" "$@")"
+while test "$1" != "--"
+do
+  case "$1" in
+  -e)
+    fitsfwhmopts="$fitsfwhmopts -e \"$2\""
+    shift 2
+    ;;
+  -s)
+    fitsfwhmopts="$fitsfwhmopts -s \"$2\""
+    shift 2
+    ;;
+  -S)
+    fitsfwhmopts="$fitsfwhmopts -S \"$2\""
+    shift 2
+    ;;
+  -m)
+    fitsfwhmopts="$fitsfwhmopts -m"
+    shift 1
+    ;;
+  -A)
+    fitsfwhmopts="$fitsfwhmopts -A"
+    shift
+    ;;
+  -w)
+    fitsfwhmopts="$fitsfwhmopts -w \"$2\""
+    shift 2
+    ;;
+  -z)
+    zkeyword="$2"
+    shift 2
+    ;;
+  *)
+    usageerror
+    ;;
+  esac
+done
+shift
+if test $# = 0
+then
+  usageerror
+fi
+
+for fitsfile in "$@"
+do
+  echo $fitsfile $(fitsheadervalue $zkeyword "$fitsfile") $(fitsfwhm $fitsfwhmopts "$fitsfile")
+done |
+awk '
+
+BEGIN{
+  i = 0;
+  n = 0;
+}
+{
+  # For brevity, we use x for z and y for FWHM.
+  file[i] = $1;
+  x[i]    = $2;
+  y[i]    = $3;
+  chi[i]  = 0.0;
+  ++i;
+  ++n;
+}
+END {
+  maxabschi = 2.0
+  maxfwhm = 15.0
+}
+
+function abs(x)
+{
+  if (x < 0)
+    return -x;
+  else
+    return +x;
+}
+
+function fit () 
+{
+  S00 = 0.0;
+  S10 = 0.0;
+  S20 = 0.0;
+  S30 = 0.0;
+  S40 = 0.0;
+  S01 = 0.0;
+  S11 = 0.0;
+  S21 = 0.0;
+  for (i = 0; i < n; ++i) {
+    if (y[i] <= maxfwhm && abs(chi[i]) <= maxabschi) {
+      S00 += 1;
+      S10 += x[i];
+      S20 += x[i] * x[i];
+      S30 += x[i] * x[i] * x[i];
+      S40 += x[i] * x[i] * x[i] * x[i];
+      S01 += y[i];
+      S11 += x[i] * y[i];
+      S21 += x[i] * x[i] * y[i];
+    }
+  }
+  A0 = S01 * S10 - S11 * S00;
+  B0 = S10 * S10 - S20 * S00;
+  C0 = S20 * S10 - S30 * S00;
+  A1 = S11 * S20 - S21 * S10;
+  B1 = S20 * S20 - S30 * S10;
+  C1 = S30 * S20 - S40 * S10;
+  c = (A0 * B1 - A1 * B0) / (B1 * C0 - B0 * C1);
+  b = (A0 - C0 * c) / B0;
+  a = (S01 - S10 * b - S20 * c) / S00;
+}
+  
+END {
+  for (iteration = 0; iteration < 3; ++iteration) {
+    fit();
+    sdyy = 0.0;
+    for (i = 0; i < n; ++i) {
+      dy = y[i] - (a + b * x[i] + c * x[i] * x[i]);
+      sdyy += dy * dy;
+    }
+    sigma = sqrt(sdyy / (n - 1));
+    for (i = 0; i < n; ++i) {
+      dy = y[i] - (a + b * x[i] + c * x[i] * x[i]);
+      if (sigma != 0.0)
+        chi[i] = dy / sigma;
+      else
+        chi[i] = 0.0;
+    }
+  }
+  for (i = 0; i < n; ++i) {
+    if (y[i] <= maxfwhm && abs(ch[i]) <= maxabschi) {
+      printf("info: FWHM = %4.1f pixels at %d (chi = %+6.2f)\n", y[i], x[i], chi[i]);
+    } else {
+      printf("info: FWHM = %4.1f pixels at %d (chi = %+6.2f rejected)\n", y[i], x[i], chi[i]);
+    }
+  }
+  minx = (-b / (2 * c));
+  miny = a + b * minx + c * minx * minx;
+  if (c < 0) {
+    printf("error: turning point is a maximum.")
+    exit(1);
+  }
+  printf("info: model minimum: FWHM = %.1f pixels at %d.\n", miny, minx);
+  printf ("%.0f %.2f\n", minx, miny);
+}
+'
+
+exit 0

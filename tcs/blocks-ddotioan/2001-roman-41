@@ -1,0 +1,13 @@
+proposal::setidentifier "[utcclock::semester]-2001"
+block::setidentifier "41"
+visit::setidentifier "0"
+visit::setname "Roman: ONE"
+block::settotalexposures 0
+visit::settargetcoordinates equatorial 05:59:34.30 +08:11:37.8 2000
+
+constraints::setmaxskybrightness "astronomicaltwilight"
+constraints::setminha -1h
+constraints::setmaxha +1h
+constraints::setmaxfocusdelay 3600
+
+visit::setcommand "gridvisit 1 5 1 60"

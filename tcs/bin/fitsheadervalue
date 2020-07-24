@@ -1,0 +1,97 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: fitsheadervalue 3373 2019-10-30 15:09:02Z Alan $
+
+########################################################################
+
+# Copyright © 2010, 2011, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
+
+program=$(basename "$0")
+
+usageerror () {
+  echo 1>&2 "usage: $program [-l] [--] key [fitsfile ...]"
+  exit 1
+}
+
+optstring="l"
+list=false
+if ! getopt -qQ -- "$optstring" "$@"
+then
+  usageerror
+fi
+eval set -- "$(getopt -- "$optstring" "$@")"
+while test "$1" != "--"
+do
+  case "$1" in
+  -l)
+    list=true
+    shift 1
+    ;;
+  *)
+    usageerror
+    ;;
+  esac
+done
+shift
+case "$#" in
+0)
+  usageerror
+  ;;
+1)
+  key="$1"
+  set -- "/dev/stdin"
+  ;;
+*)
+  key="$1"
+  shift
+  ;;
+esac
+
+squote="'"
+for file in "$@"
+do
+  fitsheader -- "$file" |
+  sed 's/=/ /' | 
+  awk -v key="$key" -v fitsfile="$fitsfile" -v list=$list '
+  $1 == key {
+    if (match($2, "'$squote'") == 1) {
+      sub("^[^'$squote']*'$squote'", "");
+      sub("'$squote'.*", "");
+      printf("%s", $0);
+    } else {
+      printf("%s", $2);
+    }
+    if (list == "true") {
+      printf("\t%s", fitsfile);
+    }
+    printf("\n");
+    exit(0);
+  }
+  $1 == "END" {
+    exit(1);
+  }
+  ' || exit 1
+done
+
+exit 0

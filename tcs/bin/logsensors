@@ -1,0 +1,107 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: C0server 3336 2019-07-22 22:43:55Z Alan $
+
+########################################################################
+
+# Copyright © 2009 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+#\
+umask 0; PATH=/usr/local/opt/tcl-tk/bin:$PATH exec tclsh8.6 -encoding "utf-8" "$0" ${1+"$@"}
+
+source [file join [file dirname [info script]] ".." "lib" "tcs" "packages.tcl"]
+
+package require "directories"
+package require "sensorsclient"
+package require "utcclock"
+
+if {[catch {sensorsclient::update} message]} {
+  puts stderr "logsensors: error: unable to update sensors data: $message"
+  exit 1
+}
+
+set status [sensorsclient::getstatus]
+if {![string equal $status "ok"]} {
+  puts stderr "logsensors: error: sensors status is \"$status\"."
+  exit 1
+}
+
+set directoryname [file join [directories::vartoday] "sensors"]
+if {[catch {file mkdir $directoryname}]} {
+  puts stderr "logsensors: error: unable to make directory \"$directoryname\"."
+  exit 1
+}
+
+set filename [file join $directoryname [format "sensors-%s.json" [utcclock::combinedformat now 0 false]]]
+if {[catch {set channel [open $filename "w"]}]} {
+  puts stderr "logsensors: error: unable to opening file \"$filename\"."
+  exit 1
+}
+
+if {[catch {
+
+  set sensors [config::getvalue "sensors" "dict"]
+
+  puts $channel "\{"
+  puts $channel "  \"frame_model\": \"0.0\","
+  puts $channel "  \"producer_name\": \"TCS\","
+  puts $channel "  \"entities\": \["
+
+  set first true
+  foreach name [sensorsclient::getdata "names"] {
+    if {!$first} {
+      puts $channel "    ,"
+    }
+    set value     [sensorsclient::getdata $name]
+    set timestamp [sensorsclient::getdata ${name}-timestamp]
+    if {![string equal $value ""] && ![string equal $timestamp ""]} {
+      set errorcode 0
+    } else {
+      set errorcode 1
+    }
+    set first false
+    puts $channel "    \{"
+    puts $channel "      \"device_name\"       : \"$name\","
+    puts $channel "      \"device_value\"      : \"[sensorsclient::getdata $name]\","
+    puts $channel "      \"device_date\"       : \"[sensorsclient::getdata ${name}-timestamp]\","
+    puts $channel "      \"device_group\"      : \"[dict get $sensors ${name} group]\","
+    puts $channel "      \"device_pretty_name\": \"[dict get $sensors ${name} prettyname]\","
+    puts $channel "      \"device_model\"      : \"[dict get $sensors ${name} model]\","
+    puts $channel "      \"device_identifier\" : \"[dict get $sensors ${name} identifier]\","
+    puts $channel "      \"device_firmware\"   : \"[dict get $sensors ${name} firmware]\","
+    puts $channel "      \"device_type\"       : \"[dict get $sensors ${name} type]\","
+    puts $channel "      \"device_unit\"       : \"[dict get $sensors ${name} unit]\","
+    puts $channel "      \"device_error_code\" : $errorcode"
+    puts $channel "    \}"
+  }
+
+  puts $channel "  \]"
+  puts $channel "\}"
+} message]} {
+  puts stderr "logsensors: error: while writing sensors data: $message."
+  exit 1
+}
+
+if {[catch {close $channel}]} {
+  puts stderr "logsensors: error: while closing file \"$filename\"."
+  exit 1
+}

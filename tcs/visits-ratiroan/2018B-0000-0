@@ -1,0 +1,97 @@
+# Visit file produced by: $Id: phase2 2563 2017-02-14 17:15:19Z alan $
+
+proposal::setidentifier "2018B-0000"
+visit::setidentifier    "0"
+visit::setname          "Mk 1018 ugriZYJH"
+visit::settargetcoordinates equatorial 02:06:15.99 -00:17:29.2 2000
+
+proc SELECTABLE {args} {
+  return [expr {
+    [maxfocusdelay 3600] &&
+    [withintelescopepointinglimits] &&
+    [maxskybrightness astronomicaltwilight] &&
+    [minairmass 1.000] &&
+    [maxairmass 1.500] &&
+    [minha -05:30:00] &&
+    [maxha +05:30:00] &&
+    [mindate 20180829T000000] &&
+    [maxdate 20190829T000000] &&
+    [minmoonseparation 15.0d] &&
+    [maxmoonseparation 180.0d]
+  }]
+}
+
+proc EXECUTE {args} {
+  setsecondaryoffset 0
+  track ricenter 0as 0as finder
+  set i 0
+  while {$i < 1} {
+    movefilterwheel r
+    offset riZJcenter -10.0as -30.0as finder
+    exposeobject 10 10 10 10 4 4
+    movefilterwheel g
+    offset riYHcenter -10.0as -30.0as finder
+    exposeobject 10 10 10 10 4 4
+    movefilterwheel u
+    offset riYHcenter +10.0as +30.0as finder
+    exposeobject 10 10 10 10 4 4
+    offset riZJcenter +10.0as +30.0as finder
+    exposeobject 10 10 10 10 4 4
+    movefilterwheel g
+    offset riZJcenter +10.0as -30.0as finder
+    exposeobject 10 10 10 10 4 4
+    movefilterwheel r
+    offset riYHcenter +10.0as -30.0as finder
+    exposeobject 10 10 10 10 4 4
+    offset riZJcenter -10.0as +30.0as finder
+    exposeobject 10 10 10 10 4 4
+    movefilterwheel g
+    offset riYHcenter -10.0as +30.0as finder
+    exposeobject 10 10 10 10 4 4
+    movefilterwheel u
+    offset riYHcenter -10.0as +0.0as finder
+    exposeobject 10 10 10 10 4 4
+    offset riZJcenter -10.0as +0.0as finder
+    exposeobject 10 10 10 10 4 4
+    movefilterwheel g
+    offset riZJcenter +10.0as +0.0as finder
+    exposeobject 10 10 10 10 4 4
+    movefilterwheel r
+    offset riYHcenter +10.0as +0.0as finder
+    exposeobject 10 10 10 10 4 4
+    offset riZJcenter +0.0as +15.0as finder
+    exposeobject 10 10 10 10 4 4
+    movefilterwheel g
+    offset riYHcenter +0.0as +15.0as finder
+    exposeobject 10 10 10 10 4 4
+    movefilterwheel u
+    offset riYHcenter +0.0as -15.0as finder
+    exposeobject 10 10 10 10 4 4
+    offset riZJcenter +0.0as -15.0as finder
+    exposeobject 10 10 10 10 4 4
+    movefilterwheel g
+    offset riZJcenter -10.0as +15.0as finder
+    exposeobject 10 10 10 10 4 4
+    movefilterwheel r
+    offset riYHcenter -10.0as +15.0as finder
+    exposeobject 10 10 10 10 4 4
+    offset riZJcenter -10.0as -15.0as finder
+    exposeobject 10 10 10 10 4 4
+    movefilterwheel g
+    offset riYHcenter -10.0as -15.0as finder
+    exposeobject 10 10 10 10 4 4
+    movefilterwheel u
+    offset riYHcenter +10.0as +15.0as finder
+    exposeobject 10 10 10 10 4 4
+    offset riZJcenter +10.0as +15.0as finder
+    exposeobject 10 10 10 10 4 4
+    movefilterwheel g
+    offset riZJcenter +10.0as -15.0as finder
+    exposeobject 10 10 10 10 4 4
+    movefilterwheel r
+    offset riYHcenter +10.0as -15.0as finder
+    exposeobject 10 10 10 10 4 4
+    incr i
+  }
+  return true
+}

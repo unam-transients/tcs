@@ -1,0 +1,172 @@
+@charset "utf-8";
+
+/*
+ ***********************************************************************
+ *
+ * This file is part of the UNAM telescope control system.
+ *
+ * $Id: style.css 3373 2019-10-30 15:09:02Z Alan $
+ * 
+ ***********************************************************************
+ *
+ * Copyright © 2010, 2011, 2012, 2013, 2014, 2016, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
+ * 
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+ * WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+ * DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+ * PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+ * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+ * PERFORMANCE OF THIS SOFTWARE.
+ * 
+ ***********************************************************************
+ */
+
+body, input, pre, table {
+  font-family:        "Verdana", sans-serif;
+  font-size:          10px;
+  line-height:        12px;
+}
+
+body        {
+  margin:             0.5em;
+}
+
+h1 {
+  font-size:          16px;
+  margin:             0;
+  padding:            0;
+}
+
+div {
+  margin:             0;
+  padding:            0;
+}
+
+div#images,
+div#navigation,
+div#title {
+  clear:              both;
+  padding:            0.5em;
+  padding-bottom:     0em;
+}
+
+div#webcam,
+div#finder,
+div#instrument,
+div#allsky {
+  float:              left;
+  padding:            0.5em;
+}
+
+div#controls {
+  float:              right;
+  padding:            0.5em;
+}
+
+div#status {
+  padding:            0.5em;
+  width:              56em;
+}
+
+div#log {
+  padding:            0.5em;
+}
+
+img.webcam-small, img.allsky-small, img.finder-small, img.instrument-small {
+  height:             90px;
+  margin:             1px;
+}
+
+img.webcam, img.allsky, img.finder, img.instrument {
+  height:             384px;
+  margin:             1px;
+}
+
+pre, table, tbody, tr, td, form, input {
+  margin:             0;
+  padding:            0;
+}
+
+table, tbody, tr, td {
+  border:             none;
+}
+
+table {
+  border-collapse:    collapse;
+}
+
+table.status, 
+table.control {
+  margin-bottom:      1em;
+}
+
+td.key {
+  padding-right:      0em;
+  width:              20em;
+}
+
+td.field {
+  padding-left:       0em;
+  padding-right:      0em;
+  border-right:       0.5em;
+  border-left:        0.5em;
+  border-left-style:  solid;
+  border-right-style: solid;
+  border-color:       #fff;
+  width:              8em;
+}
+
+th {
+  font-style:         bold;
+  border-bottom:      1em;
+}
+
+th.emergency {
+  color:              red;
+}
+
+td.full {
+  width:              25em;
+}
+
+pre.log {
+  white-space:        pre-wrap;
+}
+
+th.control,
+td.control {
+  padding:            0.2em;
+}
+
+input {
+  width:              14em;
+  font-size:          9px;
+}
+
+input.text {
+  width:              13.5em;
+}
+
+input.emergency {
+  color:              red;
+}
+
+td.summary, emph.summary {
+  font-weight:        bold;
+}
+
+td.warning, emph.warning {
+  font-weight:        bold;
+  background-color:   #fea;
+}
+
+td.error, emph.error {
+  font-weight:        bold;
+  background-color:   #f88;
+}

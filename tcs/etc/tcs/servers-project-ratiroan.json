@@ -1,0 +1,58 @@
+////////////////////////////////////////////////////////////////////////
+
+// This file is part of the UNAM telescope control system.
+
+// $Id: servers-project-ratiroan.json 3613 2020-06-20 20:21:43Z Alan $
+
+////////////////////////////////////////////////////////////////////////
+
+// Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
+//
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the
+// above copyright notice and this permission notice appear in all
+// copies.
+//
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+// WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+// AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+// DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+// PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+// TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+// PERFORMANCE OF THIS SOFTWARE.
+
+////////////////////////////////////////////////////////////////////////
+
+{
+  "C0"            : { "host" : "detectors", "port" : 5000 },
+  "C1"            : { "host" : "detectors", "port" : 5001 },
+  "C2"            : { "host" : "tcs-a"    , "port" : 5002 },
+  "C3"            : { "host" : "tcs-a"    , "port" : 5003 },
+  "covers"        : { "host" : "control"  , "port" : 5004 },
+  "cryostat"      : { "host" : "control"  , "port" : 5005 },
+  "dome"          : { "host" : "control"  , "port" : 5006 },
+  "enclosure"     : { "host" : "control"  , "port" : 5007 },
+  "executor"      : { "host" : "control"  , "port" : 5008 },
+  "gcntan"        : { "host" : "services" , "port" : 5009 },
+  "guider"        : { "host" : "control"  , "port" : 5010 },
+  "html"          : { "host" : "services" , "port" : 5011 },
+  "inclinometers" : { "host" : "control"  , "port" : 5012 },
+  "instrument"    : { "host" : "control"  , "port" : 5013 },
+  "lights"        : { "host" : "control"  , "port" : 5014 },
+  "log"           : { "host" : "services" , "port" : 5015 },
+  "moon"          : { "host" : "control"  , "port" : 5016 },
+  "mount"         : { "host" : "control"  , "port" : 5017 },
+  "power"         : { "host" : "control"  , "port" : 5018 },
+  "nefinder"      : { "host" : "control"  , "port" : 5019 },
+  "secondary"     : { "host" : "control"  , "port" : 5020 },
+  "selector"      : { "host" : "control"  , "port" : 5021 },
+  "sefinder"      : { "host" : "control"  , "port" : 5022 },
+  "sensors"       : { "host" : "control"  , "port" : 5023 },
+  "shutters"      : { "host" : "control"  , "port" : 5024 },
+  "sun"           : { "host" : "control"  , "port" : 5025 },
+  "supervisor"    : { "host" : "control"  , "port" : 5026 },
+  "target"        : { "host" : "control"  , "port" : 5027 },
+  "telescope"     : { "host" : "control"  , "port" : 5028 },
+  "weather"       : { "host" : "control"  , "port" : 5029 }
+}

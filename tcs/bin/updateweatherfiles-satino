@@ -1,0 +1,110 @@
+#!/bin/sh
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: updateweatherfiles-satino 3373 2019-10-30 15:09:02Z Alan $
+
+########################################################################
+
+# Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
+export LC_ALL=C
+
+program=$(basename "$0")
+
+usageerror () {
+  echo 1>&2 "usage: $program [-p prefix]"
+  exit 1
+}
+
+optstring=p:
+prefix=/usr/local
+if ! getopt -qQ -- "$optstring" "$@"
+then
+  usageerror
+fi
+eval set -- "$(getopt -q -- "$optstring" "$@")"
+while test "$1" != "--"
+do
+  case "$1" in
+  -p)
+    prefix="$2"
+    shift 2
+    ;;
+  *)
+    usageerror
+    ;;
+  esac
+done
+shift
+if test $# != 0
+then
+  usageerror
+fi
+
+mkdir -p "$prefix"/var/tcs/weather
+cd "$prefix"/var/tcs/weather
+
+version="a.1"
+
+# Get the AAG_SLD.dat file
+aag="$(curl -s -L  https://www.dropbox.com/sh/f80de8vbidh8tzb/AADobN_S7ShCYjwcaX9pH2_Oa/AAG_SLD.dat)"
+
+# Get a line from the PLC, but take the minimum wind speed from 10 lines, since it has unreasonable peaks.
+plc=$(
+  for i in 0 1 2 3 4 5 6 7 8 9
+  do
+    echo "AK1@"
+    sleep 1
+  done |
+  nc -w 1 plc 5001 | 
+  tr -d '\r' |
+  sed -n 's/,$//;s/,/ /gp' |
+  awk '
+  NR == 1 {
+    n = NF;
+    for (i = 1; i <= n; ++i)
+      f[i] = $i;
+  }
+  {
+    if ($1 < f[1])
+      f[1] = $1;
+  }
+  END {
+    for (i = 1; i <= n; ++i)
+      printf(" %s", f[i]);
+    printf("\n");
+  }
+  '    
+)
+
+set -- $aag $plc
+
+# Convert timestamp from UTC-1 (CET standard time) to UTC
+#timestamp="$1 $(echo $2 | sed 's/\.[0-9]*$//')"
+#seconds=$(TZ=GMT-1 date --date="$timestamp" "+%s")
+
+# Ignore the timestamp from the AAG.
+seconds=$(date -u "+%s")
+
+timestamp=$(date -u --date=@$seconds "+%F %T")
+date=$(date -u --date=@$seconds "+%F")
+
+echo "$version $timestamp $*" >>$date.txt

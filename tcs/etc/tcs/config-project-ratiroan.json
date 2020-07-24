@@ -1,0 +1,694 @@
+////////////////////////////////////////////////////////////////////////
+
+// This file is part of the UNAM telescope control system.
+
+// $Id: config-project-ratiroan.json 3613 2020-06-20 20:21:43Z Alan $
+
+////////////////////////////////////////////////////////////////////////
+
+// Copyright © 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+//
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
+//
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+// WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+// AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+// DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+// PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+// TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+// PERFORMANCE OF THIS SOFTWARE.
+
+////////////////////////////////////////////////////////////////////////
+
+// Finder pointing apertures should be [ -CH, +ID ]
+
+{
+  "C0": {
+    "telescopedescription": "OAN/SPM Harold L. Johnson 1.5-meter",
+    "detectortype": "fli",
+    "detectoridentifier": "PL0212309",
+    "detectorpixelscale": "0.32as",
+    "detectorinitialreadmode": "1MHz",
+    "detectorinitialsoftwaregain": "4",
+    "detectorinitialbinning": "2",
+    "detectorwindows": {
+      "initial": "default",
+      "default": "2kx2k",
+      "2kx2k": {
+        "sx": "0",
+        "sy": "32",
+        "nx": "2064",
+        "ny": "2048"
+      }
+    },
+    "detectorfullunbinneddatawindow": {
+      "sx": "16",
+      "sy": "32",
+      "nx": "2048",
+      "ny": "2048"
+    },
+    "detectorfullunbinnedbiaswindow": {
+      "sx": "0",
+      "sy": "32",
+      "nx": "16",
+      "ny": "2048"
+    },
+    "cooleropensetting": "-40",
+    "coolerclosedsetting": "following",
+    "temperaturelimit": "40",
+    "filterwheeltype": "fli",
+    "filterwheelidentifier": "CFW-6-10-001",
+    "filterwheelinitialposition": "0",
+    "filterlist": [
+      "u",
+      "g",
+      "r",
+      "BV",
+      "BB",
+      "Sy",
+      "4871/49",
+      "5016/51",
+      "4772/44",
+      "6630/40"
+    ],
+    "focusertype": "fli",
+    "focuseridentifier": "PDF0034613",
+    "focuserinitialposition": "2050",
+    "focuserbacklashoffset": "0",
+    "focusercorrectionmodel": "{}",
+    "pointingmodelparameters": "{}",
+    "isstandalone": "false",
+    "fitsfwhmargs": {
+      "1": "-m",
+      "2": "-m",
+      "4": "-A",
+      "8": "-A",
+      "16": "-A"
+    }
+  },
+  "C1": {
+    "telescopedescription": "OAN/SPM Harold L. Johnson 1.5-meter",
+    "detectortype": "fli",
+    "detectoridentifier": "PL0154809",
+    "detectorpixelscale": "0.32as",
+    "detectorinitialreadmode": "1MHz",
+    "detectorinitialsoftwaregain": "4",
+    "detectorinitialbinning": "2",
+    "detectorwindows": {
+      "initial": "default",
+      "default": "2kx2k",
+      "2kx2k": {
+        "sx": "0",
+        "sy": "32",
+        "nx": "2064",
+        "ny": "2048"
+      }
+    },
+    "detectorfullunbinneddatawindow": {
+      "sx": "16",
+      "sy": "32",
+      "nx": "2048",
+      "ny": "2048"
+    },
+    "detectorfullunbinnedbiaswindow": {
+      "sx": "0",
+      "sy": "32",
+      "nx": "16",
+      "ny": "2048"
+    },
+    "cooleropensetting": "-30",
+    "coolerclosedsetting": "following",
+    "temperaturelimit": "40",
+    "filterwheeltype": "null",
+    "filterwheelidentifier": "null",
+    "filterwheelinitialposition": "0",
+    "filterlist": [
+      "i"
+    ],
+    "focusertype": "fli",
+    "focuseridentifier": "PDF-001",
+    "focuserinitialposition": "2525",
+    "focuserbacklashoffset": "0",
+    "focusercorrectionmodel": "{}",
+    "pointingmodelparameters": "{}",
+    "isstandalone": "false",
+    "fitsfwhmargs": {
+      "1": "-m",
+      "2": "-m",
+      "4": "-A",
+      "8": "-A",
+      "16": "-A"
+    }
+  },
+  "C2": {
+    "telescopedescription": "OAN/SPM Harold L. Johnson 1.5-meter",
+    "detectortype": "h2rg",
+    "detectoridentifier": "C2",
+    "detectorpixelscale": "0.30as",
+    "detectorinitialreadmode": "1",
+    "detectorinitialsoftwaregain": "2",
+    "detectorinitialbinning": "1",
+    "detectorwindows": {
+      "initial": "default",
+      "default": "2kx2k",
+      "2kx2k": {
+        "sx": "0",
+        "sy": "32",
+        "nx": "2048",
+        "ny": "2048"
+      }
+    },
+    "detectorfullunbinneddatawindow": {
+      "sx": "0",
+      "sy": "0",
+      "nx": "2048",
+      "ny": "2048"
+    },
+    "detectorfullunbinnedbiaswindow": {
+      "sx": "0",
+      "sy": "0",
+      "nx": "0",
+      "ny": "0"
+    },
+    "cooleropensetting": "{}",
+    "coolerclosedsetting": "{}",
+    "temperaturelimit": "{}",
+    "filterwheeltype": "null",
+    "filterwheelidentifier": "null",
+    "filterwheelinitialposition": "0",
+    "filterlist": [
+      "Z/Y"
+    ],
+    "focusertype": "null",
+    "focuseridentifier": "null",
+    "focuserinitialposition": "0",
+    "focuserbacklashoffset": "0",
+    "focusercorrectionmodel": "{}",
+    "pointingmodelparameters": "{}",
+    "isstandalone": "false",
+    "fitsfwhmargs": {
+      "1": "-m",
+      "2": "-m",
+      "4": "-A",
+      "8": "-A",
+      "16": "-A"
+    }
+  },
+  "C3": {
+    "telescopedescription": "OAN/SPM Harold L. Johnson 1.5-meter",
+    "detectortype": "h2rg",
+    "detectoridentifier": "C3",
+    "detectorpixelscale": "0.30as",
+    "detectorinitialreadmode": "1",
+    "detectorinitialsoftwaregain": "2",
+    "detectorinitialbinning": "1",
+    "detectorwindows": {
+      "initial": "default",
+      "default": "2kx2k",
+      "2kx2k": {
+        "sx": "0",
+        "sy": "32",
+        "nx": "2048",
+        "ny": "2048"
+      }
+    },
+    "detectorfullunbinneddatawindow": {
+      "sx": "0",
+      "sy": "0",
+      "nx": "2048",
+      "ny": "2048"
+    },
+    "detectorfullunbinnedbiaswindow": {
+      "sx": "0",
+      "sy": "0",
+      "nx": "0",
+      "ny": "0"
+    },
+    "cooleropensetting": "{}",
+    "coolerclosedsetting": "{}",
+    "temperaturelimit": "{}",
+    "filterwheeltype": "null",
+    "filterwheelidentifier": "null",
+    "filterwheelinitialposition": "0",
+    "filterlist": [
+      "J/H"
+    ],
+    "focusertype": "null",
+    "focuseridentifier": "null",
+    "focuserinitialposition": "0",
+    "focuserbacklashoffset": "0",
+    "focusercorrectionmodel": "{}",
+    "pointingmodelparameters": "{}",
+    "isstandalone": "false",
+    "fitsfwhmargs": {
+      "1": "-m",
+      "2": "-m",
+      "4": "-A",
+      "8": "-A",
+      "16": "-A"
+    }
+  },
+  "html": {
+    "servers": [
+      "C0",
+      "C1",
+      "C2",
+      "C3",
+      "covers",
+      "cryostat",
+      "dome",
+      "executor",
+      "gcntan",
+      "guider",
+      "html",
+      "inclinometers",
+      "instrument",
+      "moon",
+      "mount",
+      "power",
+      "nefinder",
+      "secondary",
+      "sefinder",
+      "scheduler",
+      "sensors",
+      "shutters",
+      "sun",
+      "supervisor",
+      "target",
+      "telescope",
+      "weather"
+    ]
+  },
+  "secondary": {
+    "type": "ratir",
+    "controllerhost": "secondary-z",
+    "controllerport": "3333",
+    "initialz0": "6500",
+    "minz": "500",
+    "maxz": "18500",
+    "allowedzerror": "1",
+    "zdeadzonewidth": "5",
+    "dztweak": "+30",
+    "dzdzenithdistance": "+352.0",
+    "dzdha": "-6.5",
+    "dzddelta": "-14.0",
+    "dzdT": "35.0",
+    "temperaturesensor": "dome-temperature"
+  },
+  "site": {
+    "latitude": "+31:02:43.0",
+    "longitude": "-115:28:00",
+    "altitude": "2790.0",
+    "civiltimezone": "America/Tijuana"
+  },
+  "target": {
+    "southdeltalimit": "-27:35:00",
+    "northdeltalimit": "+57:55:00",
+    "easthalimit": "-05:20:20",
+    "westhalimit": "+05:20:20",
+    "maxzenithdistancelimit": "79d",
+    "idleha": "0h",
+    "idledelta": "30d",
+    "pointingapertures": {
+      "default": [
+        "+0.0am",
+        "+0.0am"
+      ],
+      "rcenter": [
+        "+0.0am",
+        "+0.0am"
+      ],
+      "icenter": [
+        "+0.0am",
+        "+0.0am"
+      ],
+      "zcenter": [
+        "+0.0am",
+        "+0.0am"
+      ],
+      "ricenter": [
+        "+0.0am",
+        "+0.0am"
+      ],
+      "riZJcenter": [
+        "-1.4am",
+        "+0.1am"
+      ],
+      "riYHcenter": [
+        "+2.1am",
+        "+0.3am"
+      ],
+      "ZJcenter": [
+        "-2.3am",
+        "+0.7am"
+      ],
+      "YHcenter": [
+        "+3.5am",
+        "+1.0am"
+      ],
+      "nefinder": [
+        "-0.005685842385145498",
+        "+0.001172724616829814"
+      ],
+      "sefinder": [
+        "-0.004230721672753733",
+        "-0.010692308224369446"
+      ]
+    }
+  },
+  "weather": {
+    "windaveragespeedlimit": "45"
+  }
+}
+
+
+// The mount controller soft declination limits are -34:59:59 and +57:59:59
+// (inclusive). The mount hard limits in HA are ±5:30:00.
+// 
+// 
+// The mount limits are 10am beyond the target limits.
+//    "mountsouthdeltalimit": "-27:45:00",
+//    "mountnorthdeltalimit": "+58:05:00",
+//    "mounteasthalimit": "-05:21:00",
+//    "mountwesthalimit": "+05:21:00",
+// 
+// To be able to observe GRB 130122A.
+// /config::setvalue targetnorthdeltalimit         "+59:35:00"
+// /config::setvalue mountnorthdeltalimit          "+59:40:00"
+// 
+// To be able to observer GRB 130419A.
+// /config::setvalue targeteasthalimit            "-05:25:00"
+// /config::setvalue targetwesthalimit            "+05:25:00"
+// /config::setvalue mounteasthalimit             "-05:27:00"
+// /config::setvalue mountwesthalimit             "+05:27:00"
+// 
+//    "supervisorwithplc": "false",
+// 
+// 
+//    "fitsheaderservers": "{",
+//   moon 
+//   mount 
+//   sensors 
+//   secondary
+//   sun 
+//   target 
+//   weather
+// }
+// 
+//    "instrumentdetectors": "{ "C0" "C1" "C2" "C3" }",
+//    "instrumentidlefilterwheelpositions": "{ "r"  ""    ""  ""   }",
+//    "instrumentoutletgroups": "{ "science-ccd-pump" }",
+//    "instrumentpointingdetectors": "{ "C1" }",
+// 
+// 
+// 2015-06-03
+// 
+//    "guidereastgain": "-0.5",
+//    "guidernorthgain": "-0.5",
+// 
+//    "finders": "{",
+//   nefinder
+//   sefinder
+// }
+// 
+// Secondary z0 value from 2013-03.
+//    "secondaryinitialz0": "6400",
+// 
+// Finder focuser values determined 2015-08-05.
+//    "nefinderfocuserinitialposition": "900",
+// Finder focuser values determined 2015-08-05.
+//    "sefinderfocuserinitialposition": "900",
+// 
+// nefinder->C1 pointing model from 2012-12-01.
+//    "nefinderpointingmodelparameters": "{",
+//   ID 0.001172724616829814
+//   CH 0.005685842385145498
+//   TF 0.0005557820545917196
+//   PXD -5.739428252316131e-05
+//   PXH -3.829445767034429e-05
+//   PDD -0.00015076829979477878
+//   PDH -2.0153042921818306e-05
+//   PXD2 4.710492734205875e-05
+//   PXDH 2.7998725294985172e-05
+//   PXH2 0.00010151415908659922
+//   PDD2 0.00012000944747220974
+//   PDDH 1.594716198114816e-05
+//   PDH2 0.00011748745500824078
+// }
+// 
+// sefinder->C1 pointing model from 2012-10-27/28/31.
+//    "sefinderpointingmodelparameters": "{",
+//   ID -0.010692308224369446
+//   CH 0.004230721672753733
+//   TF 0.00046325793363857646
+//   PXD 1.375228342951329e-06
+//   PXH -3.3526524143720686e-06
+//   PDD -2.2141872634801845e-05
+//   PDH 1.6481509756466534e-05
+//   PXD2 7.315276054862623e-05
+//   PXDH 3.1845332089947575e-06
+//   PXH2 8.878162777549892e-05
+//   PDD2 -2.5914516517080327e-05
+//   PDDH -1.697474636767768e-05
+//   PDH2 5.091854922385925e-06
+// }
+// 
+//    "mounttype": "ratir",
+// 
+// C1 pointing model is from 2013-03-02.
+//    "mountpointingmodelparameters": "{",
+//   IH 0.006533668242404539
+//   ID 0.007929685881814245
+//   CH -0.0026209213938258894
+//   NP -4.680493297568115e-05
+//   MA 0.00012641691268718878
+//   ME 0.00017322259785379566
+//   TF 0.0003755179464592134
+//   HHSH 0.0015396083794900325
+//   HHCH -0.0006592977329989079
+//   HDSD 0.00013017678456448128
+//   HDCD -0.0008225964782655859
+//   HHSH2 -0.0007669133481851367
+//   HHCH2 0.00029049382856910006
+//   HDSD2 -0.0002654818427167385
+//   HDCD2 0.0003500303048745197
+// }
+// 
+// set nefinderCH [dict get [config::getvalue nefinderpointingmodelparameters] CH]
+// set nefinderID [dict get [config::getvalue nefinderpointingmodelparameters] ID]
+// set sefinderCH [dict get [config::getvalue sefinderpointingmodelparameters] CH]
+// set sefinderID [dict get [config::getvalue sefinderpointingmodelparameters] ID]
+// 
+// Finder offsets should be {-CH +ID}
+//    "pointingapertures": "[dict create \",
+//   ""           {+0.0am +0.0am} \
+//   "default"    {+0.0am +0.0am} \
+//   "rcenter"    {+0.0am +0.0am} \
+//   "icenter"    {+0.0am +0.0am} \
+//   "zcenter"    {+0.0am +0.0am} \
+//   "ricenter"   {+0.0am +0.0am} \
+//   "riZJcenter" {-1.4am +0.1am} \
+//   "riYHcenter" {+2.1am +0.3am} \
+//   "ZJcenter"   {-2.3am +0.7am} \
+//   "YHcenter"   {+3.5am +1.0am} \
+//   "nefinder"   [list [expr {-1 * $nefinderCH}] $nefinderID] \
+//   "sefinder"   [list [expr {-1 * $sefinderCH}] $sefinderID] \
+// ]
+// 
+//    "fitsheaderservers": "{",
+//   moon 
+//   mount 
+//   owsensors 
+//   sun 
+//   target 
+//   weather
+// }
+// 
+//    "ibbhostsdict": "{",
+//   "rack-ibb"  16
+//   "ics-cabinet-ibb"  16
+//   "dome-ibb"         16
+//   "dome-cabinet-ibb" 8
+//   "telescope-ibb"    16
+//   "instrument-ibb"   16
+// }
+// 
+//    "ibboutletgroupaddressesdict": "{",
+//   
+//     "mount"                {{dome-cabinet-ibb a 7}}
+//     "mount-motors"         {{dome-cabinet-ibb a 6}}
+//     "mount-adapter"        {{dome-cabinet-ibb a 5}}
+//     "inclinometers/covers" {{dome-ibb b 1}}
+//     "dome"                 {{dome-ibb b 4}}
+//     "shutters"             {{dome-ibb a 5}}
+//     "secondary"            {{dome-ibb a 6}}
+//     
+//     "nefinder-ccd"         {{telescope-ibb a 6}}
+//     "nefinder-focuser"     {{telescope-ibb a 1}}
+//     "sefinder-ccd"         {{telescope-ibb a 7}}
+//     "sefinder-focuser"     {{telescope-ibb a 3}}
+//     "finder-usb-rex"       {{telescope-ibb a 4}}
+// 
+//     "science-ccd-pump"     {{rack-ibb a 7}}
+//     "finder-ccd-pump"      {{rack-ibb a 8}}
+//     
+//     "C0-ccd"               {{instrument-ibb b 1}}
+//     "C0-focuser"           {{instrument-ibb b 6}}
+//     "C0-filter-wheel"      {{instrument-ibb b 4}}
+//     "C1-ccd"               {{instrument-ibb b 2}}
+//     "C1-focuser"           {{instrument-ibb b 8}}
+//     "C01-usb-rex"          {{instrument-ibb b 5}}
+//     
+//     "C23-detectors"        {{instrument-ibb a 1}}
+//     "C23-usb-rex"          {{instrument-ibb a 2}}
+// 
+//     "dome-lights"          {{dome-ibb b 6}}
+//     "hallway-light"        {{rack-ibb a 4}}
+//     
+//     "dome-fans"            {{dome-ibb a 2}}
+//     "compressor-fan"       {{dome-ibb a 4}}
+// 
+//     "compressor"           {{dome-ibb a 3}}
+//     "vacuum-pump"          {{dome-ibb b 5}}
+//     
+//     "alarm-bell"           {{dome-ibb b 8}}
+// }
+// 
+//    "ibbextraoutletgroupaddressesdict": "{",
+// 
+//     "firewall"             {{rack-ibb b 1}}
+//     "control"              {{rack-ibb b 2}}
+//     "services"             {{rack-ibb b 3}}
+//     "detectors"            {{rack-ibb b 4}}
+//     "irpc"                 {{rack-ibb a 6}}
+//     "cryostat"             {{dome-cabinet-ibb a 2}}
+//     
+//     "pressure-sensor"      {{instrument-ibb b 2}}
+//     "pressure-sensor-rex"  {{instrument-ibb b 1}}
+// 
+//     "machine-room-owhub"   {{rack-ibb a 1}}
+//     "dome-owhub"           {{dome-ibb a 8}}
+//     "telescope-owhub"      {{telescope-ibb a 8}}
+//     
+//     "ni-controller"        {{dome-ibb a 7}}
+//         
+// }
+// 
+//    "emergencystopdefaultoutletgroups": "{",
+//   "mount-motors"
+//   "mount"
+//   "dome"
+//   "shutters"
+//   "secondary"
+//   "dome-fans"
+// }
+// 
+//    "sensorsdict": "{",
+// 
+//   control-room-temperature          { file /usr/local/var/tcs/sensors/control/ow/26.D2A000000000/temperature      keyword CNTM  prettyname "control room temperature"                    group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-TL" identifier "26.D2A000000000" firmware "" }
+//   bathroom-temperature              { file /usr/local/var/tcs/sensors/control/ow/26.48A601000000/temperature      keyword BTTM  prettyname "bathroom temperature"                        group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-TL" identifier "26.48A601000000" firmware "" }
+//   machine-room-temperature          { file /usr/local/var/tcs/sensors/control/ow/26.8D9D00000000/temperature      keyword MCTM  prettyname "machine room temperature"                    group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-TL" identifier "26.8D9D00000000" firmware "" }
+//   dark-room-temperature             { file /usr/local/var/tcs/sensors/control/ow/26.76C201000000/temperature      keyword DKTM  prettyname "dark room temperature"                       group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-TL" identifier "26.76C201000000" firmware "" }
+//   cistern-room-temperature          { file /usr/local/var/tcs/sensors/control/ow/28.54908C020000/temperature      keyword CSTM  prettyname "cistern room temperature"                    group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-T"  identifier "28.54908C020000" firmware "" }
+//   hallway-temperature               { file /usr/local/var/tcs/sensors/control/ow/26.426901000000/temperature      keyword HLTM  prettyname "hallway temperature"                         group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-TL" identifier "26.426901000000" firmware "" }
+//   dome-temperature                  { file /usr/local/var/tcs/sensors/control/ow/26.4688E1010000/temperature      keyword DMTM  prettyname "dome temperature"                            group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-TL" identifier "26.4688E1010000" firmware "" }
+// 
+//   dome-cabinet-temperature          { file /usr/local/var/tcs/sensors/control/ow/28.6510A1020000/temperature      keyword DMCTM prettyname "dome cabinet temperature"                    group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-T"  identifier "28.6510A1020000" firmware ""}
+// 
+//   dome-humidity                     { file /usr/local/var/tcs/sensors/control/ow/26.4688E1010000/HIH4000/humidity keyword DMHM  prettyname "dome relative humidity"                      group "environmental-sensors" type "float" unit ""  model "iButtonLink MS-TH" identifier "26.4688E1010000" firmware "" }
+// 
+//   compressor-current                { file /usr/local/var/tcs/sensors/control/ow/26.69B340010000/VAD         keyword CMCR  prettyname "compressor current"                          group "environmental-sensors" type "float" unit "A" model "iButtonLink MS-TC" identifier "26.69B340010000" firmware "" }
+//   compressor-temperature            { file /usr/local/var/tcs/sensors/control/ow/28.3AF4E0020000/temperature keyword CMTM  prettyname "compressor temperature"                      group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-T"  identifier "28.3AF4E0020000" firmware ""}
+//   compressor-cabinet-temperature    { file /usr/local/var/tcs/sensors/control/ow/26.69B340010000/temperature keyword CMCTM prettyname "compressor cabinet temperature"              group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-TC" identifier "26.69B340010000" firmware ""}
+//   compressor-supply-temperature     { file /usr/local/var/tcs/sensors/control/ow/28.4720E1020000/temperature keyword CMSTM prettyname "compressor supply temperature"               group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-T"  identifier "28.4720E1020000" firmware ""}
+//   compressor-return-temperature     { file /usr/local/var/tcs/sensors/control/ow/28.A87E8C020000/temperature keyword CMRTM prettyname "compressor return temperature"               group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-T"  identifier "28.A87E8C020000" firmware ""}
+// 
+//   cryostat-external-temperature     { file /usr/local/var/tcs/sensors/control/ow/28.F806E1020000/temperature keyword CRTM  prettyname "cryostat external temperature"               group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-T"  identifier "28.F806E1020000" firmware ""}
+//   coldhead-external-temperature     { file /usr/local/var/tcs/sensors/control/ow/28.D4E8E0020000/temperature keyword CHTM  prettyname "coldhead external temperature"               group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-T"  identifier "28.D4E8E0020000" firmware ""}
+// 
+//   ccd-coolant-temperature           { file /usr/local/var/tcs/sensors/control/ow/28.219414060000/temperature keyword CCTM  prettyname "ccd coolant temperature"                     group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-T"  identifier "28.219414060000" firmware ""}
+//   finder-ccd-pump-temperature       { file /usr/local/var/tcs/sensors/control/ow/28.3CD8E0020000/temperature keyword FPTM  prettyname "finder ccd pump temperature"                 group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-T"  identifier "28.3CD8E0020000" firmware ""}
+//   science-ccd-pump-temperature      { file /usr/local/var/tcs/sensors/control/ow/28.8F08E1020000/temperature keyword SPTM  prettyname "science ccd pump temperature"                group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-T"  identifier "28.8F08E1020000" firmware ""}
+// 
+//   control-room-light-level          { file /usr/local/var/tcs/sensors/control/ow/26.D2A000000000/VAD         keyword CNLL  prettyname "control room light level"                    group "environmental-sensors" type "float" unit ""  model "iButtonLink MS-TL" identifier "26.D2A000000000" firmware ""}
+//   bathroom-light-level              { file /usr/local/var/tcs/sensors/control/ow/26.48A601000000/VAD         keyword BTLL  prettyname "bathroom light level"                        group "environmental-sensors" type "float" unit ""  model "iButtonLink MS-TL" identifier "26.48A601000000" firmware ""}
+//   machine-room-light-level          { file /usr/local/var/tcs/sensors/control/ow/26.8D9D00000000/VAD         keyword MCLL  prettyname "machine room light level"                    group "environmental-sensors" type "float" unit ""  model "iButtonLink MS-TL" identifier "26.8D9D00000000" firmware ""}
+//   dark-room-light-level             { file /usr/local/var/tcs/sensors/control/ow/26.76C201000000/VAD         keyword DRLL  prettyname "dark room light level"                       group "environmental-sensors" type "float" unit ""  model "iButtonLink MS-TL" identifier "26.76C201000000" firmware ""}
+//   hallway-light-level               { file /usr/local/var/tcs/sensors/control/ow/26.426901000000/VAD         keyword HLLL  prettyname "hallway light level"                         group "environmental-sensors" type "float" unit ""  model "iButtonLink MS-TL" identifier "26.426901000000" firmware ""}
+//   dome-light-level                  { file /usr/local/var/tcs/sensors/control/ow/26.D8B801000000/VAD         keyword DMLL  prettyname "dome light level"                            group "environmental-sensors" type "float" unit ""  model "iButtonLink MS-TL" identifier "26.D8B801000000" firmware ""}
+// 
+//   host-services-load                 { file /usr/local/var/tcs/sensors/services/load                         keyword ""    prettyname "load on host services"                       group "host-services"   type "float" unit "processes" model "" identifier "" firmware "" }
+//   host-control-load                  { file /usr/local/var/tcs/sensors/control/load                          keyword ""    prettyname "load on host control"                        group "host-control"    type "float" unit "processes" model "" identifier "" firmware "" }
+//   host-detectors-load                { file /usr/local/var/tcs/sensors/detectors/load                       keyword ""    prettyname "load on host instrument"                     group "host-instrument" type "float" unit "processes" model "" identifier "" firmware "" }
+// 
+//   host-services-disk-space-used      { file /usr/local/var/tcs/sensors/services/disk-space-used              keyword ""    prettyname "relative disk space used on host services"   group "host-services"   type "float" unit "" model "" identifier "" firmware "" }
+//   host-control-disk-space-used       { file /usr/local/var/tcs/sensors/control/disk-space-used               keyword ""    prettyname "relative disk space used on host control"    group "host-control"    type "float" unit "" model "" identifier "" firmware "" }
+//   host-detectors-disk-space-used    { file /usr/local/var/tcs/sensors/detectors/disk-space-used            keyword ""    prettyname "relative disk space used on host instrument" group "host-instrument" type "float" unit "" model "" identifier "" firmware "" }
+//   
+//   C0-detector-detector-temperature   { file /usr/local/var/tcs/sensors/detectors/C0-detector-detector-temperature   keyword ""   prettyname "C0 detector temperature"   group "detector-C0" type "float"   unit "C" model "FLI PL3041"   identifier "PL0212309"  firmware "" }
+//   C0-detector-housing-temperature    { file /usr/local/var/tcs/sensors/detectors/C0-detector-housing-temperature    keyword ""   prettyname "C0 housing temperature"    group "detector-C0" type "float"   unit "C" model "FLI PL3041"   identifier "PL0212309"  firmware "" }
+//   C0-detector-cooler-set-temperature { file /usr/local/var/tcs/sensors/detectors/C0-detector-cooler-set-temperature keyword ""   prettyname "C0 cooler set temperature" group "detector-C0" type "float"   unit "C" model "FLI PL3041"   identifier "PL0212309"  firmware "" }
+//   C0-detector-cooler-power           { file /usr/local/var/tcs/sensors/detectors/C0-detector-cooler-power           keyword ""   prettyname "C0 relative cooler power"  group "detector-C0" type "float"   unit ""  model "FLI PL3041"   identifier "PL0212309"  firmware "" }
+//   C0-detector-cooler-state           { file /usr/local/var/tcs/sensors/detectors/C0-detector-cooler-state           keyword ""   prettyname "C0 cooler state"           group "detector-C0" type "string"  unit ""  model "FLI PL3041"   identifier "PL0212309"  firmware "" }
+//   C0-focuser-position                { file /usr/local/var/tcs/sensors/detectors/C0-focuser-position                keyword ""   prettyname "C0 focuser position"       group "detector-C0" type "integer" unit ""  model "FLI PDF"      identifier "PDF0034613" firmware "" }
+//   C0-filter-wheel-position           { file /usr/local/var/tcs/sensors/detectors/C0-filter-wheel-position           keyword ""   prettyname "C0 filter wheel position"  group "detector-C0" type "integer" unit ""  model "FLI CFW-6-10" identifier ""           firmware "" }
+// 
+//   C1-detector-detector-temperature   { file /usr/local/var/tcs/sensors/detectors/C1-detector-detector-temperature   keyword ""   prettyname "C1 detector temperature"   group "detector-C1" type "float"   unit "C" model "FLI PL3041"   identifier "PL0154809"  firmware "" }
+//   C1-detector-housing-temperature    { file /usr/local/var/tcs/sensors/detectors/C1-detector-housing-temperature    keyword ""   prettyname "C1 housing temperature"    group "detector-C1" type "float"   unit "C" model "FLI PL3041"   identifier "PL0154809"  firmware "" }
+//   C1-detector-cooler-set-temperature { file /usr/local/var/tcs/sensors/detectors/C1-detector-cooler-set-temperature keyword ""   prettyname "C1 cooler set temperature" group "detector-C1" type "float"   unit "C" model "FLI PL3041"   identifier "PL0154809"  firmware "" }
+//   C1-detector-cooler-power           { file /usr/local/var/tcs/sensors/detectors/C1-detector-cooler-power           keyword ""   prettyname "C1 relative cooler power"  group "detector-C1" type "float"   unit ""  model "FLI PL3041"   identifier "PL0154809"  firmware "" }
+//   C1-detector-cooler-state           { file /usr/local/var/tcs/sensors/detectors/C1-detector-cooler-state           keyword ""   prettyname "C1 cooler state"           group "detector-C1" type "string"  unit ""  model "FLI PL3041"   identifier "PL0154809"  firmware "" }
+//   C1-focuser-position                { file /usr/local/var/tcs/sensors/detectors/C1-focuser-position                keyword ""   prettyname "C1 focuser position"       group "detector-C1" type "integer" unit ""  model "FLI PDF"      identifier ""           firmware "" }
+//   C1-filter-wheel-position           { file /usr/local/var/tcs/sensors/detectors/C1-filter-wheel-position           keyword ""   prettyname "C1 filter wheel position"  group "detector-C1" type "integer" unit ""  model ""             identifier ""           firmware "" }
+// 
+// }
+// 
+//    "sensorslognames": "{",
+// 
+//   control-room-temperature
+//   bathroom-temperature
+//   machine-room-temperature
+//   dark-room-temperature
+//   cistern-room-temperature
+//   hallway-temperature
+//   dome-temperature
+//   
+//   control-room-light-level
+//   bathroom-light-level
+//   machine-room-light-level
+//   dark-room-light-level
+//   hallway-light-level
+//   dome-light-level
+// 
+//   dome-cabinet-temperature
+// 
+//   compressor-current
+//   compressor-cabinet-temperature
+//   compressor-supply-temperature
+//   compressor-return-temperature
+// 
+//   cryostat-external-temperature
+//   coldhead-external-temperature
+// 
+//   ccd-coolant-temperature
+//   finder-ccd-pump-temperature
+//   science-ccd-pump-temperature
+//   
+//   compressor-temperature
+// 
+// }
+// 
+//    "safetyswitchtype": "none",
+//    "executortype": "ratiroan",
+//    "telescopetype": "ratiroan",
+//    "telescopecloseexplicitly": "true",
+//    "supervisorinternalhumiditysensor": "dome-humidity",
+// 
+//    "gcntanswiftalertprojectnumber": "1000",
+//    "gcntanfermialertprojectnumber": "1001",
+//    "gcntanlvcalertprojectnumber": "1002",
+//    "gcntanserverpacketport": "5328",
+
