@@ -73,6 +73,15 @@ namespace eval "sensors" {
     return [dict get $sensors $name "keyword"]
   }
 
+  proc getsensorcorrectionmodel {name} {
+    variable sensors
+    if {[dict exists $sensors $name "correctionmodel"]} {
+      return [dict get $sensors $name "correctionmodel"]
+    } else {
+      return ""
+    }
+  }
+
   proc getsensorkeywords {} {
     set keywords {}
     foreach name [getsensornames] {
@@ -81,12 +90,15 @@ namespace eval "sensors" {
     return $keywords
   }
 
-  proc getsensorvalue {name} {
+  ######################################################################
+
+  proc getsensorrawvalue {name} {
+    # Read a sensor value from the  associated file and perform basic unit conversion.
     if {[catch {open [getsensorfile $name]} channel]} {
       log::debug "failed to open sensor file for $name."
       return ""
     }
-    if {[catch {coroutine::gets $channel 5000} rawvalue]} {
+    if {[catch {coroutine::gets $channel 5000} filevalue]} {
       log::debug "failed to read sensor file for $name."
       close $channel
       return ""
@@ -95,45 +107,45 @@ namespace eval "sensors" {
     if {[catch {
       switch -glob $name {
         "*-temperature" {
-          set value [format "%+.1f" $rawvalue]
+          set rawvalue [format "%+.2f" $filevalue]
         }
         "*-pressure" {
-          set value [format "%.0f" $rawvalue]
+          set rawvalue [format "%.1f" $filevalue]
         }
         "*-humidity" {
-          set value [format "%.2f" [expr {$rawvalue / 100}]]
+          set rawvalue [format "%.3f" [expr {$filevalue / 100}]]
         }
         "*-light-level" {
           switch [getsensormodel $name] {
             "iButtonLink MS-TL" {
-              if {$rawvalue == 10.23} {
-                set rawvalue 0.0
+              if {$filevalue == 10.23} {
+                set filevalue 0.0
               }
-              set value [format "%.2f" [expr {$rawvalue / 10.22}]]
+              set rawvalue [format "%.3f" [expr {$filevalue / 10.22}]]
             }
             default {
-              set value $rawvalue
+              set rawvalue $filevalue
             }
           }
         }
         "*-current" {
           switch [getsensormodel $name] {
             "iButtonLink MS-TC" {
-              set value [format "%.1f" [expr {$rawvalue / 3.78 * 20.0}]]
+              set rawvalue [format "%.2f" [expr {$filevalue / 3.78 * 20.0}]]
             }
             default {
-              set value $rawvalue
+              set rawvalue $filevalue
             }
           }
         }         
         default {
-          set value $rawvalue
+          set rawvalue $filevalue
         }
       }
     }]} {
-     set value $rawvalue
+     set rawvalue $filevalue
     }
-    return $value      
+    return $rawvalue      
   }
   
   proc getsensortimestamp {name} {
@@ -146,14 +158,34 @@ namespace eval "sensors" {
   }
   
   ######################################################################
+  
+  proc correctsensorrawvalue {name rawvalue} {
+    set correctionmodel [getsensorcorrectionmodel $name]
+    if {[string equal $correctionmodel ""]} {
+      set value $rawvalue
+    } elseif {
+      [scan $correctionmodel "MS-T:1.0:%f" a] == 1 ||
+      [scan $correctionmodel "ENV-T:1.0:%f" a] == 1
+    } {
+      set value [expr {$rawvalue - $a}]
+      set value [format "+%.2f" $value]
+    } else {
+      error "invalid correction model \"$correctionmodel\" for sensor \"$name\"."
+    }
+    return $value
+  }
+  
+  ######################################################################
 
   proc updatedata {} {
     set timestampseconds [utcclock::seconds]
     server::setdata "names" [getsensornames]
     foreach name [getsensornames] {
-        set value     [getsensorvalue     $name]
         set timestamp [getsensortimestamp $name]
+        set rawvalue  [getsensorrawvalue  $name]
+        set value     [correctsensorrawvalue $name $rawvalue]
         server::setdata $name $value
+        server::setdata "${name}-raw" $rawvalue
         server::setdata "${name}-timestamp" $timestamp
     }
     server::setdata "timestamp" [utcclock::combinedformat $timestampseconds]
