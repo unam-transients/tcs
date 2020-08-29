@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>WorksheetContents</key>
+	<string>cd ~/Documents/GitHub/tcs
+pwd
+/Users/Alan/Documents/GitHub/tcs
+
+for host in services control detectors; do echo -n "rsyning to $host ... "; rsync -ah --delete . colibricu-${host}:svn/ &amp;&amp; echo done. ; done
+</string>
+</dict>
+</plist>
