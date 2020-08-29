@@ -605,72 +605,28 @@
         "identifier": "26.F3961A020000",
         "firmware": ""
       },
-//       "control-room-humidity": {
-//         "file": "/usr/local/var/tcs/sensors/control/ow/26.F3961A020000/HIH4000/humidity",
-//         "keyword": "CRHM",
-//         "prettyname": "control room relative humidity",
-//         "group": "environmental-sensors",
-//         "type": "float",
-//         "unit": "",
-//         "model": "iButtonLink MS-TH",
-//         "identifier": "26.F3961A020000",
-//         "firmware": ""
-//       },
-//       "electronics-humidity": {
-//         "file": "/usr/local/var/tcs/sensors/detectors/ow/26.FE7D1A020000/HIH4000/humidity",
-//         "keyword": "DEHM",
-//         "prettyname": "electronics relative humidity",
-//         "group": "environmental-sensors",
-//         "type": "float",
-//         "unit": "",
-//         "model": "iButtonLink MS-TH",
-//         "identifier": "26.FE7D1A020000",
-//         "firmware": ""
-//       },
-//       "external-humidity": {
-//         "file": "/usr/local/var/tcs/sensors/detectors/ow/7E.983100001000/EDS0068/humidity",
-//         "keyword": "DXHM",
-//         "prettyname": "external relative humidity",
-//         "group": "environmental-sensors",
-//         "type": "float",
-//         "unit": "",
-//         "model": "EDS OW-ENV-THPL",
-//         "identifier": "7E.983100001000",
-//         "firmware": ""
-//       },
-//       "internal-humidity": {
-//         "file": "/usr/local/var/tcs/sensors/detectors/ow/26.477E1A020000/HIH4000/humidity",
-//         "keyword": "DIHM",
-//         "prettyname": "internal relative humidity",
-//         "group": "environmental-sensors",
-//         "type": "float",
-//         "unit": "",
-//         "model": "iButtonLink MS-TH",
-//         "identifier": "26.477E1A020000",
-//         "firmware": ""
-//       },
-//       "external-light-level": {
-//         "file": "/usr/local/var/tcs/sensors/detectors/ow/7E.983100001000/EDS0068/light",
-//         "keyword": "DXLL",
-//         "prettyname": "external light level",
-//         "group": "environmental-sensors",
-//         "type": "float",
-//         "unit": "lx",
-//         "model": "EDS OW-ENV-THPL",
-//         "identifier": "7E.983100001000",
-//         "firmware": ""
-//       },
-//       "external-pressure": {
-//         "file": "/usr/local/var/tcs/sensors/detectors/ow/7E.983100001000/EDS0068/pressure",
-//         "keyword": "DXPR",
-//         "prettyname": "external pressure",
-//         "group": "environmental-sensors",
-//         "type": "float",
-//         "unit": "mbar",
-//         "model": "EDS OW-ENV-THPL",
-//         "identifier": "7E.983100001000",
-//         "firmware": ""
-//       },
+      "instrument-external-light-level": {
+        "file": "/usr/local/var/tcs/sensors/detectors/ow/7E.983100001000/EDS0068/light",
+        "keyword": "CE2LL",
+        "prettyname": "instrument external light level",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "lx",
+        "model": "EDS OW-ENV-THPL",
+        "identifier": "7E.983100001000",
+        "firmware": ""
+      },
+      "instrument-external-pressure": {
+        "file": "/usr/local/var/tcs/sensors/detectors/ow/7E.983100001000/EDS0068/pressure",
+        "keyword": "DXPR",
+        "prettyname": "instrument external pressure",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "mbar",
+        "model": "EDS OW-ENV-THPL",
+        "identifier": "7E.983100001000",
+        "firmware": ""
+      },
 // 
 //       "26.BCB01A020000-temperature": {
 //         "file": "/usr/local/var/tcs/sensors/detectors/ow/26.BCB01A020000/temperature",
