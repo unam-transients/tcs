@@ -168,7 +168,22 @@ namespace eval "sensors" {
       [scan $correctionmodel "ENV-T:1.0:%f" a] == 1
     } {
       set value [expr {$rawvalue - $a}]
-      set value [format "+%.2f" $value]
+      set value [format "+%.2f" $value]      
+    } elseif {
+      [scan $correctionmodel "MS-H:1.0:%f:%f:%f:%f" al bl ah bh] == 4 ||
+      [scan $correctionmodel "ENV-H:1.0:%f:%f:%f:%f" al bl ah bh] == 4
+    } {
+      set cl [expr {$al + $rawvalue * $bl}]
+      set ch [expr {$ah + $rawvalue * $bh}]
+      if {$rawvalue < 0.30} {
+        set c $cl
+      } elseif {$rawvalue < 0.40} {
+        set c [expr {($cl * (0.4 - $rawvalue) + $ch * ($rawvalue - 0.3)) / 0.1}]
+      } else {
+        set c $ch
+      }
+      set value [expr {$rawvalue - $c}]
+      set value [format "%.3f" $value]
     } else {
       error "invalid correction model \"$correctionmodel\" for sensor \"$name\"."
     }
