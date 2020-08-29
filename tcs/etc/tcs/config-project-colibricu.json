@@ -436,6 +436,7 @@
         "group": "environmental-sensors",
         "type": "float",
         "unit": "C",
+        "correctionmodel": "ENV-T:1.0:+0.24",
         "model": "EDS OW-ENV-THPL",
         "identifier": "7E.983100001000",
         "firmware": ""
@@ -447,6 +448,7 @@
         "group": "environmental-sensors",
         "type": "float",
         "unit": "C",
+        "correctionmodel": "MS-T:1.0:-0.83",
         "model": "iButtonLink MS-TH",
         "identifier": "26.BCB01A020000",
         "firmware": ""
@@ -458,6 +460,7 @@
         "group": "environmental-sensors",
         "type": "float",
         "unit": "C",
+        "correctionmodel": "MS-T:1.0:-0.21",
         "model": "iButtonLink MS-TH",
         "identifier": "26.477E1A020000",
         "firmware": ""
@@ -469,6 +472,7 @@
         "group": "environmental-sensors",
         "type": "float",
         "unit": "C",
+        "correctionmodel": "MS-T:1.0:-0.50",
         "model": "iButtonLink MS-TH",
         "identifier": "26.E9AE1A020000",
         "firmware": ""
@@ -480,6 +484,7 @@
         "group": "environmental-sensors",
         "type": "float",
         "unit": "C",
+        "correctionmodel": "MS-T:1.0:-0.20",
         "model": "iButtonLink MS-TH",
         "identifier": "26.FAAE1A020000",
         "firmware": ""
@@ -491,6 +496,7 @@
         "group": "environmental-sensors",
         "type": "float",
         "unit": "C",
+        "correctionmodel": "MS-T:1.0:-0.43",
         "model": "iButtonLink MS-TH",
         "identifier": "26.659DE1010000",
         "firmware": ""
@@ -502,6 +508,7 @@
         "group": "environmental-sensors",
         "type": "float",
         "unit": "C",
+        "correctionmodel": "MS-T:1.0:-1.26",
         "model": "iButtonLink MS-TH",
         "identifier": "26.FE7D1A020000",
         "firmware": ""
@@ -512,6 +519,7 @@
         "prettyname": "blue service cabinet internal temperature",
         "group": "environmental-sensors",
         "type": "float",
+        "correctionmodel": "MS-T:1.0:-0.74",
         "unit": "C",
         "model": "iButtonLink MS-TH",
         "identifier": "26.F3961A020000",
