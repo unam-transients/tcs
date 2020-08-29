@@ -60,7 +60,7 @@ if {[catch {
 # Print the response.
 if {[string equal $command "status"]} {
   foreach {key value} $result {
-    puts [format "%-32.32s %s" $key $value]
+    puts [format "%-48.48s %s" $key $value]
   }
 } elseif {![string equal $result ""]} {
   puts $result
