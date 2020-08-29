@@ -162,11 +162,9 @@ td.summary, emph.summary {
 }
 
 td.warning, emph.warning {
-  font-weight:        bold;
   background-color:   #fea;
 }
 
 td.error, emph.error {
-  font-weight:        bold;
-  background-color:   #f88;
+  background-color:   #f99;
 }
