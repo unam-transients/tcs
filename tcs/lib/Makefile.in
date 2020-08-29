@@ -68,13 +68,8 @@ installs_project_colibricito	:=	\
 	filterwheelqsi.so
 	
 installs_project_colibricu	:=	\
-	detectorqsi.so			\
-	detectorfli.so			\
 	detectorsi.so			\
-	detectordummy.so		\
-	filterwheelnull.so		\
-	filterwheelfli.so		\
-	filterwheelqsi.so
+	filterwheelfli.so
 
 ########################################################################
 
