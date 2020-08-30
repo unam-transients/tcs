@@ -31,15 +31,16 @@ umask 0; PATH=/usr/local/opt/tcl-tk/bin:$PATH exec tclsh8.6 -encoding "utf-8" "$
 source [file join [file dirname [info script]] ".." "lib" "tcs" "packages.tcl"]
 
 package require "directories"
-package require "sensorsclient"
+package require "client"
+package require "config"
 package require "utcclock"
 
-if {[catch {sensorsclient::update} message]} {
+if {[catch {client::update "sensors"} message]} {
   puts stderr "logsensors: error: unable to update sensors data: $message"
   exit 1
 }
 
-set status [sensorsclient::getstatus]
+set status [client::getstatus "sensors"]
 if {![string equal $status "ok"]} {
   puts stderr "logsensors: error: sensors status is \"$status\"."
   exit 1
@@ -59,7 +60,8 @@ if {[catch {set channel [open $filename "w"]}]} {
 
 if {[catch {
 
-  set sensors [config::getvalue "sensors" "dict"]
+  set lognames [config::getvalue "sensors" "lognames"]
+  set sensors  [config::getvalue "sensors" "sensors"]
 
   puts $channel "\{"
   puts $channel "  \"frame_model\": \"0.0\","
@@ -67,30 +69,43 @@ if {[catch {
   puts $channel "  \"entities\": \["
 
   set first true
-  foreach name [sensorsclient::getdata "names"] {
+  foreach name $lognames {
     if {!$first} {
       puts $channel "    ,"
     }
-    set value     [sensorsclient::getdata $name]
-    set timestamp [sensorsclient::getdata ${name}-timestamp]
-    if {![string equal $value ""] && ![string equal $timestamp ""]} {
+    set value     [client::getdata "sensors" $name]
+    set timestamp [client::getdata "sensors" ${name}-timestamp]
+    set rawvalue  [client::getdata "sensors" ${name}-raw]
+    if {![string equal $rawvalue ""] && ![string equal $timestamp ""]} {
       set errorcode 0
     } else {
       set errorcode 1
     }
+    set prettyname [dict get $sensors $name prettyname]
+    set model      [dict get $sensors $name model]
+    set identifier [dict get $sensors $name identifier]
+    set firmware   [dict get $sensors $name firmware]
+    set type       [dict get $sensors $name type]
+    set unit       [dict get $sensors $name unit]
+    if {[dict exists $sensors $name correctionmodel]} {
+      set correctionmodel [dict get $sensors $name correctionmodel]
+    } else {
+      set correctionmodel ""
+    }
     set first false
     puts $channel "    \{"
-    puts $channel "      \"device_name\"       : \"$name\","
-    puts $channel "      \"device_value\"      : \"[sensorsclient::getdata $name]\","
-    puts $channel "      \"device_date\"       : \"[sensorsclient::getdata ${name}-timestamp]\","
-    puts $channel "      \"device_group\"      : \"[dict get $sensors ${name} group]\","
-    puts $channel "      \"device_pretty_name\": \"[dict get $sensors ${name} prettyname]\","
-    puts $channel "      \"device_model\"      : \"[dict get $sensors ${name} model]\","
-    puts $channel "      \"device_identifier\" : \"[dict get $sensors ${name} identifier]\","
-    puts $channel "      \"device_firmware\"   : \"[dict get $sensors ${name} firmware]\","
-    puts $channel "      \"device_type\"       : \"[dict get $sensors ${name} type]\","
-    puts $channel "      \"device_unit\"       : \"[dict get $sensors ${name} unit]\","
-    puts $channel "      \"device_error_code\" : $errorcode"
+    puts $channel "      \"device_name\"            : \"$name\","
+    puts $channel "      \"device_value\"           : \"$value\","
+    puts $channel "      \"device_date\"            : \"$timestamp\","
+    puts $channel "      \"device_pretty_name\"     : \"$prettyname\","
+    puts $channel "      \"device_model\"           : \"$model\","
+    puts $channel "      \"device_identifier\"      : \"$identifier\","
+    puts $channel "      \"device_firmware\"        : \"$firmware\","
+    puts $channel "      \"device_type\"            : \"$type\","
+    puts $channel "      \"device_unit\"            : \"$unit\","
+    puts $channel "      \"device_correction_model\": \"$correctionmodel\","
+    puts $channel "      \"device_raw_value\"       : \"$rawvalue\","
+    puts $channel "      \"device_error_code\"      : $errorcode"
     puts $channel "    \}"
   }
 
