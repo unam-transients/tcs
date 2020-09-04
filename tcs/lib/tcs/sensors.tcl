@@ -107,13 +107,13 @@ namespace eval "sensors" {
     if {[catch {
       switch -glob $name {
         "*-temperature" {
-          set rawvalue [format "%+.2f" $filevalue]
+          set rawvalue $filevalue
         }
         "*-pressure" {
-          set rawvalue [format "%.2f" $filevalue]
+          set rawvalue $filevalue
         }
         "*-humidity" {
-          set rawvalue [format "%.3f" [expr {$filevalue / 100}]]
+          set rawvalue [expr {$filevalue / 100}]
         }
         "*-light-level" {
           switch [getsensormodel $name] {
@@ -121,7 +121,7 @@ namespace eval "sensors" {
               if {$filevalue == 10.23} {
                 set filevalue 0.0
               }
-              set rawvalue [format "%.3f" [expr {$filevalue / 10.22}]]
+              set rawvalue [expr {$filevalue / 10.22}]
             }
             default {
               set rawvalue $filevalue
@@ -131,7 +131,7 @@ namespace eval "sensors" {
         "*-current" {
           switch [getsensormodel $name] {
             "iButtonLink MS-TC" {
-              set rawvalue [format "%.2f" [expr {$filevalue / 3.78 * 20.0}]]
+              set rawvalue [expr {$filevalue / 3.78 * 20.0}]
             }
             default {
               set rawvalue $filevalue
@@ -168,7 +168,6 @@ namespace eval "sensors" {
       [scan $correctionmodel "ENV-T:1.0:%f" a] == 1
     } {
       set value [expr {$rawvalue - $a}]
-      set value [format "+%.2f" $value]      
     } elseif {
       [scan $correctionmodel "MS-H:1.0:%f:%f:%f:%f" al bl ah bh] == 4 ||
       [scan $correctionmodel "ENV-H:1.0:%f:%f:%f:%f" al bl ah bh] == 4
@@ -183,14 +182,34 @@ namespace eval "sensors" {
         set c $ch
       }
       set value [expr {$rawvalue - $c}]
-      set value [format "%.3f" $value]
     } elseif {
         [scan $correctionmodel "ENV-P:1.0:%f" a] == 1
     } {
       set value [expr {$rawvalue - $a}]
-      set value [format "%.2f" $value]      
     } else {
       error "invalid correction model \"$correctionmodel\" for sensor \"$name\"."
+    }
+    return $value
+  }
+  
+  ######################################################################
+  
+  proc formatsensorvalue {name value} {
+    if {[string is double -strict $value]} {
+      switch -glob $name {
+        *-temperature {
+          set value [format "%+.1f" $value]
+        }
+        *-humidity {
+          set value [format "%.2f" $value]
+        }
+        *-pressure {
+          set value [format "%.1f" $value]
+        }
+        *-current {
+          set value [format "%.1f" $value]
+        }
+      }
     }
     return $value
   }
@@ -203,7 +222,7 @@ namespace eval "sensors" {
     foreach name [getsensornames] {
         set timestamp [getsensortimestamp $name]
         set rawvalue  [getsensorrawvalue  $name]
-        set value     [correctsensorrawvalue $name $rawvalue]
+        set value     [formatsensorvalue $name [correctsensorrawvalue $name $rawvalue]]
         server::setdata $name $value
         server::setdata "${name}-raw" $rawvalue
         server::setdata "${name}-timestamp" $timestamp
