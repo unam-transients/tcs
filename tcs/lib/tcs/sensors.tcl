@@ -110,7 +110,7 @@ namespace eval "sensors" {
           set rawvalue [format "%+.2f" $filevalue]
         }
         "*-pressure" {
-          set rawvalue [format "%.1f" $filevalue]
+          set rawvalue [format "%.2f" $filevalue]
         }
         "*-humidity" {
           set rawvalue [format "%.3f" [expr {$filevalue / 100}]]
@@ -184,6 +184,11 @@ namespace eval "sensors" {
       }
       set value [expr {$rawvalue - $c}]
       set value [format "%.3f" $value]
+    } elseif {
+        [scan $correctionmodel "ENV-P:1.0:%f" a] == 1
+    } {
+      set value [expr {$rawvalue - $a}]
+      set value [format "%.2f" $value]      
     } else {
       error "invalid correction model \"$correctionmodel\" for sensor \"$name\"."
     }
