@@ -642,7 +642,7 @@
       "host-services-disk-space-used": {
         "file": "/usr/local/var/tcs/sensors/services/disk-space-used",
         "keyword": "",
-        "prettyname": "disk space used on host services",
+        "prettyname": "relative disk space used on host services",
         "group": "host-services",
         "type": "float",
         "unit": "",
@@ -653,7 +653,7 @@
       "host-control-disk-space-used": {
         "file": "/usr/local/var/tcs/sensors/control/disk-space-used",
         "keyword": "",
-        "prettyname": "disk space used on host control",
+        "prettyname": "relative disk space used on host control",
         "group": "host-control",
         "type": "float",
         "unit": "",
@@ -664,7 +664,7 @@
       "host-detectors-disk-space-used": {
         "file": "/usr/local/var/tcs/sensors/detectors/disk-space-used",
         "keyword": "",
-        "prettyname": "disk space used on host detectors",
+        "prettyname": "relative disk space used on host detectors",
         "group": "host-detectors",
         "type": "float",
         "unit": "",
@@ -755,7 +755,7 @@
         "prettyname": "C0 cooler state",
         "group": "detector-C0",
         "type": "string",
-        "unit": "",
+        "unit": "state",
         "model": "SI 1100",
         "identifier": "167",
         "firmware": ""
