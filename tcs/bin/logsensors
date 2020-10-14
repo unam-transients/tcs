@@ -64,9 +64,9 @@ if {[catch {
   set sensors  [config::getvalue "sensors" "sensors"]
 
   puts $channel "\{"
-  puts $channel "  \"frame_model\": \"0.0\","
+  puts $channel "  \"frame_model\": \"1.0\","
   puts $channel "  \"producer_name\": \"TCS\","
-  puts $channel "  \"entities\": \["
+  puts $channel "  \"devices\": \["
 
   set first true
   foreach name $lognames {
@@ -94,18 +94,18 @@ if {[catch {
     }
     set first false
     puts $channel "    \{"
-    puts $channel "      \"device_name\"            : \"$name\","
-    puts $channel "      \"device_value\"           : \"$value\","
-    puts $channel "      \"device_date\"            : \"$timestamp\","
-    puts $channel "      \"device_pretty_name\"     : \"$prettyname\","
-    puts $channel "      \"device_model\"           : \"$model\","
-    puts $channel "      \"device_identifier\"      : \"$identifier\","
-    puts $channel "      \"device_firmware\"        : \"$firmware\","
-    puts $channel "      \"device_type\"            : \"$type\","
-    puts $channel "      \"device_unit\"            : \"$unit\","
-    puts $channel "      \"device_correction_model\": \"$correctionmodel\","
-    puts $channel "      \"device_raw_value\"       : \"$rawvalue\","
-    puts $channel "      \"device_error_code\"      : $errorcode"
+    puts $channel "      \"name\"            : \"$name\","
+    puts $channel "      \"value\"           : \"$value\","
+    puts $channel "      \"date\"            : \"$timestamp\","
+    puts $channel "      \"pretty_name\"     : \"$prettyname\","
+    puts $channel "      \"model\"           : \"$model\","
+    puts $channel "      \"identifier\"      : \"$identifier\","
+    puts $channel "      \"firmware\"        : \"$firmware\","
+    puts $channel "      \"type\"            : \"$type\","
+    puts $channel "      \"unit\"            : \"$unit\","
+    puts $channel "      \"correction_model\": \"$correctionmodel\","
+    puts $channel "      \"raw_value\"       : \"$rawvalue\","
+    puts $channel "      \"error_code\"      : $errorcode"
     puts $channel "    \}"
   }
 

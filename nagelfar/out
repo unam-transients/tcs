@@ -1,3 +1,0 @@
-tcs/lib/tcs/power.tcl:283: E Bad expression: invalid bareword "current"
-in expression "0.01 * current";
-should be "$current" or "{current}" or "current(...)" or ...

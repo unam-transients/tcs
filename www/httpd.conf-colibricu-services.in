@@ -72,9 +72,16 @@ ServerName colibri.astroscu.unam.mx
 
   ############################################################
   
+  LogLevel info proxy:debug
+
   <Location /proxy/pdu1/>
     ProxyPass         http://pdu1/
     ProxyPassReverse  /
+    ProxyHTMLEnable   On
+#    ProxyHTMLExtended On
+    ProxyHTMLURLMap   http://pdu1 /proxy/pdu1/
+    ProxyHTMLURLMap   /            /proxy/pdu1/
+    RequestHeader    unset  Accept-Encoding
   </Location>
 
   <Location /proxy/pdu2/>
