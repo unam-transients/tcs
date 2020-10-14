@@ -576,6 +576,16 @@ namespace eval "html" {
         [formatdeltaifdouble [client::getdata "target" "currentdelta"]]
       writehtmlrow "Current equinox" \
         [formatifok "%.2f" [client::getdata "target" "currentequinox"]]
+      writehtmlrow "Standard position (α,HA,δ)" \
+        [formatalphaifdouble [client::getdata "target" "standardalpha"]] \
+        "" \
+        [formatdeltaifdouble [client::getdata "target" "standarddelta"]]
+      writehtmlrow "Standard rate (α,δ)" \
+        [formatrateifdouble [client::getdata "target" "standardalpharate"]] \
+        "" \
+        [formatrateifdouble [client::getdata "target" "standarddeltarate"]]
+      writehtmlrow "Standard equinox" \
+        [formatifok "%.2f" [client::getdata "target" "standardequinox"]]
       writehtmlrow "Aperture offset (α,δ)" \
         [formatoffsetifdouble [client::getdata "target" "aperturealphaoffset"]] \
         "" \
