@@ -446,6 +446,7 @@ namespace eval "detector" {
   variable binning                {}
   variable detectortemperature    {}
   variable housingtemperature     {}
+  variable chamberpressure        {}
   variable coolerstate            {}
   variable coolersettemperature   {}
   variable coolerpower            {}
@@ -492,6 +493,11 @@ namespace eval "detector" {
     return $housingtemperature
   }
 
+  proc getchamberpressure {} {
+    variable chamberpressure
+    return $chamberpressure
+  }
+
   proc getcoolerstate {} {
     variable coolerstate
     return $coolerstate
@@ -526,6 +532,7 @@ namespace eval "detector" {
     variable binning
     variable detectortemperature
     variable housingtemperature
+    variable chamberpressure
     variable coolersettemperature
     variable coolerpower
     variable coolerstate
@@ -537,6 +544,7 @@ namespace eval "detector" {
     set binning              {}
     set detectortemperature  {}
     set housingtemperature   {}
+    set chamberpressure      {}
     set coolerstate          {}
     set coolersettemperature {}
     set coolerpower          {}
@@ -559,6 +567,7 @@ namespace eval "detector" {
     set binning              [detectorrawgetvalue "binning"]
     set detectortemperature  [detectorrawgetvalue "detectortemperature"]
     set housingtemperature   [detectorrawgetvalue "housingtemperature"]
+    set chamberpressure      [detectorrawgetvalue "chamberpressure"]
     set coolerstate          [detectorrawgetvalue "cooler"]
     set coolersettemperature [detectorrawgetvalue "coolersettemperature"]
     set coolerpower          [detectorrawgetvalue "coolerpower"]
