@@ -383,6 +383,7 @@ namespace eval "html" {
       writehtmlrow "Detector binning"              [formatifok "%d" [client::getdata $server "detectorbinning"]]
       writehtmlrow "Detector temperature"          [formatifok "%+.1f C" [client::getdata $server "detectordetectortemperature"]]
       writehtmlrow "Housing temperature"           [formatifok "%+.1f C" [client::getdata $server "detectorhousingtemperature"]]
+      writehtmlrow "Cold end temperature"          [formatifok "%+.1f C" [client::getdata $server "detectorcoldendtemperature"]]
       writehtmlrow "Chamber pressure"              [formatifok "%.2e mbar" [client::getdata $server "detectorchamberpressure"]]
       writehtmlrow "Cooler state"                  [format "%s" [client::getdata $server "detectorcoolerstate"]]
       writehtmlrow "Cooler set temperature"        [formatifok "%+.1f C" [client::getdata $server "detectorcoolersettemperature"]]
@@ -428,6 +429,8 @@ namespace eval "html" {
       writehtmlfullrow "Detector window"
       writehtmlrow "Detector binning"
       writehtmlrow "Detector temperature"
+      writehtmlrow "Housing temperature"
+      writehtmlrow "Cold end temperature"
       writehtmlrow "Housing temperature"
       writehtmlrow "Cooler state"
       writehtmlrow "Cooler set temperature"

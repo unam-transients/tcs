@@ -157,7 +157,8 @@ namespace eval "ccd" {
     }
 
     set detectortemperature [detector::getdetectortemperature]
-    set housingtemperature [detector::gethousingtemperature]
+    set housingtemperature  [detector::gethousingtemperature]
+    set coldendtemperature  [detector::getcoldendtemperature]
 
     variable temperaturelimit
     if {![string equal "" $temperaturelimit]} {
@@ -202,6 +203,7 @@ namespace eval "ccd" {
     server::setdata "detectorreadmode"               [detector::getreadmode]
     server::setdata "detectordetectortemperature"    $detectortemperature
     server::setdata "detectorhousingtemperature"     $housingtemperature
+    server::setdata "detectorcoldendtemperature"     $coldendtemperature
     server::setdata "detectorchamberpressure"        $chamberpressure
     server::setdata "detectorcoolerstate"            [detector::getcoolerstate]
     server::setdata "detectorcoolersettemperature"   [detector::getcoolersettemperature]
@@ -231,6 +233,7 @@ namespace eval "ccd" {
     foreach {sensorname dataname} {
       detector-detector-temperature   detectordetectortemperature 
       detector-housing-temperature    detectorhousingtemperature
+      detector-cold-end-temperature   detectorcoldendtemperature
       detector-chamber-pressure       detectorchamberpressure
       detector-cooler-power           detectorcoolerpower
       detector-cooler-state           detectorcoolerstate
