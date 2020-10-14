@@ -128,22 +128,33 @@ namespace eval "target" {
       set currentha      ""
       set currentequinox $requestedequinox
 
-      set standardequinox 2000.0
-      set standardalpha [astrometry::precessedalpha $currentalpha $currentdelta $currentequinox $standardequinox]
-      set standarddelta [astrometry::precesseddelta $currentalpha $currentdelta $currentequinox $standardequinox]
-
-      set observedalpha [astrometry::observedalpha $currentalpha $currentdelta $currentequinox $seconds]
-      set observeddelta [astrometry::observeddelta $currentalpha $currentdelta $currentequinox $seconds]
-      set observedalpha [astrometry::foldradpositive [expr {$observedalpha + $aperturealphaoffset / cos($observeddelta)}]]
-      set observeddelta [astrometry::foldradsymmetric [expr {$observeddelta + $aperturedeltaoffset}]]      
-      set observedha    [astrometry::ha $observedalpha $seconds]
-
       set futurecurrentdelta [expr {
         $requesteddelta + ($requesteddeltaoffset + ($futureseconds - $epochseconds) * $requesteddeltarate)
       }]
       set futurecurrentalpha [astrometry::foldradpositive [expr {
         $requestedalpha + ($requestedalphaoffset + ($futureseconds - $epochseconds) * $requestedalpharate) / cos($futurecurrentdelta)
       }]]
+
+      set standardequinox 2000.0
+
+      set standardalpha [astrometry::precessedalpha $currentalpha $currentdelta $currentequinox $standardequinox]
+      set standarddelta [astrometry::precesseddelta $currentalpha $currentdelta $currentequinox $standardequinox]
+
+      set futurestandardalpha [astrometry::precessedalpha $futurecurrentalpha $futurecurrentdelta $currentequinox $standardequinox]
+      set futurestandarddelta [astrometry::precesseddelta $futurecurrentalpha $futurecurrentdelta $currentequinox $standardequinox]
+
+      set standardalpharate [astrometry::foldradsymmetric [expr {
+        ($futurestandardalpha - $standardalpha) / $dseconds * cos($currentdelta)
+      }]]
+      set standarddeltarate [expr {
+        ($futurestandarddelta - $standarddelta) / $dseconds
+      }]
+
+      set observedalpha [astrometry::observedalpha $currentalpha $currentdelta $currentequinox $seconds]
+      set observeddelta [astrometry::observeddelta $currentalpha $currentdelta $currentequinox $seconds]
+      set observedalpha [astrometry::foldradpositive [expr {$observedalpha + $aperturealphaoffset / cos($observeddelta)}]]
+      set observeddelta [astrometry::foldradsymmetric [expr {$observeddelta + $aperturedeltaoffset}]]      
+      set observedha    [astrometry::ha $observedalpha $seconds]
 
       set futureobservedalpha [astrometry::observedalpha $futurecurrentalpha $futurecurrentdelta $currentequinox $futureseconds]
       set futureobserveddelta [astrometry::observeddelta $futurecurrentalpha $futurecurrentdelta $currentequinox $futureseconds]
@@ -168,9 +179,11 @@ namespace eval "target" {
       set currentdelta   $requesteddelta
       set currentequinox ""
 
-      set standardequinox ""
-      set standardalpha   ""
-      set standarddelta   ""
+      set standardequinox   ""
+      set standardalpha     ""
+      set standarddelta     ""
+      set standardalpharate ""
+      set standarddeltarate ""
 
       set aperturealphaoffset ""
       set aperturedeltaoffset ""
@@ -221,6 +234,8 @@ namespace eval "target" {
     server::setdata "currentequinox"         $currentequinox
     server::setdata "standardalpha"          $standardalpha
     server::setdata "standarddelta"          $standarddelta
+    server::setdata "standardalpharate"      $standardalpharate
+    server::setdata "standarddeltarate"      $standarddeltarate
     server::setdata "standardequinox"        $standardequinox
     server::setdata "aperturealphaoffset"    $aperturealphaoffset
     server::setdata "aperturedeltaoffset"    $aperturedeltaoffset
