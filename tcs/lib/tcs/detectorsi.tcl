@@ -634,8 +634,15 @@ namespace eval "detector" {
     foreach line $data {
       log::debug "detectorrawupdatestatus: getstatus line: \"$line\"."
       if {[scan $line "CCD 0 CCD Temp.,%f," value] == 1} {
+        log::debug "rawdetectortemperature is $value."
         variable rawdetectortemperature
         set rawdetectortemperature $value
+      } elseif {[scan $line "Chamber Pressure,%f," value] == 1} {
+        # Convert to mbar
+        set value [expr {$value / 750.06 * 1e3}]
+        log::debug "rawchamberpressure is $value."
+        variable rawchamberpressure
+        set rawchamberpressure $value
       }
     }
 
@@ -654,6 +661,10 @@ namespace eval "detector" {
       "detectortemperature" {
         variable rawdetectortemperature
         return $rawdetectortemperature
+      }
+      "chamberpressure" {
+        variable rawchamberpressure
+        return $rawchamberpressure
       }
       "coolersettemperature" {
         return 0
@@ -704,6 +715,7 @@ namespace eval "detector" {
 
   variable rawdetectortemperature ""
   variable rawhousingtemperature  ""
+  variable rawchamberpressure     ""
 
   proc detectorrawgetdetectortemperature {} {
     variable rawdetectortemperature
@@ -713,6 +725,11 @@ namespace eval "detector" {
   proc detectorrawgethousingtemperature {} {
     variable rawhousingtemperature
     return $rawhousingtemperature
+  }
+
+  proc detectorrawgetchamberpressure {} {
+    variable chamberpressure
+    return $chamberpressure
   }
 
   ######################################################################

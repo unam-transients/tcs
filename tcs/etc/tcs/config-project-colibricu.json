@@ -96,10 +96,10 @@
   },
   "instrument": {
     "detectors": [
-      "C0"
+      "C0", "C1"
     ],
     "idlefilterwheelpositions": [
-      "w"
+      "w", "w"
     ],
     "pointingdetectors": [
       "C1"
@@ -420,6 +420,7 @@
       "pdu3-current",
       "C0-detector-detector-temperature",
       "C0-detector-housing-temperature",
+      "C0-detector-chamber-pressure",
       "C0-detector-cooler-set-temperature",
       "C0-detector-cooler-state",
       "C0-detector-cooler-power",
@@ -723,6 +724,17 @@
         "group": "detector-C0",
         "type": "float",
         "unit": "C",
+        "model": "SI 1100",
+        "identifier": "167",
+        "firmware": ""
+      },
+      "C0-detector-chamber-pressure": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-chamber-pressure",
+        "keyword": "",
+        "prettyname": "C0 chamber pressure",
+        "group": "detector-C0",
+        "type": "float",
+        "unit": "mbar",
         "model": "SI 1100",
         "identifier": "167",
         "firmware": ""

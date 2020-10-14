@@ -383,6 +383,7 @@ namespace eval "html" {
       writehtmlrow "Detector binning"              [formatifok "%d" [client::getdata $server "detectorbinning"]]
       writehtmlrow "Detector temperature"          [formatifok "%+.1f C" [client::getdata $server "detectordetectortemperature"]]
       writehtmlrow "Housing temperature"           [formatifok "%+.1f C" [client::getdata $server "detectorhousingtemperature"]]
+      writehtmlrow "Chamber pressure"              [formatifok "%.2e mbar" [client::getdata $server "detectorchamberpressure"]]
       writehtmlrow "Cooler state"                  [format "%s" [client::getdata $server "detectorcoolerstate"]]
       writehtmlrow "Cooler set temperature"        [formatifok "%+.1f C" [client::getdata $server "detectorcoolersettemperature"]]
       writehtmlrow "Cooler power"                  [formatpercentifok "%.0f%%" [client::getdata $server "detectorcoolerpower"]]

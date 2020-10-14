@@ -203,6 +203,9 @@ namespace eval "sensors" {
         *-humidity {
           set value [format "%.2f" $value]
         }
+        *-chamber-pressure {
+          set value [format "%.2e" $value]
+        }
         *-pressure {
           set value [format "%.1f" $value]
         }
