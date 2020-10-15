@@ -158,7 +158,6 @@ namespace eval "ccd" {
 
     set detectortemperature [detector::getdetectortemperature]
     set housingtemperature  [detector::gethousingtemperature]
-    set coldendtemperature  [detector::getcoldendtemperature]
 
     variable temperaturelimit
     if {![string equal "" $temperaturelimit]} {
@@ -184,8 +183,6 @@ namespace eval "ccd" {
       
     }
     
-    set chamberpressure [detector::getchamberpressure]
-
     server::setstatus "ok"
 
     server::setdata "timestamp"                      [utcclock::combinedformat $timestamp]
@@ -203,8 +200,10 @@ namespace eval "ccd" {
     server::setdata "detectorreadmode"               [detector::getreadmode]
     server::setdata "detectordetectortemperature"    $detectortemperature
     server::setdata "detectorhousingtemperature"     $housingtemperature
-    server::setdata "detectorcoldendtemperature"     $coldendtemperature
-    server::setdata "detectorchamberpressure"        $chamberpressure
+    server::setdata "detectorcoldendtemperature"     [detector::getcoldendtemperature]
+    server::setdata "detectorchamberpressure"        [detector::getchamberpressure]
+    server::setdata "detectorsupplypressure"         [detector::getsupplypressure]
+    server::setdata "detectorreturnpressure"         [detector::getreturnpressure]
     server::setdata "detectorcoolerstate"            [detector::getcoolerstate]
     server::setdata "detectorcoolersettemperature"   [detector::getcoolersettemperature]
     server::setdata "detectorcoolerpower"            [detector::getcoolerpower]
@@ -235,6 +234,8 @@ namespace eval "ccd" {
       detector-housing-temperature    detectorhousingtemperature
       detector-cold-end-temperature   detectorcoldendtemperature
       detector-chamber-pressure       detectorchamberpressure
+      detector-supply-pressure        detectorsupplypressure
+      detector-return-pressure        detectorreturnpressure
       detector-cooler-power           detectorcoolerpower
       detector-cooler-state           detectorcoolerstate
       detector-cooler-set-temperature detectorcoolersettemperature
