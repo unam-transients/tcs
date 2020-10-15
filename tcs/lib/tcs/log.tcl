@@ -325,7 +325,11 @@ namespace  eval log {
 
     set data {}
     foreach key $keys {
-      lappend data [server::getdata $key]
+      set value [server::getdata $key]
+      if {[string equal $value ""]} {
+        set value "-"
+      }
+      lappend data $value
     }
     putmessage [timestamp] $component "data" [join $data "\t"]    
 
