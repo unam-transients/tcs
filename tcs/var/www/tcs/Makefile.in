@@ -35,7 +35,6 @@ installs			:=	\
 	cgi.tcl				\
 	jquery.js			\
 	operator-extended.html		\
-	plots.sh                	\
 	style.css			\
 	tcs.js
 	
@@ -57,7 +56,8 @@ installs_project_ratiroan	:=		\
 	webcam-b-project-ratiroan.html		\
 	webcam-c-project-ratiroan.html		\
 	webcam-d-project-ratiroan.html		\
-	webcam-e-project-ratiroan.html
+	webcam-e-project-ratiroan.html		\
+	plots-project-ratiroan.sh
 
 installs_project_coatlioan	:=		\
 	allsky-project-coatlioan.html		\
@@ -88,6 +88,7 @@ installs_project_colibricu	:=		\
 	C0-project-colibricu.html  	     	\
 	config-project-colibricu.js		\
 	interface-project-colibricu.html	\
+	plots-project-colibricu.sh
 
 installs_project_colibricito	:=		\
 	allsky-project-colibricito.html		\

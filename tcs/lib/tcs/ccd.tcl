@@ -227,6 +227,10 @@ namespace eval "ccd" {
       detectorcoolerpower
       detectorcoolerstate
       detectorcoolersettemperature 
+      detectorcoldendtemperature
+      detectorchamberpressure
+      detectorsupplypressure
+      detectorreturnpressure
     }
     
     foreach {sensorname dataname} {
