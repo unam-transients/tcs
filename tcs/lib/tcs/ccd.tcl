@@ -201,6 +201,7 @@ namespace eval "ccd" {
     server::setdata "detectordetectortemperature"    $detectortemperature
     server::setdata "detectorhousingtemperature"     $housingtemperature
     server::setdata "detectorcoldendtemperature"     [detector::getcoldendtemperature]
+    server::setdata "detectorpowersupplytemperature" [detector::getpowersupplytemperature]
     server::setdata "detectorchamberpressure"        [detector::getchamberpressure]
     server::setdata "detectorsupplypressure"         [detector::getsupplypressure]
     server::setdata "detectorreturnpressure"         [detector::getreturnpressure]
@@ -231,21 +232,23 @@ namespace eval "ccd" {
       detectorchamberpressure
       detectorsupplypressure
       detectorreturnpressure
+      detectorpowersupplytemperature
     }
     
     foreach {sensorname dataname} {
-      detector-detector-temperature   detectordetectortemperature 
-      detector-housing-temperature    detectorhousingtemperature
-      detector-cold-end-temperature   detectorcoldendtemperature
-      detector-chamber-pressure       detectorchamberpressure
-      detector-supply-pressure        detectorsupplypressure
-      detector-return-pressure        detectorreturnpressure
-      detector-cooler-power           detectorcoolerpower
-      detector-cooler-state           detectorcoolerstate
-      detector-cooler-set-temperature detectorcoolersettemperature
-      filter-wheel-position           filterwheelposition
-      focuser-position                focuserposition
-      focuser-raw-position            focuserrawposition
+      detector-detector-temperature    detectordetectortemperature 
+      detector-housing-temperature     detectorhousingtemperature
+      detector-cold-end-temperature    detectorcoldendtemperature
+      detector-power-supply-temperaure detectorpowersupplytemperature
+      detector-chamber-pressure        detectorchamberpressure
+      detector-supply-pressure         detectorsupplypressure
+      detector-return-pressure         detectorreturnpressure
+      detector-cooler-power            detectorcoolerpower
+      detector-cooler-state            detectorcoolerstate
+      detector-cooler-set-temperature  detectorcoolersettemperature
+      filter-wheel-position            filterwheelposition
+      focuser-position                 focuserposition
+      focuser-raw-position             focuserrawposition
     } {
       log::writesensorsfile "$identifier-$sensorname" [server::getdata $dataname] [server::getdata "timestamp"]
     }

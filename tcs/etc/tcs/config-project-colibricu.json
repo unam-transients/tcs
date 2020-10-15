@@ -742,6 +742,17 @@
         "identifier": "167",
         "firmware": ""
       },
+      "C0-detector-power-supply-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-power-supply-temperature",
+        "keyword": "",
+        "prettyname": "C0 power supply temperature",
+        "group": "detector-C0",
+        "type": "float",
+        "unit": "C",
+        "model": "SI 1100",
+        "identifier": "167",
+        "firmware": ""
+      },
       "C0-detector-chamber-pressure": {
         "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-chamber-pressure",
         "keyword": "",

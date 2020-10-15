@@ -101,8 +101,9 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "C0.dat" using 1:2  title "C0 Detector" with lines linestyle 1, \
-      "C0.dat" using 1:7  title "C0 Cold End" with lines linestyle 2
+      "C0.dat" using 1:2  title "C0 Detector"     with lines linestyle 1, \
+      "C0.dat" using 1:7  title "C0 Cold End"     with lines linestyle 2, \
+      "C0.dat" using 1:11 title "C0 Power Supply" with lines linestyle 3
 
     set yrange [-111:-109]
     set ytics -111,0.5,-109
