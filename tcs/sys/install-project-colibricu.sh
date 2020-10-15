@@ -92,6 +92,7 @@ EOF
   colibricu-services)
     cat <<"EOF"
 */5 *  *  *  * /usr/local/bin/logsensors
+*   *  *  *  * cd /usr/local/var/www/tcs/; sh plots.sh >plots.txt 2>&1
 #*   *  *  *  *  rsync -aH --include="error.txt" --include="warning.txt" --include="summary.txt" --include="info.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/ddoti-raw/
 #00  *  *  *  *  rsync -aH /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/ddoti-raw/
 #*/5 *  *  *  *  rsync -aH --remove-source-files --include="*/" --include="*.fits.fz" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/ddoti-raw/
