@@ -73,20 +73,20 @@ EOF
     set grid back
     set grid xtics
 
-    set style line  1 linewidth 1 linecolor  1
-    set style line  2 linewidth 1 linecolor  2
-    set style line  3 linewidth 1 linecolor  3
-    set style line  4 linewidth 1 linecolor  4
-    set style line  5 linewidth 1 linecolor  5
-    set style line  6 linewidth 1 linecolor  6
-    set style line  7 linewidth 1 linecolor  7
-    set style line  8 linewidth 1 linecolor  8
-    set style line  9 linewidth 1 linecolor  9
-    set style line 10 linewidth 1 linecolor 10
-    set style line 11 linewidth 1 linecolor 11
+    set style line  1 linewidth 1 linecolor  1 pointtype 7 pointsize 0.5
+    set style line  2 linewidth 1 linecolor  2 pointtype 7 pointsize 0.5
+    set style line  3 linewidth 1 linecolor  3 pointtype 7 pointsize 0.5
+    set style line  4 linewidth 1 linecolor  4 pointtype 7 pointsize 0.5
+    set style line  5 linewidth 1 linecolor  5 pointtype 7 pointsize 0.5
+    set style line  6 linewidth 1 linecolor  6 pointtype 7 pointsize 0.5
+    set style line  7 linewidth 1 linecolor  7 pointtype 7 pointsize 0.5
+    set style line  8 linewidth 1 linecolor  8 pointtype 7 pointsize 0.5
+    set style line  9 linewidth 1 linecolor  9 pointtype 7 pointsize 0.5
+    set style line 10 linewidth 1 linecolor 10 pointtype 7 pointsize 0.5
+    set style line 11 linewidth 1 linecolor 11 pointtype 7 pointsize 0.5
 
     set key outside
-
+    
     set terminal pngcairo enhanced size 1200,1800
     set output "ccds.png.new"
 
@@ -101,9 +101,9 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "C0.dat" using 1:2  title "C0 Detector"     with lines linestyle 1, \
-      "C0.dat" using 1:7  title "C0 Cold End"     with lines linestyle 2, \
-      "C0.dat" using 1:11 title "C0 Power Supply" with lines linestyle 3
+      "C0.dat" using 1:2  title "C0 Detector"     with points linestyle 1, \
+      "C0.dat" using 1:7  title "C0 Cold End"     with points linestyle 2, \
+      "C0.dat" using 1:11 title "C0 Power Supply" with points linestyle 3
 
     set yrange [-111:-109]
     set ytics -111,0.5,-109
@@ -111,7 +111,7 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "C0.dat" using 1:2  title "C0 Detector" with lines linestyle 1
+      "C0.dat" using 1:2  title "C0 Detector" with points linestyle 1
 
     set yrange [1e-3:1000]
     set ylabel "Pressure (mbar)"
@@ -119,7 +119,7 @@ EOF
     set ytics 1e-8,10,1000 logscale
     set format y "10^{%L}"
     set key on
-    plot "C0.dat" using 1:8 title "C0 Chamber" with lines linestyle 1
+    plot "C0.dat" using 1:8 title "C0 Chamber" with points linestyle 1
     set nologscale
     set format y "%+g"
 
@@ -133,8 +133,8 @@ EOF
     set ylabel "Pressure (psi)"
     set key on
     plot \
-      "C0.dat" using 1:9  title "C0 Supply" with lines linestyle 1, \
-      "C0.dat" using 1:10 title "C0 Return" with lines linestyle 2
+      "C0.dat" using 1:9  title "C0 Supply" with points linestyle 1, \
+      "C0.dat" using 1:10 title "C0 Return" with points linestyle 2
 
     unset multiplot
 
