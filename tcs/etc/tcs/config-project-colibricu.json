@@ -422,6 +422,8 @@
       "C0-detector-housing-temperature",
       "C0-detector-cold-end-temperature",
       "C0-detector-chamber-pressure",
+      "C0-detector-supply-pressure",
+      "C0-detector-return-pressure",
       "C0-detector-cooler-set-temperature",
       "C0-detector-cooler-state",
       "C0-detector-cooler-power",
@@ -747,6 +749,28 @@
         "group": "detector-C0",
         "type": "float",
         "unit": "mbar",
+        "model": "SI 1100",
+        "identifier": "167",
+        "firmware": ""
+      },
+      "C0-detector-supply-pressure": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-supply-pressure",
+        "keyword": "",
+        "prettyname": "C0 supply pressure",
+        "group": "detector-C0",
+        "type": "float",
+        "unit": "psi",
+        "model": "SI 1100",
+        "identifier": "167",
+        "firmware": ""
+      },
+      "C0-detector-return-pressure": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-return-pressure",
+        "keyword": "",
+        "prettyname": "C0 return pressure",
+        "group": "detector-C0",
+        "type": "float",
+        "unit": "psi",
         "model": "SI 1100",
         "identifier": "167",
         "firmware": ""

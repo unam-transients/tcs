@@ -448,6 +448,8 @@ namespace eval "detector" {
   variable housingtemperature     {}
   variable coldendtemperature     {}
   variable chamberpressure        {}
+  variable returnpressure         {}
+  variable supplypressure         {}
   variable coolerstate            {}
   variable coolersettemperature   {}
   variable coolerpower            {}
@@ -504,6 +506,16 @@ namespace eval "detector" {
     return $chamberpressure
   }
 
+  proc getreturnpressure {} {
+    variable returnpressure
+    return $returnpressure
+  }
+
+  proc getsupplypressure {} {
+    variable supplypressure
+    return $supplypressure
+  }
+
   proc getcoolerstate {} {
     variable coolerstate
     return $coolerstate
@@ -540,6 +552,8 @@ namespace eval "detector" {
     variable housingtemperature
     variable coldendtemperature
     variable chamberpressure
+    variable returnpressure
+    variable supplypressure
     variable coolersettemperature
     variable coolerpower
     variable coolerstate
@@ -553,6 +567,8 @@ namespace eval "detector" {
     set housingtemperature   {}
     set coldendtemperature   {}
     set chamberpressure      {}
+    set returnpressure       {}
+    set supplypressure       {}
     set coolerstate          {}
     set coolersettemperature {}
     set coolerpower          {}
@@ -577,6 +593,8 @@ namespace eval "detector" {
     set housingtemperature   [detectorrawgetvalue "housingtemperature"]
     set coldendtemperature   [detectorrawgetvalue "coldendtemperature"]
     set chamberpressure      [detectorrawgetvalue "chamberpressure"]
+    set returnpressure       [detectorrawgetvalue "returnpressure"]
+    set supplypressure       [detectorrawgetvalue "supplypressure"]
     set coolerstate          [detectorrawgetvalue "cooler"]
     set coolersettemperature [detectorrawgetvalue "coolersettemperature"]
     set coolerpower          [detectorrawgetvalue "coolerpower"]

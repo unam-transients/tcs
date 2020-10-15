@@ -385,6 +385,8 @@ namespace eval "html" {
       writehtmlrow "Housing temperature"           [formatifok "%+.1f C" [client::getdata $server "detectorhousingtemperature"]]
       writehtmlrow "Cold end temperature"          [formatifok "%+.1f C" [client::getdata $server "detectorcoldendtemperature"]]
       writehtmlrow "Chamber pressure"              [formatifok "%.2e mbar" [client::getdata $server "detectorchamberpressure"]]
+      writehtmlrow "Supply pressure"               [formatifok "%.0f psi" [client::getdata $server "detectorsupplypressure"]]
+      writehtmlrow "Return pressure"               [formatifok "%.0f psi" [client::getdata $server "detectorreturnpressure"]]
       writehtmlrow "Cooler state"                  [format "%s" [client::getdata $server "detectorcoolerstate"]]
       writehtmlrow "Cooler set temperature"        [formatifok "%+.1f C" [client::getdata $server "detectorcoolersettemperature"]]
       writehtmlrow "Cooler power"                  [formatpercentifok "%.0f%%" [client::getdata $server "detectorcoolerpower"]]
@@ -432,6 +434,9 @@ namespace eval "html" {
       writehtmlrow "Housing temperature"
       writehtmlrow "Cold end temperature"
       writehtmlrow "Housing temperature"
+      writehtmlrow "Chamber pressure"
+      writehtmlrow "Supply pressure"
+      writehtmlrow "Return pressure"
       writehtmlrow "Cooler state"
       writehtmlrow "Cooler set temperature"
       writehtmlrow "Cooler power"
