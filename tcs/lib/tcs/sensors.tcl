@@ -113,7 +113,7 @@ namespace eval "sensors" {
           set rawvalue $filevalue
         }
         "*-humidity" {
-          set rawvalue [expr {$filevalue / 100}]
+          set rawvalue [expr {$filevalue * 0.01}]
         }
         "*-light-level" {
           switch [getsensormodel $name] {
@@ -177,7 +177,7 @@ namespace eval "sensors" {
       if {$rawvalue < 0.30} {
         set c $cl
       } elseif {$rawvalue < 0.40} {
-        set c [expr {($cl * (0.4 - $rawvalue) + $ch * ($rawvalue - 0.3)) / 0.1}]
+        set c [expr {($cl * (0.40 - $rawvalue) + $ch * ($rawvalue - 0.30)) / 0.10}]
       } else {
         set c $ch
       }
