@@ -149,8 +149,8 @@
       "nx": 50,
       "ny": 4112
     },
-    "cooleropensetting": "off",
-    "coolerclosedsetting": "off",
+    "cooleropensetting": "on",
+    "coolerclosedsetting": "on",
     "temperaturelimit": 40,
 //    "filterwheeltype": "fli",
 //    "filterwheelidentifier": "CFW-14-5",
