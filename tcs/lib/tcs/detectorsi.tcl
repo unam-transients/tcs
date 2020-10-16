@@ -199,6 +199,7 @@ namespace eval "detector" {
     "getimageheader"           { 1024  2 "Su"     true  2006  log::debug }
     "setcameramode"            { 1042  1 "c"      true  2007  log::debug }
     "setformat"                { 1043 24 "IIIIII" true  2007  log::debug }
+    "setcooler"                { 1046  1 "c"      true  2007  log::debug }
     "setcontinuousclearmode"   { 1062  1 "c"      true  2007  log::debug }
     "resetcamerasoftware"      { 1063  0 ""       true  2007  log::debug }
     "resetcamerahardware"      { 1064  0 ""       true  2007  log::debug }
@@ -765,6 +766,19 @@ namespace eval "detector" {
   ######################################################################
 
   proc detectorrawsetcooler {state} {
+    switch $state {
+      "on" {
+        set value 1
+      }
+      "off" {
+	set value 0
+      }
+      default {
+        return "invalid cooler state \"$state\"."
+      }
+    }
+    rawputsiimagecommandpacket "setcooler" $value
+    rawgetsiimagedatapacket "setcooler"
     return "ok"
   }
   
