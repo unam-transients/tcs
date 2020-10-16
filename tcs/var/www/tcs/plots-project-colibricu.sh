@@ -33,8 +33,9 @@ cd plots
 
 if test -z "$when"
 then
-  when=$(date -u +%Y%m%d)
+  when=$(date -u +%Y%m%dT%H)
 fi
+whendate=$(echo $when | sed 's/T.*//')
 
 for days in 1 4 30 120 360 1600
 do
@@ -45,24 +46,36 @@ do
     lines=1
   fi
 
+  if test $days = 1 || test $days = 4
+  then
+    xrange=$(
+      tclsh <<EOF
+        set now [clock scan "$when" -format "%Y%m%dT%H" -timezone UTC]
+        set min [clock format [expr {\$now - (24 * $days - 1) * 3600}] -format "%Y-%m-%dT%H" -timezone UTC]
+        set max [clock format [expr {\$now + 1 * 3600}] -format "%Y-%m-%dT%H" -timezone UTC]
+        puts "\[\"\$min\":\"\$max\"\]"
+EOF
+    )
+  else
+    xrange=$(
+      tclsh <<EOF
+        set now [clock scan "$whendate" -format "%Y%m%d" -timezone UTC]
+        set min [clock format [expr {\$now - 24 * 3600 * ($days - 1)}] -format "%Y-%m-%dT00" -timezone UTC]
+        set max [clock format [expr {\$now + 24 * 3600 * 1}] -format "%Y-%m-%dT00" -timezone UTC]
+        puts "\[\"\$min\":\"\$max\"\]"
+EOF
+    )
+  fi
+    
   (
     cd /usr/local/var/tcs
-    cat $(ls [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/log/C0-data.txt | sed -n "1,/$when/p" | tail -$days) | awk "NR % $lines == 0 { print; }"
+    cat $(ls [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/log/C0-data.txt | sed -n "1,/$whendate/p" | tail -$(expr $days + 1)) | awk "NR % $lines == 0 { print; }"
   ) >C0.dat
 
   (
     cd /usr/local/var/tcs
-    cat $(ls [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/log/sensors-data.txt | sed -n "1,/$when/p" | tail -$days) | awk "NR % $lines == 0 { print; }"
+    cat $(ls [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/log/sensors-data.txt | sed -n "1,/$whendate/p" | tail -$(expr $days + 1)) | awk "NR % $lines == 0 { print; }"
   ) >sensors.dat
-
-  xrange=$(
-    tclsh <<EOF
-      set now [clock scan "$when" -timezone UTC]
-      set min [clock format [expr {\$now - 24 * 3600 * ($days - 1)}] -format "%Y-%m-%d" -timezone UTC]
-      set max [clock format [expr {\$now + 24 * 3600 * 1}] -format "%Y-%m-%d" -timezone UTC]
-      puts "\[\"\$min\":\"\$max\"\]"
-EOF
-  )
 
   gnuplot <<EOF
 
@@ -72,7 +85,7 @@ EOF
     set bmargin 0
 
     set xdata time
-    set timefmt "%Y-%m-%d"
+    set timefmt "%Y-%m-%dT%H"
     set xrange $xrange
     set timefmt "%Y-%m-%dT%H:%M:%S"
     set grid back
@@ -172,8 +185,8 @@ EOF
       "sensors.dat" using 16:(\$17*100) title "Instrument Tunnel"   with points linestyle 3, \
       "sensors.dat" using 20:(\$21*100) title "Close Electronics"   with points linestyle 4
       
-    set yrange [0:1000]
-    set ytics 0,100,1000
+    set yrange [0:2000]
+    set ytics 0,200,2000
     set format y "%.0f"
     set ylabel "Light Level (lux)"
     set key on
