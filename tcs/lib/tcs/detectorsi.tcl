@@ -95,11 +95,14 @@ namespace eval "detector" {
     rawputsiimagecommandpacket "getparameters"
     set data [rawgetsiimagedatapacket "getparameters"]
     foreach line $data {
+      log::debug "getparameters: line is \"$line\"."
       if {[scan $line "Factory,Instrument Model,%s" value] == 1} {
         set model $value
-      }
-      if {[scan $line "Factory,Instrument SN,%s" value] == 1} {
+      } elseif {[scan $line "Factory,Instrument SN,%s" value] == 1} {
         set serialnumber $value
+      } elseif {[scan $line "Setup,CCD Temperature Setpoint,%d" value] == 1} {
+        variable rawcoolersettemperature
+        set rawcoolersettemperature [format "%+.1f" [expr {-273 + 0.1 * $value}]]
       }
     }
     variable rawdescription
@@ -724,7 +727,8 @@ namespace eval "detector" {
         return $rawreturnpressure
       }
       "coolersettemperature" {
-        return 0
+        variable rawcoolersettemperature
+        return $rawcoolersettemperature
       }
       "coolerpower" {
         return 0
@@ -790,7 +794,8 @@ namespace eval "detector" {
   variable rawchamberpressure        ""
   variable rawsupplypressure         ""
   variable rawreturnpressure         ""
-  variable rawcoolingstate           ""
+  variable rawcooler                 ""
+  variable rawcoolersettemperature   ""
 
   proc detectorrawgetdetectortemperature {} {
     variable rawdetectortemperature
