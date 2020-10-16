@@ -314,6 +314,15 @@ namespace  eval log {
 
   proc writedatalog {component keys} {
   
+    set fullkeys {}
+    foreach key $keys {
+      if {[catch {server::getdata "${key}-timestamp"}]} {
+        lappend fullkeys $key
+      } else {
+        lappend fullkeys "${key}-timestamp" $key
+      }
+    }
+  
     variable lastdatalogseconds
     set seconds [utcclock::seconds]
     if {![string equal $lastdatalogseconds ""] && ($seconds - $lastdatalogseconds) < 60} {
@@ -321,10 +330,10 @@ namespace  eval log {
     }
     set lastdatalogseconds $seconds
 
-    putmessage [timestamp] $component "keys" [join $keys "\t"]
+    putmessage [timestamp] $component "keys" [join $fullkeys "\t"]
 
     set data {}
-    foreach key $keys {
+    foreach key $fullkeys {
       set value [server::getdata $key]
       if {[string equal $value ""]} {
         set value "-"
