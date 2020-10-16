@@ -1117,10 +1117,6 @@ namespace eval "ccd" {
       variable coolerclosedsetting
       set setting $coolerclosedsetting
     }
-    if {[string equal $setting "on"]} {
-      variable cooleropensetting
-      set setting $cooleropensetting
-    }
     detector::setcooler $setting
     updatedata
     log::info [format "finished setting cooler after %.1f seconds." [utcclock::diff now $start]]
