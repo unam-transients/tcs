@@ -239,7 +239,7 @@ namespace eval "ccd" {
       detector-detector-temperature    detectordetectortemperature 
       detector-housing-temperature     detectorhousingtemperature
       detector-cold-end-temperature    detectorcoldendtemperature
-      detector-power-supply-temperaure detectorpowersupplytemperature
+      detector-power-supply-temperature detectorpowersupplytemperature
       detector-chamber-pressure        detectorchamberpressure
       detector-supply-pressure         detectorsupplypressure
       detector-return-pressure         detectorreturnpressure
