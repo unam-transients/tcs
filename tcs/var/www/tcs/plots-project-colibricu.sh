@@ -50,6 +50,11 @@ do
     cat $(ls [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/log/C0-data.txt | sed -n "1,/$when/p" | tail -$days) | awk "NR % $lines == 0 { print; }"
   ) >C0.dat
 
+  (
+    cd /usr/local/var/tcs
+    cat $(ls [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/log/sensors-data.txt | sed -n "1,/$when/p" | tail -$days) | awk "NR % $lines == 0 { print; }"
+  ) >sensors.dat
+
   xrange=$(
     tclsh <<EOF
       set now [clock scan "$when" -timezone UTC]
@@ -102,8 +107,7 @@ EOF
     set key on
     plot \
       "C0.dat" using 1:2  title "C0 Detector"     with points linestyle 1, \
-      "C0.dat" using 1:7  title "C0 Cold End"     with points linestyle 2, \
-      "C0.dat" using 1:11 title "C0 Power Supply" with points linestyle 3
+      "C0.dat" using 1:7  title "C0 Cold End"     with points linestyle 2
 
     set yrange [-111:-109]
     set ytics -111,0.5,-109
@@ -133,14 +137,103 @@ EOF
     set ylabel "Pressure (psi)"
     set key on
     plot \
-      "C0.dat" using 1:9  title "C0 Supply" with points linestyle 1, \
-      "C0.dat" using 1:10 title "C0 Return" with points linestyle 2
+      "C0.dat" using 1:9  title "C0 Supply" with points linestyle 2, \
+      "C0.dat" using 1:10 title "C0 Return" with points linestyle 1
+
+    unset multiplot
+
+    set terminal pngcairo enhanced size 1200,1800
+    set output "instrument.png.new"
+
+    set multiplot layout 7,1
+
+    set format x ""
+    set xlabel ""
+
+    set yrange [-30:+40]
+    set ytics -30,10,40
+    set format y "%+.0f"
+    set ylabel "Temperature (C)"
+    set key on
+    plot \
+      "sensors.dat" using 2:3   title "Instrument External" with points linestyle 1, \
+      "sensors.dat" using 10:11 title "Instrument Internal" with points linestyle 2, \
+      "sensors.dat" using 14:15 title "Instrument Tunnel"   with points linestyle 3, \
+      "sensors.dat" using 18:19 title "Close Electronics"   with points linestyle 4
+      
+    set yrange [0:100]
+    set ytics 0,10,100
+    set format y "%g"
+    set ylabel "RH (%)"
+    set key on
+    plot \
+      "sensors.dat" using 4:(\$5*100)   title "Instrument External" with points linestyle 1, \
+      "sensors.dat" using 12:(\$13*100) title "Instrument Internal" with points linestyle 2, \
+      "sensors.dat" using 16:(\$17*100) title "Instrument Tunnel"   with points linestyle 3, \
+      "sensors.dat" using 20:(\$21*100) title "Close Electronics"   with points linestyle 4
+      
+    set yrange [0:1000]
+    set ytics 0,100,1000
+    set format y "%.0f"
+    set ylabel "Light Level (lux)"
+    set key on
+    plot \
+      "sensors.dat" using 8:9   title "Instrument External" with points linestyle 1
+      
+    set format x "%Y%m%dT%H"
+    set xtics rotate by 90 right
+    set xlabel "UTC"
+
+    set yrange [750:800]
+    set ytics 750,10,800
+    set format y "%.0f"
+    set ylabel "Pressure (mbar)"
+    set key on
+    plot \
+      "sensors.dat" using 6:7   title "Instrument External" with points linestyle 1
+      
+    unset multiplot
+
+    set terminal pngcairo enhanced size 1200,1800
+    set output "control-room.png.new"
+
+    set multiplot layout 7,1
+
+    set format x ""
+    set xlabel ""
+
+    set yrange [0:+50]
+    set ytics 0,10,50
+    set format y "%+.0f"
+    set ylabel "Temperature (C)"
+    set key on
+    plot \
+      "sensors.dat" using 22:23 title "Rack Internal"               with points linestyle 1, \
+      "sensors.dat" using 26:27 title "Rack External"               with points linestyle 2, \
+      "sensors.dat" using 68:69 title "C0 Service Cabinet Internal" with points linestyle 3, \
+      "sensors.dat" using 72:73 title "C0 Service Cabinet External" with points linestyle 4, \
+      "C0.dat"      using 1:11  title "C0 Power Supply"             with points linestyle 5
+      
+   set format x "%Y%m%dT%H"
+   set xtics rotate by 90 right
+   set xlabel "UTC"
+
+   set yrange [0:100]
+    set ytics 0,10,100
+    set format y "%g"
+    set ylabel "RH (%)"
+    set key on
+    plot \
+      "sensors.dat" using 24:(\$25*100) title "Rack Internal"               with points linestyle 1, \
+      "sensors.dat" using 28:(\$29*100) title "Rack External"               with points linestyle 2, \
+      "sensors.dat" using 70:(\$71*100) title "C0 Service Cabinet Internal" with points linestyle 3, \
+      "sensors.dat" using 74:(\$75*100) title "C0 Service Cabinet External" with points linestyle 4, \
 
     unset multiplot
 
 EOF
 
-  for component in ccds
+  for component in ccds instrument control-room
   do
     mv $component.png.new $component-$days.png
   done
