@@ -605,6 +605,9 @@ namespace eval "detector" {
 
   ######################################################################
 
+  variable lastcameraflags 0
+  variable lastrawcooler ""
+
   proc detectorrawupdatestatus {} {
 
     log::debug "detectorrawupdatestatus: start."
@@ -659,6 +662,27 @@ namespace eval "detector" {
         log::debug "rawreturnpressure is $value."
         variable rawreturnpressure
         set rawreturnpressure $value
+      } elseif {[scan $line "Camera Flags,%d," value] == 1} {
+        log::debug "camera flags are $value."
+        variable lastcameraflags
+        set cameraflags $value
+        if {$cameraflags != $lastcameraflags} {
+          log::debug [format "camera flags changed from %x to %x." $lastcameraflags $cameraflags]
+        }
+        set lastcameraflags $cameraflags
+        variable rawcooler
+        if {$cameraflags & 0x20} {
+          set rawcooler on
+        } else {
+          set rawcooler off
+        }
+        variable lastrawcooler
+        if {[string equal "" $lastrawcooler]} {
+          log::info "cooling state is \"$rawcooler\"."
+        } elseif {![string equal $rawcooler $lastrawcooler]} {
+          log::info "cooling state changed from \"$lastrawcooler\" to \"$rawcooler\"."
+        }
+        set lastrawcooler $rawcooler
       }
     }
 
@@ -705,7 +729,8 @@ namespace eval "detector" {
         return 0
       }
       "cooler" {
-        return "off"
+        variable rawcooler
+        return $rawcooler
       }
       "readmode" {
         variable rawreadmode
@@ -751,6 +776,7 @@ namespace eval "detector" {
   variable rawchamberpressure        ""
   variable rawsupplypressure         ""
   variable rawreturnpressure         ""
+  variable rawcoolingstate           ""
 
   proc detectorrawgetdetectortemperature {} {
     variable rawdetectortemperature
