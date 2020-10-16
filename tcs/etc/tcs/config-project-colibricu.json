@@ -427,7 +427,7 @@
       "C0-detector-cooler-set-temperature",
       "C0-detector-cooler-state",
       "C0-detector-cooler-power",
-      "C0-filterwheel-position",
+      "C0-filter-wheel-position",
       "C0-service-cabinet-internal-temperature",
       "C0-service-cabinet-internal-humidity",
       "C0-service-cabinet-external-temperature",
