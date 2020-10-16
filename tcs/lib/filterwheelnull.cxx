@@ -116,7 +116,7 @@ filterwheelrawgetvalue(const char *name)
   value[0] = 0;
   if (strcmp(name, "description") == 0)
     snprintf(value, sizeof(value), "%s", description);
-  if (strcmp(name, "position") == 0)
+  else if (strcmp(name, "position") == 0)
     snprintf(value, sizeof(value), "%ld", position);
   else if (strcmp(name, "maxposition") == 0)
     snprintf(value, sizeof(value), "%ld", maxposition);
