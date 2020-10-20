@@ -611,6 +611,9 @@ namespace eval "detector" {
 
   variable lastcameraflags 0
   variable lastrawcooler ""
+  
+  variable lastgetstatustimestamp ""
+  variable detectorrawupdatestatusvalue "error"
 
   proc detectorrawupdatestatus {} {
 
@@ -620,79 +623,91 @@ namespace eval "detector" {
     variable rawacquiring
     variable rawretrieving
     variable estimatedexposureend
+    variable lastgetstatustimestamp
+    variable detectorrawupdatestatusvalue
+
+    log::debug "detectorrawupdatestatus: lastgetstatustimestamp = $lastgetstatustimestamp."
     
-    # Avoid sending getstatus and getparameters commands while reading
-    # (or in the last second of reading), since they will hang. Also,
-    # avoid sending them while retrieving to avoid interrupting the flow
-    # of image packets.
+    # Avoid sending getstatus commands: (a) while reading (or in the last second
+    # of reading), since they will hang; (b) while retrieving to avoid
+    # interrupting the flow of image packets; and (c) within 15 seconds of the
+    # previous one (since SI Image imposes a minimum delay of 10 seconds).
     
-    if {
-      ($rawacquiring && [utcclock::diff $estimatedexposureend] < 2) ||
-      $rawretrieving
+    if {$rawacquiring && [utcclock::diff $estimatedexposureend "now"] < 2} {
+      log::debug "detectorrawupdatestatus: acquiring."
+    } elseif {$rawretrieving} {
+      log::debug "detectorrawupdatestatus: retrieving."
+    } elseif {
+      ![string equal "" $lastgetstatustimestamp] &&
+      [utcclock::diff "now" $lastgetstatustimestamp] < 15
     } {
-      return "ok"
-    }
-
-    log::debug "detectorrawupdatestatus: sending getstatus command."
-    rawputsiimagecommandpacket "getstatus"
-    set data [rawgetsiimagedatapacket "getstatus"]
-
-    log::debug "detectorrawupdatestatus: processing getstatus data."
-    foreach line $data {
-      log::debug "detectorrawupdatestatus: getstatus line: \"$line\"."
-      if {[scan $line "CCD 0 CCD Temp.,%f," value] == 1} {
-        log::debug "rawdetectortemperature is $value."
-        variable rawdetectortemperature
-        set rawdetectortemperature $value
-      } elseif {[scan $line "Cold End Temperature,%f," value] == 1} {
-        log::debug "rawcoldendtemperature is $value."
-        variable rawcoldendtemperature
-        set rawcoldendtemperature $value
-      } elseif {[scan $line "PS Case Temp,%f," value] == 1} {
-        log::debug "rawpowersupplytemperature is $value."
-        variable rawpowersupplytemperature
-        set rawpowersupplytemperature $value
-      } elseif {[scan $line "Chamber Pressure,%f," value] == 1} {
-        # Convert to mbar
-        set value [expr {$value / 750.06 * 1e3}]
-        log::debug "rawchamberpressure is $value."
-        variable rawchamberpressure
-        set rawchamberpressure $value
-      } elseif {[scan $line "PS Pressure 2,%f," value] == 1} {
-        log::debug "rawsupplypressure is $value."
-        variable rawsupplypressure
-        set rawsupplypressure $value
-      } elseif {[scan $line "PS Pressure 1,%f," value] == 1} {
-        log::debug "rawreturnpressure is $value."
-        variable rawreturnpressure
-        set rawreturnpressure $value
-      } elseif {[scan $line "Camera Flags,%d," value] == 1} {
-        log::debug "camera flags are $value."
-        variable lastcameraflags
-        set cameraflags $value
-        if {$cameraflags != $lastcameraflags} {
-          log::debug [format "camera flags changed from %x to %x." $lastcameraflags $cameraflags]
+      log::debug [format "detectorrawupdatestatus: only %.1f seconds since last getstatus command." [utcclock::diff "now" $lastgetstatustimestamp]]
+    } elseif {[catch {
+      log::debug "detectorrawupdatestatus: sending getstatus command."
+      set lastgetstatustimestamp [utcclock::format]
+      rawputsiimagecommandpacket "getstatus"
+      set data [rawgetsiimagedatapacket "getstatus"]
+    }]} {
+      set detectorrawupdatestatusvalue "getstatus command failed."
+    } else {
+      log::debug "detectorrawupdatestatus: processing getstatus data."
+      foreach line $data {
+        log::debug "detectorrawupdatestatus: getstatus line: \"$line\"."
+        if {[scan $line "CCD 0 CCD Temp.,%f," value] == 1} {
+          log::debug "rawdetectortemperature is $value."
+          variable rawdetectortemperature
+          set rawdetectortemperature $value
+        } elseif {[scan $line "Cold End Temperature,%f," value] == 1} {
+          log::debug "rawcoldendtemperature is $value."
+          variable rawcoldendtemperature
+          set rawcoldendtemperature $value
+        } elseif {[scan $line "PS Case Temp,%f," value] == 1} {
+          log::debug "rawpowersupplytemperature is $value."
+          variable rawpowersupplytemperature
+          set rawpowersupplytemperature $value
+        } elseif {[scan $line "Chamber Pressure,%f," value] == 1} {
+          # Convert to mbar
+          set value [expr {$value / 750.06 * 1e3}]
+          log::debug "rawchamberpressure is $value."
+          variable rawchamberpressure
+          set rawchamberpressure $value
+        } elseif {[scan $line "PS Pressure 2,%f," value] == 1} {
+          log::debug "rawsupplypressure is $value."
+          variable rawsupplypressure
+          set rawsupplypressure $value
+        } elseif {[scan $line "PS Pressure 1,%f," value] == 1} {
+          log::debug "rawreturnpressure is $value."
+          variable rawreturnpressure
+          set rawreturnpressure $value
+        } elseif {[scan $line "Camera Flags,%d," value] == 1} {
+          log::debug "camera flags are $value."
+          variable lastcameraflags
+          set cameraflags $value
+          if {$cameraflags != $lastcameraflags} {
+            log::debug [format "camera flags changed from %x to %x." $lastcameraflags $cameraflags]
+          }
+          set lastcameraflags $cameraflags
+          variable rawcooler
+          if {$cameraflags & 0x20} {
+            set rawcooler on
+          } else {
+            set rawcooler off
+          }
+          variable lastrawcooler
+          if {[string equal "" $lastrawcooler]} {
+            log::info "cooling state is \"$rawcooler\"."
+          } elseif {![string equal $rawcooler $lastrawcooler]} {
+            log::info "cooling state changed from \"$lastrawcooler\" to \"$rawcooler\"."
+          }
+          set lastrawcooler $rawcooler
         }
-        set lastcameraflags $cameraflags
-        variable rawcooler
-        if {$cameraflags & 0x20} {
-          set rawcooler on
-        } else {
-          set rawcooler off
-        }
-        variable lastrawcooler
-        if {[string equal "" $lastrawcooler]} {
-          log::info "cooling state is \"$rawcooler\"."
-        } elseif {![string equal $rawcooler $lastrawcooler]} {
-          log::info "cooling state changed from \"$lastrawcooler\" to \"$rawcooler\"."
-        }
-        set lastrawcooler $rawcooler
+        set detectorrawupdatestatusvalue "ok"
       }
     }
 
     log::debug "detectorrawupdatestatus: end"
 
-    return "ok"
+    return $detectorrawupdatestatusvalue
   }
   
   proc detectorrawgetvalue {name} {
