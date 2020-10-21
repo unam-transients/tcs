@@ -255,14 +255,14 @@ namespace eval "detector" {
     $logprocedure "rawgetpacket: $command: start."
     set start [read $rawsiimagechannel 4]
     if {[string length $start] < 4} {
-      error "getbacket: $command: truncated packet."
+      error "rawgetpacket: $command: truncated packet."
     }
     binary scan $start Iu packetlength
     $logprocedure "rawgetpacket: $command: packet length = $packetlength."
     set rest [read $rawsiimagechannel [expr {$packetlength - 4}]]
     set packet [binary format "a*a*" $start $rest]
     if {[string length $packet] != $packetlength} {
-      error "getbacket: $command: truncated packet."
+      error "rawgetpacket: $command: truncated packet."
     }
     $logprocedure "rawgetpacket: $command: end."
     return $packet    
