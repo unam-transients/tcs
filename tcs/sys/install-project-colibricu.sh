@@ -161,7 +161,7 @@ EOF
 #     echo "webcamimageserver b http://ddoti:ddoti@webcam-b/cgi-bin/viewer/video.jpg &"
 #     echo "webcamimageserver c http://ddoti:ddoti@webcam-c/cgi-bin/viewer/video.jpg &"
 #     echo "webcamimageserver -r 1 -c 640x480+480+600 cz http://ddoti:ddoti@webcam-c/cgi-bin/viewer/video.jpg &"
-#     echo "allskyimageserver http://132.248.4.140/imagenes/ultima_RED.jpg &"
+    echo "allskyimageserver http://iris.lam.fr/wp-includes/images/ftp_iris/allsky1.jpg &"
     echo "mkdir -p /usr/local/var/tcs/reboot"
     echo "mkdir -p /usr/local/var/tcs/restart"
     echo "mkdir -p /usr/local/var/tcs/halt"
