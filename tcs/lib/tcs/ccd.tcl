@@ -74,6 +74,7 @@ namespace eval "ccd" {
   variable detectorpixelscale              [astrometry::parseangle [config::getvalue $identifier "detectorpixelscale"]]
   variable pointingmodelparameters         [config::getvalue $identifier "pointingmodelparameters"        ]
   variable temperaturelimit                [config::getvalue $identifier "temperaturelimit"               ]
+  variable temperaturelimitoutletgroup     [config::getvalue $identifier "temperaturelimitoutletgroup"    ]
   variable fitsfwhmargs                    [config::getvalue $identifier "fitsfwhmargs"                   ]
 
   ######################################################################
@@ -165,18 +166,22 @@ namespace eval "ccd" {
       set toowarm false
   
       if {$detectortemperature > $temperaturelimit} {
-        log::error [format "switching off cooling and performing an emergency stop as the detector is too warm (%+.1f C)." $detectortemperature]
+        log::error [format "switching off cooling as the detector is too warm (%+.1f C)." $detectortemperature]
         set toowarm true
       }
 
       if {$housingtemperature > $temperaturelimit} {
-        log::error [format "switching off cooling and performing an emergency stop as the housing is too warm (%+.1f C)." $housingtemperature]
+        log::error [format "switching off cooling as the housing is too warm (%+.1f C)." $housingtemperature]
         set toowarm true
       }
 
       if {$toowarm} {
         detector::setcooler "off"
-        exec "[directories::prefix]/bin/emergencystop" "$identifier-ccd"
+        variable temperaturelimitoutletgroup
+        if {![string equal "" $temperaturelimitoutletgroup]} {
+          log::error "performing an emergency stop."
+          exec "[directories::prefix]/bin/emergencystop" $temperaturelimitoutletgroup
+        }
         log::error "exiting."
         exit 1
       }
