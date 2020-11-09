@@ -83,15 +83,16 @@
       }
     },
     "outletgroupaddresses": {
-      "access"              : [[ "pdu2", "a", "5"]],
-      "services"            : [[ "pdu1", "a", "4"]],
-      "control"             : [[ "pdu1", "a", "3"]],
-      "detectors"           : [[ "pdu1", "a", "2"]],
-      "blue"                : [[ "pdu1", "a", "1"]],
-      "blue-service-cabinet": [[ "pdu1", "a", "7"]],
-      "close-electronics"   : [[ "pdu1", "a", "8"]],
-      "sparelinux"          : [[ "pdu1", "a", "5"]],
-      "sparewindows"        : [[ "pdu1", "a", "6"]]
+      "firewall"            : [[ "pdu1", "a", "1"]],
+      "access"              : [[ "pdu1", "a", "2"]],
+      "services"            : [[ "pdu1", "a", "3"]],
+      "control"             : [[ "pdu1", "a", "4"]],
+      "detectors"           : [[ "pdu1", "a", "5"]],
+      "blue"                : [[ "pdu1", "a", "6"]],
+      "sparelinux"          : [[ "pdu1", "a", "7"]],
+      "sparewindows"        : [[ "pdu1", "a", "8"]],
+      "close-electronics"   : [[ "pdu3", "a", "1"]],
+      "blue-service-cabinet": [[ "pdu3", "a", "2"]]
     }
   },
   "instrument": {
