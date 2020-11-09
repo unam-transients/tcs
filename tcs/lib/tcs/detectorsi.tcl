@@ -283,7 +283,7 @@ namespace eval "detector" {
 
   proc rawputsiimagecommandpacket {command args} {
 
-    # Send a command packet to the TCP/OIP server. If appropriate, wait
+    # Send a command packet to the TCP/IP server. If appropriate, wait
     # for an acknowledgement.
     
     # The format of command packets is given in §5.1.1 and §5.3 of the
@@ -609,8 +609,10 @@ namespace eval "detector" {
 
   ######################################################################
 
-  variable lastcameraflags 0
-  variable lastrawcooler ""
+  variable lastcameraflags      0
+  variable lastrawcooler        ""
+  variable lastrawcoolerlowflow ""
+  variable lastrawcompressor    ""
   
   variable lastgetstatustimestamp ""
   variable detectorrawupdatestatusvalue "error"
@@ -650,6 +652,7 @@ namespace eval "detector" {
     }]} {
       set detectorrawupdatestatusvalue "getstatus command failed."
     } else {
+
       log::debug "detectorrawupdatestatus: processing getstatus data."
       foreach line $data {
         log::debug "detectorrawupdatestatus: getstatus line: \"$line\"."
@@ -672,13 +675,25 @@ namespace eval "detector" {
           variable rawchamberpressure
           set rawchamberpressure $value
         } elseif {[scan $line "PS Pressure 2,%f," value] == 1} {
-          log::debug "rawsupplypressure is $value."
-          variable rawsupplypressure
-          set rawsupplypressure $value
+          log::debug "rawcompressorsupplypressure is $value."
+          variable rawcompressorsupplypressure
+          set rawcompressorsupplypressure $value
         } elseif {[scan $line "PS Pressure 1,%f," value] == 1} {
-          log::debug "rawreturnpressure is $value."
-          variable rawreturnpressure
-          set rawreturnpressure $value
+          log::debug "rawcompressorreturnpressure is $value."
+          variable rawcompressorreturnpressure
+          set rawcompressorreturnpressure $value
+        } elseif {[scan $line "Cryo Current,%f," value] == 1} {
+          log::debug "compressor current is $value."
+          variable rawcompressorcurrent
+          set rawcompressorcurrent $value
+        } elseif {[scan $line "CCD Heater Current,%f," value] == 1} {
+          log::debug "rawdetectorheatercurrent is $value."
+          variable rawdetectorheatercurrent
+          set rawdetectorheatercurrent $value
+        } elseif {[scan $line "Cold End Heater Current,%f," value] == 1} {
+          log::debug "rawcoldendheatercurrent is $value."
+          variable rawcoldendheatercurrent
+          set rawcoldendheatercurrent $value
         } elseif {[scan $line "Camera Flags,%d," value] == 1} {
           log::debug "camera flags are $value."
           variable lastcameraflags
@@ -687,20 +702,51 @@ namespace eval "detector" {
             log::debug [format "camera flags changed from %x to %x." $lastcameraflags $cameraflags]
           }
           set lastcameraflags $cameraflags
-          variable rawcooler
-          if {$cameraflags & 0x20} {
-            set rawcooler on
-          } else {
-            set rawcooler off
-          }
-          variable lastrawcooler
-          if {[string equal "" $lastrawcooler]} {
-            log::info "cooling state is \"$rawcooler\"."
-          } elseif {![string equal $rawcooler $lastrawcooler]} {
-            log::info "cooling state changed from \"$lastrawcooler\" to \"$rawcooler\"."
-          }
-          set lastrawcooler $rawcooler
         }
+
+        variable rawcooler
+        if {$cameraflags & 0x20} {
+          set rawcooler on
+        } else {
+          set rawcooler off
+        }
+        variable lastrawcooler
+        if {[string equal "" $lastrawcooler]} {
+          log::info "cooler state is \"$rawcooler\"."
+        } elseif {![string equal $rawcooler $lastrawcooler]} {
+          log::info "cooler state changed from \"$lastrawcooler\" to \"$rawcooler\"."
+        }
+        set lastrawcooler $rawcooler
+
+	variable lastrawcompressor
+	variable rawcompressorcurrent
+	if {$rawcompressorcurrent > 0.5} {
+	  set rawcompressor "on"
+	} else {
+	  set rawcompressor "off"
+	}
+        if {[string equal "" $lastrawcompressor]} {
+          log::info "compressor is \"$rawcompressor\"."
+        } elseif {![string equal $lastrawcompressor $rawcompressor]} {
+          log::info "compressor changed from \"$lastrawcompressor\" to \"$rawcompressor\"."
+        }
+        set lastrawcompressor $rawcompressor
+
+        variable rawcoolerlowflow
+        if {$cameraflags & 0x10} {
+          set rawcoolerlowflow on
+        } else {
+          set rawcoolerlowflow off
+        }
+        variable lastrawcoolerlowflow
+        if {[string equal "" $lastrawcoolerlowflow]} {
+          log::info "cooler low flow is \"$rawcooler\"."
+        } elseif {![string equal $rawcoolerlowflow $lastrawcoolerlowflow]} {
+          variable rawcoldendtemperature
+          log::info [format "cooler low flow changed from \"$lastrawcoolerlowflow\" to \"$rawcoolerlowflow\" with cold end at %+.1f C." $rawcoldendtemperature]
+        }
+        set lastrawcoolerlowflow $rawcoolerlowflow
+        
         set detectorrawupdatestatusvalue "ok"
       }
     }
@@ -733,24 +779,45 @@ namespace eval "detector" {
         variable rawchamberpressure
         return $rawchamberpressure
       }
-      "supplypressure" {
-        variable rawsupplypressure
-        return $rawsupplypressure
+      "compressorsupplypressure" {
+        variable rawcompressorsupplypressure
+        return $rawcompressorsupplypressure
       }
-      "returnpressure" {
-        variable rawreturnpressure
-        return $rawreturnpressure
+      "compressorreturnpressure" {
+        variable rawcompressorreturnpressure
+        return $rawcompressorreturnpressure
       }
       "coolersettemperature" {
         variable rawcoolersettemperature
         return $rawcoolersettemperature
       }
-      "coolerpower" {
-        return 0
+      "compressorcurrent" {
+        variable rawcompressorcurrent
+        return $rawcompressorcurrent
+      }
+      "compressor" {
+        variable rawcompressor
+        return $rawcompressor
+      }
+      "detectorheatercurrent" {
+        variable rawdetectorheatercurrent
+        return $rawdetectorheatercurrent
+      }
+      "coldendheatercurrent" {
+        variable rawcoldendheatercurrent
+        return $rawcoldendheatercurrent
+      }
+      "coolersettemperature" {
+        variable rawcoolersettemperature
+        return $rawcoolersettemperature
       }
       "cooler" {
         variable rawcooler
         return $rawcooler
+      }
+      "coolerlowflow" {
+        variable rawcoolerlowflow
+        return $rawcoolerlowflow
       }
       "readmode" {
         variable rawreadmode
@@ -803,14 +870,18 @@ namespace eval "detector" {
   
   ######################################################################
 
-  variable rawdetectortemperature    ""
-  variable rawcoldendtemperature     ""
-  variable rawpowersupplytemperature ""
-  variable rawchamberpressure        ""
-  variable rawsupplypressure         ""
-  variable rawreturnpressure         ""
-  variable rawcooler                 ""
-  variable rawcoolersettemperature   ""
+  variable rawdetectortemperature      ""
+  variable rawdetectorheatercurrent    ""
+  variable rawcoldendtemperature       ""
+  variable rawcoldendheatercurrent     ""
+  variable rawpowersupplytemperature   ""
+  variable rawchamberpressure          ""
+  variable rawcompressorsupplypressure ""
+  variable rawcompressorreturnpressure ""
+  variable rawcompressorcurrent        ""
+  variable rawcooler                   ""
+  variable rawcoolerlowflow            ""
+  variable rawcoolersettemperature     ""
 
   proc detectorrawgetdetectortemperature {} {
     variable rawdetectortemperature

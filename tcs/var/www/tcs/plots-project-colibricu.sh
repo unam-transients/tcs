@@ -131,14 +131,24 @@ EOF
       "C0.dat" using 1:2  title "C0 Detector" with points linestyle 1
 
     set yrange [1e-3:1000]
-    set ylabel "Pressure (mbar)"
+    set ylabel "Pressure (Torr)"
     set logscale y
     set ytics 1e-8,10,1000 logscale
     set format y "10^{%L}"
     set key on
-    plot "C0.dat" using 1:8 title "C0 Chamber" with points linestyle 1
+    plot "C0.dat" using 1:(\$8/1.33) title "C0 Chamber" with points linestyle 1
     set nologscale
-    set format y "%+g"
+
+#    set format y "%+g"
+#    set yrange [1e-3:1000]
+#    set ylabel "Pressure (mbar)"
+#    set logscale y
+#    set ytics 1e-8,10,1000 logscale
+#    set format y "10^{%L}"
+#    set key on
+#    plot "C0.dat" using 1:8 title "C0 Chamber" with points linestyle 1
+#    set nologscale
+#    set format y "%+g"
 
     set format x "%Y%m%dT%H"
     set xtics rotate by 90 right
