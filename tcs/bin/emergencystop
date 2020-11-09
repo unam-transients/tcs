@@ -33,7 +33,7 @@ source [file join [file dirname [info script]] ".." "lib" "tcs" "packages.tcl"]
 package require "config"
 package require "server"
 package require "power"
-package require "scheduler"
+package require "coroutine"
 
 config::setdefaultvalue "emergencystop" "defaultoutletgroups" {}
 
@@ -62,8 +62,8 @@ proc exitifdone {} {
 }
 
 foreach outletgroup $outletgroups {
-  scheduler::create "emergencystop $outletgroup"
+  coroutine::create "emergencystop $outletgroup"
 }
 
-scheduler::every 1000 exitifdone
-scheduler::start
+coroutine::every 1000 exitifdone
+coroutine::start
