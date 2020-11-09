@@ -97,13 +97,13 @@
   },
   "instrument": {
     "detectors": [
-      "C0", "C1"
+      "C0"
     ],
     "idlefilterwheelpositions": [
-      "w", "w"
+      "g"
     ],
     "pointingdetectors": [
-      "C1"
+      "C0"
     ],
     "outletgroups": []
   },
@@ -182,208 +182,208 @@
       "16": "-A"
     }
   },
-  "C1": {
-    "telescopedescription": "COLIBRI/CU laboratory",
-    "detectortype": "dummy",
-    "detectoridentifier": "",
-    "detectorpixelscale": "0.381as",
-    "detectorinitialreadmode": "",
-    "detectorinitialsoftwaregain": 1,
-    "detectorinitialbinning": 1,
-    "detectorwindows": {
-      "initial": "default",
-      "default": "4kx4k",
-      "center": "1kx1k",
-      "1kx1k": {
-        "sx": 0,
-        "sy": 0,
-        "nx": 1024,
-        "ny": 1024
-      },
-      "2kx2k": {
-        "sx": 1024,
-        "sy": 1024,
-        "nx": 2048,
-        "ny": 2048
-      },
-      "4kx4k": {
-        "sx": 1536,
-        "sy": 1536,
-        "nx": 4096,
-        "ny": 4096
-      }
-    },
-    "detectorfullunbinneddatawindow": {
-      "sx": 0,
-      "sy": 0,
-      "nx": 4096,
-      "ny": 4096
-    },
-    "detectorfullunbinnedbiaswindow": {
-      "sx": 0,
-      "sy": 0,
-      "nx": 0,
-      "ny": 0
-    },
-    "cooleropensetting": "off",
-    "coolerclosedsetting": "off",
-    "temperaturelimit": 40,
-    "temperaturelimitoutletgroup": "",
-    "filterwheeltype": "null",
-    "filterwheelidentifier": "null",
-    "filterwheelinitialposition": 0,
-    "filterlist": [
-      "w"
-    ],
-    "focusertype": "null",
-    "focuseridentifier": "null",
-    "focuserinitialposition": 0,
-    "focuserbacklashoffset": 0,
-    "focusercorrectionmodel": {},
-    "pointingmodelparameters": {},
-    "isstandalone": false,
-    "fitsfwhmargs": {
-      "1": "-m",
-      "2": "-A",
-      "4": "-A",
-      "8": "-A",
-      "16": "-A"
-    }
-  },
-  "C2": {
-    "telescopedescription": "COLIBRI/CU laboratory",
-    "detectortype": "fli",
-    "detectoridentifier": "ML0032515",
-    "detectorpixelscale": "0.381as",
-    "detectorinitialreadmode": "",
-    "detectorinitialsoftwaregain": 1,
-    "detectorinitialbinning": 1,
-    "detectorwindows": {
-      "initial": "default",
-      "default": "4kx4k",
-      "center": "1kx1k",
-      "1kx1k": {
-        "sx": 0,
-        "sy": 0,
-        "nx": 4152,
-        "ny": 4128
-      },
-      "2kx2k": {
-        "sx": 1061,
-        "sy": 1047,
-        "nx": 2048,
-        "ny": 2048
-      },
-      "4kx4k": {
-        "sx": 1573,
-        "sy": 1559,
-        "nx": 1024,
-        "ny": 1024
-      }
-    },
-    "detectorfullunbinneddatawindow": {
-      "sx": 37,
-      "sy": 23,
-      "nx": 4096,
-      "ny": 4096
-    },
-    "detectorfullunbinnedbiaswindow": {
-      "sx": 16,
-      "sy": 23,
-      "nx": 16,
-      "ny": 4096
-    },
-    "cooleropensetting": "0",
-    "coolerclosedsetting": "following",
-    "temperaturelimit": 40,
-    "filterwheeltype": "null",
-    "filterwheelidentifier": "null",
-    "filterwheelinitialposition": 0,
-    "filterlist": [
-      "w"
-    ],
-    "focusertype": "null",
-    "focuseridentifier": "null",
-    "focuserinitialposition": 0,
-    "focuserbacklashoffset": 0,
-    "focusercorrectionmodel": {},
-    "pointingmodelparameters": {},
-    "isstandalone": false,
-    "fitsfwhmargs": {
-      "1": "-m",
-      "2": "-A",
-      "4": "-A",
-      "8": "-A",
-      "16": "-A"
-    }
-  },
-  "C3": {
-    "telescopedescription": "COLIBRI/CU laboratory",
-    "detectortype": "qsi",
-    "detectoridentifier": "00502146",
-    "detectorpixelscale": "1.38as",
-    "detectorinitialreadmode": "",
-    "detectorinitialsoftwaregain": 4,
-    "detectorinitialbinning": 1,
-    "detectorwindows": {
-      "initial": "default",
-      "default": "768x512",
-      "center": "256x256",
-      "768x512": {
-        "sx": 0,
-        "sy": 0,
-        "nx": 800,
-        "ny": 512
-      },
-      "512x512": {
-        "sx": 128,
-        "sy": 0,
-        "nx": 512,
-        "ny": 512
-      },
-      "256x256": {
-        "sx": 256,
-        "sy": 128,
-        "nx": 256,
-        "ny": 256
-      }
-    },
-    "detectorfullunbinneddatawindow": {
-      "sx": 0,
-      "sy": 0,
-      "nx": 768,
-      "ny": 512
-    },
-    "detectorfullunbinnedbiaswindow": {
-      "sx": 784,
-      "sy": 0,
-      "nx": 16,
-      "ny": 512
-    },
-    "cooleropensetting": "0",
-    "coolerclosedsetting": "off",
-    "temperaturelimit": 40,
-    "filterwheeltype": "fli",
-    "filterwheelidentifier": "CFW-14-5",
-    "filterwheelinitialposition": 0,
-    "filterlist": [
-      "w"
-    ],
-    "focusertype": "null",
-    "focuseridentifier": "null",
-    "focuserinitialposition": 0,
-    "focuserbacklashoffset": 0,
-    "focusercorrectionmodel": {},
-    "pointingmodelparameters": {},
-    "isstandalone": false,
-    "fitsfwhmargs": {
-      "1": "-m",
-      "2": "-A",
-      "4": "-A",
-      "8": "-A",
-      "16": "-A"
-    }
-  },
+//   "C1": {
+//     "telescopedescription": "COLIBRI/CU laboratory",
+//     "detectortype": "dummy",
+//     "detectoridentifier": "",
+//     "detectorpixelscale": "0.381as",
+//     "detectorinitialreadmode": "",
+//     "detectorinitialsoftwaregain": 1,
+//     "detectorinitialbinning": 1,
+//     "detectorwindows": {
+//       "initial": "default",
+//       "default": "4kx4k",
+//       "center": "1kx1k",
+//       "1kx1k": {
+//         "sx": 0,
+//         "sy": 0,
+//         "nx": 1024,
+//         "ny": 1024
+//       },
+//       "2kx2k": {
+//         "sx": 1024,
+//         "sy": 1024,
+//         "nx": 2048,
+//         "ny": 2048
+//       },
+//       "4kx4k": {
+//         "sx": 1536,
+//         "sy": 1536,
+//         "nx": 4096,
+//         "ny": 4096
+//       }
+//     },
+//     "detectorfullunbinneddatawindow": {
+//       "sx": 0,
+//       "sy": 0,
+//       "nx": 4096,
+//       "ny": 4096
+//     },
+//     "detectorfullunbinnedbiaswindow": {
+//       "sx": 0,
+//       "sy": 0,
+//       "nx": 0,
+//       "ny": 0
+//     },
+//     "cooleropensetting": "off",
+//     "coolerclosedsetting": "off",
+//     "temperaturelimit": 40,
+//     "temperaturelimitoutletgroup": "",
+//     "filterwheeltype": "null",
+//     "filterwheelidentifier": "null",
+//     "filterwheelinitialposition": 0,
+//     "filterlist": [
+//       "w"
+//     ],
+//     "focusertype": "null",
+//     "focuseridentifier": "null",
+//     "focuserinitialposition": 0,
+//     "focuserbacklashoffset": 0,
+//     "focusercorrectionmodel": {},
+//     "pointingmodelparameters": {},
+//     "isstandalone": false,
+//     "fitsfwhmargs": {
+//       "1": "-m",
+//       "2": "-A",
+//       "4": "-A",
+//       "8": "-A",
+//       "16": "-A"
+//     }
+//   },
+//   "C2": {
+//     "telescopedescription": "COLIBRI/CU laboratory",
+//     "detectortype": "fli",
+//     "detectoridentifier": "ML0032515",
+//     "detectorpixelscale": "0.381as",
+//     "detectorinitialreadmode": "",
+//     "detectorinitialsoftwaregain": 1,
+//     "detectorinitialbinning": 1,
+//     "detectorwindows": {
+//       "initial": "default",
+//       "default": "4kx4k",
+//       "center": "1kx1k",
+//       "1kx1k": {
+//         "sx": 0,
+//         "sy": 0,
+//         "nx": 4152,
+//         "ny": 4128
+//       },
+//       "2kx2k": {
+//         "sx": 1061,
+//         "sy": 1047,
+//         "nx": 2048,
+//         "ny": 2048
+//       },
+//       "4kx4k": {
+//         "sx": 1573,
+//         "sy": 1559,
+//         "nx": 1024,
+//         "ny": 1024
+//       }
+//     },
+//     "detectorfullunbinneddatawindow": {
+//       "sx": 37,
+//       "sy": 23,
+//       "nx": 4096,
+//       "ny": 4096
+//     },
+//     "detectorfullunbinnedbiaswindow": {
+//       "sx": 16,
+//       "sy": 23,
+//       "nx": 16,
+//       "ny": 4096
+//     },
+//     "cooleropensetting": "0",
+//     "coolerclosedsetting": "following",
+//     "temperaturelimit": 40,
+//     "filterwheeltype": "null",
+//     "filterwheelidentifier": "null",
+//     "filterwheelinitialposition": 0,
+//     "filterlist": [
+//       "w"
+//     ],
+//     "focusertype": "null",
+//     "focuseridentifier": "null",
+//     "focuserinitialposition": 0,
+//     "focuserbacklashoffset": 0,
+//     "focusercorrectionmodel": {},
+//     "pointingmodelparameters": {},
+//     "isstandalone": false,
+//     "fitsfwhmargs": {
+//       "1": "-m",
+//       "2": "-A",
+//       "4": "-A",
+//       "8": "-A",
+//       "16": "-A"
+//     }
+//   },
+//   "C3": {
+//     "telescopedescription": "COLIBRI/CU laboratory",
+//     "detectortype": "qsi",
+//     "detectoridentifier": "00502146",
+//     "detectorpixelscale": "1.38as",
+//     "detectorinitialreadmode": "",
+//     "detectorinitialsoftwaregain": 4,
+//     "detectorinitialbinning": 1,
+//     "detectorwindows": {
+//       "initial": "default",
+//       "default": "768x512",
+//       "center": "256x256",
+//       "768x512": {
+//         "sx": 0,
+//         "sy": 0,
+//         "nx": 800,
+//         "ny": 512
+//       },
+//       "512x512": {
+//         "sx": 128,
+//         "sy": 0,
+//         "nx": 512,
+//         "ny": 512
+//       },
+//       "256x256": {
+//         "sx": 256,
+//         "sy": 128,
+//         "nx": 256,
+//         "ny": 256
+//       }
+//     },
+//     "detectorfullunbinneddatawindow": {
+//       "sx": 0,
+//       "sy": 0,
+//       "nx": 768,
+//       "ny": 512
+//     },
+//     "detectorfullunbinnedbiaswindow": {
+//       "sx": 784,
+//       "sy": 0,
+//       "nx": 16,
+//       "ny": 512
+//     },
+//     "cooleropensetting": "0",
+//     "coolerclosedsetting": "off",
+//     "temperaturelimit": 40,
+//     "filterwheeltype": "fli",
+//     "filterwheelidentifier": "CFW-14-5",
+//     "filterwheelinitialposition": 0,
+//     "filterlist": [
+//       "w"
+//     ],
+//     "focusertype": "null",
+//     "focuseridentifier": "null",
+//     "focuserinitialposition": 0,
+//     "focuserbacklashoffset": 0,
+//     "focusercorrectionmodel": {},
+//     "pointingmodelparameters": {},
+//     "isstandalone": false,
+//     "fitsfwhmargs": {
+//       "1": "-m",
+//       "2": "-A",
+//       "4": "-A",
+//       "8": "-A",
+//       "16": "-A"
+//     }
+//   },
   "fitsheader": {
     "servers": [
       "target",

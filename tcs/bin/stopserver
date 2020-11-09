@@ -104,7 +104,7 @@ colibricu-control)
   allargs="scheduler executor instrument telescope weather sun moon target power sensors"
   ;;
 colibricu-detectors)
-  allargs="C1 C0"
+  allargs="C0"
   ;;
 esac
 
