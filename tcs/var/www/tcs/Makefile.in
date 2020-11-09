@@ -85,6 +85,7 @@ installs_project_ddotioan	:=		\
 	webcam-cz-project-ddotioan.html
 
 installs_project_colibricu	:=		\
+	allsky-project-colibricu.html      	\
 	C0-project-colibricu.html  	     	\
 	config-project-colibricu.js		\
 	interface-project-colibricu.html	\
