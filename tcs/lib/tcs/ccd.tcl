@@ -185,41 +185,45 @@ namespace eval "ccd" {
     
     server::setstatus "ok"
 
-    server::setdata "timestamp"                      [utcclock::combinedformat $timestamp]
-    server::setdata "lasttimestamp"                  $lasttimestamp
-    server::setdata "detectordescription"            [detector::getdescription]
-    server::setdata "detectorsoftwaregain"           [detector::getsoftwaregain]
-    server::setdata "detectorsaturationlevel"        [detector::getsaturationlevel]
-    server::setdata "detectorwindow"                 [detector::getwindow]
-    server::setdata "detectorwidth"                  [getwidth]
-    server::setdata "detectorbinning"                [detector::getbinning]
-    server::setdata "detectorfullunbinneddatawindow" [detector::getfullunbinneddatawindow]
-    server::setdata "detectorfullunbinnedbiaswindow" [detector::getfullunbinnedbiaswindow]
-    server::setdata "detectordatawindow"             [detector::getdatawindow]
-    server::setdata "detectorbiaswindow"             [detector::getbiaswindow]
-    server::setdata "detectorreadmode"               [detector::getreadmode]
-    server::setdata "detectordetectortemperature"    $detectortemperature
-    server::setdata "detectorhousingtemperature"     $housingtemperature
-    server::setdata "detectorcoldendtemperature"     [detector::getcoldendtemperature]
-    server::setdata "detectorpowersupplytemperature" [detector::getpowersupplytemperature]
-    server::setdata "detectorchamberpressure"        [detector::getchamberpressure]
-    server::setdata "detectorsupplypressure"         [detector::getsupplypressure]
-    server::setdata "detectorreturnpressure"         [detector::getreturnpressure]
-    server::setdata "detectorcoolerstate"            [detector::getcoolerstate]
-    server::setdata "detectorcoolersettemperature"   [detector::getcoolersettemperature]
-    server::setdata "detectorcoolerpower"            [detector::getcoolerpower]
-    server::setdata "filterwheeldescription"         [filterwheel::getdescription]
-    server::setdata "filterwheelposition"            $filterwheelposition
-    server::setdata "filterwheelpositionerror"       $filterwheelpositionerror
-    server::setdata "lastfilterwheelposition"        $lastfilterwheelposition
-    server::setdata "filterwheelmaxposition"         [filterwheel::getmaxposition]
-    server::setdata "filter"                         [getfilter $filterwheelposition]
-    server::setdata "focuserdescription"             [focuser::getdescription]
-    server::setdata "focuserposition"                $focuserposition
-    server::setdata "focuserrawposition"             $focuserrawposition
-    server::setdata "focuserminposition"             [focuser::getminposition]
-    server::setdata "focusermaxposition"             [focuser::getmaxposition]
-    server::setdata "focuserpositionerror"           $focuserpositionerror
+    server::setdata "timestamp"                        [utcclock::combinedformat $timestamp]
+    server::setdata "lasttimestamp"                    $lasttimestamp
+    server::setdata "detectordescription"              [detector::getdescription]
+    server::setdata "detectorsoftwaregain"             [detector::getsoftwaregain]
+    server::setdata "detectorsaturationlevel"          [detector::getsaturationlevel]
+    server::setdata "detectorwindow"                   [detector::getwindow]
+    server::setdata "detectorwidth"                    [getwidth]
+    server::setdata "detectorbinning"                  [detector::getbinning]
+    server::setdata "detectorfullunbinneddatawindow"   [detector::getfullunbinneddatawindow]
+    server::setdata "detectorfullunbinnedbiaswindow"   [detector::getfullunbinnedbiaswindow]
+    server::setdata "detectordatawindow"               [detector::getdatawindow]
+    server::setdata "detectorbiaswindow"               [detector::getbiaswindow]
+    server::setdata "detectorreadmode"                 [detector::getreadmode]
+    server::setdata "detectordetectortemperature"      $detectortemperature
+    server::setdata "detectordetectorheatercurrent"    [detector::getdetectorheatercurrent]
+    server::setdata "detectorhousingtemperature"       $housingtemperature
+    server::setdata "detectorcoldendtemperature"       [detector::getcoldendtemperature]
+    server::setdata "detectorcoldendheatercurrent"     [detector::getcoldendheatercurrent]
+    server::setdata "detectorpowersupplytemperature"   [detector::getpowersupplytemperature]
+    server::setdata "detectorchamberpressure"          [detector::getchamberpressure]
+    server::setdata "detectorcompressorsupplypressure" [detector::getcompressorsupplypressure]
+    server::setdata "detectorcompressorreturnpressure" [detector::getcompressorreturnpressure]
+    server::setdata "detectorcompressorcurrent"        [detector::getcompressorcurrent]
+    server::setdata "detectorcoolerstate"              [detector::getcoolerstate]
+    server::setdata "detectorcoolersettemperature"     [detector::getcoolersettemperature]
+    server::setdata "detectorcoolerpower"              [detector::getcoolerpower]
+    server::setdata "detectorcoolerlowflow"            [detector::getcoolerlowflow]
+    server::setdata "filterwheeldescription"           [filterwheel::getdescription]
+    server::setdata "filterwheelposition"              $filterwheelposition
+    server::setdata "filterwheelpositionerror"         $filterwheelpositionerror
+    server::setdata "lastfilterwheelposition"          $lastfilterwheelposition
+    server::setdata "filterwheelmaxposition"           [filterwheel::getmaxposition]
+    server::setdata "filter"                           [getfilter $filterwheelposition]
+    server::setdata "focuserdescription"               [focuser::getdescription]
+    server::setdata "focuserposition"                  $focuserposition
+    server::setdata "focuserrawposition"               $focuserrawposition
+    server::setdata "focuserminposition"               [focuser::getminposition]
+    server::setdata "focusermaxposition"               [focuser::getmaxposition]
+    server::setdata "focuserpositionerror"             $focuserpositionerror
     
     log::writedatalog $identifier {
       timestamp
@@ -230,25 +234,25 @@ namespace eval "ccd" {
       detectorcoolersettemperature 
       detectorcoldendtemperature
       detectorchamberpressure
-      detectorsupplypressure
-      detectorreturnpressure
+      detectorcompressorsupplypressure
+      detectorcompressorreturnpressure
       detectorpowersupplytemperature
     }
     
     foreach {sensorname dataname} {
-      detector-detector-temperature    detectordetectortemperature 
-      detector-housing-temperature     detectorhousingtemperature
-      detector-cold-end-temperature    detectorcoldendtemperature
-      detector-power-supply-temperature detectorpowersupplytemperature
-      detector-chamber-pressure        detectorchamberpressure
-      detector-supply-pressure         detectorsupplypressure
-      detector-return-pressure         detectorreturnpressure
-      detector-cooler-power            detectorcoolerpower
-      detector-cooler-state            detectorcoolerstate
-      detector-cooler-set-temperature  detectorcoolersettemperature
-      filter-wheel-position            filterwheelposition
-      focuser-position                 focuserposition
-      focuser-raw-position             focuserrawposition
+      detector-detector-temperature       detectordetectortemperature 
+      detector-housing-temperature        detectorhousingtemperature
+      detector-cold-end-temperature       detectorcoldendtemperature
+      detector-power-supply-temperature   detectorpowersupplytemperature
+      detector-chamber-pressure           detectorchamberpressure
+      detector-compressor-supply-pressure detectorcompressorsupplypressure
+      detector-compressor-return-pressure detectorcompressorreturnpressure
+      detector-cooler-power               detectorcoolerpower
+      detector-cooler-state               detectorcoolerstate
+      detector-cooler-set-temperature     detectorcoolersettemperature
+      filter-wheel-position               filterwheelposition
+      focuser-position                    focuserposition
+      focuser-raw-position                focuserrawposition
     } {
       log::writesensorsfile "$identifier-$sensorname" [server::getdata $dataname] [server::getdata "timestamp"]
     }

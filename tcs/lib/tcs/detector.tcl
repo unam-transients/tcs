@@ -437,25 +437,28 @@ namespace eval "detector" {
 
   ######################################################################
 
-  variable description            {}
-  variable readmode               {}
-  variable softwaregain           {}
-  variable rawsaturationlevel     65535
-  variable saturationlevel        {}
-  variable window                 {}
-  variable binning                {}
-  variable detectortemperature    {}
-  variable housingtemperature     {}
-  variable coldendtemperature     {}
-  variable powersupplytemperature {}
-  variable chamberpressure        {}
-  variable supplypressure         {}
-  variable returnpressure         {}
-  variable coolerstate            {}
-  variable coolersettemperature   {}
-  variable coolerpower            {}
-  variable average                {}
-  variable standarddeviation      {}
+  variable description              {}
+  variable readmode                 {}
+  variable softwaregain             {}
+  variable rawsaturationlevel       65535
+  variable saturationlevel          {}
+  variable window                   {}
+  variable binning                  {}
+  variable detectortemperature      {}
+  variable housingtemperature       {}
+  variable coldendtemperature       {}
+  variable powersupplytemperature   {}
+  variable chamberpressure          {}
+  variable compressorsupplypressure {}
+  variable compressorreturnpressure {}
+  variable compressorcurrent        {}
+  variable detectorheatercurrent    {}
+  variable coldendheatercurrent     {}
+  variable coolerstate              {}
+  variable coolersettemperature     {}
+  variable coolerpower              {}
+  variable average                  {}
+  variable standarddeviation        {}
 
   proc getdescription {} {
     variable description
@@ -512,19 +515,39 @@ namespace eval "detector" {
     return $chamberpressure
   }
 
-  proc getsupplypressure {} {
-    variable supplypressure
-    return $supplypressure
+  proc getcompressorsupplypressure {} {
+    variable compressorsupplypressure
+    return $compressorsupplypressure
   }
 
-  proc getreturnpressure {} {
-    variable returnpressure
-    return $returnpressure
+  proc getcompressorreturnpressure {} {
+    variable compressorreturnpressure
+    return $compressorreturnpressure
+  }
+
+  proc getcompressorcurrent {} {
+    variable compressorcurrent
+    return $compressorcurrent
+  }
+
+  proc getdetectorheatercurrent {} {
+    variable detectorheatercurrent
+    return $detectorheatercurrent
+  }
+
+  proc getcoldendheatercurrent {} {
+    variable coldendheatercurrent
+    return $coldendheatercurrent
   }
 
   proc getcoolerstate {} {
     variable coolerstate
     return $coolerstate
+  }
+
+  proc getcoolerlowflow {} {
+    variable coolerlowflow
+    return $coolerlowflow
   }
 
   proc getcoolersettemperature {} {
@@ -555,31 +578,37 @@ namespace eval "detector" {
     variable window
     variable binning
     variable detectortemperature
+    variable detectorheatercurrent
     variable housingtemperature
     variable coldendtemperature
+    variable coldendheatercurrent
     variable powersupplytemperature
     variable chamberpressure
-    variable supplypressure
-    variable returnpressure
+    variable compressorsupplypressure
+    variable compressorreturnpressure
+    variable compressorcurrent
     variable coolersettemperature
     variable coolerpower
     variable coolerstate
+    variable coolerlowflow
     
-    set readmode               {}
-    set softwaregain           {}
-    set saturationlevel        {}
-    set window                 {}
-    set binning                {}
-    set detectortemperature    {}
-    set housingtemperature     {}
-    set coldendtemperature     {}
-    set powersupplytemperature {}
-    set returnpressure         {}
-    set chamberpressure        {}
-    set supplypressure         {}
-    set coolerstate            {}
-    set coolersettemperature   {}
-    set coolerpower            {}
+    set readmode                 {}
+    set softwaregain             {}
+    set saturationlevel          {}
+    set window                   {}
+    set binning                  {}
+    set detectortemperature      {}
+    set housingtemperature       {}
+    set coldendtemperature       {}
+    set powersupplytemperature   {}
+    set chamberpressure          {}
+    set compressorsupplypressure {}
+    set compressorreturnpressure {}
+    set compressorcurrent        {}
+    set coolerstate              {}
+    set coolersettemperature     {}
+    set coolerpower              {}
+    set coolerlowflow            {}
     
     checkisopen
     
@@ -595,19 +624,23 @@ namespace eval "detector" {
       "nx" [detectorrawgetvalue "windownx"] \
       "ny" [detectorrawgetvalue "windowny"] \
     ]
-    set readmode               [detectorrawgetvalue "readmode"]
-    set binning                [detectorrawgetvalue "binning"]
-    set detectortemperature    [detectorrawgetvalue "detectortemperature"]
-    set housingtemperature     [detectorrawgetvalue "housingtemperature"]
-    set coldendtemperature     [detectorrawgetvalue "coldendtemperature"]
-    set powersupplytemperature [detectorrawgetvalue "powersupplytemperature"]
-    set chamberpressure        [detectorrawgetvalue "chamberpressure"]
-    set returnpressure         [detectorrawgetvalue "returnpressure"]
-    set supplypressure         [detectorrawgetvalue "supplypressure"]
-    set coolerstate            [detectorrawgetvalue "cooler"]
-    set coolersettemperature   [detectorrawgetvalue "coolersettemperature"]
-    set coolerpower            [detectorrawgetvalue "coolerpower"]
-    set softwaregain           [detectorrawgetvalue "softwaregain"]
+    set readmode                 [detectorrawgetvalue "readmode"]
+    set binning                  [detectorrawgetvalue "binning"]
+    set detectortemperature      [detectorrawgetvalue "detectortemperature"]
+    set detectorheatercurrent    [detectorrawgetvalue "detectorheatercurrent"]
+    set housingtemperature       [detectorrawgetvalue "housingtemperature"]
+    set coldendtemperature       [detectorrawgetvalue "coldendtemperature"]
+    set coldendheatercurrent     [detectorrawgetvalue "coldendheatercurrent"]
+    set powersupplytemperature   [detectorrawgetvalue "powersupplytemperature"]
+    set chamberpressure          [detectorrawgetvalue "chamberpressure"]
+    set compressorreturnpressure [detectorrawgetvalue "compressorreturnpressure"]
+    set compressorsupplypressure [detectorrawgetvalue "compressorsupplypressure"]
+    set compressorcurrent        [detectorrawgetvalue "compressorcurrent"]
+    set coolerstate              [detectorrawgetvalue "cooler"]
+    set coolerlowflow            [detectorrawgetvalue "coolerlowflow"]
+    set coolersettemperature     [detectorrawgetvalue "coolersettemperature"]
+    set coolerpower              [detectorrawgetvalue "coolerpower"]
+    set softwaregain             [detectorrawgetvalue "softwaregain"]
 
     variable rawsaturationlevel
     set saturationlevel [expr {int($rawsaturationlevel / $softwaregain)}]
