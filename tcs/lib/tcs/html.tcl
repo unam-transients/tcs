@@ -381,31 +381,57 @@ namespace eval "html" {
       writehtmlrow "Detector software gain"        [formatifok "%d" [client::getdata $server "detectorsoftwaregain"]]
       writehtmlfullrow "Detector window"           [client::getdata $server "detectorwindow"]
       writehtmlrow "Detector binning"              [formatifok "%d" [client::getdata $server "detectorbinning"]]
-      writehtmlrow "Detector temperature"          [formatifok "%+.1f C" [client::getdata $server "detectordetectortemperature"]]
-      writehtmlrow "Housing temperature"           [formatifok "%+.1f C" [client::getdata $server "detectorhousingtemperature"]]
-      writehtmlrow "Cold end temperature"          [formatifok "%+.1f C" [client::getdata $server "detectorcoldendtemperature"]]
-      writehtmlrow "Power supply temperature"      [formatifok "%+.1f C" [client::getdata $server "detectorpowersupplytemperature"]]
-      writehtmlrow "Chamber pressure"              [formatifok "%.2e mbar" [client::getdata $server "detectorchamberpressure"]]
-      writehtmlrow "Compressor supply pressure"    [formatifok "%.0f psi" [client::getdata $server "detectorcompressorsupplypressure"]]
-      writehtmlrow "Compressor return pressure"    [formatifok "%.0f psi" [client::getdata $server "detectorcompressorreturnpressure"]]
-      writehtmlrow "Compressor current"            [formatifok "%.2f A" [client::getdata $server "detectorcompressorcurrent"]]
       writehtmlrow "Cooler state"                  [format "%s" [client::getdata $server "detectorcoolerstate"]]
-      writehtmlrow "Cooler low-flow"               [format "%s" [client::getdata $server "detectorcoolerlowflow"]]
       writehtmlrow "Cooler set temperature"        [formatifok "%+.1f C" [client::getdata $server "detectorcoolersettemperature"]]
-      writehtmlrow "Cooler power"                  [formatpercentifok "%.0f%%" [client::getdata $server "detectorcoolerpower"]]
-      writehtmlrow "Detector heater current"       [formatifok "%.2f A" [client::getdata $server "detectordetectorheatercurrent"]]
-      writehtmlrow "Cold end heater current"       [formatifok "%.2f A" [client::getdata $server "detectorcoldendheatercurrent"]]
+      writehtmlrow "Detector temperature"          [formatifok "%+.1f C" [client::getdata $server "detectordetectortemperature"]]
+      if {![string equal "" [client::getdata $server "detectorhousingtemperature"]]} {
+        writehtmlrow "Housing temperature"           [formatifok "%+.1f C" [client::getdata $server "detectorhousingtemperature"]]
+      }
+      if {![string equal "" [client::getdata $server "detectorcoldendtemperature"]]} {
+        writehtmlrow "Cold end temperature"          [formatifok "%+.1f C" [client::getdata $server "detectorcoldendtemperature"]]
+      }
+      if {![string equal "" [client::getdata $server "detectorpowersupplytemperature"]]} {
+        writehtmlrow "Power supply temperature"      [formatifok "%+.1f C" [client::getdata $server "detectorpowersupplytemperature"]]
+      }
+      if {![string equal "" [client::getdata $server "detectorchamberpressure"]]} {
+        writehtmlrow "Chamber pressure"              [formatifok "%.2e mbar" [client::getdata $server "detectorchamberpressure"]]
+      }
+      if {![string equal "" [client::getdata $server "detectorcompressorsupplypressure"]]} {
+        writehtmlrow "Compressor supply pressure"    [formatifok "%.0f psi" [client::getdata $server "detectorcompressorsupplypressure"]]
+      }
+      if {![string equal "" [client::getdata $server "detectorcompressorreturnpressure"]]} {
+        writehtmlrow "Compressor return pressure"    [formatifok "%.0f psi" [client::getdata $server "detectorcompressorreturnpressure"]]
+      }
+      if {![string equal "" [client::getdata $server "detectorcompressorcurrent"]]} {
+        writehtmlrow "Compressor current"            [formatifok "%.2f A" [client::getdata $server "detectorcompressorcurrent"]]
+      }
+      if {![string equal "" [client::getdata $server "detectorcoolerlowflow"]]} {
+        writehtmlrow "Cooler low-flow"               [format "%s" [client::getdata $server "detectorcoolerlowflow"]]
+      }
+      if {![string equal "" [client::getdata $server "detectorcoolerpower"]]} {
+        writehtmlrow "Cooler power"                  [formatpercentifok "%.0f%%" [client::getdata $server "detectorcoolerpower"]]
+      }
+      if {![string equal "" [client::getdata $server "detectordetectorheatercurrent"]]} {
+        writehtmlrow "Detector heater current"       [formatifok "%.2f A" [client::getdata $server "detectordetectorheatercurrent"]]
+      }
+      if {![string equal "" [client::getdata $server "detectorcoldendheatercurrent"]]} {
+        writehtmlrow "Cold end heater current"       [formatifok "%.2f A" [client::getdata $server "detectorcoldendheatercurrent"]]
+      }
       writehtmlfullrow "Filter wheel"              [client::getdata $server "filterwheeldescription"]
-      writehtmlrow "Filter wheel position"         [formatifok "%d" [client::getdata $server "filterwheelposition"]]
-      writehtmlrow "Filter wheel maximum position" [formatifok "%d" [client::getdata $server "filterwheelmaxposition"]]
       writehtmlfullrow "Filter"                    [client::getdata $server "filter"]
+      if {![string equal "null" [client::getdata $server "filterwheeldescription"]]} {
+        writehtmlrow "Filter wheel position"         [formatifok "%d" [client::getdata $server "filterwheelposition"]]
+        writehtmlrow "Filter wheel maximum position" [formatifok "%d" [client::getdata $server "filterwheelmaxposition"]]
+      }
       writehtmlfullrow "Focuser"                   [client::getdata $server "focuserdescription"]
-      writehtmlrow "Focuser requested position"    [formatifok "%d" [client::getdata $server "requestedfocuserposition"]]
-      writehtmlrow "Focuser position"              [formatifok "%d" [client::getdata $server "focuserposition"]]
-      writehtmlrow "Focuser position error"        [formatifok "%+d" [client::getdata $server "focuserpositionerror"]]
-      writehtmlrow "Focuser raw position"          [formatifok "%d" [client::getdata $server "focuserrawposition"]]
-      writehtmlrow "Focuser minimum position"      [formatifok "%d" [client::getdata $server "focuserminposition"]]
-      writehtmlrow "Focuser maximum position"      [formatifok "%d" [client::getdata $server "focusermaxposition"]]
+      if {![string equal "null" [client::getdata $server "focuserdescription"]]} {
+        writehtmlrow "Focuser requested position"    [formatifok "%d" [client::getdata $server "requestedfocuserposition"]]
+        writehtmlrow "Focuser position"              [formatifok "%d" [client::getdata $server "focuserposition"]]
+        writehtmlrow "Focuser position error"        [formatifok "%+d" [client::getdata $server "focuserpositionerror"]]
+        writehtmlrow "Focuser raw position"          [formatifok "%d" [client::getdata $server "focuserrawposition"]]
+        writehtmlrow "Focuser minimum position"      [formatifok "%d" [client::getdata $server "focuserminposition"]]
+        writehtmlrow "Focuser maximum position"      [formatifok "%d" [client::getdata $server "focusermaxposition"]]
+      }
       writehtmlrow "Solved position (α,δ)" \
         [formatalphaifdouble [client::getdata $server "solvedalpha"]] \
         [formatdeltaifdouble [client::getdata $server "solveddelta"] 1] \
@@ -426,44 +452,6 @@ namespace eval "html" {
       writehtmlrow "Average and Standard Deviation" \
         [formatifok "%.1f" [client::getdata $server "average"]] \
         [formatifok "%.1f" [client::getdata $server "standarddeviation"]] \
-    } else {
-      writehtmlfullrow "Telescope"
-      writehtmlfullrow "Detector"
-      writehtmlrow "Exposure time"
-      writehtmlfullrow "FITS file"
-      writehtmlrow "Detector read mode"
-      writehtmlrow "Detector software gain"
-      writehtmlfullrow "Detector window"
-      writehtmlrow "Detector binning"
-      writehtmlrow "Detector temperature"
-      writehtmlrow "Housing temperature"
-      writehtmlrow "Cold end temperature"
-      writehtmlrow "Housing temperature"
-      writehtmlrow "Chamber pressure"
-      writehtmlrow "Supply pressure"
-      writehtmlrow "Return pressure"
-      writehtmlrow "Cooler state"
-      writehtmlrow "Cooler set temperature"
-      writehtmlrow "Cooler power"
-      writehtmlfullrow "Filter wheel"
-      writehtmlrow "Filter wheel position"
-      writehtmlrow "Filter wheel maximum position"
-      writehtmlfullrow "Filter"
-      writehtmlfullrow "Focuser"
-      writehtmlrow "Focuser requested position"
-      writehtmlrow "Focuser requested corrected position"
-      writehtmlrow "Focuser position"
-      writehtmlrow "Focuser minimum position"
-      writehtmlrow "Focuser maximum position"
-      writehtmlrow "Solved position (α,δ)"
-      writehtmlrow "Solved observed position (α,δ)"
-      writehtmlrow "Mount observed position (α,δ)"
-      writehtmltimestampedrow "Last correction"
-      writehtmlrow "Last correction (E,N)"
-      writehtmlrow "FWHM"
-      writehtmlrow "Last correction (α,δ)"
-      writehtmlrow "FWHM"
-      writehtmlrow "Average and Standard Deviation"
     }
 
     putshtml "</table>"
@@ -514,10 +502,6 @@ namespace eval "html" {
       if {![catch {client::getdata "covers" "outputchannels"}]} {
         writehtmlrow "Output channels" [client::getdata "covers" "outputchannels"]
       }
-    } else {
-      writehtmlrow "Requested covers"
-      writehtmlrow "Current covers" 
-      writehtmlrow "Mode" 
     }
   
     putshtml "</table>"
@@ -539,11 +523,6 @@ namespace eval "html" {
       writehtmlrow "Current upper shutter"  [client::getdata "shutters" "uppershutter"]
       writehtmlrow "Current lower shutter"  [client::getdata "shutters" "lowershutter"]
       writehtmlrow "Current power contacts" [client::getdata "shutters" "powercontacts"]
-    } else {
-      writehtmlrow "Requested shutters"
-      writehtmlrow "Current upper shutter"
-      writehtmlrow "Current lower shutter"
-      writehtmlrow "Current power contacts"
     }
   
     putshtml "</table>"
@@ -614,20 +593,6 @@ namespace eval "html" {
         [formatifok "%.3f" [client::getdata "target" "observedairmass"]]
       writehtmlrow "Within limits" \
         [client::getdata "target" "withinlimits"]
-    } else {
-      writehtmlrow "Requested position (α,HA,δ)"
-      writehtmlrow "Requested equinox"
-      writehtmlrow "Requested offset (α,δ)"
-      writehtmltimestampedrow "Requested epoch"
-      writehtmlrow "Requested rate (α,δ)"
-      writehtmlrow "Requested aperture"
-      writehtmlrow "Current position (α,HA,δ)"
-      writehtmlrow "Current equinox"
-      writehtmlrow "Aperture offset (α,δ)"
-      writehtmlrow "Observed position (α,HA,δ)"
-      writehtmlrow "Observed rate (α,δ)"
-      writehtmlrow "Observed position (A,z,X)"
-      writehtmlrow "Within limits"
     }
 
     putshtml "</table>"
@@ -647,9 +612,6 @@ namespace eval "html" {
     if {[string equal [client::getstatus "lights"] "ok"]} {
       writehtmlrow "Requested lights" [client::getdata "lights" "requestedlights"]
       writehtmlrow "Current lights" [client::getdata "lights" "lights"]
-    } else {
-      writehtmlrow "Requested lights"
-      writehtmlrow "Current lights" 
     }
   
     putshtml "</table>"
@@ -680,12 +642,6 @@ namespace eval "html" {
       writehtmlrow "Sky state" [client::getdata "moon" "skystate"]
       writehtmlrow "Illuminated" \
         [format "%2.0f%%" [expr {[client::getdata "moon" "illuminatedfraction"] * 100}]]
-    } else {
-      writehtmlrow "Observed position (α,HA,δ)"
-      writehtmlrow "Observed position (A,z)"
-      writehtmlrow "Observed target distance"
-      writehtmlrow "Sky state"
-      writehtmlrow "Illuminated fraction"
     }
 
     putshtml "</table>"
@@ -719,19 +675,6 @@ namespace eval "html" {
       writehtmlrowwithemph "UPS alarm"      [alarmemph [client::getdata "plc" "upsalarm"]]      [client::getdata "plc" "upsalarm"]
       writehtmlrowwithemph "Humidity alarm" [alarmemph [client::getdata "plc" "humidityalarm"]] [client::getdata "plc" "humidityalarm"]
       writehtmlrowwithemph "Watchdog alarm" [alarmemph [client::getdata "plc" "watchdogalarm"]] [client::getdata "plc" "watchdogalarm"]
-    } else {
-      writehtmlrow "Mode"        
-      writehtmlrow "Must be closed"
-      writehtmlrow "Roof"        
-      writehtmlrow "Door"        
-      writehtmlrow "Lights"      
-      writehtmlrow "Alarm"
-      writehtmlrow "AAG alarm"
-      writehtmlrow "Rain alarm"
-      writehtmlrow "Wind alarm"
-      writehtmlrow "UPS alarm"
-      writehtmlrow "Humidity alarm"
-      writehtmlrow "Watchdog alarm"
     }
 
     putshtml "</table>"
@@ -773,15 +716,6 @@ namespace eval "html" {
         "[utcclock::format $endofnightseconds   0] (in [utcclock::formattime [expr {$endofnightseconds   - $seconds}] 0])"
       writehtmlfullrow "Start of day" \
         "[utcclock::format $startofdayseconds   0] (in [utcclock::formattime [expr {$startofdayseconds   - $seconds}] 0])"
-    } else {
-      writehtmlrow "Observed position (α,HA,δ)"
-      writehtmlrow "Observed position (A,z)"
-      writehtmlrow "Observed target distance"
-      writehtmlrow "Sky state"
-      writehtmlrow "End of day"
-      writehtmlrow "Start of night"
-      writehtmlrow "End of night"
-      writehtmlrow "Start of day"
     }
 
     putshtml "</table>"
@@ -804,15 +738,6 @@ namespace eval "html" {
       writehtmlrow "Open to cool"        [client::getdata "supervisor" "opentocool"]
       writehtmlrow "Closed"              [client::getdata "supervisor" "closed"]
       writehtmlrow "Why"                 [client::getdata "supervisor" "why"]
-      
-    } else {
-      writehtmlrow "Mode"        
-      writehtmlrow "May be open"    
-      writehtmlrow "May be open to cool"    
-      writehtmlrow "Open"           
-      writehtmlrow "Open to cool"           
-      writehtmlrow "Closed"         
-      writehtmlrow "Why"         
     }
 
     putshtml "</table>"
@@ -878,18 +803,6 @@ namespace eval "html" {
         [formatoffsetifdouble [client::getdata "mount" "lastcorrectiondalpha"]] \
         "" \
         [formatoffsetifdouble [client::getdata "mount" "lastcorrectionddelta"]]
-    } else {
-      writehtmlrow "LAST" [formatalphaifdouble [astrometry::last]]
-      writehtmlrow "State"
-      writehtmlrow "Requested observed position (α,HA,δ)"
-      writehtmlrow "Requested observed rate (α,Hδ)"
-      writehtmlrow "Requested mount position (α,HA,δ)"
-      writehtmlrow "Requested mount rate (α,δ)"
-      writehtmlrow "Current mount position (α,HA,δ)"
-      writehtmlrow "Current mount error (α,HA,δ)"
-      writehtmlrow "Current mount rotation"
-      writehtmlrow "Last correction"
-      writehtmlrow "Last correction (α,δ)"
     }
 
     putshtml "</table>"
@@ -922,12 +835,6 @@ namespace eval "html" {
       writehtmlrow "Proximity switches (HA,δ)" \
         [client::getdata "inclinometers" "haswitch"] \
         [client::getdata "inclinometers" "deltaswitch"]
-    } else {
-      writehtmlrow "Current position (X,Y)"
-      writehtmlrow "Current position (x,y)"
-      writehtmlrow "Current position (HA,δ)"
-      writehtmlrow "Current position (A,z)"
-      writehtmlrow "Proximity switches (HA,δ)"
     }
 
     putshtml "</table>"
@@ -946,8 +853,6 @@ namespace eval "html" {
 
     if {[string equal [client::getstatus "instrument"] "ok"]} {
       writehtmlfullrow "Detectors" [join [client::getdata "instrument" "detectors"]]
-    } else {
-      writehtmlfullrow "Detectors"
     }
 
     putshtml "</table>"
@@ -970,12 +875,6 @@ namespace eval "html" {
       writehtmlrow "Current azimuth"                [formatradtodegifdouble "%.1f°" [client::getdata "dome" "azimuth"]]
       writehtmlrow "Current azimuth error"          [formatradtodegifdouble "%+.1f°" [client::getdata "dome" "azimutherror"]]
       writehtmlrow "Maximum absolute azimuth error" [formatradtodegifdouble "%+.1f°" [client::getdata "dome" "maxabsazimutherror"]]
-    } else {
-      writehtmlrow "Controller initialized"
-      writehtmlrow "Requested azimuth"
-      writehtmlrow "Current azimuth"
-      writehtmlrow "Current azimuth error"
-      writehtmlrow "Maximum absolute azimuth error"
     }
   
     putshtml "</table>"
@@ -1029,20 +928,6 @@ namespace eval "html" {
         [formatrateifdouble [client::getdata "guider" "meaneastoffsetrate"]] \
         [formatrateifdouble [client::getdata "guider" "meannorthoffsetrate"]] \
         [formatrateifdouble [client::getdata "guider" "meantotaloffsetrate"]]
-    } else {
-      writehtmlrow "Guiding"
-      writehtmlrow "Finder"
-      writehtmlrow "Exposure time"
-      writehtmlrow "Mean Cadence"
-      writehtmlrow "East Gain"
-      writehtmlrow "North Gain"
-      writehtmlrow "Dead-zone radius"
-      writehtmlrow "Dead-zone fraction"
-      writehtmlrow "Current error (E, N, total)"
-      writehtmlrow "Mean error (E, N, total)"
-      writehtmlrow "RMS error about mean (E, N, total)"
-      writehtmlrow "Total offset (E, N, total)"
-      writehtmlrow "Mean offset rate (E, N, total)"
     }
 
     putshtml "</table>"
@@ -1100,20 +985,6 @@ namespace eval "html" {
       writehtmlrow "Maximum position (z)" [formatifok "%d" [client::getdata "secondary" "maxz"]]
       writehtmlrow "Current z lower limit switch" [client::getdata "secondary" "zlowerlimit"]
       writehtmlrow "Current z upper limit switch" [client::getdata "secondary" "zupperlimit"]
-    } else {
-      writehtmlrow "Requested position (z0)"
-      writehtmlrow "Temperature correction (dzT)"
-      writehtmlrow "Requested position (zT)"
-      writehtmlrow "Position correction (dzP)"
-      writehtmlrow "Requested position (zP)"
-      writehtmlrow "Offset (dzoffset)"
-      writehtmlrow "Requested position (z)"
-      writehtmlrow "Current position (z)"
-      writehtmlrow "Current error in position (z)"
-      writehtmlrow "Minimum position (z)"
-      writehtmlrow "Maximum position (z)"
-      writehtmlrow "Current z lower limit switch"
-      writehtmlrow "Current z upper limit switch"
     }
 
     putshtml "</table>"
@@ -1188,10 +1059,6 @@ namespace eval "html" {
         [format "%.1fas" [astrometry::radtoarcsec [client::getdata "telescope" "pointingtolerance"]]]
       writehtmlrow "Guiding mode" \
         [client::getdata "telescope" "guidingmode"]
-    } else {
-      writehtmlrow "Pointing mode"
-      writehtmlrow "Pointing tolerance"
-      writehtmlrow "Guiding mode"
     }
 
     putshtml "</table>"
@@ -1277,21 +1144,6 @@ namespace eval "html" {
         [format "%+.1f C" [client::getdata "temperatures" "S"]] \
         [formatdifferenceifdouble "%+.1f C" [client::getdata "temperatures" "S"] $A1] \
         [formatdifferenceifdouble "%+.1f C" [client::getdata "temperatures" "S"] $E]
-    } else {
-      writehtmlrow "P1 (Primary E)"
-      writehtmlrow "P2 (Primary N)"
-      writehtmlrow "P3 (Primary W)"
-      writehtmlrow "P4 (Primary S)"
-      writehtmlrow "P  (Primary)"
-      writehtmlrow "A1 (Primary E)"
-      writehtmlrow "A2 (Intermediate E)"
-      writehtmlrow "A3 (Covers E)"
-      writehtmlrow "A4 (Lower struts E)"
-      writehtmlrow "A5 (Middle struts E)"
-      writehtmlrow "A6 (Lower struts E)"
-      writehtmlrow "A7 (Upper top end)"
-      writehtmlrow "A8 (Lower top end)"
-      writehtmlrow "S  (Secondary)"
     }
 
     if {[string equal [client::getstatus "weather"] "ok"]} {
@@ -1299,8 +1151,6 @@ namespace eval "html" {
         [formatifok "%+.1f C" [client::getdata "weather" "temperature"]] \
         [formatdifferenceifdouble "%+.1f C" [client::getdata "weather" "temperature"] $A1] \
         ""
-    } else {
-      writehtmlrow "E  (External)"
     }
 
     putshtml "</table>"
@@ -1383,25 +1233,6 @@ namespace eval "html" {
       writehtmlrowwithemph "Humidity alarm" [alarmemph [client::getdata "weather" "humidityalarm"]] [client::getdata "weather" "humidityalarm"]
       writehtmlrowwithemph "Wind alarm"     [alarmemph [client::getdata "weather" "windalarm"]]     [client::getdata "weather" "windalarm"]
       writehtmlrowwithemph "Rain alarm"     [alarmemph [client::getdata "weather" "rainalarm"]]      [client::getdata "weather" "rainalarm"]
-    } else {
-      writehtmlrow "Must be closed"
-      writehtmlrow "Temperature"
-      writehtmlrow "Dewpoint"
-      writehtmlrow "Dewpoint depression"
-      writehtmlrow "Humidity"
-      writehtmlrow "Wind average speed"
-      writehtmlrow "Wind gust speed"
-      writehtmlrow "Wind average azimuth"
-      writehtmlrow "Wind average speed limit"
-      writehtmlrow "Wind average speed below limit"
-      writehtmlrow "Rain rate"
-      writehtmlrow "Pressure"
-      writehtmlrow "Light level"
-      writehtmlrow "Cloudiness"
-      writehtmlrow "Humidity limit"
-      writehtmlrow "High humidity"
-      writehtmlrow "High wind"
-      writehtmlrow "rainalarm"
     }
 
     putshtml "</table>"
@@ -1455,31 +1286,6 @@ namespace eval "html" {
         [formatoffsetifdouble [client::getdata $server "lastcorrectionnorthoffset"]]
       writehtmlrow "FWHM" \
         [formatifok "%.2f pixels" [client::getdata $server "fwhm"]]
-    } else {
-      writehtmlrow "Telescope"
-      writehtmlrow "Detector"
-      writehtmlrow "Exposure time"
-      writehtmlrow "FITS file"
-      writehtmlrow "Detector read mode"
-      writehtmlrow "Detector software gain"
-      writehtmlrow "Detector binning"
-      writehtmlrow "Detector temperature"
-      writehtmlrow "Housing temperature"
-      writehtmlrow "Cooler state"
-      writehtmlrow "Cooler set temperature"
-      writehtmlrow "Cooler power"
-      writehtmlrow "Filter position"
-      writehtmlrow "Maximum filter position"
-      writehtmlrow "Focuser"
-      writehtmlrow "Focuser position"
-      writehtmlrow "Focuser minimum position"
-      writehtmlrow "Focuser maximum position"
-      writehtmlrow "Solved position (α,δ)"
-      writehtmlrow "Solved observed position (α,δ)"
-      writehtmlrow "Mount observed position (α,δ)"
-      writehtmlrow "Last correction"
-      writehtmlrow "Last correction (α,δ)"
-      writehtmlrow "FWHM"
     }
 
     putshtml "</table>"
@@ -1613,12 +1419,6 @@ namespace eval "html" {
       writehtmlfullrow "Block file"        [client::getdata "scheduler" "blockfile"]
       writehtmlfullrow "Alert file"        [client::getdata "scheduler" "alertfile"]
       writehtmlfullrow "Focused"           [formattimestamp [client::getdata "scheduler" "focustimestamp"]]
-    } else {
-      writehtmlfullrow "Mode"    
-      writehtmlfullrow "Scheduler date"
-      writehtmlfullrow "Block file" 
-      writehtmlfullrow "Alert file" 
-      writehtmlfullrow "Focused"                
     }
     putshtml "</table>"
 
@@ -1647,20 +1447,6 @@ namespace eval "html" {
         writehtmlrow "Emergency stop flag" [client::getdata "enclosure" "emergencystopflag"]
         writehtmlrow "Input channels" [client::getdata "enclosure" "inputchannels"]
         writehtmlrow "Output channels" [client::getdata "enclosure" "outputchannels"]
-      }
-    } else {
-      writehtmlrow "Requested enclosure"
-      writehtmlrow "Current enclosure"
-      if {[string equal [config::getvalue "enclosure" "type"] "arts"]} {
-        writehtmlrow "Requested position"
-        writehtmlrow "Mode"
-        writehtmlrow "Error flag"
-        writehtmlrow "Motor current flag"
-        writehtmlrow "Rain sensor flag"
-        writehtmlrow "Safety rail flag"
-        writehtmlrow "Emergency stop flag"
-        writehtmlrow "Input channels"
-        writehtmlrow "Output channels"
       }
     }
   
@@ -1694,19 +1480,6 @@ namespace eval "html" {
       writehtmlfullrow "Alert uncertainty" \
         [formatarcsecifdouble "%.2fas" [client::getdata "executor" "alertuncertainty"]]
       writehtmlfullrow "Completed"     [client::getdata "executor" "completed"]
-    } else {
-      writehtmlfullrow "Block file"
-      writehtmlfullrow "Project identifier"
-      writehtmlfullrow "Block identifier"
-      writehtmlfullrow "Visit identifier"
-      writehtmlfullrow "Visit name"
-      writehtmlfullrow "Alert file"
-      writehtmlfullrow "Alert type"
-      writehtmlfullrow "Alert event identifier"
-      writehtmlfullrow "Alert event timestamp"
-      writehtmlrow "Alert coordinates"
-      writehtmlfullrow "Alert uncertainty"
-      writehtmlfullrow "Completed"
     }
     putshtml "</table>"
 
@@ -1725,9 +1498,6 @@ namespace eval "html" {
     if {[string equal [client::getstatus "fans"] "ok"]} {
       writehtmlrow "Requested fans" [client::getdata "fans" "requestedfans"]
       writehtmlrow "Current fans" [client::getdata "fans" "fans"]
-    } else {
-      writehtmlrow "Requested fans"
-      writehtmlrow "Current fans" 
     }
   
     putshtml "</table>"
@@ -1749,7 +1519,7 @@ namespace eval "html" {
         [formatalphaifdouble [client::getdata "gcntan" "swiftalpha"]] \
         [formatdeltaifdouble [client::getdata "gcntan" "swiftdelta"] 1] \
         [formatifok "%.2f" [client::getdata "gcntan" "swiftequinox"]]
-    } else {
+    
       writehtmlrow "Swift pointing (α,δ)"
     }
   
