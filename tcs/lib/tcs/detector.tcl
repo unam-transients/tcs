@@ -52,7 +52,6 @@ namespace eval "detector" {
     variable description
     set description [detectorrawgetvalue "description"]
     log::info "detector is \"$description\"."
-    detectorrawsetcooler "off"
     detectorrawsetreadmode ""
     updatestatus
     return
@@ -315,7 +314,7 @@ namespace eval "detector" {
   ######################################################################
 
   proc setcooler {setting} {
-    if {![string equal "" $setting]} {
+    if {![string equal "current" $setting]} {
       log::debug "setting cooler to $setting."
       checkisopen
       set result [detectorrawsetcooler $setting]

@@ -1104,7 +1104,7 @@ namespace eval "ccd" {
     server::checkstatus
     server::checkactivity "idle"
     if {
-      ![string equal $setting ""] && 
+      ![string equal $setting "current"] && 
       ![string equal $setting "on"] && 
       ![string equal $setting "off"] &&
       ![string equal $setting "following"] &&
@@ -1116,10 +1116,16 @@ namespace eval "ccd" {
     if {[string equal $setting "open"]} {
       variable cooleropensetting
       set setting $cooleropensetting
+      log::info "requested to set cooler to open setting which is \"$setting\"."
     }
     if {[string equal $setting "closed"]} {
       variable coolerclosedsetting
       set setting $coolerclosedsetting
+      log::info "requested to set cooler to closed setting which is \"$setting\"."
+    }
+    if {[string equal $setting "current"]} {
+      set setting [server::getdata "detectorcoolersetting"]
+      log::info "requested to set cooler to current setting which is \"$setting\"."
     }
     detector::setcooler $setting
     updatedata
