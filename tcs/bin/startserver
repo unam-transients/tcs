@@ -105,7 +105,7 @@ colibricu-control)
   allargs="sensors power weather 1 target 1 moon sun 1 telescope instrument 1 executor scheduler"
   ;;
 colibricu-detectors)
-  allargs="C0 C1"
+  allargs="C0"
   ;;
 esac
 
