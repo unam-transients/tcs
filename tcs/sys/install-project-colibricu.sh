@@ -145,14 +145,11 @@ EOF
     ;;
   esac
   
-#   case $host in
-#   colibricu-services)
-#     echo "instrumentdataserver -f rsync://transients.astrossp.unam.mx/ddoti-raw/ &"
-#     ;;
-#   colibricu-[de][123])
-#     echo "instrumentdataserver -f -d rsync://services/tcs/ &"
-#     ;;
-#   esac
+   case $host in
+   colibricu-detectors)
+     echo "instrumentdataserver -f -d rsync://services/tcs/ &"
+     ;;
+   esac
 
   case $host in
   colibricu-services)
