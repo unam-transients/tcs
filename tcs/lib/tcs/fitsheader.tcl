@@ -176,9 +176,9 @@ namespace eval "fitsheader" {
    foreach {key fitskey fitstype} [concat $standardkeylist $keylist] {
      set comment "$component $key"
      if {![catch {client::getdata $component $key} value]} {
-       writekeyandvalue $channel "[directories::prefix]$componentprefix$fitskey" $fitstype $value $comment
+       writekeyandvalue $channel "$prefix$componentprefix$fitskey" $fitstype $value $comment
      } else {
-       writemissing $channel "[directories::prefix]$componentprefix$fitskey" $comment
+       writemissing $channel "$prefix$componentprefix$fitskey" $comment
      }
    }
 
@@ -217,7 +217,7 @@ namespace eval "fitsheader" {
 
 
   proc writekeysandvaluesforfinder {channel finder prefix componentprefix} {
-    writekeysandvaluesforcomponent $channel $finder [directories::prefix] $componentprefix {
+    writekeysandvaluesforcomponent $channel $finder $prefix $componentprefix {
       identifier                    ID    string
       telescopedescription          TLDS  string
       detectordescription           DTDS  string
@@ -254,13 +254,13 @@ namespace eval "fitsheader" {
   }
   
   proc writefinderfitsheader {channel finder prefix} {
-    writecomment $channel "Start of finder section \"[directories::prefix]\"."
-    writekeysandvaluesforfinder $channel $finder [directories::prefix] ""
-    writecomment $channel "End of finder section \"[directories::prefix]\"."
+    writecomment $channel "Start of finder section \"$prefix\"."
+    writekeysandvaluesforfinder $channel $finder $prefix ""
+    writecomment $channel "End of finder section \"$prefix\"."
   }
 
   proc writekeysandvaluesforccd {channel ccd prefix componentprefix} {
-    writekeysandvaluesforcomponent $channel $ccd [directories::prefix] $componentprefix {
+    writekeysandvaluesforcomponent $channel $ccd $prefix $componentprefix {
       identifier                     ID    string
       telescopedescription           TLDS  string
       detectordescription            DTDS  string
@@ -268,10 +268,10 @@ namespace eval "fitsheader" {
       detectorreadmode               DTRM  string
       detectorsoftwaregain           DTSG  double
       detectorbinning                DTBN  integer
-      detectorfullunbinneddatawindow DTFDS string
-      detectorfullunbinnedbiaswindow DTFBS string
-      detectordatasection            DTDS  string
-      detectorbiassection            DTBS  string
+      detectorfullunbinneddatawindow DTFDW string
+      detectorfullunbinnedbiaswindow DTFBW string
+      detectordatawindow             DTDW  string
+      detectorbiaswindow             DTBW  string
       detectordetectortemperature    DTTM  double
       detectorhousingtemperature     HSTM  double
       detectorcoolerstate            CLST  string
@@ -305,23 +305,23 @@ namespace eval "fitsheader" {
   ######################################################################
 
   proc writekeysandvaluesforC0 {channel prefix} {
-    writekeysandvaluesforccd $channel C0 [directories::prefix] "C0"
+    writekeysandvaluesforccd $channel C0 $prefix "C0"
   }
   
   proc writekeysandvaluesforC1 {channel prefix} {
-    writekeysandvaluesforccd $channel C1 [directories::prefix] "C1"
+    writekeysandvaluesforccd $channel C1 $prefix "C1"
   }
   
   proc writekeysandvaluesforC2 {channel prefix} {
-    writekeysandvaluesforccd $channel C2 [directories::prefix] "C2"
+    writekeysandvaluesforccd $channel C2 $prefix "C2"
   }
   
   proc writekeysandvaluesforC3 {channel prefix} {
-    writekeysandvaluesforccd $channel C3 [directories::prefix] "C3"
+    writekeysandvaluesforccd $channel C3 $prefix "C3"
   }
   
   proc writekeysandvaluesforcovers {channel prefix} {
-    writekeysandvaluesforcomponent $channel covers [directories::prefix] "CV" {
+    writekeysandvaluesforcomponent $channel covers $prefix "CV" {
       requestedcovers       RQCV  string
       covers                CV    string
       settled               SE    boolean
@@ -330,7 +330,7 @@ namespace eval "fitsheader" {
   }
   
   proc writekeysandvaluesfordome {channel prefix} {
-    writekeysandvaluesforcomponent $channel dome [directories::prefix] "DM" {
+    writekeysandvaluesforcomponent $channel dome $prefix "DM" {
       controllerinitialized CNIN  boolean
       encoderazimuth        ENAZ  double
       flags                 FG    string      
@@ -346,7 +346,7 @@ namespace eval "fitsheader" {
   }
   
   proc writekeysandvaluesforexecutor {channel prefix} {
-    writekeysandvaluesforcomponent $channel executor [directories::prefix] "EX" {
+    writekeysandvaluesforcomponent $channel executor $prefix "EX" {
       blockfile              BLKFL  string
       projectidentifier     PRPID string
       blockidentifier        BLKID integer
@@ -366,15 +366,15 @@ namespace eval "fitsheader" {
   }
   
   proc writekeysandvaluesfornefinder {channel prefix} {
-    writekeysandvaluesforfinder $channel nefinder [directories::prefix] "NE"
+    writekeysandvaluesforfinder $channel nefinder $prefix "NE"
   }
   
   proc writekeysandvaluesforsefinder {channel prefix} {
-    writekeysandvaluesforfinder $channel sefinder [directories::prefix] "SE"
+    writekeysandvaluesforfinder $channel sefinder $prefix "SE"
   }
   
   proc writekeysandvaluesforguider {channel prefix} {
-    writekeysandvaluesforcomponent $channel guider [directories::prefix] "GD" {
+    writekeysandvaluesforcomponent $channel guider $prefix "GD" {
       guidingtime         GT    double
       finder              FN    string
       exposuretime        ET    double
@@ -406,7 +406,7 @@ namespace eval "fitsheader" {
   }
   
   proc writekeysandvaluesforpower {channel prefix} {
-    writekeysandvaluesforcomponent $channel power [directories::prefix] "PW" {
+    writekeysandvaluesforcomponent $channel power $prefix "PW" {
       mount                 MT   string
       mount-motors          MTMT string
       mount-adapter         MTAD string
@@ -428,7 +428,7 @@ namespace eval "fitsheader" {
   }
   
   proc writekeysandvaluesforinclinometers {channel prefix} {
-    writekeysandvaluesforcomponent $channel inclinometers [directories::prefix] "IN" {
+    writekeysandvaluesforcomponent $channel inclinometers $prefix "IN" {
       X              RWX  angle
       Y              RWY  angle
       x              X    angle
@@ -443,7 +443,7 @@ namespace eval "fitsheader" {
   }
   
   proc writekeysandvaluesforcryostat {channel prefix} {
-    writekeysandvaluesforcomponent $channel cryostat [directories::prefix] "CR" {
+    writekeysandvaluesforcomponent $channel cryostat $prefix "CR" {
       alarm   AL   string
       A       A    double
       Atrend  ATR  string
@@ -471,7 +471,7 @@ namespace eval "fitsheader" {
   }
   
   proc writekeysandvaluesformoon {channel prefix} {
-    writekeysandvaluesforcomponent $channel moon [directories::prefix] "MN" {
+    writekeysandvaluesforcomponent $channel moon $prefix "MN" {
       observedalpha          RA angle
       observedha             HA angle
       observeddelta          DE angle
@@ -484,7 +484,7 @@ namespace eval "fitsheader" {
   }
   
   proc writekeysandvaluesformount {channel prefix} {
-    writekeysandvaluesforcomponent $channel mount [directories::prefix] "MT" {
+    writekeysandvaluesforcomponent $channel mount $prefix "MT" {
       mountlst                    LS    angle
       mountlsterror               LSE   angle
       mounttracking               TR    boolean
@@ -533,12 +533,12 @@ namespace eval "fitsheader" {
       lappend args $keyword
       lappend args "double"
     }
-    writekeysandvaluesforcomponent $channel owsensors [directories::prefix] "OW" $args
+    writekeysandvaluesforcomponent $channel owsensors $prefix "OW" $args
   }
 
 
   proc writekeysandvaluesforpirani {channel prefix} {
-    writekeysandvaluesforcomponent $channel pirani [directories::prefix] "PR" {
+    writekeysandvaluesforcomponent $channel pirani $prefix "PR" {
       alarm         AL   string
       pressure      PR   double
       pressuretrend PRTR string
@@ -546,7 +546,7 @@ namespace eval "fitsheader" {
   }
   
   proc writekeysandvaluesforsecondary {channel prefix} {
-    writekeysandvaluesforcomponent $channel secondary [directories::prefix] "SC" {
+    writekeysandvaluesforcomponent $channel secondary $prefix "SC" {
       requestedz0       RQZ0  double
       requestedzP       RQDZP double
       requestedzT       RQDZT double
@@ -589,12 +589,12 @@ namespace eval "fitsheader" {
         lappend args "date"
       }
     }
-    writekeysandvaluesforcomponent $channel sensors [directories::prefix] "SE" $args
+    writekeysandvaluesforcomponent $channel sensors $prefix "SE" $args
   }
 
 
   proc writekeysandvaluesforshutters {channel prefix} {
-    writekeysandvaluesforcomponent $channel shutters [directories::prefix] "SH" {
+    writekeysandvaluesforcomponent $channel shutters $prefix "SH" {
       requestedshutters RQSH string
       uppershutter      UPSH string
       lowershutter      LWSH string
@@ -603,7 +603,7 @@ namespace eval "fitsheader" {
   }
   
   proc writekeysandvaluesforsun {channel prefix} {
-    writekeysandvaluesforcomponent $channel sun [directories::prefix] "SN" {
+    writekeysandvaluesforcomponent $channel sun $prefix "SN" {
       observedalpha           RA   angle
       observedha              HA   angle
       observeddelta           DE   angle
@@ -620,7 +620,7 @@ namespace eval "fitsheader" {
   }
   
   proc writekeysandvaluesfortarget {channel prefix} {
-    writekeysandvaluesforcomponent $channel target [directories::prefix] "TR" {
+    writekeysandvaluesforcomponent $channel target $prefix "TR" {
       last                      LS    angle
       requestedalpha            RQRA  angle
       requestedha               RQHA  angle
@@ -655,7 +655,7 @@ namespace eval "fitsheader" {
   }
   
   proc writekeysandvaluesfortelescope {channel prefix} {
-    writekeysandvaluesforcomponent $channel telescope [directories::prefix] "TL" {
+    writekeysandvaluesforcomponent $channel telescope $prefix "TL" {
       pointingmode          PTMD  string
       pointingtolerance     PTTL  angle
       guidingmode           GDMD  string
@@ -664,7 +664,7 @@ namespace eval "fitsheader" {
   }
   
   proc writekeysandvaluesforweather {channel prefix} {
-    writekeysandvaluesforcomponent $channel weather [directories::prefix] "WT" {
+    writekeysandvaluesforcomponent $channel weather $prefix "WT" {
       temperature             TM   double
       temperaturetrend        TMTR string
       dewpoint                DW   double
@@ -691,22 +691,22 @@ namespace eval "fitsheader" {
 
   proc writetcsfitsheader {channel prefix} {
     set seconds [utcclock::seconds]
-    writecomment $channel "Start of TCS section \"[directories::prefix]\"."
+    writecomment $channel "Start of TCS section \"$prefix\"."
     writekeyandvalue $channel "${prefix}DATE" date   $seconds "date TCS section written"
     writekeyandvalue $channel "${prefix}MJD"  double [format "%.8f" [utcclock::mjd $seconds]] "MJD TCS section written"
     variable servers
     foreach server $servers {
-      writekeysandvaluesfor$server $channel [directories::prefix]
+      writekeysandvaluesfor$server $channel $prefix
     }
-    writecomment $channel "End of TCS section \"[directories::prefix]\"."
+    writecomment $channel "End of TCS section \"$prefix\"."
   }
   
   ######################################################################
 
   proc writeccdfitsheader {channel ccd prefix} {
-    writecomment $channel "Start of CCD section \"[directories::prefix]\"."
-    writekeysandvaluesforccd $channel $ccd [directories::prefix] ""
-    writecomment $channel "End of CCD section \"[directories::prefix]\"."
+    writecomment $channel "Start of CCD section \"$prefix\"."
+    writekeysandvaluesforccd $channel $ccd $prefix ""
+    writecomment $channel "End of CCD section \"$prefix\"."
   }
   
   ######################################################################
