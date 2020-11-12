@@ -910,7 +910,7 @@ namespace eval "detector" {
     rawputsiimagecommandpacket "setcameramode" $newreadmode
     rawgetsiimagedatapacket "setcameramode"
     set rawreadmode $newreadmode
-    return "ok"
+    return [detectorrawsetwindow 0 0 0 0]
   }
 
   ######################################################################
