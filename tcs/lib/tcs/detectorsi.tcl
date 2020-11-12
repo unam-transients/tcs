@@ -1062,15 +1062,8 @@ namespace eval "detector" {
     set data [rawgetsiimagedatapacket "inquireacquisitionstatus"]
     set percentexposuredone [lindex $data 0]
     log::debug "detectorrawgetreadytoberead: percentexposuredone = $percentexposuredone."
-
-    if {$percentexposuredone == 100} {
-      log::debug "detectorrawgetreadytoberead: true."
-      return true
-    } else {
-      log::debug "detectorrawgetreadytoberead: false."
-      return false
-    }
-
+    
+    return $rawacquiring
   }
   
   ######################################################################
