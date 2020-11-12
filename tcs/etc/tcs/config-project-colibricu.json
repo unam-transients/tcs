@@ -92,7 +92,8 @@
       "sparelinux"          : [[ "pdu1", "a", "7"]],
       "sparewindows"        : [[ "pdu1", "a", "8"]],
       "close-electronics"   : [[ "pdu3", "a", "1"]],
-      "blue-service-cabinet": [[ "pdu3", "a", "2"]]
+      "blue-service-cabinet": [[ "pdu3", "a", "2"]],
+      "led"                 : [[ "pdu3", "a", "3"]]
     }
   },
   "instrument": {
@@ -425,8 +426,8 @@
       "C0-detector-housing-temperature",
       "C0-detector-cold-end-temperature",
       "C0-detector-chamber-pressure",
-      "C0-detector-supply-pressure",
-      "C0-detector-return-pressure",
+      "C0-detector-compressor-supply-pressure",
+      "C0-detector-compressor-return-pressure",
       "C0-detector-cooler-set-temperature",
       "C0-detector-cooler-state",
       "C0-detector-cooler-power",
@@ -767,28 +768,6 @@
         "identifier": "167",
         "firmware": ""
       },
-      "C0-detector-supply-pressure": {
-        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-supply-pressure",
-        "keyword": "",
-        "prettyname": "C0 supply pressure",
-        "group": "detector-C0",
-        "type": "float",
-        "unit": "psi",
-        "model": "SI 1100",
-        "identifier": "167",
-        "firmware": ""
-      },
-      "C0-detector-return-pressure": {
-        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-return-pressure",
-        "keyword": "",
-        "prettyname": "C0 return pressure",
-        "group": "detector-C0",
-        "type": "float",
-        "unit": "psi",
-        "model": "SI 1100",
-        "identifier": "167",
-        "firmware": ""
-      },
       "C0-detector-cooler-set-temperature": {
         "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-cooler-set-temperature",
         "keyword": "",
@@ -818,6 +797,28 @@
         "group": "detector-C0",
         "type": "string",
         "unit": "state",
+        "model": "SI 1100",
+        "identifier": "167",
+        "firmware": ""
+      },
+      "C0-detector-compressor-supply-pressure": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-compressor-supply-pressure",
+        "keyword": "",
+        "prettyname": "C0 compressor supply pressure",
+        "group": "detector-C0",
+        "type": "string",
+        "unit": "psi",
+        "model": "SI 1100",
+        "identifier": "167",
+        "firmware": ""
+      },
+      "C0-detector-compressor-return-pressure": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-compressor-return-pressure",
+        "keyword": "",
+        "prettyname": "C0 compressor return pressure",
+        "group": "detector-C0",
+        "type": "string",
+        "unit": "psi",
         "model": "SI 1100",
         "identifier": "167",
         "firmware": ""
