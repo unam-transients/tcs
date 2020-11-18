@@ -132,11 +132,16 @@
         "nx": 2048,
         "ny": 2048
       },
+      // For the default "4kx4k" window, we skip the first and last 8 rows for
+      // two reasons. First, the first and last row show odd behavior both in
+      // the underscan (high values) and the active (low value) regions. Second,
+      // it makes the data section square. If we really want the full CCD, we
+      // can use the implicit "full" window.
       "4kx4k": {
         "sx": 2,
-        "sy": 0,
+        "sy": 8,
         "nx": 4192,
-        "ny": 4112
+        "ny": 4096
       }
     },
     "detectorfullunbinneddatawindow": {
