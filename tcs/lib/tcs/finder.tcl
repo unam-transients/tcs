@@ -353,14 +353,14 @@ namespace eval "finder" {
   proc initializeactivitycommand {} {
     stopexposing
     stopsolving
-    variable detectorinitialreadmode
-    detector::setreadmode $detectorinitialreadmode
-    variable detectorinitialsoftwaregain
-    detector::setsoftwaregain $detectorinitialsoftwaregain
     variable detectorfullunbinneddatawindow
     detector::setfullunbinneddatawindow $detectorfullunbinneddatawindow
     variable detectorfullunbinnedbiaswindow
     detector::setfullunbinnedbiaswindow $detectorfullunbinnedbiaswindow
+    variable detectorinitialreadmode
+    detector::setreadmode $detectorinitialreadmode
+    variable detectorinitialsoftwaregain
+    detector::setsoftwaregain $detectorinitialsoftwaregain
     detector::setwindow $detectorfullunbinneddatawindow
     variable detectorinitialbinning
     detector::setbinning $detectorinitialbinning

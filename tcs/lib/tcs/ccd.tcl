@@ -433,14 +433,14 @@ namespace eval "ccd" {
     log::info "initializing."
     stopexposing
     stopsolving
-    variable detectorinitialreadmode
-    detector::setreadmode $detectorinitialreadmode
-    variable detectorinitialsoftwaregain
-    detector::setsoftwaregain $detectorinitialsoftwaregain
     variable detectorfullunbinneddatawindow
     detector::setfullunbinneddatawindow $detectorfullunbinneddatawindow
     variable detectorfullunbinnedbiaswindow
     detector::setfullunbinnedbiaswindow $detectorfullunbinnedbiaswindow
+    variable detectorinitialreadmode
+    detector::setreadmode $detectorinitialreadmode
+    variable detectorinitialsoftwaregain
+    detector::setsoftwaregain $detectorinitialsoftwaregain
     variable detectorwindows
     set window "initial"
     while {[dict exists $detectorwindows $window]} {
@@ -1203,6 +1203,8 @@ namespace eval "ccd" {
       }
     }
     detector::setwindow $window
+    variable detectorinitialbinning
+    detector::setbinning $detectorinitialbinning
     updatedata
     log::info [format "finished setting window after %.1f seconds." [utcclock::diff now $start]]
     return
@@ -1241,6 +1243,14 @@ namespace eval "ccd" {
     server::checkstatus
     server::checkactivity "idle"
     detector::setreadmode $readmode
+    variable detectorwindows
+    set window "initial"
+    while {[dict exists $detectorwindows $window]} {
+      set window [dict get $detectorwindows $window]
+    }
+    detector::setwindow $window
+    variable detectorinitialbinning
+    detector::setbinning $detectorinitialbinning
     updatedata
     log::info [format "finished setting read mode after %.1f seconds." [utcclock::diff now $start]]
     return
