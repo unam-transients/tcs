@@ -111,7 +111,7 @@
   "C0": {
     "telescopedescription": "COLIBRI/CU laboratory",
     "detectortype": "si",
-    "detectoridentifier": "sparewindows:2055",
+    "detectoridentifier": "blue:2055",
     "detectorpixelscale": "0.381as",
     "detectorinitialreadmode": "0",
     "detectorinitialsoftwaregain": 1,
@@ -164,15 +164,15 @@
     "filterwheelidentifier": "CFW-14-5",
     "filterwheelinitialposition": 0,
     "filterlist": [
-      "g",
-      "r",
-      "i",
-      "z",
-      "y"
+      "dark",
+      "open",
+      "open",
+      "open",
+      "open"
     ],
-//    "filterwheeltype": "null",
-//    "filterwheelidentifier": "null",
-//    "filterlist": [ "w" ],
+//     "filterwheeltype": "null",
+//     "filterwheelidentifier": "null",
+//     "filterlist": [ "w" ],
     "focusertype": "null",
     "focuseridentifier": "null",
     "focuserinitialposition": 0,
