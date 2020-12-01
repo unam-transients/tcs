@@ -78,7 +78,7 @@ namespace eval "covers" {
       error "invalid controller response \"$controllerresponse\"."
     }
     
-    log::debug [format "input channels = %02x output channels = %02x" $outputchannels $inputchannels] 
+    log::debug [format "input channels = %02x output channels = %02x" $inputchannels $outputchannels] 
 
     if {$inputchannels & 1} {
       set open true
