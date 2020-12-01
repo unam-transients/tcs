@@ -1046,6 +1046,8 @@ namespace eval "detector" {
   }
   
   ######################################################################
+
+  variable startreading
   
   proc detectorrawgetreadytoberead {} {
 
@@ -1053,17 +1055,28 @@ namespace eval "detector" {
 
     log::debug "detectorrawgetreadytoberead: start."
 
-    if {!$rawacquiring} {
-      log::debug "detectorrawgetreadytoberead: true."
-      return true
-    }
+    log::debug "detectorrawgetreadytoberead: rawacquiring is $rawacquiring."
+
+#    if {!$rawacquiring} {
+#      log::info "detectorrawgetreadytoberead: true."
+#      return true
+#    }
     
     rawputsiimagecommandpacket "inquireacquisitionstatus"
     set data [rawgetsiimagedatapacket "inquireacquisitionstatus"]
     set percentexposuredone [lindex $data 0]
     log::debug "detectorrawgetreadytoberead: percentexposuredone = $percentexposuredone."
     
-    return $rawacquiring
+    variable startreading
+    if {$percentexposuredone == 100} {
+      set startreading [utcclock::seconds]
+    }
+    
+    if {$percentexposuredone == 100} {
+      return true
+    } else {
+      return false
+    }
   }
   
   ######################################################################
@@ -1105,16 +1118,23 @@ namespace eval "detector" {
       return $result
     }
 
-    log::debug "detectorrawread: waiting while reading detector."
-    while {$rawacquiring} {
+    log::debug "detectorrawread: waiting while reading the detector."
+    while {true} {
       rawputsiimagecommandpacket "inquireacquisitionstatus"
       set data [rawgetsiimagedatapacket "inquireacquisitionstatus"]
       set percentreaddone [lindex $data 1]
       log::debug "detectorrawread: percentreaddone = $percentreaddone."
+      if {!$rawacquiring && $percentreaddone == 100} {
+        break
+      }
       coroutine::after 100
     }
-    log::debug "detectorrawread: finished reading detector."
+    log::debug "detectorrawread: finished reading the detector."
     
+    variable startreading
+    set end [utcclock::seconds]
+    log::debug [format "detectorrawread: reading the detector took %.2f seconds." [expr {$end - $startreading}]]
+
     log::debug "detectorrawread: retrieving image."
     set start [utcclock::seconds]
     rawputsiimagecommandpacket "retrieveimage" 0
@@ -1127,7 +1147,7 @@ namespace eval "detector" {
       }
     }
     set end [utcclock::seconds]
-    log::debug [format "retrieving image took %.2f seconds." [expr {$end - $start}]]
+    log::debug [format "detectorrawread: retrieving the image took %.2f seconds." [expr {$end - $start}]]
 
     set start [utcclock::seconds]
     set result [detectorrawpixend]
@@ -1135,7 +1155,7 @@ namespace eval "detector" {
       return $result
     }    
     set end [utcclock::seconds]
-    log::debug [format "detectorrawpixend took %.2f seconds." [expr {$end - $start}]]
+    log::debug [format "detectorrawread: detectorrawpixend took %.2f seconds." [expr {$end - $start}]]
     
     log::debug "detectorrawread: done."
 
