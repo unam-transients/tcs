@@ -30,16 +30,17 @@ export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bi
 program=$(basename "$0")
 
 usageerror () {
-  echo 1>&2 "usage: $program [-c] [-f] [-w width] [-e etcdir] [-t cpulimit] [--] fitsfile"
+  echo 1>&2 "usage: $program [-b] [-c] [-f] [-w width] [-r radius] [-e etcdir] [-t cpulimit] [--] fitsfile"
   exit 1
 }
 
-optstring=bce:ft:w:
+optstring=bce:ft:w:r:
 cpulimit=unlimited
 clean=false
 blind=false
 force=false
 width=""
+radius=10
 etcdir=/usr/local/etc/tcs
 if ! getopt -qQ -- "$optstring" "$@"
 then
@@ -64,6 +65,10 @@ do
   -f)
     force=true
     shift 1
+    ;;
+  -r)
+    radius="$2"
+    shift 2
     ;;
   -t)
     cpulimit="$2"
@@ -133,7 +138,7 @@ then
   then
     coordinateargs=""
   else
-    coordinateargs="--ra=$alpha --dec=$delta --radius=10"
+    coordinateargs="--ra=$alpha --dec=$delta --radius=$radius"
   fi
   for runargs in \
     "--backend-config "$etcdir"/fitssolvewcs.cfg-a --depth 1-10 $coordinateargs" \
