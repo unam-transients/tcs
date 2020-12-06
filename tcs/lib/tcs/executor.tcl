@@ -342,7 +342,9 @@ namespace eval "executor" {
       lset exposuretimes [lsearch -exact $detectors $detector] $exposuretime
       lset analyzetypes  [lsearch -exact $detectors $detector] "astrometry"
     } 
-    eval expose "object" $exposuretimes
+    if {$exposuretime != 0} {
+      eval expose "object" $exposuretimes
+    }
     eval analyze $analyzetypes
     set alphalist {}
     set deltalist {}
