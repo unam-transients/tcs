@@ -3,12 +3,6 @@ Worksheet.worksheet
 nagelfar/header
 nagelfar/out
 nagelfar/nagelfarize
-.DS_Store
-Worksheet.worksheet
-.DS_Store
-nagelfar/out
-tcs/.DS_Store
-.DS_Store
 map/map-0.txt
 map/map-180.txt
 map/residuals-0.dat
@@ -18,7 +12,3 @@ map/residuals.log
 map/residuals.out
 map/residuals.pdf
 map/residuals.synctex.gz
-.DS_Store
-Worksheet.worksheet
-.DS_Store
-tcs/.DS_Store
