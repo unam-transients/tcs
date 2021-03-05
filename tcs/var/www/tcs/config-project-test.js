@@ -2,11 +2,11 @@
 
 // This file is part of the UNAM telescope control system.
 
-// $Id: BOILERPLATE 3370 2019-10-30 02:46:01Z Alan $
+// $Id: config-project-colibricu.js 3444 2020-02-23 16:53:46Z Alan $
 
 ////////////////////////////////////////////////////////////////////////
 
-// Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
+// Copyright © 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the
@@ -24,12 +24,4 @@
 
 ////////////////////////////////////////////////////////////////////////
 
-{
-  "log"     : { "host" : "localhost", "port" : 5000 },
-  "html"    : { "host" : "localhost", "port" : 5001 },
-  "moon"    : { "host" : "localhost", "port" : 5002 },
-  "sun"     : { "host" : "localhost", "port" : 5003 },
-  "target"  : { "host" : "localhost", "port" : 5004 },
-  "weather" : { "host" : "localhost", "port" : 5005 },
-  "C0"      : { "host" : "localhost", "port" : 5006 }
-}
+var projectname="TEST";
