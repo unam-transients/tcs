@@ -147,16 +147,22 @@ sudo apt-get -y install build-essential libpq-dev libssl-dev openssl libffi-dev 
 #sudo apt-get -y install python3-pip python3-dev
 sudo apt-get -y install sqlite3 libsqlite3-dev
 
-sudo rm -rf install-python3.6
-mkdir install-python3.6
-cd install-python3.6
+# We used to install our own Python 3, but in newer versions of Ubuntu the
+# standard one now seems to work.
 
-wget https://www.python.org/ftp/python/3.6.3/Python-3.6.3.tgz
-tar -xvf Python-3.6.3.tgz
-cd Python-3.6.3
-sudo ./configure --enable-optimizations
-sudo make -j8
-sudo make install
+#sudo rm -rf install-python3.6
+#mkdir install-python3.6
+#cd install-python3.6
+
+#wget https://www.python.org/ftp/python/3.6.3/Python-3.6.3.tgz
+#tar -xvf Python-3.6.3.tgz
+#cd Python-3.6.3
+#sudo ./configure --enable-optimizations
+#sudo make -j8
+#sudo make install
+
+sudo apt-get install python3-pip
+
 sudo -H pip3 install --upgrade pip
 sudo -H pip3 install wheel
 sudo -H pip3 install --upgrade setuptools
