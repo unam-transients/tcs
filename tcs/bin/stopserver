@@ -106,6 +106,9 @@ colibricu-control)
 colibricu-detectors)
   allargs="C0"
   ;;
+test-*)
+  allargs="C0 weather sun moon target log"
+  ;;
 esac
 
 optstring=a

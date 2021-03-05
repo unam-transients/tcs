@@ -71,6 +71,10 @@ installs_project_colibricu	:=	\
 	detectorsi.so			\
 	filterwheelfli.so
 
+installs_project_test		:=	\
+	detectordummy.so		\
+	filterwheelnull.so
+
 ########################################################################
 
 DEFS				:=	@DEFS@
