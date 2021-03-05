@@ -29,5 +29,81 @@
     "latitude": "+19:19:33.0",
     "altitude": "2280.0",
     "civiltimezone": "Europe/Marseille"
+  },
+  "fitsheader": {
+    "servers": [
+      "target",
+      "sun",
+      "moon",
+      "weather"
+    ]
+  },
+  "C0": {
+    "telescopedescription": "Test",
+    "detectortype": "dummy",
+    "detectoridentifier": "",
+    "detectorpixelscale": "0.381as",
+    "detectorinitialreadmode": "",
+    "detectorinitialsoftwaregain": 1,
+    "detectorinitialbinning": 1,
+    "detectorwindows": {
+      "initial": "default",
+      "default": "4kx4k",
+      "center": "1kx1k",
+      "1kx1k": {
+        "sx": 0,
+        "sy": 0,
+        "nx": 1024,
+        "ny": 1024
+      },
+      "2kx2k": {
+        "sx": 1024,
+        "sy": 1024,
+        "nx": 2048,
+        "ny": 2048
+      },
+      "4kx4k": {
+        "sx": 1536,
+        "sy": 1536,
+        "nx": 4096,
+        "ny": 4096
+      }
+    },
+    "detectorfullunbinneddatawindow": {
+      "sx": 0,
+      "sy": 0,
+      "nx": 4096,
+      "ny": 4096
+    },
+    "detectorfullunbinnedbiaswindow": {
+      "sx": 0,
+      "sy": 0,
+      "nx": 0,
+      "ny": 0
+    },
+    "cooleropensetting": "off",
+    "coolerclosedsetting": "off",
+    "temperaturelimit": 40,
+    "temperaturelimitoutletgroup": "",
+    "filterwheeltype": "null",
+    "filterwheelidentifier": "null",
+    "filterwheelinitialposition": 0,
+    "filterlist": [
+      "w"
+    ],
+    "focusertype": "null",
+    "focuseridentifier": "null",
+    "focuserinitialposition": 0,
+    "focuserbacklashoffset": 0,
+    "focusercorrectionmodel": {},
+    "pointingmodelparameters": {},
+    "isstandalone": false,
+    "fitsfwhmargs": {
+      "1": "-m",
+      "2": "-A",
+      "4": "-A",
+      "8": "-A",
+      "16": "-A"
+    }
   }
 }

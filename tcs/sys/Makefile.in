@@ -44,5 +44,8 @@ install-project-colibricu	:
 
 install-project-colibricito	:
 	sh install-project-colibricito.sh
+	
+install-project-test		:
+	sh install-project-test.sh
 
 include ../Makefile.epilog
