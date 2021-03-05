@@ -28,19 +28,13 @@ include ../../../Makefile.prolog
 installs			:=	\
 	.htaccess			\
 	blank.png			\
-	C1.html                 	\
-	C2.html                 	\
-	C3.html                 	\
-	C4.html                 	\
 	cgi.tcl				\
 	jquery.js			\
-	operator-extended.html		\
 	style.css			\
 	tcs.js
 	
 installbins			:=	\
 	request.cgi			\
-
 
 installs_project_ratiroan	:=		\
 	allsky-project-ratiroan.html      	\
@@ -99,6 +93,11 @@ installs_project_colibricito	:=		\
 	webcam-a-project-colibricito.html	\
 	webcam-b-project-colibricito.html	\
 	webcam-c-project-colibricito.html	\
+
+installs_project_test		:=		\
+	interface-project-test.html		\
+	C0-project-test.html  	     		\
+	config-project-test.js			\
 
 EXTRA_INSTALLS			:=	\
 	install-webcam-link

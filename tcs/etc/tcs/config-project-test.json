@@ -28,7 +28,15 @@
     "longitude": "-99:10:40",
     "latitude": "+19:19:33.0",
     "altitude": "2280.0",
-    "civiltimezone": "Europe/Marseille"
+    "civiltimezone": "America/Mexico_City"
+  },
+  "html": {
+    "servers": [
+      "moon",
+      "sun",
+      "target",
+      "weather"
+    ]
   },
   "fitsheader": {
     "servers": [
@@ -37,6 +45,22 @@
       "moon",
       "weather"
     ]
+  },
+  "power": {
+    "hosts": {},
+    "outletgroupaddresses": {}
+  },
+  "instrument": {
+    "detectors": [
+      "C0"
+    ],
+    "idlefilterwheelpositions": [
+      "w"
+    ],
+    "pointingdetectors": [
+      "C0"
+    ],
+    "outletgroups": []
   },
   "C0": {
     "telescopedescription": "Test",
