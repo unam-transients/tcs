@@ -119,6 +119,16 @@ clean-colibricito-control				:
 	
 ########################################################################
 
+all-test					:	docs-test/index.html
+docs-test/index.html				:	docs-test/index.md
+
+install-test					:	install-linux
+
+clean-test				:
+	-rm -f docs-test/*.html
+	
+########################################################################
+
 install-macos					:
 	sudo mkdir -p $(prefix)/var/www/
 	sudo cp -r style.css docs-@SITE@/. $(prefix)/var/www/

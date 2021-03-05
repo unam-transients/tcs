@@ -40,6 +40,7 @@ AC_CONFIG_FILES(
   httpd.conf-ddotioan-services
   httpd.conf-colibricu-services
   httpd.conf-colibricito-control
+  httpd.conf-test
 )
 AC_OUTPUT
 
