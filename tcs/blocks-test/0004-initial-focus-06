@@ -1,0 +1,40 @@
+{
+  "proposal": {
+    "identifier": "0004"
+  },
+  "block": {
+    "identifier": "06",
+    "name": "initial focus at 06h"
+  },
+  "visits": [
+    {
+      "identifier": "206",
+      "name": "initial focus on TIC 1867-0896-1 (bright)",
+      "targetcoordinates": {
+        "type": "equatorial",
+        "alpha": "05:58:36.727",
+        "delta": "+24:47:52.15",
+        "equinox": "2000"
+      },
+      "command": "initialbrightfocusvisit"
+    },
+    {
+      "identifier": "106",
+      "name": "initial focus on TIC 1868-0263-1 (faint)",
+      "targetcoordinates": {
+        "type": "equatorial",
+        "alpha": "06:00:00.118",
+        "delta": "+24:51:57.33",
+        "equinox": "2000"
+      },
+      "command": "initialfaintfocusvisit"
+    }
+  ],
+  "constraints": {
+    "minfocusdelay": 14400,
+    "maxskybrightness": "nauticaltwilight",
+    "minha": "-03:00:00",
+    "maxha": "+01:00:00",
+    "minmoondistance": "15d"
+  }
+}
