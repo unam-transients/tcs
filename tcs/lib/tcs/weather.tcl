@@ -231,9 +231,13 @@ namespace eval "weather" {
       set previouspressure $pressure
 
       variable windaveragespeedlimit
+      
+      log::debug "windaveragespeed is \"$windaveragespeed\""
+      log::debug "windaveragespeedlimit is \"$windaveragespeedlimit\""
+      log::debug "lastwindalarmseconds is \"$lastwindalarmseconds\""
       if {
         ![string equal $windaveragespeedlimit ""] &&
-        ([string equal $lastwindalarmseconds "unknown"] || && $windaveragespeed >= $windaveragespeedlimit)
+        ([string equal $lastwindalarmseconds "unknown"] || $windaveragespeed >= $windaveragespeedlimit)
       } {
         set lastwindalarmseconds $timestampseconds
       }
@@ -253,8 +257,12 @@ namespace eval "weather" {
     if {[string equal $previoustemperature "unknown"]} {
       error "no valid data."
     }
-    
-    set lowwindspeedseconds [expr {$timestampseconds - $lastwindalarmseconds}]
+
+    if {[string equal $windaveragespeedlimit ""]} {
+      set lowwindspeedseconds 0
+    } else {
+      set lowwindspeedseconds [expr {$timestampseconds - $lastwindalarmseconds}]
+    }
     
     server::setdata "timestamp"               [utcclock::combinedformat $timestampseconds]
     server::setdata "temperature"             $temperature
@@ -294,7 +302,9 @@ namespace eval "weather" {
       set humidityalarm false
     } 
   
-    if {$lowwindspeedseconds < 30 * 60} {
+    if {[string equal $windaveragespeedlimit ""]} {
+      set windalarm false
+    } elseif {$lowwindspeedseconds < 30 * 60} {
       set windalarm true
     } else {
       set windalarm false
