@@ -204,13 +204,17 @@ const char *
 detectorrawupdatestatus(void)
 {
   DETECTOR_CHECK_OPEN();
-  detectortemperature = 0;
-  housingtemperature = 0;
-  coolerpower = 0;
-  if (strcmp(cooler, "following") == 0) {
+  if (strcmp(cooler, "on") == 0) {
+    detectortemperature = coolersettemperature;
+    coolerpower = 1.0;
+  } else if (strcmp(cooler, "following") == 0) {
     coolersettemperature = housingtemperature;
+    detectortemperature = coolersettemperature;
+    coolerpower = 0.5;
+  } else {
+    detectortemperature = housingtemperature + 10;
+    coolerpower = 0;
   }
-  coolerpower = 0;
   DETECTOR_OK();
 }
 
@@ -255,7 +259,10 @@ const char *
 detectorrawsetcooler(const char *newcooler)
 {
   DETECTOR_CHECK_OPEN();
-  if (strcmp(newcooler, "off") == 0) {
+  if (strcmp(newcooler, "on") == 0) {
+    cooler = "on";
+    DETECTOR_OK();
+  } else if (strcmp(newcooler, "off") == 0) {
     cooler = "off";
     DETECTOR_OK();
   } else if (strcmp(newcooler, "following") == 0) {
