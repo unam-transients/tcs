@@ -38,6 +38,7 @@
       "scheduler",
       "sensors",
       "sun",
+      "supervisor",
       "target",
       "telescope",
       "weather"
@@ -54,6 +55,9 @@
   "power": {
     "hosts": {},
     "outletgroupaddresses": {}
+  },
+  "supervisor": {
+    "internalhumiditysensor": ""
   },
   "scheduler": {},
   "executor": {},
