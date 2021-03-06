@@ -129,5 +129,8 @@
       "8": "-A",
       "16": "-A"
     }
+  },
+  "weather": {
+    "windaveragespeedlimit": "30"
   }
 }
