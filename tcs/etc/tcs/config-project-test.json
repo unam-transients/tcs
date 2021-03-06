@@ -37,6 +37,7 @@
       "sensors",
       "sun",
       "target",
+      "telescope",
       "weather"
     ]
   },
@@ -51,6 +52,11 @@
   "power": {
     "hosts": {},
     "outletgroupaddresses": {}
+  },
+  "telescope": {
+    "type": "dummy",
+    "idleha": "0h",
+    "idledelta": "0d"
   },
   "safetyswitch": {
     "type": "none"
