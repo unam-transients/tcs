@@ -59,11 +59,7 @@ catch {
   source [file join $prefix "lib" "tcs" "packages.tcl"]
 
   package require log
-  package require genericclient
-  package require supervisorclient
-  package require selectorclient
-  package require executorclient
-  package require telescopeclient
+  package require client
   
   log::info "requesting \"$request\"." "web"
 
