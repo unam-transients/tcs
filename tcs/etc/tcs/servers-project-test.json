@@ -31,5 +31,6 @@
   "sun"     : { "host" : "localhost", "port" : 5003 },
   "target"  : { "host" : "localhost", "port" : 5004 },
   "weather" : { "host" : "localhost", "port" : 5005 },
-  "C0"      : { "host" : "localhost", "port" : 5006 }
+  "C0"      : { "host" : "localhost", "port" : 5006 },
+  "sensors" : { "host" : "localhost", "port" : 5007 }
 }
