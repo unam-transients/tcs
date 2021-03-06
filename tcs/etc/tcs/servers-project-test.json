@@ -34,5 +34,6 @@
   "C0"         : { "host" : "localhost", "port" : 5006 },
   "sensors"    : { "host" : "localhost", "port" : 5007 },
   "instrument" : { "host" : "localhost", "port" : 5008 },
-  "telescope"  : { "host" : "localhost", "port" : 5009 }
+  "telescope"  : { "host" : "localhost", "port" : 5009 },
+  "executor"   : { "host" : "localhost", "port" : 5010 }
 }
