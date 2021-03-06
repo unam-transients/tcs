@@ -103,7 +103,8 @@ installbins			:= 		\
 	webcamimageserver
 
 installbins_project_test	:=		\
-	C0server
+	C0server				\
+	updateweatherfiles-oan
 	
 installbins_project_ratiroan	:=		\
 	C0server				\
