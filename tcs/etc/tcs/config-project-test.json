@@ -32,6 +32,7 @@
   },
   "html": {
     "servers": [
+      "executor",
       "instrument",
       "moon",
       "sensors",
@@ -53,6 +54,7 @@
     "hosts": {},
     "outletgroupaddresses": {}
   },
+  "executor": {},
   "telescope": {
     "type": "dummy",
     "idleha": "0h",
