@@ -107,7 +107,7 @@ colibricu-detectors)
   allargs="C0"
   ;;
 test-*)
-  allargs="instrument C0 weather sensors sun moon target html log"
+  allargs="instrument telescope C0 weather sensors sun moon target html log"
   ;;
 esac
 
