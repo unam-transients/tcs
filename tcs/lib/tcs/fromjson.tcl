@@ -49,7 +49,7 @@ namespace eval "fromjson" {
   # Other types of comments (e.g., block comments introduced by "/\*" and
   # terminated by "\*/") are not accepted.
 
-  proc parse {string} {
+  proc parse {string {many false}} {
     set lines [split $string "\n\r"]
     set strictstring ""
     foreach line $lines {
@@ -58,28 +58,34 @@ namespace eval "fromjson" {
       }
       set strictstring "$strictstring$line\n"
     }
-    if {[catch {set value [json::json2dict $strictstring]} message]} {
-      error "invalid JSON object: $message"
+    if {$many} {
+      if {[catch {set value [json::many-json2dict $strictstring]} message]} {
+        error "invalid JSON object: $message"
+      }
+    } else {
+      if {[catch {set value [json::json2dict $strictstring]} message]} {
+        error "invalid JSON object: $message"
+      }
     }
     return $value
   }
   
-  proc read {channel} {
+  proc read {channel {many false}} {
     set string ""
     while {![eof $channel]} {
       set line [gets $channel]
       set string "$string$line\n"
     }
-    return [parse $string]
+    return [parse $string $many]
   }
   
-  proc readfile {filename} {
+  proc readfile {filename {many false}} {
     if {[catch {set channel [open $filename "r"]}]} {
       error "unable to open \"$filename\"."
     }
     chan configure $channel -encoding "utf-8"
     chan configure $channel -buffering "line"
-    if {[catch {set value [read $channel]} message]} {
+    if {[catch {set value [read $channel $many]} message]} {
       close $channel
       error $message
     }

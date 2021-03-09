@@ -158,7 +158,7 @@ namespace eval "gcntan" {
         set uncertainty        [swiftuncertainty     $packet]
         set grb                [swiftgrb             $packet]
         set retraction         [swiftretraction      $packet]
-        respondtogrbalert $test $projectidentifier $blockidentifier 0 $type $eventidentifier $timestamp $noticetimestamp $eventtimestamp $retraction $grb $alpha $delta $equinox $uncertainty
+        respondtogrbalert $test $projectidentifier $blockidentifier $type $eventidentifier $timestamp $noticetimestamp $eventtimestamp $retraction $grb $alpha $delta $equinox $uncertainty
         return "echo"
       }
 
@@ -180,7 +180,7 @@ namespace eval "gcntan" {
         set uncertainty        [fermigbmuncertainty  $packet]
         set grb                [fermigrb             $packet]
         set retraction         [fermiretraction      $packet]
-        respondtogrbalert $test $projectidentifier $blockidentifier 0 $type $eventidentifier $timestamp $noticetimestamp $eventtimestamp $retraction $grb $alpha $delta $equinox $uncertainty
+        respondtogrbalert $test $projectidentifier $blockidentifier $type $eventidentifier $timestamp $noticetimestamp $eventtimestamp $retraction $grb $alpha $delta $equinox $uncertainty
         return "echo"
       }
        
@@ -202,7 +202,7 @@ namespace eval "gcntan" {
         set uncertainty        [fermilatuncertainty  $packet]
         set grb                [fermigrb             $packet]
         set retraction         [fermiretraction      $packet]
-        respondtogrbalert $test $projectidentifier $blockidentifier 0 $type $eventidentifier $timestamp $noticetimestamp $eventtimestamp $retraction $grb $alpha $delta $equinox $uncertainty
+        respondtogrbalert $test $projectidentifier $blockidentifier $type $eventidentifier $timestamp $noticetimestamp $eventtimestamp $retraction $grb $alpha $delta $equinox $uncertainty
         return "echo"
       }
 
@@ -218,7 +218,7 @@ namespace eval "gcntan" {
         set eventtimestamp     [lvceventtimestamp  $packet]
         set test               [lvctest            $packet]
         set skymapurl          [lvcurl             $packet]
-        respondtolvcalert $test $projectidentifier $blockidentifier 0 $type $eventidentifier $timestamp $noticetimestamp $eventtimestamp false $skymapurl
+        respondtolvcalert $test $projectidentifier $blockidentifier $type $eventidentifier $timestamp $noticetimestamp $eventtimestamp false $skymapurl
         return "echo"
       }
 
@@ -231,7 +231,7 @@ namespace eval "gcntan" {
         set noticetimestamp    [noticetimestamp     $packet]
         set eventtimestamp     [lvceventtimestamp   $packet]
         set test               [lvctest             $packet]
-        respondtolvcalert $test $projectidentifier $blockidentifier 0 $type $eventidentifier $timestamp $noticetimestamp $eventtimestamp true ""
+        respondtolvcalert $test $projectidentifier $blockidentifier $type $eventidentifier $timestamp $noticetimestamp $eventtimestamp true ""
         return "echo"
       }
        
@@ -278,11 +278,10 @@ namespace eval "gcntan" {
     }
   }
   
-  proc respondtogrbalert {test projectidentifier blockidentifier visitidentifier type eventidentifier alerttimestamp noticetimestamp eventtimestamp retraction grb alpha delta equinox uncertainty} {
+  proc respondtogrbalert {test projectidentifier blockidentifier type eventidentifier alerttimestamp noticetimestamp eventtimestamp retraction grb alpha delta equinox uncertainty} {
     logresponse $test [format "%s: test is %s." $type $test]
     logresponse $test [format "%s: project identifier is \"%s\"." $type $projectidentifier]
     logresponse $test [format "%s: block identifier is %d." $type $blockidentifier]
-    logresponse $test [format "%s: visit identifier is %d." $type $visitidentifier]
     logresponse $test [format "%s: event identifier is %s." $type $eventidentifier]
     logresponse $test [format "%s: alert timestamp is %s." $type [utcclock::format $alerttimestamp]] 
     logresponse $test [format "%s: notice timestamp is %s." $type [utcclock::format $noticetimestamp]] 
@@ -316,18 +315,17 @@ namespace eval "gcntan" {
     } else {
       logresponse $test [format "%s: requesting scheduler to respond." $type]
       if {[catch {
-        client::request "scheduler" [list respondtoalert $projectidentifier $blockidentifier $visitidentifier $type $eventidentifier $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty]
+        client::request "scheduler" [list respondtoalert $projectidentifier $blockidentifier $type $eventidentifier $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty]
       } result]} {
         log::warning [format "%s: unable to request scheduler: %s" $type $result]
       }
     }
   }
   
-  proc respondtolvcalert {test projectidentifier blockidentifier visitidentifier type eventidentifier alerttimestamp noticetimestamp eventtimestamp retraction skymapurl} {
+  proc respondtolvcalert {test projectidentifier blockidentifier type eventidentifier alerttimestamp noticetimestamp eventtimestamp retraction skymapurl} {
     logresponse $test [format "%s: test is %s." $type $test]
     logresponse $test [format "%s: project identifier is \"%s\"." $type $projectidentifier]
     logresponse $test [format "%s: block identifier is %d." $type $blockidentifier]
-    logresponse $test [format "%s: visit identifier is %d." $type $visitidentifier]
     logresponse $test [format "%s: event identifier is %s." $type $eventidentifier]
     logresponse $test [format "%s: alert timestamp is %s." $type [utcclock::format $alerttimestamp]] 
     logresponse $test [format "%s: notice timestamp is %s." $type [utcclock::format $noticetimestamp]] 
@@ -350,7 +348,7 @@ namespace eval "gcntan" {
     } else {
       logresponse $test [format "%s: requesting scheduler to respond." $type]
       if {[catch {
-        client::request "scheduler" [list respondtolvcalert $projectidentifier $blockidentifier $visitidentifier $type $eventidentifier $alerttimestamp $eventtimestamp $enabled $skymapurl]
+        client::request "scheduler" [list respondtolvcalert $projectidentifier $blockidentifier $type $eventidentifier $alerttimestamp $eventtimestamp $enabled $skymapurl]
       } result]} {
         log::warning [format "%s: unable to request scheduler: %s" $type $result]
       }

@@ -37,7 +37,7 @@ namespace eval "block" {
     if {[dict exists $block "identifier"]} {
       return [dict get $block "identifier"]
     } else {
-      error "invalid block: no block identifier."
+      return ""
     }
   }
   
@@ -53,7 +53,7 @@ namespace eval "block" {
     if {[dict exists $block "project"]} {
       return [dict get $block "project"]
     } else {
-      error "invalid block: no project member."
+      return ""
     }
   }
   
@@ -61,7 +61,7 @@ namespace eval "block" {
     if {[dict exists $block "constraints"]} {
       return [dict get $block "constraints"]
     } else {
-      error "invalid block: no constraints."
+      return ""
     }
   }
   
@@ -69,8 +69,39 @@ namespace eval "block" {
     if {[dict exists $block "visits"]} {
       return [dict get $block "visits"]
     } else {
-      error "invalid block: no visits."
+      return ""
     }
+  }
+  
+  proc alert {block} {
+    if {[dict exists $block "alert"]} {
+      return [dict get $block "alert"]
+    } else {
+      return ""
+    }
+  }
+  
+  ######################################################################
+  
+  proc makeblock {identifier name project constraints visits {alert ""}} {
+    return [dict create         \
+      "identifier" $identifier  \
+      "name"       $name        \
+      "project"    $project     \
+      "contraints" $constraints \
+      "visits"     $visits      \
+      "alert"      $alert       \
+    ]
+  }
+  
+  proc makealertblock {identifier name project constraints alert} {
+    return [dict create         \
+      "identifier" $identifier  \
+      "name"       $name        \
+      "project"    $project     \
+      "contraints" $constraints \
+      "alert"      $alert       \
+    ]
   }
   
   ######################################################################

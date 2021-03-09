@@ -270,5 +270,25 @@ namespace eval "visit" {
   }
 
   ######################################################################
+  
+  proc makevisit {identifier name targetcoordinates command estimatedduration} {
+    return [dict create \
+      "identifier"        $identifier        \
+      "name"              $name              \
+      "targetcoordinates" $targetcoordinates \
+      "command"           $command           \
+      "estimatedduration" $estimatedduration \
+    ]
+  }
+  
+  proc makeequatorialtargetcoordinates {alpha delta equinox} {
+    return [dict create \
+      "type"    "equatorial" \
+      "alpha"   $alpha       \
+      "delta"   $delta       \
+      "equinox" $equinox     \
+    ]
+  }
 
+  ######################################################################
 }
