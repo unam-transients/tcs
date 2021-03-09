@@ -30,14 +30,20 @@ namespace eval "fitfocus" {
   variable svnid {$Id}
 
   ######################################################################
+  
+  # This code estimates the minmum of a function y = f(x).
+  
+  # It first finds the least-squares fitting parabola, with 2-sigma rejection.
+  # It then determines the turning point. If the turning point is a minimum, it
+  # returns the value of x at the minimum. Otherwise, it finds the least-squares
+  # fitting line, with 2-sigma rejection, and returns the x value at the
+  # intercept with y = 0.
 
-  # The code finds the least-squares fitting parabola, with 2-sigma
-  # rejection, to the FWHM, and the minium focus. (Formally, it determines
-  # the turning point, which might be the maximum.)
+  # The least-square parabola is determined as follows. Given a parabola
   #
-  # The least-square parabola is determined as follows. Given a parabola y
-  # = a + b * x + c * x * x, the least-squares fitting coefficients are
-  # given by:
+  # y = a + b * x + c * x * x, 
+  # 
+  # the least-squares fitting coefficients are given by:
   #
   # S01 = S00 * a + S10 * b + S20 * c,
   # S11 = S10 * a + S20 * b + S30 * c, and
@@ -64,11 +70,23 @@ namespace eval "fitfocus" {
   # c = (A0 * B1 - A1 * B0) / (B1 * C0 - B0 * C1),
   # b = (A0 - C0 * c) / B0, and
   # a = (S01 - S10 * b - S20 * c) / S00.
+  #
+  # The turning point is a minimum if c > 0.
+  
+  # The least-square line is determined as follows. Given a line
+  #
+  #   y = a + b x,
+  #
+  # the least-squares fitting coefficients are given by:
+  #
+  # b = (S00 * S11 - S10 * S01) / (S00 * S20 - S10 * S10)
+  # a = S01 / S00 - b * S10 / S00
+  
   
   variable maxabschi 2.0
   variable maxfwhm 15.0
   
-  proc fit {xlist ylist chilist} {
+  proc fit2 {xlist ylist chilist} {
     variable maxabschi
     variable maxfwhm
     set S00 0.0
@@ -104,6 +122,32 @@ namespace eval "fitfocus" {
     return [list $a $b $c]
   }
   
+  proc fit1 {xlist ylist chilist} {
+    variable maxabschi
+    variable maxfwhm
+    set S00 0.0
+    set S10 0.0
+    set S20 0.0
+    set S30 0.0
+    set S40 0.0
+    set S01 0.0
+    set S11 0.0
+    set S21 0.0
+    foreach x $xlist y $ylist chi $chilist {
+      log::debug "fitfocus: x = $x y = $y chi = $chi."
+      if {$y <= $maxfwhm && abs($chi) <= $maxabschi} {
+        set S00 [expr {$S00 + 1}]
+        set S10 [expr {$S10 + $x}]
+        set S20 [expr {$S20 + $x * $x}]
+        set S01 [expr {$S01 + $y}]
+        set S11 [expr {$S11 + $x * $y}]
+      }
+    }
+    set b [expr {($S00 * $S11 - $S10 * $S01) / ($S00 * $S20 - $S10 * $S10)}]
+    set a [expr {($S01 - $S10 * $b) / $S00}]
+    return [list $a $b]
+  }
+  
   proc findmin {xlist ylist} {
     # For brevity, we use x for z0 and y for FWHM.
     variable maxabschi
@@ -115,9 +159,10 @@ namespace eval "fitfocus" {
     }
     set n [llength $xlist]
     log::debug "fitfocus: n = $n."
+    log::info "fitfocus: performing quadratic fit."
     set chilist [lrepeat $n 0.0]
     foreach iteration {0 1 2} {
-      set coeffientslist [fit $xlist $ylist $chilist]
+      set coeffientslist [fit2 $xlist $ylist $chilist]
       set a [lindex $coeffientslist 0]
       set b [lindex $coeffientslist 1]
       set c [lindex $coeffientslist 2]
@@ -139,17 +184,55 @@ namespace eval "fitfocus" {
         }
       }
     }
+    if {$c < 0} {
+      log::info "fitfocus: quadratic fit has maximum."
+      set dolinearfit true
+    } else {
+      set minx [expr {int(-$b / (2 * $c))}]
+      set miny [expr {$a + $b * $minx + $c * $minx * $minx}]
+      if {$miny < 0} {
+        log::info "fitfocus: quadratic fit has negative minimum."
+        set dolinearfit true
+      } else {
+        log::info "fitfocus: quadratic fit has positive minimum."
+        set dolinearfit false
+      }
+    }
+    if {$dolinearfit} {
+      log::info "fitfocus: performing linear fit."
+      set chilist [lrepeat $n 0.0]
+      foreach iteration {0 1 2} {
+        set coeffientslist [fit1 $xlist $ylist $chilist]
+        set a [lindex $coeffientslist 0]
+        set b [lindex $coeffientslist 1]
+        log::debug "fitfocus: iteration $iteration: a = $a b = $b."
+        set sdyy 0.0
+        foreach x $xlist y $ylist {
+          set dy [expr {$y - ($a + $b * $x)}]
+          set sdyy [expr {$sdyy + $dy * $dy}]
+        }
+        set sigma [expr {sqrt($sdyy / ($n - 1))}]
+        log::debug "fitfocus: iteration $iteration: sigma = $sigma."
+        set chilist {}
+        foreach x $xlist y $ylist {
+          set dy [expr {$y - ($a + $b * $x)}]
+          if {$sigma != 0} {
+            lappend chilist [expr {$dy / $sigma}]
+          } else {
+            lappend chilist 0
+          }
+        }
+      }
+      log::info "fitfocus: linear fit found intercept."
+      set minx [expr {int(-$a / $b)}]
+      set miny 0
+    }
     foreach x $xlist y $ylist chi $chilist {
       if {$y <= $maxfwhm && abs($chi) <= $maxabschi} {
         log::info [format "fitfocus: FWHM = %4.1f pixels at %d (chi = %+6.2f)" $y $x $chi]
       } else {
         log::info [format "fitfocus: FWHM = %4.1f pixels at %d (chi = %+6.2f rejected)" $y $x $chi]
       }
-    }
-    set minx [expr {int(-$b / (2 * $c))}]
-    set miny [expr {$a + $b * $minx + $c * $minx * $minx}]
-    if {$c < 0} {
-      error "turning point is maximum."
     }
     log::info [format "fitfocus: model minimum: FWHM = %.1f pixels at %d." $miny $minx]
     return $minx
