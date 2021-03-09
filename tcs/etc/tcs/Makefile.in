@@ -37,10 +37,12 @@ installs	:=				\
 
 installs_project_test		:=		\
 	alertblock-project-test			\
-	alertscript-project-test		\
 	config-project-test.json		\
 	servers-project-test.json		\
 	visitcommands-project-test.tcl
+	
+install_bins_project_test	:=		\
+	alertscript-project-test
 
 installs_project_ratiroan	:=		\
 	alertblock-project-ratiroan		\
