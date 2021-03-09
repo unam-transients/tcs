@@ -39,7 +39,7 @@ namespace eval "project" {
     if {[dict exists $project "identifier"]} {
       return [dict get $project "identifier"]
     } else {
-      error "invalid block: no identifier."
+      return ""
     }
   }
   
