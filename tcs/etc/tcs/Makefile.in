@@ -36,6 +36,7 @@ installs	:=				\
 	fitssolvewcs.sex
 
 installs_project_test		:=		\
+	alertscript-project-ratiroan		\
 	config-project-test.json		\
 	servers-project-test.json		\
 	visitcommands-project-test.tcl
