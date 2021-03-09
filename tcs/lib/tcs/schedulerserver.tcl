@@ -55,12 +55,12 @@ namespace eval "schedulerserver" {
     return
   }
   
-  proc slaverespondtoalert {projectidentifier blockidentifier visitidentifier type eventidentifier alerttimestamp eventtimestamp enabled alpha delta equinox uncertainty} {
-    scheduler::respondtoalert $projectidentifier $blockidentifier $visitidentifier $type $eventidentifier $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty
+  proc slaverespondtoalert {proposalidentifier blockidentifier visitidentifier type eventidentifier alerttimestamp eventtimestamp enabled alpha delta equinox uncertainty} {
+    scheduler::respondtoalert $proposalidentifier $blockidentifier $visitidentifier $type $eventidentifier $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty
   }
 
-  proc slaverespondtolvcalert {projectidentifier blockidentifier visitidentifier type eventidentifier alerttimestamp eventtimestamp enabled skymapurl} {
-    scheduler::respondtolvcalert $projectidentifier $blockidentifier $visitidentifier $type $eventidentifier $alerttimestamp $eventtimestamp $enabled $skymapurl
+  proc slaverespondtolvcalert {proposalidentifier blockidentifier visitidentifier type eventidentifier alerttimestamp eventtimestamp enabled skymapurl} {
+    scheduler::respondtolvcalert $proposalidentifier $blockidentifier $visitidentifier $type $eventidentifier $alerttimestamp $eventtimestamp $enabled $skymapurl
   }
 
   proc slavesetfocused {} {
