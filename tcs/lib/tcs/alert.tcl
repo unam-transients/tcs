@@ -35,14 +35,20 @@ namespace eval "alert" {
 
   ######################################################################
   
-  proc readfile {filename oldblock} {
+  proc readfile {blockfile alertfile} {
   
-    log::info "reading alert from alert file \"$filename\"."
+    log::info "reading alert from block file \"$blockfile\" and alert file \"$alertfile\"."
       
-    # Read the partial blocks from the alert file and iteratively merge them
-    # with the partial block oldblock.
+    # Read the partial block from the block file.
+    
+    if {[catch {set oldblock [block::readfile $blockfile]} message]} {
+      error "invalid block file: $message"
+    }
 
-    if {[catch {set newblocks [fromjson::readfile $filename true]} message]} {
+    # Read the partial blocks from the alert file and iteratively merge them
+    # with partial block from the block file.
+
+    if {[catch {set newblocks [fromjson::readfile $alertfile true]} message]} {
       error "invalid alert file: $message."
     }
 

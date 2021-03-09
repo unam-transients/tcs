@@ -153,7 +153,6 @@ namespace eval "scheduler" {
   }
   
   proc selectable {blockfile alertfile seconds} {
-    constraints::start
     if {[catch {
       set block [block::readfile $blockfile]
     } message]} {
@@ -163,11 +162,12 @@ namespace eval "scheduler" {
       return false
     }
     if {![string equal "" $alertfile] && [catch {
-      set block [alert::readfile $alertfile $block]
+      set block [alert::readfile $blockfile $alertfile]
     } message]} {
       log::warning "error while reading alert file $alertfile: $message"
       return false
     }
+    constraints::start
     foreach visit [block::visits $block] {
       if {![constraints::check $visit [block::constraints $block] $seconds]} {
         log::info "rejected [files $blockfile $alertfile]: [constraints::why]"
@@ -319,7 +319,12 @@ namespace eval "scheduler" {
       }
 
       log::info "executing [files $blockfile $alertfile]."
-      set block [block::readfile $blockfile]
+      
+      if {[string equal $alertfile ""]} {
+        set block [block::readfile $blockfile]
+      } else {
+        set block [alert::readfile $blockfile $alertfile]
+      }
       log::info "executing block [block::identifier $block] of project [project::identifier [block::project $block]]."
       server::setactivity "executing"
       set idled false
