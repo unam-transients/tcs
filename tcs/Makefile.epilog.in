@@ -70,15 +70,28 @@ all-here			:	$(installbins) $(installbins_@PROJECT@) $(installs) $(installs_proj
 install-here			:	all-here
 	if test ! -z "$(installbins)" ; \
 	then \
-	  sudo mkdir -p $(INSTALL_DIR) ; \
-	  sudo install $(installbins) $(INSTALL_DIR) ; \
+	  sudo mkdir -p $(INSTALL_DIR); \
+	  for install in $(installbins) ; \
+	  do \
+	    if test -d $$install ; \
+	    then \
+	      sudo install -d -m u=rwX,go=rX $$install $(INSTALL_DIR)/$$install ; \
+	    else \
+	    sudo install -m u=rwx,go=rx $(installbins) $(INSTALL_DIR) ; \
+	    fi ; \
+	  done ; \
 	fi
 	if test ! -z "$(installbins_project_@PROJECT@)" ;  \
 	then \
 	  sudo mkdir -p $(INSTALL_DIR); \
 	  for install in $(installbins_project_@PROJECT@) ; \
 	  do \
-	    sudo install $$install $(INSTALL_DIR)/$$(echo $$install | sed 's/-project-@PROJECT@//') ; \
+	    if test -d $$install ; \
+	    then \
+	      sudo install -d -m u=rwX,go=rX $$install $(INSTALL_DIR)/$$install ; \
+	    else \
+	       sudo install -m u=rwx,go=rx $$install $(INSTALL_DIR)/$$(echo $$install | sed 's/-project-@PROJECT@//') ; \
+	    fi; \
 	  done ; \
 	fi
 	if test ! -z "$(installs)" ; \
