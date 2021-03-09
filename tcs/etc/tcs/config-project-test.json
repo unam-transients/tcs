@@ -60,6 +60,9 @@
     "internalhumiditysensor": ""
   },
   "scheduler": {},
+  "swift": {
+    "pointingsource": "none"
+  },
   "executor": {},
   "telescope": {
     "type": "dummy",
