@@ -12,3 +12,5 @@ map/residuals.log
 map/residuals.out
 map/residuals.pdf
 map/residuals.synctex.gz
+.DS_Store
+tcs/etc/.DS_Store
