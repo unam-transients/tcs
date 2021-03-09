@@ -388,7 +388,7 @@ namespace eval "scheduler" {
     return
   }
   
-  proc respondtoalert {projectidentifier blockidentifier visitidentifier type eventidentifier alerttimestamp eventtimestamp enabled alpha delta equinox uncertainty} {
+  proc respondtoalert {proposalidentifier blockidentifier visitidentifier type eventidentifier alerttimestamp eventtimestamp enabled alpha delta equinox uncertainty} {
     variable mode
 
     log::summary "responding to alert for $eventidentifier."
@@ -400,7 +400,7 @@ namespace eval "scheduler" {
       set eventtimestamp [utcclock::combinedformat [utcclock::scan $eventtimestamp]]
     }
 
-    log::info [format "projectidentifier is \"%s\"." $projectidentifier]
+    log::info [format "proposalidentifier is \"%s\"." $proposalidentifier]
     log::info [format "blockidentifier is %s." $blockidentifier]
     log::info [format "visitidentifier is %s." $visitidentifier]
     log::info [format "type is %s." $type]
@@ -428,7 +428,7 @@ namespace eval "scheduler" {
       }
     }
     
-    set alertfile [getalertfile "$projectidentifier-$blockidentifier-$visitidentifier"]
+    set alertfile [getalertfile "$proposalidentifier-$blockidentifier-$visitidentifier"]
     
     file mkdir [file dirname $alertfile]
     log::info [format "alert file is \"%s\"." $alertfile]
@@ -443,27 +443,42 @@ namespace eval "scheduler" {
     }
     set channel [open $alertfile "a"]
     if {!$alertfileexists} {
-      puts $channel [format "# Alert file \"%s\"." $alertfile]
-      puts $channel [format "# Created at %s." [utcclock::format now]]
-      puts $channel [format "project::setidentifier \"%s\"" $projectidentifier]
-      puts $channel [format "block::setidentifier %s" $blockidentifier]
-      puts $channel [format "visit::setidentifier %s" $visitidentifier]
-      puts $channel [format "visit::setname \"%s visit %s\"" $eventidentifier $visitidentifier]
-      puts $channel [format "alert::seteventidentifier \"%s\"" $eventidentifier]
-      puts $channel [format "alert::setexposures \"default\""]
+      puts $channel [format "// Alert file \"%s\"." $alertfile]
+      puts $channel [format "// Created at %s." [utcclock::format now]]
     } else {
-      puts $channel [format "# Updated at %s." [utcclock::format now]]
+      puts $channel [format "// Updated at %s." [utcclock::format now]]
     }
-    puts $channel [format "alert::setalerttimestamp \"%s\"" $alerttimestamp]
-    if {![string equal $eventtimestamp ""]} {
-      puts $channel [format "alert::seteventtimestamp \"%s\"" $eventtimestamp]
-    }
-    if {![string equal $alpha ""] && ![string equal $delta ""] && ![string equal $equinox ""] && ![string equal $uncertainty ""]} {
-      puts $channel [format "alert::settargetcoordinates %s %s %s %s %s" $type [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox [astrometry::formatdistance $uncertainty]]
-    }
-    if {![string equal $enabled ""] && !$enabled} {
-      puts $channel [format "alert::setenabled %s" $enabled]
-    }
+    puts $channel [format "\{"]
+    puts $channel [format "  \"proposal\": \{"]
+    puts $channel [format "    \"identifier\": \"%s\"" $proposalidentifier]
+    puts $channel [format "  \},"]
+    puts $channel [format "  \"block\": \{"]
+    puts $channel [format "    \"identifier\": \"%s\"," $blockidentifier]
+    puts $channel [format "    \"name\": \"%s\"," $eventidentifier]
+    puts $channel [format "    \"eventtimestamp\": \"%s\"," $eventtimestamp]
+    puts $channel [format "    \"alerttimestamp\": \"%s\"," $alerttimestamp]
+    puts $channel [format "    \"enabled\": \"%s\"" $enabled]
+    puts $channel [format "  \},"]
+    puts $channel [format "  \"visits\": \[\{"]
+    puts $channel [format "    \"identifier\": \"%s\"," $visitidentifier]
+    puts $channel [format "    \"targetcoordinates\": \{"]
+    puts $channel [format "      \"type\": \"equatorial\","]
+    puts $channel [format "      \"alpha\": \"%s\"," [astrometry::formatalpha $alpha]]
+    puts $channel [format "      \"delta\": \"%s\"," [astrometry::formatdelta $delta]]
+    puts $channel [format "      \"equinox\": \"%s\"," $equinox]
+    puts $channel [format "      \"uncertainty\": \"%s\"" [astrometry::formatdistance $uncertainty]]
+    puts $channel [format "    \},"]
+    puts $channel [format "    \"command\": \"alertvisit\","]
+    puts $channel [format "    \"estimatedduration\": \"0m\""]
+    puts $channel [format "  \}\],"]
+    puts $channel [format "  \"constraints\": \{"]
+    puts $channel [format "    \"maxskybrightness\": \"astronomicaltwilight\","]
+    puts $channel [format "    \"minmoondistance\": \"15d\","]
+    puts $channel [format "    \"maxzenithdistance\": \"72d\","]
+    puts $channel [format "    \"maxfocusdelay\": \"1200\""]
+    puts $channel [format "  \}"]
+    puts $channel [format "\}"]
+
     close $channel
     
     if {!$interrupt} {
@@ -495,7 +510,7 @@ namespace eval "scheduler" {
     return
   }
   
-  proc respondtolvcalert {projectidentifier blockidentifier visitidentifier type eventidentifier alerttimestamp eventtimestamp enabled skymapurl} {
+  proc respondtolvcalert {proposalidentifier blockidentifier visitidentifier type eventidentifier alerttimestamp eventtimestamp enabled skymapurl} {
     log::summary "responding to lvc alert."    
     if {![string equal $skymapurl ""]} {
       log::info [format "skymap url is %s." $skymapurl]
@@ -518,7 +533,7 @@ namespace eval "scheduler" {
       set equinox     ""
       set uncertainty ""
     }
-    respondtoalert $projectidentifier $blockidentifier $visitidentifier $type $eventidentifier $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty
+    respondtoalert $proposalidentifier $blockidentifier $visitidentifier $type $eventidentifier $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty
     log::summary "finished responding to lvc alert."
     return
   }
