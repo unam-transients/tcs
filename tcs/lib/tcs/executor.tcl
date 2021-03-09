@@ -414,12 +414,8 @@ namespace eval "executor" {
       server::setdata "visitcommand"      [visit::command $visit]
     }
     
-if {false} {
-    server::setdata "alerttype"             [alert::type]
-}
-    server::setdata "alerttype"            ""
-
-    if {true || [string equal "" [alert::type]]} {
+    if {[string equal "" $block] || [string equal "" [block::alert $block]]} {
+      server::setdata "alerttype"              ""
       server::setdata "alerteventidentifier"   ""
       server::setdata "alertalerttimestamp"    ""
       server::setdata "alerteventtimestamp"    ""
@@ -427,14 +423,16 @@ if {false} {
       server::setdata "alertdelta"             ""
       server::setdata "alertequinox"           ""
       server::setdata "alertuncertainty"       ""
-    } else {
-      server::setdata "alerteventidentifier"   [alert::eventidentifier]
-      server::setdata "alertalerttimestamp"    [alert::alerttimestamp]
-      server::setdata "alerteventtimestamp"    [alert::eventtimestamp]
-      server::setdata "alertalpha"             [astrometry::parsealpha   [visit::alpha]]
-      server::setdata "alertdelta"             [astrometry::parsedelta   [visit::delta]]
-      server::setdata "alertequinox"           [astrometry::parseequinox [visit::equinox]]
-      server::setdata "alertuncertainty"       [astrometry::parseoffset [alert::uncertainty]]
+    } else {    
+      set alert [block::alert $block]
+      server::setdata "alerttype"              [alert::type $alert]
+      server::setdata "alerteventidentifier"   [alert::eventidentifier $alert]
+      server::setdata "alertalerttimestamp"    [alert::alerttimestamp $alert]
+      server::setdata "alerteventtimestamp"    [alert::eventtimestamp $alert]
+      server::setdata "alertalpha"             [astrometry::parsealpha   [alert::alpha $alert]]
+      server::setdata "alertdelta"             [astrometry::parsedelta   [alert::delta $alert]]
+      server::setdata "alertequinox"           [astrometry::parseequinox [alert::equinox $alert]]
+      server::setdata "alertuncertainty"       [astrometry::parseoffset  [alert::uncertainty $alert]]
     }
 
     server::setdata "timestamp" [utcclock::combinedformat]
@@ -539,36 +537,40 @@ if {false} {
     variable exposure
     set exposure 0
     
-    if {[catch {
-      set block [block::readfile $blockfile]
-    }]} {
-      updatedata true $blockfile "" "" ""
-      log::error "while reading block file \"[file tail $blockfile]\": $result"
-      log::info "deleting block file \"[file tail $blockfile]\"."
-      file delete -force $blockfile
-      return
+    if {[string equal "" $alertfile]} {
+      if {[catch {
+        set block [block::readfile $blockfile]
+      }]} {
+        updatedata true $blockfile "" "" ""
+        log::error "while reading block file \"[file tail $blockfile]\": $result"
+        log::info "deleting block file \"[file tail $blockfile]\"."
+        file delete -force $blockfile
+        return
+      }
+    } else {
+      if {[catch {
+        set block [alert::readfile $blockfile $alertfile]
+      }]} {
+        updatedata true $blockfile "" "" ""
+        log::error "while reading alert file \"[file tail $alertfile]\": $result"
+        log::info "deleting alert file \"[file tail $alertfile]\"."
+        file delete -force $alertfile
+        return
+      }
     }
+    
+    log::info "block is $block."
     
     set project [block::project $block]
     updatedata false $blockfile $project $block ""
 
     log::summary "executing block [block::identifier $block] of project [project::identifier $project]."
-    if {![string equal "" [project::name $block]]} {
-      log::info "project name is \"[project::name $project]\"."
+    if {![string equal "" [project::name $project]]} {
+      log::info "project name is \"[project::name [block::project $block]]\"."
     }
     if {![string equal "" [block::name $block]]} {
       log::info "block name is \"[block::name $block]\"."
     }
-    
-#    if {![string equal $alertfile ""]} {
-#      if {[catch {
-#        source $alertfile
-#      } result]} {
-#        log::warning "while loading alert file $alertfile: $result"
-#        file delete -force $alertfile
-#        return
-#      }
-#    }
     
     variable visit
     foreach visit [block::visits $block] {
@@ -577,7 +579,7 @@ if {false} {
 
       log::summary "executing visit [visit::identifier $visit] of block [block::identifier $block] of project [project::identifier $project]."
       if {![string equal [visit::name $visit] ""]} {
-        log::summary "visit name is \"[visit::name $visit]\"."
+        log::info "visit name is \"[visit::name $visit]\"."
       }
       log::info "visit command is \"[visit::command $visit]\"."
 
