@@ -153,7 +153,6 @@ namespace eval "scheduler" {
   }
   
   proc selectable {blockfile alertfile seconds} {
-    alert::start $alertfile
     constraints::start
     if {[catch {
       set block [block::readfile $blockfile]
@@ -163,12 +162,12 @@ namespace eval "scheduler" {
       file delete -force $blockfile
       return false
     }
-#     if {![string equal "" $alertfile] && [catch {
-#       source $alertfile
-#     } message]} {
-#       log::warning "error while reading alert file $alertfile: $message"
-#       return false
-#     }
+    if {![string equal "" $alertfile] && [catch {
+      set block [alert::readfile $alertfile $block]
+    } message]} {
+      log::warning "error while reading alert file $alertfile: $message"
+      return false
+    }
     foreach visit [block::visits $block] {
       if {![constraints::check $visit [block::constraints $block] $seconds]} {
         log::info "rejected [files $blockfile $alertfile]: [constraints::why]"
@@ -319,7 +318,6 @@ namespace eval "scheduler" {
         continue
       }
 
-#      alert::start $alertfile
       log::info "executing [files $blockfile $alertfile]."
       set block [block::readfile $blockfile]
       log::info "executing block [block::identifier $block] of project [project::identifier [block::project $block]]."
@@ -388,7 +386,7 @@ namespace eval "scheduler" {
     return
   }
   
-  proc respondtoalert {proposalidentifier blockidentifier visitidentifier type eventidentifier alerttimestamp eventtimestamp enabled alpha delta equinox uncertainty} {
+  proc respondtoalert {projectidentifier blockidentifier type eventidentifier alerttimestamp eventtimestamp enabled alpha delta equinox uncertainty} {
     variable mode
 
     log::summary "responding to alert for $eventidentifier."
@@ -400,9 +398,8 @@ namespace eval "scheduler" {
       set eventtimestamp [utcclock::combinedformat [utcclock::scan $eventtimestamp]]
     }
 
-    log::info [format "proposalidentifier is \"%s\"." $proposalidentifier]
+    log::info [format "projectidentifier is \"%s\"." $projectidentifier]
     log::info [format "blockidentifier is %s." $blockidentifier]
-    log::info [format "visitidentifier is %s." $visitidentifier]
     log::info [format "type is %s." $type]
     log::info [format "event identifier is %s." $eventidentifier]
     log::info [format "alert timestamp is %s." [utcclock::format [utcclock::scan $alerttimestamp]]]
@@ -428,7 +425,7 @@ namespace eval "scheduler" {
       }
     }
     
-    set alertfile [getalertfile "$proposalidentifier-$blockidentifier-$visitidentifier"]
+    set alertfile [getalertfile "$projectidentifier-$blockidentifier"]
     
     file mkdir [file dirname $alertfile]
     log::info [format "alert file is \"%s\"." $alertfile]
@@ -449,33 +446,20 @@ namespace eval "scheduler" {
       puts $channel [format "// Updated at %s." [utcclock::format now]]
     }
     puts $channel [format "\{"]
-    puts $channel [format "  \"proposal\": \{"]
-    puts $channel [format "    \"identifier\": \"%s\"" $proposalidentifier]
+    puts $channel [format "  \"identifier\": \"%s\"," $blockidentifier]
+    puts $channel [format "  \"name\": \"%s\"," $eventidentifier]
+    puts $channel [format "  \"project\": \{"]
+    puts $channel [format "    \"identifier\": \"%s\"" $projectidentifier]
     puts $channel [format "  \},"]
-    puts $channel [format "  \"block\": \{"]
-    puts $channel [format "    \"identifier\": \"%s\"," $blockidentifier]
-    puts $channel [format "    \"name\": \"%s\"," $eventidentifier]
+    puts $channel [format "  \"alert\": \{"]
+    puts $channel [format "    \"type\": \"%s\"," $type]
+    puts $channel [format "    \"alpha\": \"%s\"," [astrometry::formatalpha $alpha]]
+    puts $channel [format "    \"delta\": \"%s\"," [astrometry::formatdelta $delta]]
+    puts $channel [format "    \"equinox\": \"%s\"," $equinox]
+    puts $channel [format "    \"uncertainty\": \"%s\"," [astrometry::formatdistance $uncertainty]]
     puts $channel [format "    \"eventtimestamp\": \"%s\"," $eventtimestamp]
     puts $channel [format "    \"alerttimestamp\": \"%s\"," $alerttimestamp]
     puts $channel [format "    \"enabled\": \"%s\"" $enabled]
-    puts $channel [format "  \},"]
-    puts $channel [format "  \"visits\": \[\{"]
-    puts $channel [format "    \"identifier\": \"%s\"," $visitidentifier]
-    puts $channel [format "    \"targetcoordinates\": \{"]
-    puts $channel [format "      \"type\": \"equatorial\","]
-    puts $channel [format "      \"alpha\": \"%s\"," [astrometry::formatalpha $alpha]]
-    puts $channel [format "      \"delta\": \"%s\"," [astrometry::formatdelta $delta]]
-    puts $channel [format "      \"equinox\": \"%s\"," $equinox]
-    puts $channel [format "      \"uncertainty\": \"%s\"" [astrometry::formatdistance $uncertainty]]
-    puts $channel [format "    \},"]
-    puts $channel [format "    \"command\": \"alertvisit\","]
-    puts $channel [format "    \"estimatedduration\": \"0m\""]
-    puts $channel [format "  \}\],"]
-    puts $channel [format "  \"constraints\": \{"]
-    puts $channel [format "    \"maxskybrightness\": \"astronomicaltwilight\","]
-    puts $channel [format "    \"minmoondistance\": \"15d\","]
-    puts $channel [format "    \"maxzenithdistance\": \"72d\","]
-    puts $channel [format "    \"maxfocusdelay\": \"1200\""]
     puts $channel [format "  \}"]
     puts $channel [format "\}"]
 
@@ -485,8 +469,8 @@ namespace eval "scheduler" {
       log::summary "not interrupting the executor: interrupt is false."
     } elseif {[string equal $mode "disabled"]} {
       log::summary "not interrupting the executor: scheduler is disabled."
-    } elseif {![selectable [getalertblockfile] $alertfile "now"]} {
-      log::summary "not interrupting the executor: alert is not selectable."
+#    } elseif {![selectable [getalertblockfile] $alertfile "now"]} {
+#      log::summary "not interrupting the executor: alert is not selectable."
     } else {
       log::summary "interrupting the executor."
       if {[catch {client::request "executor" "stop"} message]} {
@@ -510,7 +494,7 @@ namespace eval "scheduler" {
     return
   }
   
-  proc respondtolvcalert {proposalidentifier blockidentifier visitidentifier type eventidentifier alerttimestamp eventtimestamp enabled skymapurl} {
+  proc respondtolvcalert {projectidentifier blockidentifier type eventidentifier alerttimestamp eventtimestamp enabled skymapurl} {
     log::summary "responding to lvc alert."    
     if {![string equal $skymapurl ""]} {
       log::info [format "skymap url is %s." $skymapurl]
@@ -533,7 +517,7 @@ namespace eval "scheduler" {
       set equinox     ""
       set uncertainty ""
     }
-    respondtoalert $proposalidentifier $blockidentifier $visitidentifier $type $eventidentifier $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty
+    respondtoalert $projectidentifier $blockidentifier $type $eventidentifier $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty
     log::summary "finished responding to lvc alert."
     return
   }

@@ -90,7 +90,7 @@ sh focus-map.sh
 #  singleblock 0100-150+45              k2
 #  singleblock 0100-150+45              k3
 
-  #allblocks 0008-pointing-map           k
+  allblocks 0008-pointing-map           k
   #allblocks 0010-focus-map              l
 
   allblocks 0004-initial-focus          m

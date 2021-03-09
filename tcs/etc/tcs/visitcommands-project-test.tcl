@@ -23,6 +23,23 @@
 
 ########################################################################
 
+proc alertcommand {filters} {
+  log::summary "alertcommand: starting."
+  executor::move
+  executor::setwindow "default"
+  executor::setbinning 1
+  set i 0
+  while {$i < 20} {
+    executor::expose object 60
+    incr i
+    coroutine::after 10000
+  }
+  log::summary "alertcommand: finished."
+  return true
+}
+
+########################################################################
+
 proc biasesvisit {} {
   log::summary "biasesvisit: starting."
   executor::move

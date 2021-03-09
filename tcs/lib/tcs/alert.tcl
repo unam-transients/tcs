@@ -35,49 +35,240 @@ namespace eval "alert" {
 
   ######################################################################
   
-  variable file            ""
-  variable type            ""
-  variable eventidentifier ""
-  variable uncertainty     ""
-  variable alerttimestamp  ""
-  variable eventtimestamp  ""
-  variable enabled         true
-  variable exposures       ""
+  proc readfile {filename oldblock} {
   
-  proc start {filearg} {
-    variable file
-    set file $filearg
-    variable type
-    set type ""
-    variable eventidentifier
-    set eventidentifier ""
-    variable uncertainty
-    set uncertainty ""
-    variable alerttimestamp
-    set alerttimestamp ""
-    variable eventtimestamp
-    set eventtimestamp ""
-    variable enabled
-    set enabled true
-    variable exposures
-    set exposures ""
+    log::info "reading alert from alert file \"$filename\"."
+      
+    # Read the partial blocks from the alert file and iteratively merge them
+    # with the partial block oldblock.
+
+    if {[catch {set newblocks [fromjson::readfile $filename true]} message]} {
+      error "invalid alert file: $message."
+    }
+
+    foreach newblock $newblocks {
+    
+      log::debug "oldblock is $oldblock."
+      log::debug "newblock is $newblock."
+
+      set oldalert [block::alert $oldblock]
+      set newalert [block::alert $newblock]
+      
+      # Choose the position with the smallest uncertainty.
+      set olduncertainty [alert::uncertainty $oldalert]
+      set newuncertainty [alert::uncertainty $newalert]
+      if {[string equal $olduncertainty ""]} {
+        set identifier  [block::identifier  $newblock]
+        set name        [block::name        $newblock]
+        set project     [block::project     $newblock]
+        set type        [alert::type        $newalert]
+        set alpha       [alert::alpha       $newalert]
+        set delta       [alert::delta       $newalert]
+        set equinox     [alert::equinox     $newalert]
+        set uncertainty [alert::uncertainty $newalert]
+      } elseif {[string equal $newuncertainty ""]} {
+        set identifier  [block::identifier  $oldblock]
+        set name        [block::name        $oldblock]
+        set project     [block::project     $oldblock]
+        set type        [alert::type        $oldalert]
+        set alpha       [alert::alpha       $oldalert]
+        set delta       [alert::delta       $oldalert]
+        set equinox     [alert::equinox     $oldalert]
+        set uncertainty [alert::uncertainty $oldalert]
+      } elseif {[astrometry::parsedistance $newuncertainty] < [astrometry::parsedistance $olduncertainty]} {
+        set identifier  [block::identifier  $newblock]
+        set name        [block::name        $newblock]
+        set project     [block::project     $newblock]
+        set type        [alert::type        $newalert]
+        set alpha       [alert::alpha       $newalert]
+        set delta       [alert::delta       $newalert]
+        set equinox     [alert::equinox     $newalert]
+        set uncertainty [alert::uncertainty $newalert]
+      } else {
+        set identifier  [block::identifier  $oldblock]
+        set name        [block::name        $oldblock]
+        set project     [block::project     $oldblock]
+        set type        [alert::type        $oldalert]
+        set alpha       [alert::alpha       $oldalert]
+        set delta       [alert::delta       $oldalert]
+        set equinox     [alert::equinox     $oldalert]
+        set uncertainty [alert::uncertainty $oldalert]
+      }
+      
+      # Choose the earliest eventtimestamp.
+      set oldeventtimestamp [alert::eventtimestamp $oldalert]
+      set neweventtimestamp [alert::eventtimestamp $newalert]
+      if {[string equal "" $neweventtimestamp]} {
+        set eventtimestamp $oldeventtimestamp
+      } elseif {[string equal "" $oldeventtimestamp]} {
+        set eventtimestamp $neweventtimestamp
+      } elseif {[utcclock::scan $neweventtimestamp] <  [utcclock::scan $oldeventtimestamp]} {
+        set eventtimestamp $neweventtimestamp
+      } else {
+        set eventtimestamp $oldeventtimestamp
+      }
+
+      # Choose the earliest alerttimestamp.
+      set oldalerttimestamp [alert::alerttimestamp $oldalert]
+      set newalerttimestamp [alert::alerttimestamp $newalert]
+      if {[string equal "" $newalerttimestamp]} {
+        set alerttimestamp $oldalerttimestamp
+      } elseif {[string equal "" $oldalerttimestamp]} {
+        set alerttimestamp $newalerttimestamp
+      } elseif {[utcclock::scan $newalerttimestamp] <  [utcclock::scan $oldalerttimestamp]} {
+        set alerttimestamp $newalerttimestamp
+      } else {
+        set alerttimestamp $oldalerttimestamp
+      }
+
+      # Choose the most specific enabled.
+      set oldenabled [alert::enabled $oldalert]
+      set newenabled [alert::enabled $newalert]
+      if {[string equal "" $newenabled]} {
+        set enabled $oldenabled
+      } else {
+        set enabled $newenabled
+      }
+
+      # Choose the most recent constraints.
+      set oldconstraints [block::constraints $oldblock]
+      set newconstraints [block::constraints $newblock]
+      if {[string equal "" $newconstraints]} {
+        set constraints $oldconstraints
+      } else {
+        set constraints $newconstraints
+      }
+      
+      # Choose the most recent command.
+      set oldcommand [alert::command $oldalert]
+      set newcommand [alert::command $newalert]
+      if {[string equal "" $newcommand]} {
+        set command $oldcommand
+      } else {
+        set command $newcommand
+      }
+      
+      set alert [alert::makealert $type $alpha $delta $equinox $uncertainty $eventtimestamp $alerttimestamp $command $enabled]
+      set block [block::makealertblock $identifier $name $project $constraints $alert]
+
+      log::debug "block is $block."
+
+      set oldblock $block
+
+    }
+    
+    set alert [block::alert $block]
+    log::info [format "alert name is \"%s\"." [block::name $block]]
+    log::info [format "alert type is \"%s\"." [alert::type $alert]]
+    log::info [format "alert coordinates are %s %s %s with an uncertainty of %s." \
+      [alert::alpha       $alert] \
+      [alert::delta       $alert] \
+      [alert::equinox     $alert] \
+      [alert::uncertainty $alert] \
+    ]
+    log::info [format "alert command is \"%s\"." [alert::command $alert]]
+      
+   # Create the proper block.
+
+    set targetcoordinates [visit::makeequatorialtargetcoordinates $alpha $delta $equinox]
+    set visit [visit::makevisit "0" "Visit 0"  $targetcoordinates $command "0m"]
+    set block [block::makeblock $identifier $name $project $constraints [list $visit] $alert]
+    
+    return $block
+  }
+    
+  ######################################################################
+  
+  proc type {alert} {
+    if {[dict exists $alert "type"]} {
+      return [dict get $alert "type"]
+    } else {
+      return ""
+    }
   }
   
-  proc file {} {
-    variable file
-    return $file
+  proc alpha {alert} {
+    if {[dict exists $alert "alpha"]} {
+      return [dict get $alert "alpha"]
+    } else {
+      return ""
+    }
   }
   
-  proc type {} {
-    variable type
-    return $type
+  proc delta {alert} {
+    if {[dict exists $alert "delta"]} {
+      return [dict get $alert "delta"]
+    } else {
+      return ""
+    }
   }
   
-  proc uncertainty {} {
-    variable uncertainty
-    return $uncertainty
+  proc equinox {alert} {
+    if {[dict exists $alert "equinox"]} {
+      return [dict get $alert "equinox"]
+    } else {
+      return ""
+    }
   }
   
+  proc uncertainty {alert} {
+    if {[dict exists $alert "uncertainty"]} {
+      return [dict get $alert "uncertainty"]
+    } else {
+      return ""
+    }
+  }
+  
+  proc eventtimestamp {alert} {
+    if {[dict exists $alert "eventtimestamp"]} {
+      return [dict get $alert "eventtimestamp"]
+    } else {
+      return ""
+    }
+  }
+  
+  proc alerttimestamp {alert} {
+    if {[dict exists $alert "alerttimestamp"]} {
+      return [dict get $alert "alerttimestamp"]
+    } else {
+      return ""
+    }
+  }
+  
+  proc command {alert} {
+    if {[dict exists $alert "command"]} {
+      return [dict get $alert "command"]
+    } else {
+      return ""
+    }
+  }
+  
+  proc enabled {alert} {
+    if {[dict exists $alert "enabled"]} {
+      return [dict get $alert "enabled"]
+    } else {
+      return ""
+    }
+  }
+  
+  ######################################################################
+
+  proc makealert {type alpha delta equinox uncertainty eventtimestamp alerttimestamp command enabled} {
+    return [dict create                   \
+      "type"           $type              \
+      "alpha"          $alpha             \
+      "delta"          $delta             \
+      "equinox"        $equinox           \
+      "uncertainty"    $uncertainty       \
+      "eventtimestamp" $eventtimestamp    \
+      "alerttimestamp" $alerttimestamp    \
+      "command"        $command           \
+      "enabled"        $enabled           \
+    ]
+  } 
+  
+  ######################################################################
+
   proc seteventidentifier {eventidentifierarg} {
     variable eventidentifier
     set eventidentifier $eventidentifierarg
@@ -86,36 +277,6 @@ namespace eval "alert" {
   proc eventidentifier {} {
     variable eventidentifier
     return $eventidentifier
-  }
-  
-  proc setalerttimestamp {alerttimestamparg} {
-    # For multiple time stamps, we take the earliest value.
-    variable alerttimestamp
-    if {
-      [string equal $alerttimestamp ""] ||
-      [utcclock::diff $alerttimestamparg $alerttimestamp] < 0
-    } {
-      set alerttimestamp $alerttimestamparg
-    }
-  }
-  
-  proc alerttimestamp {} {
-    variable alerttimestamp
-    return $alerttimestamp
-  }
-  
-  proc seteventtimestamp {eventtimestamparg} {
-    # For multiple time stamps, we take the last value set. For example, the time
-    # stamps in swiftbatquicklookposition and swiftbatgrbposition are often
-    # slightly different. Presumably, the swiftbatgrbposition value is the
-    # definitive one and this is normally the last one set. 
-    variable eventtimestamp
-    set eventtimestamp $eventtimestamparg
-  }
-  
-  proc eventtimestamp {} {
-    variable eventtimestamp
-    return $eventtimestamp
   }
   
   proc delay {} {
@@ -131,16 +292,6 @@ namespace eval "alert" {
     return $delay
   }
     
-  proc setenabled {enabledarg} {
-    variable enabled
-    set enabled $enabledarg
-  }
-
-  proc enabled {} {
-    variable enabled
-    return $enabled
-  }
-  
   proc setexposures {exposuresarg} {
     variable exposures
     set exposures $exposuresarg
@@ -149,17 +300,6 @@ namespace eval "alert" {
   proc exposures {} {
     variable exposures
     return $exposures
-  }
-  
-  proc settargetcoordinates {typearg alphaarg deltaarg equinoxarg uncertaintyarg} {
-    set uncertaintyarg [astrometry::parseangle $uncertaintyarg]
-    variable type
-    variable uncertainty
-    if {[string equal $uncertainty ""] || $uncertaintyarg <= $uncertainty} {
-      set type        $typearg
-      set uncertainty $uncertaintyarg
-      visit::settargetcoordinates equatorial $alphaarg $deltaarg $equinoxarg
-    }
   }
   
 }

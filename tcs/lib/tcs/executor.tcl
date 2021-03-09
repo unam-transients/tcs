@@ -414,8 +414,12 @@ namespace eval "executor" {
       server::setdata "visitcommand"      [visit::command $visit]
     }
     
+if {false} {
     server::setdata "alerttype"             [alert::type]
-    if {[string equal "" [alert::type]]} {
+}
+    server::setdata "alerttype"            ""
+
+    if {true || [string equal "" [alert::type]]} {
       server::setdata "alerteventidentifier"   ""
       server::setdata "alertalerttimestamp"    ""
       server::setdata "alerteventtimestamp"    ""
@@ -524,8 +528,6 @@ namespace eval "executor" {
     set start [utcclock::seconds]
 
     updatedata false $blockfile "" "" ""
-
-#    alert::start $alertfile
 
     set visitcommandsfile [file join [directories::etc] "visitcommands.tcl"]
     if {[catch {
@@ -804,7 +806,6 @@ namespace eval "executor" {
     server::setdata "alertfile" ""
     server::setdata "completed" false
     server::setdata "timestamp" [utcclock::combinedformat]
-    alert::start ""
     updatedata false "" "" "" ""
     
     server::setactivity [server::getrequestedactivity]
