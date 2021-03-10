@@ -21,30 +21,26 @@
 
 ########################################################################
 
-type="$1"
-eventidentifier="$2"
-blockidentifier="$3"
+name="$1"
+origin="$2"
+identifier="$3"
+type="$4"
 
 timestamp="$(date +"%Y-%m-%d %H:%M.%S")"
 
 priority=""
-case $type in
-swift*)
+case $origin in
+swift)
   priority="normal"
   url="https://gcn.gsfc.nasa.gov/other/$blockidentifier.swift"
   group="grb-group"
   ;;
-fermilat*)
+fermi)
   priority="normal"
   url="https://gcn.gsfc.nasa.gov/other/$blockidentifier.fermi"
   group="grb-group"
   ;;
-fermi*)
-  priority="normal"
-  url="https://gcn.gsfc.nasa.gov/other/$targetidentifier.fermi"
-  group="grb-group"
-  ;;
-lvc*)
+lvc)
   priority="normal"
   url="https://gracedb.ligo.org/superevents/$eventidentifier"
   group="gw-group"
@@ -53,11 +49,11 @@ esac
 
 if test "$priority" != ""
 then
-  echo "$timestamp: TEST as received a $type GCN Notice for $eventidentifier (target $blockidentifier)." |
+  echo "$timestamp: TEST has received a $origin alert for $name (identifier $identifier type $type)." |
   sendpushover \
     -P "$priority" \
     -U "$url" \
-    -s "TEST $identifier: $type" \
+    -s "TEST: $origin $type alert for $name" \
     "$group"
 fi
 

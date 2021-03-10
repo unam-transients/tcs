@@ -41,7 +41,7 @@ installs_project_test		:=		\
 	servers-project-test.json		\
 	visitcommands-project-test.tcl
 	
-install_bins_project_test	:=		\
+installbins_project_test	:=		\
 	alertscript-project-test
 
 installs_project_ratiroan	:=		\

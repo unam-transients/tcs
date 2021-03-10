@@ -380,11 +380,12 @@ namespace eval "executor" {
 
   ######################################################################
   
-  proc updatedata {completed blockfile project block visit} {
+  proc updatedata {completed blockfile alertfile project block visit} {
   
     server::setdata "completed" $completed
 
     server::setdata "blockfile" [file tail $blockfile]
+    server::setdata "alertfile" [file tail $alertfile]
 
     if {[string equal $project ""]} {
       server::setdata "projectfullidentifier" ""
@@ -415,24 +416,28 @@ namespace eval "executor" {
     }
     
     if {[string equal "" $block] || [string equal "" [block::alert $block]]} {
-      server::setdata "alerttype"              ""
-      server::setdata "alerteventidentifier"   ""
-      server::setdata "alertalerttimestamp"    ""
-      server::setdata "alerteventtimestamp"    ""
-      server::setdata "alertalpha"             ""
-      server::setdata "alertdelta"             ""
-      server::setdata "alertequinox"           ""
-      server::setdata "alertuncertainty"       ""
+      server::setdata "alertname"           ""
+      server::setdata "alertorigin"         ""
+      server::setdata "alertidentifier"     ""
+      server::setdata "alerttype"           ""
+      server::setdata "alerteventtimestamp" ""
+      server::setdata "alertalerttimestamp" ""
+      server::setdata "alertalpha"          ""
+      server::setdata "alertdelta"          ""
+      server::setdata "alertequinox"        ""
+      server::setdata "alertuncertainty"    ""
     } else {    
       set alert [block::alert $block]
-      server::setdata "alerttype"              [alert::type $alert]
-      server::setdata "alerteventidentifier"   [alert::eventidentifier $alert]
-      server::setdata "alertalerttimestamp"    [alert::alerttimestamp $alert]
-      server::setdata "alerteventtimestamp"    [alert::eventtimestamp $alert]
-      server::setdata "alertalpha"             [astrometry::parsealpha   [alert::alpha $alert]]
-      server::setdata "alertdelta"             [astrometry::parsedelta   [alert::delta $alert]]
-      server::setdata "alertequinox"           [astrometry::parseequinox [alert::equinox $alert]]
-      server::setdata "alertuncertainty"       [astrometry::parseoffset  [alert::uncertainty $alert]]
+      server::setdata "alertname"           [alert::name $alert]
+      server::setdata "alertorigin"         [alert::origin $alert]
+      server::setdata "alertidentifier"     [alert::identifier $alert]
+      server::setdata "alerttype"           [alert::type $alert]
+      server::setdata "alerteventtimestamp" [alert::eventtimestamp $alert]
+      server::setdata "alertalerttimestamp" [alert::alerttimestamp $alert]
+      server::setdata "alertalpha"          [astrometry::parsealpha   [alert::alpha $alert]]
+      server::setdata "alertdelta"          [astrometry::parsedelta   [alert::delta $alert]]
+      server::setdata "alertequinox"        [astrometry::parseequinox [alert::equinox $alert]]
+      server::setdata "alertuncertainty"    [astrometry::parseoffset  [alert::uncertainty $alert]]
     }
 
     server::setdata "timestamp" [utcclock::combinedformat]
@@ -525,7 +530,7 @@ namespace eval "executor" {
 
     set start [utcclock::seconds]
 
-    updatedata false $blockfile "" "" ""
+    updatedata false $blockfile $alertfile "" "" ""
 
     set visitcommandsfile [file join [directories::etc] "visitcommands.tcl"]
     if {[catch {
@@ -541,7 +546,7 @@ namespace eval "executor" {
       if {[catch {
         set block [block::readfile $blockfile]
       }]} {
-        updatedata true $blockfile "" "" ""
+        updatedata true $blockfile $alertfile "" "" ""
         log::error "while reading block file \"[file tail $blockfile]\": $result"
         log::info "deleting block file \"[file tail $blockfile]\"."
         file delete -force $blockfile
@@ -551,7 +556,7 @@ namespace eval "executor" {
       if {[catch {
         set block [alert::readfile $blockfile $alertfile]
       }]} {
-        updatedata true $blockfile "" "" ""
+        updatedata true $blockfile $alertfile "" "" ""
         log::error "while reading alert file \"[file tail $alertfile]\": $result"
         log::info "deleting alert file \"[file tail $alertfile]\"."
         file delete -force $alertfile
@@ -562,7 +567,7 @@ namespace eval "executor" {
     log::info "block is $block."
     
     set project [block::project $block]
-    updatedata false $blockfile $project $block ""
+    updatedata false $blockfile $alertfile $project $block ""
 
     log::summary "executing block [block::identifier $block] of project [project::identifier $project]."
     if {![string equal "" [project::name $project]]} {
@@ -575,7 +580,7 @@ namespace eval "executor" {
     variable visit
     foreach visit [block::visits $block] {
 
-      updatedata false $blockfile $project $block $visit
+      updatedata false $blockfile $alertfile $project $block $visit
 
       log::summary "executing visit [visit::identifier $visit] of block [block::identifier $block] of project [project::identifier $project]."
       if {![string equal [visit::name $visit] ""]} {
@@ -604,7 +609,7 @@ namespace eval "executor" {
 
     server::setdata "completed" true
     server::setdata "timestamp" [utcclock::combinedformat]
-    updatedata true $blockfile "" "" ""
+    updatedata true $blockfile $alertfile "" "" ""
 
     log::summary [format "finished executing after %.1f seconds." [utcclock::diff now $start]]
   }
@@ -808,7 +813,7 @@ namespace eval "executor" {
     server::setdata "alertfile" ""
     server::setdata "completed" false
     server::setdata "timestamp" [utcclock::combinedformat]
-    updatedata false "" "" "" ""
+    updatedata false "" "" "" "" ""
     
     server::setactivity [server::getrequestedactivity]
     server::setstatus "ok"
