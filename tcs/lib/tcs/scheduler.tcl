@@ -391,10 +391,10 @@ namespace eval "scheduler" {
     return
   }
   
-  proc respondtoalert {projectidentifier blockidentifier type eventidentifier alerttimestamp eventtimestamp enabled alpha delta equinox uncertainty} {
+  proc respondtoalert {projectidentifier blockidentifier name origin identifier type alerttimestamp eventtimestamp enabled alpha delta equinox uncertainty} {
     variable mode
 
-    log::summary "responding to alert for $eventidentifier."
+    log::summary "responding to alert for $name."
 
     if {![string equal $alerttimestamp ""]} {
       set alerttimestamp [utcclock::combinedformat [utcclock::scan $alerttimestamp]]
@@ -403,10 +403,9 @@ namespace eval "scheduler" {
       set eventtimestamp [utcclock::combinedformat [utcclock::scan $eventtimestamp]]
     }
 
-    log::info [format "projectidentifier is \"%s\"." $projectidentifier]
+    log::info [format "projectidentifier is %s." $projectidentifier]
     log::info [format "blockidentifier is %s." $blockidentifier]
-    log::info [format "type is %s." $type]
-    log::info [format "event identifier is %s." $eventidentifier]
+    log::info [format "origin/identifier/type are %s/%s/%s." $origin $identifier $type]
     log::info [format "alert timestamp is %s." [utcclock::format [utcclock::scan $alerttimestamp]]]
     if {![string equal $eventtimestamp ""]} {
       log::info [format "event timestamp is %s." [utcclock::format [utcclock::scan $eventtimestamp]]]
@@ -452,11 +451,14 @@ namespace eval "scheduler" {
     }
     puts $channel [format "\{"]
     puts $channel [format "  \"identifier\": \"%s\"," $blockidentifier]
-    puts $channel [format "  \"name\": \"%s\"," $eventidentifier]
+    puts $channel [format "  \"name\": \"%s\"," $name]
     puts $channel [format "  \"project\": \{"]
     puts $channel [format "    \"identifier\": \"%s\"" $projectidentifier]
     puts $channel [format "  \},"]
     puts $channel [format "  \"alert\": \{"]
+    puts $channel [format "    \"name\": \"%s\"," $name]
+    puts $channel [format "    \"origin\": \"%s\"," $origin]
+    puts $channel [format "    \"identifier\": \"%s\"," $identifier]
     puts $channel [format "    \"type\": \"%s\"," $type]
     puts $channel [format "    \"alpha\": \"%s\"," [astrometry::formatalpha $alpha]]
     puts $channel [format "    \"delta\": \"%s\"," [astrometry::formatdelta $delta]]
@@ -474,8 +476,8 @@ namespace eval "scheduler" {
       log::summary "not interrupting the executor: interrupt is false."
     } elseif {[string equal $mode "disabled"]} {
       log::summary "not interrupting the executor: scheduler is disabled."
-#    } elseif {![selectable [getalertblockfile] $alertfile "now"]} {
-#      log::summary "not interrupting the executor: alert is not selectable."
+    } elseif {![selectable [getalertblockfile] $alertfile [utcclock::seconds]]} {
+      log::summary "not interrupting the executor: alert is not selectable."
     } else {
       log::summary "interrupting the executor."
       if {[catch {client::request "executor" "stop"} message]} {
@@ -484,11 +486,11 @@ namespace eval "scheduler" {
       variable alertindex
       set alertindex 0
     }
-
+    
     if {!$alertfileexists} {
       log::info "running alertscript."
       if {[catch {
-        exec "[directories::etc]/alertscript" $type $eventidentifier $blockidentifier
+        exec "[directories::etc]/alertscript" $name $origin $identifier $type
       } message]} {
         log::warning "alertscript failed: $message."
       }
@@ -499,7 +501,7 @@ namespace eval "scheduler" {
     return
   }
   
-  proc respondtolvcalert {projectidentifier blockidentifier type eventidentifier alerttimestamp eventtimestamp enabled skymapurl} {
+  proc respondtolvcalert {projectidentifier blockidentifier name origin identifier type alerttimestamp eventtimestamp enabled skymapurl} {
     log::summary "responding to lvc alert."    
     if {![string equal $skymapurl ""]} {
       log::info [format "skymap url is %s." $skymapurl]
@@ -522,7 +524,7 @@ namespace eval "scheduler" {
       set equinox     ""
       set uncertainty ""
     }
-    respondtoalert $projectidentifier $blockidentifier $type $eventidentifier $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty
+    respondtoalert $projectidentifier $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty
     log::summary "finished responding to lvc alert."
     return
   }

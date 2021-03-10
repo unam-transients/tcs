@@ -64,41 +64,25 @@ namespace eval "alert" {
       set olduncertainty [alert::uncertainty $oldalert]
       set newuncertainty [alert::uncertainty $newalert]
       if {[string equal $olduncertainty ""]} {
-        set identifier  [block::identifier  $newblock]
-        set name        [block::name        $newblock]
-        set project     [block::project     $newblock]
-        set type        [alert::type        $newalert]
-        set alpha       [alert::alpha       $newalert]
-        set delta       [alert::delta       $newalert]
-        set equinox     [alert::equinox     $newalert]
-        set uncertainty [alert::uncertainty $newalert]
+        set identifier      [block::identifier      $newblock]
+        set name            [block::name            $newblock]
+        set project         [block::project         $newblock]
+        set alert           $newalert
       } elseif {[string equal $newuncertainty ""]} {
-        set identifier  [block::identifier  $oldblock]
-        set name        [block::name        $oldblock]
-        set project     [block::project     $oldblock]
-        set type        [alert::type        $oldalert]
-        set alpha       [alert::alpha       $oldalert]
-        set delta       [alert::delta       $oldalert]
-        set equinox     [alert::equinox     $oldalert]
-        set uncertainty [alert::uncertainty $oldalert]
+        set identifier      [block::identifier      $oldblock]
+        set name            [block::name            $oldblock]
+        set project         [block::project         $oldblock]
+        set alert           $oldalert
       } elseif {[astrometry::parsedistance $newuncertainty] < [astrometry::parsedistance $olduncertainty]} {
-        set identifier  [block::identifier  $newblock]
-        set name        [block::name        $newblock]
-        set project     [block::project     $newblock]
-        set type        [alert::type        $newalert]
-        set alpha       [alert::alpha       $newalert]
-        set delta       [alert::delta       $newalert]
-        set equinox     [alert::equinox     $newalert]
-        set uncertainty [alert::uncertainty $newalert]
+        set identifier      [block::identifier      $newblock]
+        set name            [block::name            $newblock]
+        set project         [block::project         $newblock]
+        set alert           $newalert
       } else {
-        set identifier  [block::identifier  $oldblock]
-        set name        [block::name        $oldblock]
-        set project     [block::project     $oldblock]
-        set type        [alert::type        $oldalert]
-        set alpha       [alert::alpha       $oldalert]
-        set delta       [alert::delta       $oldalert]
-        set equinox     [alert::equinox     $oldalert]
-        set uncertainty [alert::uncertainty $oldalert]
+        set identifier      [block::identifier      $oldblock]
+        set name            [block::name            $oldblock]
+        set project         [block::project         $oldblock]
+        set alert           $oldalert
       }
       
       # Choose the earliest eventtimestamp.
@@ -154,7 +138,16 @@ namespace eval "alert" {
         set command $newcommand
       }
       
-      set alert [alert::makealert $type $alpha $delta $equinox $uncertainty $eventtimestamp $alerttimestamp $command $enabled]
+      set alertname        [alert::name        $alert]
+      set alertorigin      [alert::origin      $alert]
+      set alertidentifier  [alert::identifier  $alert]
+      set alerttype        [alert::type        $alert]
+      set alertalpha       [alert::alpha       $alert]
+      set alertdelta       [alert::delta       $alert]
+      set alertequinox     [alert::equinox     $alert]
+      set alertuncertainty [alert::uncertainty $alert]
+
+      set alert [alert::makealert $alertname $alertorigin $alertidentifier $alerttype $alertalpha $alertdelta $alertequinox $alertuncertainty $eventtimestamp $alerttimestamp $command $enabled]
       set block [block::makealertblock $identifier $name $project $constraints $alert]
 
       log::debug "block is $block."
@@ -165,7 +158,7 @@ namespace eval "alert" {
     
     set alert [block::alert $block]
     log::info [format "alert name is \"%s\"." [block::name $block]]
-    log::info [format "alert type is \"%s\"." [alert::type $alert]]
+    log::info [format "alert origin/identifier/type are %s/%s/%s." [alert::origin $alert] [alert::identifier $alert] [alert::type $alert]]
     log::info [format "alert coordinates are %s %s %s with an uncertainty of %s." \
       [alert::alpha       $alert] \
       [alert::delta       $alert] \
@@ -174,16 +167,40 @@ namespace eval "alert" {
     ]
     log::info [format "alert command is \"%s\"." [alert::command $alert]]
       
-   # Create the proper block.
+    # Create the proper block.
 
-    set targetcoordinates [visit::makeequatorialtargetcoordinates $alpha $delta $equinox]
-    set visit [visit::makevisit "0" "Visit 0"  $targetcoordinates $command "0m"]
+    set targetcoordinates [visit::makeequatorialtargetcoordinates [alert::alpha $alert] [alert::delta $alert] [alert::equinox $alert]]
+    set visit [visit::makevisit "0" ""  $targetcoordinates $command "0m"]
     set block [block::makeblock $identifier $name $project $constraints [list $visit] $alert]
     
     return $block
   }
     
   ######################################################################
+  
+  proc name {alert} {
+    if {[dict exists $alert "name"]} {
+      return [dict get $alert "name"]
+    } else {
+      return ""
+    }
+  }
+  
+  proc origin {alert} {
+    if {[dict exists $alert "origin"]} {
+      return [dict get $alert "origin"]
+    } else {
+      return ""
+    }
+  }
+  
+  proc identifier {alert} {
+    if {[dict exists $alert "identifier"]} {
+      return [dict get $alert "identifier"]
+    } else {
+      return ""
+    }
+  }
   
   proc type {alert} {
     if {[dict exists $alert "type"]} {
@@ -259,31 +276,24 @@ namespace eval "alert" {
   
   ######################################################################
 
-  proc makealert {type alpha delta equinox uncertainty eventtimestamp alerttimestamp command enabled} {
-    return [dict create                   \
-      "type"           $type              \
-      "alpha"          $alpha             \
-      "delta"          $delta             \
-      "equinox"        $equinox           \
-      "uncertainty"    $uncertainty       \
-      "eventtimestamp" $eventtimestamp    \
-      "alerttimestamp" $alerttimestamp    \
-      "command"        $command           \
-      "enabled"        $enabled           \
+  proc makealert {name origin identifier type alpha delta equinox uncertainty eventtimestamp alerttimestamp command enabled} {
+    return [dict create                    \
+      "name"            $name              \
+      "origin"          $origin            \
+      "identifier"      $identifier        \
+      "type"            $type              \
+      "alpha"           $alpha             \
+      "delta"           $delta             \
+      "equinox"         $equinox           \
+      "uncertainty"     $uncertainty       \
+      "eventtimestamp"  $eventtimestamp    \
+      "alerttimestamp"  $alerttimestamp    \
+      "command"         $command           \
+      "enabled"         $enabled           \
     ]
   } 
   
   ######################################################################
-
-  proc seteventidentifier {eventidentifierarg} {
-    variable eventidentifier
-    set eventidentifier $eventidentifierarg
-  }
-  
-  proc eventidentifier {} {
-    variable eventidentifier
-    return $eventidentifier
-  }
   
   proc delay {} {
     variable eventtimestamp

@@ -1470,9 +1470,12 @@ namespace eval "html" {
       writehtmlfullrow "Visit identifier"       [client::getdata "executor" "visitidentifier"]
       writehtmlfullrow "Visit name"             [client::getdata "executor" "visitname"]
       writehtmlfullrow "Alert file"             [client::getdata "executor" "alertfile"]
+      writehtmlfullrow "Alert name"             [client::getdata "executor" "alertname"]
+      writehtmlfullrow "Alert origin"           [client::getdata "executor" "alertorigin"]
+      writehtmlfullrow "Alert identifier"       [client::getdata "executor" "alertidentifier"]
       writehtmlfullrow "Alert type"             [client::getdata "executor" "alerttype"]
-      writehtmlfullrow "Alert event identifier" [client::getdata "executor" "alerteventidentifier"]
       writehtmlfullrow "Alert event timestamp"  [formattimestamp [client::getdata "executor" "alerteventtimestamp"]]
+      writehtmlfullrow "Alert alert timestamp"  [formattimestamp [client::getdata "executor" "alertalerttimestamp"]]
       writehtmlrow "Alert coordinates" \
         [formatalphaifdouble [client::getdata "executor" "alertalpha"]] \
         [formatdeltaifdouble [client::getdata "executor" "alertdelta"]] \
