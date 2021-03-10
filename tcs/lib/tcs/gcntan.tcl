@@ -40,9 +40,9 @@ namespace eval "gcntan" {
   # We should get an imalive packet every 60 seconds.
   variable packettimeout 300000
   
-  variable swiftalertprojectnumber [config::getvalue "gcntan" "swiftalertprojectnumber"]
-  variable fermialertprojectnumber [config::getvalue "gcntan" "fermialertprojectnumber"]
-  variable lvcalertprojectnumber   [config::getvalue "gcntan" "lvcalertprojectnumber"  ]
+  variable swiftalertprojectidentifier [config::getvalue "gcntan" "swiftalertprojectidentifier"]
+  variable fermialertprojectidentifier [config::getvalue "gcntan" "fermialertprojectidentifier"]
+  variable lvcalertprojectidentifier   [config::getvalue "gcntan" "lvcalertprojectidentifier"  ]
 
   ######################################################################
 
@@ -145,10 +145,12 @@ namespace eval "gcntan" {
       "swiftxrtposition" - 
       "swiftuvotposition" {
         log::info [format "received %s packet." $type]
-        variable swiftalertprojectnumber
-        set projectidentifier [project::makeidentifier $swiftalertprojectnumber]
+        variable swiftalertprojectidentifier
+        set projectidentifier  $swiftalertprojectidentifier
         set blockidentifier    [swifttrigger         $packet]
-        set eventidentifier    [swifteventidentifier $packet]
+        set name               [swiftgrbname         $packet]
+        set origin             "swift"
+        set identifier         [swifttrigger         $packet]
         set noticetimestamp    [noticetimestamp      $packet]
         set test               [swifttest            $packet]
         set eventtimestamp     [swifteventtimestamp  $packet]
@@ -158,7 +160,7 @@ namespace eval "gcntan" {
         set uncertainty        [swiftuncertainty     $packet]
         set grb                [swiftgrb             $packet]
         set retraction         [swiftretraction      $packet]
-        respondtogrbalert $test $projectidentifier $blockidentifier $type $eventidentifier $timestamp $noticetimestamp $eventtimestamp $retraction $grb $alpha $delta $equinox $uncertainty
+        respondtogrbalert $test $projectidentifier $blockidentifier $name $origin $identifier $type $timestamp $noticetimestamp $eventtimestamp $retraction $grb $alpha $delta $equinox $uncertainty
         return "echo"
       }
 
@@ -167,10 +169,12 @@ namespace eval "gcntan" {
       "fermigbmfinpos" -
       "fermigbmpostest" {
         log::info [format "received %s packet." $type]
-        variable fermialertprojectnumber
-        set projectidentifier [project::makeidentifier $fermialertprojectnumber]
+        variable fermialertprojectidentifier
+        set projectidentifier  $fermialertprojectidentifier
         set blockidentifier    [fermitrigger         $packet]
-        set eventidentifier    [fermieventidentifier $packet]
+        set name               [fermigrbname         $packet]
+        set origin             "fermi"
+        set identifier         [fermitrigger         $packet]
         set noticetimestamp    [noticetimestamp      $packet]
         set test               [fermitest            $packet]
         set eventtimestamp     [fermieventtimestamp  $packet]
@@ -180,7 +184,7 @@ namespace eval "gcntan" {
         set uncertainty        [fermigbmuncertainty  $packet]
         set grb                [fermigrb             $packet]
         set retraction         [fermiretraction      $packet]
-        respondtogrbalert $test $projectidentifier $blockidentifier $type $eventidentifier $timestamp $noticetimestamp $eventtimestamp $retraction $grb $alpha $delta $equinox $uncertainty
+        respondtogrbalert $test $projectidentifier $blockidentifier $name $origin $identifier $type $timestamp $noticetimestamp $eventtimestamp $retraction $grb $alpha $delta $equinox $uncertainty
         return "echo"
       }
        
@@ -189,10 +193,12 @@ namespace eval "gcntan" {
       "fermilatgnd" -
       "fermilatoffline" {
         log::info [format "received %s packet." $type]
-        variable fermialertprojectnumber
-        set projectidentifier [project::makeidentifier $fermialertprojectnumber]
+        variable fermialertprojectidentifier
+        set projectidentifier  $fermialertprojectidentifier
         set blockidentifier    [fermitrigger         $packet]
-        set eventidentifier    [fermieventidentifier $packet]
+        set name               [fermigrbname         $packet]
+        set origin             "fermi"
+        set eventidentifier    [fermitrigger         $packet]
         set noticetimestamp    [noticetimestamp      $packet]
         set test               [fermitest            $packet]
         set eventtimestamp     [fermieventtimestamp  $packet]
@@ -202,7 +208,7 @@ namespace eval "gcntan" {
         set uncertainty        [fermilatuncertainty  $packet]
         set grb                [fermigrb             $packet]
         set retraction         [fermiretraction      $packet]
-        respondtogrbalert $test $projectidentifier $blockidentifier $type $eventidentifier $timestamp $noticetimestamp $eventtimestamp $retraction $grb $alpha $delta $equinox $uncertainty
+        respondtogrbalert $test $projectidentifier $blockidentifier $name $origin $identifier $type $timestamp $noticetimestamp $eventtimestamp $retraction $grb $alpha $delta $equinox $uncertainty
         return "echo"
       }
 
@@ -210,37 +216,43 @@ namespace eval "gcntan" {
       "lvcinitial" -
       "lvcupdate" {
         log::info [format "received %s packet." $type]
-         variable lvcalertprojectnumber
-        set projectidentifier [project::makeidentifier $lvcalertprojectnumber]
+         variable lvcalertprojectidentifier
+        set projectidentifier  $lvcalertprojectidentifier
         set blockidentifier    [lvctrigger         $packet]
-        set eventidentifier    [lvceventidentifier $packet]
+        set name               [lvcname            $packet]
+        set origin             "lvc"
+        set identifier         [lvcidentifier      $packet]
         set noticetimestamp    [noticetimestamp    $packet]
         set eventtimestamp     [lvceventtimestamp  $packet]
         set test               [lvctest            $packet]
         set skymapurl          [lvcurl             $packet]
-        respondtolvcalert $test $projectidentifier $blockidentifier $type $eventidentifier $timestamp $noticetimestamp $eventtimestamp false $skymapurl
+        respondtolvcalert $test $projectidentifier $blockidentifier $name $origin $identifier $type $timestamp $noticetimestamp $eventtimestamp false $skymapurl
         return "echo"
       }
 
       "lvcretraction" {
         log::info [format "received %s packet." $type]
-        variable lvcalertprojectnumber
-        set projectidentifier [project::makeidentifier $lvcalertprojectnumber]
+        variable lvcalertprojectidentifier
+        set projectidentifier  $lvcalertprojectidentifier
         set blockidentifier    [lvctrigger          $packet]
-        set eventidentifier    [lvceventidentifier  $packet]
+        set name               [lvcname             $packet]
+        set origin             "lvc"
+        set identifier         [lvcidentifier      $packet]
         set noticetimestamp    [noticetimestamp     $packet]
         set eventtimestamp     [lvceventtimestamp   $packet]
         set test               [lvctest             $packet]
-        respondtolvcalert $test $projectidentifier $blockidentifier $type $eventidentifier $timestamp $noticetimestamp $eventtimestamp true ""
+        respondtolvcalert $test $projectidentifier $blockidentifier $name $origin $identifier $type $timestamp $noticetimestamp $eventtimestamp true ""
         return "echo"
       }
        
       "lvccounterpart" {
         log::info [format "received %s packet." $type]
-        variable lvcalertprojectnumber
-        set projectidentifier [project::makeidentifier $lvcalertprojectnumber]
+        variable lvcalertprojectidentifier
+        set projectidentifier  $lvcalertprojectidentifier
         set blockidentifier    [lvctrigger          $packet]
-        set eventidentifier    [lvceventidentifier  $packet]
+        set name               [lvcname       $packet]
+        set origin             "lvc"
+        set identifier         [lvcidentifier      $packet]
         set noticetimestamp    [noticetimestamp     $packet]
         set eventtimestamp     [lvceventtimestamp   $packet]
         set test               [lvctest             $packet]
@@ -278,11 +290,12 @@ namespace eval "gcntan" {
     }
   }
   
-  proc respondtogrbalert {test projectidentifier blockidentifier type eventidentifier alerttimestamp noticetimestamp eventtimestamp retraction grb alpha delta equinox uncertainty} {
+  proc respondtogrbalert {test projectidentifier blockidentifier name origin identifier type alerttimestamp noticetimestamp eventtimestamp retraction grb alpha delta equinox uncertainty} {
     logresponse $test [format "%s: test is %s." $type $test]
-    logresponse $test [format "%s: project identifier is \"%s\"." $type $projectidentifier]
+    logresponse $test [format "%s: project identifier is %d." $type $projectidentifier]
     logresponse $test [format "%s: block identifier is %d." $type $blockidentifier]
-    logresponse $test [format "%s: event identifier is %s." $type $eventidentifier]
+    logresponse $test [format "%s: name is %s." $type $name]
+    logresponse $test [format "%s: origin/identifier/type are %s." $type $origin $identifier $type]
     logresponse $test [format "%s: alert timestamp is %s." $type [utcclock::format $alerttimestamp]] 
     logresponse $test [format "%s: notice timestamp is %s." $type [utcclock::format $noticetimestamp]] 
     logresponse $test [format "%s: notice delay is %s." $type [utcclock::formatinterval [utcclock::diff $alerttimestamp $noticetimestamp]]]
@@ -315,18 +328,19 @@ namespace eval "gcntan" {
     } else {
       logresponse $test [format "%s: requesting scheduler to respond." $type]
       if {[catch {
-        client::request "scheduler" [list respondtoalert $projectidentifier $blockidentifier $type $eventidentifier $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty]
+        client::request "scheduler" [list respondtoalert $projectidentifier $blockidentifier $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty]
       } result]} {
         log::warning [format "%s: unable to request scheduler: %s" $type $result]
       }
     }
   }
   
-  proc respondtolvcalert {test projectidentifier blockidentifier type eventidentifier alerttimestamp noticetimestamp eventtimestamp retraction skymapurl} {
+  proc respondtolvcalert {test projectidentifier blockidentifier name origin identifier type alerttimestamp noticetimestamp eventtimestamp retraction skymapurl} {
     logresponse $test [format "%s: test is %s." $type $test]
     logresponse $test [format "%s: project identifier is \"%s\"." $type $projectidentifier]
     logresponse $test [format "%s: block identifier is %d." $type $blockidentifier]
-    logresponse $test [format "%s: event identifier is %s." $type $eventidentifier]
+    logresponse $test [format "%s: name is %s." $type $name]
+    logresponse $test [format "%s: origin/identifier/type are %s." $type $origin $identifier $type]
     logresponse $test [format "%s: alert timestamp is %s." $type [utcclock::format $alerttimestamp]] 
     logresponse $test [format "%s: notice timestamp is %s." $type [utcclock::format $noticetimestamp]] 
     logresponse $test [format "%s: notice delay is %s." $type [utcclock::formatinterval [utcclock::diff $alerttimestamp $noticetimestamp]]]
@@ -348,7 +362,7 @@ namespace eval "gcntan" {
     } else {
       logresponse $test [format "%s: requesting scheduler to respond." $type]
       if {[catch {
-        client::request "scheduler" [list respondtolvcalert $projectidentifier $blockidentifier $type $eventidentifier $alerttimestamp $eventtimestamp $enabled $skymapurl]
+        client::request "scheduler" [list respondtolvcalert $projectidentifier $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $skymapurl]
       } result]} {
         log::warning [format "%s: unable to request scheduler: %s" $type $result]
       }
@@ -386,7 +400,7 @@ namespace eval "gcntan" {
     return [expr {[field0 $packet 4] & 0xffffff}]
   }
   
-  proc swiftgrbidentifier {packet} {
+  proc swiftgrbname {packet} {
     set timestamp [swifteventtimestamp $packet]
     if {[string equal $timestamp ""]} {
       return ""
@@ -395,14 +409,10 @@ namespace eval "gcntan" {
       error "unable to scan timestamp \"$timestamp\"."
     }
     set dayfraction [expr {($hours + $minutes / 60.0 + $seconds / 3600.0) / 24.0}]
-    set identifier [format "GRB %02d%02d%02d.%03d" [expr {$year % 100}] $month $day [expr {int($dayfraction * 1000)}]]
+    set identifier [format "Swift GRB %02d%02d%02d.%03d" [expr {$year % 100}] $month $day [expr {int($dayfraction * 1000)}]]
     return $identifier
   }
 
-  proc swifteventidentifier {packet} {
-    return [string trim "Swift trigger [swifttrigger $packet] [swiftgrbidentifier $packet]"]
-  }
-  
   proc swifteventtimestamp {packet} {
     switch [type $packet] {
       "swiftbatquicklookposition" -
@@ -513,7 +523,7 @@ namespace eval "gcntan" {
     return [field0 $packet 4]
   }
 
-  proc fermigrbidentifier {packet} {
+  proc fermigrbname {packet} {
     set timestamp [fermieventtimestamp $packet]
     if {[string equal $timestamp ""]} {
       return ""
@@ -524,20 +534,16 @@ namespace eval "gcntan" {
     switch -glob [type $packet] {
       "fermigbm*" {
         set dayfractioninthousandths [field0 $packet 32]
-        set identifier [format "GRB %02d%02d%02d.%03d" [expr {$year % 100}] $month $day $dayfractioninthousandths]
+        set identifier [format "Fermi GRB %02d%02d%02d.%03d" [expr {$year % 100}] $month $day $dayfractioninthousandths]
       }
       "fermilat*" {
         set dayfraction [expr {($hours + $minutes / 60.0 + $seconds / 3600.0) / 24.0}]
-        set identifier [format "GRB %02d%02d%02d.%03d" [expr {$year % 100}] $month $day [expr {int($dayfraction * 1000)}]]
+        set identifier [format "Fermi GRB %02d%02d%02d.%03d" [expr {$year % 100}] $month $day [expr {int($dayfraction * 1000)}]]
       }
     }
     return $identifier
   }
 
-  proc fermieventidentifier {packet} {
-    return [string trim "Fermi trigger [fermitrigger $packet] [fermigrbidentifier $packet]"]
-  }
-  
   proc fermieventtimestamp {packet} {
     return [utcclock::combinedformat [seconds $packet 5]]
   }
@@ -793,27 +799,7 @@ proc r {s P} {
 
 ######################################################################
 
-  proc lvctest {packet} {
-    set identifier [lvceventidentifier $packet]
-    switch -glob $identifier {
-      "S*" -
-      "GW" {
-        return false
-      }
-      "MS*"  -
-      "MGW*" -
-      "TS*"  -
-      "TGW" {
-        return true
-      } 
-      default {
-        log::warning "obsolete lvc identifier $identifier."
-        return false
-      }
-    }
-  }
-
-  proc lvceventidentifier {packet} {
+  proc lvcidentifier {packet} {
 
     set date [field0 $packet 4]            
 
@@ -842,6 +828,30 @@ proc r {s P} {
     set suffix1 [format "%c" [expr {([field0 $packet 21] >>  0) & 0xff}]]          
 
     return [string trimright "${prefix}${date}${suffix0}${suffix1}"]
+  }
+
+  proc lvctest {packet} {
+    set identifier [lvcidentifier $packet]
+    switch -glob $identifier {
+      "S*" -
+      "GW" {
+        return false
+      }
+      "MS*"  -
+      "MGW*" -
+      "TS*"  -
+      "TGW" {
+        return true
+      } 
+      default {
+        log::warning "obsolete lvc identifier $identifier."
+        return false
+      }
+    }
+  }
+
+  proc lvcname {packet} {
+    return "LVC [lvcidentifier $packet]"     
   }
 
   proc lvceventtimestamp {packet} {
