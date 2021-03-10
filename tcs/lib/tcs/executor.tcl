@@ -564,7 +564,7 @@ namespace eval "executor" {
       }
     }
     
-    log::info "block is $block."
+    log::debug "block is $block."
     
     set project [block::project $block]
     updatedata false $blockfile $alertfile $project $block ""
