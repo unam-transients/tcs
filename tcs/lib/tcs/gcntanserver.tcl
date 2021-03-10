@@ -45,13 +45,13 @@ namespace eval "gcntanserver" {
     return
   }
   
-  proc slaverespondtogrbalert {test projectidentifier blockidentifier visitidentifier type eventidentifier timestamp noticetimestamp eventtimestamp retraction grb alpha delta equinox uncertainty} {
-    gcntan::respondtogrbalert $test $projectidentifier $blockidentifier $visitidentifier $type $eventidentifier $timestamp $noticetimestamp $eventtimestamp $retraction $grb $alpha $delta $equinox $uncertainty
+  proc slaverespondtogrbalert {test projectidentifier blockidentifier name origin identifier type timestamp eventtimestamp retraction grb alpha delta equinox uncertainty} {
+    gcntan::respondtogrbalert $test $projectidentifier $blockidentifier $name $origin $identifier $type $timestamp $eventtimestamp $retraction $grb $alpha $delta $equinox $uncertainty
     return
   }
 
-  proc slaverespondtolvcalert {test projectidentifier blockidentifier visitidentifier type eventidentifier timestamp noticetimestamp eventtimestamp retraction skymapurl} {
-    gcntan::respondtolvcalert $test $projectidentifier $blockidentifier $visitidentifier $type $eventidentifier $timestamp $noticetimestamp $eventtimestamp $retraction $skymapurl
+  proc slaverespondtolvcalert {test projectidentifier blockidentifier name origin identifier type timestamp eventtimestamp retraction skymapurl} {
+    gcntan::respondtolvcalert $test $projectidentifier $blockidentifier $name $origin $identifier $type $timestamp $eventtimestamp $retraction $skymapurl
     return
   }
 
