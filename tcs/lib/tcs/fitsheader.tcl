@@ -192,13 +192,17 @@ namespace eval "fitsheader" {
 
     foreach {key fitskey fitstype} {
       blockfile              BLKFL string
-      projectidentifier     PRPID string
+      projectidentifier      PRPID integer
       blockidentifier        BLKID integer
       visitidentifier        VSTID integer
+      projectname            PRKNM string
+      blockname              BLKNM string
       visitname              VSTNM string
       alertfile              ALFL  string
+      alertname              ALNM  string
+      alertorigin            ALOR  string
+      alertidentifier        ALID  string
       alerttype              ALTY  string
-      alerteventidentifier   ALID  integer
       alertalerttimestamp    ALALT date
       alerteventtimestamp    ALEVT date
       alertalpha             ALRA  angle
