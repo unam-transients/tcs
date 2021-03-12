@@ -161,7 +161,7 @@ sudo apt-get -y install sqlite3 libsqlite3-dev
 #sudo make -j8
 #sudo make install
 
-sudo apt-get install python3-pip
+sudo apt-get -y install python3-pip
 
 sudo -H pip3 install --upgrade pip
 sudo -H pip3 install wheel
