@@ -37,5 +37,6 @@
   "telescope"  : { "host" : "localhost", "port" : 5009 },
   "executor"   : { "host" : "localhost", "port" : 5010 },
   "scheduler"  : { "host" : "localhost", "port" : 5011 },
-  "supervisor" : { "host" : "localhost", "port" : 5012 }
+  "supervisor" : { "host" : "localhost", "port" : 5012 },
+  "gcntan"     : { "host" : "localhost", "port" : 5013 }
 }
