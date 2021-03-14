@@ -174,6 +174,8 @@ sudo apt-get -y install tcllib
 
 ########################################################################
 
+exit
+
 # Install python3.6
 
 # http://devopspy.com/python/install-python-3-6-ubuntu-lts/
