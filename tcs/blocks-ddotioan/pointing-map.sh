@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Pointing map visits typically take about 20 seconds when the slew is short and
+# 60 seconds when the slew is longer.
+
 awk '
 BEGIN {
   pi = 4 * atan2(1, 1);
@@ -27,13 +30,21 @@ function zenithdistance(ha, delta) {
   return radtodeg(z);
 }
 BEGIN {
-  targetid = 0;
-  for (ha = -11.5; ha <= 11.5; ha += 1.0)
-    for (delta = -50; delta < 90; delta += 15) {
-      z = zenithdistance(ha * 15, delta)
+  dha = 5;
+  ddelta = 10;
+  blockid = 0;
+  iha = 0;
+  for (ha = -180 + 0.5 * dha; ha < 180; ha += dha) {
+    startdelta = -55;
+    if (iha % 2 == 1) 
+      startdelta += 0.5 * ddelta;
+    iha += 1;
+    for (delta = startdelta; delta < 90; delta += ddelta) {
+      z = zenithdistance(ha, delta)
       if (z < 85)
-        printf("%03d %+.1fh %+.1fd %.1fd\n", targetid++, ha, delta, z);
+        printf("%04d %+.1fd %+.1fd %.1fd\n", blockid++, ha, delta, z);
     }
+  }
 }
 ' |
 while read blockid ha delta z
