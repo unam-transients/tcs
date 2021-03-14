@@ -99,6 +99,24 @@ namespace eval "telescope" {
   
   ######################################################################
 
+  proc switchlights {state} {
+    client::waituntilstarted "lights"
+    log::info "switching lights $state."
+    client::request "lights" "switch$state"
+    client::wait "lights"
+  }
+  
+  ######################################################################
+  
+  proc switchheater {state} {
+    client::waituntilstarted "heater"
+    log::info "switching heater $state."
+    client::request "heater" "switch$state"
+    client::wait "heater"
+  }
+  
+  ######################################################################
+
   proc getpowercontacts {} {
     client::update "shutters"
     if {[string equal "error" [client::getdata "shutters" "activity"]]} {
