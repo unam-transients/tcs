@@ -148,51 +148,40 @@ namespace  eval log {
     set line "$timestamp $who: $type: $payload"
 
     switch -- $type {
-      "data" {
-        puttodatafile $logdir $who [unescape $payload]
-      }
-      "keys" {
-        puttokeysfile $logdir $who [unescape $payload]
-      }
-      "error" {
-        puttologfile $logdir "error-$who"   $line
-        puttologfile $logdir "error"        $line
-        puttologfile $logdir "warning-$who" $line
-        puttologfile $logdir "warning"      $line
-        puttologfile $logdir "summary-$who" $line
-        puttologfile $logdir "summary"      $line
-        puttologfile $logdir "info-$who"    $line
-        puttologfile $logdir "info"         $line
-        puttologfile $logdir "debug-$who"   $line
-        puttologfile $logdir "debug"        $line
-      }
-      "warning" {
-        puttologfile $logdir "warning-$who" $line
-        puttologfile $logdir "warning"      $line
-        puttologfile $logdir "summary-$who" $line
-        puttologfile $logdir "summary"      $line
-        puttologfile $logdir "info-$who"    $line
-        puttologfile $logdir "info"         $line
-        puttologfile $logdir "debug-$who"   $line
-        puttologfile $logdir "debug"        $line
-      }
-      "summary" {
-        puttologfile $logdir "summary-$who" $line
-        puttologfile $logdir "summary"      $line
-        puttologfile $logdir "info-$who"    $line
-        puttologfile $logdir "info"         $line
-        puttologfile $logdir "debug-$who"   $line
+      "debug" {
         puttologfile $logdir "debug"        $line
       }
       "info" {
         puttologfile $logdir "info-$who"    $line
         puttologfile $logdir "info"         $line
-        puttologfile $logdir "debug-$who"   $line
         puttologfile $logdir "debug"        $line
       }
-      "debug" {
-        puttologfile $logdir "debug-$who"   $line
+      "summary" {
+        puttologfile $logdir "summary"      $line
+        puttologfile $logdir "info-$who"    $line
+        puttologfile $logdir "info"         $line
         puttologfile $logdir "debug"        $line
+      }
+      "warning" {
+        puttologfile $logdir "warning"      $line
+        puttologfile $logdir "summary"      $line
+        puttologfile $logdir "info-$who"    $line
+        puttologfile $logdir "info"         $line
+        puttologfile $logdir "debug"        $line
+      }
+      "error" {
+        puttologfile $logdir "error"        $line
+        puttologfile $logdir "warning"      $line
+        puttologfile $logdir "summary"      $line
+        puttologfile $logdir "info-$who"    $line
+        puttologfile $logdir "info"         $line
+        puttologfile $logdir "debug"        $line
+      }
+      "data" {
+        puttodatafile $logdir $who [unescape $payload]
+      }
+      "keys" {
+        puttokeysfile $logdir $who [unescape $payload]
       }
       default {
         error "invalid type argument \"$type\" (in \"$line\")."
@@ -200,14 +189,15 @@ namespace  eval log {
     }
   }
   
+  variable currentdebuglogfile ""
+  variable currentdebuglogchannel ""
+  
   proc puttologfile {logdir type line} {
-
     set logfile [file join $logdir "${type}.txt"]
     set channel [open $logfile a 0666]
     chan configure $channel -blocking false -encoding "utf-8"
     puts $channel $line
     close $channel
-    
   }
 
   proc puttodatafile {logdir who line} {
