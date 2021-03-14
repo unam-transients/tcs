@@ -46,21 +46,30 @@ namespace eval "telescope" {
   ######################################################################
 
   proc initializeprolog {} {
+    switchlights "on"
+    switchheater "automatically"
   }
 
   proc initializeepilog {} {
+    switchlights "off"
   }
 
   proc openprolog {} {
+    switchlights "on"
+    switchheater "off"
   }
 
   proc openepilog {} {
+    switchlights "off"
   }
 
   proc closeprolog {} {
+    switchlights "on"
   }
 
   proc closeepilog {} {
+    switchlights "off"
+    switchheater "automatically"
   }
 
   ######################################################################
