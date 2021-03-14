@@ -107,14 +107,21 @@ colibricu-control)
 colibricu-detectors)
   allargs="C0"
   ;;
-test-*)
-  allargs="log 1 html 1 target 1 moon sun sensors weather C0 1 telescope instrument 1 executor scheduler supervisor"
+test-ubuntu-18)
+  allargs="log 1 html gcntan 1 target 1 moon sun sensors weather C0 1 telescope instrument 1 executor scheduler supervisor"
+  ;;
+test-ubuntu-server-14)
+  allargs="lights heater"
+  ;;
+test-minnowboard-14)
+  allargs="lights heater"
   ;;
 esac
 
-optstring=ad
+optstring=adf
 all=false
 debug=false
+foreground=false
 if ! getopt -qQ -- "$optstring" "$@"
 then
   usageerror
@@ -131,6 +138,10 @@ do
     debug=true
     shift 1
     ;;
+  -f)
+    foreground=true
+    shift 1
+    ;;
   *)
     usageerror
     ;;
@@ -138,7 +149,7 @@ do
 done
 shift
 
-if $all && $debug
+if $all && $foreground
 then
   usageerror
 elif $all && test $# != 0
@@ -147,7 +158,7 @@ then
 elif ! $all && test $# = 0
 then
   usageerror
-elif $debug && test $# != 1
+elif $foreground && test $# != 1
 then
   usageerror
 fi
@@ -171,11 +182,11 @@ do
     then
       if which $fullserver >/dev/null
       then
-        if $debug
+        if $foreground
         then
-          TCSLOGTOSTDERR=true $fullserver
+          TCSLOGDEBUG=$debug TCSLOGTOSTDERR=true $fullserver
         else
-          nohup $fullserver >/dev/null 2>&1 &
+          TCSLOGDEBUG=$debug nohup $fullserver >/dev/null 2>&1 &
           printf '%5d   %s\n' $! $arg
         fi
       else

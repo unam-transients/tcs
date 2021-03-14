@@ -36,9 +36,11 @@ usageerror () {
   exit 1
 }
 
-optstring=ad
+optstring=adf
 all=false
 debug=false
+foreground=false
+startopts=""
 if ! getopt -qQ -- "$optstring" "$@"
 then
   usageerror
@@ -53,6 +55,12 @@ do
     ;;
   -d)
     debug=true
+    startopts="$startopts -d"
+    shift 1
+    ;;
+  -f)
+    foreground=true
+    startopts="$startopts -f"
     shift 1
     ;;
   *)
@@ -62,7 +70,7 @@ do
 done
 shift
 
-if $all && $debug
+if $all && $foreground
 then
   usageerror
 elif $all && test $# != 0
@@ -71,7 +79,7 @@ then
 elif ! $all && test $# = 0
 then
   usageerror
-elif $debug && test $# != 1
+elif $foreground && test $# != 1
 then
   usageerror
 fi
@@ -79,14 +87,10 @@ fi
 if $all
 then
   stopserver -a
-  startserver -a
-elif $debug
-then
-  stopserver -- "$@"
-  startserver -d -- "$@"
+  startserver $startopts -a
 else
   stopserver -- "$@"
-  startserver -- "$@"
+  startserver $startopts -- "$@"
 fi
 
 exit 0
