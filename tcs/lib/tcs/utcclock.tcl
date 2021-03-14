@@ -63,6 +63,16 @@ namespace eval "utcclock" {
     }
     return $seconds
   }
+  
+  proc milliseconds {} {
+    variable resolution
+    if {$resolution == 1.0} {
+      set milliseconds [expr {double([clock seconds]) * 1e3}]
+    } else {
+      set milliseconds [expr {double([clock milliseconds])}]
+    }
+    return $milliseconds
+  }
 
   proc mjd {{seconds "now"}} {
     if {[string equal $seconds now]} {
