@@ -37,8 +37,12 @@ namespace eval "moon" {
 
   ######################################################################
 
+  variable lastskystate ""
+  
   proc updateobservedposition {} {
     
+    variable lastskystate
+
     set seconds [utcclock::seconds]
 
     set observedalpha [astrometry::moonobservedalpha $seconds]
@@ -49,6 +53,12 @@ namespace eval "moon" {
     set observedzenithdistance [astrometry::zenithdistance $observedha $observeddelta]
     
     set skystate [astrometry::moonskystate $seconds]
+    if {![string equal $lastskystate ""]} {
+      if {![string equal $lastskystate $skystate]} {
+        log::summary "sky state changed from \"$lastskystate\" to \"$skystate\"."
+      }
+    }
+    set lastskystate $skystate
     
     set illuminatedfraction [astrometry::moonilluminatedfraction $seconds]
     
