@@ -106,8 +106,14 @@ colibricu-control)
 colibricu-detectors)
   allargs="C0"
   ;;
-test-*)
-  allargs="supervisor scheduler executor instrument telescope C0 weather sensors sun moon target html log"
+test-ubuntu-18)
+  allargs="supervisor scheduler executor instrument telescope C0 weather sensors sun moon target gcntan html log"
+  ;;
+test-ubuntu-server-14)
+  allargs="heater lights"
+  ;;
+test-minnowboard-14)
+  allargs="heater lights"
   ;;
 esac
 

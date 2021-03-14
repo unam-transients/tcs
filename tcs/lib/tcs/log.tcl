@@ -38,6 +38,10 @@ namespace  eval log {
   variable logserverhost [jsonrpc::getserverhost "log"]
   variable logserverport [jsonrpc::getserverport "log"]
 
+  variable logdebug false
+  if {[environment::exists "TCSLOGDEBUG"]} {
+    set logdebug [environment::get "TCSLOGDEBUG"]
+  }
   variable logtostderr false
   if {[environment::exists "TCSLOGTOSTDERR"]} {
     set logtostderr [environment::get "TCSLOGTOSTDERR"]
@@ -103,7 +107,10 @@ namespace  eval log {
   }
 
   proc debug {message {who ""}} {
-    putmessage [timestamp] $who "debug" $message
+    variable logdebug
+    if {$logdebug} {
+      putmessage [timestamp] $who "debug" $message
+    }
   }
 
   proc putmessage {timestamp who type message} {
