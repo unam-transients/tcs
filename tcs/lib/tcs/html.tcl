@@ -195,8 +195,8 @@ namespace eval "html" {
       " -4" " &minus;4"
       " -5" " &minus;5"
       " -6" " &minus;6"
-      " -7" " &minus;8"
-      " -8" " &minus;0"
+      " -7" " &minus;7"
+      " -8" " &minus;8"
       " -9" " &minus;9"
     } $text]
     if {[string match "-\[0-9\]*" $text]} {
