@@ -33,6 +33,9 @@ host=$(uname -n | sed 's/\..*//')
   sed '/^# Start of tcs epilog./q' /etc/hosts
   cat <<"EOF"
 # Start of tcs epilog.
+10.211.55.3	ubuntu-18		test-ubuntu-18
+10.211.55.8	ubuntu-server-14	test-ubuntu-server-14
+192.168.1.200	minnowboard-14		test-minnowboard-14
 EOF
 ) | 
 sudo cp /dev/stdin /etc/hosts.tmp
@@ -53,7 +56,13 @@ sudo mv /etc/hosts.tmp /etc/hosts
 *  *  *  *  *  /usr/local/bin/checkreboot
 *  *  *  *  *  /usr/local/bin/checkrestart
 *  *  *  *  *  /usr/local/bin/checkhalt
-*   *  *  *  *  sleep 10; /usr/local/bin/updatesensorsfiles localhost
+EOF
+
+  case $host in
+  test-ubuntu-18)
+    cat <<"EOF"
+*   *  *  *  *  sleep 10; /usr/local/bin/updatesensorsfiles ubuntu-18
+*   *  *  *  *  sleep 10; /usr/local/bin/updatesensorsfiles minnowboard-14
 *   *  *  *  *  /usr/local/bin/updateweatherfiles-oan
 00  18 *  *  *  /usr/local/bin/updateweatherfiles-oan -a
 *   *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
@@ -61,7 +70,9 @@ sudo mv /etc/hosts.tmp /etc/hosts
 */5 *  *  *  * /usr/local/bin/logsensors
 *   *  *  *  * cd /usr/local/var/www/tcs/; sh plots.sh >plots.txt 2>&1
 EOF
-
+    ;;
+  esac
+  
 ) | sudo crontab
 
 ################################################################################
@@ -72,8 +83,28 @@ EOF
 
   echo "#!/bin/sh"
   echo "PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
+
+  # The Minnowboard Turbos come up with / read-only after power cycling.
+  # Don't know why, but it causes all sorts of problems.
+  if dmesg | grep -iq minnowboard
+  then
+    echo "test -w /etc || mount -o remount,rw /"
+  fi
+
+  # Enable gpios on Minnowboards
+  if dmesg | grep -iq minnowboard
+  then
+    echo "gpio -i"
+  fi
+
   echo "owserver -c /etc/owfs.conf"
-  echo "instrumentdataserver -f -d rsync://localhost/tcs/ &"
+  
+  case $host in
+  test-ubuntu-18)
+    echo "instrumentdataserver -f -d rsync://localhost/tcs/ &"
+    ;;
+  esac
+  
   echo "mkdir -p /usr/local/var/tcs/reboot"
   echo "mkdir -p /usr/local/var/tcs/restart"
   echo "mkdir -p /usr/local/var/tcs/halt"
@@ -188,7 +219,7 @@ sudo rm -f /tmp/sudoers-tcs
 (
   echo 'test ALL=(ALL) ALL'
   case $host in
-  colibricu-services)
+  test-ubuntu-18)
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/rebootsoon'
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/restartsoon'
     ;;
