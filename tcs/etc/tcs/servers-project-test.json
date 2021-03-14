@@ -25,18 +25,20 @@
 ////////////////////////////////////////////////////////////////////////
 
 {
-  "log"        : { "host" : "localhost", "port" : 5000 },
-  "html"       : { "host" : "localhost", "port" : 5001 },
-  "moon"       : { "host" : "localhost", "port" : 5002 },
-  "sun"        : { "host" : "localhost", "port" : 5003 },
-  "target"     : { "host" : "localhost", "port" : 5004 },
-  "weather"    : { "host" : "localhost", "port" : 5005 },
-  "C0"         : { "host" : "localhost", "port" : 5006 },
-  "sensors"    : { "host" : "localhost", "port" : 5007 },
-  "instrument" : { "host" : "localhost", "port" : 5008 },
-  "telescope"  : { "host" : "localhost", "port" : 5009 },
-  "executor"   : { "host" : "localhost", "port" : 5010 },
-  "scheduler"  : { "host" : "localhost", "port" : 5011 },
-  "supervisor" : { "host" : "localhost", "port" : 5012 },
-  "gcntan"     : { "host" : "localhost", "port" : 5013 }
+  "log"        : { "host" : "192.168.1.82"  , "port" : 5000 },
+  "html"       : { "host" : "ubuntu-18"  , "port" : 5001 },
+  "moon"       : { "host" : "ubuntu-18"  , "port" : 5002 },
+  "sun"        : { "host" : "ubuntu-18"  , "port" : 5003 },
+  "target"     : { "host" : "ubuntu-18"  , "port" : 5004 },
+  "weather"    : { "host" : "ubuntu-18"  , "port" : 5005 },
+  "C0"         : { "host" : "ubuntu-18"  , "port" : 5006 },
+  "sensors"    : { "host" : "ubuntu-18"  , "port" : 5007 },
+  "instrument" : { "host" : "ubuntu-18"  , "port" : 5008 },
+  "telescope"  : { "host" : "ubuntu-18"  , "port" : 5009 },
+  "executor"   : { "host" : "ubuntu-18"  , "port" : 5010 },
+  "scheduler"  : { "host" : "ubuntu-18"  , "port" : 5011 },
+  "supervisor" : { "host" : "ubuntu-18"  , "port" : 5012 },
+  "gcntan"     : { "host" : "ubuntu-18"  , "port" : 5013 },
+  "lights"     : { "host" : "minnowboard-14", "port" : 5014 },
+  "heater"     : { "host" : "minnowboard-14", "port" : 5015 }
 }

@@ -33,7 +33,10 @@
   "html": {
     "servers": [
       "executor",
+      "gcntan",
+      "heater",
       "instrument",
+      "lights",
       "moon",
       "scheduler",
       "sensors",
@@ -60,6 +63,12 @@
     "internalhumiditysensor": ""
   },
   "scheduler": {},
+  "gcntan": {
+    "serverpacketport": "5351",
+    "swiftalertprojectidentifier": "1001",
+    "fermialertprojectidentifier": "1002",
+    "lvcalertprojectidentifier"  : "1003"
+  },
   "swift": {
     "pointingsource": "none"
   },
@@ -71,6 +80,14 @@
   },
   "safetyswitch": {
     "type": "none"
+  },
+  "heater": {
+    "type": "gpio",
+    "gpiopath": "/sys/class/gpio/gpio476/value"
+  },
+  "lights": {
+    "type": "gpio",
+    "gpiopath": "/sys/class/gpio/gpio481/value"
   },
   "instrument": {
     "detectors": [
@@ -169,8 +186,10 @@
   },
   "sensors": {
     "lognames": [
-      "host-localhost-load",
-      "host-localhost-disk-space-used",
+      "host-ubuntu-18-load",
+      "host-ubuntu-18-disk-space-used",
+      "host-minnowboard-14-load",
+      "host-minnowboard-14-disk-space-used",
       "C0-detector-detector-temperature",
       "C0-detector-cooler-set-temperature",
       "C0-detector-cooler-state",
@@ -178,22 +197,44 @@
       "C0-filter-wheel-position"
     ],
     "sensors": {
-      "host-localhost-load": {
-        "file": "/usr/local/var/tcs/sensors/localhost/load",
+      "host-ubuntu-18-load": {
+        "file": "/usr/local/var/tcs/sensors/ubuntu-18/load",
         "keyword": "",
-        "prettyname": "load on host localhost",
-        "group": "host-localhost",
+        "prettyname": "load on host ubuntu-18",
+        "group": "host-ubuntu-18",
         "type": "float",
         "unit": "processes",
         "model": "",
         "identifier": "",
         "firmware": ""
       },
-      "host-localhost-disk-space-used": {
-        "file": "/usr/local/var/tcs/sensors/localhost/disk-space-used",
+      "host-minnowboard-14-load": {
+        "file": "/usr/local/var/tcs/sensors/minnowboard-14/load",
         "keyword": "",
-        "prettyname": "relative disk space used on host localhost",
-        "group": "host-localhost",
+        "prettyname": "load on host minnowboard-14",
+        "group": "host-minnowboard-14",
+        "type": "float",
+        "unit": "processes",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-ubuntu-18-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/ubuntu-18/disk-space-used",
+        "keyword": "",
+        "prettyname": "relative disk space used on host ubuntu-18",
+        "group": "host-ubuntu-18",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-minnowboard-14-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/minnowboard-14/disk-space-used",
+        "keyword": "",
+        "prettyname": "relative disk space used on host minnowboard-14",
+        "group": "host-minnowboard-14",
         "type": "float",
         "unit": "",
         "model": "",
@@ -201,7 +242,7 @@
         "firmware": ""
       },
       "C0-detector-detector-temperature": {
-        "file": "/usr/local/var/tcs/sensors/localhost/C0-detector-detector-temperature",
+        "file": "/usr/local/var/tcs/sensors/ubuntu-18/C0-detector-detector-temperature",
         "keyword": "",
         "prettyname": "C0 detector temperature",
         "group": "detector-C0",
@@ -212,7 +253,7 @@
         "firmware": ""
       },
       "C0-detector-cooler-set-temperature": {
-        "file": "/usr/local/var/tcs/sensors/localhost/C0-detector-cooler-set-temperature",
+        "file": "/usr/local/var/tcs/sensors/ubuntu-18/C0-detector-cooler-set-temperature",
         "keyword": "",
         "prettyname": "C0 cooler set temperature",
         "group": "detector-C0",
@@ -223,7 +264,7 @@
         "firmware": ""
       },
       "C0-detector-cooler-power": {
-        "file": "/usr/local/var/tcs/sensors/localhost/C0-detector-cooler-power",
+        "file": "/usr/local/var/tcs/sensors/ubuntu-18/C0-detector-cooler-power",
         "keyword": "",
         "prettyname": "C0 relative cooler power",
         "group": "detector-C0",
@@ -234,7 +275,7 @@
         "firmware": ""
       },
       "C0-detector-cooler-state": {
-        "file": "/usr/local/var/tcs/sensors/localhost/C0-detector-cooler-state",
+        "file": "/usr/local/var/tcs/sensors/ubuntu-18/C0-detector-cooler-state",
         "keyword": "",
         "prettyname": "C0 cooler state",
         "group": "detector-C0",
@@ -245,7 +286,7 @@
         "firmware": ""
       },
       "C0-filter-wheel-position": {
-        "file": "/usr/local/var/tcs/sensors/localhost/C0-filter-wheel-position",
+        "file": "/usr/local/var/tcs/sensors/ubuntu-18/C0-filter-wheel-position",
         "keyword": "",
         "prettyname": "C0 filter wheel position",
         "group": "detector-C0",
