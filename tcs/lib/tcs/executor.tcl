@@ -49,26 +49,6 @@ namespace eval "executor" {
   variable pointingdetectors [config::getvalue "instrument" "pointingdetectors"]
   
   ######################################################################
-  
-  proc switchlightsonactivitycommand {} {
-    set start [utcclock::seconds]
-    log::summary "switching lights on."
-    catch {client::waituntilstarted "lights"}
-    client::request "lights" "switchon"
-    client::wait "lights"
-    log::summary [format "finished switching lights on after %.1f seconds." [utcclock::diff now $start]]
-  }
-
-  proc switchlightsoffactivitycommand {} {
-    set start [utcclock::seconds]
-    log::summary "switching lights off."
-    catch {client::waituntilstarted "lights"}
-    client::request "lights" "switchoff"
-    client::wait "lights"
-    log::summary [format "finished switching lights off after %.1f seconds." [utcclock::diff now $start]]
-  }
-
-  ######################################################################
 
   variable trackstart
   
@@ -787,20 +767,6 @@ namespace eval "executor" {
     server::checkactivityformove
     server::newactivitycommand "executing" "idle" \
       "executor::idleactivitycommand"
-  }
-  
-  proc switchlightson {} {
-    server::checkstatus
-    server::checkactivityforswitch
-    server::newactivitycommand "switchingon" [server::getactivity] \
-      "executor::switchlightsonactivitycommand"
-  }
-  
-  proc switchlightsoff {} {
-    server::checkstatus
-    server::checkactivityforswitch
-    server::newactivitycommand "switchingoff" [server::getactivity] \
-      "executor::switchlightsoffactivitycommand"
   }
   
   ######################################################################

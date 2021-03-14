@@ -48,8 +48,6 @@ namespace eval "telescope" {
   variable catalogdirectory [file join [directories::share] "catalogs"]
   
   variable finders [config::getvalue "telescope" "finders"]
-  foreach finder $finders {
-      }
   
   variable mechanisms
 
@@ -261,8 +259,16 @@ namespace eval "telescope" {
   proc initializeactivitycommand {} {
     set start [utcclock::seconds]
     log::info "initializing."
+    variable withlights
+    variable withheater
     if {[catch {
       server::setdata "timestamp" [utcclock::combinedformat now]
+      if {$withlights} {
+        switchlights "on"
+      }
+      if {$withheater} {
+        switchheater "automatically"
+      }
       initializeprolog
       variable mechanisms
       foreach mechanism  [concat $mechanisms "target"] {
@@ -276,6 +282,9 @@ namespace eval "telescope" {
         initializemechanismepilog $mechanism
       }
       initializeepilog
+      if {$withlights} {
+        switchlights "off"
+      }
       server::setdata "timestamp" [utcclock::combinedformat now]   
       log::info [format "finished initializing after %.1f seconds." [utcclock::diff now $start]]
     } message]} {
@@ -288,6 +297,8 @@ namespace eval "telescope" {
   proc openactivitycommand {} {
     set start [utcclock::seconds]    
     log::info "opening."
+    variable withlights
+    variable withheater
     variable withmount
     variable withdome
     variable withenclosure
@@ -297,6 +308,12 @@ namespace eval "telescope" {
     variable idleha
     variable idledelta
     if {[catch {
+      if {$withlights} {
+        switchlights "on"
+      }
+      if {$withheater} {
+        switchheater "off"
+      }
       openprolog
       if {$withguider} {
         log::info "stopping guider."
@@ -345,6 +362,9 @@ namespace eval "telescope" {
         client::wait "mount"
       }
       openepilog
+      if {$withlights} {
+        switchlights "off"
+      }
       config::setvarvalue "telescope" "lastopenedtimestamp" [utcclock::format now]
       server::setdata "timestamp" [utcclock::combinedformat now]    
       log::info [format "finished opening after %.1f seconds." [utcclock::diff now $start]]
@@ -358,6 +378,8 @@ namespace eval "telescope" {
   proc opentocoolactivitycommand {} {
     set start [utcclock::seconds]    
     log::info "opening to cool."
+    variable withlights
+    variable withheater
     variable withmount
     variable withdome
     variable withenclosure
@@ -367,6 +389,12 @@ namespace eval "telescope" {
     variable idleha
     variable idledelta
     if {[catch {
+      if {$withlights} {
+        switchlights "on"
+      }
+      if {$withheater} {
+        switchheater "off"
+      }
       openprolog
       if {$withguider} {
         log::info "stopping guider."
@@ -408,6 +436,9 @@ namespace eval "telescope" {
         client::wait "covers"
       }
       openepilog
+      if {$withlights} {
+        switchlights "off"
+      }
       config::setvarvalue "telescope" "lastopenedtimestamp" [utcclock::format now]
       server::setdata "timestamp" [utcclock::combinedformat now]    
       log::info [format "finished opening to cool after %.1f seconds." [utcclock::diff now $start]]
@@ -421,6 +452,8 @@ namespace eval "telescope" {
   proc closeactivitycommand {} {
     set start [utcclock::seconds]        
     log::info "closing."
+    variable withlights
+    variable withheater
     variable withmount
     variable withdome
     variable withenclosure
@@ -430,6 +463,9 @@ namespace eval "telescope" {
     variable idleha
     variable idledelta
     if {[catch {
+      if {$withlights} {
+        switchlights "on"
+      }
       closeprolog
       if {$withguider} {
         log::info "stopping guider."
@@ -474,6 +510,12 @@ namespace eval "telescope" {
         }
       }
       closeepilog
+      if {$withheater} {
+        switchheater "automatically"
+      }
+      if {$withlights} {
+        switchlights "off"
+      }
       server::setdata "timestamp" [utcclock::combinedformat now]
       log::info [format "finished closing after %.1f seconds." [utcclock::diff now $start]]
     } message]} {
