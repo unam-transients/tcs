@@ -282,26 +282,4 @@ namespace eval "executor" {
 
   ######################################################################
 
-  proc switchlightsonactivitycommand {} {
-    log::summary "switching lights on."
-    catch {client::waituntilstarted "telescope"}
-    client::request "telescope" "reset"
-    client::wait "telescope"
-    client::request "telescope" "switchlightson"
-    client::wait "telescope"
-    log::summary "finished switching lights on."
-  }
-
-  proc switchlightsoffactivitycommand {} {
-    log::summary "switching lights off."
-    catch {client::waituntilstarted "telescope"}
-    client::request "telescope" "reset"
-    client::wait "telescope"
-    client::request "telescope" "switchlightsoff"
-    client::wait "telescope"
-    log::summary "finished switching lights off."
-  }
-
-  ######################################################################
-
 }

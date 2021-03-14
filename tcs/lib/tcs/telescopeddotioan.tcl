@@ -42,34 +42,27 @@ namespace eval "telescope" {
   variable validpointingmodes { none }
   variable validguidingmodes  { none }
   variable mechanisms { mount enclosure }
+  variable withlights true
+  variable withheater true
 
   ######################################################################
 
   proc initializeprolog {} {
-    switchlights "on"
-    switchheater "automatically"
   }
 
   proc initializeepilog {} {
-    switchlights "off"
   }
 
   proc openprolog {} {
-    switchlights "on"
-    switchheater "off"
   }
 
   proc openepilog {} {
-    switchlights "off"
   }
 
   proc closeprolog {} {
-    switchlights "on"
   }
 
   proc closeepilog {} {
-    switchlights "off"
-    switchheater "automatically"
   }
 
   ######################################################################

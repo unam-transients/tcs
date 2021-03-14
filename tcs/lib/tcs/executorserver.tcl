@@ -70,14 +70,6 @@ namespace eval "executorserver" {
     return
   }
   
-  proc slaveswitchlightson {} {
-    executor::switchlightson
-  }
-
-  proc slaveswitchlightsoff {} {
-    executor::switchlightsoff
-  }
-  
   proc slaveexecute {blockfile {alertfile ""}} {
     executor::execute $blockfile $alertfile
     return
@@ -96,8 +88,6 @@ namespace eval "executorserver" {
     interp alias $slave opentocool      {} executorserver::slaveopentocool
     interp alias $slave close           {} executorserver::slaveclose
     interp alias $slave emergencyclose  {} executorserver::slaveemergencyclose
-    interp alias $slave switchlightson  {} executorserver::slaveswitchlightson
-    interp alias $slave switchlightsoff {} executorserver::slaveswitchlightsoff
     interp alias $slave execute         {} executorserver::slaveexecute
     interp alias $slave idle            {} executorserver::slaveidle
   }

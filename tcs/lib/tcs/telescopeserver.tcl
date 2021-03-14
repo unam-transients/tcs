@@ -48,14 +48,6 @@ namespace eval "telescopeserver" {
     telescope::reset
   }
 
-  proc slaveswitchlightson {} {
-    telescope::switchlightson
-  }
-
-  proc slaveswitchlightsoff {} {
-    telescope::switchlightsoff
-  }
-  
   proc slavestop {} {
     telescope::stop
   }
@@ -175,8 +167,6 @@ namespace eval "telescopeserver" {
     interp alias $slave startup                     {} telescopeserver::slavestartup
     interp alias $slave shutdown                    {} telescopeserver::slaveshutdown
     interp alias $slave reset                       {} telescopeserver::slavereset
-    interp alias $slave switchlightson              {} telescopeserver::slaveswitchlightson
-    interp alias $slave switchlightsoff             {} telescopeserver::slaveswitchlightsoff
     interp alias $slave stop                        {} telescopeserver::slavestop
     interp alias $slave initialize                  {} telescopeserver::slaveinitialize
     interp alias $slave open                        {} telescopeserver::slaveopen

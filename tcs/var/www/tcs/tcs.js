@@ -171,11 +171,11 @@ $(function () {
   $("form#executor-reset").submit(function () {
     return submitrequest("executor reset");
   });
-  $("form#executor-switchlightson").submit(function () {
-    return submitrequest("executor switchlightson");
+  $("form#lights-switchon").submit(function () {
+    return submitrequest("lights switchon");
   });
-  $("form#executor-switchlightsoff").submit(function () {
-    return submitrequest("executor switchlightsoff");
+  $("form#lights-switchoff").submit(function () {
+    return submitrequest("lights switchoff");
   });
   $("form#supervisor-enable").submit(function () {
     return submitrequest("supervisor enable");
