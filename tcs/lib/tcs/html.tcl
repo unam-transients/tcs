@@ -1809,9 +1809,13 @@ namespace eval "html" {
     variable wwwdirectory
     variable servers
   
+    set pollmilliseconds 1000
+  
     while {true} {
     
       log::debug "updating data."
+      
+      set startmilliseconds [utcclock::milliseconds]
 
       foreach server $servers {
         if {[catch {client::update $server}]} {
@@ -1847,7 +1851,7 @@ namespace eval "html" {
       
       set script [file join [directories::prefix] "lib" "tcs" "html-log.sh"]
 
-      foreach server [concat "info" "summary" "warning" "error" $servers] {     
+      foreach server [concat "info" "summary" "warning" "error" $servers] {
 
         coroutine::after 1
 
@@ -1866,7 +1870,11 @@ namespace eval "html" {
       
       log::debug "finished writing HTML log files."
 
-      coroutine::after 100
+      set endmilliseconds [utcclock::milliseconds]
+      set durationmilliseconds [expr {$endmilliseconds - $startmilliseconds}]
+      if {$durationmilliseconds < $pollmilliseconds} {
+        coroutine::after [expr {int($pollmilliseconds - $durationmilliseconds)}]
+      }
 
     }
 
