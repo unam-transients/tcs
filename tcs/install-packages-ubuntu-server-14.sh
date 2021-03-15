@@ -8,7 +8,7 @@
 
 ########################################################################
 
-# Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+# Copyright © 2018, 2019, 2021 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -29,11 +29,16 @@ prefix=${1:-/usr/local}
 
 ########################################################################
 
+# DO NOT update. Let's keep everything the same as at install.
 #sudo apt-get -y update
+
+# DO NOT upgrade. Something in the upgrade causes the machines to freeze after
+# minutes to hours.
 #sudo apt-get -y upgrade
+
+# DO NOT dist-upgrade, as it will install 16.04.
 #sudo apt-get -y dist-upgrade
 
-sudo apt-get -y install nano
 sudo apt-get -y install ntp
 sudo apt-get -y install autoconf 
 sudo apt-get -y install make 
@@ -90,9 +95,9 @@ cd /tmp/install-packages
 cd cfitsio
 prefix=/usr/local
 ./configure --prefix=$prefix
-make
+make -j2
 sudo make install
-make fpack funpack
+make -j2 fpack funpack
 sudo mkdir -p $prefix/bin
 sudo cp fpack funpack $prefix/bin
 
@@ -147,36 +152,3 @@ sudo apt-get -y install tcl-dev
 sudo apt-get -y install tcllib
 
 ########################################################################
-
-exit
-
-# Install python3.6
-
-# http://devopspy.com/python/install-python-3-6-ubuntu-lts/
-
-sudo apt-get -y install build-essential libpq-dev libssl-dev openssl libffi-dev zlib1g-dev
-sudo apt-get -y install python3-pip python3-dev
-
-sudo apt-get -y install sqlite3 libsqlite3-dev
-
-sudo rm -rf /tmp/install-python3.6
-mkdir /tmp/install-python3.6
-cd /tmp/install-python3.6
-
-wget https://www.python.org/ftp/python/3.6.3/Python-3.6.3.tgz
-tar -xvf Python-3.6.3.tgz
-cd Python-3.6.3
-sudo ./configure --enable-optimizations
-sudo make -j8
-sudo make install
-sudo pip3 install --upgrade pip
-sudo pip3 install --upgrade setuptools
-
-########################################################################
-
-# Install ligo.skymap
-
-sudo pip3 install ligo.skymap
-
-########################################################################
-
