@@ -58,10 +58,65 @@
 //      "shutters",
       "sun",
 //      "supervisor",
-//      "target",
+      "target",
 //      "telescope",
       "weather"
     ]
+  },
+  "target": {
+    "southdeltalimit": "-27:35:00",
+    "northdeltalimit": "+57:55:00",
+    "easthalimit": "-05:20:20",
+    "westhalimit": "+05:20:20",
+    "maxzenithdistancelimit": "79d",
+    "idleha": "0h",
+    "idledelta": "30d",
+    "pointingapertures": {
+      "default": [
+        "+0.0am",
+        "+0.0am"
+      ],
+      "rcenter": [
+        "+0.0am",
+        "+0.0am"
+      ],
+      "icenter": [
+        "+0.0am",
+        "+0.0am"
+      ],
+      "zcenter": [
+        "+0.0am",
+        "+0.0am"
+      ],
+      "ricenter": [
+        "+0.0am",
+        "+0.0am"
+      ],
+      "riZJcenter": [
+        "-1.4am",
+        "+0.1am"
+      ],
+      "riYHcenter": [
+        "+2.1am",
+        "+0.3am"
+      ],
+      "ZJcenter": [
+        "-2.3am",
+        "+0.7am"
+      ],
+      "YHcenter": [
+        "+3.5am",
+        "+1.0am"
+      ],
+      "nefinder": [
+        "-0.005685842385145498",
+        "+0.001172724616829814"
+      ],
+      "sefinder": [
+        "-0.004230721672753733",
+        "-0.010692308224369446"
+      ]
+    }
   },
   "power": {
     "hosts": {
@@ -329,61 +384,6 @@
     "longitude": "-115:28:00",
     "altitude": "2790.0",
     "civiltimezone": "America/Tijuana"
-  },
-  "target": {
-    "southdeltalimit": "-27:35:00",
-    "northdeltalimit": "+57:55:00",
-    "easthalimit": "-05:20:20",
-    "westhalimit": "+05:20:20",
-    "maxzenithdistancelimit": "79d",
-    "idleha": "0h",
-    "idledelta": "30d",
-    "pointingapertures": {
-      "default": [
-        "+0.0am",
-        "+0.0am"
-      ],
-      "rcenter": [
-        "+0.0am",
-        "+0.0am"
-      ],
-      "icenter": [
-        "+0.0am",
-        "+0.0am"
-      ],
-      "zcenter": [
-        "+0.0am",
-        "+0.0am"
-      ],
-      "ricenter": [
-        "+0.0am",
-        "+0.0am"
-      ],
-      "riZJcenter": [
-        "-1.4am",
-        "+0.1am"
-      ],
-      "riYHcenter": [
-        "+2.1am",
-        "+0.3am"
-      ],
-      "ZJcenter": [
-        "-2.3am",
-        "+0.7am"
-      ],
-      "YHcenter": [
-        "+3.5am",
-        "+1.0am"
-      ],
-      "nefinder": [
-        "-0.005685842385145498",
-        "+0.001172724616829814"
-      ],
-      "sefinder": [
-        "-0.004230721672753733",
-        "-0.010692308224369446"
-      ]
-    }
   },
   "weather": {
     "windaveragespeedlimit": "45"
