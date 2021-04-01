@@ -30,9 +30,9 @@ export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bi
 program=$(basename "$0")
 
 usageerror () {
-  echo 1>&2 "usage: $program [--] servername [...]"
-  echo 1>&2 "usage: $program [-d] [--] servername"
-  echo 1>&2 "usage: $program [-a] [--]"
+  echo 1>&2 "usage: $program [-d] [--] servername [...]"
+  echo 1>&2 "usage: $program [-d] [-f] [--] servername"
+  echo 1>&2 "usage: $program [-d] [-a] [--]"
   exit 1
 }
 
