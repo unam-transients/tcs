@@ -42,7 +42,7 @@
 //      "guider",
       "html",
 //      "inclinometers",
-//      "instrument",
+      "instrument",
       "moon",
 //      "mount",
       "power",
@@ -125,6 +125,9 @@
     "internalhumiditysensor": "dome-humidity"
   },
   "scheduler": {},
+  "safetyswitch": {
+    "type": "none"
+  },
   "power": {
     "hosts": {
       "rack-ibb": {
@@ -225,7 +228,7 @@
       "C1"
     ],
     "outletgroups": [
-//
+      "science-ccd-pump"
     ]
   },
   "C0": {
