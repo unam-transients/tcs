@@ -42,7 +42,7 @@
       "cryostat",
 //      "dome",
 //      "executor",
-//      "gcntan",
+      "gcntan",
 //      "guider",
       "html",
 //      "inclinometers",
@@ -53,7 +53,7 @@
 //      "nefinder",
 //      "secondary",
 //      "sefinder",
-//      "scheduler",
+      "scheduler",
 //      "sensors",
 //      "shutters",
       "sun",
@@ -118,6 +118,13 @@
       ]
     }
   },
+  "gcntan": {
+    "serverpacketport": "5328",
+    "swiftalertprojectidentifier": "1000",
+    "fermialertprojectidentifier": "1001",
+    "lvcalertprojectidentifier"  : "1002"
+  },
+  "scheduler": {},
   "power": {
     "hosts": {
       "rack-ibb": {
@@ -796,8 +803,4 @@
 //    "telescopecloseexplicitly": "true",
 //    "supervisorinternalhumiditysensor": "dome-humidity",
 // 
-//    "gcntanswiftalertprojectnumber": "1000",
-//    "gcntanfermialertprojectnumber": "1001",
-//    "gcntanlvcalertprojectnumber": "1002",
-//    "gcntanserverpacketport": "5328",
 
