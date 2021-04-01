@@ -27,17 +27,13 @@
 
 {
   "site": {
-    "longitude": "-99:10:40",
-    "latitude": "+19:19:33.0",
-    "altitude": "2280.0",
+    "latitude": "+31:02:43.0",
+    "longitude": "-115:28:00",
+    "altitude": "2790.0",
     "civiltimezone": "America/Tijuana"
   },
   "html": {
     "servers": [
-//      "C0",
-//      "C1",
-//      "C2",
-//      "C3",
 //      "covers",
       "cryostat",
 //      "dome",
@@ -220,13 +216,13 @@
   },
   "instrument": {
     "detectors": [
-//      "C0" "C1"
+      "C0", "C1"
     ],
     "idlefilterwheelpositions": [
-//      "r" "i"
+      "r", "i"
     ],
     "pointingdetectors": [
-//      "C1"
+      "C1"
     ],
     "outletgroups": [
 //
@@ -265,6 +261,7 @@
     "cooleropensetting": "-40",
     "coolerclosedsetting": "following",
     "temperaturelimit": "40",
+    "temperaturelimitoutletgroup": "C0-ccd",
     "filterwheeltype": "fli",
     "filterwheelidentifier": "CFW-6-10-001",
     "filterwheelinitialposition": "0",
@@ -328,6 +325,7 @@
     "cooleropensetting": "-30",
     "coolerclosedsetting": "following",
     "temperaturelimit": "40",
+    "temperaturelimitoutletgroup": "C1-ccd",
     "filterwheeltype": "null",
     "filterwheelidentifier": "null",
     "filterwheelinitialposition": "0",
@@ -457,6 +455,17 @@
       "16": "-A"
     }
   },
+  "fitsheader": {
+    "servers": [
+      "target",
+      "moon",
+      "sun",
+      "mount",
+      "secondary",
+      "sensors",
+      "weather"
+    ]
+  },
   "secondary": {
     "type": "ratir",
     "controllerhost": "secondary-z",
@@ -472,12 +481,6 @@
     "dzddelta": "-14.0",
     "dzdT": "35.0",
     "temperaturesensor": "dome-temperature"
-  },
-  "site": {
-    "latitude": "+31:02:43.0",
-    "longitude": "-115:28:00",
-    "altitude": "2790.0",
-    "civiltimezone": "America/Tijuana"
   },
   "weather": {
     "windaveragespeedlimit": "45"
@@ -506,15 +509,6 @@
 // /config::setvalue mountwesthalimit             "+05:27:00"
 // // 
 // 
-//    "fitsheaderservers": "{",
-//   moon 
-//   mount 
-//   sensors 
-//   secondary
-//   sun 
-//   target 
-//   weather
-// }
 // 
 //    "instrumentdetectors": "{ "C0" "C1" "C2" "C3" }",
 //    "instrumentidlefilterwheelpositions": "{ "r"  ""    ""  ""   }",

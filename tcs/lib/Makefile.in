@@ -49,7 +49,7 @@ installs_project_ratiroan	:=	\
 	detectorfli.so			\
 	focuserfli.so			\
 	filterwheelfli.so		\
-	detectorsi.so			\
+	filterwheelnull.so
 
 installs_project_coatlioan	:=	\
 	detectorfli.so			\
