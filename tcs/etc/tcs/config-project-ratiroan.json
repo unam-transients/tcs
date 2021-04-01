@@ -26,6 +26,63 @@
 // Finder pointing apertures should be [ -CH, +ID ]
 
 {
+  "site": {
+    "longitude": "-99:10:40",
+    "latitude": "+19:19:33.0",
+    "altitude": "2280.0",
+    "civiltimezone": "America/Tijuana"
+  },
+  "html": {
+    "servers": [
+//      "C0",
+//      "C1",
+//      "C2",
+//      "C3",
+//      "covers",
+      "cryostat",
+//      "dome",
+//      "executor",
+//      "gcntan",
+//      "guider",
+      "html"
+//      "inclinometers",
+//      "instrument",
+//      "moon",
+//      "mount",
+//      "power",
+//      "nefinder",
+//      "secondary",
+//      "sefinder",
+//      "scheduler",
+//      "sensors",
+//      "shutters",
+//      "sun",
+//      "supervisor",
+//      "target",
+//      "telescope",
+//      "weather"
+    ]
+  },
+  "power": {
+    "hosts": {
+    },
+    "outletgroupaddresses": {
+    }
+  },
+  "instrument": {
+    "detectors": [
+//      "C0" "C1"
+    ],
+    "idlefilterwheelpositions": [
+//      "r" "i"
+    ],
+    "pointingdetectors": [
+//      "C1"
+    ],
+    "outletgroups": [
+//
+    ]
+  },
   "C0": {
     "telescopedescription": "OAN/SPM Harold L. Johnson 1.5-meter",
     "detectortype": "fli",
@@ -250,37 +307,6 @@
       "8": "-A",
       "16": "-A"
     }
-  },
-  "html": {
-    "servers": [
-      "C0",
-      "C1",
-      "C2",
-      "C3",
-      "covers",
-      "cryostat",
-      "dome",
-      "executor",
-      "gcntan",
-      "guider",
-      "html",
-      "inclinometers",
-      "instrument",
-      "moon",
-      "mount",
-      "power",
-      "nefinder",
-      "secondary",
-      "sefinder",
-      "scheduler",
-      "sensors",
-      "shutters",
-      "sun",
-      "supervisor",
-      "target",
-      "telescope",
-      "weather"
-    ]
   },
   "secondary": {
     "type": "ratir",
