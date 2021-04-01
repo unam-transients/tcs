@@ -78,6 +78,13 @@
 (define (pointing-y-error pointing)
   (list-ref pointing 8))
   
+(define (pointing-mount-z pointing)
+  (let* (
+      (h     (pointing-mount-h     pointing))
+      (delta (pointing-mount-delta pointing))
+      (z     (acos (+ (* (sin delta) (sin phi)) (* (cos delta) (cos phi) (cos h))))))
+    z))
+
 (define (pointing-lst pointing)
   (fold-angle (+ (pointing-image-alpha pointing) (pointing-mount-h pointing) (deg->rad +32))))
 
@@ -185,6 +192,7 @@
       (* (model-term 'NPS     p) (* (sgn h) (sin delta)))
       (* (model-term 'MA      p) (- (* (sin delta) (cos h))))
       (* (model-term 'ME      p) (sin delta) (sin h))
+      (* (model-term 'TF      p) (* (cos phi) (sin h)))
       (* (model-term 'DAF     p) (- (cos z)))
       (* (model-term 'HHSH    p) (cos delta) (sin h))
       (* (model-term 'HHCH    p) (cos delta) (cos h))
@@ -255,6 +263,7 @@
 	 (if ignore-IDx 0 1))
       (* (model-term 'MA    p)    (sin h))
       (* (model-term 'ME    p)    (cos h))
+      (* (model-term 'TF    p) (- (* (cos phi) (cos h) (sin delta)) (* (sin phi) (cos delta))))
       (* (model-term 'FO    p)    (cos h))
       (* (model-term 'HDSD  p)  (sin delta))
       (* (model-term 'HDCD  p)  (cos delta))
@@ -289,7 +298,7 @@
       (A     (atan (sin h) (- (* (cos phi) (tan delta)) (* (sin phi) (cos h)))))
     )
     (+
-      (* (model-term 'TF p)    (sin z))
+      (* 0 (model-term 'TF p)    (sin z))
       (* (model-term 'TFSA p)  (sin z) (sin A))
       (* (model-term 'TFCA p)  (sin z) (cos A))
       (* (model-term 'TFSA2 p) (sin z) (sin (* 2.0 A)))
@@ -419,17 +428,24 @@
     
 
     ; Absolute terms for science CCD
-    ;IH ID 
+    IH ID 
     ;IH0 ID0 
     ;IH1 ID1
     ;IH2 ID2
-    IH3 ID3
+    ;IH3 ID3
     CH NP
-    MA ME TF 
-    HHSH HHCH 
-    HDSD HDCD 
+    MA ME 
+    ;TF 
+
+    ;HHSH HHCH 
     ;HHSH2 HHCH2 
+    ;HHSH3 HHCH3
+    ;HHSH4 HHCH4
+
+    ;HDSD HDCD 
     ;HDSD2 HDCD2
+    ;HDSD3 HDCD3
+    ;HDSD4 HDCD4
 
     ;PXH PXD 
     ;PXH2 PXD2 
@@ -440,10 +456,10 @@
 
     ;ID CH IA
     ;NP MA ME 
-    ;TF 
+    TF 
     ;TX
-    ;FO
-    ;DAF
+    FO
+    DAF
     
     ;TFSA TFCA 
     ;TFSA2 TFCA2
@@ -452,8 +468,6 @@
 
     ;HHSH  HHCH 
     ;HHSH2 HHCH2 
-    ;HHSH3 HHCH3
-    ;HHSH4 HHCH4
 
     ;HXSH  HXCH 
     ;HXSH2 HXCH2 
@@ -462,8 +476,6 @@
     
     ;HDSD HDCD 
     ;HDSD2 HDCD2
-    ;HDSD3 HDCD3
-    ;HDSD4 HDCD4
 
     ;PXH  PXD 
     ;PXH2 PXD2
@@ -669,6 +681,8 @@
               (display (rad->deg (pointing-mount-h pointing)))
               (display "\t")
               (display (rad->deg (pointing-mount-delta pointing)))
+              (display "\t")
+              (display (rad->deg (pointing-mount-z pointing)))
               (display "\t")
               (display (* scale (rad->arcsec (model-x-residual p pointing))))
               (display "\t")

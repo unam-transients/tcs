@@ -1,0 +1,214 @@
+\documentclass{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\scalearrows}{0.1}
+\newcommand{\residualscale}{300}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[utf8]{inputenc}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.13}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{fullpage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{amsmath,amsfonts,amssymb}
+\renewcommand{\baselinestretch}{1.0}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{\medskipamount}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{newtxtext,newtxmath}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\pagestyle{empty}
+
+\small
+
+\begin{center}
+\begin{tikzpicture}
+\small
+\begin{axis}[
+   width=16cm,
+   xmin=-200,
+   xmax=+200,
+   xtick={-180,-150,-120,-90,-60,-30,0,+30,+60,+90,+120,+150,+180},
+   xlabel={$h$ (degree) or $\Delta x \times \scalearrows$ (arcsec)},
+   minor x tick num=3,
+   height=8cm,
+   ymin=-100,
+   ymax=+100,
+   ytick={-90,-60,-30,0,+30,+60,+90},
+   minor y tick num=3,
+   ylabel={$\delta$ (degree) or $\Delta y \times \scalearrows$ (arcsec)},
+]
+\addplot [
+  red,
+  quiver={
+   u=\thisrowno{3},
+   v=\thisrowno{4},
+    scale arrows=\scalearrows,
+  },
+  -stealth,
+] table [
+  x index=0,
+  y index=1,
+]  {residuals-0.dat};
+\addplot [
+  blue,
+  quiver={
+    u=\thisrowno{3},
+    v=\thisrowno{4},
+    scale arrows=\scalearrows,
+  },
+  -stealth,
+] table [
+  x index=0,
+  y index=1,
+]  {residuals-180.dat};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+\begin{center}
+
+\begin{tikzpicture}
+\small
+\begin{axis}[
+   width=7.5cm,
+   xmin=-200,
+   xmax=+200,
+   xtick={-180,-120,-60,0,+60,+120,+180},
+   xlabel={$h$ (degree)},
+   minor x tick num=3,
+   height=5cm,
+   ymin=-\residualscale,
+   ymax=+\residualscale,
+   minor y tick num=3,
+   ylabel={$\Delta x$ (arcsec)},
+]
+\addplot [red,mark=o,only marks] table [x index=0,y index=3,only marks] {residuals-0.dat};
+\addplot [blue,mark=o,only marks] table [x index=0,y index=3,only marks] {residuals-180.dat};
+\end{axis}
+\end{tikzpicture}
+\hspace{1cm}
+\begin{tikzpicture}
+\small
+\begin{axis}[
+   width=7.5cm,
+   xmin=-200,
+   xmax=+200,
+   xtick={-180,-120,-60,0,+60,+120,+180},
+   xlabel={$h$ (degree)},
+   minor x tick num=3,
+   height=5cm,
+   ymin=-\residualscale,
+   ymax=+\residualscale,
+   minor y tick num=3,
+   ylabel={$\Delta y$ (arcsec)},
+]
+\addplot [red,mark=o,only marks] table [x index=0,y index=4,only marks] {residuals-0.dat};
+\addplot [blue,mark=o,only marks] table [x index=0,y index=4,only marks] {residuals-180.dat};
+\end{axis}
+\end{tikzpicture}
+
+\begin{tikzpicture}
+\small
+\begin{axis}[
+   width=7.5cm,
+   xmin=-100,
+   xmax=+100,
+   xtick={-90,-60,-30,0,+30,+60,+90},
+   xlabel={$\delta$ (degree)},
+   minor x tick num=3,
+   height=5cm,
+   ymin=-\residualscale,
+   ymax=+\residualscale,
+   minor y tick num=3,
+   ylabel={$\Delta x$ (arcsec)},
+]
+\addplot [red,mark=o,only marks] table [x index=1,y index=3,only marks] {residuals-0.dat};
+\addplot [blue,mark=o,only marks] table [x index=1,y index=3,only marks] {residuals-180.dat};
+\end{axis}
+\end{tikzpicture}
+\hspace{1cm}
+\begin{tikzpicture}
+\small
+\begin{axis}[
+   width=7.5cm,
+   xmin=-100,
+   xmax=+100,
+   xtick={-90,-60,-30,0,+30,+60,+90},
+   xlabel={$\delta$ (degree)},
+   minor x tick num=3,
+   height=5cm,
+   ymin=-\residualscale,
+   ymax=+\residualscale,
+   minor y tick num=3,
+   ylabel={$\Delta y$ (arcsec)},
+]
+\addplot [red,mark=o,only marks] table [x index=1,y index=4] {residuals-0.dat};
+\addplot [blue,mark=o,only marks] table [x index=1,y index=4] {residuals-180.dat};
+\end{axis}
+\end{tikzpicture}
+
+\begin{tikzpicture}
+\small
+\begin{axis}[
+   width=7.5cm,
+   xmin=0,
+   xmax=+100,
+   xtick={0,+30,+60,+90},
+   xlabel={$z$ (degree)},
+   minor x tick num=3,
+   height=5cm,
+   ymin=-\residualscale,
+   ymax=+\residualscale,
+   minor y tick num=3,
+   ylabel={$\Delta x$ (arcsec)},
+]
+\addplot [red,mark=o,only marks] table [x index=2,y index=3,only marks] {residuals-0.dat};
+\addplot [blue,mark=o,only marks] table [x index=2,y index=3,only marks] {residuals-180.dat};
+\end{axis}
+\end{tikzpicture}
+\hspace{1cm}
+\begin{tikzpicture}
+\small
+\begin{axis}[
+   width=7.5cm,
+   xmin=0,
+   xmax=+100,
+   xtick={0,+30,+60,+90},
+   xlabel={$z$ (degree)},
+   minor x tick num=3,
+   height=5cm,
+   ymin=-\residualscale,
+   ymax=+\residualscale,
+   minor y tick num=3,
+   ylabel={$\Delta y$ (arcsec)},
+]
+\addplot [red,mark=o,only marks] table [x index=2,y index=4,only marks] {residuals-0.dat};
+\addplot [blue,mark=o,only marks] table [x index=2,y index=4,only marks] {residuals-180.dat};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+\end{document}
