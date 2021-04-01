@@ -3,6 +3,7 @@
 selectrotation=$1
 shift
 
+grep -v '^#' "$@" |
 awk -v selectrotation=$selectrotation '
 BEGIN {
   pi = 4 * atan2(1, 1);
@@ -23,25 +24,18 @@ function atan(x) {
   return atan2(x,1);
 }
 function zenithdistance(ha, delta) {
-  ha = degtorad(ha);
+  h = degtorad(h);
   delta = degtorad(delta);
-  latitude = degtorad(31);
-  z = acos(sin(latitude) * sin(delta) + cos(latitude) * cos(delta) * cos(ha));
+  phi = degtorad(31.0455305556);
+  z = acos(sin(phi) * sin(delta) + cos(phi) * cos(delta) * cos(h));
   return radtodeg(z);
 }
 {
-  if (NF == 1 || $1 == ";;") {
-    print $0;
-    next;
-  }
+  h = $7;
+  delta = $8;
+  rotation = $9;
   
-  ha = $9;
-  delta = $10;
-  rotation = $11;
-  
-  if (delta < 70 && zenithdistance(ha, delta) <= 65 && rotation == selectrotation) {
+  if (-90 <= delta && delta <= 90 && z <= 90 && rotation == selectrotation) {
     printf("%s\n", $0);
-  } else {
-    printf(";; %s\n", $0);
   } 
 }' "$@"
