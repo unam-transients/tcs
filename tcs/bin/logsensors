@@ -82,6 +82,9 @@ if {[catch {
       set errorcode 1
     }
     set prettyname [dict get $sensors $name prettyname]
+    set subsystem  [dict get $sensors $name subsystem]
+    set component  [dict get $sensors $name component]
+    set group      [dict get $sensors $name group]
     set model      [dict get $sensors $name model]
     set identifier [dict get $sensors $name identifier]
     set firmware   [dict get $sensors $name firmware]
@@ -98,6 +101,9 @@ if {[catch {
     puts $channel "      \"value\"           : \"$value\","
     puts $channel "      \"date\"            : \"$timestamp\","
     puts $channel "      \"pretty_name\"     : \"$prettyname\","
+    puts $channel "      \"subsystem\"       : \"$subsystem\","
+    puts $channel "      \"component\"       : \"$component\","
+    puts $channel "      \"group\"           : \"$group\","
     puts $channel "      \"model\"           : \"$model\","
     puts $channel "      \"identifier\"      : \"$identifier\","
     puts $channel "      \"firmware\"        : \"$firmware\","
