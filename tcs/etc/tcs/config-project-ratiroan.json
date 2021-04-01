@@ -49,7 +49,7 @@
 //      "instrument",
       "moon",
 //      "mount",
-//      "power",
+      "power",
 //      "nefinder",
 //      "secondary",
 //      "sefinder",
@@ -120,8 +120,91 @@
   },
   "power": {
     "hosts": {
+      "rack-ibb": {
+        "type": "ibootbar",
+        "outlets": "16",
+        "inlets": "2"
+      },
+      "ics-cabinet-ibb": {
+        "type": "ibootbar",
+        "outlets": "16",
+        "inlets": "2"
+      },
+      "dome-ibb": {
+        "type": "ibootbar",
+        "outlets": "16",
+        "inlets": "2"
+      },
+      "dome-cabinet-ibb": {
+        "type": "ibootbar",
+        "outlets": "8",
+        "inlets": "2"
+      },
+      "telescope-ibb": {
+        "type": "ibootbar",
+        "outlets": "16",
+        "inlets": "2"
+      },
+      "instrument-ibb": {
+        "type": "ibootbar",
+        "outlets": "16",
+        "inlets": "2"
+      }
     },
     "outletgroupaddresses": {
+      "mount"                : [["dome-cabinet-ibb", "a", "7"]],
+      "mount-motors"         : [["dome-cabinet-ibb", "a", "6"]],
+      "mount-adapter"        : [["dome-cabinet-ibb", "a", "5"]],
+      "inclinometers/covers" : [["dome-ibb", "b", "1"]],
+      "dome"                 : [["dome-ibb", "b", "4"]],
+      "shutters"             : [["dome-ibb", "a", "5"]],
+      "secondary"            : [["dome-ibb", "a", "6"]],
+     
+      "nefinder-ccd"         : [["telescope-ibb", "a", "6"]],
+      "nefinder-focuser"     : [["telescope-ibb", "a", "1"]],
+      "sefinder-ccd"         : [["telescope-ibb", "a", "7"]],
+      "sefinder-focuser"     : [["telescope-ibb", "a", "3"]],
+      "finder-usb-rex"       : [["telescope-ibb", "a", "4"]],
+  
+      "science-ccd-pump"     : [["rack-ibb", "a", "7"]],
+      "finder-ccd-pump"      : [["rack-ibb", "a", "8"]],
+      
+      "C0-ccd"               : [["instrument-ibb", "b", "1"]],
+      "C0-focuser"           : [["instrument-ibb", "b", "6"]],
+      "C0-filter-wheel"      : [["instrument-ibb", "b", "4"]],
+      "C1-ccd"               : [["instrument-ibb", "b", "2"]],
+      "C1-focuser"           : [["instrument-ibb", "b", "8"]],
+      "C01-usb-rex"          : [["instrument-ibb", "b", "5"]],
+      
+      "C23-detectors"        : [["instrument-ibb", "a", "1"]],
+      "C23-usb-rex"          : [["instrument-ibb", "a", "2"]],
+  
+      "dome-lights"          : [["dome-ibb", "b", "6"]],
+      "hallway-light"        : [["rack-ibb", "a", "4"]],
+      
+      "dome-fans"            : [["dome-ibb", "a", "2"]],
+      "compressor-fan"       : [["dome-ibb", "a", "4"]],
+  
+      "compressor"           : [["dome-ibb", "a", "3"]],
+      "vacuum-pump"          : [["dome-ibb", "b", "5"]],
+      
+      "alarm-bell"           : [["dome-ibb", "b", "8"]],
+  
+      "firewall"             : [["rack-ibb", "b", "1"]],
+      "control"              : [["rack-ibb", "b", "2"]],
+      "services"             : [["rack-ibb", "b", "3"]],
+      "detectors"            : [["rack-ibb", "b", "4"]],
+      "irpc"                 : [["rack-ibb", "a", "6"]],
+      "cryostat"             : [["dome-cabinet-ibb", "a", "2"]],
+      
+      "pressure-sensor"      : [["instrument-ibb", "b", "2"]],
+      "pressure-sensor-rex"  : [["instrument-ibb", "b", "1"]],
+  
+      "machine-room-owhub"   : [["rack-ibb", "a", "1"]],
+      "dome-owhub"           : [["dome-ibb", "a", "8"]],
+      "telescope-owhub"      : [["telescope-ibb", "a", "8"]],
+      
+      "ni-controller"        : [["dome-ibb", "a", "7"]]
     }
   },
   "instrument": {

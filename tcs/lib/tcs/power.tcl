@@ -234,6 +234,10 @@ namespace eval "power" {
         for {set i 0} {$i < $outlets} {incr i} {
           set command "$command outletStatus.$i"
         }
+        set inlets [gethostinlets $host]
+        for {set i 1} {$i <= $inlets} {incr i} {
+          set command "$command currentLC$i.0"
+        }
       }
       "ibootpdu" {
         set command "/usr/bin/snmpget -L n -v 1 -c public -M \"+[directories::share]/mibs/\" -m +IBOOTPDU-MIB \"$host\""
@@ -244,8 +248,10 @@ namespace eval "power" {
           set command "$command currentLC$i.0"
         }
       }
+      default {
+        error "unknown power unit type \"$type\"."
+      }
     }
-
     log::debug "$host: command = \"$command\"."
     set channel [open "|$command </dev/null 2>@1" "r"]
     set totalcurrent 0
@@ -257,41 +263,30 @@ namespace eval "power" {
         set line [coroutine::gets $channel]
         log::debug "$host: line = \"$line\"."
         if {[chan eof $channel]} {
-          error "unexpected eof on SNMP channel."
-        }
-        switch $type {
-          "ibootbar" {
-            scan $line "%*\[^:\]::outletStatus.%*d = INTEGER: %\[^(\](%*d)" state
-            if {![string equal $state "on"] && ![string equal $state "off"]} {
-              set state "switching"
-            }
-            set device [string index "abcdefghijklmnop" [expr {$i / 8}]]
-            set number [expr {$i % 8 + 1}]
-            set address [list $host $device $number]
-            setoutletstate $address $state
+          break
+        } elseif {[scan $line "%*\[^:\]::outletStatus.%d = INTEGER: %\[^(\](%*d)" outlet state] == 2} {
+          if {![string equal $state "on"] && ![string equal $state "off"]} {
+            set state "switching"
           }
-          "ibootpdu" {
-            if {[scan $line "IBOOTPDU-MIB::outletStatus.%d = INTEGER: %\[^(\](%*d)" outlet state] == 2} {
-              log::debug "outlet = $outlet state = $state."
-              if {![string equal $state "on"] && ![string equal $state "off"]} {
-                set state "switching"
-              }
-              set device [string index "abcdefghijklmnop" [expr {$outlet / 8}]]
-              set outlet [expr {$outlet % 8 + 1}]
-              set address [list $host $device $outlet]
-              setoutletstate $address $state
-            } elseif {[scan $line "IBOOTPDU-MIB::currentLC%d.0 = INTEGER: %d" inlet current] == 2} {
-              log::debug "inlet = $inlet current = $current."
-              set current [expr {0.01 * $current}]
-              set totalcurrent [expr {$totalcurrent + $current}]
-            } else {
-              error "unexpected SNMP response: $line"
-            }
+          set device [string index "abcdefghijklmnop" [expr {$outlet / 8}]]
+          set number [expr {$outlet % 8 + 1}]
+          set address [list $host $device $number]
+          log::debug "outlet = $outlet address = $address state = $state."
+          setoutletstate $address $state
+        } elseif {[scan $line "%*\[^:\]::currentLC%d.0 = INTEGER: %d" inlet current] == 2} {
+          log::debug "inlet = $inlet current = $current."
+          if {[string equal $type "ibootbar"]} {
+            set current [expr {0.1 * $current}]
+          } elseif {[string equal $type "ibootpdu"]} {
+            set current [expr {0.01 * $current}]
           }
+          set totalcurrent [expr {$totalcurrent + $current}]
+        } else {
+          error "unexpected SNMP response: $line"
         }
       }
-    }]} {
-      log::debug "$host: unable to update."
+    } message]} {
+      log::debug "$host: unable to update: $message"
     } else {
       log::debug "$host: successfully updated."
     }
