@@ -80,7 +80,7 @@ sh focus-map.sh
 
   #allblocks 0014-apertures              e
 
-#   allblocks 2001-roman                  f
+  allblocks 2001-roman                  f
 #   allblocks 2002-gomez-maqueo           g
 #   singleblock 2003-parrott-0            h0
 #   singleblock 2003-parrott-0            h1
