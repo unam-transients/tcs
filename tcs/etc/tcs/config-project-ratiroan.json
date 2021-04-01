@@ -57,7 +57,7 @@
 //      "sensors",
 //      "shutters",
       "sun",
-//      "supervisor",
+      "supervisor",
       "target",
 //      "telescope",
       "weather"
@@ -123,6 +123,10 @@
     "swiftalertprojectidentifier": "1000",
     "fermialertprojectidentifier": "1001",
     "lvcalertprojectidentifier"  : "1002"
+  },
+  "supervisor": {
+    "withplc": "false",
+    "internalhumiditysensor": "dome-humidity"
   },
   "scheduler": {},
   "power": {
@@ -500,9 +504,7 @@
 // /config::setvalue targetwesthalimit            "+05:25:00"
 // /config::setvalue mounteasthalimit             "-05:27:00"
 // /config::setvalue mountwesthalimit             "+05:27:00"
-// 
-//    "supervisorwithplc": "false",
-// 
+// // 
 // 
 //    "fitsheaderservers": "{",
 //   moon 
@@ -801,6 +803,5 @@
 //    "executortype": "ratiroan",
 //    "telescopetype": "ratiroan",
 //    "telescopecloseexplicitly": "true",
-//    "supervisorinternalhumiditysensor": "dome-humidity",
 // 
 
