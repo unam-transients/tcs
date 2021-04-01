@@ -115,6 +115,8 @@ namespace eval "pointing" {
 
     set ddelta [expr {$ddelta + [getparameter $parameters PDD4 ] * pow($delta - $phi, 4)}]
     set ddelta [expr {$ddelta + [getparameter $parameters PDH4 ] * pow($ha, 4)}]
+    
+    set ddelta [expr {$ddelta + [getparameter $parameters DICD ] / cos($delta)}]
 
     return $ddelta
   }
