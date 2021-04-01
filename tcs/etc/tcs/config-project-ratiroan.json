@@ -44,7 +44,7 @@
 //      "executor",
 //      "gcntan",
 //      "guider",
-      "html"
+      "html",
 //      "inclinometers",
 //      "instrument",
 //      "moon",
@@ -60,7 +60,7 @@
 //      "supervisor",
 //      "target",
 //      "telescope",
-//      "weather"
+      "weather"
     ]
   },
   "power": {
