@@ -34,6 +34,11 @@ package require "finders"
 
 package provide "guider" 0.0
 
+config::setdefaultvalue "guider" "eastgain"       -0.50
+config::setdefaultvalue "guider" "northgain"      -0.50
+config::setdefaultvalue "guider" "deadzonewidth"  0.5as
+config::setdefaultvalue "guider" "warningradius"  2.0as
+
 namespace eval "guider" {
 
   variable svnid {$Id}

@@ -27,6 +27,9 @@ package require "config"
 
 package provide "finders" 0.0
 
+config::setdefaultvalue "finders" "minexposuretime" 0.5
+config::setdefaultvalue "finders" "maxexposuretime" 10.0
+
 namespace eval "finders" {
 
   variable svnid {$Id}
