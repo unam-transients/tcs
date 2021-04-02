@@ -6,7 +6,7 @@
 
 ########################################################################
 
-# Copyright © 2009, 2010, 2011, 2012, 2013, 2014, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
+# Copyright © 2009, 2010, 2011, 2012, 2013, 2014, 2017, 2019, 2021 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -31,6 +31,16 @@ package require "log"
 package require "server"
 
 package provide "dome" 0.0
+
+config::setvalue "dome" "controllerhost"        "dome"
+config::setvalue "dome" "controllerport"       "4545"
+config::setvalue "dome" "sx"                   "-0.087"
+config::setvalue "dome" "sy"                   "-0.001"
+config::setvalue "dome" "sz"                   "+0.000"
+config::setvalue "dome" "parkedazimuth"        "0d"
+config::setvalue "dome" "contactsazimuth"      "64d"
+config::setvalue "dome" "allowedazimutherror"  "3d"
+config::setvalue "dome" "trackinganticipation" "1d"
 
 namespace eval "dome" {
 
