@@ -32,15 +32,15 @@ package require "server"
 
 package provide "dome" 0.0
 
-config::setvalue "dome" "controllerhost"        "dome"
-config::setvalue "dome" "controllerport"       "4545"
-config::setvalue "dome" "sx"                   "-0.087"
-config::setvalue "dome" "sy"                   "-0.001"
-config::setvalue "dome" "sz"                   "+0.000"
-config::setvalue "dome" "parkedazimuth"        "0d"
-config::setvalue "dome" "contactsazimuth"      "64d"
-config::setvalue "dome" "allowedazimutherror"  "3d"
-config::setvalue "dome" "trackinganticipation" "1d"
+config::setdefaultvalue "dome" "controllerhost"        "dome"
+config::setdefaultvalue "dome" "controllerport"       "4545"
+config::setdefaultvalue "dome" "sx"                   "-0.087"
+config::setdefaultvalue "dome" "sy"                   "-0.001"
+config::setdefaultvalue "dome" "sz"                   "+0.000"
+config::setdefaultvalue "dome" "parkedazimuth"        "0d"
+config::setdefaultvalue "dome" "contactsazimuth"      "64d"
+config::setdefaultvalue "dome" "allowedazimutherror"  "3d"
+config::setdefaultvalue "dome" "trackinganticipation" "1d"
 
 namespace eval "dome" {
 

@@ -29,8 +29,8 @@ package require "directories"
 package require "log"
 package require "server"
 
-config::setvalue "covers" "controllerhost" "covers"
-config::setvalue "covers" "controllerport" "4545"
+config::setdefaultvalue "covers" "controllerhost" "covers"
+config::setdefaultvalue "covers" "controllerport" "4545"
 
 package provide "coversratiroan" 0.0
 
