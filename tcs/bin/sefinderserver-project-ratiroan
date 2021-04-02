@@ -32,56 +32,7 @@ source [file join [file dirname [info script]] ".." "lib" "tcs" "packages.tcl"]
 
 package require "server"
 server::start {
-
-  config::setdefaultvalue "sefinder" "telescopedescription"        "SE C8-A XLT Finder"
-  config::setdefaultvalue "sefinder" "detectortype"                "fli"
-  config::setdefaultvalue "sefinder" "detectoridentifier"          "ML0702510"
-  config::setdefaultvalue "sefinder" "detectorwidth"               0.68d
-  config::setdefaultvalue "sefinder" "detectorinitialreadmode"     "5MHz"
-  config::setdefaultvalue "sefinder" "detectorinitialsoftwaregain" 8
-  config::setdefaultvalue "sefinder" "detectorinitialbinning"      2
-  config::setdefaultvalue "sefinder" "detectorfullunbinneddatawindow" { sx 46 sy 34 nx 2184 ny 1472 }
-  config::setdefaultvalue "sefinder" "detectorfullunbinnedbiaswindow" { sx 12 sy 34 nx   34 ny 1472 }
-  config::setdefaultvalue "sefinder" "coolersettemperature"        -30
-  config::setdefaultvalue "sefinder" "filterwheeltype"             "null"
-  config::setdefaultvalue "sefinder" "filterwheelidentifier"       "null"
-  config::setdefaultvalue "sefinder" "filterwheelinitialposition"  0
-  config::setdefaultvalue "sefinder" "focusertype"                 "fli"
-  config::setdefaultvalue "sefinder" "focuseridentifier"           "DF0080209"
-  config::setdefaultvalue "sefinder" "focuserinitialposition"      1000
-  config::setdefaultvalue "sefinder" "defaultfocusexposuretime"    1.0
-  config::setdefaultvalue "sefinder" "defaultfocusrange"           600
-  config::setdefaultvalue "sefinder" "defaultfocusstep"            25
-  config::setdefaultvalue "sefinder" "pointingmodelparameters"     {}
-  config::setdefaultvalue "sefinder" "isstandalone"                false
-  config::setdefaultvalue "sefinder" "temperaturelimit"            "40"
-  config::setdefaultvalue "sefinder" "temperaturelimitoutletgroup" "sefinder-ccd"
-
-  config::setdefaultvalue "finder" "identifier"                     "sefinder"
-  config::setdefaultvalue "finder" "telescopedescription"           [config::getvalue "sefinder" "telescopedescription"          ]  
-  config::setdefaultvalue "finder" "detectortype"                   [config::getvalue "sefinder" "detectortype"                  ]
-  config::setdefaultvalue "finder" "detectoridentifier"             [config::getvalue "sefinder" "detectoridentifier"            ]
-  config::setdefaultvalue "finder" "detectorwidth"                  [config::getvalue "sefinder" "detectorwidth"                 ]
-  config::setdefaultvalue "finder" "detectorinitialreadmode"        [config::getvalue "sefinder" "detectorinitialreadmode"       ]
-  config::setdefaultvalue "finder" "detectorinitialsoftwaregain"    [config::getvalue "sefinder" "detectorinitialsoftwaregain"   ]
-  config::setdefaultvalue "finder" "detectorinitialbinning"         [config::getvalue "sefinder" "detectorinitialbinning"        ]
-  config::setdefaultvalue "finder" "detectorfullunbinneddatawindow" [config::getvalue "sefinder" "detectorfullunbinneddatawindow"]
-  config::setdefaultvalue "finder" "detectorfullunbinnedbiaswindow" [config::getvalue "sefinder" "detectorfullunbinnedbiaswindow"]
-  config::setdefaultvalue "finder" "coolersettemperature"           [config::getvalue "sefinder" "coolersettemperature"          ]
-  config::setdefaultvalue "finder" "filterwheeltype"                [config::getvalue "sefinder" "filterwheeltype"               ]
-  config::setdefaultvalue "finder" "filterwheelidentifier"          [config::getvalue "sefinder" "filterwheelidentifier"         ]
-  config::setdefaultvalue "finder" "filterwheelinitialposition"     [config::getvalue "sefinder" "filterwheelinitialposition"    ]
-  config::setdefaultvalue "finder" "focusertype"                    [config::getvalue "sefinder" "focusertype"                   ]
-  config::setdefaultvalue "finder" "focuseridentifier"              [config::getvalue "sefinder" "focuseridentifier"             ]
-  config::setdefaultvalue "finder" "focuserinitialposition"         [config::getvalue "sefinder" "focuserinitialposition"        ]
-  config::setdefaultvalue "finder" "defaultfocusexposuretime"       [config::getvalue "sefinder" "defaultfocusexposuretime"      ]
-  config::setdefaultvalue "finder" "defaultfocusrange"              [config::getvalue "sefinder" "defaultfocusrange"             ]
-  config::setdefaultvalue "finder" "defaultfocusstep"               [config::getvalue "sefinder" "defaultfocusstep"              ]
-  config::setdefaultvalue "finder" "pointingmodelparameters"        [config::getvalue "sefinder" "pointingmodelparameters"       ]
-  config::setdefaultvalue "finder" "isstandalone"                   [config::getvalue "sefinder" "isstandalone"                  ]
-  config::setdefaultvalue "finder" "temperaturelimit"               [config::getvalue "sefinder" "temperaturelimit"              ]
-  config::setdefaultvalue "finder" "temperaturelimitoutletgroup"    [config::getvalue "sefinder" "temperaturelimitoutletgroup"   ]
-
+  config::setvalue "finder" "identifier" "sefinder"
   package require finderserver
   finderserver::start
 }
