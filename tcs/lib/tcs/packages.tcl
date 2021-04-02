@@ -50,10 +50,10 @@ package ifneeded constraints           0.0 \
   [list source [file join [file dirname [info script]] constraints.tcl]]
 package ifneeded controller            0.0 \
   [list source [file join [file dirname [info script]] controller.tcl]]
-package ifneeded coversratir           0.0 \
-  [list source [file join [file dirname [info script]] coversratir.tcl]]
-package ifneeded coversastelco         0.0 \
-  [list source [file join [file dirname [info script]] coversastelco.tcl]]
+package ifneeded coversratiroan        0.0 \
+  [list source [file join [file dirname [info script]] coversratiroan.tcl]]
+package ifneeded coverscoatlioan       0.0 \
+  [list source [file join [file dirname [info script]] coverscoatlioan.tcl]]
 package ifneeded coversserver          0.0 \
   [list source [file join [file dirname [info script]] coversserver.tcl]]
 package ifneeded cryostat              0.0 \

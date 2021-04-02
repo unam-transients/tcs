@@ -29,7 +29,10 @@ package require "directories"
 package require "log"
 package require "server"
 
-package provide "coversratir" 0.0
+config::setvalue "covers" "controllerhost" "covers"
+config::setvalue "covers" "controllerport" "4545"
+
+package provide "coversratiroan" 0.0
 
 namespace eval "covers" {
 

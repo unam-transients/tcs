@@ -24,9 +24,10 @@
 ########################################################################
 
 package require "config"
-package require "telescope[config::getvalue "telescope" "type"]"
 package require "log"
 package require "server"
+
+package require "telescope[config::getvalue "telescope" "type"]"
 
 package provide "telescopeserver" 0.0
 

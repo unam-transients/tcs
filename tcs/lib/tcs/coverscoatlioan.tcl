@@ -2,7 +2,7 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: coversastelco.tcl 3601 2020-06-11 03:20:53Z Alan $
+# $Id: coverscoatlioan.tcl 3601 2020-06-11 03:20:53Z Alan $
 
 ########################################################################
 
@@ -28,7 +28,10 @@ package require "controller"
 package require "log"
 package require "server"
 
-package provide "coversastelco" 0.0
+config::setvalue "covers" "controllerport" "serial"
+config::setvalue "covers" "controllerhost" "10001"
+
+package provide "coverscoatlioan" 0.0
 
 namespace eval "covers" {
 

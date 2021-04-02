@@ -37,8 +37,8 @@ installs	:=			\
 	controller.tcl			\
 	coroutine.tcl			\
 	covers.tcl			\
-	coversastelco.tcl		\
-	coversratir.tcl			\
+	coverscoatlioan.tcl		\
+	coversratiroan.tcl			\
 	coversserver.tcl		\
 	cryostat.tcl			\
 	cryostatserver.tcl		\
