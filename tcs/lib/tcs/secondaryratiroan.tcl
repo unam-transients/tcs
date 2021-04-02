@@ -30,7 +30,24 @@ package require "log"
 package require "coroutine"
 package require "server"
 
-package provide "secondaryratir" 0.0
+package provide "secondaryratiroan" 0.0
+
+# The actual range is more like 0 to 19150, but we want to stay away
+# from the limits.
+
+config::setdefaultvalue "secondary" "controllerhost"    "secondary-z"
+config::setdefaultvalue "secondary" "controllerport"    "3333"
+config::setdefaultvalue "secondary" "minz"              "500"
+config::setdefaultvalue "secondary" "maxz"              "18500"
+config::setdefaultvalue "secondary" "initialz0"         "6400"
+config::setdefaultvalue "secondary" "dztweak"           "+30"
+config::setdefaultvalue "secondary" "dzdzenithdistance" "+352.0"
+config::setdefaultvalue "secondary" "dzdha"             "-6.5"
+config::setdefaultvalue "secondary" "dzddelta"          "-14.0"
+config::setdefaultvalue "secondary" "dzdT"              "35.0"
+config::setdefaultvalue "secondary" "temperaturesensor" "dome-temperature"
+config::setdefaultvalue "secondary" "allowedzerror"     "1"
+config::setdefaultvalue "secondary" "zdeadzonewidth"    "5"
 
 namespace eval "secondary" {
 

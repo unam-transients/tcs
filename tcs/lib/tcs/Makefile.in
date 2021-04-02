@@ -125,7 +125,7 @@ installs	:=			\
 	schedulerserver.tcl 		\
 	secondary.tcl			\
 	secondaryoptec.tcl		\
-	secondaryratir.tcl		\
+	secondaryratiroan.tcl		\
 	secondaryserver.tcl		\
 	sensors.tcl			\
 	sensorsserver.tcl		\
