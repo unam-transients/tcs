@@ -32,6 +32,9 @@ package require "utcclock"
 
 package provide "inclinometers" 0.0
 
+config::setdefaultvalue "inclinometers" "controllerhost" "inclinometers"
+config::setdefaultvalue "inclinometers" "controllerport" "4545"
+
 namespace eval "inclinometers" {
 
   variable svnid {$Id}

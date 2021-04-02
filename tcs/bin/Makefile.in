@@ -115,7 +115,7 @@ installbins_project_ratiroan	:=		\
 	cryostatserver-project-ratiroan		\
 	finderdataserver                        \
 	h2rgexpose-project-ratiroan		\
-	inclinometersserver-project-ratiroan	\
+	inclinometersserver	\
 	instrumentimageserver			\
 	nefinderserver-project-ratiroan		\
 	secondaryserver				\
