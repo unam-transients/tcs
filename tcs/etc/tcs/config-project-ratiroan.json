@@ -43,6 +43,7 @@
       "html",
       "inclinometers",
       "instrument",
+      "lights",
       "moon",
 //      "mount",
       "power",
@@ -471,6 +472,10 @@
   },
   "covers": {
     "type": "ratiroan"
+  },
+  "lights": {
+    "type": "power",
+    "outletgroup": "dome-lights"
   },
   "secondary": {
     "type": "ratir",

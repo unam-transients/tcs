@@ -42,7 +42,7 @@ ratiroan-services)
   allargs="log 1 html gcntan"
   ;;
 ratiroan-control)
-  allargs="cryostat sensors power weather 1 target 1 moon sun 1 covers dome inclinometers secondary shutters 1 mount 1 nefinder sefinder 1 guider 1 telescope instrument 1 executor scheduler supervisor"
+  allargs="cryostat sensors power weather 1 target 1 moon sun 1 covers dome inclinometers lights secondary shutters 1 mount 1 nefinder sefinder 1 guider 1 telescope instrument 1 executor scheduler supervisor"
   ;;
 ratiroan-detectors)
   allargs="C0 C1"

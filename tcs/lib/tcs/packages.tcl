@@ -158,6 +158,8 @@ package ifneeded lightsgpio            0.0 \
   [list source [file join [file dirname [info script]] lightsgpio.tcl]]
 package ifneeded lightsplc             0.0 \
   [list source [file join [file dirname [info script]] lightsplc.tcl]]
+package ifneeded lightspower          0.0 \
+  [list source [file join [file dirname [info script]] lightspower.tcl]]
 package ifneeded lightsserver          0.0 \
   [list source [file join [file dirname [info script]] lightsserver.tcl]]
 package ifneeded moon                  0.0 \
