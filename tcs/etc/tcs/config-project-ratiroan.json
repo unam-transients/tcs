@@ -39,8 +39,7 @@
       "dome",
 //      "executor",
       "gcntan",
-//      "guider",
-      "html",
+      "guider",
       "inclinometers",
       "instrument",
       "lights",
@@ -481,6 +480,12 @@
     "type": "ratiroan",
     "initialz0": "6500",
     "temperaturesensor": "dome-temperature"
+  },
+  "guider": {
+    "finders": [
+      "nefinder",
+      "sefinder"
+    ]
   },
   "nefinder": {
     // Finder focuser values determined 2015-08-05.
@@ -1193,13 +1198,6 @@
 // 
 // 2015-06-03
 // 
-//    "guidereastgain": "-0.5",
-//    "guidernorthgain": "-0.5",
-// 
-//    "finders": "{",
-//   nefinder
-//   sefinder
-// }
 // 
 // Secondary z0 value from 2013-03.
 //    "secondaryinitialz0": "6400",
