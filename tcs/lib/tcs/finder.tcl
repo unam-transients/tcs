@@ -70,6 +70,7 @@ namespace eval "finder" {
   variable detectorwidth                   [astrometry::parseangle [config::getvalue "finder" "detectorwidth"]]
   variable pointingmodelparameters         [config::getvalue "finder" "pointingmodelparameters"        ]
   variable temperaturelimit                [config::getvalue "finder" "temperaturelimit"               ]
+  variable temperaturelimitoutletgroup     [config::getvalue "finder" "temperaturelimitoutletgroup" ]
 
   ######################################################################
   
@@ -168,27 +169,35 @@ namespace eval "finder" {
       set settled false
     }
     
-    variable temperaturelimit
-    set toowarm false
-
     set detectortemperature [detector::getdetectortemperature]
-    if {$detectortemperature > $temperaturelimit} {
-      log::error [format "switching off cooling and performing an emergency stop as the detector is too warm (%+.1f C)." $detectortemperature]
-      set toowarm true
-    }
+    set housingtemperature  [detector::gethousingtemperature]
 
-    set housingtemperature [detector::gethousingtemperature]
-    if {$housingtemperature > $temperaturelimit} {
-      log::error [format "switching off cooling and performing an emergency stop as the housing is too warm (%+.1f C)." $housingtemperature]
-      set toowarm true
-    }
+    variable temperaturelimit
+    if {![string equal "" $temperaturelimit]} {
 
-    if {$toowarm} {
-      detector::setcooler "off"
-      variable identifier
-      exec "[directories::prefix]/bin/emergencystop" "$identifier-ccd"
-      log::error "exiting."
-      exit 1
+      set toowarm false
+  
+      if {$detectortemperature > $temperaturelimit} {
+        log::error [format "switching off cooling as the detector is too warm (%+.1f C)." $detectortemperature]
+        set toowarm true
+      }
+
+      if {$housingtemperature > $temperaturelimit} {
+        log::error [format "switching off cooling as the housing is too warm (%+.1f C)." $housingtemperature]
+        set toowarm true
+      }
+
+      if {$toowarm} {
+        detector::setcooler "off"
+        variable temperaturelimitoutletgroup
+        if {![string equal "" $temperaturelimitoutletgroup]} {
+          log::error "performing an emergency stop."
+          exec "[directories::prefix]/bin/emergencystop" $temperaturelimitoutletgroup
+        }
+        log::error "exiting."
+        exit 1
+      }
+      
     }
 
     server::setstatus "ok"
