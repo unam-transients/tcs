@@ -50,7 +50,7 @@
 //      "secondary",
 //      "sefinder",
       "scheduler",
-//      "sensors",
+      "sensors",
 //      "shutters",
       "sun",
       "supervisor",
@@ -490,6 +490,591 @@
   },
   "weather": {
     "windaveragespeedlimit": "45"
+  },
+  "sensors": {
+    "lognames": [
+      "control-room-temperature",
+      "bathroom-temperature",
+      "machine-room-temperature",
+      "dark-room-temperature",
+      "cistern-room-temperature",
+      "hallway-temperature",
+      "dome-temperature",
+      "control-room-light-level",
+      "bathroom-light-level",
+      "machine-room-light-level",
+      "dark-room-light-level",
+      "hallway-light-level",
+      "dome-light-level",
+      "dome-cabinet-temperature",
+      "compressor-current",
+      "compressor-cabinet-temperature",
+      "compressor-supply-temperature",
+      "compressor-return-temperature",
+      "cryostat-external-temperature",
+      "coldhead-external-temperature",
+      "ccd-coolant-temperature",
+      "finder-ccd-pump-temperature",
+      "science-ccd-pump-temperature",
+      "compressor-temperature",
+      "rack-ibb-current",
+      "dome-ibb-current",
+      "dome-cabinet-current",
+      "telescope-ibb-current",
+      "instrument-ibb-current"
+    ],
+    "sensors": {
+      "control-room-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.D2A000000000/temperature",
+        "keyword": "CNTM",
+        "prettyname": "control room temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.D2A000000000",
+        "firmware": ""
+      },
+      "bathroom-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.48A601000000/temperature",
+        "keyword": "BTTM",
+        "prettyname": "bathroom temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.48A601000000",
+        "firmware": ""
+      },
+      "machine-room-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.8D9D00000000/temperature",
+        "keyword": "MCTM",
+        "prettyname": "machine room temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.8D9D00000000",
+        "firmware": ""
+      },
+      "dark-room-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.76C201000000/temperature",
+        "keyword": "DKTM",
+        "prettyname": "dark room temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.76C201000000",
+        "firmware": ""
+      },
+      "cistern-room-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/28.54908C020000/temperature",
+        "keyword": "CSTM",
+        "prettyname": "cistern room temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-T",
+        "identifier": "28.54908C020000",
+        "firmware": ""
+      },
+      "hallway-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.426901000000/temperature",
+        "keyword": "HLTM",
+        "prettyname": "hallway temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.426901000000",
+        "firmware": ""
+      },
+      "dome-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.4688E1010000/temperature",
+        "keyword": "DMTM",
+        "prettyname": "dome temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.4688E1010000",
+        "firmware": ""
+      },
+      "dome-cabinet-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/28.6510A1020000/temperature",
+        "keyword": "DMCTM",
+        "prettyname": "dome cabinet temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-T",
+        "identifier": "28.6510A1020000",
+        "firmware": ""
+      },
+      "dome-humidity": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.4688E1010000/HIH4000/humidity",
+        "keyword": "DMHM",
+        "prettyname": "dome relative humidity",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.4688E1010000",
+        "firmware": ""
+      },
+      "compressor-current": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.69B340010000/VAD",
+        "keyword": "CMCR",
+        "prettyname": "compressor current",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "A",
+        "model": "iButtonLink MS-TC",
+        "identifier": "26.69B340010000",
+        "firmware": ""
+      },
+      "compressor-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/28.3AF4E0020000/temperature",
+        "keyword": "CMTM",
+        "prettyname": "compressor temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-T",
+        "identifier": "28.3AF4E0020000",
+        "firmware": ""
+      },
+      "compressor-cabinet-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.69B340010000/temperature",
+        "keyword": "CMCTM",
+        "prettyname": "compressor cabinet temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TC",
+        "identifier": "26.69B340010000",
+        "firmware": ""
+      },
+      "compressor-supply-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/28.4720E1020000/temperature",
+        "keyword": "CMSTM",
+        "prettyname": "compressor supply temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-T",
+        "identifier": "28.4720E1020000",
+        "firmware": ""
+      },
+      "compressor-return-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/28.A87E8C020000/temperature",
+        "keyword": "CMRTM",
+        "prettyname": "compressor return temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-T",
+        "identifier": "28.A87E8C020000",
+        "firmware": ""
+      },
+      "cryostat-external-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/28.F806E1020000/temperature",
+        "keyword": "CRTM",
+        "prettyname": "cryostat external temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-T",
+        "identifier": "28.F806E1020000",
+        "firmware": ""
+      },
+      "coldhead-external-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/28.D4E8E0020000/temperature",
+        "keyword": "CHTM",
+        "prettyname": "coldhead external temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-T",
+        "identifier": "28.D4E8E0020000",
+        "firmware": ""
+      },
+      "ccd-coolant-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/28.219414060000/temperature",
+        "keyword": "CCTM",
+        "prettyname": "ccd coolant temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-T",
+        "identifier": "28.219414060000",
+        "firmware": ""
+      },
+      "finder-ccd-pump-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/28.3CD8E0020000/temperature",
+        "keyword": "FPTM",
+        "prettyname": "finder ccd pump temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-T",
+        "identifier": "28.3CD8E0020000",
+        "firmware": ""
+      },
+      "science-ccd-pump-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/28.8F08E1020000/temperature",
+        "keyword": "SPTM",
+        "prettyname": "science ccd pump temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-T",
+        "identifier": "28.8F08E1020000",
+        "firmware": ""
+      },
+      "control-room-light-level": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.D2A000000000/VAD",
+        "keyword": "CNLL",
+        "prettyname": "control room light level",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.D2A000000000",
+        "firmware": ""
+      },
+      "bathroom-light-level": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.48A601000000/VAD",
+        "keyword": "BTLL",
+        "prettyname": "bathroom light level",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.48A601000000",
+        "firmware": ""
+      },
+      "machine-room-light-level": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.8D9D00000000/VAD",
+        "keyword": "MCLL",
+        "prettyname": "machine room light level",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.8D9D00000000",
+        "firmware": ""
+      },
+      "dark-room-light-level": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.76C201000000/VAD",
+        "keyword": "DRLL",
+        "prettyname": "dark room light level",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.76C201000000",
+        "firmware": ""
+      },
+      "hallway-light-level": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.426901000000/VAD",
+        "keyword": "HLLL",
+        "prettyname": "hallway light level",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.426901000000",
+        "firmware": ""
+      },
+      "dome-light-level": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.D8B801000000/VAD",
+        "keyword": "DMLL",
+        "prettyname": "dome light level",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.D8B801000000",
+        "firmware": ""
+      },
+      "host-services-load": {
+        "file": "/usr/local/var/tcs/sensors/services/load",
+        "keyword": "",
+        "prettyname": "load on host services",
+        "group": "host-services",
+        "type": "float",
+        "unit": "processes",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-control-load": {
+        "file": "/usr/local/var/tcs/sensors/control/load",
+        "keyword": "",
+        "prettyname": "load on host control",
+        "group": "host-control",
+        "type": "float",
+        "unit": "processes",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-detectors-load": {
+        "file": "/usr/local/var/tcs/sensors/detectors/load",
+        "keyword": "",
+        "prettyname": "load on host instrument",
+        "group": "host-instrument",
+        "type": "float",
+        "unit": "processes",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-services-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/services/disk-space-used",
+        "keyword": "",
+        "prettyname": "relative disk space used on host services",
+        "group": "host-services",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-control-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/control/disk-space-used",
+        "keyword": "",
+        "prettyname": "relative disk space used on host control",
+        "group": "host-control",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-detectors-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/detectors/disk-space-used",
+        "keyword": "",
+        "prettyname": "relative disk space used on host instrument",
+        "group": "host-instrument",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "rack-ibb-current": {
+        "file": "/usr/local/var/tcs/sensors/control/rack-ibb-current",
+        "keyword": "",
+        "prettyname": "inlet current for rack-ibb",
+        "group": "power",
+        "type": "float",
+        "unit": "A",
+        "model": "iBootBar",
+        "identifier": "",
+        "firmware": ""
+      },      
+      "dome-ibb-current": {
+        "file": "/usr/local/var/tcs/sensors/control/dome-ibb-current",
+        "keyword": "",
+        "prettyname": "inlet current for dome-ibb",
+        "group": "power",
+        "type": "float",
+        "unit": "A",
+        "model": "iBootBar",
+        "identifier": "",
+        "firmware": ""
+      },      
+      "dome-cabinet-ibb-current": {
+        "file": "/usr/local/var/tcs/sensors/control/dome-cabinet-ibb-current",
+        "keyword": "",
+        "prettyname": "inlet current for dome-cabinet-ibb",
+        "group": "power",
+        "type": "float",
+        "unit": "A",
+        "model": "iBootBar",
+        "identifier": "",
+        "firmware": ""
+      },      
+      "telescope-ibb-current": {
+        "file": "/usr/local/var/tcs/sensors/control/telescope-ibb-current",
+        "keyword": "",
+        "prettyname": "inlet current for telescope-ibb",
+        "group": "power",
+        "type": "float",
+        "unit": "A",
+        "model": "iBootBar",
+        "identifier": "",
+        "firmware": ""
+      },      
+      "instrument-ibb-current": {
+        "file": "/usr/local/var/tcs/sensors/control/instrument-ibb-current",
+        "keyword": "",
+        "prettyname": "inlet current for instrument-ibb",
+        "group": "power",
+        "type": "float",
+        "unit": "A",
+        "model": "iBootBar",
+        "identifier": "",
+        "firmware": ""
+      },      
+      "C0-detector-detector-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-detector-temperature",
+        "keyword": "",
+        "prettyname": "C0 detector temperature",
+        "group": "detector-C0",
+        "type": "float",
+        "unit": "C",
+        "model": "FLI PL3041",
+        "identifier": "PL0212309",
+        "firmware": ""
+      },
+      "C0-detector-housing-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-housing-temperature",
+        "keyword": "",
+        "prettyname": "C0 housing temperature",
+        "group": "detector-C0",
+        "type": "float",
+        "unit": "C",
+        "model": "FLI PL3041",
+        "identifier": "PL0212309",
+        "firmware": ""
+      },
+      "C0-detector-cooler-set-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-cooler-set-temperature",
+        "keyword": "",
+        "prettyname": "C0 cooler set temperature",
+        "group": "detector-C0",
+        "type": "float",
+        "unit": "C",
+        "model": "FLI PL3041",
+        "identifier": "PL0212309",
+        "firmware": ""
+      },
+      "C0-detector-cooler-power": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-cooler-power",
+        "keyword": "",
+        "prettyname": "C0 relative cooler power",
+        "group": "detector-C0",
+        "type": "float",
+        "unit": "",
+        "model": "FLI PL3041",
+        "identifier": "PL0212309",
+        "firmware": ""
+      },
+      "C0-detector-cooler-state": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-cooler-state",
+        "keyword": "",
+        "prettyname": "C0 cooler state",
+        "group": "detector-C0",
+        "type": "string",
+        "unit": "",
+        "model": "FLI PL3041",
+        "identifier": "PL0212309",
+        "firmware": ""
+      },
+      "C0-focuser-position": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C0-focuser-position",
+        "keyword": "",
+        "prettyname": "C0 focuser position",
+        "group": "detector-C0",
+        "type": "integer",
+        "unit": "",
+        "model": "FLI PDF",
+        "identifier": "PDF0034613",
+        "firmware": ""
+      },
+      "C0-filter-wheel-position": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C0-filter-wheel-position",
+        "keyword": "",
+        "prettyname": "C0 filter wheel position",
+        "group": "detector-C0",
+        "type": "integer",
+        "unit": "",
+        "model": "FLI CFW-6-10",
+        "identifier": "",
+        "firmware": ""
+      },
+      "C1-detector-detector-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C1-detector-detector-temperature",
+        "keyword": "",
+        "prettyname": "C1 detector temperature",
+        "group": "detector-C1",
+        "type": "float",
+        "unit": "C",
+        "model": "FLI PL3041",
+        "identifier": "PL0154809",
+        "firmware": ""
+      },
+      "C1-detector-housing-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C1-detector-housing-temperature",
+        "keyword": "",
+        "prettyname": "C1 housing temperature",
+        "group": "detector-C1",
+        "type": "float",
+        "unit": "C",
+        "model": "FLI PL3041",
+        "identifier": "PL0154809",
+        "firmware": ""
+      },
+      "C1-detector-cooler-set-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C1-detector-cooler-set-temperature",
+        "keyword": "",
+        "prettyname": "C1 cooler set temperature",
+        "group": "detector-C1",
+        "type": "float",
+        "unit": "C",
+        "model": "FLI PL3041",
+        "identifier": "PL0154809",
+        "firmware": ""
+      },
+      "C1-detector-cooler-power": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C1-detector-cooler-power",
+        "keyword": "",
+        "prettyname": "C1 relative cooler power",
+        "group": "detector-C1",
+        "type": "float",
+        "unit": "",
+        "model": "FLI PL3041",
+        "identifier": "PL0154809",
+        "firmware": ""
+      },
+      "C1-detector-cooler-state": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C1-detector-cooler-state",
+        "keyword": "",
+        "prettyname": "C1 cooler state",
+        "group": "detector-C1",
+        "type": "string",
+        "unit": "",
+        "model": "FLI PL3041",
+        "identifier": "PL0154809",
+        "firmware": ""
+      },
+      "C1-focuser-position": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C1-focuser-position",
+        "keyword": "",
+        "prettyname": "C1 focuser position",
+        "group": "detector-C1",
+        "type": "integer",
+        "unit": "",
+        "model": "FLI PDF",
+        "identifier": "",
+        "firmware": ""
+      },
+      "C1-filter-wheel-position": {
+        "file": "/usr/local/var/tcs/sensors/detectors/C1-filter-wheel-position",
+        "keyword": "",
+        "prettyname": "C1 filter wheel position",
+        "group": "detector-C1",
+        "type": "integer",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      }
+    }
   }
 }
 
@@ -706,96 +1291,11 @@
 // 
 //    "sensorsdict": "{",
 // 
-//   control-room-temperature          { file /usr/local/var/tcs/sensors/control/ow/26.D2A000000000/temperature      keyword CNTM  prettyname "control room temperature"                    group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-TL" identifier "26.D2A000000000" firmware "" }
-//   bathroom-temperature              { file /usr/local/var/tcs/sensors/control/ow/26.48A601000000/temperature      keyword BTTM  prettyname "bathroom temperature"                        group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-TL" identifier "26.48A601000000" firmware "" }
-//   machine-room-temperature          { file /usr/local/var/tcs/sensors/control/ow/26.8D9D00000000/temperature      keyword MCTM  prettyname "machine room temperature"                    group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-TL" identifier "26.8D9D00000000" firmware "" }
-//   dark-room-temperature             { file /usr/local/var/tcs/sensors/control/ow/26.76C201000000/temperature      keyword DKTM  prettyname "dark room temperature"                       group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-TL" identifier "26.76C201000000" firmware "" }
-//   cistern-room-temperature          { file /usr/local/var/tcs/sensors/control/ow/28.54908C020000/temperature      keyword CSTM  prettyname "cistern room temperature"                    group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-T"  identifier "28.54908C020000" firmware "" }
-//   hallway-temperature               { file /usr/local/var/tcs/sensors/control/ow/26.426901000000/temperature      keyword HLTM  prettyname "hallway temperature"                         group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-TL" identifier "26.426901000000" firmware "" }
-//   dome-temperature                  { file /usr/local/var/tcs/sensors/control/ow/26.4688E1010000/temperature      keyword DMTM  prettyname "dome temperature"                            group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-TL" identifier "26.4688E1010000" firmware "" }
-// 
-//   dome-cabinet-temperature          { file /usr/local/var/tcs/sensors/control/ow/28.6510A1020000/temperature      keyword DMCTM prettyname "dome cabinet temperature"                    group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-T"  identifier "28.6510A1020000" firmware ""}
-// 
-//   dome-humidity                     { file /usr/local/var/tcs/sensors/control/ow/26.4688E1010000/HIH4000/humidity keyword DMHM  prettyname "dome relative humidity"                      group "environmental-sensors" type "float" unit ""  model "iButtonLink MS-TH" identifier "26.4688E1010000" firmware "" }
-// 
-//   compressor-current                { file /usr/local/var/tcs/sensors/control/ow/26.69B340010000/VAD         keyword CMCR  prettyname "compressor current"                          group "environmental-sensors" type "float" unit "A" model "iButtonLink MS-TC" identifier "26.69B340010000" firmware "" }
-//   compressor-temperature            { file /usr/local/var/tcs/sensors/control/ow/28.3AF4E0020000/temperature keyword CMTM  prettyname "compressor temperature"                      group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-T"  identifier "28.3AF4E0020000" firmware ""}
-//   compressor-cabinet-temperature    { file /usr/local/var/tcs/sensors/control/ow/26.69B340010000/temperature keyword CMCTM prettyname "compressor cabinet temperature"              group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-TC" identifier "26.69B340010000" firmware ""}
-//   compressor-supply-temperature     { file /usr/local/var/tcs/sensors/control/ow/28.4720E1020000/temperature keyword CMSTM prettyname "compressor supply temperature"               group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-T"  identifier "28.4720E1020000" firmware ""}
-//   compressor-return-temperature     { file /usr/local/var/tcs/sensors/control/ow/28.A87E8C020000/temperature keyword CMRTM prettyname "compressor return temperature"               group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-T"  identifier "28.A87E8C020000" firmware ""}
-// 
-//   cryostat-external-temperature     { file /usr/local/var/tcs/sensors/control/ow/28.F806E1020000/temperature keyword CRTM  prettyname "cryostat external temperature"               group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-T"  identifier "28.F806E1020000" firmware ""}
-//   coldhead-external-temperature     { file /usr/local/var/tcs/sensors/control/ow/28.D4E8E0020000/temperature keyword CHTM  prettyname "coldhead external temperature"               group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-T"  identifier "28.D4E8E0020000" firmware ""}
-// 
-//   ccd-coolant-temperature           { file /usr/local/var/tcs/sensors/control/ow/28.219414060000/temperature keyword CCTM  prettyname "ccd coolant temperature"                     group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-T"  identifier "28.219414060000" firmware ""}
-//   finder-ccd-pump-temperature       { file /usr/local/var/tcs/sensors/control/ow/28.3CD8E0020000/temperature keyword FPTM  prettyname "finder ccd pump temperature"                 group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-T"  identifier "28.3CD8E0020000" firmware ""}
-//   science-ccd-pump-temperature      { file /usr/local/var/tcs/sensors/control/ow/28.8F08E1020000/temperature keyword SPTM  prettyname "science ccd pump temperature"                group "environmental-sensors" type "float" unit "C" model "iButtonLink MS-T"  identifier "28.8F08E1020000" firmware ""}
-// 
-//   control-room-light-level          { file /usr/local/var/tcs/sensors/control/ow/26.D2A000000000/VAD         keyword CNLL  prettyname "control room light level"                    group "environmental-sensors" type "float" unit ""  model "iButtonLink MS-TL" identifier "26.D2A000000000" firmware ""}
-//   bathroom-light-level              { file /usr/local/var/tcs/sensors/control/ow/26.48A601000000/VAD         keyword BTLL  prettyname "bathroom light level"                        group "environmental-sensors" type "float" unit ""  model "iButtonLink MS-TL" identifier "26.48A601000000" firmware ""}
-//   machine-room-light-level          { file /usr/local/var/tcs/sensors/control/ow/26.8D9D00000000/VAD         keyword MCLL  prettyname "machine room light level"                    group "environmental-sensors" type "float" unit ""  model "iButtonLink MS-TL" identifier "26.8D9D00000000" firmware ""}
-//   dark-room-light-level             { file /usr/local/var/tcs/sensors/control/ow/26.76C201000000/VAD         keyword DRLL  prettyname "dark room light level"                       group "environmental-sensors" type "float" unit ""  model "iButtonLink MS-TL" identifier "26.76C201000000" firmware ""}
-//   hallway-light-level               { file /usr/local/var/tcs/sensors/control/ow/26.426901000000/VAD         keyword HLLL  prettyname "hallway light level"                         group "environmental-sensors" type "float" unit ""  model "iButtonLink MS-TL" identifier "26.426901000000" firmware ""}
-//   dome-light-level                  { file /usr/local/var/tcs/sensors/control/ow/26.D8B801000000/VAD         keyword DMLL  prettyname "dome light level"                            group "environmental-sensors" type "float" unit ""  model "iButtonLink MS-TL" identifier "26.D8B801000000" firmware ""}
-// 
-//   host-services-load                 { file /usr/local/var/tcs/sensors/services/load                         keyword ""    prettyname "load on host services"                       group "host-services"   type "float" unit "processes" model "" identifier "" firmware "" }
-//   host-control-load                  { file /usr/local/var/tcs/sensors/control/load                          keyword ""    prettyname "load on host control"                        group "host-control"    type "float" unit "processes" model "" identifier "" firmware "" }
-//   host-detectors-load                { file /usr/local/var/tcs/sensors/detectors/load                       keyword ""    prettyname "load on host instrument"                     group "host-instrument" type "float" unit "processes" model "" identifier "" firmware "" }
-// 
-//   host-services-disk-space-used      { file /usr/local/var/tcs/sensors/services/disk-space-used              keyword ""    prettyname "relative disk space used on host services"   group "host-services"   type "float" unit "" model "" identifier "" firmware "" }
-//   host-control-disk-space-used       { file /usr/local/var/tcs/sensors/control/disk-space-used               keyword ""    prettyname "relative disk space used on host control"    group "host-control"    type "float" unit "" model "" identifier "" firmware "" }
-//   host-detectors-disk-space-used    { file /usr/local/var/tcs/sensors/detectors/disk-space-used            keyword ""    prettyname "relative disk space used on host instrument" group "host-instrument" type "float" unit "" model "" identifier "" firmware "" }
-//   
-//   C0-detector-detector-temperature   { file /usr/local/var/tcs/sensors/detectors/C0-detector-detector-temperature   keyword ""   prettyname "C0 detector temperature"   group "detector-C0" type "float"   unit "C" model "FLI PL3041"   identifier "PL0212309"  firmware "" }
-//   C0-detector-housing-temperature    { file /usr/local/var/tcs/sensors/detectors/C0-detector-housing-temperature    keyword ""   prettyname "C0 housing temperature"    group "detector-C0" type "float"   unit "C" model "FLI PL3041"   identifier "PL0212309"  firmware "" }
-//   C0-detector-cooler-set-temperature { file /usr/local/var/tcs/sensors/detectors/C0-detector-cooler-set-temperature keyword ""   prettyname "C0 cooler set temperature" group "detector-C0" type "float"   unit "C" model "FLI PL3041"   identifier "PL0212309"  firmware "" }
-//   C0-detector-cooler-power           { file /usr/local/var/tcs/sensors/detectors/C0-detector-cooler-power           keyword ""   prettyname "C0 relative cooler power"  group "detector-C0" type "float"   unit ""  model "FLI PL3041"   identifier "PL0212309"  firmware "" }
-//   C0-detector-cooler-state           { file /usr/local/var/tcs/sensors/detectors/C0-detector-cooler-state           keyword ""   prettyname "C0 cooler state"           group "detector-C0" type "string"  unit ""  model "FLI PL3041"   identifier "PL0212309"  firmware "" }
-//   C0-focuser-position                { file /usr/local/var/tcs/sensors/detectors/C0-focuser-position                keyword ""   prettyname "C0 focuser position"       group "detector-C0" type "integer" unit ""  model "FLI PDF"      identifier "PDF0034613" firmware "" }
-//   C0-filter-wheel-position           { file /usr/local/var/tcs/sensors/detectors/C0-filter-wheel-position           keyword ""   prettyname "C0 filter wheel position"  group "detector-C0" type "integer" unit ""  model "FLI CFW-6-10" identifier ""           firmware "" }
-// 
-//   C1-detector-detector-temperature   { file /usr/local/var/tcs/sensors/detectors/C1-detector-detector-temperature   keyword ""   prettyname "C1 detector temperature"   group "detector-C1" type "float"   unit "C" model "FLI PL3041"   identifier "PL0154809"  firmware "" }
-//   C1-detector-housing-temperature    { file /usr/local/var/tcs/sensors/detectors/C1-detector-housing-temperature    keyword ""   prettyname "C1 housing temperature"    group "detector-C1" type "float"   unit "C" model "FLI PL3041"   identifier "PL0154809"  firmware "" }
-//   C1-detector-cooler-set-temperature { file /usr/local/var/tcs/sensors/detectors/C1-detector-cooler-set-temperature keyword ""   prettyname "C1 cooler set temperature" group "detector-C1" type "float"   unit "C" model "FLI PL3041"   identifier "PL0154809"  firmware "" }
-//   C1-detector-cooler-power           { file /usr/local/var/tcs/sensors/detectors/C1-detector-cooler-power           keyword ""   prettyname "C1 relative cooler power"  group "detector-C1" type "float"   unit ""  model "FLI PL3041"   identifier "PL0154809"  firmware "" }
-//   C1-detector-cooler-state           { file /usr/local/var/tcs/sensors/detectors/C1-detector-cooler-state           keyword ""   prettyname "C1 cooler state"           group "detector-C1" type "string"  unit ""  model "FLI PL3041"   identifier "PL0154809"  firmware "" }
-//   C1-focuser-position                { file /usr/local/var/tcs/sensors/detectors/C1-focuser-position                keyword ""   prettyname "C1 focuser position"       group "detector-C1" type "integer" unit ""  model "FLI PDF"      identifier ""           firmware "" }
-//   C1-filter-wheel-position           { file /usr/local/var/tcs/sensors/detectors/C1-filter-wheel-position           keyword ""   prettyname "C1 filter wheel position"  group "detector-C1" type "integer" unit ""  model ""             identifier ""           firmware "" }
 // 
 // }
 // 
 //    "sensorslognames": "{",
 // 
-//   control-room-temperature
-//   bathroom-temperature
-//   machine-room-temperature
-//   dark-room-temperature
-//   cistern-room-temperature
-//   hallway-temperature
-//   dome-temperature
-//   
-//   control-room-light-level
-//   bathroom-light-level
-//   machine-room-light-level
-//   dark-room-light-level
-//   hallway-light-level
-//   dome-light-level
-// 
-//   dome-cabinet-temperature
-// 
-//   compressor-current
-//   compressor-cabinet-temperature
-//   compressor-supply-temperature
-//   compressor-return-temperature
-// 
-//   cryostat-external-temperature
-//   coldhead-external-temperature
-// 
-//   ccd-coolant-temperature
-//   finder-ccd-pump-temperature
-//   science-ccd-pump-temperature
-//   
-//   compressor-temperature
 // 
 // }
 // 
