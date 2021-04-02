@@ -41,7 +41,7 @@ ratiroan-services)
   allargs="gcntan html log"
   ;;
 ratiroan-control)
-  allargs="supervisor scheduler executor instrument telescope guider sefinder nefinder mount shutters secondary inclinometers dome covers weather moon sun target power sensors cryostat"
+  allargs="supervisor scheduler executor instrument telescope guider sefinder nefinder mount shutters secondary lights inclinometers dome covers weather moon sun target power sensors cryostat"
   ;;
 ratiroan-detectors)
   allargs="C1 C0"

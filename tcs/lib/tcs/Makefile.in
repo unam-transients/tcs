@@ -96,6 +96,7 @@ installs	:=			\
 	lights.tcl			\
 	lightsgpio.tcl			\
 	lightsplc.tcl			\
+	lightspower.tcl			\
 	lightsserver.tcl		\
 	log.tcl				\
 	moon.tcl			\
