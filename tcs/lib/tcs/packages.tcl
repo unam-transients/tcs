@@ -168,8 +168,8 @@ package ifneeded moonserver            0.0 \
   [list source [file join [file dirname [info script]] moonserver.tcl]]
 package ifneeded mountntm              0.0 \
   [list source [file join [file dirname [info script]] mountntm.tcl]]
-package ifneeded mountratir            0.0 \
-  [list source [file join [file dirname [info script]] mountratir.tcl]]
+package ifneeded mountratiroan         0.0 \
+  [list source [file join [file dirname [info script]] mountratiroan.tcl]]
 package ifneeded mountserver           0.0 \
   [list source [file join [file dirname [info script]] mountserver.tcl]]
 package ifneeded owsensors             0.0 \

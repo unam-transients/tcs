@@ -32,10 +32,28 @@ package require "pointing"
 package require "server"
 package require "utcclock"
 
-package provide "mountratir" 0.0
+package provide "mountratiroan" 0.0
+
+config::setdefaultvalue "mount" "controllerhost"          "mount"
+config::setdefaultvalue "mount" "controllerport"          10001
+config::setdefaultvalue "mount" "allowedlsterror"         "2s"
+config::setdefaultvalue "mount" "allowedpositionerror"    "4as"
+config::setdefaultvalue "mount" "pointingmodelparameters" [dict create]
+config::setdefaultvalue "mount" "allowedguideoffset"      "30as"
 
 # The mount controller soft limits are 0.25d beyond the target
 # controller limits.
+
+config::setdefaultvalue "mount" "easthalimit"             "-05:21:00"
+config::setdefaultvalue "mount" "westhalimit"             "+05:21:00"
+config::setdefaultvalue "mount" "northdeltalimit"         "+56:15:00"
+config::setdefaultvalue "mount" "southdeltalimit"         "-33:15:00"
+config::setdefaultvalue "mount" "zenithdistancelimit"     "79.5d"
+
+config::setdefaultvalue "mount" "hapark"                  "0h"
+config::setdefaultvalue "mount" "deltapark"               $astrometry::latitude
+config::setdefaultvalue "mount" "haunpark"                "0h"
+config::setdefaultvalue "mount" "deltaunpark"             $astrometry::latitude
 
 namespace eval "mount" {
 

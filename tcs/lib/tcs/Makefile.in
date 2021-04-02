@@ -103,7 +103,7 @@ installs	:=			\
 	moonserver.tcl			\
 	mount.tcl			\
 	mountntm.tcl			\
-	mountratir.tcl			\
+	mountratiroan.tcl			\
 	mountserver.tcl			\
 	owsensors.tcl			\
 	owsensorsserver.tcl		\
