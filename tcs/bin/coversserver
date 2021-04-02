@@ -4,7 +4,7 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: coversserver-project-ratiroan 3575 2020-05-23 19:47:32Z Alan $
+# $Id: coversserver-project-ratir 3575 2020-05-23 19:47:32Z Alan $
 
 ########################################################################
 
@@ -30,15 +30,9 @@ umask 0; PATH=/usr/local/opt/tcl-tk/bin:$PATH exec tclsh8.6 -encoding "utf-8" "$
 
 source [file join [file dirname [info script]] ".." "lib" "tcs" "packages.tcl"]
 
-package require "config"
-
-config::setvalue "covers" "controllerport" "covers"
-config::setvalue "covers" "controllerhost" "4545"
-
 package require "server"
 server::start {
-  config::setvalue package require coversserverratir
- "covers" "type"
+  package require coversserver
   coversserver::start
 }
 

@@ -24,9 +24,10 @@
 ########################################################################
 
 package require "config"
-package require "covers[config::getvalue "covers" "type"]"
 package require "log"
 package require "server"
+
+package require "covers[config::getvalue "covers" "type"]"
 
 package provide "coversserver" 0.0
 

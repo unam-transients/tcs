@@ -111,7 +111,7 @@ installbins_project_ratiroan	:=		\
 	C1server				\
 	C2server				\
 	C3server				\
-	coversserver-project-ratiroan		\
+	coversserver		\
 	cryostatserver-project-ratiroan		\
 	finderdataserver                        \
 	h2rgexpose-project-ratiroan		\
@@ -124,8 +124,6 @@ installbins_project_ratiroan	:=		\
 
 installbins_project_coatlioan	:=		\
 	C0server				\
-	C1server				\
-	coversserver-project-coatlioan		\
 	enclosureserver				\
 	instrumentimageserver			\
 	secondaryserver				\

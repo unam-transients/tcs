@@ -34,7 +34,7 @@
   },
   "html": {
     "servers": [
-//      "covers",
+      "covers",
       "cryostat",
 //      "dome",
 //      "executor",
@@ -468,6 +468,9 @@
       "sensors",
       "weather"
     ]
+  },
+  "covers": {
+    "type": "ratiroan"
   },
   "secondary": {
     "type": "ratir",
