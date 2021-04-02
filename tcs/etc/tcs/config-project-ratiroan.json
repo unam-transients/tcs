@@ -37,7 +37,7 @@
       "covers",
       "cryostat",
       "dome",
-//      "executor",
+      "executor",
       "gcntan",
       "guider",
       "inclinometers",
@@ -125,6 +125,9 @@
     "internalhumiditysensor": "dome-humidity"
   },
   "scheduler": {},
+  "executor": {
+    "type": "ratiroan"
+  },
   "safetyswitch": {
     "type": "none"
   },
