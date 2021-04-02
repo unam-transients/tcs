@@ -28,8 +28,8 @@ package require "controller"
 package require "log"
 package require "server"
 
-config::setvalue "covers" "controllerport" "serial"
-config::setvalue "covers" "controllerhost" "10001"
+config::setdefaultvalue "covers" "controllerport" "serial"
+config::setdefaultvalue "covers" "controllerhost" "10001"
 
 package provide "coverscoatlioan" 0.0
 
