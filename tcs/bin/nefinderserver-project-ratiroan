@@ -54,7 +54,8 @@ server::start {
   config::setdefaultvalue "nefinder" "defaultfocusstep"               25
   config::setdefaultvalue "nefinder" "pointingmodelparameters"        {}
   config::setdefaultvalue "nefinder" "isstandalone"                   false
-  config::setdefaultvalue "nefinder" "temperaturelimit"            "40"
+  config::setdefaultvalue "nefinder" "temperaturelimit"               "40"
+  config::setdefaultvalue "nefinder" "temperaturelimitoutletgroup"    "nefinder-ccd"
 
   config::setdefaultvalue "finder" "identifier"                     "nefinder"
   config::setdefaultvalue "finder" "telescopedescription"           [config::getvalue "nefinder" "telescopedescription"          ]  
@@ -79,6 +80,7 @@ server::start {
   config::setdefaultvalue "finder" "pointingmodelparameters"        [config::getvalue "nefinder" "pointingmodelparameters"       ]
   config::setdefaultvalue "finder" "isstandalone"                   [config::getvalue "nefinder" "isstandalone"                  ]
   config::setdefaultvalue "finder" "temperaturelimit"               [config::getvalue "nefinder" "temperaturelimit"              ]
+  config::setdefaultvalue "finder" "temperaturelimitoutletgroup"    [config::getvalue "nefinder" "temperaturelimitoutletgroup"   ]
 
   package require finderserver
   finderserver::start

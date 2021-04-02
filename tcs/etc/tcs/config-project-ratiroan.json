@@ -12,7 +12,7 @@
 // purpose with or without fee is hereby granted, provided that the above
 // copyright notice and this permission notice appear in all copies.
 //
-// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+// THE SOFTWARE IS PROVIDED "AS IS": AND THE AUTHOR DISCLAIMS ALL
 // WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
 // WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
 // AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
@@ -119,7 +119,7 @@
     "serverpacketport": "5328",
     "swiftalertprojectidentifier": "1000",
     "fermialertprojectidentifier": "1001",
-    "lvcalertprojectidentifier"  : "1002"
+    "lvcalertprojectidentifier": "1002"
   },
   "supervisor": {
     "withplc": "false",
@@ -163,59 +163,59 @@
       }
     },
     "outletgroupaddresses": {
-      "mount"                : [["dome-cabinet-ibb", "a", "7"]],
-      "mount-motors"         : [["dome-cabinet-ibb", "a", "6"]],
-      "mount-adapter"        : [["dome-cabinet-ibb", "a", "5"]],
-      "inclinometers/covers" : [["dome-ibb", "b", "1"]],
-      "dome"                 : [["dome-ibb", "b", "4"]],
-      "shutters"             : [["dome-ibb", "a", "5"]],
-      "secondary"            : [["dome-ibb", "a", "6"]],
+      "mount"                 : [["dome-cabinet-ibb", "a", "7"]],
+      "mount-motors"          : [["dome-cabinet-ibb", "a", "6"]],
+      "mount-adapter"         : [["dome-cabinet-ibb", "a", "5"]],
+      "inclinometers/covers"  : [["dome-ibb", "b", "1"]],
+      "dome"                  : [["dome-ibb", "b", "4"]],
+      "shutters"              : [["dome-ibb", "a", "5"]],
+      "secondary"             : [["dome-ibb", "a", "6"]],
      
-      "nefinder-ccd"         : [["telescope-ibb", "a", "6"]],
-      "nefinder-focuser"     : [["telescope-ibb", "a", "1"]],
-      "sefinder-ccd"         : [["telescope-ibb", "a", "7"]],
-      "sefinder-focuser"     : [["telescope-ibb", "a", "3"]],
-      "finder-usb-rex"       : [["telescope-ibb", "a", "4"]],
+      "nefinder-ccd"          : [["telescope-ibb", "a", "6"]],
+      "nefinder-focuser"      : [["telescope-ibb", "a", "1"]],
+      "sefinder-ccd"          : [["telescope-ibb", "a", "7"]],
+      "sefinder-focuser"      : [["telescope-ibb", "a", "3"]],
+      "finder-usb-rex"        : [["telescope-ibb", "a", "4"]],
   
-      "science-ccd-pump"     : [["rack-ibb", "a", "7"]],
-      "finder-ccd-pump"      : [["rack-ibb", "a", "8"]],
+      "science-ccd-pump"      : [["rack-ibb", "a", "7"]],
+      "finder-ccd-pump"       : [["rack-ibb", "a", "8"]],
       
-      "C0-ccd"               : [["instrument-ibb", "b", "1"]],
-      "C0-focuser"           : [["instrument-ibb", "b", "6"]],
-      "C0-filter-wheel"      : [["instrument-ibb", "b", "4"]],
-      "C1-ccd"               : [["instrument-ibb", "b", "2"]],
-      "C1-focuser"           : [["instrument-ibb", "b", "8"]],
-      "C01-usb-rex"          : [["instrument-ibb", "b", "5"]],
+      "C0-ccd"                : [["instrument-ibb", "b", "1"]],
+      "C0-focuser"            : [["instrument-ibb", "b", "6"]],
+      "C0-filter-wheel"       : [["instrument-ibb", "b", "4"]],
+      "C1-ccd"                : [["instrument-ibb", "b", "2"]],
+      "C1-focuser"            : [["instrument-ibb", "b", "8"]],
+      "C01-usb-rex"           : [["instrument-ibb", "b", "5"]],
       
-      "C23-detectors"        : [["instrument-ibb", "a", "1"]],
-      "C23-usb-rex"          : [["instrument-ibb", "a", "2"]],
+      "C23-detectors"         : [["instrument-ibb", "a", "1"]],
+      "C23-usb-rex"           : [["instrument-ibb", "a", "2"]],
   
-      "dome-lights"          : [["dome-ibb", "b", "6"]],
-      "hallway-light"        : [["rack-ibb", "a", "4"]],
+      "dome-lights"           : [["dome-ibb", "b", "6"]],
+      "hallway-light"         : [["rack-ibb", "a", "4"]],
       
-      "dome-fans"            : [["dome-ibb", "a", "2"]],
-      "compressor-fan"       : [["dome-ibb", "a", "4"]],
+      "dome-fans"             : [["dome-ibb", "a", "2"]],
+      "compressor-fan"        : [["dome-ibb", "a", "4"]],
   
-      "compressor"           : [["dome-ibb", "a", "3"]],
-      "vacuum-pump"          : [["dome-ibb", "b", "5"]],
+      "compressor"            : [["dome-ibb", "a", "3"]],
+      "vacuum-pump"           : [["dome-ibb", "b", "5"]],
       
-      "alarm-bell"           : [["dome-ibb", "b", "8"]],
+      "alarm-bell"            : [["dome-ibb", "b", "8"]],
   
-      "firewall"             : [["rack-ibb", "b", "1"]],
-      "control"              : [["rack-ibb", "b", "2"]],
-      "services"             : [["rack-ibb", "b", "3"]],
-      "detectors"            : [["rack-ibb", "b", "4"]],
-      "irpc"                 : [["rack-ibb", "a", "6"]],
-      "cryostat"             : [["dome-cabinet-ibb", "a", "2"]],
+      "firewall"              : [["rack-ibb", "b", "1"]],
+      "control"               : [["rack-ibb", "b", "2"]],
+      "services"              : [["rack-ibb", "b", "3"]],
+      "detectors"             : [["rack-ibb", "b", "4"]],
+      "irpc"                  : [["rack-ibb", "a", "6"]],
+      "cryostat"              : [["dome-cabinet-ibb", "a", "2"]],
       
-      "pressure-sensor"      : [["instrument-ibb", "b", "2"]],
-      "pressure-sensor-rex"  : [["instrument-ibb", "b", "1"]],
+      "pressure-sensor"       : [["instrument-ibb", "b", "2"]],
+      "pressure-sensor-rex"   : [["instrument-ibb", "b", "1"]],
   
-      "machine-room-owhub"   : [["rack-ibb", "a", "1"]],
-      "dome-owhub"           : [["dome-ibb", "a", "8"]],
-      "telescope-owhub"      : [["telescope-ibb", "a", "8"]],
+      "machine-room-owhub"    : [["rack-ibb", "a", "1"]],
+      "dome-owhub"            : [["dome-ibb", "a", "8"]],
+      "telescope-owhub"       : [["telescope-ibb", "a", "8"]],
       
-      "ni-controller"        : [["dome-ibb", "a", "7"]]
+      "ni-controller"         : [["dome-ibb", "a", "7"]]
     }
   },
   "instrument": {
@@ -487,19 +487,19 @@
     "focuserinitialposition": "900",
     // nefinder->C1 pointing model from 2012-12-01.
     "pointingmodelparameters": {
-      "ID" "0.001172724616829814",
-      "CH" "0.005685842385145498",
-      "TF" "0.0005557820545917196",
-      "PXD" "-5.739428252316131e-05",
-      "PXH" "-3.829445767034429e-05",
-      "PDD" "-0.00015076829979477878",
-      "PDH" "-2.0153042921818306e-05",
-      "PXD2" "4.710492734205875e-05",
-      "PXDH" "2.7998725294985172e-05",
-      "PXH2" "0.00010151415908659922",
-      "PDD2" "0.00012000944747220974",
-      "PDDH" "1.594716198114816e-05",
-      "PDH2" "0.00011748745500824078"
+      "ID": "0.001172724616829814",
+      "CH": "0.005685842385145498",
+      "TF": "0.0005557820545917196",
+      "PXD": "-5.739428252316131e-05",
+      "PXH": "-3.829445767034429e-05",
+      "PDD": "-0.00015076829979477878",
+      "PDH": "-2.0153042921818306e-05",
+      "PXD2": "4.710492734205875e-05",
+      "PXDH": "2.7998725294985172e-05",
+      "PXH2": "0.00010151415908659922",
+      "PDD2": "0.00012000944747220974",
+      "PDDH": "1.594716198114816e-05",
+      "PDH2": "0.00011748745500824078"
     }
   },
   "sefinder": {
@@ -507,21 +507,21 @@
     "focuserinitialposition": "900",
     // sefinder->C1 pointing model from 2012-10-27/28/31.
     "pointingmodelparameters": {
-      "ID" "-0.010692308224369446",
-      "CH" "0.004230721672753733",
-      "TF" "0.00046325793363857646",
-      "PXD" "1.375228342951329e-06",
-      "PXH" "-3.3526524143720686e-06",
-      "PDD" "-2.2141872634801845e-05",
-      "PDH" "1.6481509756466534e-05",
-      "PXD2" "7.315276054862623e-05",
-      "PXDH" "3.1845332089947575e-06",
-      "PXH2" "8.878162777549892e-05",
-      "PDD2" "-2.5914516517080327e-05",
-      "PDDH" "-1.697474636767768e-05",
-      "PDH2" "5.091854922385925e-06"
+      "ID": "-0.010692308224369446",
+      "CH": "0.004230721672753733",
+      "TF": "0.00046325793363857646",
+      "PXD": "1.375228342951329e-06",
+      "PXH": "-3.3526524143720686e-06",
+      "PDD": "-2.2141872634801845e-05",
+      "PDH": "1.6481509756466534e-05",
+      "PXD2": "7.315276054862623e-05",
+      "PXDH": "3.1845332089947575e-06",
+      "PXH2": "8.878162777549892e-05",
+      "PDD2": "-2.5914516517080327e-05",
+      "PDDH": "-1.697474636767768e-05",
+      "PDH2": "5.091854922385925e-06"
     }
-  }
+  },
   "weather": {
     "windaveragespeedlimit": "45"
   },
@@ -1135,10 +1135,10 @@
 // // 
 // 
 // 
-//    "instrumentdetectors": "{ "C0" "C1" "C2" "C3" }",
-//    "instrumentidlefilterwheelpositions": "{ "r"  ""    ""  ""   }",
-//    "instrumentoutletgroups": "{ "science-ccd-pump" }",
-//    "instrumentpointingdetectors": "{ "C1" }",
+//    "instrumentdetectors": "{ "C0": "C1": "C2": "C3": }",
+//    "instrumentidlefilterwheelpositions": "{ "r":  "":    "":  "":   }",
+//    "instrumentoutletgroups": "{ "science-ccd-pump": }",
+//    "instrumentpointingdetectors": "{ "C1": }",
 // 
 // 
 // 2015-06-03
@@ -1159,21 +1159,21 @@
 // 
 // C1 pointing model is from 2013-03-02.
 //    "mountpointingmodelparameters": "{",
-      "IH" "0.006533668242404539",
-      "ID" "0.007929685881814245",
-      "CH" "-0.0026209213938258894",
-      "NP" "-4.680493297568115e-05",
-      "MA" "0.00012641691268718878",
-      "ME" "0.00017322259785379566",
-      "TF" "0.0003755179464592134",
-      "HHSH" "0.0015396083794900325",
-      "HHCH" "-0.0006592977329989079",
-      "HDSD" "0.00013017678456448128",
-      "HDCD" "-0.0008225964782655859",
-      "HHSH2" "-0.0007669133481851367",
-      "HHCH2" "0.00029049382856910006",
-      "HDSD2" "-0.0002654818427167385",
-      "HDCD2" "0.0003500303048745197",
+//      "IH": "0.006533668242404539",
+//      "ID": "0.007929685881814245",
+//      "CH": "-0.0026209213938258894",
+//      "NP": "-4.680493297568115e-05",
+//      "MA": "0.00012641691268718878",
+//      "ME": "0.00017322259785379566",
+//      "TF": "0.0003755179464592134",
+//      "HHSH": "0.0015396083794900325",
+//      "HHCH": "-0.0006592977329989079",
+//      "HDSD": "0.00013017678456448128",
+//      "HDCD": "-0.0008225964782655859",
+//      "HHSH2": "-0.0007669133481851367",
+//      "HHCH2": "0.00029049382856910006",
+//      "HDSD2": "-0.0002654818427167385",
+//      "HDCD2": "0.0003500303048745197",
 // }
 // 
 // set nefinderCH [dict get [config::getvalue nefinderpointingmodelparameters] CH]
@@ -1183,18 +1183,18 @@
 // 
 // Finder offsets should be {-CH +ID}
 //    "pointingapertures": "[dict create \",
-//   ""           {+0.0am +0.0am} \
-//   "default"    {+0.0am +0.0am} \
-//   "rcenter"    {+0.0am +0.0am} \
-//   "icenter"    {+0.0am +0.0am} \
-//   "zcenter"    {+0.0am +0.0am} \
-//   "ricenter"   {+0.0am +0.0am} \
-//   "riZJcenter" {-1.4am +0.1am} \
-//   "riYHcenter" {+2.1am +0.3am} \
-//   "ZJcenter"   {-2.3am +0.7am} \
-//   "YHcenter"   {+3.5am +1.0am} \
-//   "nefinder"   [list [expr {-1 * $nefinderCH}] $nefinderID] \
-//   "sefinder"   [list [expr {-1 * $sefinderCH}] $sefinderID] \
+//   "":           {+0.0am +0.0am} \
+//   "default":    {+0.0am +0.0am} \
+//   "rcenter":    {+0.0am +0.0am} \
+//   "icenter":    {+0.0am +0.0am} \
+//   "zcenter":    {+0.0am +0.0am} \
+//   "ricenter":   {+0.0am +0.0am} \
+//   "riZJcenter": {-1.4am +0.1am} \
+//   "riYHcenter": {+2.1am +0.3am} \
+//   "ZJcenter":   {-2.3am +0.7am} \
+//   "YHcenter":   {+3.5am +1.0am} \
+//   "nefinder":   [list [expr {-1 * $nefinderCH}] $nefinderID] \
+//   "sefinder":   [list [expr {-1 * $sefinderCH}] $sefinderID] \
 // ]
 // 
 //    "fitsheaderservers": "{",
@@ -1207,12 +1207,12 @@
 // }
 // 
 //    "ibbhostsdict": "{",
-//   "rack-ibb"  16
-//   "ics-cabinet-ibb"  16
-//   "dome-ibb"         16
-//   "dome-cabinet-ibb" 8
-//   "telescope-ibb"    16
-//   "instrument-ibb"   16
+//   "rack-ibb":  16
+//   "ics-cabinet-ibb":  16
+//   "dome-ibb":         16
+//   "dome-cabinet-ibb": 8
+//   "telescope-ibb":    16
+//   "instrument-ibb":   16
 // }
 // 
 // 
