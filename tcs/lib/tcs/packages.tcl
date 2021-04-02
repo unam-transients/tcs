@@ -210,8 +210,8 @@ package ifneeded schedulerserver        0.0 \
   [list source [file join [file dirname [info script]] schedulerserver.tcl]]
 package ifneeded secondaryoptec        0.0 \
   [list source [file join [file dirname [info script]] secondaryoptec.tcl]]
-package ifneeded secondaryratir        0.0 \
-  [list source [file join [file dirname [info script]] secondaryratir.tcl]]
+package ifneeded secondaryratiroan     0.0 \
+  [list source [file join [file dirname [info script]] secondaryratiroan.tcl]]
 package ifneeded secondaryserver       0.0 \
   [list source [file join [file dirname [info script]] secondaryserver.tcl]]
 package ifneeded sensors               0.0 \

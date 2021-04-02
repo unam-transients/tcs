@@ -48,7 +48,7 @@
 //      "mount",
       "power",
 //      "nefinder",
-//      "secondary",
+      "secondary",
 //      "sefinder",
       "scheduler",
       "sensors",
@@ -478,19 +478,8 @@
     "outletgroup": "dome-lights"
   },
   "secondary": {
-    "type": "ratir",
-    "controllerhost": "secondary-z",
-    "controllerport": "3333",
+    "type": "ratiroan",
     "initialz0": "6500",
-    "minz": "500",
-    "maxz": "18500",
-    "allowedzerror": "1",
-    "zdeadzonewidth": "5",
-    "dztweak": "+30",
-    "dzdzenithdistance": "+352.0",
-    "dzdha": "-6.5",
-    "dzddelta": "-14.0",
-    "dzdT": "35.0",
     "temperaturesensor": "dome-temperature"
   },
   "weather": {
