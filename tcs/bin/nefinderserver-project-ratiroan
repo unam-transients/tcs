@@ -54,29 +54,31 @@ server::start {
   config::setdefaultvalue "nefinder" "defaultfocusstep"               25
   config::setdefaultvalue "nefinder" "pointingmodelparameters"        {}
   config::setdefaultvalue "nefinder" "isstandalone"                   false
+  config::setdefaultvalue "nefinder" "temperaturelimit"            "40"
 
   config::setdefaultvalue "finder" "identifier"                     "nefinder"
-  config::setdefaultvalue "finder" "telescopedescription"           [config::getvalue nefindertelescopedescription          ]  
-  config::setdefaultvalue "finder" "detectortype"                   [config::getvalue nefinderdetectortype                  ]
-  config::setdefaultvalue "finder" "detectoridentifier"             [config::getvalue nefinderdetectoridentifier            ]
-  config::setdefaultvalue "finder" "detectorwidth"                  [config::getvalue nefinderdetectorwidth                 ]
-  config::setdefaultvalue "finder" "detectorinitialreadmode"        [config::getvalue nefinderdetectorinitialreadmode       ]
-  config::setdefaultvalue "finder" "detectorinitialsoftwaregain"    [config::getvalue nefinderdetectorinitialsoftwaregain   ]
-  config::setdefaultvalue "finder" "detectorinitialbinning"         [config::getvalue nefinderdetectorinitialbinning        ]
-  config::setdefaultvalue "finder" "detectorfullunbinneddatawindow" [config::getvalue nefinderdetectorfullunbinneddatawindow]
-  config::setdefaultvalue "finder" "detectorfullunbinnedbiaswindow" [config::getvalue nefinderdetectorfullunbinnedbiaswindow]
-  config::setdefaultvalue "finder" "coolersettemperature"           [config::getvalue nefindercoolersettemperature          ]
-  config::setdefaultvalue "finder" "filterwheeltype"                [config::getvalue nefinderfilterwheeltype               ]
-  config::setdefaultvalue "finder" "filterwheelidentifier"          [config::getvalue nefinderfilterwheelidentifier         ]
-  config::setdefaultvalue "finder" "filterwheelinitialposition"     [config::getvalue nefinderfilterwheelinitialposition    ]
-  config::setdefaultvalue "finder" "focusertype"                    [config::getvalue nefinderfocusertype                   ]
-  config::setdefaultvalue "finder" "focuseridentifier"              [config::getvalue nefinderfocuseridentifier             ]
-  config::setdefaultvalue "finder" "focuserinitialposition"         [config::getvalue nefinderfocuserinitialposition        ]
-  config::setdefaultvalue "finder" "defaultfocusexposuretime"       [config::getvalue nefinderdefaultfocusexposuretime      ]
-  config::setdefaultvalue "finder" "defaultfocusrange"              [config::getvalue nefinderdefaultfocusrange             ]
-  config::setdefaultvalue "finder" "defaultfocusstep"               [config::getvalue nefinderdefaultfocusstep              ]
-  config::setdefaultvalue "finder" "pointingmodelparameters"        [config::getvalue nefinderpointingmodelparameters       ]
-  config::setdefaultvalue "finder" "isstandalone"                   [config::getvalue nefinderisstandalone                  ]
+  config::setdefaultvalue "finder" "telescopedescription"           [config::getvalue "nefinder" "telescopedescription"          ]  
+  config::setdefaultvalue "finder" "detectortype"                   [config::getvalue "nefinder" "detectortype"                  ]
+  config::setdefaultvalue "finder" "detectoridentifier"             [config::getvalue "nefinder" "detectoridentifier"            ]
+  config::setdefaultvalue "finder" "detectorwidth"                  [config::getvalue "nefinder" "detectorwidth"                 ]
+  config::setdefaultvalue "finder" "detectorinitialreadmode"        [config::getvalue "nefinder" "detectorinitialreadmode"       ]
+  config::setdefaultvalue "finder" "detectorinitialsoftwaregain"    [config::getvalue "nefinder" "detectorinitialsoftwaregain"   ]
+  config::setdefaultvalue "finder" "detectorinitialbinning"         [config::getvalue "nefinder" "detectorinitialbinning"        ]
+  config::setdefaultvalue "finder" "detectorfullunbinneddatawindow" [config::getvalue "nefinder" "detectorfullunbinneddatawindow"]
+  config::setdefaultvalue "finder" "detectorfullunbinnedbiaswindow" [config::getvalue "nefinder" "detectorfullunbinnedbiaswindow"]
+  config::setdefaultvalue "finder" "coolersettemperature"           [config::getvalue "nefinder" "coolersettemperature"          ]
+  config::setdefaultvalue "finder" "filterwheeltype"                [config::getvalue "nefinder" "filterwheeltype"               ]
+  config::setdefaultvalue "finder" "filterwheelidentifier"          [config::getvalue "nefinder" "filterwheelidentifier"         ]
+  config::setdefaultvalue "finder" "filterwheelinitialposition"     [config::getvalue "nefinder" "filterwheelinitialposition"    ]
+  config::setdefaultvalue "finder" "focusertype"                    [config::getvalue "nefinder" "focusertype"                   ]
+  config::setdefaultvalue "finder" "focuseridentifier"              [config::getvalue "nefinder" "focuseridentifier"             ]
+  config::setdefaultvalue "finder" "focuserinitialposition"         [config::getvalue "nefinder" "focuserinitialposition"        ]
+  config::setdefaultvalue "finder" "defaultfocusexposuretime"       [config::getvalue "nefinder" "defaultfocusexposuretime"      ]
+  config::setdefaultvalue "finder" "defaultfocusrange"              [config::getvalue "nefinder" "defaultfocusrange"             ]
+  config::setdefaultvalue "finder" "defaultfocusstep"               [config::getvalue "nefinder" "defaultfocusstep"              ]
+  config::setdefaultvalue "finder" "pointingmodelparameters"        [config::getvalue "nefinder" "pointingmodelparameters"       ]
+  config::setdefaultvalue "finder" "isstandalone"                   [config::getvalue "nefinder" "isstandalone"                  ]
+  config::setdefaultvalue "finder" "temperaturelimit"               [config::getvalue "nefinder" "temperaturelimit"              ]
 
   package require finderserver
   finderserver::start

@@ -54,6 +54,7 @@ server::start {
   config::setdefaultvalue "sefinder" "defaultfocusstep"            25
   config::setdefaultvalue "sefinder" "pointingmodelparameters"     {}
   config::setdefaultvalue "sefinder" "isstandalone"                false
+  config::setdefaultvalue "sefinder" "temperaturelimit"            "40"
 
   config::setdefaultvalue "finder" "identifier"                     "sefinder"
   config::setdefaultvalue "finder" "telescopedescription"           [config::getvalue "sefinder" "telescopedescription"          ]  
@@ -77,6 +78,7 @@ server::start {
   config::setdefaultvalue "finder" "defaultfocusstep"               [config::getvalue "sefinder" "defaultfocusstep"              ]
   config::setdefaultvalue "finder" "pointingmodelparameters"        [config::getvalue "sefinder" "pointingmodelparameters"       ]
   config::setdefaultvalue "finder" "isstandalone"                   [config::getvalue "sefinder" "isstandalone"                  ]
+  config::setdefaultvalue "finder" "temperaturelimit"               [config::getvalue "sefinder" "temperaturelimit"              ]
 
   package require finderserver
   finderserver::start
