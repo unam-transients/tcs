@@ -117,9 +117,9 @@ installbins_project_ratiroan	:=		\
 	h2rgexpose-project-ratiroan		\
 	inclinometersserver	\
 	instrumentimageserver			\
-	nefinderserver-project-ratiroan		\
+	nefinderserver		\
 	secondaryserver				\
-	sefinderserver-project-ratiroan		\
+	sefinderserver		\
 	updateweatherfiles-oan
 
 installbins_project_coatlioan	:=		\

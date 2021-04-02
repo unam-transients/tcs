@@ -33,9 +33,9 @@ package require "pointing"
 package require "server"
 package require "directories"
 
-package require "detector[config::getvalue "finder" "detectortype"]"
-package require "focuser[config::getvalue "finder" "focusertype"]"
-package require "filterwheel[config::getvalue "finder" "filterwheeltype"]"
+package require "detector[config::getvalue [config::getvalue "finder" "identifier"] "detectortype"]"
+package require "focuser[config::getvalue [config::getvalue "finder" "identifier"] "focusertype"]"
+package require "filterwheel[config::getvalue [config::getvalue "finder" "identifier"] "filterwheeltype"]"
 
 package provide "finder" 0.0
 
@@ -46,31 +46,31 @@ namespace eval "finder" {
   ######################################################################
 
   variable identifier                      [config::getvalue "finder" "identifier"                     ]
-  variable telescopedescription            [config::getvalue "finder" "telescopedescription"           ]
-  variable detectortype                    [config::getvalue "finder" "detectortype"                   ]
-  variable detectoridentifier              [config::getvalue "finder" "detectoridentifier"             ]
-  variable detectorinitialreadmode         [config::getvalue "finder" "detectorinitialreadmode"        ]
-  variable detectorinitialsoftwaregain     [config::getvalue "finder" "detectorinitialsoftwaregain"    ]
-  variable detectorinitialbinning          [config::getvalue "finder" "detectorinitialbinning"         ]
-  variable detectorfullunbinneddatawindow  [config::getvalue "finder" "detectorfullunbinneddatawindow" ]
-  variable detectorfullunbinnedbiaswindow  [config::getvalue "finder" "detectorfullunbinnedbiaswindow" ]
-  variable coolersettemperature            [config::getvalue "finder" "coolersettemperature"           ]
-  variable filterwheeltype                 [config::getvalue "finder" "filterwheeltype"                ]
-  variable filterwheelidentifier           [config::getvalue "finder" "filterwheelidentifier"          ]
-  variable filterwheelinitialposition      [config::getvalue "finder" "filterwheelinitialposition"     ]
-  variable allowedfilterwheelpositionerror [config::getvalue "finder" "allowedfilterwheelpositionerror"]
-  variable focusertype                     [config::getvalue "finder" "focusertype"                    ]
-  variable focuseridentifier               [config::getvalue "finder" "focuseridentifier"              ]
-  variable focuserinitialposition          [config::getvalue "finder" "focuserinitialposition"         ]
-  variable allowedfocuserpositionerror     [config::getvalue "finder" "allowedfocuserpositionerror"    ]
-  variable defaultfocusexposuretime        [config::getvalue "finder" "defaultfocusexposuretime"       ]
-  variable defaultfocusrange               [config::getvalue "finder" "defaultfocusrange"              ]
-  variable defaultfocusstep                [config::getvalue "finder" "defaultfocusstep"               ]
-  variable isstandalone                    [config::getvalue "finder" "isstandalone"                   ]
-  variable detectorwidth                   [astrometry::parseangle [config::getvalue "finder" "detectorwidth"]]
-  variable pointingmodelparameters         [config::getvalue "finder" "pointingmodelparameters"        ]
-  variable temperaturelimit                [config::getvalue "finder" "temperaturelimit"               ]
-  variable temperaturelimitoutletgroup     [config::getvalue "finder" "temperaturelimitoutletgroup" ]
+  variable telescopedescription            [config::getvalue $identifier "telescopedescription"           ]
+  variable detectortype                    [config::getvalue $identifier "detectortype"                   ]
+  variable detectoridentifier              [config::getvalue $identifier "detectoridentifier"             ]
+  variable detectorinitialreadmode         [config::getvalue $identifier "detectorinitialreadmode"        ]
+  variable detectorinitialsoftwaregain     [config::getvalue $identifier "detectorinitialsoftwaregain"    ]
+  variable detectorinitialbinning          [config::getvalue $identifier "detectorinitialbinning"         ]
+  variable detectorfullunbinneddatawindow  [config::getvalue $identifier "detectorfullunbinneddatawindow" ]
+  variable detectorfullunbinnedbiaswindow  [config::getvalue $identifier "detectorfullunbinnedbiaswindow" ]
+  variable coolersettemperature            [config::getvalue $identifier "coolersettemperature"           ]
+  variable filterwheeltype                 [config::getvalue $identifier "filterwheeltype"                ]
+  variable filterwheelidentifier           [config::getvalue $identifier "filterwheelidentifier"          ]
+  variable filterwheelinitialposition      [config::getvalue $identifier "filterwheelinitialposition"     ]
+  variable allowedfilterwheelpositionerror [config::getvalue $identifier "allowedfilterwheelpositionerror"]
+  variable focusertype                     [config::getvalue $identifier "focusertype"                    ]
+  variable focuseridentifier               [config::getvalue $identifier "focuseridentifier"              ]
+  variable focuserinitialposition          [config::getvalue $identifier "focuserinitialposition"         ]
+  variable allowedfocuserpositionerror     [config::getvalue $identifier "allowedfocuserpositionerror"    ]
+  variable defaultfocusexposuretime        [config::getvalue $identifier "defaultfocusexposuretime"       ]
+  variable defaultfocusrange               [config::getvalue $identifier "defaultfocusrange"              ]
+  variable defaultfocusstep                [config::getvalue $identifier "defaultfocusstep"               ]
+  variable isstandalone                    [config::getvalue $identifier "isstandalone"                   ]
+  variable detectorwidth                   [astrometry::parseangle [config::getvalue $identifier "detectorwidth"]]
+  variable pointingmodelparameters         [config::getvalue $identifier "pointingmodelparameters"        ]
+  variable temperaturelimit                [config::getvalue $identifier "temperaturelimit"               ]
+  variable temperaturelimitoutletgroup     [config::getvalue $identifier "temperaturelimitoutletgroup" ]
 
   ######################################################################
   
