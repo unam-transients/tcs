@@ -30,6 +30,9 @@ package require "server"
 
 package provide "shutters" 0.0
 
+config::setdefaultvalue "shutters" "controllerhost" "shutters"
+config::setdefaultvalue "shutters" "controllerport" "3333"
+
 namespace eval "shutters" {
 
   variable svnid {$Id}
