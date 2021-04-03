@@ -135,7 +135,7 @@ EOF
     set ylabel "Current (A)"
     set key on
     plot \
-      "sensors.dat" using 1:16           title "Compressor"  with lines linestyle 1
+      "sensors.dat" using 30:31            title "Compressor"  with lines linestyle 1
 
     set yrange [-20:30]
     set ytics -20,10,30
@@ -143,13 +143,13 @@ EOF
     set format y "%+g"
     set key on
     plot \
-      "sensors.dat" using 1:8             title "Dome"               with lines linestyle 1, \
-      ""            using 1:17            title "Compressor Cabinet" with lines linestyle 2, \
-      ""            using 1:25            title "Compressor"         with lines linestyle 3, \
-      ""            using 1:18            title "Compressor Supply"  with lines linestyle 4, \
-      ""            using 1:19            title "Compressor Return"  with lines linestyle 5, \
-      ""            using 1:20            title "Cryostat"           with lines linestyle 9, \
-      ""            using 1:21            title "Cold Head"          with lines linestyle 7
+      "sensors.dat" using 14:15            title "Dome"                with lines linestyle 1, \
+      ""            using 32:33            title "Compressor Cabinet"  with lines linestyle 2, \
+      ""            using 48:49            title "Compressor External" with lines linestyle 3, \
+      ""            using 34:35            title "Compressor Supply"   with lines linestyle 4, \
+      ""            using 36:37            title "Compressor Return"   with lines linestyle 5, \
+      ""            using 38:39            title "Cryostat External"   with lines linestyle 6, \
+      ""            using 40:41            title "Cold Head External"  with lines linestyle 7
 
     set yrange [-5:15]
     set ytics -5,5,15
@@ -157,11 +157,11 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "sensors.dat" using 1:(\$17-\$8)  title "Compressor Cabinet - Dome"       with lines linestyle 2, \
-      ""            using 1:(\$25-\$17) title "Compressor - Compressor Cabinet" with lines linestyle 3, \
-      ""            using 1:(\$19-\$18) title "Compressor Return - Supply"      with lines linestyle 5, \
-      ""            using 1:(\$20-\$8)  title "Cryostat - Dome"                 with lines linestyle 9, \
-      ""            using 1:(\$21-\$8)  title "Cold Head - Dome"                with lines linestyle 7
+      "sensors.dat" using 1:(\$33-\$15)  title "Compressor Cabinet - Dome"      with lines linestyle 1, \
+      ""            using 1:(\$39-\$33) title "Compressor - Compressor Cabinet" with lines linestyle 2, \
+      ""            using 1:(\$37-\$35) title "Compressor Return - Supply"      with lines linestyle 3, \
+      ""            using 1:(\$39-\$15)  title "Cryostat - Dome"                with lines linestyle 4, \
+      ""            using 1:(\$41-\$15)  title "Cold Head - Dome"               with lines linestyle 5
 
     set yrange [0:350]
     set ytics 0,50,350
@@ -188,8 +188,8 @@ EOF
     plot \
       "cryostat.dat" using 1:2  title "Cold Finger (A)"    with lines linestyle 1, \
       ""             using 1:3  title "Cold Plate (B)"     with lines linestyle 2, \
-      ""             using 1:8  title "Detector 1 (D1)"    with lines linestyle 5, \
-      ""             using 1:9  title "Detector 2 (D2)"    with lines linestyle 9
+      ""             using 1:8  title "Detector 1 (D1)"    with lines linestyle 3, \
+      ""             using 1:9  title "Detector 2 (D2)"    with lines linestyle 4
 
     set format x "%Y%m%dT%H"
     set xtics rotate by 90 right
@@ -221,14 +221,14 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "weather.dat" using 1:2  title "External"           with lines linestyle  1, \
-      "sensors.dat" using 1:2  title "Control Room"       with lines linestyle  2, \
-      ""            using 1:3  title "Bathroom"           with lines linestyle  3, \
-      ""            using 1:4  title "Machine Room"       with lines linestyle  4, \
-      ""            using 1:5  title "Dark Room"          with lines linestyle  5, \
-      ""            using 1:6  title "Cistern Room"       with lines linestyle  6, \
-      ""            using 1:7  title "Hallway"            with lines linestyle  7, \
-      ""            using 1:8  title "Dome"               with lines linestyle  8
+      "weather.dat" using 1:2   title "External"           with lines linestyle  1, \
+      "sensors.dat" using 2:3   title "Control Room"       with lines linestyle  2, \
+      ""            using 4:5   title "Bathroom"           with lines linestyle  3, \
+      ""            using 6:7   title "Machine Room"       with lines linestyle  4, \
+      ""            using 8:9   title "Dark Room"          with lines linestyle  5, \
+      ""            using 10:11 title "Cistern Room"       with lines linestyle  6, \
+      ""            using 12:13 title "Hallway"            with lines linestyle  7, \
+      ""            using 14:15 title "Dome"               with lines linestyle  8
 
     set yrange [-20:40]
     set ytics -20,10,40
@@ -236,10 +236,10 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "weather.dat" using 1:2  title "External"           with lines linestyle  1, \
-      "sensors.dat" using 1:8  title "Dome"               with lines linestyle  8, \
-      ""            using 1:15 title "Dome Cabinet"       with lines linestyle  9, \
-      ""            using 1:17 title "Compressor Cabinet" with lines linestyle 10
+      "weather.dat" using 1:2   title "External"           with lines linestyle 1, \
+      "sensors.dat" using 14:15 title "Dome"               with lines linestyle 2, \
+      ""            using 28:29 title "Dome Cabinet"       with lines linestyle 3, \
+      ""            using 32:33 title "Compressor Cabinet" with lines linestyle 4
 
     set yrange [-10:20]
     set ytics -10,5,20
@@ -247,8 +247,8 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "sensors.dat" using 1:(\$15-\$8) title "Dome Cabinet - Dome"       with lines linestyle  9, \
-      ""            using 1:(\$17-\$8) title "Compressor Cabinet - Dome" with lines linestyle 10
+      "sensors.dat" using 1:(\$29-\$15) title "Dome Cabinet - Dome"       with lines linestyle 1, \
+      ""            using 1:(\$33-\$15) title "Compressor Cabinet - Dome" with lines linestyle 2
 
     set format x "%Y%m%dT%H"
     set xtics rotate by 90 right
@@ -260,12 +260,12 @@ EOF
     set ylabel "Light Level"
     set key on
     plot \
-      "sensors.dat" using 1:9  title "Control Room" with lines linestyle 2, \
-      ""            using 1:10 title "Bathroom"     with lines linestyle 3, \
-      ""            using 1:11 title "Machine Room" with lines linestyle 4, \
-      ""            using 1:12 title "Dark Room"    with lines linestyle 5, \
-      ""            using 1:13 title "Hallway"      with lines linestyle 7, \
-      ""            using 1:14 title "Dome"         with lines linestyle 8
+      "sensors.dat" using 16:17 title "Control Room" with lines linestyle 1, \
+      ""            using 18:19 title "Bathroom"     with lines linestyle 2, \
+      ""            using 20:21 title "Machine Room" with lines linestyle 3, \
+      ""            using 22:23 title "Dark Room"    with lines linestyle 4, \
+      ""            using 24:25 title "Hallway"      with lines linestyle 5, \
+      ""            using 26:27 title "Dome"         with lines linestyle 7
 
     unset multiplot
 
@@ -283,10 +283,10 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "nefinder.dat" using 1:2  title "NE Finder Detector" with lines linestyle 4, \
-      "sefinder.dat" using 1:2  title "SE Finder Detector" with lines linestyle 5, \
-      "C0.dat"       using 1:2  title "C0 Detector"        with lines linestyle 9, \
-      "C1.dat"       using 1:2  title "C1 Detector"        with lines linestyle 7
+      "nefinder.dat" using 1:2  title "NE Finder Detector" with lines linestyle 1, \
+      "sefinder.dat" using 1:2  title "SE Finder Detector" with lines linestyle 2, \
+      "C0.dat"       using 1:2  title "C0 Detector"        with lines linestyle 3, \
+      "C1.dat"       using 1:2  title "C1 Detector"        with lines linestyle 4
 
     set yrange [-20:50]
     set ytics -20,10,50
@@ -294,13 +294,13 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "weather.dat"  using 1:2  title "External"           with lines linestyle 1, \
-      "sensors.dat"  using 1:22 title "CCD Coolant"        with lines linestyle 2, \
-      ""             using 1:8  title "Dome"               with lines linestyle 3, \
-      "nefinder.dat" using 1:3  title "NE Finder Housing"  with lines linestyle 4, \
-      "sefinder.dat" using 1:3  title "SE Finder Housing"  with lines linestyle 5, \
-      "C0.dat"       using 1:3  title "C0 Housing"         with lines linestyle 9, \
-      "C1.dat"       using 1:3  title "C1 Housing"         with lines linestyle 7
+      "weather.dat"  using 1:2   title "External"           with lines linestyle 1, \
+      "sensors.dat"  using 42:43 title "CCD Coolant"        with lines linestyle 2, \
+      ""             using 14:15 title "Dome"               with lines linestyle 3, \
+      "nefinder.dat" using 1:3   title "NE Finder Housing"  with lines linestyle 4, \
+      "sefinder.dat" using 1:3   title "SE Finder Housing"  with lines linestyle 5, \
+      "C0.dat"       using 1:3   title "C0 Housing"         with lines linestyle 6, \
+      "C1.dat"       using 1:3   title "C1 Housing"         with lines linestyle 7
 
     set yrange [-20:50]
     set ytics -20,10,50
@@ -308,9 +308,9 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "weather.dat" using 1:2  title "External"         with lines linestyle 1, \
-      "sensors.dat" using 1:22 title "CCD Coolant"     with lines linestyle 2, \
-      ""            using 1:4  title "Machine Room"     with lines linestyle 3
+      "weather.dat" using 1:2   title "External"         with lines linestyle 1, \
+      "sensors.dat" using 42:43 title "CCD Coolant"      with lines linestyle 2, \
+      ""            using 20:21 title "Machine Room"     with lines linestyle 3
 
     set format x "%Y%m%dT%H"
     set xtics rotate by 90 right
@@ -322,10 +322,10 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "sensors.dat" using 1:22 title "CCD Coolant"     with lines linestyle 2, \
-      ""            using 1:4  title "Machine Room"     with lines linestyle 3, \
-      ""            using 1:23 title "Finder CCD Pump"  with lines linestyle 4, \
-      ""            using 1:24 title "Science CCD Pump" with lines linestyle 5
+      "sensors.dat" using 42:43 title "CCD Coolant"      with lines linestyle 1, \
+      ""            using 20:21 title "Machine Room"     with lines linestyle 2, \
+      ""            using 44:45 title "Finder CCD Pump"  with lines linestyle 3, \
+      ""            using 46:47 title "Science CCD Pump" with lines linestyle 4
 
     unset multiplot
 
