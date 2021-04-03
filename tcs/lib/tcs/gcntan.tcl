@@ -213,7 +213,6 @@ namespace eval "gcntan" {
       "lvcinitial" -
       "lvcupdate" {
         log::info [format "received %s packet." $type]
-         variable lvcalertprojectidentifier
         return "echo"
         variable lvcalertprojectidentifier
         set projectidentifier  $lvcalertprojectidentifier
