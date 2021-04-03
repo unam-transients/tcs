@@ -196,7 +196,7 @@ namespace eval "gcntan" {
         set blockidentifier    [fermitrigger         $packet]
         set name               [fermigrbname         $packet]
         set origin             "fermi"
-        set eventidentifier    [fermitrigger         $packet]
+        set identifier         [fermitrigger         $packet]
         set test               [fermitest            $packet]
         set eventtimestamp     [fermieventtimestamp  $packet]
         set alpha              [fermialpha           $packet]
