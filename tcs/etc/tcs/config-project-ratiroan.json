@@ -128,7 +128,7 @@
   "executor": {
     "type": "ratiroan"
   },
-  "telesecope": {
+  "telescope": {
     "type": "ratiroan",
     "idleha": "0h",
     "idledelta": "10d",
