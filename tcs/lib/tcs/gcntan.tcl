@@ -319,7 +319,7 @@ namespace eval "gcntan" {
     } else {
       logresponse $test [format "%s: requesting scheduler to respond." $type]
       if {[catch {
-        client::request "scheduler" [list respondtoalert $projectidentifier $blockidentifier $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty]
+        client::request "scheduler" [list respondtoalert $projectidentifier $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty]
       } result]} {
         log::warning [format "%s: unable to request scheduler: %s" $type $result]
       }
