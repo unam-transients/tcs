@@ -214,6 +214,8 @@ namespace eval "gcntan" {
       "lvcupdate" {
         log::info [format "received %s packet." $type]
          variable lvcalertprojectidentifier
+        return "echo"
+        variable lvcalertprojectidentifier
         set projectidentifier  $lvcalertprojectidentifier
         set blockidentifier    [lvctrigger         $packet]
         set name               [lvcname            $packet]
@@ -228,12 +230,13 @@ namespace eval "gcntan" {
 
       "lvcretraction" {
         log::info [format "received %s packet." $type]
+        return "echo"
         variable lvcalertprojectidentifier
         set projectidentifier  $lvcalertprojectidentifier
         set blockidentifier    [lvctrigger          $packet]
         set name               [lvcname             $packet]
         set origin             "lvc"
-        set identifier         [lvcidentifier      $packet]
+        set identifier         [lvcidentifier       $packet]
         set eventtimestamp     [lvceventtimestamp   $packet]
         set test               [lvctest             $packet]
         respondtolvcalert $test $projectidentifier $blockidentifier $name $origin $identifier $type $timestamp $eventtimestamp true ""
@@ -242,19 +245,21 @@ namespace eval "gcntan" {
        
       "lvccounterpart" {
         log::info [format "received %s packet." $type]
+        return "echo"
         variable lvcalertprojectidentifier
         set projectidentifier  $lvcalertprojectidentifier
         set blockidentifier    [lvctrigger          $packet]
-        set name               [lvcname       $packet]
+        set name               [lvcname             $packet]
         set origin             "lvc"
-        set identifier         [lvcidentifier      $packet]
+        set identifier         [lvcidentifier       $packet]
         set eventtimestamp     [lvceventtimestamp   $packet]
         set test               [lvctest             $packet]
         log::info [format "%s: test is %s." $type $test]
         log::info [format "%s: project identifier is \"%s\"." $type $projectidentifier]
-        log::info [format "%s: event identifier is %s." $type $eventidentifier]
-        log::info [format "%s: trigger timestamp is %s." $type $eventtimestamp]
         log::info [format "%s: block identifier is %s." $type $blockidentifier ]
+        log::info [format "%s: name is %s." $type $name]
+        log::info [format "%s: origin/identifier/type are %s." $type $origin $identifier $type]
+        log::info [format "%s: event timestamp is %s." $type $eventtimestamp]
         return "echo"
       }
        
