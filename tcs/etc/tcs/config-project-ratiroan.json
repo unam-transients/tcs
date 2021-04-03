@@ -55,7 +55,7 @@
       "sun",
       "supervisor",
       "target",
-//      "telescope",
+      "telescope",
       "weather"
     ]
   },
@@ -127,6 +127,12 @@
   "scheduler": {},
   "executor": {
     "type": "ratiroan"
+  },
+  "telesecope": {
+    "type": "ratiroan",
+    "idleha": "0h",
+    "idledelta": "10d",
+    "closeexplicitly": "true"
   },
   "safetyswitch": {
     "type": "none"
@@ -632,7 +638,7 @@
       "compressor-temperature",
       "rack-ibb-current",
       "dome-ibb-current",
-      "dome-cabinet-current",
+      "dome-cabinet-ibb-current",
       "telescope-ibb-current",
       "instrument-ibb-current"
     ],
