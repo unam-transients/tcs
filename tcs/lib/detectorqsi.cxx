@@ -217,7 +217,7 @@ detectorrawgetreadytoberead(void)
 ////////////////////////////////////////////////////////////////////////
 
 const char *
-detectorrawread()
+detectorrawread(void)
 {
   DETECTOR_CHECK_OPEN();
   if (!detectorrawgetreadytoberead())
