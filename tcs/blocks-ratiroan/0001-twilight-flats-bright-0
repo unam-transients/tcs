@@ -1,12 +1,70 @@
-proposal::setidentifier "[utcclock::semester]-0001"
-block::setidentifier "0"
-visit::setidentifier "0"
-visit::setname "twilight flats -- bright"
-block::settotalexposures 0
-visit::settargetcoordinates fixed +3h +45d
+// Filter visit identifier targetngood
+//
+//   "BV" 2 7
+//   "BI" 4 7
+//   "BR" 3 7
+//   "BB" 1 7
+//   "u" 0 7
+//   "r" 2 7
+//   "g" 1 7
 
-constraints::setminmoondistance "30d"
-constraints::setmaxskybrightness "daylight"
-constraints::setminskybrightness "civiltwilight"
+{
+  "project": {
+    "identifier": "0001",
+    "name": "twilight flats"
+  },
+  "identifier": "0",
+  "visits": [
+    {
+      "identifier": "0",
+      "name": "twilight flats -- bright",
+      "targetcoordinates": {
+        "type": "fixed",
+        "ha": "-3h",
+        "delta": "+45d"
+      },
+      "command": "twilightflatsbrightvisit u 7",
+      "estimatedduration": "10m"
+    },
+    {
+      "identifier": "2",
+      "name": "twilight flats -- bright",
+      "targetcoordinates": {
+        "type": "fixed",
+        "ha": "-3h",
+        "delta": "+45d"
+      },
+      "command": "twilightflatsbrightvisit r 7",
+      "estimatedduration": "10m"
+    },
+    {
+      "identifier": "1",
+      "name": "twilight flats -- bright",
+      "targetcoordinates": {
+        "type": "fixed",
+        "ha": "-3h",
+        "delta": "+45d"
+      },
+      "command": "twilightflatsbrightvisit g 7",
+      "estimatedduration": "10m"
+    }
+  ],
+  "constraints": {
+    "minmoondistance": "30d",
+    "maxskybrightness": "civiltwilight",
+    "minskybrightness": "civiltwilight"
+  }
+}
 
-visit::setcommand "twilightflatsbrightvisit"
+// proposal::setidentifier "[utcclock::semester]-0001"
+// block::setidentifier "0"
+// visit::setidentifier "0"
+// visit::setname "twilight flats -- bright"
+// block::settotalexposures 0
+// visit::settargetcoordinates fixed +3h +45d
+// 
+// constraints::setminmoondistance "30d"
+// constraints::setmaxskybrightness "daylight"
+// constraints::setminskybrightness "civiltwilight"
+// 
+// visit::setcommand "twilightflatsbrightvisit"

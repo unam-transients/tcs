@@ -1,10 +1,32 @@
-proposal::setidentifier "[utcclock::semester]-0002"
-block::setidentifier "0"
-visit::setidentifier "0"
-visit::setname "biases"
-block::settotalexposures 0
-visit::settargetcoordinates zenith
+{
+  "project": {
+    "identifier": "0002",
+    "name": "biases"
+  },
+  "identifier": "0",
+  "visits": [
+    {
+      "identifier": "0",
+      "name": "biases",
+      "targetcoordinates": {
+        "type": "idle"
+      },
+      "command": "biasesvisit",
+      "estimatedduration": "2m"
+    }
+  ],
+  "constraints": {
+    "maxskybrightness": "civiltwilight"
+  }
+}
 
-constraints::setmaxskybrightness "civiltwilight"
-
-visit::setcommand "biasesvisit"
+// proposal::setidentifier "[utcclock::semester]-0002"
+// block::setidentifier "0"
+// visit::setidentifier "0"
+// visit::setname "biases"
+// block::settotalexposures 0
+// visit::settargetcoordinates zenith
+// 
+// constraints::setmaxskybrightness "civiltwilight"
+// 
+// visit::setcommand "biasesvisit"
