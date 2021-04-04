@@ -249,6 +249,9 @@
   },
   "instrument": {
     "detectors": [
+      "C0", "C1", "C2", "C3"
+    ],
+    "activedetectors": [
       "C0", "C1"
     ],
     "idlefilterwheelpositions": [
@@ -410,9 +413,10 @@
       "nx": "0",
       "ny": "0"
     },
-    "cooleropensetting": "{}",
-    "coolerclosedsetting": "{}",
-    "temperaturelimit": "{}",
+    "cooleropensetting": "",
+    "coolerclosedsetting": "",
+    "temperaturelimit": "",
+    "temperaturelimitoutletgroup": "",
     "filterwheeltype": "null",
     "filterwheelidentifier": "null",
     "filterwheelinitialposition": "0",
@@ -423,8 +427,8 @@
     "focuseridentifier": "null",
     "focuserinitialposition": "0",
     "focuserbacklashoffset": "0",
-    "focusercorrectionmodel": "{}",
-    "pointingmodelparameters": "{}",
+    "focusercorrectionmodel": {},
+    "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
       "1": "-m",
@@ -464,9 +468,10 @@
       "nx": "0",
       "ny": "0"
     },
-    "cooleropensetting": "{}",
-    "coolerclosedsetting": "{}",
-    "temperaturelimit": "{}",
+    "cooleropensetting": "",
+    "coolerclosedsetting": "",
+    "temperaturelimit": "",
+    "temperaturelimitoutletgroup": "",
     "filterwheeltype": "null",
     "filterwheelidentifier": "null",
     "filterwheelinitialposition": "0",
@@ -477,8 +482,8 @@
     "focuseridentifier": "null",
     "focuserinitialposition": "0",
     "focuserbacklashoffset": "0",
-    "focusercorrectionmodel": "{}",
-    "pointingmodelparameters": "{}",
+    "focusercorrectionmodel": {},
+    "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
       "1": "-m",
