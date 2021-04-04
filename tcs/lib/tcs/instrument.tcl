@@ -122,7 +122,7 @@ namespace eval "instrument" {
     log::info "stopping."
     variable activedetectors
     foreach detector $activedetectors {
-      client::resetifnecessary $activedetectors
+      client::resetifnecessary $detector
       client::request $detector "stop"
     }
     foreach detector $activedetectors {

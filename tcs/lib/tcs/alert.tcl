@@ -274,6 +274,19 @@ namespace eval "alert" {
     }
   }
   
+  proc delay {alert} {
+    set eventtimestamp [eventtimestamp $alert]
+    set alerttimestamp [alerttimestamp $alert]
+    if {![string equal $eventtimestamp ""]} {
+      set delay [utcclock::diff now $eventtimestamp]
+    } elseif {![string equal $alerttimestamp ""]} {
+      set delay [utcclock::diff now $alerttimestamp]
+    } else {
+      set delay 0
+    }
+    return $delay
+  }
+    
   ######################################################################
 
   proc makealert {name origin identifier type alpha delta equinox uncertainty eventtimestamp alerttimestamp command enabled} {
@@ -295,19 +308,6 @@ namespace eval "alert" {
   
   ######################################################################
   
-  proc delay {} {
-    variable eventtimestamp
-    variable alerttimestamp
-    if {![string equal $eventtimestamp ""]} {
-      set delay [utcclock::diff now $eventtimestamp]
-    } elseif {![string equal $alerttimestamp ""]} {
-      set delay [utcclock::diff now $alerttimestamp]
-    } else {
-      set delay 0
-    }
-    return $delay
-  }
-    
   proc setexposures {exposuresarg} {
     variable exposures
     set exposures $exposuresarg

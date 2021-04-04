@@ -916,73 +916,101 @@ namespace eval "constraints" {
     return [checkmaxfocusdelayat $visit $constraints $start "start"]
   } 
   
-  proc checkalertenabled {} {
-    log::info "checking alert is enabled."
-    set alertenabled [alert::enabled]
-    if {!$alertenabled} {
-      setwhy [format "alert is not enabled."]
-      return false
+  proc checkalertenabled {alert} {
+    if {![string equal "" $alert]} {
+      log::info "checking alert is enabled."
+      set alertenabled [alert::enabled $alert]
+      if {!$alertenabled} {
+        setwhy [format "alert is not enabled."]
+        return false
+      }
     }
     return true  
   }
   
-  proc checkminalertdelay {mindelay} {
-    log::info [format "checking the alert delay against the minimum allowed of %s." [utcclock::formatinterval $mindelay]]
-    set delay [alert::delay]
-    if {$delay < $mindelay} {
-      setwhy [format \
-        "alert delay of %s is less than minimum allowed of %s." \
-        [utcclock::formatinterval $delay] \
-        [utcclock::formatinterval $mindelay] \
-      ]
-      return false
+  proc checkminalertdelay {alert constraints} {
+    if {![string equal "" $alert]} {
+      if {![hasconstraint $constraints "minalertdelay"]} {
+        log::info "no minimum alert delay constraint."
+      } else {
+        set mindelay [getconstraint $constraints "minalertdelay"]
+        log::info [format "checking the alert delay against the minimum allowed of %s." [utcclock::formatinterval $mindelay]]
+        set delay [alert::delay $alert]
+        if {$delay < $mindelay} {
+          setwhy [format \
+            "alert delay of %s is less than minimum allowed of %s." \
+            [utcclock::formatinterval $delay] \
+            [utcclock::formatinterval $mindelay] \
+          ]
+          return false
+        }
+      }
     }
     return true        
     
   }
   
-  proc checkmaxalertdelay {maxdelay} {
-    log::info [format "checking the alert delay against the maximum allowed of %s." [utcclock::formatinterval $maxdelay]]
-    set delay [alert::delay]
-    if {$delay > $maxdelay} {
-      setwhy [format \
-        "alert delay of %s is more than maximum allowed of %s." \
-        [utcclock::formatinterval $delay] \
-        [utcclock::formatinterval $maxdelay] \
-      ]
-      return false
+  proc checkmaxalertdelay {alert constraints} {
+    if {![string equal "" $alert]} {
+      if {![hasconstraint $constraints "maxalertdelay"]} {
+        log::info "no maximum alert delay constraint."
+      } else {
+        set maxdelay [getconstraint $constraints "maxalertdelay"]
+        log::info [format "checking the alert delay against the maximum allowed of %s." [utcclock::formatinterval $maxdelay]]
+        set delay [alert::delay $alert]
+        if {$delay > $maxdelay} {
+          setwhy [format \
+            "alert delay of %s is more than maximum allowed of %s." \
+            [utcclock::formatinterval $delay] \
+            [utcclock::formatinterval $maxdelay] \
+          ]
+          return false
+        }
+      }
     }
     return true        
   }
   
-  proc checkminalertuncertainty {minuncertainty} {
-    log::info [format "checking the alert uncertainty against the minimum allowed of %s." [astrometry::formatdistance $minuncertainty]]
-    set uncertainty [alert::uncertainty]
-    if {$uncertainty < $minuncertainty} {
-      setwhy [format \
-        "alert uncertainty of %s is less than minimum allowed of %s." \
-        [astrometry::formatdistance $uncertainty] \
-        [astrometry::formatdistance $minuncertainty] \
-      ]
-      return false
+  proc checkminalertuncertainty {alert constraints} {
+    if {![string equal "" $alert]} {
+      if {![hasconstraint $constraints "minalertuncertainty"]} {
+        log::info "no minimum alert uncertainty constraint."
+      } else {
+        set minuncertainty [getconstraint $constraints "minalertuncertainty"]
+        log::info [format "checking the alert uncertainty against the minimum allowed of %s." [astrometry::formatdistance $minuncertainty]]
+        set uncertainty [alert::uncertainty $alert]
+        if {$uncertainty < $minuncertainty} {
+          setwhy [format \
+            "alert uncertainty of %s is less than minimum allowed of %s." \
+            [astrometry::formatdistance $uncertainty] \
+            [astrometry::formatdistance $minuncertainty] \
+          ]
+          return false
+        }
+      }
     }
-    return true        
-    
+    return true
   }
   
-  proc checkmaxalertuncertainty {maxuncertainty} {
-    log::info [format "checking the alert uncertainty against the maximum allowed of %s." [astrometry::formatdistance $maxuncertainty]]
-    set uncertainty [alert::uncertainty]
-    if {$uncertainty > $maxuncertainty} {
-      setwhy [format \
-        "alert uncertainty of %s is more than maximum allowed of %s." \
-        [astrometry::formatdistance $uncertainty] \
-        [astrometry::formatdistance $maxuncertainty] \
-      ]
-      return false
+  proc checkmaxalertuncertainty {alert constraints} {
+    if {![string equal "" $alert]} {
+      if {![hasconstraint $constraints "maxalertuncertainty"]} {
+        log::info "no maximum alert uncertainty constraint."
+      } else {
+        set maxuncertainty [getconstraint $constraints "maxalertuncertainty"]
+        log::info [format "checking the alert uncertainty against the maximum allowed of %s." [astrometry::formatdistance $maxuncertainty]]
+        set uncertainty [alert::uncertainty $alert]
+        if {$uncertainty > $maxuncertainty} {
+          setwhy [format \
+            "alert uncertainty of %s is more than maximum allowed of %s." \
+            [astrometry::formatdistance $uncertainty] \
+            [astrometry::formatdistance $maxuncertainty] \
+          ]
+          return false
+        }
+      }
     }
-    return true        
-    
+    return true
   }
   
   proc checkmustbeonfavoredsideforswiftat {visit constraints seconds when} {
@@ -1019,15 +1047,28 @@ namespace eval "constraints" {
   
   ######################################################################
   
-  proc check {visit constraints seconds} {
-
-#     if {![checkalertenabled]} {
-#       return false
-#     }
+  proc check {visit constraints alert seconds} {
 
     log::info [format "visit start is %s." [utcclock::format [getstart $visit $seconds]]]
     log::info [format "visit end is %s." [utcclock::format [getend $visit $seconds]]]
     log::info [format "estimated duration is %.0f seconds." [visit::estimatedduration $visit]]
+
+    if {![checkalertenabled $alert]} {
+      return false
+    }
+
+    if {![checkminalertuncertainty $alert $constraints]} {
+      return false
+    }
+    if {![checkmaxalertuncertainty $alert $constraints]} {
+      return false
+    }
+    if {![checkminalertdelay $alert $constraints]} {
+      return false
+    }
+    if {![checkmaxalertdelay $alert $constraints]} {
+      return false
+    }
 
     if {![checkwithintelescopepointinglimits $visit $constraints $seconds]} {
       return false
@@ -1103,22 +1144,6 @@ namespace eval "constraints" {
       return false
     }
     
-    return true
-
-
-    if {![string equal "" $minalertuncertainty] && ![checkminalertuncertainty $minalertuncertainty]} {
-      return false
-    }
-    if {![string equal "" $maxalertuncertainty] && ![checkmaxalertuncertainty $maxalertuncertainty]} {
-      return false
-    }
-    if {![string equal "" $minalertdelay] && ![checkminalertdelay $minalertdelay]} {
-      return false
-    }
-    if {![string equal "" $maxalertdelay] && ![checkmaxalertdelay $maxalertdelay]} {
-      return false
-    }
-
     if {![checkmustbeonfavoredsideforswift $visit $constraints $seconds]} {
       return false
     }

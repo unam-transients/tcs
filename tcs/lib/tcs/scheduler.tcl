@@ -167,9 +167,11 @@ namespace eval "scheduler" {
       log::warning "error while reading alert file $alertfile: $message"
       return false
     }
+    log::info "considering [files $blockfile $alertfile]."
+    set alert [block::alert $block]
     constraints::start
     foreach visit [block::visits $block] {
-      if {![constraints::check $visit [block::constraints $block] $seconds]} {
+      if {![constraints::check $visit [block::constraints $block] $alert $seconds]} {
         log::info "rejected [files $blockfile $alertfile]: [constraints::why]"
         return false
       }

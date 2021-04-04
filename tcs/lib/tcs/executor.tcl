@@ -49,6 +49,12 @@ namespace eval "executor" {
   variable pointingdetectors [config::getvalue "instrument" "pointingdetectors"]
   
   ######################################################################
+  
+  variable blockfile
+  variable alertfile
+  variable visit
+  
+  ######################################################################
 
   variable trackstart
   
@@ -105,12 +111,12 @@ namespace eval "executor" {
       [astrometry::formatoffset $deltaoffset] \
       $aperture \
     ]
-    client::request "telescope" "offset $alphaoffset $deltaoffset $aperture"
+#    client::request "telescope" "offset $alphaoffset $deltaoffset $aperture"
   } 
   
   proc waituntiltracking {} {
     variable trackstart
-    client::wait "telescope" 
+#    client::wait "telescope" 
     log::info [format "tracking after %.1f seconds." [utcclock::diff now $trackstart]]
   }
   
@@ -515,7 +521,12 @@ namespace eval "executor" {
     }
   }
   
-  proc executeactivitycommand {blockfile {alertfile ""}} {
+  proc executeactivitycommand {blockfilearg {alertfilearg ""}} {
+  
+    variable blockfile
+    variable alertfile
+    set blockfile $blockfilearg
+    set alertfile $alertfilearg
 
     log::info "executing [files $blockfile $alertfile]."
 
@@ -578,7 +589,7 @@ namespace eval "executor" {
         log::info "visit name is \"[visit::name $visit]\"."
       }
       log::info "visit command is \"[visit::command $visit]\"."
-
+      
       if {[catch {
         eval [visit::command $visit]
       } result]} {
