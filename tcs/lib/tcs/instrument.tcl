@@ -36,14 +36,15 @@ namespace eval "instrument" {
   ######################################################################
 
   variable detectors                [config::getvalue "instrument" "detectors"]
+  variable activedetectors          [config::getvalue "instrument" "activedetectors"]
   variable pointingdetectors        [config::getvalue "instrument" "pointingdetectors"]
   variable outletgroups             [config::getvalue "instrument" "outletgroups"]
   
   ######################################################################
   
   proc isactivedetector {detector} {
-    variable detectors
-    if {[lsearch $detectors $detector] != -1} {
+    variable activedetectors
+    if {[lsearch $activedetectors $detector] != -1} {
       return true
     } else {
       return false
@@ -64,13 +65,13 @@ namespace eval "instrument" {
   proc initializeactivitycommand {} {
     set start [utcclock::seconds]
     log::info "initializing."
-    variable detectors
-    foreach detector $detectors {
+    variable activedetectors
+    foreach detector $activedetectors {
       client::waituntilstarted $detector 
       client::resetifnecessary $detector
       client::request $detector "initialize"
     }
-    foreach detector $detectors {
+    foreach detector $activedetectors {
       client::wait $detector
     }
     log::info [format "finished initializing after %.1f seconds." [utcclock::diff now $start]]
@@ -85,12 +86,12 @@ namespace eval "instrument" {
       client::request "power" "switchon $outletgroup"
       client::wait "power"
     }
-    variable detectors
-    foreach detector $detectors {
+    variable activedetectors
+    foreach detector $activedetectors {
       client::resetifnecessary $detector
       client::request $detector "setcooler open"
     }
-    foreach detector $detectors {
+    foreach detector $activedetectors {
       client::wait $detector
     }
     log::info [format "finished opening after %.1f seconds." [utcclock::diff now $start]]
@@ -105,12 +106,12 @@ namespace eval "instrument" {
       client::request "power" "switchon $outletgroup"
       client::wait "power"
     }
-    variable detectors
-    foreach detector $detectors {
+    variable activedetectors
+    foreach detector $activedetectors {
       client::resetifnecessary $detector
       client::request $detector "setcooler open"
     }
-    foreach detector $detectors {
+    foreach detector $activedetectors {
       client::wait $detector
     }
     log::info [format "finished opening to cool after %.1f seconds." [utcclock::diff now $start]]
@@ -119,12 +120,12 @@ namespace eval "instrument" {
   proc stopactivitycommand {} {
     set start [utcclock::seconds]
     log::info "stopping."
-    variable detectors
-    foreach detector $detectors {
-      client::resetifnecessary $detector
+    variable activedetectors
+    foreach detector $activedetectors {
+      client::resetifnecessary $activedetectors
       client::request $detector "stop"
     }
-    foreach detector $detectors {
+    foreach detector $activedetectors {
       client::wait $detector
     }
     log::info [format "finished stopping after %.1f seconds." [utcclock::diff now $start]]
@@ -133,12 +134,12 @@ namespace eval "instrument" {
   proc resetactivitycommand {} {
     set start [utcclock::seconds]
     log::info "resetting."
-    variable detectors
-    foreach detector $detectors {
+    variable activedetectors
+    foreach detector $activedetectors {
       client::waituntilstarted $detector
       client::request $detector "reset"
     }
-    foreach detector $detectors {
+    foreach detector $activedetectors {
       client::wait $detector
     }
     server::setactivity [server::getstoppedactivity]
@@ -148,12 +149,12 @@ namespace eval "instrument" {
   proc closeactivitycommand {} {
     set start [utcclock::seconds]
     log::info "closing."
-    variable detectors
-    foreach detector $detectors {
+    variable activedetectors
+    foreach detector $activedetectors {
       client::resetifnecessary $detector
       client::request $detector "setcooler closed"
     }
-    foreach detector $detectors {
+    foreach detector $activedetectors {
       client::wait $detector
     }
     variable outletgroups
@@ -175,14 +176,14 @@ namespace eval "instrument" {
   proc idleactivitycommand {} {
     set start [utcclock::seconds]
     log::info "idling."
-    variable detectors
-    foreach detector $detectors {
+    variable activedetectors
+    foreach detector $activedetectors {
       if {[isactivedetector $detector]} {
         client::resetifnecessary $detector
         client::request $detector "movefilterwheel idle"
       }
     }
-    foreach detector $detectors {
+    foreach detector $activedetectors {
       if {[isactivedetector $detector]} {
         client::wait $detector
       }
@@ -257,17 +258,18 @@ namespace eval "instrument" {
     set start [utcclock::seconds]
     log::info "setting read mode."
     set modes $args
-    variable detectors
-    foreach detector $detectors {
+    variable activedetectors
+    foreach detector $activedetectors {
       client::resetifnecessary $detector
     }
+    variable detectors
     foreach detector $detectors mode $modes {
       if {![string equal $mode "none"] && [isactivedetector $detector]} {
         log::info "setting $detector read mode to $mode."
         client::request $detector "setreadmode $mode"
       }
     }
-    foreach detector $detectors {
+    foreach detector $activedetectors {
       client::wait $detector
     }
     log::info [format "finished setting read mode after %.1f seconds." [utcclock::diff now $start]]
@@ -277,17 +279,18 @@ namespace eval "instrument" {
     set start [utcclock::seconds]
     log::info "setting window."
     set windows $args
-    variable detectors
-    foreach detector $detectors {
+    variable activedetectors
+    foreach detector $activedetectors {
       client::resetifnecessary $detector
     }
+    variable detectors
     foreach detector $detectors window $windows {
       if {![string equal $window "none"] && [isactivedetector $detector]} {
         log::info "setting $detector window to $window."
         client::request $detector "setwindow $window"
       }
     }
-    foreach detector $detectors {
+    foreach detector $activedetectors {
       client::wait $detector
     }
     log::info [format "finished setting window after %.1f seconds." [utcclock::diff now $start]]
@@ -297,17 +300,18 @@ namespace eval "instrument" {
     set start [utcclock::seconds]
     log::info "setting binning."
     set binnings $args
-    variable detectors
-    foreach detector $detectors {
+    variable activedetectors
+    foreach detector $activedetectors {
       client::resetifnecessary $detector
     }
+    variable detectors
     foreach detector $detectors binning $binnings {
       if {![string equal $binning "none"] && [isactivedetector $detector]} {
         log::info "setting $detector binning to $binning."
         client::request $detector "setbinning $binning"
       }
     }
-    foreach detector $detectors {
+    foreach detector $activedetectors {
       client::wait $detector
     }
     log::info [format "finished setting binning after %.1f seconds." [utcclock::diff now $start]]
@@ -317,17 +321,18 @@ namespace eval "instrument" {
     set start [utcclock::seconds]
     log::info "setting focuser."
     set positions $args
-    variable detectors
-    foreach detector $detectors {
+    variable activedetectors
+    foreach detector $activedetectors {
       client::resetifnecessary $detector
     }
+    variable detectors
     foreach detector $detectors position $positions {
       if {![string equal $position "none"] && [isactivedetector $detector]} {
         log::info "setting $detector focuser to $position."
         client::request $detector "setfocuser $position"
       }
     }
-    foreach detector $detectors {
+    foreach detector $activedetectors {
       client::wait $detector
     }
     log::info [format "finished setting focuser after %.1f seconds." [utcclock::diff now $start]]
@@ -337,17 +342,18 @@ namespace eval "instrument" {
     set start [utcclock::seconds]
     log::info "moving filter wheel."
     set positions $args
-    variable detectors
-    foreach detector $detectors {
+    variable activedetectors
+    foreach detector $activedetectors {
       client::resetifnecessary $detector
     }
+    variable detectors
     foreach detector $detectors position $positions {
       if {![string equal $position "none"] && [isactivedetector $detector]} {
         log::info "moving $detector filter wheel to $position."
         client::request $detector "movefilterwheel $position"
       }
     }
-    foreach detector $detectors {
+    foreach detector $activedetectors {
       client::wait $detector
     }
     log::info [format "finished moving filter wheel after %.1f seconds." [utcclock::diff now $start]]
@@ -359,21 +365,18 @@ namespace eval "instrument" {
     set exposuretimes $args
     log::info "FITS file prefix is $fitsfileprefix."
     file mkdir [file dirname $fitsfileprefix]
-    variable detectors
-    foreach detector $detectors {
+    variable activedetectors
+    foreach detector $activedetectors {
       client::resetifnecessary $detector
     }
-    set exposingdetectorlist {}
-    set exposuretimelist {}
-    foreach detector $detectors {
-      set detectorindex [lsearch $detectors $detector]
-      set exposuretime [lindex $exposuretimes $detectorindex]
-      if {![string equal $exposuretime "none"]} {
-        log::info "exposing $detector for ${exposuretime}s."
+    variable detectors
+    foreach detector $detectors exposuretime $exposuretimes {
+      if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
+        log::info "exposing $detector for $exposuretime seconds."
         client::request $detector "expose $exposuretime $type $fitsfileprefix"
       }
     }
-    foreach detector $detectors {
+    foreach detector $activedetectors {
       client::wait $detector
     }
     log::info [format "finished exposing $type image after %.1f seconds." [utcclock::diff now $start]]
@@ -383,17 +386,18 @@ namespace eval "instrument" {
     set start [utcclock::seconds]
     log::info "analyzing last image."
     set types $args
-    variable detectors
-    foreach detector $detectors {
+    variable activedetectors
+    foreach detector $activedetectors {
       client::resetifnecessary $detector
     }
+    variable detectors
     foreach detector $detectors type $types {
-      if {![string equal $type "none"]} {
+      if {![string equal $type "none"] && [isactivedetector $detector]} {
         log::info "analyzing last $detector image for $type."
         client::request $detector "analyze $type"
       }
     }
-    foreach detector $detectors {
+    foreach detector $activedetectors {
       client::wait $detector
     }
     log::info [format "finished analyzing after %.1f seconds." [utcclock::diff now $start]]
@@ -403,17 +407,18 @@ namespace eval "instrument" {
     set start [utcclock::seconds]
     log::info "focusing."
     set exposuretimes $args
-    variable detectors
-    foreach detector $detectors {
+    variable activedetectors
+    foreach detector $activedetectors {
       client::resetifnecessary $detector
     }
+    variable detectors
     foreach detector $detectors exposuretime $exposuretimes {
-      if {![string equal $exposuretime "none"]} {
+      if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
         log::info "focusing $detector."
         client::request $detector "focus $exposuretime $fitsfileprefix $range $step $witness"
       }
     }
-    foreach detector $detectors {
+    foreach detector $activedetectors {
       client::wait $detector
     }
     log::info [format "finished focusing after %.1f seconds." [utcclock::diff now $start]]
@@ -423,17 +428,18 @@ namespace eval "instrument" {
     set start [utcclock::seconds]
     log::info "mapping focus."
     set exposuretimes $args
-    variable detectors
-    foreach detector $detectors {
+    variable activedetectors
+    foreach detector $activedetectors {
       client::resetifnecessary $detector
     }
+    variable detectors
     foreach detector $detectors exposuretime $exposuretimes {
-      if {![string equal $exposuretime "none"]} {
+      if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
         log::info "mapping focus with $detector."
         client::request $detector "mapfocus $exposuretime $fitsfileprefix $range $step"
       }
     }
-    foreach detector $detectors {
+    foreach detector $activedetectors {
       client::wait $detector
     }
     log::info [format "finished mapping focus after %.1f seconds." [utcclock::diff now $start]]
@@ -926,6 +932,8 @@ namespace eval "instrument" {
     server::setrequestedactivity "started"
     variable detectors
     server::setdata "detectors" [join $detectors]
+    variable activedetectors
+    server::setdata "activedetectors" [join $activedetectors]
     server::setdata "timestamp" [utcclock::combinedformat]
     server::setactivity [server::getrequestedactivity]
     server::setstatus "ok"
