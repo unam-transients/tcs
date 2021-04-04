@@ -1106,14 +1106,15 @@ namespace eval "telescope" {
 
   proc setsecondaryoffset {dz} {
     variable withsecondary
-    if {!$withsecondary} {
-      error "the telescope does not have a secondary."
+    if {$withsecondary} {
+      server::checkstatus
+      server::checkactivity "idle" "tracking"
+      safetyswitch::checksafetyswitch
+      server::newactivitycommand "setting" [server::getactivity] \
+        "telescope::setsecondaryoffsetactivitycommand $dz"
+    } else {
+      return
     }
-    server::checkstatus
-    server::checkactivity "idle" "tracking"
-    safetyswitch::checksafetyswitch
-    server::newactivitycommand "setting" [server::getactivity] \
-      "telescope::setsecondaryoffsetactivitycommand $dz"
   }
 
   set server::datalifeseconds 0
