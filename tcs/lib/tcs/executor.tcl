@@ -222,7 +222,7 @@ namespace eval "executor" {
   proc expose {type args} {
     set start [utcclock::seconds]
     variable exposure
-    log::info "exposing $type image for $args (exposure $exposure)."
+    log::info "exposing $type image for $args seconds (exposure $exposure)."
     set date [utcclock::formatdate $start false]
     set dateandtime [utcclock::combinedformat $start 0 false]
     set projectfullidentifier [server::getdata "projectfullidentifier"]
