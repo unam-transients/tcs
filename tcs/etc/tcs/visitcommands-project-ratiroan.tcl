@@ -323,13 +323,13 @@ proc twilightflatsbrightvisit {} {
   } {
     log::info "twilightflatsbrightvisit: starting with filter $filter."
     visit::setidentifier $visitidentifier
-    executor::movefilterwheel $filter
+    executor::movefilterwheel $filter "none" "none" "none"
     set ngood 0
     set mingoodlevel $maxlevel
     set maxgoodlevel $minlevel
     while {true} {
       executor::expose flat $exposuretime
-      executor::analyze levels
+      executor::analyze levels "none" "none" "none"
       set level [executor::exposureaverage C0]
       log::info [format "twilightflatsbrightvisit: level is %.1f DN in filter $filter in $exposuretime seconds." $level]
       if {$level > $maxlevel} {
@@ -364,10 +364,10 @@ proc twilightflatsfaintvisit {} {
   log::summary "twilightflatsfaintvisit: starting."
   executor::setsecondaryoffset 0
   executor::move
-  executor::movefilterwheel "r"
+  executor::movefilterwheel "r" "none" "none" "none"
   set i 0
   while {$i < 20} {
-    executor::expose flat none none 10 10
+    executor::expose flat "none" "none" 10 10
     incr i
   }
   log::summary "twilightflatsfaintvisit: finished."
@@ -380,10 +380,10 @@ proc biasesvisit {} {
   log::summary "biasesvisit: starting."
   executor::setsecondaryoffset 0
   executor::move
-  executor::movefilterwheel "r"
+  executor::movefilterwheel "r" "none" "none" "none"
   set i 0
   while {$i < 20} {
-    executor::expose bias 0 0 none none
+    executor::expose bias 0 0 "none" "none"
     incr i
   }
   log::summary "biasesvisit: finished."
@@ -396,7 +396,7 @@ proc darksvisit {} {
   log::summary "darksvisit: starting."
   executor::setsecondaryoffset 0
   executor::move
-  executor::movefilterwheel "r"
+  executor::movefilterwheel "r" "none" "none" "none"
   set i 0
   while {$i < 20} {
     executor::expose dark 60 60 none none
