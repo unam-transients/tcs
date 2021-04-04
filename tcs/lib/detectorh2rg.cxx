@@ -64,15 +64,14 @@ detectorrawstart(void)
 ////////////////////////////////////////////////////////////////////////
 
 const char *
-detectorrawopen(char *identifier)
+detectorrawopen(char *newidentifier)
 {
   if (detectorrawgetisopen())
     DETECTOR_ERROR("a detector is currently opened.");
 
-  if (strcmp(identifier, "C2") != 0 && strcmp(identifier, "C3") != 0)
+  if (strcmp(newidentifier, "C2") != 0 && strcmp(newidentifier, "C3") != 0)
     return "invalid H2RG identifier.";
-  snprintf(identifier, sizeof(identifier), "%s", identifier);
-  
+  snprintf(identifier, sizeof(identifier), "%s", newidentifier);
   snprintf(description, sizeof(description), "H2RG (%s)", identifier);    
   
   detectorrawsetisopen(true);
