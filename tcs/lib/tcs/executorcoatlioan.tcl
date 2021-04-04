@@ -31,12 +31,4 @@ namespace eval "executor" {
 
   variable svnid {$Id}
 
-  proc movefilterwheel {position} {
-    set start [utcclock::seconds]
-    log::info "moving filter wheel to $position."
-    client::request "instrument" "movefilterwheel $position"
-    client::wait "instrument"
-    log::info [format "finished moving filter wheel after %.1f seconds." [utcclock::diff now $start]]
-  }
-  
 }

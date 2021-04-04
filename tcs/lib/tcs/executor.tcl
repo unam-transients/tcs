@@ -272,6 +272,15 @@ namespace eval "executor" {
     log::info [format "finished setting binning after %.1f seconds." [utcclock::diff now $start]]
   }
 
+  proc movefilterwheel {args} {
+    set start [utcclock::seconds]
+    set positions $args
+    log::info "moving filter wheel to $positions."
+    client::request "instrument" "movefilterwheel $positions"
+    client::wait "instrument"
+    log::info [format "finished moving filter wheel after %.1f seconds." [utcclock::diff now $start]]
+  }
+
   proc setfocuser {args} {
     set start [utcclock::seconds]
     set positions $args
@@ -525,9 +534,9 @@ namespace eval "executor" {
     if {[string equal "" $alertfile]} {
       if {[catch {
         set block [block::readfile $blockfile]
-      }]} {
+      } message]} {
         updatedata true $blockfile $alertfile "" "" ""
-        log::error "while reading block file \"[file tail $blockfile]\": $result"
+        log::error "while reading block file \"[file tail $blockfile]\": $message"
         log::info "deleting block file \"[file tail $blockfile]\"."
         file delete -force $blockfile
         return
@@ -535,9 +544,9 @@ namespace eval "executor" {
     } else {
       if {[catch {
         set block [alert::readfile $blockfile $alertfile]
-      }]} {
+      } message]} {
         updatedata true $blockfile $alertfile "" "" ""
-        log::error "while reading alert file \"[file tail $alertfile]\": $result"
+        log::error "while reading alert file \"[file tail $alertfile]\": $message"
         log::info "deleting alert file \"[file tail $alertfile]\"."
         file delete -force $alertfile
         return
