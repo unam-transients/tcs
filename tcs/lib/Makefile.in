@@ -47,6 +47,7 @@ installs_project_ratir		:=	\
 
 installs_project_ratiroan	:=	\
 	detectorfli.so			\
+	detectorh2rg.so         \
 	focuserfli.so			\
 	filterwheelfli.so		\
 	filterwheelnull.so
