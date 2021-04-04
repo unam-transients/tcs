@@ -41,8 +41,8 @@ config::setdefaultvalue "mount" "allowedpositionerror"    "4as"
 config::setdefaultvalue "mount" "pointingmodelparameters" [dict create]
 config::setdefaultvalue "mount" "allowedguideoffset"      "30as"
 
-# The mount controller soft limits are 0.25d beyond the target
-# controller limits.
+# The mount controller soft declination limits are -34:59:59 and +57:59:59
+# (inclusive). The mount controller hard limits in HA are ±5:30:00.
 
 config::setdefaultvalue "mount" "easthalimit"             "-05:21:00"
 config::setdefaultvalue "mount" "westhalimit"             "+05:21:00"
