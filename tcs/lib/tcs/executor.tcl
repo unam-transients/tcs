@@ -222,7 +222,8 @@ namespace eval "executor" {
   proc expose {type args} {
     set start [utcclock::seconds]
     variable exposure
-    log::info "exposing $type image for $args seconds (exposure $exposure)."
+    variable exposuretimes $args
+    log::info "exposing $type image for [join $exposuretimes /] seconds (exposure $exposure)."
     set date [utcclock::formatdate $start false]
     set dateandtime [utcclock::combinedformat $start 0 false]
     set projectfullidentifier [server::getdata "projectfullidentifier"]
@@ -231,7 +232,7 @@ namespace eval "executor" {
     set fitsfileprefix "[directories::vartoday]/executor/images/$projectfullidentifier/$blockidentifier/$visitidentifier/$dateandtime"
     log::info "FITS file prefix is $fitsfileprefix."
     file mkdir [file dirname $fitsfileprefix]
-    client::request "instrument" "expose $type $fitsfileprefix $args"
+    client::request "instrument" "expose $type $fitsfileprefix $exposuretimes"
     client::wait "instrument"
     log::info [format "finished exposing $type image (exposure $exposure) after %.1f seconds." [utcclock::diff now $start]]
     set exposure [expr {$exposure + 1}]
@@ -239,8 +240,9 @@ namespace eval "executor" {
   
   proc analyze {args} {
     set start [utcclock::seconds]
-    log::info "analyzing $args."
-    client::request "instrument" "analyze $args"
+    set types $args
+    log::info "analyzing [join $types /]."
+    client::request "instrument" "analyze $types"
     client::wait "instrument"
     log::info [format "finished analyzing after %.1f seconds." [utcclock::diff now $start]]
   }
@@ -248,7 +250,7 @@ namespace eval "executor" {
   proc setreadmode {args} {
     set start [utcclock::seconds]
     set modes $args
-    log::info "setting read mode to $modes."
+    log::info "setting read mode to [join $modes /]."
     client::request "instrument" "setreadmode $args"
     client::wait "instrument"
     log::info [format "finished setting read modes after %.1f seconds." [utcclock::diff now $start]]
@@ -257,7 +259,7 @@ namespace eval "executor" {
   proc setwindow {args} {
     set start [utcclock::seconds]
     set windows $args
-    log::info "setting window to $windows."
+    log::info "setting window to [join $windows /]."
     client::request "instrument" "setwindow $windows"
     client::wait "instrument"
     log::info [format "finished setting window after %.1f seconds." [utcclock::diff now $start]]
@@ -266,7 +268,7 @@ namespace eval "executor" {
   proc setbinning {args} {
     set start [utcclock::seconds]
     set binnings $args
-    log::info "setting binning to $binnings."
+    log::info "setting binning to [join $binnings /]."
     client::request "instrument" "setbinning $binnings"
     client::wait "instrument"
     log::info [format "finished setting binning after %.1f seconds." [utcclock::diff now $start]]
@@ -275,7 +277,7 @@ namespace eval "executor" {
   proc movefilterwheel {args} {
     set start [utcclock::seconds]
     set positions $args
-    log::info "moving filter wheel to $positions."
+    log::info "moving filter wheel to [join $positions /]."
     client::request "instrument" "movefilterwheel $positions"
     client::wait "instrument"
     log::info [format "finished moving filter wheel after %.1f seconds." [utcclock::diff now $start]]
@@ -284,7 +286,7 @@ namespace eval "executor" {
   proc setfocuser {args} {
     set start [utcclock::seconds]
     set positions $args
-    log::info "setting focuser to $positions."
+    log::info "setting focuser to [join $positions /]."
     client::request "instrument" "setfocuser $positions"
     client::wait "instrument"
     log::info [format "finished setting focuser after %.1f seconds." [utcclock::diff now $start]]
