@@ -66,7 +66,7 @@
     "westhalimit": "+05:20:20",
     "maxzenithdistancelimit": "79d",
     "idleha": "0h",
-    "idledelta": "30d",
+    "idledelta": "31d",
     "pointingapertures": {
       "default": [
         "+0.0am",
@@ -131,7 +131,7 @@
   "telescope": {
     "type": "ratiroan",
     "idleha": "0h",
-    "idledelta": "10d",
+    "idledelta": "0d",
     "closeexplicitly": "true"
   },
   "safetyswitch": {
@@ -1198,15 +1198,6 @@
 }
 
 
-// The mount controller soft declination limits are -34:59:59 and +57:59:59
-// (inclusive). The mount hard limits in HA are ±5:30:00.
-// 
-// 
-// The mount limits are 10am beyond the target limits.
-//    "mountsouthdeltalimit": "-27:45:00",
-//    "mountnorthdeltalimit": "+58:05:00",
-//    "mounteasthalimit": "-05:21:00",
-//    "mountwesthalimit": "+05:21:00",
 // 
 // To be able to observe GRB 130122A.
 // /config::setvalue targetnorthdeltalimit         "+59:35:00"
