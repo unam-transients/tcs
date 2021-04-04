@@ -155,6 +155,11 @@ namespace eval "detector" {
 
   ######################################################################
   
+  proc detectorrawstart {} {
+  }
+
+  ######################################################################
+
   proc detectorrawgetdetectortemperature {} {
     return ""
   }
