@@ -299,7 +299,7 @@ proc focusvisit {} {
 
 ########################################################################
 
-proc twilightflatsbrightvisit {} {
+proc twilightflatsbrightvisit {filter targetngood} {
 
   log::summary "twilightflatsbrightvisit: starting."
 
@@ -311,54 +311,45 @@ proc twilightflatsbrightvisit {} {
   
   set exposuretime 10
 
-#    "BV" 2 7
-#    "BI" 4 7
-#    "BR" 3 7
-#    "BB" 1 7
-#    "w"  0 15
-  foreach {filter visitidentifier targetngood} {
-    "u" 0 7
-    "r" 2 7
-    "g" 1 7
-  } {
-    log::info "twilightflatsbrightvisit: starting with filter $filter."
-    visit::setidentifier $visitidentifier
-    executor::movefilterwheel $filter "none" "none" "none"
-    set ngood 0
-    set mingoodlevel $maxlevel
-    set maxgoodlevel $minlevel
-    while {true} {
-      executor::expose flat $exposuretime
-      executor::analyze levels "none" "none" "none"
-      set level [executor::exposureaverage C0]
-      log::info [format "twilightflatsbrightvisit: level is %.1f DN in filter $filter in $exposuretime seconds." $level]
-      if {$level > $maxlevel} {
-        log::info "twilightflatsbrightvisit: level is too bright."
-      } elseif {$level < $minlevel} {
-        log::info "twilightflatsbrightvisit: level is too faint."
-        break
-      } else {
-        log::info "twilightflatsbrightvisit: level is good."
-        incr ngood
-        set mingoodlevel [expr {min($level,$mingoodlevel)}]
-        set maxgoodlevel [expr {max($level,$maxgoodlevel)}]
-        if {$ngood == $targetngood} {
-          break
-        }
-      }
-    }
-    log::info "twilightflatsbrightvisit: finished with filter $filter."
-    if {$ngood == 0} {
-      log::summary [format "twilightflatsbrightvisit: $ngood good flats with filter $filter."]
+  log::info "twilightflatsbrightvisit: filter $filter."
+  executor::movefilterwheel $filter "none" "none" "none"
+
+  set ngood 0
+  set mingoodlevel $maxlevel
+  set maxgoodlevel $minlevel
+  while {true} {
+    executor::expose flat $exposuretime
+    executor::analyze levels "none" "none" "none"
+    set level [executor::exposureaverage C0]
+    log::info [format "twilightflatsbrightvisit: level is %.1f DN in filter $filter in $exposuretime seconds." $level]
+    if {$level > $maxlevel} {
+      log::info "twilightflatsbrightvisit: level is too bright."
+    } elseif {$level < $minlevel} {
+      log::info "twilightflatsbrightvisit: level is too faint."
+      break
     } else {
-      log::summary [format "twilightflatsbrightvisit: $ngood good flats with filter $filter (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
+      log::info "twilightflatsbrightvisit: level is good."
+      incr ngood
+      set mingoodlevel [expr {min($level,$mingoodlevel)}]
+      set maxgoodlevel [expr {max($level,$maxgoodlevel)}]
+      if {$ngood == $targetngood} {
+        break
+      }
     }
   }
 
-  log::summary "twilightflatsvisit: finished."
+  if {$ngood == 0} {
+    log::summary [format "twilightflatsbrightvisit: $ngood good flats with filter $filter."]
+  } else {
+    log::summary [format "twilightflatsbrightvisit: $ngood good flats with filter $filter (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
+  }
+
+  log::summary "twilightflatsbrightvisit: finished."
 
   return true
 }
+
+########################################################################
 
 proc twilightflatsfaintvisit {} {
   log::summary "twilightflatsfaintvisit: starting."

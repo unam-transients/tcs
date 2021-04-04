@@ -1,12 +1,38 @@
-proposal::setidentifier "[utcclock::semester]-0001"
-block::setidentifier "1"
-visit::setidentifier "0"
-visit::setname "twilight flats -- faint"
-block::settotalexposures 0
-visit::settargetcoordinates fixed -3h +45d
+{
+  "project": {
+    "identifier": "0001",
+    "name": "twilight flats"
+  },
+  "identifier": "1",
+  "visits": [
+    {
+      "identifier": "0",
+      "name": "twilight flats -- faint",
+      "targetcoordinates": {
+        "type": "fixed",
+        "ha": "-3h",
+        "delta": "+45d"
+      },
+      "command": "twilightflatsfaintvisit",
+      "estimatedduration": "10m"
+    }
+  ],
+  "constraints": {
+    "minmoondistance": "30d",
+    "maxskybrightness": "nauticaltwilight",
+    "minskybrightness": "nauticaltwilight"
+  }
+}
 
-constraints::setminmoondistance "30d"
-constraints::setmaxskybrightness "nauticaltwilight"
-constraints::setminskybrightness "nauticaltwilight"
-
-visit::setcommand "twilightflatsfaintvisit"
+// proposal::setidentifier "[utcclock::semester]-0001"
+// block::setidentifier "1"
+// visit::setidentifier "0"
+// visit::setname "twilight flats -- faint"
+// block::settotalexposures 0
+// visit::settargetcoordinates fixed -3h +45d
+// 
+// constraints::setminmoondistance "30d"
+// constraints::setmaxskybrightness "nauticaltwilight"
+// constraints::setminskybrightness "nauticaltwilight"
+// 
+// visit::setcommand "twilightflatsfaintvisit"
