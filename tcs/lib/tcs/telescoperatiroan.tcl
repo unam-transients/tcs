@@ -42,8 +42,10 @@ namespace eval "telescope" {
   
   variable validpointingmodes { none finder }
   variable validguidingmodes  { none finder C0 C1 }
-  
+
   variable mechanisms { covers mount dome shutters secondary nefinder sefinder guider }
+  variable withlights true
+  variable withheater false
     
   ######################################################################
   
@@ -58,14 +60,6 @@ namespace eval "telescope" {
     log::info "finished ringing the alarm bell."
   }
 
-  proc switchlights {state} {
-    client::waituntilstarted "power"
-    log::info "switching $state the lights."
-    client::request "power" "switch$state dome-lights"
-    client::wait "power"
-    log::info "finished switching $state the dome light."
-  }
-  
   proc switchcontacts {state contacts} {
     client::waituntilstarted "power"
     foreach contact $contacts {
@@ -79,36 +73,30 @@ namespace eval "telescope" {
   ######################################################################
 
   proc initializeprolog {} {
-    switchlights "on"
     ringalarmbell
   }
 
   proc initializeepilog {} {
-    switchlights "off"
   }
   
   proc openprolog {} {
-    switchlights "on"
     ringalarmbell
-    switchcontacts "on" {mount-motors science-ccd-pump finder-ccd-pump}
     client::request "inclinometers" "suspend"
+    switchcontacts "on" {finder-ccd-pump}
   }
 
   proc openepilog {} {
     client::request "inclinometers" "resume"
-    switchlights "off"
   }
 
   proc closeprolog {} {
-    switchlights "on"
     ringalarmbell
     client::request "inclinometers" "suspend"
   }
 
   proc closeepilog {} {
     client::request "inclinometers" "resume"
-    switchcontacts "off" {mount-motors science-ccd-pump finder-ccd-pump}
-    switchlights "off"
+    switchcontacts "off" {finder-ccd-pump}
   }
 
   ######################################################################
