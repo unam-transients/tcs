@@ -34,6 +34,8 @@
   },
   "html": {
     "servers": [
+      "C2",
+      "C3",
       "covers",
       "cryostat",
       "dome",
