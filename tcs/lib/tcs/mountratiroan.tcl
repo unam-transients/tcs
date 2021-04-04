@@ -400,8 +400,8 @@ variable fakecontrollererror false
       set requestedobservedalpharate ""
       set requestedobserveddeltarate ""
 
-      set mountdha    [mountdha    $requestedobservedha $requestedobserveddelta $mountrotation]
-      set mountddelta [mountddelta $requestedobservedha $requestedobserveddelta $mountrotation]
+      set mountdha    [mountdha    $requestedobservedha    $requestedobserveddelta $mountrotation]
+      set mountddelta [mountddelta $requestedobservedalpha $requestedobserveddelta $mountrotation]
 
       set requestedmountha         [astrometry::foldradsymmetric [expr {$requestedobservedha + $mountdha}]]
       set requestedmountalpha      ""
@@ -413,7 +413,7 @@ variable fakecontrollererror false
       set mounthaerror    [expr {$mountha    - $requestedmountha   }]
       set mountalphaerror ""
       set mountdeltaerror [expr {$mountdelta - $requestedmountdelta}]
-      
+
     } else {
 
       log::debug "updating requested position in the last branch."
