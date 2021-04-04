@@ -39,43 +39,43 @@ namespace eval "visit" {
 
   ######################################################################
 
-  proc ha {visit seconds} {
+  proc ha {visit {seconds now}} {
     return [getcoordinatevalue "ha" $visit $seconds]
   }
     
-  proc alpha {visit seconds} {
+  proc alpha {visit {seconds now}} {
     return [getcoordinatevalue "alpha" $visit $seconds]
   }
     
-  proc delta {visit seconds} {
+  proc delta {visit {seconds now}} {
     return [getcoordinatevalue "delta" $visit $seconds]
   }
 
-  proc equinox {visit seconds} {
+  proc equinox {visit {seconds now}} {
     return [getcoordinatevalue "equinox" $visit $seconds]
   }
   
-  proc epoch {visit seconds} {
+  proc epoch {visit {seconds now}} {
     return [getcoordinatevalue "epoch" $visit $seconds]
   }
     
-  proc alpharate {visit seconds} {
+  proc alpharate {visit {seconds now}} {
     return [getcoordinatevalue "alpharate" $visit $seconds]
   }
     
-  proc deltarate {visit seconds} {
+  proc deltarate {visit {seconds now}} {
     return [getcoordinatevalue "deltarate" $visit $seconds]
   }
     
-  proc observedha {visit seconds} {
+  proc observedha {visit {seconds now}} {
     return [getcoordinatevalue "observedha" $visit $seconds]
   }
 
-  proc observedalpha {visit seconds} {
+  proc observedalpha {visit {seconds now}} {
     return [getcoordinatevalue "observedalpha" $visit $seconds]
   }
   
-  proc observeddelta {visit seconds} {
+  proc observeddelta {visit {seconds now}} {
     return [getcoordinatevalue "observeddelta" $visit $seconds]
   }
 

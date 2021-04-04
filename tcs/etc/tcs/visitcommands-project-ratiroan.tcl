@@ -23,23 +23,28 @@
 
 ########################################################################
 
-proc alertvisit {alertfile} {
+proc alertvisit {{filters "r"}} {
 
   log::summary "alertvisit: starting."
   
-  if {[string equal "" [alert::eventtimestamp]]} {
+  variable blockfile
+  variable alertfile
+  
+  set block [alert::readfile $blockfile $alertfile]
+  set alert [block::alert $block]
+  
+  if {[string equal "" [alert::eventtimestamp $alert]]} {
     log::info [format "alertvisit: no event timestamp."]
   } else {  
-    log::info [format "alertvisit: event timestamp is %s." [utcclock::format [alert::eventtimestamp]]]
+    log::info [format "alertvisit: event timestamp is %s." [utcclock::format [alert::eventtimestamp $alert]]]
   }
-  if {[string equal "" [alert::alerttimestamp]]} {
+  if {[string equal "" [alert::alerttimestamp $alert]]} {
     log::info [format "alertvisit: no alert timestamp."]
   } else {  
-    log::info [format "alertvisit: alert timestamp is %s." [utcclock::format [alert::alerttimestamp]]]
+    log::info [format "alertvisit: alert timestamp is %s." [utcclock::format [alert::alerttimestamp $alert]]]
   }
   
-  set filters {"r"}
-  set alertdelay [alert::delay]
+  set alertdelay [alert::delay $alert]
   log::summary [format "alertvisit: alert delay is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
   set exposuretime       60
   set exposuresperdither 1
@@ -48,17 +53,17 @@ proc alertvisit {alertfile} {
   executor::setguidingmode "none"
   executor::setpointingmode "finder"
 
-  executor::executor::track
+  executor::track
 
-  executor::executor::setwindow  "default"
+  executor::setwindow  "default"
   executor::setbinning 2 2 1 1
-  executor::executor::movefilterwheel [lindex $filters 0]
+  executor::movefilterwheel [lindex $filters 0] "none" "none" "none"
 
-  executor::executor::waituntiltracking
+  executor::waituntiltracking
 
-  set lastalpha       [visit::alpha]
-  set lastdelta       [visit::delta]
-  set lastequinox     [visit::equinox]
+  set lastalpha       [alert::alpha $alert]
+  set lastdelta       [alert::delta $alert]
+  set lastequinox     [alert::equinox $alert]
   set lasteastoffset  [astrometry::parseangle "0as"]
   set lastnorthoffset [astrometry::parseangle "0as"]
   set lastaperture    "default"
@@ -87,21 +92,18 @@ proc alertvisit {alertfile} {
     log::info "alertvisit: dithering $eastoffset E and $northoffset N about aperture $aperture."    
 
     if {[file exists $alertfile]} {
-      if {[catch {source $alertfile} message]} {
-        log::error "alertvisit: error while loading alert file \"$alertfile\"visit: $message"
-        return false
-      }
-      executor::updatedata
+      set block [alert::readfile $blockfile $alertfile]
+      set alert [block::alert $block]
     }
 
-    if {![alert::enabled]} {
+    if {![alert::enabled $alert]} {
       log::summary "alertvisit: the alert is no longer enabled."
       return false
     }
 
-    set alpha   [visit::alpha]
-    set delta   [visit::delta]
-    set equinox [visit::equinox]
+    set alpha   [alert::alpha $alert]
+    set delta   [alert::delta $alert]
+    set equinox [alert::equinox $alert]
 
     set eastoffset  [astrometry::parseangle $eastoffset]
     set northoffset [astrometry::parseangle $northoffset]
@@ -109,10 +111,10 @@ proc alertvisit {alertfile} {
     if {$alpha != $lastalpha || $delta != $lastdelta || $equinox != $lastequinox} {
       log::summary "alertvisit: the coordinates have been updated."
       executor::track $eastoffset $northoffset $aperture
-      executor::executor::waituntiltracking
+      executor::waituntiltracking
     } elseif {$eastoffset != $lasteastoffset || $northoffset != $lastnorthoffset || ![string equal $aperture $lastaperture]} {
       executor::offset $eastoffset $northoffset $aperture
-      executor::executor::waituntiltracking
+      executor::waituntiltracking
     }
 
     set lastalpha       $alpha
@@ -123,10 +125,10 @@ proc alertvisit {alertfile} {
     set lastaperture    $aperture
     
     foreach filter $filters {
-      executor::executor::movefilterwheel $filter
+      executor::movefilterwheel $filter "none" "none" "none"
       set i 0
       while {$i < $exposuresperdither} {
-        executor::executor::expose $exposuretype 80 80 60 60
+        executor::expose $exposuretype 80 80 60 60
         set exposuretype object
         incr i
       }
@@ -145,14 +147,14 @@ proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime filters} 
 
   log::summary "gridvisit: starting."
 
-  executor::executor::setsecondaryoffset 0
-  executor::executor::track
+  executor::setsecondaryoffset 0
+  executor::track
 
   executor::setreadmode 1MHz
-  executor::executor::setwindow "default"
-  executor::executor::setbinning 2 2 1 1
+  executor::setwindow "default"
+  executor::setbinning 2 2 1 1
 
-  executor::executor::waituntiltracking
+  executor::waituntiltracking
   
   switch $gridpoints {
     4 {
@@ -203,12 +205,12 @@ proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime filters} 
   while {$gridrepeat < $gridrepeats} {
     foreach {eastoffset northoffset} $dithers {
       executor::offset $eastoffset $northoffset "default"
-      executor::executor::waituntiltracking
+      executor::waituntiltracking
       foreach filter $filters {
-        executor::executor::movefilterwheel $filter
+        executor::movefilterwheel $filter
         set exposure 0
         while {$exposure < $exposuresperdither} {
-          executor::executor::expose object $exposuretime
+          executor::expose object $exposuretime
           incr exposure
         }
       }
