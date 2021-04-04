@@ -1261,7 +1261,7 @@ namespace eval "html" {
       writehtmlrow "Housing temperature"           [formatifok "%+.1f C" [client::getdata $server "detectorhousingtemperature"]]
       writehtmlrow "Cooler state"                  [format "%s" [client::getdata $server "detectorcoolerstate"]]
       writehtmlrow "Cooler set temperature"        [formatifok "%+.1f C" [client::getdata $server "detectorcoolersettemperature"]]
-      writehtmlrow "Cooler power"                  [formatifok "%.0f%%" [client::getdata $server "detectorcoolerpower"]]
+      writehtmlrow "Cooler power"                  [formatpercentifok "%.0f%%" [client::getdata $server "detectorcoolerpower"]]
       writehtmlfullrow "Filter wheel"              [client::getdata $server "filterwheeldescription"]
       writehtmlrow "Filter wheel position"         [formatifok "%d" [client::getdata $server "filterwheelposition"]]
       writehtmlrow "Filter wheel maximum position" [formatifok "%d" [client::getdata $server "filterwheelmaxposition"]]
