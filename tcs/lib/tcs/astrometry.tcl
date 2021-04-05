@@ -288,10 +288,10 @@ namespace eval "astrometry" {
   }
 
   proc parseepoch {epoch} {
-    if {[string is double -strict $epoch]} {
-      set newepoch $epoch
-    } elseif {[string equal $epoch "now"]} {
-      set newepoch [utcclock::epoch "now"]
+    if {[string equal $epoch "now"]} {
+      set newepoch "$epoch"
+    } elseif {![catch {utcclock::scan $epoch}]} {
+      set newepoch [utcclock::combinedformat [utcclock::scan $epoch]]
     } else {
       error "invalid epoch: \"$epoch\"."
     }
