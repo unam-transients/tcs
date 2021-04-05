@@ -132,7 +132,10 @@
     "type": "ratiroan",
     "idleha": "0h",
     "idledelta": "0d",
-    "closeexplicitly": "true"
+    "closeexplicitly": "true",
+    "finders": [
+      "nefinder", "sefinder"
+    ]
   },
   "safetyswitch": {
     "type": "none"
@@ -518,14 +521,10 @@
     "temperaturesensor": "dome-temperature"
   },
   "guider": {
-    "finders": [
-      "nefinder",
-      "sefinder"
-    ]
   },
   "nefinder": {
-    // Finder focuser values determined 2015-08-05.
-    "focuserinitialposition": "900",
+    // Finder focuser values determined 2021-04-05.
+    "focuserinitialposition": "1700",
     // nefinder->C1 pointing model from 2012-12-01.
     "pointingmodelparameters": {
       "ID": "0.001172724616829814",
@@ -569,8 +568,8 @@
     "temperaturelimitoutletgroup":     "nefinder-ccd"
   },
   "sefinder": {
-    // Finder focuser values determined 2015-08-05.
-    "focuserinitialposition": "900",
+    // Finder focuser values determined 2021-04-05.
+    "focuserinitialposition": "1100",
     // sefinder->C1 pointing model from 2012-10-27/28/31.
     "pointingmodelparameters": {
       "ID": "-0.010692308224369446",
