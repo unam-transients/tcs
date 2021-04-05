@@ -34,8 +34,6 @@
   },
   "html": {
     "servers": [
-      "C2",
-      "C3",
       "covers",
       "cryostat",
       "dome",
@@ -254,10 +252,7 @@
       "C0", "C1", "C2", "C3"
     ],
     "activedetectors": [
-      "C0", "C1"
-    ],
-    "idlefilterwheelpositions": [
-      "r", "i"
+      "C0", "C1", "C2", "C3"
     ],
     "pointingdetectors": [
       "C1"
@@ -303,6 +298,7 @@
     "filterwheeltype": "fli",
     "filterwheelidentifier": "CFW-6-10-001",
     "filterwheelinitialposition": "0",
+    "filterwheelidleposition": "r",
     "filterlist": [
       "u",
       "g",
@@ -367,6 +363,7 @@
     "filterwheeltype": "null",
     "filterwheelidentifier": "null",
     "filterwheelinitialposition": "0",
+    "filterwheelidleposition": "0",
     "filterlist": [
       "i"
     ],
@@ -422,6 +419,7 @@
     "filterwheeltype": "null",
     "filterwheelidentifier": "null",
     "filterwheelinitialposition": "0",
+    "filterwheelidleposition": "0",
     "filterlist": [
       "Z/Y"
     ],
@@ -477,6 +475,7 @@
     "filterwheeltype": "null",
     "filterwheelidentifier": "null",
     "filterwheelinitialposition": "0",
+    "filterwheelidleposition": "0",
     "filterlist": [
       "J/H"
     ],
