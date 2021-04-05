@@ -310,7 +310,7 @@ EOF
     plot \
       "weather.dat" using 1:2   title "External"         with lines linestyle 1, \
       "sensors.dat" using 42:43 title "CCD Coolant"      with lines linestyle 2, \
-      ""            using 20:21 title "Machine Room"     with lines linestyle 3
+      ""            using 6:7   title "Machine Room"     with lines linestyle 3
 
     set format x "%Y%m%dT%H"
     set xtics rotate by 90 right
@@ -323,7 +323,7 @@ EOF
     set key on
     plot \
       "sensors.dat" using 42:43 title "CCD Coolant"      with lines linestyle 1, \
-      ""            using 20:21 title "Machine Room"     with lines linestyle 2, \
+      ""            using 6:7   title "Machine Room"     with lines linestyle 2, \
       ""            using 44:45 title "Finder CCD Pump"  with lines linestyle 3, \
       ""            using 46:47 title "Science CCD Pump" with lines linestyle 4
 
