@@ -62,42 +62,44 @@ namespace eval "executor" {
     variable trackstart
     set trackstart [utcclock::seconds]
     log::info "moving to track."
-#    set alpha     [visit::alpha]
-#    set delta     [visit::delta]
-#    set equinox   [visit::equinox]
-#    set alpharate [visit::alpharate]
-#    set deltarate [visit::deltarate]
-#    set epoch     [visit::epoch]
-#    astrometry::parseoffset $alphaoffset
-#    astrometry::parseoffset $deltaoffset
-#    log::info [format \
-#      "moving to track %s %s %s %s %s %s %s %s at aperture %s." \
-#      [astrometry::formatalpha $alpha] \
-#      [astrometry::formatdelta $delta] \
-#      $equinox \
-#      [astrometry::formatoffset $alphaoffset] \
-#      [astrometry::formatoffset $deltaoffset] \
-#      $epoch \
-#      [astrometry::formatrate $alpharate] \
-#      [astrometry::formatrate $deltarate] \
-#      $aperture \
-#    ]
-#    client::request "telescope" \
-#      "track $alpha $delta $equinox $alphaoffset $deltaoffset $epoch $alpharate $deltarate $aperture"
+    variable visit
+    set alpha     [visit::alpha $visit]
+    set delta     [visit::delta $visit]
+    set equinox   [visit::equinox $visit]
+    set alpharate [visit::alpharate $visit]
+    set deltarate [visit::deltarate $visit]
+    set epoch     [visit::epoch $visit]
+    astrometry::parseoffset $alphaoffset
+    astrometry::parseoffset $deltaoffset
+    log::info [format \
+      "moving to track %s %s %s %s %s %s %s %s at aperture %s." \
+      [astrometry::formatalpha $alpha] \
+      [astrometry::formatdelta $delta] \
+      $equinox \
+      [astrometry::formatoffset $alphaoffset] \
+      [astrometry::formatoffset $deltaoffset] \
+      $epoch \
+      [astrometry::formatrate $alpharate] \
+      [astrometry::formatrate $deltarate] \
+      $aperture \
+    ]
+    client::request "telescope" \
+      "track $alpha $delta $equinox $alphaoffset $deltaoffset $epoch $alpharate $deltarate $aperture"
   }
   
   proc tracktopocentric {} {
     variable trackstart
     set trackstart [utcclock::seconds]
     log::info "moving to track topocentric coordinates."
-#    set ha    [visit::observedha]
-#    set delta [visit::observeddelta]
-#    log::info [format \
-#      "moving to track topocentric coordinates %s %s." \
-#      [astrometry::formatha $ha] \
-#      [astrometry::formatdelta $delta] \
-#    ]
-#    client::request "telescope" "tracktopocentric $ha $delta"
+    variable visit
+    set ha    [visit::observedha $visit]
+    set delta [visit::observeddelta $visit]
+    log::info [format \
+      "moving to track topocentric coordinates %s %s." \
+      [astrometry::formatha $ha] \
+      [astrometry::formatdelta $delta] \
+    ]
+    client::request "telescope" "tracktopocentric $ha $delta"
   }
   
   proc offset {{alphaoffset 0} {deltaoffset 0} {aperture "default"}} {
@@ -111,12 +113,12 @@ namespace eval "executor" {
       [astrometry::formatoffset $deltaoffset] \
       $aperture \
     ]
-#    client::request "telescope" "offset $alphaoffset $deltaoffset $aperture"
+    client::request "telescope" "offset $alphaoffset $deltaoffset $aperture"
   } 
   
   proc waituntiltracking {} {
     variable trackstart
-#    client::wait "telescope" 
+    client::wait "telescope" 
     log::info [format "tracking after %.1f seconds." [utcclock::diff now $trackstart]]
   }
   
@@ -466,14 +468,15 @@ namespace eval "executor" {
   
   proc move {} {
     set start [utcclock::seconds]
-#    set ha    [visit::observedha]
-#    set delta [visit::observeddelta]
-#    log::info [format \
-#      "moving to %s %s." \
-#      [astrometry::formatha $ha] \
-#      [astrometry::formatdelta $delta] \
-#    ]
-#    client::request "telescope" "move $ha $delta"
+    variable visit
+    set ha    [visit::observedha $visit]
+    set delta [visit::observeddelta $visit]
+    log::info [format \
+      "moving to %s %s." \
+      [astrometry::formatha $ha] \
+      [astrometry::formatdelta $delta] \
+    ]
+    client::request "telescope" "move $ha $delta"
     client::wait "telescope" 
     log::info [format "finished moving after %.1f seconds." [utcclock::diff now $start]]
   }
