@@ -225,7 +225,7 @@ proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime filters} 
 
 ########################################################################
 
-proc initialfocusvisit {ALPHA DELTA alpha delta} {
+proc initialfocusvisit {} {
 
   log::summary "initialfocusvisit: starting."
   
@@ -234,13 +234,12 @@ proc initialfocusvisit {ALPHA DELTA alpha delta} {
   executor::setguidingmode "none"
   executor::setpointingmode "none"
 
-  log::summary "initialfocusvisit: moving to brighter star."
-  visit::settargetcoordinates equatorial $ALPHA $DELTA 2000
   executor::track
   executor::waituntiltracking
   
   log::summary "initialfocusvisit: focusing finders."
   executor::focusfinders 1
+
   executor::setpointingmode "finder"
   
   executor::track
@@ -249,27 +248,27 @@ proc initialfocusvisit {ALPHA DELTA alpha delta} {
   executor::setbinning 8 8 1 1
   log::summary "initialfocusvisit: focusing C1 with binning 8."
   executor::focussecondary C1 1 1000 100 false
-  log::summary "initialfocusvisit: focusing C1 with binning 4."
-  executor::setbinning 4 4 1 1
-  executor::focussecondary C1 1 500 50 false
-
-  log::summary "initialfocusvisit: moving to fainter star."
-  visit::settargetcoordinates equatorial $alpha $delta 2000
-  executor::track
-  executor::waituntiltracking
-
-  log::summary "initialfocusvisit: correcting pointing."
-  executor::correctpointing 30
-  
-  executor::track
-  executor::waituntiltracking
-  executor::setbinning 2 2 1 1
-  log::summary "initialfocusvisit: focusing C1 with binning 2."
-  executor::focussecondary C1 4 250 25 true
-
-  executor::setfocused
 
   log::summary "initialfocusvisit: finished."
+
+  return false
+}
+
+########################################################################
+
+proc initialpointingcorrectionvisit {} {
+
+  log::summary "initialpointingcorrectionvisit: starting."
+
+  executor::setpointingmode "finder"
+
+  executor::track
+  executor::waituntiltracking
+
+  log::summary "initialpointingcorrectionvisit: correcting pointing."
+  executor::correctpointing 30
+
+  log::summary "initialpointingcorrectionvisit: finished."
 
   return false
 }
