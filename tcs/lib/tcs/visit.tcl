@@ -213,6 +213,9 @@ namespace eval "visit" {
       } else {
       
         switch $key {
+          "observedalpha" {
+            set value [astrometry::alpha [astrometry::parseha $ha] $seconds]
+          }
           "observeddelta" {
             set value [astrometry::parsedelta $delta]
           }
