@@ -39,16 +39,14 @@ namespace eval "detector" {
   variable rawfitspath
   variable identifier
 
-  proc openspecific {identifierarg} {
-    variable identifier
-    set identifier $identifierarg
+  proc detectorrawstart {} {
+    set identifier [server::getdata "identifier"]
     set rawfitsdirectory [file join [directories::var] $identifier]
     file mkdir $rawfitsdirectory
     variable rawfitspath
     set rawfitspath [file join $rawfitsdirectory "raw.fits"]
     global env
     set env(RAWFITSPATH) $rawfitspath    
-    return [detectorrawopen $identifier]
   }
   
   ######################################################################
@@ -87,7 +85,7 @@ namespace eval "detector" {
   
   ######################################################################
 
-  proc augmentfitsheader {channel} {
+  proc detectorrawaugmentfitsheader {channel} {
 
     variable readmode
     fitsheader::writekeyandvalue $channel "NREADS" integer $readmode
@@ -155,11 +153,6 @@ namespace eval "detector" {
 
   ######################################################################
   
-  proc detectorrawstart {} {
-  }
-
-  ######################################################################
-
   proc detectorrawgetdetectortemperature {} {
     return ""
   }
