@@ -231,10 +231,11 @@ namespace eval "telescope" {
     set start [utcclock::seconds]
     log::info "stopping."
     variable mechanisms
-    foreach mechanism  [concat $mechanisms "target"] {
+    variable finders
+    foreach mechanism [concat $mechanisms $finders "target"] {
       client::request $mechanism "stop"
     }
-    foreach mechanism $mechanisms {
+    foreach mechanism [concat $mechanisms $finders] {
       client::wait $mechanism
     }
     log::info [format "finished stopping after %.1f seconds." [utcclock::diff now $start]]
@@ -244,12 +245,13 @@ namespace eval "telescope" {
     set start [utcclock::seconds]
     log::info "resetting."
     variable mechanisms
-    foreach mechanism [concat $mechanisms "target"] {
+    variable finders
+    foreach mechanism [concat $mechanisms $finders "target"] {
       client::waituntilstarted $mechanism
       client::request $mechanism "reset"
     }
     client::request "target" "reset"
-    foreach mechanism $mechanisms {
+    foreach mechanism [concat $mechanisms $finders] {
       client::wait $mechanism
     }
     client::wait "target"
@@ -271,7 +273,8 @@ namespace eval "telescope" {
       }
       initializeprolog
       variable mechanisms
-      foreach mechanism  [concat $mechanisms "target"] {
+      variable finders
+      foreach mechanism  [concat $mechanisms $finders "target"] {
         client::waituntilstarted $mechanism
         client::resetifnecessary $mechanism
         initializemechanismprolog $mechanism
@@ -318,6 +321,10 @@ namespace eval "telescope" {
       if {$withguider} {
         log::info "stopping guider."
         client::request "guider" "stop"
+      }
+      foreach finder $finders {
+        log::info "cooling $finder."
+        client::request $finder "setcooler open"
       }
       if {$withmount} {
         log::info "parking mount."
@@ -400,6 +407,10 @@ namespace eval "telescope" {
         log::info "stopping guider."
         client::request "guider" "stop"
       }
+      foreach finder $finders {
+        log::info "cooling $finder."
+        client::request $finder "setcooler open"
+      }
       if {$withmount} {
         log::info "parking mount."
         client::request "mount" "preparetomove"
@@ -472,7 +483,7 @@ namespace eval "telescope" {
         client::request "guider" "stop"
       }
       foreach finder $finders {
-        log::info "cooling $finder."
+        log::info "stopping cooling $finder."
         client::request $finder "setcooler closed"
       }
       if {$withmount} {
