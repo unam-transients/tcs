@@ -10,41 +10,94 @@ rm -f 0007-donut-*
 focusfilter="r"
 correctpointingfilter="r"
 
-while read suffix targetid tyc alpha delta TYC ALPHA DELTA
+while read suffix blockid tyc alpha delta TYC ALPHA DELTA
 do
 
   cat <<EOF >0004-initial-focus-$suffix
-proposal::setidentifier "[utcclock::semester]-0004"
-block::setidentifier $suffix
-visit::setidentifier 0
-visit::setname "initial focusing at $alpha $delta"
-block::settotalexposures 0
-visit::settargetcoordinates equatorial $alpha $delta 2000
-
-constraints::setminfocusdelay    14400
-constraints::setmaxskybrightness "nauticaltwilight"
-constraints::setminha            "-03:00:00"
-constraints::setmaxha            "+01:00:00"
-constraints::setminmoondistance  "15d"
-
-visit::setcommand "initialfocusvisit $ALPHA $DELTA $alpha $delta"
+{
+  "project": {
+    "identifier": "0004",
+    "name": "initial focussing and pointing correction"
+  },
+  "identifier": "$blockid",
+  "name": "initial focussing and pointing correction near ${suffix}h +25d",
+  "visits": [
+    {
+      "identifier": "0",
+      "name": "initial focus",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$ALPHA",
+        "delta"  : "$DELTA",
+        "equinox": "2000"
+      },
+      "command": "initialfocusvisit",
+      "estimatedduration": "5m"
+    },
+    {
+      "identifier": "1",
+      "name": "initial pointing correction",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "initialpointingcorrectionvisit",
+      "estimatedduration": "5m"
+    },
+    {
+      "identifier": "2",
+      "name": "focus",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "focusvisit",
+      "estimatedduration": "10m"
+    }
+  ],
+  "constraints": {
+    "maxskybrightness": "nauticaltwilight",
+    "minha": "-3h",
+    "maxha": "+3h",
+    "minmoondistance": "15d",
+    "minfocusdelay": "14400"
+  }
+}
 EOF
-
   cat <<EOF >0004-focus-$suffix
-proposal::setidentifier "[utcclock::semester]-0004"
-block::setidentifier $suffix
-visit::setidentifier 0
-visit::setname "focusing at $alpha $delta"
-block::settotalexposures 0
-visit::settargetcoordinates equatorial $alpha $delta 2000
-
-constraints::setminfocusdelay    1200
-constraints::setmaxskybrightness "nauticaltwilight"
-constraints::setminha            "-03:00:00"
-constraints::setmaxha            "+01:00:00"
-constraints::setminmoondistance  "15d"
-
-visit::setcommand "focusvisit"
+{
+  "project": {
+    "identifier": "0004",
+    "name": "focussing"
+  },
+  "identifier": "$blockid",
+  "name": "focussing near ${suffix}h +25d",
+  "visits": [
+    {
+      "identifier": "0",
+      "name": "initial focus",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "focusvisit",
+      "estimatedduration": "5m"
+    }
+  ],
+  "constraints": {
+    "maxskybrightness": "nauticaltwilight",
+    "minha": "-3h",
+    "maxha": "+3h",
+    "minmoondistance": "15d",
+    "minfocusdelay": "1200"
+  }
+}
 EOF
 
 # The bright star for 00 was 2252-0220-1 23:58:03.867 +24:20:27.55, but this has a bright companion.
