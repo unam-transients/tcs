@@ -84,23 +84,23 @@ namespace eval "block" {
   ######################################################################
   
   proc makeblock {identifier name project constraints visits {alert ""}} {
-    return [dict create         \
-      "identifier" $identifier  \
-      "name"       $name        \
-      "project"    $project     \
-      "contraints" $constraints \
-      "visits"     $visits      \
-      "alert"      $alert       \
+    return [dict create          \
+      "identifier"  $identifier  \
+      "name"        $name        \
+      "project"     $project     \
+      "constraints" $constraints \
+      "visits"      $visits      \
+      "alert"       $alert       \
     ]
   }
   
   proc makealertblock {identifier name project constraints alert} {
-    return [dict create         \
-      "identifier" $identifier  \
-      "name"       $name        \
-      "project"    $project     \
-      "contraints" $constraints \
-      "alert"      $alert       \
+    return [dict create          \
+      "identifier"  $identifier  \
+      "name"        $name        \
+      "project"     $project     \
+      "constraints" $constraints \
+      "alert"       $alert       \
     ]
   }
   
