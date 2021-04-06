@@ -37,14 +37,18 @@ namespace eval "project" {
   
   proc identifier {project} {
     if {[dict exists $project "identifier"]} {
-      return [dict get $project "identifier"]
+      # Strip leading zeros and then format like "%04d".
+      set identifier [dict get $project "identifier"]
+      set identifier [string trimleft $identifier "0"]
+      set identifier [format "%04d" $identifier]
+      return $identifier
     } else {
       return ""
     }
   }
   
   proc fullidentifier {project} {
-    return [format "%s-%04d" [utcclock::semester] [identifier $project]]
+    return [format "%s-%s" [utcclock::semester] [identifier $project]]
   }
   
   proc name {project} {

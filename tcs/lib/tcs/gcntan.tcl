@@ -289,7 +289,7 @@ namespace eval "gcntan" {
   
   proc respondtogrbalert {test projectidentifier blockidentifier name origin identifier type alerttimestamp eventtimestamp retraction grb alpha delta equinox uncertainty} {
     logresponse $test [format "%s: test is %s." $type $test]
-    logresponse $test [format "%s: project identifier is %d." $type $projectidentifier]
+    logresponse $test [format "%s: project identifier is %s." $type $projectidentifier]
     logresponse $test [format "%s: block identifier is %d." $type $blockidentifier]
     logresponse $test [format "%s: name is %s." $type $name]
     logresponse $test [format "%s: origin/identifier/type are %s." $type $origin $identifier $type]
