@@ -1317,7 +1317,7 @@ namespace eval "ccd" {
     set ddelta [astrometry::foldradsymmetric [expr {$truemountobserveddelta - $observedmountdelta}]]
     set eastoffset [expr {$dalpha * cos($truemountobserveddelta)}]
     set northoffset $ddelta
-    log::info [format "correction is %+.1fas E and %+.1fas N." [astrometry::radtoarcsec $eastoffset] [astrometry::radtoarcsec $northoffset]]
+    log::info [format "correction is %s E and %s N." [astrometry::formatoffset $eastoffset] [astrometry::formatoffset $northoffset]]
     server::setdata "lastcorrectiontimestamp" [utcclock::format]
     server::setdata "lastcorrectioneastoffset"  $eastoffset
     server::setdata "lastcorrectionnorthoffset" $northoffset
