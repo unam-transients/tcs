@@ -122,7 +122,9 @@
   },
   "supervisor": {
     "withplc": "false",
-    "internalhumiditysensor": "dome-humidity"
+    "internalhumiditysensor": "dome-humidity",
+    "openoffsetseconds": "900",
+    "opentocooloffsetseconds": "1800"
   },
   "scheduler": {},
   "executor": {

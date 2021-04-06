@@ -30,14 +30,19 @@ package require "utcclock"
 
 package provide "supervisor" 0.0
 
+config::setdefaultvalue "supervisor" "opentocooloffsetseconds" 1800
+config::setdefaultvalue "supervisor" "openoffsetseconds"       0
+
 namespace eval "supervisor" {
 
   variable svnid {$Id}
 
   ######################################################################
 
-  variable withplc                [config::getvalue "supervisor" "withplc"               ]
-  variable internalhumiditysensor [config::getvalue "supervisor" "internalhumiditysensor"]
+  variable withplc                 [config::getvalue "supervisor" "withplc"                ]
+  variable internalhumiditysensor  [config::getvalue "supervisor" "internalhumiditysensor" ]
+  variable opentocooloffsetseconds [config::getvalue "supervisor" "opentocooloffsetseconds"]
+  variable openoffsetseconds       [config::getvalue "supervisor" "openoffsetseconds"      ]
 
   ######################################################################
 
@@ -83,6 +88,9 @@ namespace eval "supervisor" {
     variable maybeopen
     variable maybeopentocool
     variable why
+
+    variable opentocooloffsetseconds
+    variable openoffsetseconds
 
     log::debug "loop: starting."
     
@@ -220,9 +228,15 @@ namespace eval "supervisor" {
           set maybeopentocool true
           set why "$skystate"
 
-        } elseif {$seconds > $endofdayseconds - 1800} {
+        } elseif {$seconds > $endofdayseconds - $opentocooloffsetseconds} {
 
           set maybeopen false
+          set maybeopentocool true
+          set why "end of day"
+
+        } elseif {$seconds > $endofdayseconds - $openoffsetseconds} {
+
+          set maybeopen true
           set maybeopentocool true
           set why "end of day"
 
