@@ -519,7 +519,7 @@
   },
   "secondary": {
     "type": "ratiroan",
-    "initialz0": "6500",
+    "initialz0": "6100",
     "temperaturesensor": "dome-temperature"
   },
   "guider": {
