@@ -32,7 +32,7 @@ do
         "equinox": "2000"
       },
       "command": "initialfocusvisit",
-      "estimatedduration": "5m"
+      "estimatedduration": "10m"
     },
     {
       "identifier": "1",
@@ -56,7 +56,7 @@ do
         "equinox": "2000"
       },
       "command": "focusvisit",
-      "estimatedduration": "10m"
+      "estimatedduration": "5m"
     }
   ],
   "constraints": {
