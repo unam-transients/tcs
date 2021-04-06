@@ -399,3 +399,26 @@ proc darksvisit {} {
 }
 
 ########################################################################
+
+proc pointingmapvisit {} {
+
+  log::summary "pointingmapvisit: starting."
+
+  executor::setsecondaryoffset 0
+  executor::setguidingmode "none"
+  executor::setpointingmode "none"
+
+  executor::tracktopocentric  
+  executor::setwindow "default"
+  executor::setbinning 2 2 1 1
+  executor::waituntiltracking
+    
+  client::request nefinder "expose 5"
+  client::request sefinder "expose 5"
+  executor::expose object none 30 none none
+  
+  log::summary "pointingmapvisit: finished."
+  return false
+}
+
+########################################################################

@@ -51,6 +51,7 @@ singleblock () {
 ################################################################################
 
 sh focus.sh
+sh pointing-map.sh
 #sh sdss-standards.sh
 #sh landolt-standard-fields.sh
 #sh stripe-82.sh
@@ -93,7 +94,7 @@ sh focus.sh
 
     # allblocks 2017A-0010 e
   
-    # allblocks 0008-pointing-map           w
+    allblocks 0008-pointing-map           w
 
   fi
 
