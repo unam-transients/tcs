@@ -719,11 +719,12 @@ namespace eval "constraints" {
     if {![hasconstraint $constraints "minzenithdistance"]} {
       log::debug "no minimum zenith distance constraint."
     } else { 
-      set minzenithdistance [getconstraint $constraints "minzenithdistance"]
+      set minzenithdistance [astrometry::parseangle [getconstraint $constraints "minzenithdistance"]]
       set observedzenithdistance [astrometry::zenithdistance [visit::observedha $visit $seconds] [visit::observeddelta $visit $seconds]]
       log::debug [format \
-        "checking the zenith distance of the target (%.3f) at $when against the minimum allowed (%.3f)." \
-          $observedzenithdistance $minzenithdistance \
+        "checking the zenith distance of the target (%.1fd) at $when against the minimum allowed (%.1fd)." \
+          [astrometry::radtodeg $observedzenithdistance] \
+          [astrometry::radtodeg $minzenithdistance] \
         ]
       if {$observedzenithdistance < $minzenithdistance} {
         setwhy [format \
@@ -753,11 +754,12 @@ namespace eval "constraints" {
     if {![hasconstraint $constraints "maxzenithdistance"]} {
       log::debug "no maximum zenith distance constraint."
     } else { 
-      set maxzenithdistance [getconstraint $constraints "maxzenithdistance"]
+      set maxzenithdistance [astrometry::parseangle [getconstraint $constraints "maxzenithdistance"]]
       set observedzenithdistance [astrometry::zenithdistance [visit::observedha $visit $seconds] [visit::observeddelta $visit $seconds]]
       log::debug [format \
-        "checking the zenith distance of the target (%.3f) at $when against the maximum allowed (%.3f)." \
-          $observedzenithdistance $maxzenithdistance \
+        "checking the zenith distance of the target (%.1fd) at $when against the maximum allowed (%.1fd)." \
+          [astrometry::radtodeg $observedzenithdistance] \
+          [astrometry::radtodeg $maxzenithdistance] \
         ]
       if {$observedzenithdistance > $maxzenithdistance} {
         setwhy [format \
