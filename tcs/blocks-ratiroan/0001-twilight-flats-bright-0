@@ -24,7 +24,7 @@
         "delta": "+45d"
       },
       "command": "twilightflatsbrightvisit u 7",
-      "estimatedduration": "10m"
+      "estimatedduration": "2m"
     },
     {
       "identifier": "2",
@@ -35,7 +35,7 @@
         "delta": "+45d"
       },
       "command": "twilightflatsbrightvisit r 7",
-      "estimatedduration": "10m"
+      "estimatedduration": "2m"
     },
     {
       "identifier": "1",
@@ -46,7 +46,7 @@
         "delta": "+45d"
       },
       "command": "twilightflatsbrightvisit g 7",
-      "estimatedduration": "10m"
+      "estimatedduration": "2m"
     }
   ],
   "constraints": {
