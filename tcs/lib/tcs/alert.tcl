@@ -73,7 +73,7 @@ namespace eval "alert" {
         set name            [block::name            $oldblock]
         set project         [block::project         $oldblock]
         set alert           $oldalert
-      } elseif {[astrometry::parsedistance $newuncertainty] < [astrometry::parsedistance $olduncertainty]} {
+      } elseif {[astrometry::parsedistance $newuncertainty] <= [astrometry::parsedistance $olduncertainty]} {
         set identifier      [block::identifier      $newblock]
         set name            [block::name            $newblock]
         set project         [block::project         $newblock]
