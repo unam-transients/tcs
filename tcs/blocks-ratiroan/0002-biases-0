@@ -12,11 +12,11 @@
         "type": "idle"
       },
       "command": "biasesvisit",
-      "estimatedduration": "2m"
+      "estimatedduration": "3m"
     }
   ],
   "constraints": {
-    "maxskybrightness": "civiltwilight"
+    "maxskybrightness": "nauticaltwilight"
   }
 }
 
