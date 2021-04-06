@@ -533,7 +533,7 @@ namespace eval "executor" {
 
     log::info "executing [files $blockfile $alertfile]."
 
-    set start [utcclock::seconds]
+    set blockstart [utcclock::seconds]
 
     updatedata false $blockfile $alertfile "" "" ""
 
@@ -593,6 +593,7 @@ namespace eval "executor" {
       }
       log::info "visit command is \"[visit::command $visit]\"."
       
+      set visitstart [utcclock::seconds]
       if {[catch {
         eval [visit::command $visit]
       } result]} {
@@ -600,6 +601,8 @@ namespace eval "executor" {
         set result true
         break
       }
+      set visitend [utcclock::seconds]
+      log::summary [format "finished executing visit after %.1f seconds." [utcclock::diff now $visitstart]]
 
     }
     
@@ -616,7 +619,7 @@ namespace eval "executor" {
     server::setdata "timestamp" [utcclock::combinedformat]
     updatedata true $blockfile $alertfile "" "" ""
 
-    log::summary [format "finished executing after %.1f seconds." [utcclock::diff now $start]]
+    log::summary [format "finished executing block after %.1f seconds." [utcclock::diff now $blockstart]]
   }
   
   proc stopactivitycommand {} {
