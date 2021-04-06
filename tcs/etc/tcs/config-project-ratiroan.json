@@ -268,7 +268,7 @@
     "telescopedescription": "OAN/SPM Harold L. Johnson 1.5-meter",
     "detectortype": "fli",
     "detectoridentifier": "PL0212309",
-    "detectorpixelscale": "0.32as",
+    "detectorpixelscale": "0.159as",
     "detectorinitialreadmode": "1MHz",
     "detectorinitialsoftwaregain": "4",
     "detectorinitialbinning": "2",
@@ -333,7 +333,7 @@
     "telescopedescription": "OAN/SPM Harold L. Johnson 1.5-meter",
     "detectortype": "fli",
     "detectoridentifier": "PL0154809",
-    "detectorpixelscale": "0.32as",
+    "detectorpixelscale": "0.159as",
     "detectorinitialreadmode": "1MHz",
     "detectorinitialsoftwaregain": "4",
     "detectorinitialbinning": "2",
@@ -378,8 +378,8 @@
     "pointingmodelparameters": "{}",
     "isstandalone": "false",
     "fitsfwhmargs": {
-      "1": "-m",
-      "2": "-m",
+      "1": "-A",
+      "2": "-A",
       "4": "-A",
       "8": "-A",
       "16": "-A"
