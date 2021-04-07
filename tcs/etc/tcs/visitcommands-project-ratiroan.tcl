@@ -437,7 +437,7 @@ proc pointingmapvisit {} {
   executor::expose object none 30 none none
   
   log::summary "pointingmapvisit: finished."
-  return false
+  return true
 }
 
 ########################################################################
