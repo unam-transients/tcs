@@ -230,7 +230,6 @@ proc initialfocusvisit {} {
   log::summary "initialfocusvisit: starting."
   
   executor::setsecondaryoffset 0
-  
   executor::setguidingmode "none"
   executor::setpointingmode "none"
 
@@ -243,10 +242,12 @@ proc initialfocusvisit {} {
   executor::setpointingmode "finder"
   
   executor::track
-  executor::waituntiltracking
   executor::setwindow "default"
-  executor::setbinning 8 8 1 1
+  executor::movefilterwheel "r" "none" "none" "none"
+  executor::waituntiltracking
+
   log::summary "initialfocusvisit: focusing C1 with binning 8."
+  executor::setbinning 8 8 1 1
   executor::focussecondary C1 1 1000 100 false
 
   log::summary "initialfocusvisit: finished."
@@ -260,9 +261,14 @@ proc initialpointingcorrectionvisit {} {
 
   log::summary "initialpointingcorrectionvisit: starting."
 
+  executor::setsecondaryoffset 0
+  executor::setguidingmode "none"
   executor::setpointingmode "finder"
 
   executor::track
+  executor::setwindow "default"
+  executor::setbinning 4 4 1 1
+  executor::movefilterwheel "r" "none" "none" "none"
   executor::waituntiltracking
 
   log::summary "initialpointingcorrectionvisit: correcting pointing."
@@ -285,12 +291,15 @@ proc focusvisit {} {
 
   executor::track
   executor::setwindow "default"
-  executor::setbinning 4 4 1 1
+  executor::movefilterwheel "r" "none" "none" "none"
   executor::waituntiltracking
+
   log::summary "focusvisit: focusing with binning 4."
+  executor::setbinning 4 4 1 1
   executor::focussecondary C1 1 500 50 false
-  executor::setbinning 2 2 1 1
+
   log::summary "focusvisit: focusing with binning 2."
+  executor::setbinning 2 2 1 1
   executor::focussecondary C1 4 250 25 true
   executor::setfocused
 
@@ -306,6 +315,9 @@ proc twilightflatsbrightvisit {filter targetngood} {
 
   executor::setsecondaryoffset 0
   executor::move
+
+  executor::setwindow "default"
+  executor::setbinning 2 2 1 1
 
   set maxlevel 20000
   set minlevel 5000
@@ -356,6 +368,8 @@ proc twilightflatsfaintvisit {} {
   log::summary "twilightflatsfaintvisit: starting."
   executor::setsecondaryoffset 0
   executor::move
+  executor::setwindow "default"
+  executor::setbinning 2 2 1 1
   executor::movefilterwheel "r" "none" "none" "none"
   set i 0
   while {$i < 20} {
@@ -372,6 +386,8 @@ proc biasesvisit {} {
   log::summary "biasesvisit: starting."
   executor::setsecondaryoffset 0
   executor::move
+  executor::setwindow "default"
+  executor::setbinning 2 2 1 1
   executor::movefilterwheel "r" "none" "none" "none"
   set i 0
   while {$i < 20} {
@@ -388,6 +404,8 @@ proc darksvisit {} {
   log::summary "darksvisit: starting."
   executor::setsecondaryoffset 0
   executor::move
+  executor::setwindow "default"
+  executor::setbinning 2 2 1 1
   executor::movefilterwheel "r" "none" "none" "none"
   set i 0
   while {$i < 20} {
@@ -411,6 +429,7 @@ proc pointingmapvisit {} {
   executor::tracktopocentric  
   executor::setwindow "default"
   executor::setbinning 2 2 1 1
+  executor::movefilterwheel "r" "none" "none" "none"
   executor::waituntiltracking
     
   client::request nefinder "expose 5"
