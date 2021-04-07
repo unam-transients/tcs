@@ -68,10 +68,11 @@ do
         "equinox": "2000"
       },
       "command": "pointingmapvisit",
-      "estimatedduration": "5m"
+      "estimatedduration": "1m"
     }
   ],
   "constraints": {
+    "maxfocusdelay": "21600",
     "maxskybrightness": "astronomicaltwilight"
   }
 }
