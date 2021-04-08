@@ -228,15 +228,15 @@ namespace eval "supervisor" {
           set maybeopentocool true
           set why "$skystate"
 
-        } elseif {$seconds > $endofdayseconds - $opentocooloffsetseconds} {
-
-          set maybeopen false
-          set maybeopentocool true
-          set why "end of day"
-
         } elseif {$seconds > $endofdayseconds - $openoffsetseconds} {
 
           set maybeopen true
+          set maybeopentocool true
+          set why "end of day"
+
+        } elseif {$seconds > $endofdayseconds - $opentocooloffsetseconds} {
+
+          set maybeopen false
           set maybeopentocool true
           set why "end of day"
 
