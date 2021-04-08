@@ -319,8 +319,8 @@ proc twilightflatsbrightvisit {filter targetngood} {
   executor::setwindow "default"
   executor::setbinning 2 2 1 1
 
-  set maxlevel 20000
-  set minlevel 5000
+  set maxlevel 10000
+  set minlevel 2000
   
   set exposuretime 10
 
