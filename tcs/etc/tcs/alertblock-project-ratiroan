@@ -38,5 +38,6 @@
     "maxairmass": "3.0",
     "maxfocusdelay": "3600",
     "maxalertuncertainty": "5am"
-  }
+  },
+  "persistent": "true"
 }

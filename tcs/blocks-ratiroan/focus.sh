@@ -65,7 +65,8 @@ do
     "maxha": "+3h",
     "minmoondistance": "15d",
     "minfocusdelay": "14400"
-  }
+  },
+  "persistent": "true"
 }
 EOF
   cat <<EOF >0004-focus-$suffix
@@ -96,7 +97,8 @@ EOF
     "maxha": "+3h",
     "minmoondistance": "15d",
     "minfocusdelay": "1200"
-  }
+  },
+  "persistent": "true"
 }
 EOF
 

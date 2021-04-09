@@ -81,9 +81,17 @@ namespace eval "block" {
     }
   }
   
+  proc persistent {block} {
+    if {[dict exists $block "persistent"]} {
+      return [dict get $block "persistent"]
+    } else {
+      return false
+    }  
+  }
+  
   ######################################################################
   
-  proc makeblock {identifier name project constraints visits {alert ""}} {
+  proc makeblock {identifier name project constraints visits {alert ""} {persistent false}} {
     return [dict create          \
       "identifier"  $identifier  \
       "name"        $name        \
@@ -91,16 +99,18 @@ namespace eval "block" {
       "constraints" $constraints \
       "visits"      $visits      \
       "alert"       $alert       \
+      "persistent"  false        \
     ]
   }
   
-  proc makealertblock {identifier name project constraints alert} {
+  proc makealertblock {identifier name project constraints alert persistent} {
     return [dict create          \
       "identifier"  $identifier  \
       "name"        $name        \
       "project"     $project     \
       "constraints" $constraints \
       "alert"       $alert       \
+      "persistent"  false        \
     ]
   }
   

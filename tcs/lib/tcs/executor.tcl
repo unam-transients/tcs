@@ -598,19 +598,14 @@ namespace eval "executor" {
         eval [visit::command $visit]
       } result]} {
         log::error "while executing visit: $result"
-        set result true
+        log::info "aborting block."
         break
       }
-      set visitend [utcclock::seconds]
       log::summary [format "finished executing visit after %.1f seconds." [utcclock::diff now $visitstart]]
 
     }
     
-    if {![string is boolean -strict "$result"]} {
-      log::warning "while executing visit: visit command returned \"$result\" instead of a boolean; assuming true."
-      set result true
-    }
-    if {$result && [string equal $alertfile ""]} {
+    if {![block::persistent $block]} {
       log::info "deleting block file \"[file tail $blockfile]\"."
       file delete -force $blockfile
     }
