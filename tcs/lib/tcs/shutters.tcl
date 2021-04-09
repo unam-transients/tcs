@@ -196,7 +196,7 @@ namespace eval "shutters" {
     controller::sendcommand "ACORTINA CIERRA_TODO;\n"
     settle
     checkshutters
-    log::info [format "finished initialzing after %.1f seconds." [utcclock::diff now $start]]
+    log::info [format "finished initializing after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc stopactivitycommand {} {

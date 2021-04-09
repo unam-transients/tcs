@@ -296,7 +296,7 @@
       "nx": "16",
       "ny": "2048"
     },
-    "cooleropensetting": "-40",
+    "cooleropensetting": "-35",
     "coolerclosedsetting": "following",
     "temperaturelimit": "40",
     "temperaturelimitoutletgroup": "C0-ccd",
@@ -361,7 +361,7 @@
       "nx": "16",
       "ny": "2048"
     },
-    "cooleropensetting": "-30",
+    "cooleropensetting": "-25",
     "coolerclosedsetting": "following",
     "temperaturelimit": "40",
     "temperaturelimitoutletgroup": "C1-ccd",
