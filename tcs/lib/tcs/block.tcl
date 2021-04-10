@@ -99,7 +99,7 @@ namespace eval "block" {
       "constraints" $constraints \
       "visits"      $visits      \
       "alert"       $alert       \
-      "persistent"  false        \
+      "persistent"  $persistent  \
     ]
   }
   
@@ -110,7 +110,7 @@ namespace eval "block" {
       "project"     $project     \
       "constraints" $constraints \
       "alert"       $alert       \
-      "persistent"  false        \
+      "persistent"  $persistent  \
     ]
   }
   
