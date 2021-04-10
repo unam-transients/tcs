@@ -148,7 +148,7 @@ namespace eval "alert" {
       set alertuncertainty [alert::uncertainty $alert]
 
       set alert [alert::makealert $alertname $alertorigin $alertidentifier $alerttype $alertalpha $alertdelta $alertequinox $alertuncertainty $eventtimestamp $alerttimestamp $command $enabled]
-      set block [block::makealertblock $identifier $name $project $constraints $alert true]
+      set block [block::makeblock $identifier $name $project $constraints "" $alert true]
 
       log::debug "block is $block."
 
@@ -167,8 +167,7 @@ namespace eval "alert" {
     ]
     log::info [format "alert command is \"%s\"." [alert::command $alert]]
       
-    # Create the proper block.
-
+    # Complete the visit.
     set targetcoordinates [visit::makeequatorialtargetcoordinates [alert::alpha $alert] [alert::delta $alert] [alert::equinox $alert]]
     set visit [visit::makevisit "0" ""  $targetcoordinates $command "0m"]
     set block [block::makeblock $identifier $name $project $constraints [list $visit] $alert true]

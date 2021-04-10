@@ -103,17 +103,6 @@ namespace eval "block" {
     ]
   }
   
-  proc makealertblock {identifier name project constraints alert persistent} {
-    return [dict create          \
-      "identifier"  $identifier  \
-      "name"        $name        \
-      "project"     $project     \
-      "constraints" $constraints \
-      "alert"       $alert       \
-      "persistent"  $persistent  \
-    ]
-  }
-  
   ######################################################################
   
   proc readfile {file} {
