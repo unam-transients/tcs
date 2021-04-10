@@ -51,7 +51,7 @@ proc alertvisit {{filters "r"}} {
   
   executor::setsecondaryoffset 0
   executor::setguidingmode "none"
-  executor::setpointingmode "finder"
+  executor::setpointingmode "none"
 
   executor::track
 
@@ -70,6 +70,11 @@ proc alertvisit {{filters "r"}} {
   
   set exposuretype firstalertobject
   
+  log::summary "alertvisit: correcting pointing."
+  executor::correctpointing 80
+  executor::track
+  executor::waituntiltracking
+
   foreach {aperture eastoffset northoffset} {
     riZJcenter -10as -30as
     riYHcenter -10as -30as
@@ -287,11 +292,16 @@ proc focusvisit {} {
 
   executor::setsecondaryoffset 0
   executor::setguidingmode "none"
-  executor::setpointingmode "finder"
+  executor::setpointingmode "none"
 
   executor::track
   executor::setwindow "default"
   executor::movefilterwheel "r" "none" "none" "none"
+  executor::waituntiltracking
+
+  log::summary "focusvisit: correcting pointing."
+  executor::correctpointing 30
+  executor::track
   executor::waituntiltracking
 
   log::summary "focusvisit: focusing with binning 4."
