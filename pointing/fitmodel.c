@@ -6,9 +6,9 @@
 #define FIT_NP    1
 #define FIT_MA    1
 #define FIT_ME    1
-#define FIT_TF    0
+#define FIT_TF    1
 #define FIT_FO    0
-#define FIT_DAF   1
+#define FIT_DAF   0
 #define FIT_HHSH  1
 #define FIT_HHCH  1
 #define FIT_HHSH2 1
@@ -17,7 +17,17 @@
 #define FIT_HDCD  1
 #define FIT_HDSD2 1
 #define FIT_HDCD2 1
-#define FIT_DICD  1
+#define FIT_PXD   0
+#define FIT_PXH   0
+#define FIT_PXD2  0
+#define FIT_PXDH  0
+#define FIT_PXH2  0
+#define FIT_PDD   0
+#define FIT_PDH   0
+#define FIT_PDD2  0
+#define FIT_PDDH  0
+#define FIT_PDH2  0
+#define FIT_DICD  0
 #define FIT_C0    0
 #define FIT_C1    0
 #define FIT_C2    0
@@ -170,6 +180,16 @@ size_t n_parameters =
   FIT_HDCD  +
   FIT_HDSD2 +
   FIT_HDCD2 +
+  FIT_PXD   +
+  FIT_PXH   +
+  FIT_PXD2  +
+  FIT_PXDH  +
+  FIT_PXH2  +
+  FIT_PDD   +
+  FIT_PDH   +
+  FIT_PDD2  +
+  FIT_PDDH  +
+  FIT_PDH2  +
   FIT_DICD  +
   FIT_C0    +
   FIT_C1    +
@@ -197,6 +217,18 @@ double HDSD  = 0.0;
 double HDCD  = 0.0;
 double HDSD2 = 0.0;
 double HDCD2 = 0.0;
+
+double PXD   = 0.0;
+double PXH   = 0.0;
+double PXD2  = 0.0;
+double PXDH  = 0.0;
+double PXH2  = 0.0;
+
+double PDD   = 0.0;
+double PDH   = 0.0;
+double PDD2  = 0.0;
+double PDDH  = 0.0;
+double PDH2  = 0.0;
 
 double DICD  = 0.0;
 
@@ -229,6 +261,12 @@ model_h_error(size_t i)
   error += HHSH2 * sin(2 * h);
   error += HHCH2 * cos(2 * h);
 
+  error += PXD  * pow(delta - phi, 1) * pow(h, 0) * sec(delta);
+  error += PXH  * pow(delta - phi, 0) * pow(h, 1) * sec(delta);
+  error += PXD2 * pow(delta - phi, 2) * pow(h, 0) * sec(delta);
+  error += PXDH * pow(delta - phi, 1) * pow(h, 1) * sec(delta);
+  error += PXH2 * pow(delta - phi, 0) * pow(h, 2) * sec(delta);
+
   return error;
 }
 
@@ -252,6 +290,12 @@ model_delta_error(size_t i)
   error += HDCD * cos(delta);
   error += HDSD2 * sin(2 * delta);
   error += HDCD2 * cos(2 * delta);
+  
+  error += PDD  * pow(delta - phi, 1) * pow(h, 0);
+  error += PDH  * pow(delta - phi, 0) * pow(h, 1);
+  error += PDD2 * pow(delta - phi, 2) * pow(h, 0);
+  error += PDDH * pow(delta - phi, 1) * pow(h, 1);
+  error += PDH2 * pow(delta - phi, 0) * pow(h, 2);
 
   error += DICD / cos(delta);
   
@@ -292,6 +336,16 @@ calc_rms_residual(double *p)
     if (FIT_HDCD ) HDCD  = p[i++];
     if (FIT_HDSD2) HDSD2 = p[i++];
     if (FIT_HDCD2) HDCD2 = p[i++];
+    if (FIT_PXD  ) PXD   = p[i++];
+    if (FIT_PXH  ) PXH   = p[i++];
+    if (FIT_PXD2 ) PXD2  = p[i++];
+    if (FIT_PXDH ) PXDH  = p[i++];
+    if (FIT_PXH2 ) PXH2  = p[i++];
+    if (FIT_PDD  ) PDD   = p[i++];
+    if (FIT_PDH  ) PDH   = p[i++];
+    if (FIT_PDD2 ) PDD2  = p[i++];
+    if (FIT_PDDH ) PDDH  = p[i++];
+    if (FIT_PDH2 ) PDH2  = p[i++];
     if (FIT_DICD ) DICD  = p[i++];
     if (FIT_C0   ) C0    = p[i++];
     if (FIT_C1   ) C1    = p[i++];
@@ -331,7 +385,7 @@ void
 read_pointings(void)
 {
   n_pointings = 0;
-  while (11 == scanf("%s %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf", 
+  while (11 == scanf("%s %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %*f", 
     name[n_pointings],
     &requested_alpha[n_pointings],
     &requested_delta[n_pointings],
@@ -370,7 +424,7 @@ read_pointings(void)
     actual_y_error[i]     = actual_delta_error[i];
   }
   
-  printf("RMS residual = %.2f\n", radtoarcmin(calc_rms_residual(0)));
+  printf("RMS residual = %.2f am %.1f as\n", radtoarcmin(calc_rms_residual(0)), radtoarcsec(calc_rms_residual(0)));
 
   for (size_t i = 0; i < n_pointings; ++i) {
     double applied_model_alpha = fold(mount_alpha[i] - observed_alpha[i]);
@@ -395,7 +449,7 @@ read_pointings(void)
       radtodeg(requested_alpha[i]), radtodeg(requested_delta[i]),
       radtoarcmin(actual_x_error[i]), radtoarcmin(actual_y_error[i]));
   }
-  printf("RMS residual = %.2f\n", radtoarcmin(calc_rms_residual(0)));
+  printf("RMS residual = %.2f am %.1f as\n", radtoarcmin(calc_rms_residual(0)), radtoarcsec(calc_rms_residual(0)));
 }
 
 void minimize(double (*demerit)(double *));
@@ -422,28 +476,38 @@ show_model(void)
   }
 
   printf("Config parameters:\n");
-  printf("  %-6s %10.6f\n", "IH"   , IH   );
-  printf("  %-6s %10.6f\n", "ID"   , ID   );
-  printf("  %-6s %10.6f\n", "CH"   , CH   );
-  printf("  %-6s %10.6f\n", "NP"   , NP   );
-  printf("  %-6s %10.6f\n", "MA"   , MA   );
-  printf("  %-6s %10.6f\n", "ME"   , ME   );
-  printf("  %-6s %10.6f\n", "TF"   , TF   );
-  printf("  %-6s %10.6f\n", "FO"   , FO   );
-  printf("  %-6s %10.6f\n", "DAF"  , DAF  );
-  printf("  %-6s %10.6f\n", "HHSH" , HHSH );
-  printf("  %-6s %10.6f\n", "HHCH" , HHCH );
-  printf("  %-6s %10.6f\n", "HHSH2", HHSH2);
-  printf("  %-6s %10.6f\n", "HHCH2", HHCH2);
-  printf("  %-6s %10.6f\n", "HDSD" , HDSD );
-  printf("  %-6s %10.6f\n", "HDCD" , HDCD );
-  printf("  %-6s %10.6f\n", "HDSD2", HDSD2);
-  printf("  %-6s %10.6f\n", "HDCD2", HDCD2);
-  printf("  %-6s %10.6f\n", "DICD" , DICD );
-  printf("  %-6s %10.6f\n", "C0"   , C0   );
-  printf("  %-6s %10.6f\n", "C1"   , C1   );
-  printf("  %-6s %10.6f\n", "C2"   , C2   );
-  printf("  %-6s %10.6f\n", "C3"   , C3   );
+  printf("      \"%s\": \"%+.6f\"\n", "IH"   , IH   );
+  printf("      \"%s\": \"%+.6f\"\n", "ID"   , ID   );
+  printf("      \"%s\": \"%+.6f\"\n", "CH"   , CH   );
+  printf("      \"%s\": \"%+.6f\"\n", "NP"   , NP   );
+  printf("      \"%s\": \"%+.6f\"\n", "MA"   , MA   );
+  printf("      \"%s\": \"%+.6f\"\n", "ME"   , ME   );
+  printf("      \"%s\": \"%+.6f\"\n", "TF"   , TF   );
+  printf("      \"%s\": \"%+.6f\"\n", "FO"   , FO   );
+  printf("      \"%s\": \"%+.6f\"\n", "DAF"  , DAF  );
+  printf("      \"%s\": \"%+.6f\"\n", "HHSH" , HHSH );
+  printf("      \"%s\": \"%+.6f\"\n", "HHCH" , HHCH );
+  printf("      \"%s\": \"%+.6f\"\n", "HHSH2", HHSH2);
+  printf("      \"%s\": \"%+.6f\"\n", "HHCH2", HHCH2);
+  printf("      \"%s\": \"%+.6f\"\n", "HDSD" , HDSD );
+  printf("      \"%s\": \"%+.6f\"\n", "HDCD" , HDCD );
+  printf("      \"%s\": \"%+.6f\"\n", "HDSD2", HDSD2);
+  printf("      \"%s\": \"%+.6f\"\n", "HDCD2", HDCD2);
+  printf("      \"%s\": \"%+.6f\"\n", "PXD"  , PXD  );
+  printf("      \"%s\": \"%+.6f\"\n", "PXH"  , PXH  );
+  printf("      \"%s\": \"%+.6f\"\n", "PXD2" , PXD2 );
+  printf("      \"%s\": \"%+.6f\"\n", "PXDH" , PXDH );
+  printf("      \"%s\": \"%+.6f\"\n", "PXH2" , PXH2 );
+  printf("      \"%s\": \"%+.6f\"\n", "PDD"  , PDD  );
+  printf("      \"%s\": \"%+.6f\"\n", "PDH"  , PDH  );
+  printf("      \"%s\": \"%+.6f\"\n", "PDD2" , PDD2 );
+  printf("      \"%s\": \"%+.6f\"\n", "PDDH" , PDDH );
+  printf("      \"%s\": \"%+.6f\"\n", "PDH2" , PDH2 );
+  printf("      \"%s\": \"%+.6f\"\n", "DICD" , DICD );
+  printf("      \"%s\": \"%+.6f\"\n", "C0"   , C0   );
+  printf("      \"%s\": \"%+.6f\"\n", "C1"   , C1   );
+  printf("      \"%s\": \"%+.6f\"\n", "C2"   , C2   );
+  printf("      \"%s\": \"%+.6f\"\n", "C3"   , C3   );
   
 
   printf("Fit:\n");
@@ -464,20 +528,30 @@ show_model(void)
   if (FIT_HDCD ) printf("%-6s = %+6.2f\n", "HDCD" , radtoarcmin(HDCD ));
   if (FIT_HDSD2) printf("%-6s = %+6.2f\n", "HDSD2", radtoarcmin(HDSD2));
   if (FIT_HDCD2) printf("%-6s = %+6.2f\n", "HDCD2", radtoarcmin(HDCD2));
+  if (FIT_PXD  ) printf("%-6s = %+6.2f\n", "PXD"  , radtoarcmin(PXD  ));
+  if (FIT_PXH  ) printf("%-6s = %+6.2f\n", "PXH"  , radtoarcmin(PXH  ));
+  if (FIT_PXD2 ) printf("%-6s = %+6.2f\n", "PXD2" , radtoarcmin(PXD2 ));
+  if (FIT_PXDH ) printf("%-6s = %+6.2f\n", "PXDH" , radtoarcmin(PXDH ));
+  if (FIT_PXH2 ) printf("%-6s = %+6.2f\n", "PXH2" , radtoarcmin(PXH2 ));
+  if (FIT_PDD  ) printf("%-6s = %+6.2f\n", "PDD"  , radtoarcmin(PDD  ));
+  if (FIT_PDH  ) printf("%-6s = %+6.2f\n", "PDH"  , radtoarcmin(PDH  ));
+  if (FIT_PDD2 ) printf("%-6s = %+6.2f\n", "PDD2" , radtoarcmin(PDD2 ));
+  if (FIT_PDDH ) printf("%-6s = %+6.2f\n", "PDDH" , radtoarcmin(PDDH ));
+  if (FIT_PDH2 ) printf("%-6s = %+6.2f\n", "PDH2" , radtoarcmin(PDH2 ));
   if (FIT_DICD ) printf("%-6s = %+6.2f\n", "DICD" , radtoarcmin(DICD ));
   if (FIT_C0   ) printf("%-6s = %+6.2f\n", "C0"   , radtoarcmin(C0   ));
   if (FIT_C1   ) printf("%-6s = %+6.2f\n", "C1"   , radtoarcmin(C1   ));
   if (FIT_C2   ) printf("%-6s = %+6.2f\n", "C2"   , radtoarcmin(C2   ));
   if (FIT_C3   ) printf("%-6s = %+6.2f\n", "C3"   , radtoarcmin(C3   ));
   
-  printf("RMS residual = %.2f\n", radtoarcmin(calc_rms_residual(0)));
+  printf("RMS residual = %.2f am %.1f as\n", radtoarcmin(calc_rms_residual(0)), radtoarcsec(calc_rms_residual(0)));
 
   fit_min_h     = degtorad(-120);
   fit_max_h     = degtorad(+120);
   fit_min_delta = degtorad(-90);
   fit_max_delta = degtorad(+60);
   fit_max_z     = degtorad(90);
-  printf("RMS residual = %.2f\n", radtoarcmin(calc_rms_residual(0)));
+  printf("RMS residual = %.2f am %.1f as\n", radtoarcmin(calc_rms_residual(0)), radtoarcsec(calc_rms_residual(0)));
 
   FILE *fp = fopen("residuals.dat", "w");
   assert(fp != 0);
@@ -550,7 +624,7 @@ minimize(double (*demerit)(double *))
   for (int k = 0; k < 3; ++k) {
 
     for (size_t i = 1; i < n_parameters + 1; ++i) {
-      q[i][i] += 1e-3;
+      q[i][i] += 1e-2;
     }
    
     for (size_t i = 1; i < n_parameters + 2; ++i) {
