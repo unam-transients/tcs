@@ -15,3 +15,10 @@ map/residuals.synctex.gz
 .DS_Store
 tcs/etc/.DS_Store
 nagelfar/out
+pointing/fitmodel
+pointing/residuals.synctex.gz
+pointing/residuals.pdf
+pointing/residuals.log
+pointing/residuals.dat
+pointing/residuals-180.dat
+pointing/residuals-0.dat
