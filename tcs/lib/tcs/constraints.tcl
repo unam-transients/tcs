@@ -580,8 +580,8 @@ namespace eval "constraints" {
       log::debug "no minimum delta constraint."
     } else {  
       set mindelta [getconstraint $constraints "mindelta"]
-      set observeddelta [visit::observeddelta $visit $seconds]
       set mindelta [astrometry::parsedelta $mindelta]
+      set observeddelta [visit::observeddelta $visit $seconds]
       log::debug [format \
         "checking the delta of the target (%s) at $when against the minimum allowed (%s)." \
         [astrometry::formatdelta $observeddelta] \
@@ -719,7 +719,8 @@ namespace eval "constraints" {
     if {![hasconstraint $constraints "minzenithdistance"]} {
       log::debug "no minimum zenith distance constraint."
     } else { 
-      set minzenithdistance [astrometry::parseangle [getconstraint $constraints "minzenithdistance"]]
+      set minzenithdistance [getconstraint $constraints "minzenithdistance"]
+      set minzenithdistance [astrometry::parseangle $minzenithdistance]
       set observedzenithdistance [astrometry::zenithdistance [visit::observedha $visit $seconds] [visit::observeddelta $visit $seconds]]
       log::debug [format \
         "checking the zenith distance of the target (%.1fd) at $when against the minimum allowed (%.1fd)." \
@@ -754,7 +755,8 @@ namespace eval "constraints" {
     if {![hasconstraint $constraints "maxzenithdistance"]} {
       log::debug "no maximum zenith distance constraint."
     } else { 
-      set maxzenithdistance [astrometry::parseangle [getconstraint $constraints "maxzenithdistance"]]
+      set maxzenithdistance [getconstraint $constraints "maxzenithdistance"]
+      set maxzenithdistance [astrometry::parseangle $maxzenithdistance]
       set observedzenithdistance [astrometry::zenithdistance [visit::observedha $visit $seconds] [visit::observeddelta $visit $seconds]]
       log::debug [format \
         "checking the zenith distance of the target (%.1fd) at $when against the maximum allowed (%.1fd)." \
@@ -979,8 +981,9 @@ namespace eval "constraints" {
         log::debug "no minimum alert uncertainty constraint."
       } else {
         set minuncertainty [getconstraint $constraints "minalertuncertainty"]
+        set minuncertainty [astrometry::parsedistance $minuncertainty]
         log::debug [format "checking the alert uncertainty against the minimum allowed of %s." [astrometry::formatdistance $minuncertainty]]
-        set uncertainty [alert::uncertainty $alert]
+        set uncertainty [astrometry::parsedistance [alert::uncertainty $alert]]
         if {$uncertainty < $minuncertainty} {
           setwhy [format \
             "alert uncertainty of %s is less than minimum allowed of %s." \
@@ -1000,8 +1003,9 @@ namespace eval "constraints" {
         log::debug "no maximum alert uncertainty constraint."
       } else {
         set maxuncertainty [getconstraint $constraints "maxalertuncertainty"]
+        set maxuncertainty [astrometry::parsedistance $maxuncertainty]
         log::debug [format "checking the alert uncertainty against the maximum allowed of %s." [astrometry::formatdistance $maxuncertainty]]
-        set uncertainty [alert::uncertainty $alert]
+        set uncertainty [astrometry::parsedistance [alert::uncertainty $alert]]
         if {$uncertainty > $maxuncertainty} {
           setwhy [format \
             "alert uncertainty of %s is more than maximum allowed of %s." \
