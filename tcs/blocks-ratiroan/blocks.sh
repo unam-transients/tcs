@@ -94,7 +94,7 @@ sh pointing-map.sh
 
     # allblocks 2017A-0010 e
   
-    allblocks 0008-pointing-map           l
+    allblocks 0008-pointing-map           w
 
   fi
 
