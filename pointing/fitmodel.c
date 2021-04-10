@@ -1,5 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
+#define ABSOLUTE 1
+
 #define FIT_IH    1
 #define FIT_ID    1
 #define FIT_CH    1
@@ -424,8 +426,9 @@ read_pointings(void)
     actual_y_error[i]     = actual_delta_error[i];
   }
   
-  printf("RMS residual = %.2f am %.1f as\n", radtoarcmin(calc_rms_residual(0)), radtoarcsec(calc_rms_residual(0)));
+  printf("RMS residual = %.2f am %.1f as (with original model)\n", radtoarcmin(calc_rms_residual(0)), radtoarcsec(calc_rms_residual(0)));
 
+#if ABSOLUTE
   for (size_t i = 0; i < n_pointings; ++i) {
     double applied_model_alpha = fold(mount_alpha[i] - observed_alpha[i]);
     double applied_model_delta = fold(mount_delta[i] - observed_delta[i]);
@@ -440,6 +443,7 @@ read_pointings(void)
     actual_x_error[i]     = actual_h_error[i] * cos(actual_delta[i]);
     actual_y_error[i]     = actual_delta_error[i];
   }
+#endif
   
   printf("n_pointings = %lu\n", (long unsigned) n_pointings);
   for (size_t i = 0; i < n_pointings; ++i) {
@@ -449,7 +453,7 @@ read_pointings(void)
       radtodeg(requested_alpha[i]), radtodeg(requested_delta[i]),
       radtoarcmin(actual_x_error[i]), radtoarcmin(actual_y_error[i]));
   }
-  printf("RMS residual = %.2f am %.1f as\n", radtoarcmin(calc_rms_residual(0)), radtoarcsec(calc_rms_residual(0)));
+  printf("RMS residual = %.2f am %.1f as (without model)\n", radtoarcmin(calc_rms_residual(0)), radtoarcsec(calc_rms_residual(0)));
 }
 
 void minimize(double (*demerit)(double *));
@@ -544,14 +548,14 @@ show_model(void)
   if (FIT_C2   ) printf("%-6s = %+6.2f\n", "C2"   , radtoarcmin(C2   ));
   if (FIT_C3   ) printf("%-6s = %+6.2f\n", "C3"   , radtoarcmin(C3   ));
   
-  printf("RMS residual = %.2f am %.1f as\n", radtoarcmin(calc_rms_residual(0)), radtoarcsec(calc_rms_residual(0)));
+  printf("RMS residual = %.2f am %.1f as (with new model)\n", radtoarcmin(calc_rms_residual(0)), radtoarcsec(calc_rms_residual(0)));
 
   fit_min_h     = degtorad(-120);
   fit_max_h     = degtorad(+120);
   fit_min_delta = degtorad(-90);
   fit_max_delta = degtorad(+60);
   fit_max_z     = degtorad(90);
-  printf("RMS residual = %.2f am %.1f as\n", radtoarcmin(calc_rms_residual(0)), radtoarcsec(calc_rms_residual(0)));
+  printf("RMS residual = %.2f am %.1f as (with new model in restricted region)\n", radtoarcmin(calc_rms_residual(0)), radtoarcsec(calc_rms_residual(0)));
 
   FILE *fp = fopen("residuals.dat", "w");
   assert(fp != 0);
