@@ -51,7 +51,7 @@ proc alertvisit {{filters "r"}} {
   
   executor::setsecondaryoffset 0
   executor::setguidingmode "none"
-  executor::setpointingmode "none"
+  executor::setpointingmode "finder"
 
   executor::track
 
@@ -70,6 +70,7 @@ proc alertvisit {{filters "r"}} {
   
   set exposuretype firstalertobject
   
+  executor::setpointingmode "none"
   log::summary "alertvisit: correcting pointing."
   executor::correctpointing 80
   executor::track
@@ -292,13 +293,14 @@ proc focusvisit {} {
 
   executor::setsecondaryoffset 0
   executor::setguidingmode "none"
-  executor::setpointingmode "none"
+  executor::setpointingmode "finder"
 
   executor::track
   executor::setwindow "default"
   executor::movefilterwheel "r" "none" "none" "none"
   executor::waituntiltracking
 
+  executor::setpointingmode "none"
   log::summary "focusvisit: correcting pointing."
   executor::correctpointing 30
   executor::track
