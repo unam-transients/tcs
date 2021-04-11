@@ -146,22 +146,22 @@
     "type": "ratiroan",
     // C1 pointing model is from 20210409.
     "pointingmodelparameters": {
-      "IH": "-0.003156"
-      "ID": "+0.009765"
-      "CH": "+0.002381"
-      "NP": "-0.000402"
-      "MA": "-0.000365"
-      "ME": "+0.000440"
-      "TF": "-0.001917"
-      "FO": "+0.000000"
-      "DAF": "+0.000000"
-      "HHSH": "-0.000336"
-      "HHCH": "+0.000028"
-      "HHSH2": "+0.000840"
-      "HHCH2": "+0.000037"
-      "HDSD": "-0.003201"
-      "HDCD": "-0.013247"
-      "HDSD2": "+0.003085"
+      "IH": "-0.003156",
+      "ID": "+0.009765",
+      "CH": "+0.002381",
+      "NP": "-0.000402",
+      "MA": "-0.000365",
+      "ME": "+0.000440",
+      "TF": "-0.001917",
+      "FO": "+0.000000",
+      "DAF": "+0.000000",
+      "HHSH": "-0.000336",
+      "HHCH": "+0.000028",
+      "HHSH2": "+0.000840",
+      "HHCH2": "+0.000037",
+      "HDSD": "-0.003201",
+      "HDCD": "-0.013247",
+      "HDSD2": "+0.003085",
       "HDCD2": "+0.003118"
     }
   },
@@ -561,7 +561,6 @@
     "allowedfilterwheelpositionerror": "0",
     "focusertype":                     "fli",
     "focuseridentifier":               "DF0101910",
-    "focuserinitialposition":          "1000",
     "allowedfocuserpositionerror":     "0",
     "defaultfocusexposuretime":        "1.0",
     "defaultfocusrange":               "600",
@@ -605,7 +604,6 @@
     "allowedfilterwheelpositionerror": "0",
     "focusertype":                     "fli",
     "focuseridentifier":               "DF0080209",
-    "focuserinitialposition":          "1000",
     "allowedfocuserpositionerror":     "0",
     "defaultfocusexposuretime":        "1.0",
     "defaultfocusrange":               "600",
