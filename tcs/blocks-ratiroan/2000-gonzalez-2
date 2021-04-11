@@ -1,0 +1,29 @@
+{
+  "project": {
+    "identifier": "2000",
+    "name": "Gonzalez AGN"
+  },
+  "identifier": "2",
+  "name": "",
+  "visits": [
+    {
+      "identifier": "0",
+      "name": "MCG 8-11-11",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "05:54:53.6",
+        "delta"  : "+46:26:02.0",
+        "equinox": "2000"
+      },
+      "command": "agnvisit",
+      "estimatedduration": "30m"
+    }
+  ],
+  "constraints": {
+//    "mindate"         : "20210506T060000",
+//    "maxdate"         : "20210630T130000",
+    "maxskybrightness": "bright",
+    "maxfocusdelay": "1800"
+  },
+  "persistent": "false"
+}

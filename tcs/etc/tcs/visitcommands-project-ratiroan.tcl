@@ -149,6 +149,64 @@ proc alertvisit {{filters "r"}} {
 
 ########################################################################
 
+proc agnvisit {} {
+
+  log::summary "agnvisit: starting."
+  
+  variable blockfile
+  variable alertfile
+  
+  executor::setsecondaryoffset 0
+  executor::setguidingmode "none"
+  executor::setpointingmode "finder"
+
+  executor::track
+
+  executor::setwindow  "default"
+  executor::setbinning 2 2 1 1
+
+  executor::waituntiltracking
+
+  executor::setpointingmode "none"
+  log::summary "agnvisit: correcting pointing."
+  executor::correctpointing 80
+  executor::track
+  executor::waituntiltracking
+
+  foreach repeat {0 1} {
+  
+    foreach {aperture eastoffset northoffset filter} {
+      riZJcenter   0as   0as u
+      riYHcenter   0as   0as g
+      riZJcenter   0as +10as r
+      riYHcenter   0as +10as u
+      riZJcenter   0as -10as g
+      riYHcenter   0as -10as r
+      riZJcenter +10as   0as u
+      riYHcenter +10as   0as g
+      riZJcenter -10as   0as r
+      riYHcenter -10as   0as u
+    } {
+  
+      log::info "agnvisit: dithering $eastoffset E and $northoffset N about aperture $aperture."    
+      executor::offset $eastoffset $northoffset $aperture
+      executor::waituntiltracking
+    
+      executor::movefilterwheel $filter "none" "none" "none"
+      set i 0
+      executor::expose object 80 80 60 60
+
+    }
+
+  }
+
+  log::summary "agnvisit: finished."
+
+  return true
+}
+
+########################################################################
+
 proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime filters} {
 
   log::summary "gridvisit: starting."
