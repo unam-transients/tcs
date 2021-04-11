@@ -80,20 +80,8 @@ sh pointing-map.sh
     
     :
   
-    # allblocks 2019A-1002 c
-
-    # allblocks 2017A-0008-pointing-map           a
-
-    # singleblock 2019A-2001-0 a0
-
-    # allblocks 2019A-2000-0 b0
-    # singleblock 2019A-2000-1 b1
-    # singleblock 2019A-2000-2 b1
-    # singleblock 2019A-2000-3 b1
+    allblocks 2000-gonzalez               e
    
-
-    # allblocks 2017A-0010 e
-  
     allblocks 0008-pointing-map           w
 
   fi
