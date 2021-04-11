@@ -576,10 +576,10 @@ namespace eval "executor" {
 
     log::summary "executing block [block::identifier $block] of project [project::identifier $project]."
     if {![string equal "" [project::name $project]]} {
-      log::info "project name is \"[project::name [block::project $block]]\"."
+      log::summary "project name is \"[project::name [block::project $block]]\"."
     }
     if {![string equal "" [block::name $block]]} {
-      log::info "block name is \"[block::name $block]\"."
+      log::summary "block name is \"[block::name $block]\"."
     }
     
     variable visit
@@ -589,9 +589,9 @@ namespace eval "executor" {
 
       log::summary "executing visit [visit::identifier $visit] of block [block::identifier $block] of project [project::identifier $project]."
       if {![string equal [visit::name $visit] ""]} {
-        log::info "visit name is \"[visit::name $visit]\"."
+        log::summary "visit name is \"[visit::name $visit]\"."
       }
-      log::info "visit command is \"[visit::command $visit]\"."
+      log::summary "visit command is \"[visit::command $visit]\"."
       
       set visitstart [utcclock::seconds]
       if {[catch {
