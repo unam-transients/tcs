@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd /usr/local/var/ratir
+cd /usr/local/var/ratir/
 
 exec >direct.html.new
 
@@ -28,12 +28,20 @@ EOF
 for date in $(ls | grep '^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$' | sort -nr | head -30)
 do
   echo $date
-  find -L $date -maxdepth 4 -name index.html |
+  rsync --ignore-missing-args /nas/archive-ratir/raw/$date/log/error.txt   $date/log/
+  rsync --ignore-missing-args /nas/archive-ratir/raw/$date/log/warning.txt $date/log/
+  rsync --ignore-missing-args /nas/archive-ratir/raw/$date/log/summary.txt $date/log/
+  rsync --ignore-missing-args /nas/archive-ratir/raw/$date/log/info.txt    $date/log/
+done |
+while read date
+do
+  echo $date
+  find -L $date -maxdepth 5 -name index.html |
   sed '
     s:/version:/:
     s:/: :g
   ' | 
-  sort -k1,3 -k4g -s
+  sort -k1,4 -k5g -s
 done |
 awk '
 BEGIN {
@@ -42,26 +50,30 @@ BEGIN {
   firsttarget = 1;
 }
 NF == 1 {
-  if (!firsttarget)
-    printf("</li>\n  </ul>\n");
   if (!firstdate)
-    printf("</li>\n");
+    printf("</ul>\n");
   firstdate = 0;
-  printf("<li>%s:", $1);
-  firsttarget = 1;
+  url = $1 "/";
+  printf("  <li><a href=\"%s\">%s</a>:\n", url, $1);
+  printf("    <ul>\n");
+  printf("      <li>")
+  printf("        <a href=\"%s\">Info</a>", $1 "/log/info.txt");
+  printf("        <a href=\"%s\">Summary</a>", $1 "/log/summary.txt");
+  printf("        <a href=\"%s\">Warning</a>", $1 "/log/warning.txt");
+  printf("        <a href=\"%s\">Error</a>", $1 "/log/error.txt");
+  printf("      </li>\n");
 }
-NF > 1 && $4 == "latest_version" {
-  if (firsttarget)
-    printf("\n  <ul>\n");
-  else
-    printf("</li>\n");
+NF > 1 && $5 == "latest_version" {
+  printf("</li>\n");
   firsttarget = 0;
   url = $1 "/" $2 "/" $3 "/" $4 "/";
-  printf("  <li>%s: <a href=\"%s\">latest</a>", $3, url);
+  printf("  <li><a href=\"%s\">%s/%s/%s</a>: ", url, $2, $3, $4);
+  url = $1 "/" $2 "/" $3 "/" $4 "/" $5;
+  printf("<a href=\"%s\">latest</a>", url);
 }
-NF > 1 && $4 != "latest_version" {
-  url = $1 "/" $2 "/" $3 "/version" $4 "/";
-  printf(" <a href=\"%s\">%s</a>", url, $4);
+NF > 1 && $5 != "latest_version" {
+  url = $1 "/" $2 "/" $3 "/" $4 "/version" $5 "/";
+  printf(" <a href=\"%s\">%s</a>", url, $5);
 }
 END {
   printf("</ul>\n");
@@ -76,7 +88,7 @@ cat <<"EOF"
 <hr/>
 <p><a href="http://transients.astrossp.unam.mx/">Home</a>
 
-<p>Copyright © 2018 <a href="mailto:alan@astro.unam.mx">Alan M. Watson</a>.</p>
+<p>Copyright © 2018-2021 <a href="mailto:alan@astro.unam.mx">Alan M. Watson</a>.</p>
 </div>
 </body>
 </html>
