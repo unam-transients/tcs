@@ -257,7 +257,7 @@ namespace eval "gcntan" {
         log::info [format "%s: project identifier is \"%s\"." $type $projectidentifier]
         log::info [format "%s: block identifier is %s." $type $blockidentifier ]
         log::info [format "%s: name is %s." $type $name]
-        log::info [format "%s: origin/identifier/type are %s." $type $origin $identifier $type]
+        log::info [format "%s: origin/identifier/type are %s/%s/%s." $type $origin $identifier $type]
         log::info [format "%s: event timestamp is %s." $type $eventtimestamp]
         return "echo"
       }
@@ -292,7 +292,7 @@ namespace eval "gcntan" {
     logresponse $test [format "%s: project identifier is %s." $type $projectidentifier]
     logresponse $test [format "%s: block identifier is %d." $type $blockidentifier]
     logresponse $test [format "%s: name is %s." $type $name]
-    logresponse $test [format "%s: origin/identifier/type are %s." $type $origin $identifier $type]
+    logresponse $test [format "%s: origin/identifier/type are %s/%s/%s." $type $origin $identifier $type]
     logresponse $test [format "%s: alert timestamp is %s." $type [utcclock::format $alerttimestamp]] 
     if {![string equal $eventtimestamp ""]} {
       logresponse $test [format "%s: event timestamp is %s." $type [utcclock::format $eventtimestamp]]
@@ -335,7 +335,7 @@ namespace eval "gcntan" {
     logresponse $test [format "%s: project identifier is \"%s\"." $type $projectidentifier]
     logresponse $test [format "%s: block identifier is %d." $type $blockidentifier]
     logresponse $test [format "%s: name is %s." $type $name]
-    logresponse $test [format "%s: origin/identifier/type are %s." $type $origin $identifier $type]
+    logresponse $test [format "%s: origin/identifier/type are %s/%s/%s." $type $origin $identifier $type]
     logresponse $test [format "%s: alert timestamp is %s." $type [utcclock::format $alerttimestamp]] 
     logresponse $test [format "%s: event timestamp is %s." $type [utcclock::format $eventtimestamp]]
     logresponse $test [format "%s: event delay is %s." $type [utcclock::formatinterval [utcclock::diff $alerttimestamp $eventtimestamp]]]
