@@ -24,7 +24,7 @@ do
   "visits": [
     {
       "identifier": "0",
-      "name": "initial focus",
+      "name": "initial coarse focus",
       "targetcoordinates": {
         "type"   : "equatorial",
         "alpha"  : "$ALPHA",
@@ -48,7 +48,7 @@ do
     },
     {
       "identifier": "2",
-      "name": "focus",
+      "name": "initial fine focus",
       "targetcoordinates": {
         "type"   : "equatorial",
         "alpha"  : "$alpha",
@@ -80,7 +80,7 @@ EOF
   "visits": [
     {
       "identifier": "0",
-      "name": "initial focus",
+      "name": "fine focus",
       "targetcoordinates": {
         "type"   : "equatorial",
         "alpha"  : "$alpha",
