@@ -44,9 +44,12 @@ config::setdefaultvalue "mount" "allowedguideoffset"      "30as"
 # The mount controller soft declination limits are -34:59:59 and +57:59:59
 # (inclusive). The mount controller hard limits in HA are ±5:30:00.
 
+# On 2021-04-11 we verified that the mount can reach -33:15:00 and +57:59:59
+# without interference.
+
 config::setdefaultvalue "mount" "easthalimit"             "-05:21:00"
 config::setdefaultvalue "mount" "westhalimit"             "+05:21:00"
-config::setdefaultvalue "mount" "northdeltalimit"         "+56:15:00"
+config::setdefaultvalue "mount" "northdeltalimit"         "+57:59:59"
 config::setdefaultvalue "mount" "southdeltalimit"         "-33:15:00"
 config::setdefaultvalue "mount" "zenithdistancelimit"     "79.5d"
 
