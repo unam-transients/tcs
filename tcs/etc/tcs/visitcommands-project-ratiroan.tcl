@@ -379,6 +379,48 @@ proc focusvisit {} {
 
 ########################################################################
 
+proc aperturesvisit {} {
+
+  log::summary "aperturesvisit: starting."
+
+  executor::setsecondaryoffset 0
+  executor::setguidingmode "none"
+  executor::setpointingmode "finder"
+
+  executor::track
+  executor::setwindow "default"
+  executor::movefilterwheel "r" "none" "none" "none"
+  executor::waituntiltracking
+
+  set dithers {
+      0as   0as
+    +60as   0as
+    -60as   0as
+      0as +60as
+      0as -60as
+  }
+
+  foreach aperture {
+    default
+    riZJcenter
+    riYHcenter
+  } {
+  log::summary "aperturesvisit: observing at $aperture."
+    foreach {eastoffset northoffset} $dithers {
+      executor::offset $eastoffset $northoffset $aperture
+      executor::waituntiltracking
+      executor::expose object 30
+    }
+  }
+
+  log::summary "aperturesvisit: finished."
+  return false
+
+}
+
+
+########################################################################
+
 proc twilightflatsbrightvisit {filter targetngood} {
 
   log::summary "twilightflatsbrightvisit: starting."
