@@ -1,4 +1,4 @@
-RMS residual = 19.87 am 1192.2 as (with original model)
+RMS residual = 19.87 am 1192.2 as (without model)
 n_pointings = 21
 20210409T034950C1o  -49.57  25.14 +188.93  25.25  +0.21  +6.27
 20210409T035239C1o  -29.46  -4.84 +169.51  -4.74  -1.89  +3.06
@@ -21,7 +21,7 @@ n_pointings = 21
 20210409T042219C1o  +50.57  35.15  +96.82  35.16  -3.28  +4.36
 20210409T042337C1o  +50.41  55.16  +97.22  55.17  -0.83  +3.92
 20210409T042504C1o  +70.53  45.15  +77.51  45.12  -4.11  +4.15
-RMS residual = 4.81 am 288.7 as (without model)
+RMS residual = 4.81 am 288.7 as (with original model)
 Fitting model ... done.
 Residuals:
 20210409T034950C1o  -49.57  25.14 +188.93  25.25  +0.21  +6.27  +0.05  +0.15
