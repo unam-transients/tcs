@@ -1,0 +1,44 @@
+////////////////////////////////////////////////////////////////////////
+
+// This file is part of the UNAM telescope control system.
+
+// $Id: BOILERPLATE 3370 2019-10-30 02:46:01Z Alan $
+
+////////////////////////////////////////////////////////////////////////
+
+// Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
+//
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the
+// above copyright notice and this permission notice appear in all
+// copies.
+//
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+// WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+// AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+// DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+// PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+// TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+// PERFORMANCE OF THIS SOFTWARE.
+
+////////////////////////////////////////////////////////////////////////
+
+{
+  "log"        : { "host" : "control", "port" : 5000 },
+  "html"       : { "host" : "control", "port" : 5001 },
+  "moon"       : { "host" : "control", "port" : 5002 },
+  "sun"        : { "host" : "control", "port" : 5003 },
+  "target"     : { "host" : "control", "port" : 5004 },
+  "weather"    : { "host" : "control", "port" : 5005 },
+  "C0"         : { "host" : "control", "port" : 5006 },
+  "sensors"    : { "host" : "control", "port" : 5007 },
+  "instrument" : { "host" : "control", "port" : 5008 },
+  "telescope"  : { "host" : "control", "port" : 5009 },
+  "executor"   : { "host" : "control", "port" : 5010 },
+  "scheduler"  : { "host" : "control", "port" : 5011 },
+  "supervisor" : { "host" : "control", "port" : 5012 },
+  "gcntan"     : { "host" : "control", "port" : 5013 }
+}
+
+

@@ -106,6 +106,10 @@ installbins_project_test	:=		\
 	C0server				\
 	updateweatherfiles-oan
 	
+installbins_project_johnsoncu	:=		\
+	C0server				\
+	updateweatherfiles-oan
+	
 installbins_project_ratiroan	:=		\
 	C0server				\
 	C1server				\

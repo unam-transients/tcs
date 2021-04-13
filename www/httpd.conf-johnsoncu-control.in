@@ -2,11 +2,11 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: configure.ac 3442 2020-02-23 05:00:24Z Alan $
+# $Id: BOILERPLATE 3370 2019-10-30 02:46:01Z Alan $
 
 ########################################################################
 
-# Copyright © 2011, 2012, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+# Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -23,26 +23,28 @@
 
 ########################################################################
 
-AC_INIT(www, 0.0, alan@astro.unam.mx)
+ServerAdmin alan@astro.unam.mx
+ServerName johnson.astroscu.unam.mx
 
-########################################################################
+<Directory @prefix@/var/www/>
+  Options Indexes FollowSymLinks
+  AllowOverride None
+  Require all granted
+</Directory>
 
-AC_SUBST(SITE)
+<Directory "@prefix@/var/www/tcs">
+  AllowOverride None
+  Options +ExecCGI -MultiViews
+  AddHandler cgi-script cgi
+  Require all granted
+</Directory>
 
-########################################################################
+<VirtualHost *:80>
 
-AC_CONFIG_FILES(
-  Makefile
-  httpd.conf-ratir-main
-  httpd.conf-ratir-tcs
-  httpd.conf-ratiroan-services
-  httpd.conf-coatlioan-services
-  httpd.conf-ddotioan-services
-  httpd.conf-colibricu-services
-  httpd.conf-colibricito-control
-  httpd.conf-johnsoncu-control
-  httpd.conf-test
-)
-AC_OUTPUT
+  ServerName johnson.astroscu.unam.mx
+  DocumentRoot /usr/local/var/www/
 
-########################################################################
+</VirtualHost>
+
+ErrorLog ${APACHE_LOG_DIR}/error.log
+CustomLog ${APACHE_LOG_DIR}/access.log combined

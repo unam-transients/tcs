@@ -44,6 +44,15 @@ installs_project_test		:=		\
 installbins_project_test	:=		\
 	alertscript-project-test
 
+installs_project_johnsoncu		:=		\
+	alertblock-project-johnsoncu			\
+	config-project-johnsoncu.json		\
+	servers-project-johnsoncu.json		\
+	visitcommands-project-johnsoncu.tcl
+	
+installbins_project_johnsoncu	:=		\
+	alertscript-project-johnsoncu
+
 installs_project_ratiroan	:=		\
 	alertblock-project-ratiroan		\
 	config-project-ratiroan.json		\

@@ -107,6 +107,9 @@ colibricu-control)
 colibricu-detectors)
   allargs="C0"
   ;;
+johnsoncu-control)
+  allargs="log 1 html gcntan 1 target 1 moon sun sensors weather C0 1 telescope instrument 1 executor scheduler supervisor"
+  ;;
 test-ubuntu-18)
   allargs="log 1 html gcntan 1 target 1 moon sun sensors weather C0 1 telescope instrument 1 executor scheduler supervisor"
   ;;

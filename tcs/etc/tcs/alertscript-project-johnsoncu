@@ -1,12 +1,10 @@
-########################################################################
+#!/bin/sh
 
-# This file is part of the UNAM telescope control system.
-
-# $Id: configure.ac 3442 2020-02-23 05:00:24Z Alan $
+# $Id: alertscript-project-ratiroan 3522 2020-03-15 23:02:59Z Alan $
 
 ########################################################################
 
-# Copyright © 2011, 2012, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+# Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -23,26 +21,40 @@
 
 ########################################################################
 
-AC_INIT(www, 0.0, alan@astro.unam.mx)
+name="$1"
+origin="$2"
+identifier="$3"
+type="$4"
 
-########################################################################
+timestamp="$(date +"%Y-%m-%d %H:%M.%S")"
 
-AC_SUBST(SITE)
+priority=""
+case $origin in
+swift)
+  priority="normal"
+  url="https://gcn.gsfc.nasa.gov/other/$blockidentifier.swift"
+  group="grb-group"
+  ;;
+fermi)
+  priority="normal"
+  url="https://gcn.gsfc.nasa.gov/other/$blockidentifier.fermi"
+  group="grb-group"
+  ;;
+lvc)
+  priority="normal"
+  url="https://gracedb.ligo.org/superevents/$eventidentifier"
+  group="gw-group"
+  ;;
+esac
 
-########################################################################
+if test "$priority" != ""
+then
+  echo "$timestamp: TEST has received a $origin alert for $name (identifier $identifier type $type)." |
+  sendpushover \
+    -P "$priority" \
+    -U "$url" \
+    -s "TEST: $origin $type alert for $name" \
+    "$group"
+fi
 
-AC_CONFIG_FILES(
-  Makefile
-  httpd.conf-ratir-main
-  httpd.conf-ratir-tcs
-  httpd.conf-ratiroan-services
-  httpd.conf-coatlioan-services
-  httpd.conf-ddotioan-services
-  httpd.conf-colibricu-services
-  httpd.conf-colibricito-control
-  httpd.conf-johnsoncu-control
-  httpd.conf-test
-)
-AC_OUTPUT
-
-########################################################################
+exit 0
