@@ -574,24 +574,15 @@ namespace eval "executor" {
     set project [block::project $block]
     updatedata false $blockfile $alertfile $project $block ""
 
-    log::summary "executing block [block::identifier $block] of project [project::identifier $project]."
-    if {![string equal "" [project::name $project]]} {
-      log::summary "project name is \"[project::name [block::project $block]]\"."
-    }
-    if {![string equal "" [block::name $block]]} {
-      log::summary "block name is \"[block::name $block]\"."
-    }
-    
+    log::summary "executing block [block::identifier $block] (\"[block::name $block]\") of project [project::identifier $project] (\"[project::name [block::project $block]]\")."
+
     variable visit
     foreach visit [block::visits $block] {
 
       updatedata false $blockfile $alertfile $project $block $visit
 
-      log::summary "executing visit [visit::identifier $visit] of block [block::identifier $block] of project [project::identifier $project]."
-      if {![string equal [visit::name $visit] ""]} {
-        log::summary "visit name is \"[visit::name $visit]\"."
-      }
-      log::summary "visit command is \"[visit::command $visit]\"."
+      log::summary "executing visit [visit::identifier $visit] (\"[visit::name $visit]\")."
+      log::info "visit command is \"[visit::command $visit]\"."
       
       set visitstart [utcclock::seconds]
       if {[catch {
