@@ -48,6 +48,9 @@ tcs-a)
 tcs-b)
   ./configure SITE=ratir-tcs
   ;;
+johnsoncu-control)
+  ./configure SITE=johnsoncu-control
+  ;;
 test-*)
   ./configure SITE=test
   ;;

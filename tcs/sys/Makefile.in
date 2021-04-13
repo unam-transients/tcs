@@ -45,6 +45,9 @@ install-project-colibricu	:
 install-project-colibricito	:
 	sh install-project-colibricito.sh
 	
+install-project-johnsoncu	:
+	sh install-project-johnsoncu.sh
+
 install-project-test		:
 	sh install-project-test.sh
 
