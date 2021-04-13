@@ -504,19 +504,22 @@ namespace eval "finder" {
         log::debug "astrometry solving succeeded: \"$line\"."
         set solvedalpha [astrometry::degtorad $solvedalpha]
         set solveddelta [astrometry::degtorad $solveddelta]
+        log::info "solved $identifier position is [astrometry::formatalpha $solvedalpha] [astrometry::formatdelta $solveddelta] $solvedequinox."
         set solvedobservedalpha [astrometry::observedalpha $solvedalpha $solveddelta $solvedequinox]
         set solvedobserveddelta [astrometry::observeddelta $solvedalpha $solveddelta $solvedequinox]
+        log::info "solved $identifier observed position is [astrometry::formatalpha $solvedobservedalpha] [astrometry::formatdelta $solvedobserveddelta]."
         set mountdalpha [mountdalpha $solvedobservedalpha $solvedobserveddelta]
         set mountddelta [mountddelta $solvedobservedalpha $solvedobserveddelta]
-        set mountobservedalpha [astrometry::foldradpositive [expr {$solvedobservedalpha + $mountdalpha}]]
-        set mountobserveddelta [expr {$solvedobserveddelta + $mountddelta}]
+        set solvedmountobservedalpha [astrometry::foldradpositive [expr {$solvedobservedalpha + $mountdalpha}]]
+        set solvedmountobserveddelta [expr {$solvedobserveddelta + $mountddelta}]
+        log::info "solved $identifier mount observed position is [astrometry::formatalpha $solvedmountobservedalpha] [astrometry::formatdelta $solvedmountobserveddelta]."
         server::setdata "solvedalpha"         $solvedalpha
         server::setdata "solveddelta"         $solveddelta
         server::setdata "solvedequinox"       $solvedequinox
         server::setdata "solvedobservedalpha" $solvedobservedalpha
         server::setdata "solvedobserveddelta" $solvedobserveddelta
-        server::setdata "mountobservedalpha"  $mountobservedalpha
-        server::setdata "mountobserveddelta"  $mountobserveddelta
+        server::setdata "mountobservedalpha"  $solvedmountobservedalpha
+        server::setdata "mountobserveddelta"  $solvedmountobserveddelta
       }
     }
   }

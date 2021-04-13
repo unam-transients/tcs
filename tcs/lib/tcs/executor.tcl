@@ -361,14 +361,14 @@ namespace eval "executor" {
         log::info [format "finished attempting to correct the pointing model after %.1f seconds." [utcclock::diff now $start]]
         return
       }
-      log::info "$detector pointing solved as [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox."
+      log::info "solved $detector position is [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox."
       lappend alphalist $alpha
       lappend deltalist $delta
     }
     set alpha [astrometry::meanalpha $alphalist $deltalist]
     set delta [astrometry::meandelta $alphalist $deltalist]
-    log::info "mean pointing is [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox."
-    client::request "telescope" "correct [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox"
+    log::info "solved mean position is [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox."
+    client::request "telescope" "correct $alpha $delta $equinox"
     client::wait "telescope"
     log::info [format "finished attempting to correct the pointing model after %.1f seconds." [utcclock::diff now $start]]
   }
