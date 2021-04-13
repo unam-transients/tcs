@@ -141,27 +141,29 @@ namespace eval "mount" {
     return
   }
   
-  proc correct {truemountalpha truemountdelta equinox} {
+  proc correct {solvedmountalpha solvedmountdelta equinox} {
     server::checkstatus
     server::checkactivity "tracking"
-    set truemountalpha [astrometry::parsealpha $truemountalpha]
-    set truemountdelta [astrometry::parsedelta $truemountdelta]
+    set solvedmountalpha [astrometry::parsealpha $solvedmountalpha]
+    set solvedmountdelta [astrometry::parsedelta $solvedmountdelta]
     set start [utcclock::seconds]
-    log::info "correcting at [astrometry::formatalpha $truemountalpha] [astrometry::formatdelta $truemountdelta] $equinox"
+    log::info "solved position is [astrometry::formatalpha $solvedmountalpha] [astrometry::formatdelta $solvedmountdelta] $equinox"
     if {[string equal $equinox "observed"]} {
-      set truemountobservedalpha $truemountalpha
-      set truemountobserveddelta $truemountdelta
+      set solvedmountobservedalpha $solvedmountalpha
+      set solvedmountobserveddelta $solvedmountdelta
     } else {
-      set truemountobservedalpha [astrometry::observedalpha $truemountalpha $truemountdelta $equinox]
-      set truemountobserveddelta [astrometry::observeddelta $truemountalpha $truemountdelta $equinox]    
+      set solvedmountobservedalpha [astrometry::observedalpha $solvedmountalpha $solvedmountdelta $equinox]
+      set solvedmountobserveddelta [astrometry::observeddelta $solvedmountalpha $solvedmountdelta $equinox]    
     }
+    log::info "solved mount observed position is [astrometry::formatalpha $solvedmountobservedalpha] [astrometry::formatdelta $solvedmountobserveddelta]."
     set requestedobservedalpha [server::getdata "requestedobservedalpha"]
     set requestedobserveddelta [server::getdata "requestedobserveddelta"]
+    log::info "requested mount observed position is [astrometry::formatalpha $requestedobservedalpha] [astrometry::formatdelta $requestedobserveddelta]."
     set mountalphaerror [server::getdata "mountalphaerror"]
     set mountdeltaerror [server::getdata "mountdeltaerror"]
-    set dalpha [astrometry::foldradsymmetric [expr {$requestedobservedalpha - $truemountobservedalpha + $mountalphaerror}]]
-    set ddelta [astrometry::foldradsymmetric [expr {$requestedobserveddelta - $truemountobserveddelta + $mountdeltaerror}]]
-    set alphaoffset [expr {$dalpha * cos($truemountobserveddelta)}]
+    set dalpha [astrometry::foldradsymmetric [expr {$requestedobservedalpha - $solvedmountobservedalpha + $mountalphaerror}]]
+    set ddelta [astrometry::foldradsymmetric [expr {$requestedobserveddelta - $solvedmountobserveddelta + $mountdeltaerror}]]
+    set alphaoffset [expr {$dalpha * cos($solvedmountobserveddelta)}]
     set deltaoffset $ddelta
     log::info [format "correction is %s E and %s N." [astrometry::formatoffset $alphaoffset] [astrometry::formatoffset $deltaoffset]]
     server::setdata "lastcorrectiontimestamp" [utcclock::format]
@@ -169,6 +171,10 @@ namespace eval "mount" {
     server::setdata "lastcorrectionddelta"    $ddelta
     set dha [expr {-($dalpha)}]
     updatepointingmodel $dha $ddelta [server::getdata "mountrotation"]
+    updaterequestedpositiondata
+    set requestedobservedalpha [server::getdata "requestedobservedalpha"]
+    set requestedobserveddelta [server::getdata "requestedobserveddelta"]
+    log::info "requested mount observed position is [astrometry::formatalpha $requestedobservedalpha] [astrometry::formatdelta $requestedobserveddelta]."  
     log::info [format "finished correcting after %.1f seconds." [utcclock::diff now $start]]
     return
   }

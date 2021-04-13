@@ -181,11 +181,12 @@ namespace eval "telescope" {
         log::warning "unable to correct pointing."
       } else {
         log::info "correcting pointing with $finder."
-        set alpha [client::getdata $finder "mountobservedalpha"]
-        set delta [client::getdata $finder "mountobserveddelta"]
-        client::request "mount" "correct [astrometry::radtohms $alpha 2 false] [astrometry::radtodms $delta 1 true] observed"
+        set solvedmountobservedalpha [client::getdata $finder "mountobservedalpha"]
+        set solvedmountobserveddelta [client::getdata $finder "mountobserveddelta"]
+        log::info "solved $finder mount observed position is [astrometry::formatalpha $solvedmountobservedalpha] [astrometry::formatdelta $solvedmountobserveddelta]."
+        client::request "mount" "correct $solvedmountobservedalpha $solvedmountobserveddelta observed"
         client::update "mount"
-        set alphaoffset [expr {[client::getdata "mount" "lastcorrectiondalpha"] * cos($delta)}]
+        set alphaoffset [expr {[client::getdata "mount" "lastcorrectiondalpha"] * cos($solvedmountobserveddelta)}]
         set deltaoffset [client::getdata "mount" "lastcorrectionddelta"]
         log::info [format "pointing error was %+.1fas E and %+.1fas N." [astrometry::radtoarcsec $alphaoffset] [astrometry::radtoarcsec $deltaoffset]]
         set totaloffset [expr {sqrt($alphaoffset * $alphaoffset + $deltaoffset * $deltaoffset)}]
