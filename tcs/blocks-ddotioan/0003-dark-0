@@ -1,10 +1,32 @@
-proposal::setidentifier "[utcclock::semester]-0003"
-block::setidentifier "0"
-visit::setidentifier "0"
-visit::setname "darks"
-block::settotalexposures 0
-visit::settargetcoordinates zenith
+{
+  "project": {
+    "identifier": "0003",
+    "name": "darks"
+  },
+  "identifier": "0",
+  "visits": [
+    {
+      "identifier": "0",
+      "name": "darks",
+      "targetcoordinates": {
+        "type": "idle"
+      },
+      "command": "darksvisit",
+      "estimatedduration": "22m"
+    }
+  ],
+  "constraints": {
+    "maxskybrightness": "nauticaltwilight"
+  }
+}
 
-constraints::setmaxskybrightness "nauticaltwilight"
-
-visit::setcommand "darksvisit"
+// proposal::setidentifier "[utcclock::semester]-0003"
+// block::setidentifier "0"
+// visit::setidentifier "0"
+// visit::setname "darks"
+// block::settotalexposures 0
+// visit::settargetcoordinates zenith
+// 
+// constraints::setmaxskybrightness "nauticaltwilight"
+// 
+// visit::setcommand "darksvisit"

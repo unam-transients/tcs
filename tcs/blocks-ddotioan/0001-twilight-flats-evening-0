@@ -1,12 +1,38 @@
-proposal::setidentifier "[utcclock::semester]-0001"
-block::setidentifier "0"
-visit::setidentifier "0"
-visit::setname "twilight flats"
-block::settotalexposures 0
-visit::settargetcoordinates fixed 0h +45d
+{
+  "project": {
+    "identifier": "0001",
+    "name": "twilight flats"
+  },
+  "identifier": "0",
+  "visits": [
+    {
+      "identifier": "0",
+      "name": "twilight flats",
+      "targetcoordinates": {
+        "type": "fixed",
+        "ha": "0h",
+        "delta": "+45d"
+      },
+      "command": "twilightflatsvisit",
+      "estimatedduration": "5m"
+    }
+  ],
+  "constraints": {
+    "minmoondistance": "30d",
+    "maxskybrightness": "civiltwilight",
+    "minskybrightness": "civiltwilight"
+  }
+}
 
-constraints::setminmoondistance "30d"
-constraints::setmaxskybrightness "civiltwilight"
-constraints::setminskybrightness "civiltwilight"
-
-visit::setcommand "twilightflatsvisit"
+// proposal::setidentifier "[utcclock::semester]-0001"
+// block::setidentifier "0"
+// visit::setidentifier "0"
+// visit::setname "twilight flats"
+// block::settotalexposures 0
+// visit::settargetcoordinates fixed 0h +45d
+// 
+// constraints::setminmoondistance "30d"
+// constraints::setmaxskybrightness "civiltwilight"
+// constraints::setminskybrightness "civiltwilight"
+// 
+// visit::setcommand "twilightflatsvisit"

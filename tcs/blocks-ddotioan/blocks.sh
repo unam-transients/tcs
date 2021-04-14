@@ -80,7 +80,7 @@ sh focus-map.sh
 
   #allblocks 0014-apertures              e
 
-  allblocks 2001-roman                  f
+#  allblocks 2001-roman                  f
 #   allblocks 2002-gomez-maqueo           g
 #   singleblock 2003-parrott-0            h0
 #   singleblock 2003-parrott-0            h1
@@ -90,7 +90,7 @@ sh focus-map.sh
 #  singleblock 0100-150+45              k2
 #  singleblock 0100-150+45              k3
 
-  allblocks 0008-pointing-map           k
+#  allblocks 0008-pointing-map           k
   #allblocks 0010-focus-map              l
 
   allblocks 0004-initial-focus          m
