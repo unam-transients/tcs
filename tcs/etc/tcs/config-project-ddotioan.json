@@ -24,6 +24,192 @@
 ////////////////////////////////////////////////////////////////////////
 
 {
+  "site": {
+    "longitude": "-115.4658277778d",
+    "latitude": "+31.0455305556d",
+    "altitude": "2280.0",
+    "civiltimezone": "America/Tijuana"
+  },
+  "html": {
+    "servers": [
+      "enclosure",
+      "executor",
+      "gcntan",
+      "heater",
+      "instrument",
+      "lights",
+      "moon",
+      "mount",
+      "power",
+      "scheduler",
+      "sensors",
+      "sun",
+      "supervisor",
+      "target",
+      "telescope",
+      "weather"
+    ]
+  },
+  "target": {
+    "maxzenithdistancelimit": "85d",
+    "idleha": "0h",
+    "idledelta": "30d",
+    "pointingapertures": {
+      "default": [
+        "+0.00d",
+        "+0.00d"
+      ],
+      "NE": [
+        "+1.69d",
+        "+3.36d"
+      ],
+      "NW": [
+        "-1.80d",
+        "+3.30d"
+      ],
+      "E": [
+        "+1.69d",
+        "+0.05d"
+      ],
+      "W": [
+        "-1.69d",
+        "-0.05d"
+      ],
+      "SE": [
+        "+1.80d",
+        "-3.30d"
+      ],
+      "SW": [
+        "-1.69d",
+        "-3.36d"
+      ]
+    }
+  },
+  "gcntan": {
+    "serverpacketport": "5351",
+    "swiftalertprojectidentifier": "1000",
+    "fermialertprojectidentifier": "1001",
+    "lvcalertprojectidentifier": "1002"
+  },
+  "supervisor": {
+    "withplc": "false",
+    "internalhumiditysensor": "enclosure-humidity",
+    "openoffsetseconds": "0",
+    "opentocooloffsetseconds": "1800"
+  },
+  "scheduler": {},
+  "executor": {
+    "type": "ddotioan"
+  },
+  "safetyswitch": {
+    "type": "arts"
+  },
+  "telescope": {
+    "type": "ddotioan",
+    "idleha": "0h",
+    "idledelta": "30d",
+    "closeexplicitly": "true",
+    "finders": []
+  },
+  "enclosure": {
+    "type": "arts",
+    "controllerhost": "serial",
+    "controllerport": "10003",
+    "closeexplicitly": "true",
+    "openposition": "180",
+    "opentocoolposition": "60"
+  },
+  "mount": {
+    "type": "ntm",
+    // We part the mount slightly off the meridian to avoid vibrations. We
+    // choose 170d rather than -10d so that the mount initializes upwards in
+    // delta.
+    "hapark": "170d",
+    "deltapark": "40d",
+    "haunpark": "180d",
+    "deltaunpark": "150d",
+    "axisdhacorrection": "1.16as",
+    "axisddeltacorrection": "0as",
+    "southdeltalimit": "-90:00:00",
+    "northdeltalimit": "+90:00:00",
+    "easthalimit": "-12:00:00",
+    "westhalimit": "+12:00:00",
+    "zenithdistancelimit": "90d",
+    "meridianhalimit": "+00:30:00",
+    "polardeltalimit": "+65d",
+    "pointingmodelpolarhole": "1d",
+   // Pointing model from 20210315.
+   "pointingmodelparameters0": {
+      "IH":      "-0.006080",
+      "ID":      "-0.010572",
+      "CH":      "-0.001212",
+      "NP":      "+0.004468",
+      "MA":      "-0.002076",
+      "ME":      "-0.004217",
+      "TF":      "+0.000000",
+      "FO":      "+0.000000",
+      "DAF":     "+0.009734",
+      "HHSH":    "-0.002206",
+      "HHCH":    "+0.006720",
+      "HHSH2":   "+0.000120",
+      "HHCH2":   "-0.000064",
+      "HDSD":    "+0.000381",
+      "HDCD":    "+0.000813",
+      "HDSD2":   "-0.000549",
+      "HDCD2":   "-0.000068",
+      "DICD":    "+0.000400"
+    },
+    "pointingmodelparameters180": {
+      "IH":      "-0.009044",
+      "ID":      "+0.009819",
+      "CH":      "+0.001139",
+      "NP":      "+0.001506",
+      "MA":      "-0.002322",
+      "ME":      "-0.003847",
+      "TF":      "+0.000000",
+      "FO":      "+0.000000",
+      "DAF":     "+0.001592",
+      "HHSH":    "-0.002739",
+      "HHCH":    "+0.003159",
+      "HHSH2":   "+0.000303",
+      "HHCH2":   "+0.000059",
+      "HDSD":    "+0.000396",
+      "HDCD":    "+0.000983",
+      "HDSD2":   "-0.000375",
+      "HDCD2":   "-0.000225",
+      "DICD":    "+0.000387"
+    }
+  },
+  "lights": {
+    "type": "gpio",
+    "gpiopath": "/sys/class/gpio/gpio481/value"
+  },
+  "heater": {
+    "type": "gpio",
+    "gpiopath": "/sys/class/gpio/gpio476/value"
+  },
+  "instrument": {
+    "detectors": [
+      "C0", "C1", "C2", "C3", "C4", "C5"
+    ],
+    "activedetectors": [
+      "C0", "C1", "C2", "C3", "C4", "C5"
+    ],
+    "pointingdetectors": [
+      "C2", "C3"
+    ],
+    "outletgroups": []
+  },
+  "fitsheader": {
+    "servers": [
+      "target",
+      "moon",
+      "sun",
+      "mount",
+      "sensors",
+      "weather"
+    ]
+  },
   "C0": {
     "telescopedescription": "DDOTI/OAN 28-cm f/2.2",
     "detectortype": "fli",
@@ -69,6 +255,7 @@
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
     "temperaturelimit": "40",
+    "temperaturelimitoutletgroup": "",
     "filterwheeltype": "null",
     "filterwheelidentifier": "null",
     "filterwheelinitialposition": "0",
@@ -139,6 +326,7 @@
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
     "temperaturelimit": "40",
+    "temperaturelimitoutletgroup": "",
     "filterwheeltype": "null",
     "filterwheelidentifier": "null",
     "filterwheelinitialposition": "0",
@@ -209,6 +397,7 @@
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
     "temperaturelimit": "40",
+    "temperaturelimitoutletgroup": "",
     "filterwheeltype": "null",
     "filterwheelidentifier": "null",
     "filterwheelinitialposition": "0",
@@ -279,6 +468,7 @@
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
     "temperaturelimit": "40",
+    "temperaturelimitoutletgroup": "",
     "filterwheeltype": "null",
     "filterwheelidentifier": "null",
     "filterwheelinitialposition": "0",
@@ -349,6 +539,7 @@
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
     "temperaturelimit": "40",
+    "temperaturelimitoutletgroup": "",
     "filterwheeltype": "null",
     "filterwheelidentifier": "null",
     "filterwheelinitialposition": "0",
@@ -419,6 +610,7 @@
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
     "temperaturelimit": "40",
+    "temperaturelimitoutletgroup": "",
     "filterwheeltype": "null",
     "filterwheelidentifier": "null",
     "filterwheelinitialposition": "0",
@@ -444,69 +636,902 @@
       "16": "-A"
     }
   },
-  "html": {
-    "servers": [
-      "enclosure",
-      "executor",
-      "gcntan",
-      "heater",
-      "instrument",
-      "lights",
-      "moon",
-      "mount",
-      "power",
-      "scheduler",
-      "sensors",
-      "sun",
-      "supervisor",
-      "target",
-      "telescope",
-      "weather"
-    ]
-  },
-  "site": {
-    "longitude": "-115.4658277778d",
-    "latitude": "+31.0455305556d",
-    "altitude": "2280.0",
-    "civiltimezone": "America/Tijuana"
-  },
-  "target": {
-    "maxzenithdistancelimit": "85d",
-    "idleha": "0h",
-    "idledelta": "30d",
-    "pointingapertures": {
-      "default": [
-        "+0.00d",
-        "+0.00d"
-      ],
-      "NE": [
-        "+1.69d",
-        "+3.36d"
-      ],
-      "NW": [
-        "-1.80d",
-        "+3.30d"
-      ],
-      "E": [
-        "+1.69d",
-        "+0.05d"
-      ],
-      "W": [
-        "-1.69d",
-        "-0.05d"
-      ],
-      "SE": [
-        "+1.80d",
-        "-3.30d"
-      ],
-      "SW": [
-        "-1.69d",
-        "-3.36d"
-      ]
-    }
-  },
   "weather": {
     "windaveragespeedlimit": "30"
+  },
+  "power": {
+    "hosts": {
+      "ibb-127": {
+        "type": "ibootbar",
+        "outlets": "8",
+        "inlets": "2"
+      },
+      "ibb-220": {
+        "type": "ibootbar",
+        "outlets": "8",
+        "inlets": "1"
+      }
+    },
+    "outletgroupaddresses": {
+      "firewall":           [["ibb-127", "a", "5"]],
+      "access":             [["ibb-127", "a", "2"]],
+      "services":           [["ibb-127", "a", "6"]],
+      "control":            [["ibb-127", "a", "7"]],
+      "mount":              [["ibb-127", "a", "4"]],
+      "serial":             [["ibb-127", "a", "8"]],
+      "enclosure":          [["ibb-220", "a", "1"]],
+      "platform":           [["ibb-127", "a", "1"]],
+      "instrument":         [["ibb-127", "a", "3"]]
+    } 
+  },
+  "sensors": {
+    "lognames": [
+      "shed-temperature",
+      "rack-temperature",
+      "enclosure-temperature",
+      "box-a-temperature",
+      "box-c-temperature",
+      "box-d-temperature",
+      "box-e-temperature",
+      "shed-humidity",
+      "rack-humidity",
+      "enclosure-humidity",
+      "box-a-humidity",
+      "box-c-humidity",
+      "box-d-humidity",
+      "box-e-humidity",
+      "shed-light-level",
+      "enclosure-light-level"
+    ],
+    "sensors": {
+      "shed-temperature": {
+       "file": "/usr/local/var/tcs/sensors/control/ow/26.063DF5000000/temperature",
+       "keyword": "SHTM",
+       "prettyname": "shed temperature",
+       "group": "environmental-sensors",
+       "type": "float",
+       "unit": "C",
+       "model": "iButtonLink MS-TH",
+       "identifier": "26.063DF5000000",
+       "firmware": ""
+      },
+      "rack-temperature": {
+       "file": "/usr/local/var/tcs/sensors/control/ow/26.AF9C40010000/temperature",
+       "keyword": "RCTM",
+       "prettyname": "rack temperature",
+       "group": "environmental-sensors",
+       "type": "float",
+       "unit": "C",
+       "model": "iButtonLink MS-TH",
+       "identifier": "26.AF9C40010000",
+       "firmware": ""
+      },
+      "enclosure-temperature": {
+       "file": "/usr/local/var/tcs/sensors/c0/ow/26.A493A0000000/temperature",
+       "keyword": "ENTM",
+       "prettyname": "enclosure temperature",
+       "group": "environmental-sensors",
+       "type": "float",
+       "unit": "C",
+       "model": "iButtonLink MS-TH",
+       "identifier": "26.A493A0000000",
+       "firmware": ""
+      },
+      "box-c-temperature": {
+       "file": "/usr/local/var/tcs/sensors/c0/ow/26.3E9840010000/temperature",
+       "keyword": "BCTM",
+       "prettyname": "box C temperature",
+       "group": "environmental-sensors",
+       "type": "float",
+       "unit": "C",
+       "model": "iButtonLink MS-TH",
+       "identifier": "26.3E9840010000",
+       "firmware": ""
+      },
+      "box-d-temperature": {
+       "file": "/usr/local/var/tcs/sensors/d0/ow/26.2495E1010000/temperature",
+       "keyword": "BDTM",
+       "prettyname": "box D temperature",
+       "group": "environmental-sensors",
+       "type": "float",
+       "unit": "C",
+       "model": "iButtonLink MS-TH",
+       "identifier": "26.2495E1010000",
+       "firmware": ""
+      },
+      "box-e-temperature": {
+       "file": "/usr/local/var/tcs/sensors/e0/ow/26.3469E1010000/temperature",
+       "keyword": "BETM",
+       "prettyname": "box E temperature",
+       "group": "environmental-sensors",
+       "type": "float",
+       "unit": "C",
+       "model": "iButtonLink MS-TH",
+       "identifier": "26.3469E1010000",
+       "firmware": ""
+      },
+      "shed-humidity": {
+       "file": "/usr/local/var/tcs/sensors/control/ow/26.063DF5000000/HIH4000/humidity",
+       "keyword": "SHHM",
+       "prettyname": "shed relative humidity",
+       "group": "environmental-sensors",
+       "type": "float",
+       "unit": "",
+       "model": "iButtonLink MS-TH",
+       "identifier": "26.063DF5000000",
+       "firmware": ""
+      },
+      "enclosure-humidity": {
+       "file": "/usr/local/var/tcs/sensors/c0/ow/26.A493A0000000/HIH4000/humidity",
+       "keyword": "ENHM",
+       "prettyname": "enclosure relative humidity",
+       "group": "environmental-sensors",
+       "type": "float",
+       "unit": "",
+       "model": "iButtonLink MS-TH",
+       "identifier": "26.A493A0000000",
+       "firmware": ""
+      },
+      "box-c-humidity": {
+       "file": "/usr/local/var/tcs/sensors/c0/ow/26.3E9840010000/HIH4000/humidity",
+       "keyword": "BCHM",
+       "prettyname": "box C relative humidity",
+       "group": "environmental-sensors",
+       "type": "float",
+       "unit": "",
+       "model": "iButtonLink MS-TH",
+       "identifier": "26.3E9840010000",
+       "firmware": ""
+      },
+      "box-d-humidity": {
+       "file": "/usr/local/var/tcs/sensors/d0/ow/26.2495E1010000/HIH4000/humidity",
+       "keyword": "BDHM",
+       "prettyname": "box D relative humidity",
+       "group": "environmental-sensors",
+       "type": "float",
+       "unit": "",
+       "model": "iButtonLink MS-TH",
+       "identifier": "26.2495E1010000",
+       "firmware": ""
+      },
+      "box-e-humidity": {
+       "file": "/usr/local/var/tcs/sensors/e0/ow/26.3469E1010000/HIH4000/humidity",
+       "keyword": "BEHM",
+       "prettyname": "box E relative humidity",
+       "group": "environmental-sensors",
+       "type": "float",
+       "unit": "",
+       "model": "iButtonLink MS-TH",
+       "identifier": "26.3469E1010000",
+       "firmware": ""
+      },
+      "shed-light-level": {
+       "file": "/usr/local/var/tcs/sensors/control/ow/26.5584E1010000/VAD",
+       "keyword": "SHLL",
+       "prettyname": "shed light level",
+       "group": "environmental-sensors",
+       "type": "float",
+       "unit": "",
+       "model": "iButtonLink MS-TL",
+       "identifier": "26.5584E1010000",
+       "firmware": ""
+      },
+      "enclosure-light-level": {
+       "file": "/usr/local/var/tcs/sensors/c0/ow/26.7539F5000000/VAD",
+       "keyword": "ENLL",
+       "prettyname": "enclosure light level",
+       "group": "environmental-sensors",
+       "type": "float",
+       "unit": "",
+       "model": "iButtonLink MS-TL",
+       "identifier": "26.7539F5000000",
+       "firmware": ""
+      },
+      "host-services-load": {
+       "file": "/usr/local/var/tcs/sensors/services/load",
+       "keyword": "",
+       "prettyname": "load on host services",
+       "group": "host-services",
+       "type": "float",
+       "unit": "processes",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "host-control-load": {
+       "file": "/usr/local/var/tcs/sensors/control/load",
+       "keyword": "",
+       "prettyname": "load on host control",
+       "group": "host-control",
+       "type": "float",
+       "unit": "processes",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "host-c0-load": {
+       "file": "/usr/local/var/tcs/sensors/c0/load",
+       "keyword": "",
+       "prettyname": "load on host c0",
+       "group": "host-c0",
+       "type": "float",
+       "unit": "processes",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "host-d0-load": {
+       "file": "/usr/local/var/tcs/sensors/d0/load",
+       "keyword": "",
+       "prettyname": "load on host d0",
+       "group": "host-d0",
+       "type": "float",
+       "unit": "processes",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "host-d1-load": {
+       "file": "/usr/local/var/tcs/sensors/d1/load",
+       "keyword": "",
+       "prettyname": "load on host d1",
+       "group": "host-d1",
+       "type": "float",
+       "unit": "processes",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "host-d2-load": {
+       "file": "/usr/local/var/tcs/sensors/d2/load",
+       "keyword": "",
+       "prettyname": "load on host d2",
+       "group": "host-d2",
+       "type": "float",
+       "unit": "processes",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "host-d3-load": {
+       "file": "/usr/local/var/tcs/sensors/d3/load",
+       "keyword": "",
+       "prettyname": "load on host d3",
+       "group": "host-d3",
+       "type": "float",
+       "unit": "processes",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "host-e0-load": {
+       "file": "/usr/local/var/tcs/sensors/e0/load",
+       "keyword": "",
+       "prettyname": "load on host e0",
+       "group": "host-e0",
+       "type": "float",
+       "unit": "processes",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "host-e1-load": {
+       "file": "/usr/local/var/tcs/sensors/e1/load",
+       "keyword": "",
+       "prettyname": "load on host e1",
+       "group": "host-e1",
+       "type": "float",
+       "unit": "processes",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "host-e2-load": {
+       "file": "/usr/local/var/tcs/sensors/e2/load",
+       "keyword": "",
+       "prettyname": "load on host e2",
+       "group": "host-e2",
+       "type": "float",
+       "unit": "processes",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "host-e3-load": {
+       "file": "/usr/local/var/tcs/sensors/e3/load",
+       "keyword": "",
+       "prettyname": "load on host e2",
+       "group": "host-e3",
+       "type": "float",
+       "unit": "processes",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "host-services-disk-space-used": {
+       "file": "/usr/local/var/tcs/sensors/services/disk-space-used",
+       "keyword": "",
+       "prettyname": "relative disk space used on host services",
+       "group": "host-services",
+       "type": "float",
+       "unit": "",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "host-control-disk-space-used": {
+       "file": "/usr/local/var/tcs/sensors/control/disk-space-used",
+       "keyword": "",
+       "prettyname": "relative disk space used on host control",
+       "group": "host-control",
+       "type": "float",
+       "unit": "",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "host-c0-disk-space-used": {
+       "file": "/usr/local/var/tcs/sensors/c0/disk-space-used",
+       "keyword": "",
+       "prettyname": "relative disk space used on host c0",
+       "group": "host-c0",
+       "type": "float",
+       "unit": "",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "host-d0-disk-space-used": {
+       "file": "/usr/local/var/tcs/sensors/d0/disk-space-used",
+       "keyword": "",
+       "prettyname": "relative disk space used on host d0",
+       "group": "host-d0",
+       "type": "float",
+       "unit": "",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "host-d1-disk-space-used": {
+       "file": "/usr/local/var/tcs/sensors/d1/disk-space-used",
+       "keyword": "",
+       "prettyname": "relative disk space used on host d1",
+       "group": "host-d1",
+       "type": "float",
+       "unit": "",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "host-d2-disk-space-used": {
+       "file": "/usr/local/var/tcs/sensors/d2/disk-space-used",
+       "keyword": "",
+       "prettyname": "relative disk space used on host d2",
+       "group": "host-d2",
+       "type": "float",
+       "unit": "",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "host-d3-disk-space-used": {
+       "file": "/usr/local/var/tcs/sensors/d3/disk-space-used",
+       "keyword": "",
+       "prettyname": "relative disk space used on host d3",
+       "group": "host-d3",
+       "type": "float",
+       "unit": "",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "host-e0-disk-space-used": {
+       "file": "/usr/local/var/tcs/sensors/e0/disk-space-used",
+       "keyword": "",
+       "prettyname": "relative disk space used on host e0",
+       "group": "host-e0",
+       "type": "float",
+       "unit": "",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "host-e1-disk-space-used": {
+       "file": "/usr/local/var/tcs/sensors/e1/disk-space-used",
+       "keyword": "",
+       "prettyname": "relative disk space used on host e1",
+       "group": "host-e1",
+       "type": "float",
+       "unit": "",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "host-e2-disk-space-used": {
+       "file": "/usr/local/var/tcs/sensors/e2/disk-space-used",
+       "keyword": "",
+       "prettyname": "relative disk space used on host e2",
+       "group": "host-e2",
+       "type": "float",
+       "unit": "",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "host-e3-disk-space-used": {
+       "file": "/usr/local/var/tcs/sensors/e3/disk-space-used",
+       "keyword": "",
+       "prettyname": "relative disk space used on host e3",
+       "group": "host-e3",
+       "type": "float",
+       "unit": "",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "C0-detector-detector-temperature": {
+       "file": "/usr/local/var/tcs/sensors/d1/C0-detector-detector-temperature",
+       "keyword": "",
+       "prettyname": "C0 detector temperature",
+       "group": "detector-C0",
+       "type": "float",
+       "unit": "C",
+       "model": "FLI ML50100",
+       "identifier": "ML2351018",
+       "firmware": ""
+      },
+      "C1-detector-detector-temperature": {
+       "file": "/usr/local/var/tcs/sensors/e1/C1-detector-detector-temperature",
+       "keyword": "",
+       "prettyname": "C1 detector temperature",
+       "group": "detector-C1",
+       "type": "float",
+       "unit": "C",
+       "model": "FLI ML50100",
+       "identifier": "ML3442818",
+       "firmware": ""
+      },
+      "C2-detector-detector-temperature": {
+       "file": "/usr/local/var/tcs/sensors/d2/C2-detector-detector-temperature",
+       "keyword": "",
+       "prettyname": "C2 detector temperature",
+       "group": "detector-C2",
+       "type": "float",
+       "unit": "C",
+       "model": "FLI ML50100",
+       "identifier": "ML6104016",
+       "firmware": ""
+      },
+      "C3-detector-detector-temperature": {
+       "file": "/usr/local/var/tcs/sensors/e2/C3-detector-detector-temperature",
+       "keyword": "",
+       "prettyname": "C3 detector temperature",
+       "group": "detector-C3",
+       "type": "float",
+       "unit": "C",
+       "model": "FLI ML50100",
+       "identifier": "ML4182816",
+       "firmware": ""
+      },
+      "C4-detector-detector-temperature": {
+       "file": "/usr/local/var/tcs/sensors/d3/C4-detector-detector-temperature",
+       "keyword": "",
+       "prettyname": "C4 detector temperature",
+       "group": "detector-C4",
+       "type": "float",
+       "unit": "C",
+       "model": "FLI ML50100",
+       "identifier": "ML2331018",
+       "firmware": ""
+      },
+      "C5-detector-detector-temperature": {
+       "file": "/usr/local/var/tcs/sensors/e3/C5-detector-detector-temperature",
+       "keyword": "",
+       "prettyname": "C5 detector temperature",
+       "group": "detector-C5",
+       "type": "float",
+       "unit": "C",
+       "model": "FLI ML50100",
+       "identifier": "ML2341018",
+       "firmware": ""
+      },
+      "C0-detector-housing-temperature": {
+       "file": "/usr/local/var/tcs/sensors/d1/C0-detector-housing-temperature",
+       "keyword": "",
+       "prettyname": "C0 housing temperature",
+       "group": "detector-C0",
+       "type": "float",
+       "unit": "C",
+       "model": "FLI ML50100",
+       "identifier": "ML2351018",
+       "firmware": ""
+      },
+      "C1-detector-housing-temperature": {
+       "file": "/usr/local/var/tcs/sensors/e1/C1-detector-housing-temperature",
+       "keyword": "",
+       "prettyname": "C1 housing temperature",
+       "group": "detector-C1",
+       "type": "float",
+       "unit": "C",
+       "model": "FLI ML50100",
+       "identifier": "ML3442818",
+       "firmware": ""
+      },
+      "C2-detector-housing-temperature": {
+       "file": "/usr/local/var/tcs/sensors/d2/C2-detector-housing-temperature",
+       "keyword": "",
+       "prettyname": "C2 housing temperature",
+       "group": "detector-C2",
+       "type": "float",
+       "unit": "C",
+       "model": "FLI ML50100",
+       "identifier": "ML6104016",
+       "firmware": ""
+      },
+      "C3-detector-housing-temperature": {
+       "file": "/usr/local/var/tcs/sensors/e2/C3-detector-housing-temperature",
+       "keyword": "",
+       "prettyname": "C3 housing temperature",
+       "group": "detector-C3",
+       "type": "float",
+       "unit": "C",
+       "model": "FLI ML50100",
+       "identifier": "ML4182816",
+       "firmware": ""
+      },
+      "C4-detector-housing-temperature": {
+       "file": "/usr/local/var/tcs/sensors/d3/C4-detector-housing-temperature",
+       "keyword": "",
+       "prettyname": "C4 housing temperature",
+       "group": "detector-C4",
+       "type": "float",
+       "unit": "C",
+       "model": "FLI ML50100",
+       "identifier": "ML2331018",
+       "firmware": ""
+      },
+      "C5-detector-housing-temperature": {
+       "file": "/usr/local/var/tcs/sensors/e3/C5-detector-housing-temperature",
+       "keyword": "",
+       "prettyname": "C5 housing temperature",
+       "group": "detector-C5",
+       "type": "float",
+       "unit": "C",
+       "model": "FLI ML50100",
+       "identifier": "ML2341018",
+       "firmware": ""
+      },
+      "C0-detector-cooler-set-temperature": {
+       "file": "/usr/local/var/tcs/sensors/d1/C0-detector-cooler-set-temperature",
+       "keyword": "",
+       "prettyname": "C0 cooler set temperature",
+       "group": "detector-C0",
+       "type": "float",
+       "unit": "C",
+       "model": "FLI ML50100",
+       "identifier": "ML2351018",
+       "firmware": ""
+      },
+      "C1-detector-cooler-set-temperature": {
+       "file": "/usr/local/var/tcs/sensors/e1/C1-detector-cooler-set-temperature",
+       "keyword": "",
+       "prettyname": "C1 cooler set temperature",
+       "group": "detector-C1",
+       "type": "float",
+       "unit": "C",
+       "model": "FLI ML50100",
+       "identifier": "ML3442818",
+       "firmware": ""
+      },
+      "C2-detector-cooler-set-temperature": {
+       "file": "/usr/local/var/tcs/sensors/d2/C2-detector-cooler-set-temperature",
+       "keyword": "",
+       "prettyname": "C2 cooler set temperature",
+       "group": "detector-C2",
+       "type": "float",
+       "unit": "C",
+       "model": "FLI ML50100",
+       "identifier": "ML6104016",
+       "firmware": ""
+      },
+      "C3-detector-cooler-set-temperature": {
+       "file": "/usr/local/var/tcs/sensors/e2/C3-detector-cooler-set-temperature",
+       "keyword": "",
+       "prettyname": "C3 cooler set temperature",
+       "group": "detector-C3",
+       "type": "float",
+       "unit": "C",
+       "model": "FLI ML50100",
+       "identifier": "ML4182816",
+       "firmware": ""
+      },
+      "C4-detector-cooler-set-temperature": {
+       "file": "/usr/local/var/tcs/sensors/d3/C4-detector-cooler-set-temperature",
+       "keyword": "",
+       "prettyname": "C4 cooler set temperature",
+       "group": "detector-C4",
+       "type": "float",
+       "unit": "C",
+       "model": "FLI ML50100",
+       "identifier": "ML2331018",
+       "firmware": ""
+      },
+      "C5-detector-cooler-set-temperature": {
+       "file": "/usr/local/var/tcs/sensors/e3/C5-detector-cooler-set-temperature",
+       "keyword": "",
+       "prettyname": "C5 cooler set temperature",
+       "group": "detector-C5",
+       "type": "float",
+       "unit": "C",
+       "model": "FLI ML50100",
+       "identifier": "ML2341018",
+       "firmware": ""
+      },
+      "C0-detector-cooler-power": {
+       "file": "/usr/local/var/tcs/sensors/d1/C0-detector-cooler-power",
+       "keyword": "",
+       "prettyname": "C0 relative cooler power",
+       "group": "detector-C0",
+       "type": "float",
+       "unit": "",
+       "model": "FLI ML50100",
+       "identifier": "ML2351018",
+       "firmware": ""
+      },
+      "C1-detector-cooler-power": {
+       "file": "/usr/local/var/tcs/sensors/e1/C1-detector-cooler-power",
+       "keyword": "",
+       "prettyname": "C1 relative cooler power",
+       "group": "detector-C1",
+       "type": "float",
+       "unit": "",
+       "model": "FLI ML50100",
+       "identifier": "ML3442818",
+       "firmware": ""
+      },
+      "C2-detector-cooler-power": {
+       "file": "/usr/local/var/tcs/sensors/d2/C2-detector-cooler-power",
+       "keyword": "",
+       "prettyname": "C2 relative cooler power",
+       "group": "detector-C2",
+       "type": "float",
+       "unit": "",
+       "model": "FLI ML50100",
+       "identifier": "ML6104016",
+       "firmware": ""
+      },
+      "C3-detector-cooler-power": {
+       "file": "/usr/local/var/tcs/sensors/e2/C3-detector-cooler-power",
+       "keyword": "",
+       "prettyname": "C3 relative cooler power",
+       "group": "detector-C3",
+       "type": "float",
+       "unit": "",
+       "model": "FLI ML50100",
+       "identifier": "ML4182816",
+       "firmware": ""
+      },
+      "C4-detector-cooler-power": {
+       "file": "/usr/local/var/tcs/sensors/d3/C4-detector-cooler-power",
+       "keyword": "",
+       "prettyname": "C4 relative cooler power",
+       "group": "detector-C4",
+       "type": "float",
+       "unit": "",
+       "model": "FLI ML50100",
+       "identifier": "ML2351018",
+       "firmware": ""
+      },
+      "C5-detector-cooler-power": {
+       "file": "/usr/local/var/tcs/sensors/e3/C5-detector-cooler-power",
+       "keyword": "",
+       "prettyname": "C5 relative cooler power",
+       "group": "detector-C5",
+       "type": "float",
+       "unit": "",
+       "model": "FLI ML50100",
+       "identifier": "ML2341018",
+       "firmware": ""
+      },
+      "C0-detector-cooler-state": {
+       "file": "/usr/local/var/tcs/sensors/d1/C0-detector-cooler-state",
+       "keyword": "",
+       "prettyname": "C0 cooler state",
+       "group": "detector-C0",
+       "type": "string",
+       "unit": "",
+       "model": "FLI ML50100",
+       "identifier": "ML2351018",
+       "firmware": ""
+      },
+      "C1-detector-cooler-state": {
+       "file": "/usr/local/var/tcs/sensors/e1/C1-detector-cooler-state",
+       "keyword": "",
+       "prettyname": "C1 cooler state",
+       "group": "detector-C1",
+       "type": "string",
+       "unit": "",
+       "model": "FLI ML50100",
+       "identifier": "ML3442818",
+       "firmware": ""
+      },
+      "C2-detector-cooler-state": {
+       "file": "/usr/local/var/tcs/sensors/d2/C2-detector-cooler-state",
+       "keyword": "",
+       "prettyname": "C2 cooler state",
+       "group": "detector-C2",
+       "type": "string",
+       "unit": "",
+       "model": "FLI ML50100",
+       "identifier": "ML6104016",
+       "firmware": ""
+      },
+      "C3-detector-cooler-state": {
+       "file": "/usr/local/var/tcs/sensors/e2/C3-detector-cooler-state",
+       "keyword": "",
+       "prettyname": "C3 cooler state",
+       "group": "detector-C3",
+       "type": "string",
+       "unit": "",
+       "model": "FLI ML50100",
+       "identifier": "ML4182816",
+       "firmware": ""
+      },
+      "C4-detector-cooler-state": {
+       "file": "/usr/local/var/tcs/sensors/d3/C4-detector-cooler-state",
+       "keyword": "",
+       "prettyname": "C4 cooler state",
+       "group": "detector-C4",
+       "type": "string",
+       "unit": "",
+       "model": "FLI ML50100",
+       "identifier": "ML2351018",
+       "firmware": ""
+      },
+      "C5-detector-cooler-state": {
+       "file": "/usr/local/var/tcs/sensors/e3/C5-detector-cooler-state",
+       "keyword": "",
+       "prettyname": "C5 cooler state",
+       "group": "detector-C5",
+       "type": "string",
+       "unit": "",
+       "model": "FLI ML50100",
+       "identifier": "ML2341018",
+       "firmware": ""
+      },
+      "C0-focuser-position": {
+       "file": "/usr/local/var/tcs/sensors/d1/C0-focuser-position",
+       "keyword": "",
+       "prettyname": "C0 focuser position",
+       "group": "detector-C0",
+       "type": "integer",
+       "unit": "",
+       "model": "Starlight Instruments Focus Boss II",
+       "identifier": "",
+       "firmware": ""
+      },
+      "C1-focuser-position": {
+       "file": "/usr/local/var/tcs/sensors/e1/C1-focuser-position",
+       "keyword": "",
+       "prettyname": "C1 focuser position",
+       "group": "detector-C1",
+       "type": "integer",
+       "unit": "",
+       "model": "Starlight Instruments Focus Boss II",
+       "identifier": "",
+       "firmware": ""
+      },
+      "C2-focuser-position": {
+       "file": "/usr/local/var/tcs/sensors/d2/C2-focuser-position",
+       "keyword": "",
+       "prettyname": "C2 focuser position",
+       "group": "detector-C2",
+       "type": "integer",
+       "unit": "",
+       "model": "Starlight Instruments Focus Boss II",
+       "identifier": "",
+       "firmware": ""
+      },
+      "C3-focuser-position": {
+       "file": "/usr/local/var/tcs/sensors/e2/C3-focuser-position",
+       "keyword": "",
+       "prettyname": "C3 focuser position",
+       "group": "detector-C3",
+       "type": "integer",
+       "unit": "",
+       "model": "Starlight Instruments Focus Boss II",
+       "identifier": "",
+       "firmware": ""
+      },
+      "C4-focuser-position": {
+       "file": "/usr/local/var/tcs/sensors/d3/C4-focuser-position",
+       "keyword": "",
+       "prettyname": "C4 focuser position",
+       "group": "detector-C4",
+       "type": "integer",
+       "unit": "",
+       "model": "Starlight Instruments Focus Boss II",
+       "identifier": "",
+       "firmware": ""
+      },
+      "C5-focuser-position": {
+       "file": "/usr/local/var/tcs/sensors/e3/C5-focuser-position",
+       "keyword": "",
+       "prettyname": "C5 focuser position",
+       "group": "detector-C5",
+       "type": "integer",
+       "unit": "",
+       "model": "Starlight Instruments Focus Boss II",
+       "identifier": "",
+       "firmware": ""
+      },
+      "C0-filter-wheel-position": {
+       "file": "/usr/local/var/tcs/sensors/d1/C0-filter-wheel-position",
+       "keyword": "",
+       "prettyname": "C0 filter wheel position",
+       "group": "detector-C0",
+       "type": "integer",
+       "unit": "",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "C1-filter-wheel-position": {
+       "file": "/usr/local/var/tcs/sensors/e1/C1-filter-wheel-position",
+       "keyword": "",
+       "prettyname": "C1 filter wheel position",
+       "group": "detector-C1",
+       "type": "integer",
+       "unit": "",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "C2-filter-wheel-position": {
+       "file": "/usr/local/var/tcs/sensors/d2/C2-filter-wheel-position",
+       "keyword": "",
+       "prettyname": "C2 filter wheel position",
+       "group": "detector-C2",
+       "type": "integer",
+       "unit": "",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "C3-filter-wheel-position": {
+       "file": "/usr/local/var/tcs/sensors/e2/C3-filter-wheel-position",
+       "keyword": "",
+       "prettyname": "C3 filter wheel position",
+       "group": "detector-C3",
+       "type": "integer",
+       "unit": "",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "C4-filter-wheel-position": {
+       "file": "/usr/local/var/tcs/sensors/d3/C4-filter-wheel-position",
+       "keyword": "",
+       "prettyname": "C4 filter wheel position",
+       "group": "detector-C4",
+       "type": "integer",
+       "unit": "",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "C5-filter-wheel-position": {
+       "file": "/usr/local/var/tcs/sensors/e3/C5-filter-wheel-position",
+       "keyword": "",
+       "prettyname": "C5 filter wheel position",
+       "group": "detector-C5",
+       "type": "integer",
+       "unit": "",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      }
+    }
   }
 }
 

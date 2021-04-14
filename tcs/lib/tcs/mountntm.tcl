@@ -33,6 +33,13 @@ package require "server"
 
 package provide "mountntm" 0.0
 
+config::setdefaultvalue "mount" "controllerhost"          "mount"
+config::setdefaultvalue "mount" "controllerport"          65432
+config::setdefaultvalue "mount" "allowedpositionerror"    "4as"
+config::setdefaultvalue "mount" "pointingmodelparameters" [dict create]
+config::setdefaultvalue "mount" "allowedguideoffset"      "30as"
+config::setdefaultvalue "mount" "trackingsettledlimit"    "1as"
+
 namespace eval "mount" {
 
   variable svnid {$Id}
