@@ -130,6 +130,9 @@
   "executor": {
     "type": "ratiroan"
   },
+  "safetyswitch": {
+    "type": "none"
+  },
   "telescope": {
     "type": "ratiroan",
     "idleha": "0h",
@@ -138,9 +141,6 @@
     "finders": [
       "nefinder", "sefinder"
     ]
-  },
-  "safetyswitch": {
-    "type": "none"
   },
   "mount": {
     "type": "ratiroan",
@@ -165,94 +165,105 @@
       "HDCD2": "+0.003118"
     }
   },
-  "power": {
-    "hosts": {
-      "rack-ibb": {
-        "type": "ibootbar",
-        "outlets": "16",
-        "inlets": "2"
-      },
-      "ics-cabinet-ibb": {
-        "type": "ibootbar",
-        "outlets": "16",
-        "inlets": "2"
-      },
-      "dome-ibb": {
-        "type": "ibootbar",
-        "outlets": "16",
-        "inlets": "2"
-      },
-      "dome-cabinet-ibb": {
-        "type": "ibootbar",
-        "outlets": "8",
-        "inlets": "2"
-      },
-      "telescope-ibb": {
-        "type": "ibootbar",
-        "outlets": "16",
-        "inlets": "2"
-      },
-      "instrument-ibb": {
-        "type": "ibootbar",
-        "outlets": "16",
-        "inlets": "2"
-      }
+  "covers": {
+    "type": "ratiroan"
+  },
+  "lights": {
+    "type": "power",
+    "outletgroup": "dome-lights"
+  },
+  "secondary": {
+    "type": "ratiroan",
+    "initialz0": "6100",
+    "temperaturesensor": "dome-temperature"
+  },
+  "guider": {
+  },
+  "nefinder": {
+    // Finder focuser values determined 20210405.
+    "focuserinitialposition": "1700",
+    // nefinder->C1 pointing model from 20210409.
+    "pointingmodelparameters": {
+      "ID": "+0.001360",
+      "CH": "+0.005530",
+      "TF": "+0.001127",
+      "PXD": "+0.000012",
+      "PXH": "-0.000307",
+      "PXD2": "+0.000024",
+      "PXDH": "-0.000000",
+      "PXH2": "+0.000207",
+      "PDD": "-0.000605",
+      "PDH": "+0.000053",
+      "PDD2": "+0.000077",
+      "PDDH": "+0.000060",
+      "PDH2": "+0.000231"
     },
-    "outletgroupaddresses": {
-      "mount"                 : [["dome-cabinet-ibb", "a", "7"]],
-      "mount-motors"          : [["dome-cabinet-ibb", "a", "6"]],
-      "mount-adapter"         : [["dome-cabinet-ibb", "a", "5"]],
-      "inclinometers/covers"  : [["dome-ibb", "b", "1"]],
-      "dome"                  : [["dome-ibb", "b", "4"]],
-      "shutters"              : [["dome-ibb", "a", "5"]],
-      "secondary"             : [["dome-ibb", "a", "6"]],
-     
-      "nefinder-ccd"          : [["telescope-ibb", "a", "6"]],
-      "nefinder-focuser"      : [["telescope-ibb", "a", "1"]],
-      "sefinder-ccd"          : [["telescope-ibb", "a", "7"]],
-      "sefinder-focuser"      : [["telescope-ibb", "a", "3"]],
-      "finder-usb-rex"        : [["telescope-ibb", "a", "4"]],
-  
-      "science-ccd-pump"      : [["rack-ibb", "a", "7"]],
-      "finder-ccd-pump"       : [["rack-ibb", "a", "8"]],
-      
-      "C0-ccd"                : [["instrument-ibb", "b", "1"]],
-      "C0-focuser"            : [["instrument-ibb", "b", "6"]],
-      "C0-filter-wheel"       : [["instrument-ibb", "b", "4"]],
-      "C1-ccd"                : [["instrument-ibb", "b", "2"]],
-      "C1-focuser"            : [["instrument-ibb", "b", "8"]],
-      "C01-usb-rex"           : [["instrument-ibb", "b", "5"]],
-      
-      "C23-detectors"         : [["instrument-ibb", "a", "1"]],
-      "C23-usb-rex"           : [["instrument-ibb", "a", "2"]],
-  
-      "dome-lights"           : [["dome-ibb", "b", "6"]],
-      "hallway-light"         : [["rack-ibb", "a", "4"]],
-      
-      "dome-fans"             : [["dome-ibb", "a", "2"]],
-      "compressor-fan"        : [["dome-ibb", "a", "4"]],
-  
-      "compressor"            : [["dome-ibb", "a", "3"]],
-      "vacuum-pump"           : [["dome-ibb", "b", "5"]],
-      
-      "alarm-bell"            : [["dome-ibb", "b", "8"]],
-  
-      "firewall"              : [["rack-ibb", "b", "1"]],
-      "control"               : [["rack-ibb", "b", "2"]],
-      "services"              : [["rack-ibb", "b", "3"]],
-      "detectors"             : [["rack-ibb", "b", "4"]],
-      "irpc"                  : [["rack-ibb", "a", "6"]],
-      "cryostat"              : [["dome-cabinet-ibb", "a", "2"]],
-      
-      "pressure-sensor"       : [["instrument-ibb", "b", "2"]],
-      "pressure-sensor-rex"   : [["instrument-ibb", "b", "1"]],
-  
-      "machine-room-owhub"    : [["rack-ibb", "a", "1"]],
-      "dome-owhub"            : [["dome-ibb", "a", "8"]],
-      "telescope-owhub"       : [["telescope-ibb", "a", "8"]],
-      
-      "ni-controller"         : [["dome-ibb", "a", "7"]]
-    }
+    "telescopedescription":            "NE C8-A XLT Finder",
+    "detectortype":                    "fli",
+    "detectoridentifier":              "ML0503709",
+    "detectorwidth":                   "0.68d",
+    "detectorinitialreadmode":         "5MHz",
+    "detectorinitialsoftwaregain":     "8",
+    "detectorinitialbinning":          "2",
+    "detectorfullunbinneddatawindow":  { "sx": "46", "sy": "34", "nx": "2184", "ny": "1472" },
+    "detectorfullunbinnedbiaswindow":  { "sx": "12", "sy": "34", "nx":   "34", "ny": "1472" },
+    "coolersettemperature":            "-30",
+    "filterwheeltype":                 "null",
+    "filterwheelidentifier":           "null",
+    "filterwheelinitialposition":      "0",
+    "allowedfilterwheelpositionerror": "0",
+    "focusertype":                     "fli",
+    "focuseridentifier":               "DF0101910",
+    "allowedfocuserpositionerror":     "0",
+    "defaultfocusexposuretime":        "1.0",
+    "defaultfocusrange":               "600",
+    "defaultfocusstep":                "25",
+    "isstandalone":                    "false",
+    "temperaturelimit":                "40",
+    "temperaturelimitoutletgroup":     "nefinder-ccd"
+  },
+  "sefinder": {
+    // Finder focuser values determined 20210405.
+    "focuserinitialposition": "1100",
+    // sefinder->C1 pointing model from 20210409.
+    "pointingmodelparameters": {
+      "ID": "-0.010418",
+      "CH": "+0.003998",
+      "TF": "+0.000580",
+      "PXD": "+0.000101",
+      "PXH": "-0.000086",
+      "PXD2": "+0.000067",
+      "PXDH": "-0.000028",
+      "PXH2": "+0.000151",
+      "PDD": "-0.000141",
+      "PDH": "+0.000025",
+      "PDD2": "-0.000050",
+      "PDDH": "+0.000007",
+      "PDH2": "+0.000030"
+    },
+    "telescopedescription":            "SE C8-A XLT Finder",
+    "detectortype":                    "fli",
+    "detectoridentifier":              "ML0702510",
+    "detectorwidth":                   "0.68d",
+    "detectorinitialreadmode":         "5MHz",
+    "detectorinitialsoftwaregain":     "8",
+    "detectorinitialbinning":          "2",
+    "detectorfullunbinneddatawindow":  { "sx": "46", "sy": "34", "nx": "2184", "ny": "1472" },
+    "detectorfullunbinnedbiaswindow":  { "sx": "12", "sy": "34", "nx":   "34", "ny": "1472" },
+    "coolersettemperature":            "-30",
+    "filterwheeltype":                 "null",
+    "filterwheelidentifier":           "null",
+    "filterwheelinitialposition":      "0",
+    "allowedfilterwheelpositionerror": "0",
+    "focusertype":                     "fli",
+    "focuseridentifier":               "DF0080209",
+    "allowedfocuserpositionerror":     "0",
+    "defaultfocusexposuretime":        "1.0",
+    "defaultfocusrange":               "600",
+    "defaultfocusstep":                "25",
+    "isstandalone":                    "false",
+    "temperaturelimit":                "40",
+    "temperaturelimitoutletgroup":     "sefinder-ccd"
   },
   "instrument": {
     "detectors": [
@@ -266,6 +277,17 @@
     ],
     "outletgroups": [
       "science-ccd-pump"
+    ]
+  },
+  "fitsheader": {
+    "servers": [
+      "target",
+      "moon",
+      "sun",
+      "mount",
+      "secondary",
+      "sensors",
+      "weather"
     ]
   },
   "C0": {
@@ -501,119 +523,97 @@
       "16": "-A"
     }
   },
-  "fitsheader": {
-    "servers": [
-      "target",
-      "moon",
-      "sun",
-      "mount",
-      "secondary",
-      "sensors",
-      "weather"
-    ]
-  },
-  "covers": {
-    "type": "ratiroan"
-  },
-  "lights": {
-    "type": "power",
-    "outletgroup": "dome-lights"
-  },
-  "secondary": {
-    "type": "ratiroan",
-    "initialz0": "6100",
-    "temperaturesensor": "dome-temperature"
-  },
-  "guider": {
-  },
-  "nefinder": {
-    // Finder focuser values determined 20210405.
-    "focuserinitialposition": "1700",
-    // nefinder->C1 pointing model from 20210409.
-    "pointingmodelparameters": {
-      "ID": "+0.001360",
-      "CH": "+0.005530",
-      "TF": "+0.001127",
-      "PXD": "+0.000012",
-      "PXH": "-0.000307",
-      "PXD2": "+0.000024",
-      "PXDH": "-0.000000",
-      "PXH2": "+0.000207",
-      "PDD": "-0.000605",
-      "PDH": "+0.000053",
-      "PDD2": "+0.000077",
-      "PDDH": "+0.000060",
-      "PDH2": "+0.000231"
-    },
-    "telescopedescription":            "NE C8-A XLT Finder",
-    "detectortype":                    "fli",
-    "detectoridentifier":              "ML0503709",
-    "detectorwidth":                   "0.68d",
-    "detectorinitialreadmode":         "5MHz",
-    "detectorinitialsoftwaregain":     "8",
-    "detectorinitialbinning":          "2",
-    "detectorfullunbinneddatawindow":  { "sx": "46", "sy": "34", "nx": "2184", "ny": "1472" },
-    "detectorfullunbinnedbiaswindow":  { "sx": "12", "sy": "34", "nx":   "34", "ny": "1472" },
-    "coolersettemperature":            "-30",
-    "filterwheeltype":                 "null",
-    "filterwheelidentifier":           "null",
-    "filterwheelinitialposition":      "0",
-    "allowedfilterwheelpositionerror": "0",
-    "focusertype":                     "fli",
-    "focuseridentifier":               "DF0101910",
-    "allowedfocuserpositionerror":     "0",
-    "defaultfocusexposuretime":        "1.0",
-    "defaultfocusrange":               "600",
-    "defaultfocusstep":                "25",
-    "isstandalone":                    "false",
-    "temperaturelimit":                "40",
-    "temperaturelimitoutletgroup":     "nefinder-ccd"
-  },
-  "sefinder": {
-    // Finder focuser values determined 20210405.
-    "focuserinitialposition": "1100",
-    // sefinder->C1 pointing model from 20210409.
-    "pointingmodelparameters": {
-      "ID": "-0.010418",
-      "CH": "+0.003998",
-      "TF": "+0.000580",
-      "PXD": "+0.000101",
-      "PXH": "-0.000086",
-      "PXD2": "+0.000067",
-      "PXDH": "-0.000028",
-      "PXH2": "+0.000151",
-      "PDD": "-0.000141",
-      "PDH": "+0.000025",
-      "PDD2": "-0.000050",
-      "PDDH": "+0.000007",
-      "PDH2": "+0.000030"
-    },
-    "telescopedescription":            "SE C8-A XLT Finder",
-    "detectortype":                    "fli",
-    "detectoridentifier":              "ML0702510",
-    "detectorwidth":                   "0.68d",
-    "detectorinitialreadmode":         "5MHz",
-    "detectorinitialsoftwaregain":     "8",
-    "detectorinitialbinning":          "2",
-    "detectorfullunbinneddatawindow":  { "sx": "46", "sy": "34", "nx": "2184", "ny": "1472" },
-    "detectorfullunbinnedbiaswindow":  { "sx": "12", "sy": "34", "nx":   "34", "ny": "1472" },
-    "coolersettemperature":            "-30",
-    "filterwheeltype":                 "null",
-    "filterwheelidentifier":           "null",
-    "filterwheelinitialposition":      "0",
-    "allowedfilterwheelpositionerror": "0",
-    "focusertype":                     "fli",
-    "focuseridentifier":               "DF0080209",
-    "allowedfocuserpositionerror":     "0",
-    "defaultfocusexposuretime":        "1.0",
-    "defaultfocusrange":               "600",
-    "defaultfocusstep":                "25",
-    "isstandalone":                    "false",
-    "temperaturelimit":                "40",
-    "temperaturelimitoutletgroup":     "sefinder-ccd"
-  },
   "weather": {
     "windaveragespeedlimit": "45"
+  },
+  "power": {
+    "hosts": {
+      "rack-ibb": {
+        "type": "ibootbar",
+        "outlets": "16",
+        "inlets": "2"
+      },
+      "ics-cabinet-ibb": {
+        "type": "ibootbar",
+        "outlets": "16",
+        "inlets": "2"
+      },
+      "dome-ibb": {
+        "type": "ibootbar",
+        "outlets": "16",
+        "inlets": "2"
+      },
+      "dome-cabinet-ibb": {
+        "type": "ibootbar",
+        "outlets": "8",
+        "inlets": "2"
+      },
+      "telescope-ibb": {
+        "type": "ibootbar",
+        "outlets": "16",
+        "inlets": "2"
+      },
+      "instrument-ibb": {
+        "type": "ibootbar",
+        "outlets": "16",
+        "inlets": "2"
+      }
+    },
+    "outletgroupaddresses": {
+      "mount"                 : [["dome-cabinet-ibb", "a", "7"]],
+      "mount-motors"          : [["dome-cabinet-ibb", "a", "6"]],
+      "mount-adapter"         : [["dome-cabinet-ibb", "a", "5"]],
+      "inclinometers/covers"  : [["dome-ibb", "b", "1"]],
+      "dome"                  : [["dome-ibb", "b", "4"]],
+      "shutters"              : [["dome-ibb", "a", "5"]],
+      "secondary"             : [["dome-ibb", "a", "6"]],
+     
+      "nefinder-ccd"          : [["telescope-ibb", "a", "6"]],
+      "nefinder-focuser"      : [["telescope-ibb", "a", "1"]],
+      "sefinder-ccd"          : [["telescope-ibb", "a", "7"]],
+      "sefinder-focuser"      : [["telescope-ibb", "a", "3"]],
+      "finder-usb-rex"        : [["telescope-ibb", "a", "4"]],
+  
+      "science-ccd-pump"      : [["rack-ibb", "a", "7"]],
+      "finder-ccd-pump"       : [["rack-ibb", "a", "8"]],
+      
+      "C0-ccd"                : [["instrument-ibb", "b", "1"]],
+      "C0-focuser"            : [["instrument-ibb", "b", "6"]],
+      "C0-filter-wheel"       : [["instrument-ibb", "b", "4"]],
+      "C1-ccd"                : [["instrument-ibb", "b", "2"]],
+      "C1-focuser"            : [["instrument-ibb", "b", "8"]],
+      "C01-usb-rex"           : [["instrument-ibb", "b", "5"]],
+      
+      "C23-detectors"         : [["instrument-ibb", "a", "1"]],
+      "C23-usb-rex"           : [["instrument-ibb", "a", "2"]],
+  
+      "dome-lights"           : [["dome-ibb", "b", "6"]],
+      "hallway-light"         : [["rack-ibb", "a", "4"]],
+      
+      "dome-fans"             : [["dome-ibb", "a", "2"]],
+      "compressor-fan"        : [["dome-ibb", "a", "4"]],
+  
+      "compressor"            : [["dome-ibb", "a", "3"]],
+      "vacuum-pump"           : [["dome-ibb", "b", "5"]],
+      
+      "alarm-bell"            : [["dome-ibb", "b", "8"]],
+  
+      "firewall"              : [["rack-ibb", "b", "1"]],
+      "control"               : [["rack-ibb", "b", "2"]],
+      "services"              : [["rack-ibb", "b", "3"]],
+      "detectors"             : [["rack-ibb", "b", "4"]],
+      "irpc"                  : [["rack-ibb", "a", "6"]],
+      "cryostat"              : [["dome-cabinet-ibb", "a", "2"]],
+      
+      "pressure-sensor"       : [["instrument-ibb", "b", "2"]],
+      "pressure-sensor-rex"   : [["instrument-ibb", "b", "1"]],
+  
+      "machine-room-owhub"    : [["rack-ibb", "a", "1"]],
+      "dome-owhub"            : [["dome-ibb", "a", "8"]],
+      "telescope-owhub"       : [["telescope-ibb", "a", "8"]],
+      
+      "ni-controller"         : [["dome-ibb", "a", "7"]]
+    }
   },
   "sensors": {
     "lognames": [

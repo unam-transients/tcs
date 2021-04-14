@@ -58,7 +58,7 @@ installs_project_coatlioan	:=	\
 
 installs_project_ddotioan	:=	\
 	detectorfli.so			\
-	filterwheelfli.so
+	filterwheelnull.so
 
 installs_project_ddoticu	:=	\
 	detectorfli.so			\
