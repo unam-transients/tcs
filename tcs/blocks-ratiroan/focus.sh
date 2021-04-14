@@ -81,6 +81,7 @@ do
   "persistent": "true"
 }
 EOF
+
   cat <<EOF >0004-focus-$suffix
 {
   "project": {

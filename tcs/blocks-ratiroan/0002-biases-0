@@ -16,6 +16,6 @@
     }
   ],
   "constraints": {
-    "maxskybrightness": "nauticaltwilight"
+    "maxskybrightness": "civiltwilight"
   }
 }

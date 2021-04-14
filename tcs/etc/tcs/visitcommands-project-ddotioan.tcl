@@ -411,23 +411,36 @@ proc initialfocusvisit {} {
   executor::setbinning 1
   executor::expose object 4
 
-  executor::setwindow "6kx6k"
-  executor::setbinning 1
-
-  log::summary "initialfocusvisit: attempting to correct pointing at +1h +45d."
-  visit::settargetcoordinates fixed +1h +45d now
-  executor::tracktopocentric
-  executor::waituntiltracking
-  executor::correctpointing 4
-
-  log::summary "initialfocusvisit: attempting to correct pointing at -1h +45d."
-  executor::tracktopocentric
-  executor::waituntiltracking
-  executor::correctpointing 4
+#   executor::setwindow "6kx6k"
+#   executor::setbinning 1
+# 
+#   log::summary "initialfocusvisit: attempting to correct pointing at +1h +45d."
+#   visit::settargetcoordinates fixed +1h +45d now
+#   executor::tracktopocentric
+#   executor::waituntiltracking
+#   executor::correctpointing 4
+# 
+#   log::summary "initialfocusvisit: attempting to correct pointing at -1h +45d."
+#   executor::tracktopocentric
+#   executor::waituntiltracking
+#   executor::correctpointing 4
 
   log::summary "initialfocusvisit: finished."
 
   return false
+}
+
+########################################################################
+
+proc correctpointingvisit {} {
+  log::summary "correctpointingvisit: starting."
+  executor::tracktopocentric
+  executor::setwindow "default"
+  executor::setbinning 1
+  executor::waituntiltracking
+  log::summary "correctpointingvisit: correcting."
+  executor::correctpointing 4
+  log::summary "correctpointingvisit: finished."
 }
 
 ########################################################################

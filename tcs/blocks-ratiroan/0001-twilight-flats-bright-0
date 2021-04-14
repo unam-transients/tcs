@@ -17,7 +17,7 @@
   "visits": [
     {
       "identifier": "0",
-      "name": "twilight flats -- bright",
+      "name": "twilight flats -- u",
       "targetcoordinates": {
         "type": "fixed",
         "ha": "-3h",
@@ -28,7 +28,7 @@
     },
     {
       "identifier": "2",
-      "name": "twilight flats -- bright",
+      "name": "twilight flats -- r",
       "targetcoordinates": {
         "type": "fixed",
         "ha": "-3h",
@@ -39,7 +39,7 @@
     },
     {
       "identifier": "1",
-      "name": "twilight flats -- bright",
+      "name": "twilight flats -- g",
       "targetcoordinates": {
         "type": "fixed",
         "ha": "-3h",
