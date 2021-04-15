@@ -240,9 +240,13 @@ namespace eval "visit" {
 
   proc identifier {visit} {
     if {![dict exists $visit "identifier"]} {
-      error "invalid visit: no identifier."
+      error "invalid visit: missing identifier."
     }
-    return [dict get $visit "identifier"]
+    set identifier [dict get $visit "identifier"]
+    if {[scan $identifier "%d" value] != 1} {
+      error "invalid visit: invalid identifier \"$identifier\"."
+    }
+    return $value
   }
   
   proc name {visit} {

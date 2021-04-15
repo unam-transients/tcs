@@ -34,11 +34,14 @@ namespace eval "block" {
   ######################################################################
   
   proc identifier {block} {
-    if {[dict exists $block "identifier"]} {
-      return [dict get $block "identifier"]
-    } else {
-      return ""
+    if {![dict exists $block "identifier"]} {
+      error "invalid block: missing identifier \"$identifier\"."
     }
+    set identifier [dict get $block "identifier"]
+    if {[scan $identifier "%d" value] != 1} {
+      error "invalid block: invalid identifier \"$identifier\"."
+    }
+    return $value
   }
   
   proc name {block} {
