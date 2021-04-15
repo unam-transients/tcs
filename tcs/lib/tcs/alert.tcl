@@ -29,9 +29,17 @@ package require "visit"
 
 package provide "alert" 0.0
 
+config::setdefaultvalue "alert" "prologcommand"            ""
+config::setdefaultvalue "alert" "prologidentifier"         "1000"
+config::setdefaultvalue "alert" "prologestimatedduration"  "0m"
+
 namespace eval "alert" {
 
   variable svnid {$Id}
+
+  variable alertprologcommand           [config::getvalue "alert" "prologcommand"]
+  variable alertprologidentifier        [config::getvalue "alert" "prologidentifier"]
+  variable alertprologestimatedduration [config::getvalue "alert" "prologestimatedduration"]
 
   ######################################################################
   
@@ -169,8 +177,15 @@ namespace eval "alert" {
       
     # Complete the visit.
     set targetcoordinates [visit::makeequatorialtargetcoordinates [alert::alpha $alert] [alert::delta $alert] [alert::equinox $alert]]
-    set visit [visit::makevisit "0" ""  $targetcoordinates $command "0m"]
-    set block [block::makeblock $identifier $name $project $constraints [list $visit] $alert true]
+    variable alertprologcommand
+    variable alertprologidentifier
+    variable alertprologestimatedduration
+    set visits {}
+    if {![string equal "" $alertprologcommand]} {
+      lappend visits [visit::makevisit $alertprologidentifier "prolog" $targetcoordinates $alertprologcommand $alertprologestimatedduration]
+    }
+    lappend visits [visit::makevisit "0" "[block::name $block]"  $targetcoordinates $command "0m"]
+    set block [block::makeblock $identifier $name $project $constraints $visits $alert true]
     
     return $block
   }

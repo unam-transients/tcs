@@ -17,10 +17,10 @@ do
 {
   "project": {
     "identifier": "0004",
-    "name": "initial focussing and pointing correction"
+    "name": "initial focusing and pointing correction"
   },
   "identifier": "$blockid",
-  "name": "initial focussing and pointing correction near ${suffix}h +25d",
+  "name": "initial focusing and pointing correction near ${suffix}h +25d",
   "visits": [
     {
       "identifier": "0",
@@ -86,10 +86,10 @@ EOF
 {
   "project": {
     "identifier": "0004",
-    "name": "focussing"
+    "name": "focusing"
   },
   "identifier": "$blockid",
-  "name": "focussing near ${suffix}h +25d",
+  "name": "focusing near ${suffix}h +25d",
   "visits": [
     {
       "identifier": "0",
