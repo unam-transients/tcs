@@ -11,14 +11,14 @@ do
 {
   "project": {
     "identifier": "0004",
-    "name": "initial focussing and pointing correction"
+    "name": "focusing"
   },
   "identifier": "$blockid",
-  "name": "initial focussing near $alpha $delta",
+  "name": "initial focusing and pointing correction",
   "visits": [
     {
       "identifier": "0",
-      "name": "initial focus",
+      "name": "initial focusing near $alpha $delta",
       "targetcoordinates": {
         "type"   : "equatorial",
         "alpha"  : "$alpha",
@@ -30,25 +30,25 @@ do
     },
     {
       "identifier": "1",
-      "name": "initial pointing correction near +1h 55d",
+      "name": "initial pointing correction near +1h +45d",
       "targetcoordinates": {
         "type"   : "fixed",
         "ha"     : "+1h",
         "delta"  : "+45d"
       },
-      "command": "initialpointingcorrectionvisit",
-      "estimatedduration": "5m"
+      "command": "correctpointingvisit",
+      "estimatedduration": "1m"
     },
     {
       "identifier": "2",
-      "name": "initial pointing correction near -1h 45d",
+      "name": "initial pointing correction near -1h +45d",
       "targetcoordinates": {
         "type"   : "fixed",
         "ha"     : "-1h",
         "delta"  : "+45d"
       },
-      "command": "initialpointingcorrectionvisit",
-      "estimatedduration": "5m"
+      "command": "correctpointingvisit",
+      "estimatedduration": "1m"
     }
   ],
   "constraints": {
@@ -66,14 +66,14 @@ EOF
 {
   "project": {
     "identifier": "0004",
-    "name": "focussing"
+    "name": "focusing"
   },
   "identifier": "$blockid",
-  "name": "focussing near $alpha $delta",
+  "name": "focusing",
   "visits": [
     {
       "identifier": "0",
-      "name": "focus",
+      "name": "focusing near $alpha $delta",
       "targetcoordinates": {
         "type"   : "equatorial",
         "alpha"  : "$alpha",

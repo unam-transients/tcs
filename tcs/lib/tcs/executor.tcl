@@ -54,6 +54,10 @@ namespace eval "executor" {
   variable alertfile
   variable visit
   
+  variable projectfullidentifier
+  variable blockidentifier
+  variable visitidentifier
+  
   ######################################################################
 
   variable trackstart
@@ -231,12 +235,13 @@ namespace eval "executor" {
     set start [utcclock::seconds]
     variable exposure
     variable exposuretimes $args
+    variable projectfullidentifier
+    variable blockidentifier
+    variable visitidentifier
     log::info "exposing $type image for [join $exposuretimes /] seconds (exposure $exposure)."
     set date [utcclock::formatdate $start false]
     set dateandtime [utcclock::combinedformat $start 0 false]
     set projectfullidentifier [server::getdata "projectfullidentifier"]
-    set blockidentifier [server::getdata "blockidentifier"]
-    set visitidentifier [server::getdata "visitidentifier"]
     set fitsfileprefix "[directories::vartoday]/executor/images/$projectfullidentifier/$blockidentifier/$visitidentifier/$dateandtime"
     log::info "FITS file prefix is $fitsfileprefix."
     file mkdir [file dirname $fitsfileprefix]
@@ -302,10 +307,11 @@ namespace eval "executor" {
   
   proc focus {range step witness args} {
     set start [utcclock::seconds]
+    variable projectfullidentifier
+    variable blockidentifier
+    variable visitidentifier
     log::info "focusing with range $range and step $step."
     set projectfullidentifier [server::getdata "projectfullidentifier"]
-    set blockidentifier [server::getdata "blockidentifier"]
-    set visitidentifier [server::getdata "visitidentifier"]
     set fitsfileprefix "[directories::vartoday]/executor/images/$projectfullidentifier/$blockidentifier/$visitidentifier/"
     log::info "FITS file prefix is $fitsfileprefix."
     file mkdir [file dirname $fitsfileprefix]
@@ -316,10 +322,11 @@ namespace eval "executor" {
   
   proc mapfocus {range step args} {
     set start [utcclock::seconds]
+    variable projectfullidentifier
+    variable blockidentifier
+    variable visitidentifier
     log::info "mapping focus with range $range and step $step."
     set projectfullidentifier [server::getdata "projectfullidentifier"]
-    set blockidentifier [server::getdata "blockidentifier"]
-    set visitidentifier [server::getdata "visitidentifier"]
     set fitsfileprefix "[directories::vartoday]/executor/images/$projectfullidentifier/$blockidentifier/$visitidentifier/"
     log::info "FITS file prefix is $fitsfileprefix."
     file mkdir [file dirname $fitsfileprefix]
@@ -438,6 +445,13 @@ namespace eval "executor" {
       server::setdata "alertequinox"        [astrometry::parseequinox [alert::equinox $alert]]
       server::setdata "alertuncertainty"    [astrometry::parseoffset  [alert::uncertainty $alert]]
     }
+    
+    variable projectfullidentifier
+    variable blockidentifier
+    variable visitidentifier
+    set projectfullidentifier [server::getdata "projectfullidentifier"]
+    set blockidentifier       [server::getdata "blockidentifier"]
+    set visitidentifier       [server::getdata "visitidentifier"]
 
     server::setdata "timestamp" [utcclock::combinedformat]
 

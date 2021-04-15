@@ -23,51 +23,29 @@
 
 ########################################################################
 
-proc alertvisit {alertfile} {
+proc alertvisit {} {
 
-  set proposalidentifier [proposal::identifier]
-  set visitidentifier    [visit::identifier]
-
-  # First refocus.
-
-  proposal::setidentifier [proposal::makeidentifier 12]
-  executor::track
-  #executor::setwindow "6kx6k"
-  #executor::setbinning 4
-  executor::waituntiltracking
-  #log::summary "alertvisit: focusing with binning 4."
-  #executor::focus 12000 1200 false 1
-  log::summary "alertvisit: focusing with binning 1."
-  executor::setwindow "1kx1k"
-  executor::setbinning 1
-  executor::focus 4000 400 true 4
-  executor::setfocused
+  log::summary "alertvisit: starting."
   
-  # Then correct pointing
+  variable blockfile
+  variable alertfile
+  variable visitidentifier
+  
+  set block [alert::readfile $blockfile $alertfile]
+  set alert [block::alert $block]
 
-  log::summary "alertvisit: correcting pointing."
-  executor::setwindow "6kx6k"
-  executor::setbinning 1
-  executor::correctpointing 4
-
-  log::summary "alertvisit: observing target."
-
-  proposal::setidentifier $proposalidentifier
-
-  executor::setwindow "default"
-
-  if {[string equal "" [alert::eventtimestamp]]} {
+  if {[string equal "" [alert::eventtimestamp $alert]]} {
     log::summary [format "alertvisit: no event timestamp."]
   } else {  
-    log::summary [format "alertvisit: event timestamp is %s." [utcclock::format [alert::eventtimestamp]]]
+    log::summary [format "alertvisit: event timestamp is %s." [utcclock::format [alert::eventtimestamp $alert]]]
   }
-  if {[string equal "" [alert::alerttimestamp]]} {
+  if {[string equal "" [alert::alerttimestamp $alert]]} {
     log::summary [format "alertvisit: no alert timestamp."]
   } else {  
-    log::summary [format "alertvisit: alert timestamp is %s." [utcclock::format [alert::alerttimestamp]]]
+    log::summary [format "alertvisit: alert timestamp is %s." [utcclock::format [alert::alerttimestamp $alert]]]
   }
 
-  set alertdelay [alert::delay]
+  set alertdelay [alert::delay $alert]
   log::summary [format "alertvisit: alert delay is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
   if {$alertdelay < 1800} {
     set exposuretime       30
@@ -78,12 +56,14 @@ proc alertvisit {alertfile} {
     set exposuresperdither 2
     set binning            1
   }
-  executor::setbinning $binning
   log::summary [format "alertvisit: %.0f second exposures with binning of %d." $exposuretime $binning]
+
+  executor::setbinning $binning
+  executor::setwindow "default"
   
   # The decisions below aim to choose the smallest grid that includes
   # the 90% region, assuming each field is 6.6d x 9.8d.
-  set uncertainty [astrometry::parsedistance [alert::uncertainty]]
+  set uncertainty [astrometry::parsedistance [alert::uncertainty $alert]]
   log::summary [format "alertvisit: uncertainty is %s." [astrometry::formatdistance $uncertainty 2]]
   if {$uncertainty <= [astrometry::parsedistance "1.65d"]} {
     log::summary "alertvisit: grid is 1 × 1 fields."
@@ -139,21 +119,18 @@ proc alertvisit {alertfile} {
     set dithernorthrange "0.33d"
     
     if {[file exists $alertfile]} {
-      if {[catch {source $alertfile} message]} {
-        log::error "alertvisit: error while loading alert file \"$alertfile\"visit: $message"
-        return false
-      }
-      executor::updatedata
+      set block [alert::readfile $blockfile $alertfile]
+      set alert [block::alert $block]
     }
 
-    if {![alert::enabled]} {
+    if {![alert::enabled $alert]} {
       log::summary "alertvisit: the alert is no longer enabled."
       return false
     }
 
-    set alpha   [visit::alpha]
-    set delta   [visit::delta]
-    set equinox [visit::equinox]
+    set alpha   [alert::alpha $alert]
+    set delta   [alert::delta $alert]
+    set equinox [alert::equinox $alert]
     
     if {![string equal $lastalpha ""] && ($alpha != $lastalpha || $delta != $lastdelta || $equinox != $lastequinox)} {
       log::summary "alertvisit: the coordinates have been updated."
@@ -178,7 +155,6 @@ proc alertvisit {alertfile} {
       executor::track $eastoffset $northoffset $aperture
       executor::waituntiltracking
 
-      visit::setidentifier $visitidentifier
       set exposure 0
       while {$exposure < $exposuresperdither} {
         executor::expose object $exposuretime
@@ -195,45 +171,42 @@ proc alertvisit {alertfile} {
   return false
 }
 
+proc alertprologvisit {} {
+
+  log::summary "alertprologvisit: starting."
+
+  # First refocus.
+
+  executor::track
+  executor::setwindow "1kx1k"
+  executor::setbinning 1
+  executor::waituntiltracking
+  log::summary "alertprologvisit: focusing with binning 1."
+  executor::focus 4000 400 true 4
+  executor::setfocused
+
+  # Then correct pointing
+
+  log::summary "alertprologvisit: correcting pointing."
+  executor::setwindow "6kx6k"
+  executor::setbinning 1
+  executor::correctpointing 4
+  
+  log::summary "alertprologvisit: finished."
+
+}
+
+
 ########################################################################
 
 proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime} {
 
-  set proposalidentifier [proposal::identifier]
+  log::summary "gridvisit: starting."
 
-  # First refocus.
-
-  proposal::setidentifier [proposal::makeidentifier 12]
-  executor::track
-  #executor::setwindow "6kx6k"
-  #executor::setbinning 4
-  executor::waituntiltracking
-  #log::summary "gridvisit: focusing with binning 4."
-  #executor::focus 12000 1200 false 1
-  log::summary "gridvisit: focusing with binning 1."
-  executor::setwindow "1kx1k"
-  executor::setbinning 1
-  executor::focus 4000 400 true 4
-  executor::setfocused
-  
-  # Then correct pointing.
-
-  log::summary "gridvisit: correcting pointing."
-  executor::setwindow "6kx6k"
-  executor::setbinning 1
-  executor::correctpointing 4
-
-  # Then observe the target.
-  
   set binning 1
-
-  log::summary "gridvisit: observing target."
-
-  proposal::setidentifier $proposalidentifier
-
   executor::setwindow "default"
-
   executor::setbinning $binning
+  
   log::summary [format "gridvisit: %d × %.0f second exposures with binning of %d." \
     [expr {$gridrepeats * $gridpoints * $exposuresperdither}] $exposuretime $binning \
   ]
@@ -312,35 +285,7 @@ proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime} {
 
 proc steppedgridvisit {gridrepeats exposuresperdither exposuretime} {
 
-  set proposalidentifier [proposal::identifier]
-
-  # First refocus.
-
-  proposal::setidentifier [proposal::makeidentifier 12]
-  executor::track
-  #executor::setwindow "6kx6k"
-  #executor::setbinning 4
-  executor::waituntiltracking
-  #log::summary "gridvisit: focusing with binning 4."
-  #executor::focus 12000 1200 false 1
-  log::summary "steppedgridvisit: focusing with binning 1."
-  executor::setwindow "1kx1k"
-  executor::setbinning 1
-  executor::focus 4000 400 true 4
-  executor::setfocused
-  
-  # Then correct pointing.
-
-  log::summary "steppedgridvisit: correcting pointing."
-  executor::setwindow "6kx6k"
-  executor::setbinning 1
-  executor::correctpointing 4
-
-  # Then observe the target.
-  
-  log::summary "steppedgridvisit: observing target."
-
-  proposal::setidentifier $proposalidentifier
+  log::summary "steppedgridvisit: starting."
 
   set binning 1
   executor::setwindow "default"
@@ -365,9 +310,9 @@ proc steppedgridvisit {gridrepeats exposuresperdither exposuretime} {
   executor::waituntiltracking
   
   set gridrepeat 0
+  variable visitidentifier
   while {$gridrepeat < $gridrepeats} {
     foreach {visitidentifier eastoffset northoffset} $dithers {
-      visit::setidentifier $visitidentifier
       executor::offset $eastoffset $northoffset
       executor::waituntiltracking
       set exposure 0
@@ -500,49 +445,49 @@ proc fullfocusvisit {} {
 
 proc focusmapvisit {args} {
 
-  log::summary "focusmapvisit: starting."
-  
-  set ha    [visit::observedha]
-  set delta [visit::observeddelta]
-
-  log::summary "focusmapvisit: focusing first at +1h +30d."
-  visit::settargetcoordinates fixed +1h +30d now
-  executor::tracktopocentric
-  executor::waituntiltracking
-  
-  set detectors [client::getdata instrument detectors]
-  
-  foreach detector $detectors {
-    client::request $detector "movefocuser 32767"
-  } 
-  foreach detector $detectors {
-    client::wait $detector
-  }
-  
-  executor::setwindow "2kx2k"
-  executor::setreadmode 16MHz
-  executor::setbinning 4
-  executor::focus 12000 1200 false 5
-  executor::setwindow "1kx1k"
-  executor::setreadmode 16MHz
-  executor::setbinning 2
-  executor::focus 8000 800 true 5
-  executor::setfocused
-
-  log::summary "focusmapvisit: setting focusers to 32767"
-  executor::setfocuser 32767
-
-  log::summary "focusmapvisit: focusing at $ha $delta."
-  visit::settargetcoordinates fixed $ha $delta now
-  executor::tracktopocentric  
-  executor::waituntiltracking
-  executor::setwindow "2kx2k"
-  executor::setreadmode 16MHz
-  executor::setbinning 4
-  executor::focus 12000 1200 false 5
-  executor::setwindow "1kx1k"
-  executor::setbinning 2
-  executor::focus 8000 800 true 5
+#   log::summary "focusmapvisit: starting."
+#   
+#   set ha    [visit::observedha]
+#   set delta [visit::observeddelta]
+# 
+#   log::summary "focusmapvisit: focusing first at +1h +30d."
+#   visit::settargetcoordinates fixed +1h +30d now
+#   executor::tracktopocentric
+#   executor::waituntiltracking
+#   
+#   set detectors [client::getdata instrument detectors]
+#   
+#   foreach detector $detectors {
+#     client::request $detector "movefocuser 32767"
+#   } 
+#   foreach detector $detectors {
+#     client::wait $detector
+#   }
+#   
+#   executor::setwindow "2kx2k"
+#   executor::setreadmode 16MHz
+#   executor::setbinning 4
+#   executor::focus 12000 1200 false 5
+#   executor::setwindow "1kx1k"
+#   executor::setreadmode 16MHz
+#   executor::setbinning 2
+#   executor::focus 8000 800 true 5
+#   executor::setfocused
+# 
+#   log::summary "focusmapvisit: setting focusers to 32767"
+#   executor::setfocuser 32767
+# 
+#   log::summary "focusmapvisit: focusing at $ha $delta."
+#   visit::settargetcoordinates fixed $ha $delta now
+#   executor::tracktopocentric  
+#   executor::waituntiltracking
+#   executor::setwindow "2kx2k"
+#   executor::setreadmode 16MHz
+#   executor::setbinning 4
+#   executor::focus 12000 1200 false 5
+#   executor::setwindow "1kx1k"
+#   executor::setbinning 2
+#   executor::focus 8000 800 true 5
 
   return true
 }
@@ -553,16 +498,16 @@ proc pointingmapvisit {args} {
 
   log::summary "pointingmapvisit: starting."
   
-  set ha    [visit::ha]
-  set delta [visit::delta]
-
-  log::summary "focusmapvisit: focusing at $ha $delta."
-  visit::settargetcoordinates fixed $ha $delta now
-  executor::tracktopocentric  
-  executor::waituntiltracking
-  executor::setwindow "6kx6k"
-  executor::setbinning 1
-  executor::expose object 4
+#   set ha    [visit::ha]
+#   set delta [visit::delta]
+# 
+#   log::summary "focusmapvisit: focusing at $ha $delta."
+#   visit::settargetcoordinates fixed $ha $delta now
+#   executor::tracktopocentric  
+#   executor::waituntiltracking
+#   executor::setwindow "6kx6k"
+#   executor::setbinning 1
+#   executor::expose object 4
 
   return true
 }
@@ -589,12 +534,12 @@ proc twilightflatsvisit {} {
     log::info [format "twilightflatsvisit: level is %.1f DN in filter $filter." $level]
     if {$level > $maxlevel} {
       log::info "twilightflatsvisit: waiting (too bright)."
-      scheduler::after 60000
+      coroutine::after 60000
     } elseif {$level > $minlevel} {
       if {$ngood == 0} {
         log::info "twilightflatsvisit: first good flat with filter $filter."
       }
-      scheduler::after 10000
+      coroutine::after 10000
       incr ngood
       set mingoodlevel [expr {min($level,$mingoodlevel)}]
       set maxgoodlevel [expr {max($level,$maxgoodlevel)}]
@@ -618,21 +563,14 @@ proc biasesvisit {} {
   log::summary "biasesvisit: starting."
   executor::move
   executor::setwindow "default"
-  set visitidentifier 0
-  foreach readmode {16MHz} {
-    executor::setreadmode $readmode
-    foreach binning {1} {
-      visit::setidentifier $visitidentifier
-      executor::setbinning $binning
-      set i 0
-      while {$i < 20} {
-        executor::expose bias 0
-        executor::analyze levels
-        incr i
-        scheduler::after 10000
-      }
-      incr visitidentifier
-    }
+  executor::setreadmode "16MHz"
+  executor::setbinning 1
+  set i 0
+  while {$i < 20} {
+    executor::expose bias 0
+    executor::analyze levels
+    incr i
+    coroutine::after 10000
   }
   log::summary "biasesvisit: finished."
   return true
@@ -644,21 +582,14 @@ proc darksvisit {} {
   log::summary "darksvisit: starting."
   executor::move
   executor::setwindow "default"
-  set visitidentifier 0
-  foreach readmode {16MHz} {
-    executor::setreadmode $readmode
-    foreach binning {1} {
-      visit::setidentifier $visitidentifier
-      executor::setbinning $binning
-      set i 0
-      while {$i < 20} {
-        executor::expose dark 60
-        executor::analyze levels
-        incr i
-        scheduler::after 10000
-      }
-      incr visitidentifier
-    }
+  executor::setreadmode "16MHz"
+  executor::setbinning 1
+  set i 0
+  while {$i < 20} {
+    executor::expose dark 60
+    executor::analyze levels
+    incr i
+    coroutine::after 10000
   }
   log::summary "darksvisit: finished."
   return true
