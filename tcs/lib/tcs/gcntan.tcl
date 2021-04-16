@@ -1014,9 +1014,11 @@ proc r {s P} {
     169 "amonicecubeehe"
     170 "amonantaresfermilatcoinc"
     171 "amonhawcburstmonitor"
-    172 "amongammanucoinc"
-    173 "amonicecubegold"
-    174 "amonicecubebronze"
+    172 "amonnuemcoinc"
+    173 "amonicecubeastrotrackgold"
+    174 "amonicecubeastrotrackbronze"
+    175 "sksupernova"
+    176 "amonicecubecascade"
   }
   
   proc type {packet} {
