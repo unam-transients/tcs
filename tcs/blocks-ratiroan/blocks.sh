@@ -79,9 +79,7 @@ sh pointing-map.sh
   then
     
     :
-  
-    allblocks 2000-gonzalez               e
-   
+     
     allblocks 0008-pointing-map           w
 
   fi
@@ -91,6 +89,8 @@ sh pointing-map.sh
   #  singleblock 2019B-1002-0 e$letter
   #done
   
+  allblocks 2000-gonzalez               e
+
   allblocks 0004-initial-focus          m
   allblocks 0004-focus                  n
 
