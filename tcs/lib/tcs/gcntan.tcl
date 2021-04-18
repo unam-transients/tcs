@@ -288,20 +288,12 @@ namespace eval "gcntan" {
   }
   
   proc respondtogrbalert {test projectidentifier blockidentifier name origin identifier type alerttimestamp eventtimestamp retraction grb alpha delta equinox uncertainty} {
-    logresponse $test [format "%s: test is %s." $type $test]
-    logresponse $test [format "%s: project identifier is %s." $type $projectidentifier]
-    logresponse $test [format "%s: block identifier is %d." $type $blockidentifier]
     logresponse $test [format "%s: name is %s." $type $name]
-    logresponse $test [format "%s: origin/identifier/type are %s/%s/%s." $type $origin $identifier $type]
-    logresponse $test [format "%s: alert timestamp is %s." $type [utcclock::format $alerttimestamp]] 
-    if {![string equal $eventtimestamp ""]} {
-      logresponse $test [format "%s: event timestamp is %s." $type [utcclock::format $eventtimestamp]]
-      logresponse $test [format "%s: event delay is %s." $type [utcclock::formatinterval [utcclock::diff $alerttimestamp $eventtimestamp]]]
+    if {$test} {
+      logresponse $test [format "%s: this is a test." $type]
     } else {
-      logresponse $test [format "%s: no event timestamp." $type]
+      logresponse $test [format "%s: this is not a test." $type]
     }
-    logresponse $test [format "%s: position is %s %s %s." $type [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox]
-    logresponse $test [format "%s: uncertainty is %s." $type [astrometry::formatdistance $uncertainty]]
     set enabled ""
     if {![string equal $grb ""]} {
       if {$grb} {
@@ -316,6 +308,18 @@ namespace eval "gcntan" {
       logresponse $test [format "%s: this is a retraction." $type]
       set enabled false
     }
+    logresponse $test [format "%s: origin/identifier/type are %s/%s/%s." $type $origin $identifier $type]
+    logresponse $test [format "%s: alert timestamp is %s." $type [utcclock::format $alerttimestamp]] 
+    if {![string equal $eventtimestamp ""]} {
+      logresponse $test [format "%s: event timestamp is %s." $type [utcclock::format $eventtimestamp]]
+      logresponse $test [format "%s: event delay is %s." $type [utcclock::formatinterval [utcclock::diff $alerttimestamp $eventtimestamp]]]
+    } else {
+      logresponse $test [format "%s: no event timestamp." $type]
+    }
+    logresponse $test [format "%s: position is %s %s %s." $type [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox]
+    logresponse $test [format "%s: uncertainty is %s." $type [astrometry::formatdistance $uncertainty]]
+    logresponse $test [format "%s: project identifier is %s." $type $projectidentifier]
+    logresponse $test [format "%s: block identifier is %d." $type $blockidentifier]
     if {$test} {
       logresponse $test [format "%s: not requesting scheduler to respond: this is a test packet." $type]
     } elseif {[string equal $projectidentifier ""]} {
@@ -331,16 +335,11 @@ namespace eval "gcntan" {
   }
   
   proc respondtolvcalert {test projectidentifier blockidentifier name origin identifier type alerttimestamp eventtimestamp retraction skymapurl} {
-    logresponse $test [format "%s: test is %s." $type $test]
-    logresponse $test [format "%s: project identifier is \"%s\"." $type $projectidentifier]
-    logresponse $test [format "%s: block identifier is %d." $type $blockidentifier]
     logresponse $test [format "%s: name is %s." $type $name]
-    logresponse $test [format "%s: origin/identifier/type are %s/%s/%s." $type $origin $identifier $type]
-    logresponse $test [format "%s: alert timestamp is %s." $type [utcclock::format $alerttimestamp]] 
-    logresponse $test [format "%s: event timestamp is %s." $type [utcclock::format $eventtimestamp]]
-    logresponse $test [format "%s: event delay is %s." $type [utcclock::formatinterval [utcclock::diff $alerttimestamp $eventtimestamp]]]
-    if {![string equal $skymapurl ""]} {
-      logresponse $test [format "%s: skymap url is %s." $type $skymapurl]
+    if {$test} {
+      logresponse $test [format "%s: this is a test." $type]
+    } else {
+      logresponse $test [format "%s: this is not a test." $type]
     }
     if {![string equal $retraction ""] && $retraction} {
       logresponse $test [format "%s: this is a retraction." $type]
@@ -348,6 +347,15 @@ namespace eval "gcntan" {
     } else {
       set enabled true
     }
+    logresponse $test [format "%s: origin/identifier/type are %s/%s/%s." $type $origin $identifier $type]
+    logresponse $test [format "%s: alert timestamp is %s." $type [utcclock::format $alerttimestamp]] 
+    logresponse $test [format "%s: event timestamp is %s." $type [utcclock::format $eventtimestamp]]
+    logresponse $test [format "%s: event delay is %s." $type [utcclock::formatinterval [utcclock::diff $alerttimestamp $eventtimestamp]]]
+    if {![string equal $skymapurl ""]} {
+      logresponse $test [format "%s: skymap url is %s." $type $skymapurl]
+    }
+    logresponse $test [format "%s: project identifier is \"%s\"." $type $projectidentifier]
+    logresponse $test [format "%s: block identifier is %d." $type $blockidentifier]
     if {$test} {
       logresponse $test [format "%s: not requesting scheduler to respond: this is a test packet." $type]
     } elseif {[string equal $projectidentifier ""]} {
