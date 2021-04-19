@@ -50,7 +50,7 @@ cat >2001-roman-$blockid <<EOF
         "delta"  : "$delta",
         "equinox": "2000"
       },
-      "command": "gridvisits 1 5 1 60",
+      "command": "gridvisit 1 5 1 60",
       "estimatedduration": "6m"
     }
   ],
