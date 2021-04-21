@@ -46,7 +46,7 @@ proc alertvisit {} {
   }
 
   set alertdelay [alert::delay $alert]
-  log::summary [format "alertvisit: alert delay is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
+  log::summary [format "alertvisit: alert delay at start is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
   if {$alertdelay < 1800} {
     set exposuretime       30
     set exposuresperdither 4
@@ -165,6 +165,9 @@ proc alertvisit {} {
 
     incr dither
   }
+
+  set alertdelay [alert::delay $alert]
+  log::summary [format "alertvisit: alert delay at end is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
 
   log::summary "alertvisit: finished."
 
