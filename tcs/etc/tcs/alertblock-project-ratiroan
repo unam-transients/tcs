@@ -29,7 +29,8 @@
 
 {
   "alert": {
-    "command": "alertvisit r"
+    "command": "alertvisit r",
+    "enabled": "true"
   },
   "constraints": {
     "maxskybrightness": "nauticaltwilight",
