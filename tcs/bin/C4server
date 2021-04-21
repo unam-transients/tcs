@@ -32,7 +32,7 @@ source [file join [file dirname [info script]] ".." "lib" "tcs" "packages.tcl"]
 
 package require "server"
 server::start {
-  config::setvalue "ccd" "identifier" "C4"
+  config::setdefaultvalue "ccd" "identifier" "C4"
   package require ccdserver
   ccdserver::start
 }

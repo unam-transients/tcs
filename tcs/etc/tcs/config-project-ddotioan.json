@@ -1680,7 +1680,7 @@
 //
 //    "C2telescopedescription": "DDOTI/OAN 28-cm f/2.2"",
 //    "C2detectortype": "fli"",
-// /config::setvalue C2detectoridentifier             "ML6104016"
+// /config::setdefaultvalue C2detectoridentifier             "ML6104016"
 //    "C2detectoridentifier": "ML2120717"",
 //    "C2detectorpixelscale": "2.0as",
 //    "C2detectorinitialreadmode": "16MHz"",
