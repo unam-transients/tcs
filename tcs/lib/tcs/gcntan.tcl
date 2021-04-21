@@ -317,7 +317,7 @@ namespace eval "gcntan" {
       logresponse $test [format "%s: no event timestamp." $type]
     }
     logresponse $test [format "%s: position is %s %s %s." $type [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox]
-    logresponse $test [format "%s: uncertainty is %s." $type [astrometry::formatdistance $uncertainty]]
+    logresponse $test [format "%s: 90%% uncertainty is %s in radius." $type [astrometry::formatdistance $uncertainty]]
     logresponse $test [format "%s: project identifier is %s." $type $projectidentifier]
     logresponse $test [format "%s: block identifier is %d." $type $blockidentifier]
     if {$test} {
@@ -560,41 +560,6 @@ namespace eval "gcntan" {
   proc fermiequinox {packet} {
     return 2000
   }
-  
-proc r {s P} {
-
-  # LGRBs from Table 5 of the RoboBA paper.
-  set F 0.579
-  set C 1.86
-  set T 4.41
-    
-  # SGRBs from Table 5 of the RoboBA paper.
-  set F 0.39
-  set C 2.55
-  set T 4.42
-
-  # Convert from "radius containing 68% of the probability", which is the sigma of the GBM team, to an actual sigma for a distribution with p(r) = A exp(-0.5*(r/sigma)^2).
-  set s [expr {$s / sqrt(-2 * log(1-0.68))}]
-  set C [expr {$C / sqrt(-2 * log(1-0.68))}]
-  set T [expr {$T / sqrt(-2 * log(1-0.68))}]
-
-  # Add systematic and statistical uncertainties in quadrature.
-  set c [expr {sqrt($s * $s + $C * $C)}]
-  set t [expr {sqrt($s * $s + $T * $T)}]
-
-  # Find radius containing P.
-  set r 0
-  while {true} {
-    set p [expr {$F * (1 - exp(-0.5*($r*$r)/($c*$c))) + (1-$F) * (1 - exp(-0.5*($r*$r)/($t*$t)))}]
-    if {$p > $P} {
-      break
-    }
-    set r [expr {$r + 0.01}]
-  }
-
-  return $r
-}
-  
 
   proc fermigbmuncertainty {packet} {
 
@@ -603,23 +568,66 @@ proc r {s P} {
     # We work in degrees here.
 
     set rawuncertainty [field4 $packet 11]
-    log::info [format "%s: raw uncertainty is %.1fd." $type $rawuncertainty]  
+    log::info [format "%s: raw uncertainty is %.1fd in radius." $type $rawuncertainty]  
     
     # We want the radius containing 90% of the probability. There are
     # two complications here.
     # 
-    # First, the GCN notices distribute a sigma defined to be the
-    # "radius containing 68% of the probability" (see the start of
-    # section 5 of Connaughton et al. 2015), which is not the standard
-    # sigma in a 2-D Gaussian with p(x,y) = A exp(-0.5*(r/sigma)^2).
+    # First, the GCN notices distribute a raw sigma defined to be the "radius
+    # containing 68% of the probability" (see the start of section 5 of
+    # Connaughton et al. 2015). This is not the standard sigma in a 2-D Gaussian
+    # with p(x,y) = A exp(-0.5*(r/sigma)^2).
     # 
-    # Second, we need to add the systematic probability. The core and
+    # Second, we need to add the systematic uncertainty. The core and
     # tail are both Gaussians and a certain fraction of the probability
     # is in the core. The parameters are given in Table 3 of Goldstein
-    # et al. (submitted). They are different for long and short GRBs,
+    # et al. (2020). They are different for long and short GRBs,
     # but we use the global values. This could be improved based on the
     # classification in the GCN notice.
-    
+    #
+    # So, we need to convert the raw uncertainty to a true sigma, then account
+    # for the systematic uncertainty, and then determine the radius containing
+    # 90% of the probability.
+    #
+    # In this, calculation, we use the result that the probability contained
+    # within a radius r of a 2_D Gaussian with p(x,y) = A exp(-0.5*(r/sigma)^2)
+    # is (1-exp(-0.5*(r/sigma)^2)).
+    #
+    # The mapping from raw 68% uncertainty to true 90% uncertainty, including
+    # systematics, is then:
+    #
+    #   raw  true
+    #   0.0   4.8
+    #   1.0   4.9
+    #   2.0   5.4
+    #   3.0   6.2
+    #   4.0   7.2
+    #   5.0   8.4
+    #   6.0   9.6
+    #   7.0  10.9
+    #   8.0  12.2
+    #   9.0  13.5
+    #  10.0  14.9
+    #  15.0  21.8
+    #  20.0  28.8
+    #  25.0  35.8
+    #  30.0  42.9
+    #
+    # For well-localized bursts (raw uncertainty of 2 degrees or less), the
+    # dominant component of the true uncertainty is the systematic uncertainty
+    # of about 5 degrees. For poorly-localisted bursts (raw uncertainty of 10
+    # degrees or more), the dominant correction is the factor of roughly 1.4
+    # between the 68% radius and the 90% radius.
+    #
+    # References:
+    #
+    # Connaughton et al. (2015): https://ui.adsabs.harvard.edu/abs/2015ApJS..216...32C/abstract
+    # Goldstein et al. (2020): https://ui.adsabs.harvard.edu/abs/2020ApJ...895...40G/abstract
+
+    # These parameters characterize the systematic uncertainty. F is the
+    # fraction in the core. C and T are the sigmas of the core and tail. See
+    # Goldstein et al. (2020).
+        
     set F 0.517
     set C 1.81
     set T 4.07
@@ -631,11 +639,11 @@ proc r {s P} {
     set C [expr {$C / sqrt(-2 * log(1-0.68))}]
     set T [expr {$T / sqrt(-2 * log(1-0.68))}]
 
-    # Add systematic and statistical uncertainties in quadrature.
+    # Add the systematic and statistical uncertainties in quadrature.
     set c [expr {sqrt($s * $s + $C * $C)}]
     set t [expr {sqrt($s * $s + $T * $T)}]
 
-    # Find radius containing 90% of the probability.
+    # Find the radius containing 90% of the probability.
     set P 0.9
     set r 0
     set dr 0.01
@@ -648,8 +656,7 @@ proc r {s P} {
     }
 
     set uncertainty $r
-
-    log::info [format "%s: uncertainty is %.1fd." $type $uncertainty]  
+    log::info [format "%s: 90%% uncertainty is %.1fd in radius." $type $uncertainty]  
 
     return [format "%.1fd" $uncertainty]
   }
