@@ -1205,14 +1205,14 @@
 
 // 
 // To be able to observe GRB 130122A.
-// /config::setvalue targetnorthdeltalimit         "+59:35:00"
-// /config::setvalue mountnorthdeltalimit          "+59:40:00"
+// /config::setdefaultvalue targetnorthdeltalimit         "+59:35:00"
+// /config::setdefaultvalue mountnorthdeltalimit          "+59:40:00"
 // 
 // To be able to observer GRB 130419A.
-// /config::setvalue targeteasthalimit            "-05:25:00"
-// /config::setvalue targetwesthalimit            "+05:25:00"
-// /config::setvalue mounteasthalimit             "-05:27:00"
-// /config::setvalue mountwesthalimit             "+05:27:00"
+// /config::setdefaultvalue targeteasthalimit            "-05:25:00"
+// /config::setdefaultvalue targetwesthalimit            "+05:25:00"
+// /config::setdefaultvalue mounteasthalimit             "-05:27:00"
+// /config::setdefaultvalue mountwesthalimit             "+05:27:00"
 // // 
 // 
 // 

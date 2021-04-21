@@ -71,9 +71,9 @@
 //    "C0focusertype": "null"",
 //    "C0focuseridentifier": "null"",
 //    "C0focuserinitialposition": "0",
-// /config::setvalue C0focusertype                    "optec"
-// /config::setvalue C0focuseridentifier              "/dev/ttyFTDI"
-// /config::setvalue C0focuserinitialposition         32767
+// /config::setdefaultvalue C0focusertype                    "optec"
+// /config::setdefaultvalue C0focuseridentifier              "/dev/ttyFTDI"
+// /config::setdefaultvalue C0focuserinitialposition         32767
 //    "C0ccdfocuserbacklashoffset": "-5000",
 //    "C0pointingmodelparameters": "{}",
 //    "C0isstandalone": "false",

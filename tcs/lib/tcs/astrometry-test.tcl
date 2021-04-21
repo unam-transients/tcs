@@ -27,9 +27,9 @@ source [file join "/usr/local/lib/tcs/packages.tcl"]
 
 package require "config"
 
-config::setvalue "astrometry" "longitude" "-115:28:00"
-config::setvalue "astrometry" "latitude"  "+31:02:43.0"
-config::setvalue "astrometry" "altitude"  "2790.0"
+config::setdefaultvalue "astrometry" "longitude" "-115:28:00"
+config::setdefaultvalue "astrometry" "latitude"  "+31:02:43.0"
+config::setdefaultvalue "astrometry" "altitude"  "2790.0"
 
 package require "astrometry"
 

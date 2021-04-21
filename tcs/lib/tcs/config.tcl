@@ -35,8 +35,9 @@ namespace eval "config" {
 
   ######################################################################
 
+  variable varvaluedict     [dict create]
+  variable etcvaluedict     [dict create]
   variable defaultvaluedict [dict create]
-  variable valuedict        [dict create]
 
   proc setdefaultvalue {args} {
     set value [lindex $args end]
@@ -45,23 +46,20 @@ namespace eval "config" {
     eval dict set defaultvaluedict $keys {$value}
   }
 
-  proc setvalue {args} {
-    set value [lindex $args end]
-    set keys [lrange $args 0 end-1]
-    variable valuedict
-    eval dict set valuedict $keys {$value}
-  }
-
   proc getvalue {args} {
 
-    variable valuedict
+    variable varvaluedict
+    variable etcvaluedict
     variable defaultvaluedict
 
     set keys $args
 
-    if {[eval dict exists {$valuedict} $keys]} {
-      set where "setvalue"
-      set value [eval dict get {$valuedict} $keys]
+    if {[eval dict exists {$varvaluedict} $keys]} {
+      set where "var/tcs/config.json"
+      set value [eval dict get {$varvaluedict} $keys]
+   } elseif {[eval dict exists {$etcvaluedict} $keys]} {
+      set where "etc/tcs/config.json"
+      set value [eval dict get {$etcvaluedict} $keys]
     } elseif {[eval dict exists {$defaultvaluedict} $keys]} {
       set where "setdefaultvalue"
       set value [eval dict get {$defaultvaluedict} $keys]
@@ -76,18 +74,19 @@ namespace eval "config" {
   
   proc setvarvalue {args} {
     
+    variable varvaluedict
+
     set value [lindex $args end]
     set keys [lrange $args 0 end-1]
 
-    eval setvalue $keys {$value}
-
-    set keys [join [lrange $args 0 end-1] " "]
+    eval dict set varvaluedict $keys {$value}
 
     set varconfigfile [file join [directories::var] "config.tcl"]
     
-    set channel [open $varconfigfile "a"]
+    set channel [open $varconfigfile "w"]
     set timestamp [utcclock::format now]
-    puts $channel "\n# $timestamp\nconfig::setvalue $keys $value"
+    puts $channel "// Written at $timestamp"
+    puts [tojson::object $varvaluedict]
     close $channel
     
   }
@@ -103,14 +102,14 @@ namespace eval "config" {
 
   set etcconfigfile [file join [directories::etc] "config.json"]
   if {[file exists $etcconfigfile]} {
-    if {[catch {set valuedict [fromjson::readfile $etcconfigfile]} message]} {
+    if {[catch {set etcvaluedict [fromjson::readfile $etcconfigfile]} message]} {
       log::fatalerror "error reading \"$etcconfigfile\": $message."
     }
   }
 
-  set varconfigfile [file join [directories::var] "config.tcl"]
+  set varconfigfile [file join [directories::var] "config.json"]
   if {[file exists $varconfigfile]} {
-    if {[catch {source $varconfigfile} message]} {
+    if {[catch {set varvaluedict [fromjson::readfile $varconfigfile]} message]} {
       log::fatalerror "error reading \"$varconfigfile\": $message."
     }
   }
