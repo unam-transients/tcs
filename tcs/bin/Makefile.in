@@ -81,7 +81,7 @@ installbins			:= 		\
 	request					\
 	restartserver				\
 	restartsoon				\
-	schedulerserver				\
+	selectorserver				\
 	sendpushover				\
 	sensorsserver				\
 	shuttersserver				\

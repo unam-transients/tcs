@@ -282,13 +282,13 @@ namespace eval "supervisor" {
         continue
       } 
 
-      if {[catch {client::update "scheduler"} message]} {
-        log::debug "loop: continue: unable to update scheduler data: $message"
+      if {[catch {client::update "selector"} message]} {
+        log::debug "loop: continue: unable to update selector data: $message"
         set delay 1000
         continue
       }
-      if {[string equal [client::getdata "scheduler" "activity"] "starting"]} {
-        log::debug "loop: continue: scheduler is starting."
+      if {[string equal [client::getdata "selector" "activity"] "starting"]} {
+        log::debug "loop: continue: selector is starting."
         set delay 1000
         continue
       } 
@@ -352,13 +352,13 @@ namespace eval "supervisor" {
         set closed      false
         updatedata
         if {![catch {
-          client::request "scheduler" "disable"
-          client::wait "scheduler"
+          client::request "selector" "disable"
+          client::wait "selector"
           client::request "executor" "reset"
           client::wait "executor"
           client::request "executor" "open"
           client::wait "executor"
-          client::request "scheduler" "enable"
+          client::request "selector" "enable"
         } message]} {
           set open true
           updatedata
@@ -390,8 +390,8 @@ namespace eval "supervisor" {
         set closed      false
         updatedata
         if {![catch {
-          client::request "scheduler" "disable"
-          client::wait "scheduler"
+          client::request "selector" "disable"
+          client::wait "selector"
           client::request "executor" "reset"
           client::wait "executor"
           client::request "executor" "opentocool"
@@ -427,8 +427,8 @@ namespace eval "supervisor" {
         set closed     false
         updatedata
         if {![catch {
-          client::request "scheduler" "disable"
-          client::wait "scheduler"
+          client::request "selector" "disable"
+          client::wait "selector"
           client::request "executor" "reset"
           client::wait "executor"
           client::request "executor" "close"

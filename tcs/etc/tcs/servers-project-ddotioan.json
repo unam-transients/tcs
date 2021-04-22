@@ -44,7 +44,7 @@
   "mount"      : { "host" : "control" , "port" : 5016 },
   "power"      : { "host" : "control" , "port" : 5017 },
   "secondary"  : { "host" : "control" , "port" : 5018 },
-  "scheduler"  : { "host" : "control" , "port" : 5019 },
+  "selector"  : { "host" : "control" , "port" : 5019 },
   "sensors"    : { "host" : "control" , "port" : 5020 },
   "sun"        : { "host" : "control" , "port" : 5021 },
   "supervisor" : { "host" : "control" , "port" : 5022 },

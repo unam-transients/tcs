@@ -48,7 +48,7 @@
       "nefinder",
       "secondary",
       "sefinder",
-      "scheduler",
+      "selector",
       "sensors",
       "shutters",
       "sun",
@@ -126,7 +126,7 @@
     "openoffsetseconds": "900",
     "opentocooloffsetseconds": "1800"
   },
-  "scheduler": {},
+  "selector": {},
   "executor": {
     "type": "ratiroan"
   },

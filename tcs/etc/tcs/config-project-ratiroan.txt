@@ -92,7 +92,7 @@
 "plc": "controllerhost": "plc"
 "plc": "controllerport": "5001"
 "safetyswitch": "type": ""
-"scheduler": "offsethours": "0"
+"selector": "offsethours": "0"
 "secondary": "allowedzerror": 0
 "secondary": "controllerhost": ""
 "secondary": "controllerport": ""

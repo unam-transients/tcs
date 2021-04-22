@@ -2,7 +2,7 @@
 
 # This file is part of the RATTEL telescope control system.
 
-# $Id: scheduler.tcl 3601 2020-06-11 03:20:53Z Alan $
+# $Id: selector.tcl 3601 2020-06-11 03:20:53Z Alan $
 
 ########################################################################
 
@@ -34,15 +34,15 @@ package require "project"
 package require "server"
 package require "visit"
 
-package provide "scheduler" 0.0
+package provide "selector" 0.0
 
-namespace eval "scheduler" {
+namespace eval "selector" {
 
   variable svnid {$Id}
 
   ######################################################################
 
-  variable offsethours [config::getvalue "scheduler" "offsethours"]
+  variable offsethours [config::getvalue "selector" "offsethours"]
 
   ######################################################################
 
@@ -60,14 +60,14 @@ namespace eval "scheduler" {
     server::setdata "mode"             $mode
     server::setdata "blockfile"        $blockfile
     server::setdata "alertfile"        $alertfile
-    server::setdata "schedulerdate"    [schedulerdate true]
+    server::setdata "selectordate"    [selectordate true]
     server::setdata "focustimestamp"   [constraints::focustimestamp]
     server::setdata "timestamp"        [utcclock::combinedformat now]
   }
   
   ######################################################################
 
-  proc schedulerdate {{extended true}} {
+  proc selectordate {{extended true}} {
     variable offsethours
     set seconds [expr {[utcclock::seconds] + 3600 * $offsethours}]
     return [utcclock::formatdate $seconds $extended]
@@ -80,8 +80,8 @@ namespace eval "scheduler" {
   }
 
   proc getblockfilesdirectory {} {
-    log::info "scheduler date is [schedulerdate true]."
-    return [file join [directories::var] [schedulerdate false] "blocks"]
+    log::info "selector date is [selectordate true]."
+    return [file join [directories::var] [selectordate false] "blocks"]
   }
   
   proc getblockfiles {} {
@@ -477,7 +477,7 @@ namespace eval "scheduler" {
     if {!$interrupt} {
       log::summary "not interrupting the executor: interrupt is false."
     } elseif {[string equal $mode "disabled"]} {
-      log::summary "not interrupting the executor: scheduler is disabled."
+      log::summary "not interrupting the executor: selector is disabled."
     } elseif {![selectable [getalertblockfile] $alertfile [utcclock::seconds]]} {
       log::summary "not interrupting the executor: alert is not selectable."
     } else {
@@ -557,7 +557,7 @@ namespace eval "scheduler" {
     server::setrequestedactivity "idle"
     updatedata
     after idle {
-      coroutine scheduler::blockloopcoroutine scheduler::blockloop
+      coroutine selector::blockloopcoroutine selector::blockloop
     }
   }
 

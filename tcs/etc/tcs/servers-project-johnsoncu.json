@@ -36,7 +36,7 @@
   "instrument" : { "host" : "control", "port" : 5008 },
   "telescope"  : { "host" : "control", "port" : 5009 },
   "executor"   : { "host" : "control", "port" : 5010 },
-  "scheduler"  : { "host" : "control", "port" : 5011 },
+  "selector"  : { "host" : "control", "port" : 5011 },
   "supervisor" : { "host" : "control", "port" : 5012 },
   "gcntan"     : { "host" : "control", "port" : 5013 }
 }

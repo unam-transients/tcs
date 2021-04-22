@@ -75,7 +75,7 @@
   "html": {
     "servers": []
   },
-  "scheduler": {
+  "selector": {
     "offsethours": "0"
   },
   "secondary": {

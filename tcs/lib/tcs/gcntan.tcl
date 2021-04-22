@@ -321,15 +321,15 @@ namespace eval "gcntan" {
     logresponse $test [format "%s: project identifier is %s." $type $projectidentifier]
     logresponse $test [format "%s: block identifier is %d." $type $blockidentifier]
     if {$test} {
-      logresponse $test [format "%s: not requesting scheduler to respond: this is a test packet." $type]
+      logresponse $test [format "%s: not requesting selector to respond: this is a test packet." $type]
     } elseif {[string equal $projectidentifier ""]} {
-      logresponse $test [format "%s: not requesting scheduler to respond: no project identifier." $type]
+      logresponse $test [format "%s: not requesting selector to respond: no project identifier." $type]
     } else {
-      logresponse $test [format "%s: requesting scheduler to respond." $type]
+      logresponse $test [format "%s: requesting selector to respond." $type]
       if {[catch {
-        client::request "scheduler" [list respondtoalert $projectidentifier $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty]
+        client::request "selector" [list respondtoalert $projectidentifier $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty]
       } result]} {
-        log::warning [format "%s: unable to request scheduler: %s" $type $result]
+        log::warning [format "%s: unable to request selector: %s" $type $result]
       }
     }
   }
@@ -357,15 +357,15 @@ namespace eval "gcntan" {
     logresponse $test [format "%s: project identifier is \"%s\"." $type $projectidentifier]
     logresponse $test [format "%s: block identifier is %d." $type $blockidentifier]
     if {$test} {
-      logresponse $test [format "%s: not requesting scheduler to respond: this is a test packet." $type]
+      logresponse $test [format "%s: not requesting selector to respond: this is a test packet." $type]
     } elseif {[string equal $projectidentifier ""]} {
-      logresponse $test [format "%s: not requesting scheduler to respond: no project identifier." $type]
+      logresponse $test [format "%s: not requesting selector to respond: no project identifier." $type]
     } else {
-      logresponse $test [format "%s: requesting scheduler to respond." $type]
+      logresponse $test [format "%s: requesting selector to respond." $type]
       if {[catch {
-        client::request "scheduler" [list respondtolvcalert $projectidentifier $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $skymapurl]
+        client::request "selector" [list respondtolvcalert $projectidentifier $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $skymapurl]
       } result]} {
-        log::warning [format "%s: unable to request scheduler: %s" $type $result]
+        log::warning [format "%s: unable to request selector: %s" $type $result]
       }
     }
   }

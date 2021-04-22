@@ -36,7 +36,7 @@
       "gcntan",
       "instrument",
       "moon",
-      "scheduler",
+      "selector",
       "sensors",
       "sun",
       "supervisor",
@@ -60,7 +60,7 @@
   "supervisor": {
     "internalhumiditysensor": ""
   },
-  "scheduler": {},
+  "selector": {},
   "gcntan": {
     "serverpacketport": "5351",
     "swiftalertprojectidentifier": "1001",

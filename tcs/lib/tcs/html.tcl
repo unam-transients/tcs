@@ -1405,21 +1405,21 @@ namespace eval "html" {
     
   }
 
-  proc writescheduler {} {
+  proc writeselector {} {
 
     putshtml "<table class=\"status\">"
 
-    writehtmlstatusblock "scheduler"
+    writehtmlstatusblock "selector"
 
     putshtml "</table>"
 
     putshtml "<table class=\"status\">"
-    if {[string equal [client::getstatus "scheduler"] "ok"]} {
-      writehtmlfullrow "Mode"              [client::getdata "scheduler" "mode"]
-      writehtmlfullrow "Scheduler date"    [client::getdata "scheduler" "schedulerdate"]
-      writehtmlfullrow "Block file"        [client::getdata "scheduler" "blockfile"]
-      writehtmlfullrow "Alert file"        [client::getdata "scheduler" "alertfile"]
-      writehtmlfullrow "Focused"           [formattimestamp [client::getdata "scheduler" "focustimestamp"]]
+    if {[string equal [client::getstatus "selector"] "ok"]} {
+      writehtmlfullrow "Mode"              [client::getdata "selector" "mode"]
+      writehtmlfullrow "selector date"    [client::getdata "selector" "selectordate"]
+      writehtmlfullrow "Block file"        [client::getdata "selector" "blockfile"]
+      writehtmlfullrow "Alert file"        [client::getdata "selector" "alertfile"]
+      writehtmlfullrow "Focused"           [formattimestamp [client::getdata "selector" "focustimestamp"]]
     }
     putshtml "</table>"
 
@@ -1766,7 +1766,7 @@ namespace eval "html" {
       plc           {PLC}
       secondary     {Secondary}
       sefinder      {SE Finder}
-      scheduler     {Scheduler}
+      selector     {selector}
       sensors       {Sensors}
       shutters      {Shutters}
       sun           {Sun}

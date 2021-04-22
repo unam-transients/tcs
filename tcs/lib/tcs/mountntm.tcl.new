@@ -1404,9 +1404,9 @@ namespace eval "mount" {
     set start [utcclock::seconds]
     set completedcurrentcommand false
     sendcommand $command    
-    scheduler::yield
+    selector::yield
     while {!$completedcurrentcommand} {
-      scheduler::yield
+      selector::yield
     }
     set end [utcclock::seconds]
     log::debug [format "completed controller command $currentcommandidentifier in %.1fs." [utcclock::diff $end $start]]
@@ -1418,7 +1418,7 @@ namespace eval "mount" {
     set waitmoving false
     while {$waitmoving} {
       log::debug "waitwhilemoving: yielding."
-      scheduler::yield
+      selector::yield
     }
     log::debug "waitwhilemoving: finished."
   }
@@ -1427,7 +1427,7 @@ namespace eval "mount" {
     log::debug "waitwhilemountrotation: starting."
     while {$mountrotation == [server::getdata "mountrotation"]} {
       log::debug "waitwhilemountrotation: yielding."
-      scheduler::yield
+      selector::yield
     }
     log::debug "waitwhilemountrotation: finished."
   }
@@ -1452,17 +1452,17 @@ namespace eval "mount" {
         return
       }
       log::debug "waituntilsafetomovebothaxes: yielding."
-      scheduler::yield
+      selector::yield
     }
   }
 
   proc waituntiltracking {} {
     log::debug "waituntiltracking: starting."
-scheduler::after 1000
+selector::after 1000
     variable tracking
     while {!$tracking} {
       log::debug "waituntiltracking: yielding."
-      scheduler::yield
+      selector::yield
     }
     log::debug "waituntiltracking: finished."
   }
@@ -1480,7 +1480,7 @@ scheduler::after 1000
     log::debug "waituntiloperational: starting."
     while {![isoperational]} {
       log::debug "waituntiloperational: yielding."
-      scheduler::yield
+      selector::yield
     }
     log::debug "waituntiloperational: finished."
   }
@@ -1709,7 +1709,7 @@ scheduler::after 1000
       if {[utcclock::diff $trajectoryseconds now] < $trajectorydfutureseconds} {
         set trajectoryseconds [addtrajectorypoints $trajectoryseconds $trajectoryn $trajectorydseconds]
       }
-      scheduler::after 1000
+      selector::after 1000
     }
   }
   
@@ -1719,7 +1719,7 @@ scheduler::after 1000
     set start [utcclock::seconds]
     log::info "starting."
     while {[string equal [server::getstatus] "starting"]} {
-      scheduler::yield
+      selector::yield
     }
     stophardware
     set end [utcclock::seconds]
@@ -1735,11 +1735,11 @@ scheduler::after 1000
     stophardware
     if {![isoperational]} {
       log::info "attempting to change the controller state from [server::getdata "state"] to operational."
-      scheduler::after 1000
+      selector::after 1000
       sendcommandandwait "SET CABINET.STATUS.CLEAR=1"
-      scheduler::after 1000
+      selector::after 1000
       sendcommandandwait "SET CABINET.POWER=1"
-      scheduler::after 1000
+      selector::after 1000
       waituntiloperational
     }
     log::info "the controller state is operational."
@@ -1801,17 +1801,17 @@ scheduler::after 1000
     updaterequestedpositiondata false
     server::setdata "mounttracking" false
     stophardware
-    scheduler::after 1000
+    selector::after 1000
     log::info "switching off cabinet."
     sendcommandandwait "SET CABINET.POWER=0"
-    scheduler::after 1000
+    selector::after 1000
     log::info "attempting to change the controller state from [server::getdata "state"] to operational."
     log::info "clearing errors."
     sendcommandandwait "SET CABINET.STATUS.CLEAR=1"
-    scheduler::after 1000
+    selector::after 1000
     log::info "switching on cabinet."
     sendcommandandwait "SET CABINET.POWER=1"
-    scheduler::after 1000
+    selector::after 1000
     waituntiloperational
     set end [utcclock::seconds]
     log::info [format "finished rebooting after %.1fs." [utcclock::diff $end $start]]

@@ -121,8 +121,8 @@ installs	:=			\
 	safetyswitcharts.tcl		\
 	safetyswitchnone.tcl		\
 	safetyswitchplc.tcl		\
-	scheduler.tcl 			\
-	schedulerserver.tcl 		\
+	selector.tcl 			\
+	selectorserver.tcl 		\
 	secondary.tcl			\
 	secondaryoptec.tcl		\
 	secondaryratiroan.tcl		\

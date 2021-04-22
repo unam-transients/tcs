@@ -2,7 +2,7 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: schedulerserver.tcl 3590 2020-05-27 00:18:20Z Alan $
+# $Id: selectorserver.tcl 3590 2020-05-27 00:18:20Z Alan $
 
 ########################################################################
 
@@ -23,70 +23,70 @@
 
 ########################################################################
 
-package require "scheduler"
+package require "selector"
 package require "log"
 package require "server"
 
-package provide "schedulerserver" 0.0
+package provide "selectorserver" 0.0
 
-namespace eval "schedulerserver" {
+namespace eval "selectorserver" {
 
   variable svnid {$Id}
 
   ######################################################################
 
   proc slavestop {} {
-    scheduler::stop
+    selector::stop
     return
   }
 
   proc slavereset {} {
-    scheduler::reset
+    selector::reset
     return
   }
 
   proc slaveenable {} {
-    scheduler::enable
+    selector::enable
     return
   }
 
   proc slavedisable {} {
-    scheduler::disable
+    selector::disable
     return
   }
   
   proc slaverespondtoalert {proposalidentifier blockidentifier name origin identifier type alerttimestamp eventtimestamp enabled alpha delta equinox uncertainty} {
-    scheduler::respondtoalert $proposalidentifier $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty
+    selector::respondtoalert $proposalidentifier $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty
   }
 
   proc slaverespondtolvcalert {proposalidentifier blockidentifier name origin identifier type alerttimestamp eventtimestamp enabled skymapurl} {
-    scheduler::respondtolvcalert $proposalidentifier $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $skymapurl
+    selector::respondtolvcalert $proposalidentifier $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $skymapurl
   }
 
   proc slavesetfocused {} {
-    scheduler::setfocused
+    selector::setfocused
   }
 
   proc slavesetunfocused {} {
-    scheduler::setunfocused
+    selector::setunfocused
   }
 
   proc configureslave {slave} {
-    interp alias $slave stop              {} schedulerserver::slavestop
-    interp alias $slave reset             {} schedulerserver::slavereset
-    interp alias $slave enable            {} schedulerserver::slaveenable
-    interp alias $slave disable           {} schedulerserver::slavedisable
-    interp alias $slave respondtoalert    {} schedulerserver::slaverespondtoalert
-    interp alias $slave respondtolvcalert {} schedulerserver::slaverespondtolvcalert
-    interp alias $slave setfocused        {} schedulerserver::slavesetfocused
-    interp alias $slave setunfocused      {} schedulerserver::slavesetunfocused
+    interp alias $slave stop              {} selectorserver::slavestop
+    interp alias $slave reset             {} selectorserver::slavereset
+    interp alias $slave enable            {} selectorserver::slaveenable
+    interp alias $slave disable           {} selectorserver::slavedisable
+    interp alias $slave respondtoalert    {} selectorserver::slaverespondtoalert
+    interp alias $slave respondtolvcalert {} selectorserver::slaverespondtolvcalert
+    interp alias $slave setfocused        {} selectorserver::slavesetfocused
+    interp alias $slave setunfocused      {} selectorserver::slavesetunfocused
   }
 
   ######################################################################
 
   proc start {} {
-    scheduler::start
-    server::listen scheduler schedulerserver::configureslave
+    selector::start
+    server::listen selector selectorserver::configureslave
   }
 
   ######################################################################
