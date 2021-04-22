@@ -81,14 +81,14 @@ namespace eval "config" {
 
     eval dict set varvaluedict $keys {$value}
 
-    set varconfigfile [file join [directories::var] "config.tcl"]
+    set filename [file join [directories::var] "config.json"]
+    set tmpfilename "$filename.[pid]"
     
-    set channel [open $varconfigfile "w"]
-    set timestamp [utcclock::format now]
-    puts $channel "// Written at $timestamp"
-    puts [tojson::object $varvaluedict]
+    set channel [open $tmpfilename "w"]
+    puts $channel [format "// Written at %s\n%s\n" [utcclock::format now] [tojson::object $varvaluedict]] 
     close $channel
     
+    file rename -force -- "$filename.[pid]" "$filename"    
   }
   
   ######################################################################
