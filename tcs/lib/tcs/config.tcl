@@ -76,41 +76,46 @@ namespace eval "config" {
     
     variable varvaluedict
 
+    set filename [file join [directories::var] "config.json"]
+
+    if {[file exists $filename]} {
+      if {[catch {set varvaluedict [fromjson::readfile $filename]} message]} {
+        log::fatalerror "error reading \"$filename\": $message."
+      }
+    }
+  
     set value [lindex $args end]
     set keys [lrange $args 0 end-1]
 
     eval dict set varvaluedict $keys {$value}
 
-    set filename [file join [directories::var] "config.json"]
-    set tmpfilename "$filename.[pid]"
-    
+    set tmpfilename "$filename.[pid]"    
     set channel [open $tmpfilename "w"]
     puts $channel [format "// Written at %s\n%s\n" [utcclock::format now] [tojson::object $varvaluedict]] 
     close $channel
-    
     file rename -force -- "$filename.[pid]" "$filename"    
   }
   
   ######################################################################
 
-  set etcconfigfile [file join [directories::etc] "config-defaults.json"]
-  if {[file exists $etcconfigfile]} {
-    if {[catch {set defaultvaluedict [fromjson::readfile $etcconfigfile]} message]} {
-      log::fatalerror "error reading \"$etcconfigfile\": $message."
+  set etcconfigfilename [file join [directories::etc] "config-defaults.json"]
+  if {[file exists $etcconfigfilename]} {
+    if {[catch {set defaultvaluedict [fromjson::readfile $etcconfigfilename]} message]} {
+      log::fatalerror "error reading \"$etcconfigfilename\": $message."
     }
   }
 
-  set etcconfigfile [file join [directories::etc] "config.json"]
-  if {[file exists $etcconfigfile]} {
-    if {[catch {set etcvaluedict [fromjson::readfile $etcconfigfile]} message]} {
-      log::fatalerror "error reading \"$etcconfigfile\": $message."
+  set etcconfigfilename [file join [directories::etc] "config.json"]
+  if {[file exists $etcconfigfilename]} {
+    if {[catch {set etcvaluedict [fromjson::readfile $etcconfigfilename]} message]} {
+      log::fatalerror "error reading \"$etcconfigfilename\": $message."
     }
   }
 
-  set varconfigfile [file join [directories::var] "config.json"]
-  if {[file exists $varconfigfile]} {
-    if {[catch {set varvaluedict [fromjson::readfile $varconfigfile]} message]} {
-      log::fatalerror "error reading \"$varconfigfile\": $message."
+  set varconfigfilename [file join [directories::var] "config.json"]
+  if {[file exists $varconfigfilename]} {
+    if {[catch {set varvaluedict [fromjson::readfile $varconfigfilename]} message]} {
+      log::fatalerror "error reading \"$varconfigfilename\": $message."
     }
   }
 
