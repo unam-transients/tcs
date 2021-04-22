@@ -57,18 +57,18 @@ do
       },
       "command": "focusvisit",
       "estimatedduration": "5m"
-    },
-    {
-      "identifier": "3",
-      "name": "apertures",
-      "targetcoordinates": {
-        "type"   : "equatorial",
-        "alpha"  : "$alpha",
-        "delta"  : "$delta",
-        "equinox": "2000"
-      },
-      "command": "aperturesvisit",
-      "estimatedduration": "15m"
+//    },
+//    {
+//      "identifier": "3",
+//      "name": "apertures",
+//      "targetcoordinates": {
+//        "type"   : "equatorial",
+//        "alpha"  : "$alpha",
+//        "delta"  : "$delta",
+//        "equinox": "2000"
+//      },
+//      "command": "aperturesvisit",
+//      "estimatedduration": "15m"
     }
   ],
   "constraints": {
