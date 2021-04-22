@@ -13,13 +13,16 @@ sed '/^#/d' <<EOF |
 # 40 05:59:34.30 +08:11:37.8 -4h -2h ONE
 # 41 05:59:34.30 +08:11:37.8 -1h +1h ONE
 # 42 05:59:34.30 +08:11:37.8 +2h +4h ONE
-50 11:15:46.70 +87:39:50.9 -4h +4h Polaris
-60 11:13:59.30 +75:46:17.5 -4h +4h Spider
-70 09:33:52.60 +68:37:39.0 -4h +4h Ursa01
-80 08:33:22.50 +61:00:11.2 -4h +4h Ursa02
+50 11:15:46.70 +87:39:50.9 Polaris
+60 11:13:59.30 +75:46:17.5 Spider
+70 09:33:52.60 +68:37:39.0 Ursa01
+80 08:33:22.50 +61:00:11.2 Ursa02
 EOF
-while read blockid alpha delta minha maxha name
+while read i alpha delta name
 do
+  while read j minha maxha
+  do
+    blockid=$(expr $i + $j)
 cat >2001-roman-$blockid <<EOF
 {
   "project": {
@@ -64,5 +67,15 @@ cat >2001-roman-$blockid <<EOF
   "persistent": "false"
 }
 
+EOF
+  done <<EOF
+0 -6h -4h
+1 -4h -2h
+2 -2h 0h
+3  0h +2h
+4 +2h +4h
+5 +4h +6h
+6 +6h +8h
+7 +8h +10h
 EOF
 done
