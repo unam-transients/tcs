@@ -204,10 +204,10 @@ package ifneeded safetyswitchnone      0.0 \
   [list source [file join [file dirname [info script]] safetyswitchnone.tcl]]
 package ifneeded safetyswitchplc       0.0 \
   [list source [file join [file dirname [info script]] safetyswitchplc.tcl]]
-package ifneeded scheduler              0.0 \
-  [list source [file join [file dirname [info script]] scheduler.tcl]]
-package ifneeded schedulerserver        0.0 \
-  [list source [file join [file dirname [info script]] schedulerserver.tcl]]
+package ifneeded selector              0.0 \
+  [list source [file join [file dirname [info script]] selector.tcl]]
+package ifneeded selectorserver        0.0 \
+  [list source [file join [file dirname [info script]] selectorserver.tcl]]
 package ifneeded secondaryoptec        0.0 \
   [list source [file join [file dirname [info script]] secondaryoptec.tcl]]
 package ifneeded secondaryratiroan     0.0 \

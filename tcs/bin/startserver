@@ -42,7 +42,7 @@ ratiroan-services)
   allargs="log 1 html gcntan"
   ;;
 ratiroan-control)
-  allargs="cryostat sensors power weather 1 target 1 moon sun 1 covers dome inclinometers lights secondary shutters 1 mount 1 nefinder sefinder 1 guider 1 telescope instrument 1 executor scheduler supervisor"
+  allargs="cryostat sensors power weather 1 target 1 moon sun 1 covers dome inclinometers lights secondary shutters 1 mount 1 nefinder sefinder 1 guider 1 telescope instrument 1 executor selector supervisor"
   ;;
 ratiroan-detectors)
   allargs="C0 C1"
@@ -51,7 +51,7 @@ ratiroan-tcs-a)
   allargs="C2 C3"
   ;;
 coatlioan-control)
-  allargs="sensors power weather 1 target 1 moon sun 1 secondary enclosure mount 1 telescope instrument 1 executor scheduler supervisor"
+  allargs="sensors power weather 1 target 1 moon sun 1 secondary enclosure mount 1 telescope instrument 1 executor selector supervisor"
   ;;
 coatlioan-services)
   allargs="log 1 html gcntan"
@@ -66,7 +66,7 @@ coatlioan-e1)
   allargs="C0"
   ;;
 ddotioan-control)
-  allargs="sensors power weather 1 target 1 moon sun 1 enclosure mount 1 telescope instrument 1 executor scheduler supervisor"
+  allargs="sensors power weather 1 target 1 moon sun 1 enclosure mount 1 telescope instrument 1 executor selector supervisor"
   ;;
 ddotioan-services)
   allargs="log 1 html gcntan"
@@ -96,22 +96,22 @@ ddotioan-e3)
   allargs="C5"
   ;;
 colibricito-control)
-  allargs="log 2 html 1 target 1 moon sun weather 1 plc 1 enclosure mount lights C0 1 telescope instrument 1 executor scheduler supervisor"
+  allargs="log 2 html 1 target 1 moon sun weather 1 plc 1 enclosure mount lights C0 1 telescope instrument 1 executor selector supervisor"
   ;;
 colibricu-services)
   allargs="log 1 html"
   ;;
 colibricu-control)
-  allargs="sensors power weather 1 target 1 moon sun 1 telescope instrument 1 executor scheduler"
+  allargs="sensors power weather 1 target 1 moon sun 1 telescope instrument 1 executor selector"
   ;;
 colibricu-detectors)
   allargs="C0"
   ;;
 johnsoncu-control)
-  allargs="log 1 html gcntan 1 target 1 moon sun sensors weather C0 1 telescope instrument 1 executor scheduler supervisor"
+  allargs="log 1 html gcntan 1 target 1 moon sun sensors weather C0 1 telescope instrument 1 executor selector supervisor"
   ;;
 test-ubuntu-18)
-  allargs="log 1 html gcntan 1 target 1 moon sun sensors weather C0 1 telescope instrument 1 executor scheduler supervisor"
+  allargs="log 1 html gcntan 1 target 1 moon sun sensors weather C0 1 telescope instrument 1 executor selector supervisor"
   ;;
 test-ubuntu-server-14)
   allargs="lights heater"

@@ -76,7 +76,7 @@
       "moon",
       "mount",
       "plc",
-      "scheduler",
+      "selector",
       "supervisor",
       "sun",
       "target",
@@ -135,7 +135,7 @@
 //    "supervisorwithplc": "true",
 //    "telescopecloseexplicitly": "false",
 //
-//    "scheduleroffsethours": "-12",
+//    "selectoroffsethours": "-12",
 //
 // // From 201812-03-coatli-g.
 //
@@ -269,7 +269,7 @@
 //    "moonserveraddr": "control",
 //    "mountserveraddr": "control",
 //    "plcserveraddr": "control",
-//    "schedulerserveraddr": "control",
+//    "selectorserveraddr": "control",
 //    "sunserveraddr": "control",
 //    "supervisorserveraddr": "control",
 //    "targetserveraddr": "control",

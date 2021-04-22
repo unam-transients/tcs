@@ -41,7 +41,7 @@
       "instrument",
       "moon",
       "power",
-      "scheduler",
+      "selector",
       "sensors",
       "sun",
       "target",
@@ -54,7 +54,7 @@
     "idleha": "0h",
     "idledelta": "0d"
   },
-  "scheduler": {},
+  "selector": {},
   "executor": {},
   "telescope": {
     "type": "dummy",

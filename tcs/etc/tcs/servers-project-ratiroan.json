@@ -46,7 +46,7 @@
   "power"         : { "host" : "control"  , "port" : 5018 },
   "nefinder"      : { "host" : "control"  , "port" : 5019 },
   "secondary"     : { "host" : "control"  , "port" : 5020 },
-  "scheduler"     : { "host" : "control"  , "port" : 5021 },
+  "selector"     : { "host" : "control"  , "port" : 5021 },
   "sefinder"      : { "host" : "control"  , "port" : 5022 },
   "sensors"       : { "host" : "control"  , "port" : 5023 },
   "shutters"      : { "host" : "control"  , "port" : 5024 },

@@ -36,7 +36,7 @@
   "instrument" : { "host" : "ubuntu-18"  , "port" : 5008 },
   "telescope"  : { "host" : "ubuntu-18"  , "port" : 5009 },
   "executor"   : { "host" : "ubuntu-18"  , "port" : 5010 },
-  "scheduler"  : { "host" : "ubuntu-18"  , "port" : 5011 },
+  "selector"  : { "host" : "ubuntu-18"  , "port" : 5011 },
   "supervisor" : { "host" : "ubuntu-18"  , "port" : 5012 },
   "gcntan"     : { "host" : "ubuntu-18"  , "port" : 5013 },
   "lights"     : { "host" : "minnowboard-14", "port" : 5014 },

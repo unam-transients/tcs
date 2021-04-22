@@ -69,7 +69,7 @@
     "host": "detectors",
     "port": 5010
   },
-  "scheduler": {
+  "selector": {
     "host": "control",
     "port": 5011
   },

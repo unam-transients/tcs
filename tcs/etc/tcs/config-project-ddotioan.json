@@ -41,7 +41,7 @@
       "moon",
       "mount",
       "power",
-      "scheduler",
+      "selector",
       "sensors",
       "sun",
       "supervisor",
@@ -97,7 +97,7 @@
     "openoffsetseconds": "0",
     "opentocooloffsetseconds": "1800"
   },
-  "scheduler": {},
+  "selector": {},
   "executor": {
     "type": "ddotioan"
   },

@@ -4,7 +4,7 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: schedulerserver 3589 2020-05-27 00:04:14Z Alan $
+# $Id: selectorserver 3589 2020-05-27 00:04:14Z Alan $
 
 ########################################################################
 
@@ -32,6 +32,6 @@ source [file join [file dirname [info script]] ".." "lib" "tcs" "packages.tcl"]
 
 package require "server"
 server::start {
-  package require schedulerserver
-  schedulerserver::start
+  package require selectorserver
+  selectorserver::start
 }

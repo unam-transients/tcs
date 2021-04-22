@@ -508,14 +508,14 @@ namespace eval "executor" {
   proc setfocused {} {
     set start [utcclock::seconds]
     log::info "setting focused timestamp."
-    client::request "scheduler" "setfocused"
+    client::request "selector" "setfocused"
     log::info [format "finished finished setting focused timestamp after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc setunfocused {} {
     set start [utcclock::seconds]
     log::info "unsetting focused timestamp."
-    client::request "scheduler" "setunfocused"
+    client::request "selector" "setunfocused"
     log::info [format "finished unsetting focused timestamp after %.1f seconds." [utcclock::diff now $start]]
   }
 
