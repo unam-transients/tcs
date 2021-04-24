@@ -76,7 +76,7 @@ namespace eval "selector" {
   ######################################################################
 
   proc getalertblockfile {} {
-    return [file join [directories::etc] "alertblock"]
+    return [file join [directories::etc] "alert"]
   }
 
   proc getblockfilesdirectory {} {
@@ -452,24 +452,31 @@ namespace eval "selector" {
       puts $channel [format "// Updated at %s." [utcclock::format now]]
     }
     puts $channel [format "\{"]
-    puts $channel [format "  \"identifier\": \"%s\"," $blockidentifier]
-    puts $channel [format "  \"name\": \"%s\"," $name]
-    puts $channel [format "  \"project\": \{"]
-    puts $channel [format "    \"identifier\": \"%s\"" $projectidentifier]
-    puts $channel [format "  \},"]
-    puts $channel [format "  \"alert\": \{"]
-    puts $channel [format "    \"name\": \"%s\"," $name]
-    puts $channel [format "    \"origin\": \"%s\"," $origin]
-    puts $channel [format "    \"identifier\": \"%s\"," $identifier]
-    puts $channel [format "    \"type\": \"%s\"," $type]
-    puts $channel [format "    \"alpha\": \"%s\"," [astrometry::formatalpha $alpha]]
-    puts $channel [format "    \"delta\": \"%s\"," [astrometry::formatdelta $delta]]
-    puts $channel [format "    \"equinox\": \"%s\"," $equinox]
-    puts $channel [format "    \"uncertainty\": \"%s\"," [astrometry::formatdistance $uncertainty]]
-    puts $channel [format "    \"eventtimestamp\": \"%s\"," $eventtimestamp]
-    puts $channel [format "    \"alerttimestamp\": \"%s\"," $alerttimestamp]
-    puts $channel [format "    \"enabled\": \"%s\"" $enabled]
-    puts $channel [format "  \}"]
+    if {![string equal "" $name]} {
+      puts $channel [format "  \"name\": \"%s\"," $name]
+    }
+    puts $channel [format "  \"origin\": \"%s\"," $origin]
+    puts $channel [format "  \"identifier\": \"%s\"," $identifier]
+    puts $channel [format "  \"type\": \"%s\"," $type]
+    puts $channel [format "  \"projectidentifier\": \"%s\"," $projectidentifier]
+    if {
+      ![string equal "" $alpha] && 
+      ![string equal "" $delta] &&
+      ![string equal "" $equinox] &&
+      ![string equal "" $uncertainty]
+    } {
+      puts $channel [format "  \"alpha\": \"%s\"," [astrometry::formatalpha $alpha]]
+      puts $channel [format "  \"delta\": \"%s\"," [astrometry::formatdelta $delta]]
+      puts $channel [format "  \"equinox\": \"%s\"," $equinox]
+      puts $channel [format "  \"uncertainty\": \"%s\"," [astrometry::formatdistance $uncertainty]]
+    }
+    if {![string equal "" $enabled]} {
+      puts $channel [format "  \"enabled\": \"%s\"," $enabled]
+    }
+    if {![string equal "" $enabled]} {
+      puts $channel [format "  \"eventtimestamp\": \"%s\"," $eventtimestamp]
+    }
+    puts $channel [format "  \"alerttimestamp\": \"%s\"" $alerttimestamp]
     puts $channel [format "\}"]
 
     close $channel

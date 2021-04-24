@@ -28,17 +28,13 @@
 // blocks read from the alert file.
 
 {
-  "alert": {
-    "command": "alertvisit r",
-    "enabled": "true"
-  },
-  "constraints": {
-    "maxskybrightness": "nauticaltwilight",
-    "minmoondistance": "15d",
-    "maxzenithdistance": "72d",
-    "maxairmass": "3.0",
-    "maxfocusdelay": "3600",
-    "maxalertuncertainty": "5am"
-  },
-  "persistent": "true"
+  "name": "",
+  "command": "alertvisit r",
+  "enabled": "true",
+  "maxskybrightness": "nauticaltwilight",
+  "minmoondistance": "15d",
+  "maxzenithdistance": "72d",
+  "maxairmass": "3.0",
+  "maxfocusdelay": "3600",
+  "maxalertuncertainty": "5am"
 }
