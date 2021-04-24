@@ -1766,7 +1766,7 @@ namespace eval "html" {
       plc           {PLC}
       secondary     {Secondary}
       sefinder      {SE Finder}
-      selector     {selector}
+      selector      {Selector}
       sensors       {Sensors}
       shutters      {Shutters}
       sun           {Sun}
