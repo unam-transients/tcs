@@ -43,154 +43,110 @@ namespace eval "alert" {
 
   ######################################################################
   
-  proc readfile {blockfile alertfile} {
+  proc readfile {defaultalertfile alertfile} {
   
-    log::info "reading alert from block file \"$blockfile\" and alert file \"$alertfile\"."
+    log::info "reading alert from \"$defaultalertfile\" and \"$alertfile\"."
       
-    # Read the partial block from the block file.
+    # Read the defaults.
     
-    if {[catch {set oldblock [block::readfile $blockfile]} message]} {
-      error "invalid block file: $message"
+    if {[catch {set oldalert [fromjson::readfile $defaultalertfile false]} message]} {
+      error "invalid default alert file: $message"
     }
 
-    # Read the partial blocks from the alert file and iteratively merge them
-    # with partial block from the block file.
+    # Read the alert file and iteratively merge the alerts.
 
-    if {[catch {set newblocks [fromjson::readfile $alertfile true]} message]} {
+    if {[catch {set newalerts [fromjson::readfile $alertfile true]} message]} {
       error "invalid alert file: $message."
     }
 
-    foreach newblock $newblocks {
+    foreach newalert $newalerts {
     
-      log::debug "oldblock is $oldblock."
-      log::debug "newblock is $newblock."
-
-      set oldalert [block::alert $oldblock]
-      set newalert [block::alert $newblock]
+      log::debug "old alert is $oldalert."
+      log::debug "new alert is $newalert."
       
-      # Choose the position with the smallest uncertainty.
-      set olduncertainty [alert::uncertainty $oldalert]
-      set newuncertainty [alert::uncertainty $newalert]
-      if {[string equal $olduncertainty ""]} {
-        set identifier      [block::identifier      $newblock]
-        set name            [block::name            $newblock]
-        set project         [block::project         $newblock]
-        set alert           $newalert
-      } elseif {[string equal $newuncertainty ""]} {
-        set identifier      [block::identifier      $oldblock]
-        set name            [block::name            $oldblock]
-        set project         [block::project         $oldblock]
-        set alert           $oldalert
-      } elseif {[astrometry::parsedistance $newuncertainty] <= [astrometry::parsedistance $olduncertainty]} {
-        set identifier      [block::identifier      $newblock]
-        set name            [block::name            $newblock]
-        set project         [block::project         $newblock]
-        set alert           $newalert
-      } else {
-        set identifier      [block::identifier      $oldblock]
-        set name            [block::name            $oldblock]
-        set project         [block::project         $oldblock]
-        set alert           $oldalert
-      }
-      
-      # Choose the earliest eventtimestamp.
-      set oldeventtimestamp [alert::eventtimestamp $oldalert]
-      set neweventtimestamp [alert::eventtimestamp $newalert]
-      if {[string equal "" $neweventtimestamp]} {
-        set eventtimestamp $oldeventtimestamp
-      } elseif {[string equal "" $oldeventtimestamp]} {
-        set eventtimestamp $neweventtimestamp
-      } elseif {[utcclock::scan $neweventtimestamp] <  [utcclock::scan $oldeventtimestamp]} {
-        set eventtimestamp $neweventtimestamp
-      } else {
-        set eventtimestamp $oldeventtimestamp
-      }
+      set alert       [dict merge $oldalert $newalert]
 
-      # Choose the earliest alerttimestamp.
-      set oldalerttimestamp [alert::alerttimestamp $oldalert]
-      set newalerttimestamp [alert::alerttimestamp $newalert]
-      if {[string equal "" $newalerttimestamp]} {
-        set alerttimestamp $oldalerttimestamp
-      } elseif {[string equal "" $oldalerttimestamp]} {
-        set alerttimestamp $newalerttimestamp
-      } elseif {[utcclock::scan $newalerttimestamp] <  [utcclock::scan $oldalerttimestamp]} {
-        set alerttimestamp $newalerttimestamp
-      } else {
-        set alerttimestamp $oldalerttimestamp
-      }
+      log::debug "merged alert is $alert."
 
-      # Choose the most specific enabled.
-      set oldenabled [alert::enabled $oldalert]
-      set newenabled [alert::enabled $newalert]
-      if {[string equal "" $newenabled]} {
-        set enabled $oldenabled
-      } else {
-        set enabled $newenabled
-      }
-
-      # Choose the most recent constraints.
-      set oldconstraints [block::constraints $oldblock]
-      set newconstraints [block::constraints $newblock]
-      if {[string equal "" $newconstraints]} {
-        set constraints $oldconstraints
-      } else {
-        set constraints $newconstraints
-      }
-      
-      # Choose the most recent command.
-      set oldcommand [alert::command $oldalert]
-      set newcommand [alert::command $newalert]
-      if {[string equal "" $newcommand]} {
-        set command $oldcommand
-      } else {
-        set command $newcommand
-      }
-      
-      set alertname        [alert::name        $alert]
-      set alertorigin      [alert::origin      $alert]
-      set alertidentifier  [alert::identifier  $alert]
-      set alerttype        [alert::type        $alert]
-      set alertalpha       [alert::alpha       $alert]
-      set alertdelta       [alert::delta       $alert]
-      set alertequinox     [alert::equinox     $alert]
-      set alertuncertainty [alert::uncertainty $alert]
-
-      set alert [alert::makealert $alertname $alertorigin $alertidentifier $alerttype $alertalpha $alertdelta $alertequinox $alertuncertainty $eventtimestamp $alerttimestamp $command $enabled]
-      set block [block::makeblock $identifier $name $project $constraints "" $alert true]
-
-      log::debug "block is $block."
-
-      set oldblock $block
+      set oldalert $alert
 
     }
     
-    set alert [block::alert $block]
-    log::info [format "alert name is \"%s\"." [block::name $block]]
+    log::info [format "alert name is \"%s\"." [alert::name $alert]]
     log::info [format "alert origin/identifier/type are %s/%s/%s." [alert::origin $alert] [alert::identifier $alert] [alert::type $alert]]
-    log::info [format "alert coordinates are %s %s %s with an uncertainty of %s." \
-      [alert::alpha       $alert] \
-      [alert::delta       $alert] \
-      [alert::equinox     $alert] \
-      [alert::uncertainty $alert] \
+
+    set project [dict create \
+      "identifier" [alert::projectidentifier $alert] \
+      "name"       "alerts" \
     ]
-    log::info [format "alert command is \"%s\"." [alert::command $alert]]
-      
-    # Complete the visit.
-    set targetcoordinates [visit::makeequatorialtargetcoordinates [alert::alpha $alert] [alert::delta $alert] [alert::equinox $alert]]
-    variable alertprologcommand
-    variable alertprologidentifier
-    variable alertprologestimatedduration
+
+    set constraints [alert::constraints $alert]
+
     set visits {}
-    if {![string equal "" $alertprologcommand]} {
-      lappend visits [visit::makevisit $alertprologidentifier "prolog" $targetcoordinates $alertprologcommand $alertprologestimatedduration]
+    
+    if {[alert::enabled $alert]} {
+
+      log::info [format "alert is enabled."]
+      log::info [format "alert coordinates are %s %s %s with an uncertainty of %s." \
+        [alert::alpha       $alert] \
+        [alert::delta       $alert] \
+        [alert::equinox     $alert] \
+        [alert::uncertainty $alert] \
+      ]
+      log::info [format "alert command is \"%s\"." [alert::command $alert]]
+
+      set targetcoordinates [visit::makeequatorialtargetcoordinates [alert::alpha $alert] [alert::delta $alert] [alert::equinox $alert]]
+      variable alertprologcommand
+      variable alertprologidentifier
+      variable alertprologestimatedduration
+      if {![string equal "" $alertprologcommand]} {
+        lappend visits [visit::makevisit $alertprologidentifier "prolog" $targetcoordinates $alertprologcommand $alertprologestimatedduration]
+      }
+      lappend visits [visit::makevisit "0" [alert::name $alert] $targetcoordinates [alert::command $alert] "0m"]
+
+    } else {
+    
+      log::info [format "alert is not enabled."]
+
     }
-    lappend visits [visit::makevisit "0" "[block::name $block]"  $targetcoordinates $command "0m"]
-    set block [block::makeblock $identifier $name $project $constraints $visits $alert true]
+      
+    set block [block::makeblock [alert::identifier $alert] [alert::name $alert] $project $constraints $visits $alert true]
+    
+    log::info "block is: $block"
     
     return $block
   }
-    
+
   ######################################################################
+  
+  proc projectidentifier {alert} {
+    if {[dict exists $alert "projectidentifier"]} {
+      return [dict get $alert "projectidentifier"]
+    } else {
+      return ""
+    }
+  }
+  
+  proc projectname {alert} {
+    if {[dict exists $alert "projectname"]} {
+      return [dict get $alert "projectname"]
+    } else {
+      return ""
+    }
+  }
+  
+  proc constraints {alert} {
+    set constraints {}
+    foreach key [dict keys $alert] {
+      switch -glob $key {
+        "min*" -
+        "max*" {
+          dict append constraints $key [dict get $alert $key]
+        }
+      }
+    }
+    return $constraints
+  }
   
   proc name {alert} {
     if {[dict exists $alert "name"]} {
