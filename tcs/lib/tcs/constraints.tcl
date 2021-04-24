@@ -1059,6 +1059,8 @@ namespace eval "constraints" {
     log::debug [format "visit end is %s." [utcclock::format [getend $visit $seconds]]]
     log::debug [format "estimated duration is %.0f seconds." [visit::estimatedduration $visit]]
 
+    # This must be before checks on position, since disabled alerts might not
+    # have positions (if we only catch the retraction, for example).
     if {![checkalertenabled $alert]} {
       return false
     }
