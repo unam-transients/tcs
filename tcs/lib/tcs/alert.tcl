@@ -144,7 +144,7 @@ namespace eval "alert" {
       switch -glob $key {
         "min*" -
         "max*" {
-          dict append constraints $key [dict get $alert $key]
+          dict set constraints $key [dict get $alert $key]
         }
       }
     }
