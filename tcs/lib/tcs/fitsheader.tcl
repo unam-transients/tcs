@@ -191,7 +191,8 @@ namespace eval "fitsheader" {
      }
 
     foreach {key fitskey fitstype} {
-      blockfile              BLKFL string
+      filetype               FLTP  string
+      filename               FLNM  string
       projectidentifier      PRPID string
       blockidentifier        BLKID integer
       visitidentifier        VSTID integer
@@ -351,8 +352,9 @@ namespace eval "fitsheader" {
   
   proc writekeysandvaluesforexecutor {channel prefix} {
     writekeysandvaluesforcomponent $channel executor $prefix "EX" {
-      blockfile              BLKFL  string
-      projectidentifier     PRPID string
+      filetype               FLTP  string
+      filename               FLNM  string
+      projectidentifier      PRPID string
       blockidentifier        BLKID integer
       visitidentifier        VSTID integer
       visitname              VSTNM string

@@ -50,8 +50,8 @@ namespace eval "executor" {
   
   ######################################################################
   
-  variable blockfile
-  variable alertfile
+  variable filetype
+  variable filename
   variable visit
   
   variable projectfullidentifier
@@ -386,12 +386,12 @@ namespace eval "executor" {
 
   ######################################################################
   
-  proc updatedata {completed blockfile alertfile project block visit} {
+  proc updatedata {completed filetype filename project block visit} {
   
     server::setdata "completed" $completed
 
-    server::setdata "blockfile" [file tail $blockfile]
-    server::setdata "alertfile" [file tail $alertfile]
+    server::setdata "filetype" $filetype
+    server::setdata "filename" [file tail $filename]
 
     if {[string equal $project ""]} {
       server::setdata "projectfullidentifier" ""
@@ -530,26 +530,18 @@ namespace eval "executor" {
 
   ######################################################################
 
-  proc files {blockfile alertfile} {
-    if {[string equal $alertfile ""]} {
-      return "block file \"[file tail $blockfile]\""
-    } else {
-      return "block file \"[file tail $blockfile]\" with alert file \"[file tail $alertfile]\""
-    }
-  }
+  proc executeactivitycommand {filetypearg filenamearg} {
   
-  proc executeactivitycommand {blockfilearg {alertfilearg ""}} {
-  
-    variable blockfile
-    variable alertfile
-    set blockfile $blockfilearg
-    set alertfile $alertfilearg
-
-    log::info "executing [files $blockfile $alertfile]."
+    variable filetype
+    variable filename
+    set filetype $filetypearg
+    set filename $filenamearg
+    
+    log::info "executing $filetype file \"[file tail $filename]\"."
 
     set blockstart [utcclock::seconds]
 
-    updatedata false $blockfile $alertfile "" "" ""
+    updatedata false $filetype $filename "" "" ""
 
     set visitcommandsfile [file join [directories::etc] "visitcommands.tcl"]
     if {[catch {
@@ -561,24 +553,24 @@ namespace eval "executor" {
     variable exposure
     set exposure 0
     
-    if {[string equal "" $alertfile]} {
+    if {[string equal "alert" $filetype]} {
       if {[catch {
-        set block [block::readfile $blockfile]
+        set block [alert::alertfiletoblock $filename]
       } message]} {
-        updatedata true $blockfile $alertfile "" "" ""
-        log::error "while reading block file \"[file tail $blockfile]\": $message"
-        log::info "deleting block file \"[file tail $blockfile]\"."
-        file delete -force $blockfile
+        updatedata true $filetype $filename "" "" ""
+        log::error "while reading alert file \"[file tail $filename]\": $message"
+        log::info "deleting alert file \"[file tail $filename]\"."
+        file delete -force $filename
         return
       }
     } else {
       if {[catch {
-        set block [alert::readfile $blockfile $alertfile]
+        set block [block::readfile $filename]
       } message]} {
-        updatedata true $blockfile $alertfile "" "" ""
-        log::error "while reading alert file \"[file tail $alertfile]\": $message"
-        log::info "deleting alert file \"[file tail $alertfile]\"."
-        file delete -force $alertfile
+        updatedata true $filetype $filename "" "" ""
+        log::error "while reading block file \"[file tail $filename]\": $message"
+        log::info "deleting block file \"[file tail $filename]\"."
+        file delete -force $filename
         return
       }
     }
@@ -586,14 +578,14 @@ namespace eval "executor" {
     log::debug "block is $block."
     
     set project [block::project $block]
-    updatedata false $blockfile $alertfile $project $block ""
+    updatedata false $filetype $filename $project $block ""
 
     log::summary "executing block [block::identifier $block] (\"[block::name $block]\") of project [project::identifier $project] (\"[project::name [block::project $block]]\")."
 
     variable visit
     foreach visit [block::visits $block] {
 
-      updatedata false $blockfile $alertfile $project $block $visit
+      updatedata false $filetype $filename $project $block $visit
 
       log::summary "executing visit [visit::identifier $visit] (\"[visit::name $visit]\")."
       log::info "visit command is \"[visit::command $visit]\"."
@@ -611,15 +603,16 @@ namespace eval "executor" {
     }
     
     if {![block::persistent $block]} {
-      log::info "deleting block file \"[file tail $blockfile]\"."
-      file delete -force $blockfile
+      log::info "deleting $filetype file \"[file tail $filename]\"."
+      file delete -force $filename
     }
 
     server::setdata "completed" true
     server::setdata "timestamp" [utcclock::combinedformat]
-    updatedata true $blockfile $alertfile "" "" ""
+    updatedata true $filetype $filename "" "" ""
 
     log::summary [format "finished executing block after %.1f seconds." [utcclock::diff now $blockstart]]
+    log::summary [format "finished executing $filetype file \"[file tail $filename]\" after %.1f seconds." [utcclock::diff now $blockstart]]
   }
   
   proc stopactivitycommand {} {
@@ -783,11 +776,11 @@ namespace eval "executor" {
       "executor::emergencycloseactivitycommand" 900e3
   }
   
-  proc execute {blockfile alertfile} {
+  proc execute {filetype filename} {
     server::checkstatus
     server::checkactivityformove
     server::newactivitycommand "executing" "idle" \
-      "executor::executeactivitycommand $blockfile $alertfile" 7200e3
+      "executor::executeactivitycommand $filetype $filename" 7200e3
   }
   
   proc idle {} {
@@ -803,8 +796,8 @@ namespace eval "executor" {
 
   proc start {} {
     server::setrequestedactivity "started"
-    server::setdata "blockfile" ""
-    server::setdata "alertfile" ""
+    server::setdata "filetype"  ""
+    server::setdata "filename"  ""
     server::setdata "completed" false
     server::setdata "timestamp" [utcclock::combinedformat]
     updatedata false "" "" "" "" ""

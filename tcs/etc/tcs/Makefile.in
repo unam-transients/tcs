@@ -36,7 +36,7 @@ installs	:=				\
 	fitssolvewcs.sex
 
 installs_project_test		:=		\
-	alertblock-project-test			\
+	alert-project-test			\
 	config-project-test.json		\
 	servers-project-test.json		\
 	visitcommands-project-test.tcl
@@ -45,7 +45,7 @@ installbins_project_test	:=		\
 	alertscript-project-test
 
 installs_project_johnsoncu		:=		\
-	alertblock-project-johnsoncu			\
+	alert-project-johnsoncu			\
 	config-project-johnsoncu.json		\
 	servers-project-johnsoncu.json		\
 	visitcommands-project-johnsoncu.tcl
@@ -54,7 +54,7 @@ installbins_project_johnsoncu	:=		\
 	alertscript-project-johnsoncu
 
 installs_project_ratiroan	:=		\
-	alertblock-project-ratiroan		\
+	alert-project-ratiroan		\
 	config-project-ratiroan.json		\
 	servers-project-ratiroan.json   	\
 	visitcommands-project-ratiroan.tcl
@@ -63,7 +63,7 @@ installbins_project_ratiroan	:=		\
 	alertscript-project-ratiroan	
 
 installs_project_coatlioan	:=		\
-	alertblock-project-coatlioan		\
+	alert-project-coatlioan		\
 	config-project-coatlioan.json		\
 	servers-project-coatlioan.json		\
 	visitcommands-project-coatlioan.tcl
@@ -75,7 +75,7 @@ installs_project_ddoticu	:=		\
 	config-project-ddoticu.json
 
 installs_project_ddotioan	:=		\
-	alertblock-project-ddotioan		\
+	alert-project-ddotioan		\
 	config-project-ddotioan.json		\
 	servers-project-ddotioan.json		\
 	visitcommands-project-ddotioan.tcl
@@ -91,7 +91,7 @@ installs_project_colibricu	:=		\
 installbins_project_colibricu	:=		\
 
 installs_project_colibricito	:=		\
-	alertblock-project-colibricito		\
+	alert-project-colibricito		\
 	config-project-colibricito.json
 
 

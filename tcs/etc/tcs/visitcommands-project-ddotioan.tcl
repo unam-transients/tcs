@@ -27,11 +27,10 @@ proc alertvisit {} {
 
   log::summary "alertvisit: starting."
   
-  variable blockfile
-  variable alertfile
+  variable filename
   variable visitidentifier
   
-  set block [alert::readfile $blockfile $alertfile]
+  set block [alert::alertfiletoblock $filename]
   set alert [block::alert $block]
 
   if {[string equal "" [alert::eventtimestamp $alert]]} {
@@ -118,8 +117,8 @@ proc alertvisit {} {
     set dithereastrange  "0.33d"
     set dithernorthrange "0.33d"
     
-    if {[file exists $alertfile]} {
-      set block [alert::readfile $blockfile $alertfile]
+    if {[file exists $filename]} {
+      set block [alert::alertfiletoblock $filename]
       set alert [block::alert $block]
     }
 

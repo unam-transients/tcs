@@ -1416,9 +1416,9 @@ namespace eval "html" {
     putshtml "<table class=\"status\">"
     if {[string equal [client::getstatus "selector"] "ok"]} {
       writehtmlfullrow "Mode"              [client::getdata "selector" "mode"]
-      writehtmlfullrow "selector date"    [client::getdata "selector" "selectordate"]
-      writehtmlfullrow "Block file"        [client::getdata "selector" "blockfile"]
-      writehtmlfullrow "Alert file"        [client::getdata "selector" "alertfile"]
+      writehtmlfullrow "Selector date"     [client::getdata "selector" "selectordate"]
+      writehtmlfullrow "File type"         [client::getdata "selector" "filetype"]
+      writehtmlfullrow "File name"         [client::getdata "selector" "filename"]
       writehtmlfullrow "Focused"           [formattimestamp [client::getdata "selector" "focustimestamp"]]
     }
     putshtml "</table>"
@@ -1465,13 +1465,12 @@ namespace eval "html" {
 
     putshtml "<table class=\"status\">"
     if {[string equal [client::getstatus "executor"] "ok"]} {
-      writehtmlfullrow "Block file"             [client::getdata "executor" "blockfile"]
+      writehtmlfullrow "File type"              [client::getdata "executor" "filetype"]
+      writehtmlfullrow "File name"              [client::getdata "executor" "filename"]
       writehtmlfullrow "Project identifier"     [client::getdata "executor" "projectidentifier"]
       writehtmlfullrow "Block identifier"       [client::getdata "executor" "blockidentifier"]
       writehtmlfullrow "Visit identifier"       [client::getdata "executor" "visitidentifier"]
       writehtmlfullrow "Visit name"             [client::getdata "executor" "visitname"]
-      writehtmlfullrow "Alert file"             [client::getdata "executor" "alertfile"]
-      writehtmlfullrow "Alert name"             [client::getdata "executor" "alertname"]
       writehtmlfullrow "Alert origin"           [client::getdata "executor" "alertorigin"]
       writehtmlfullrow "Alert identifier"       [client::getdata "executor" "alertidentifier"]
       writehtmlfullrow "Alert type"             [client::getdata "executor" "alerttype"]

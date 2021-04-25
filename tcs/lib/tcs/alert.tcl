@@ -43,8 +43,10 @@ namespace eval "alert" {
 
   ######################################################################
   
-  proc readfile {defaultalertfile alertfile} {
+  proc alertfiletoblock {alertfile} {
   
+    set defaultalertfile [file join [directories::etc] "alert"]
+
     log::info "reading alert from \"$defaultalertfile\" and \"$alertfile\"."
       
     # Read the defaults.
@@ -112,6 +114,7 @@ namespace eval "alert" {
       
     set block [block::makeblock [alert::identifier $alert] [alert::name $alert] $project $constraints $visits $alert true]
     
+    log::info "block is: $block"
     log::info "block is: $block"
     
     return $block
