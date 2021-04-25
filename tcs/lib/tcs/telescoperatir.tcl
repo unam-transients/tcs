@@ -301,9 +301,6 @@ namespace eval "telescope" {
     
     switchlightsoffactivitycommand
 
-
-    config::setvarvalue "telescope" "lastopenedtimestamp" [utcclock::format now]
-    
     log::info "finished opening."
   }
   

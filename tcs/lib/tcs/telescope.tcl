@@ -373,7 +373,6 @@ namespace eval "telescope" {
       if {$withlights} {
         switchlights "off"
       }
-      config::setvarvalue "telescope" "lastopenedtimestamp" [utcclock::format now]
       server::setdata "timestamp" [utcclock::combinedformat now]    
       log::info [format "finished opening after %.1f seconds." [utcclock::diff now $start]]
     } message]} {
@@ -451,7 +450,6 @@ namespace eval "telescope" {
       if {$withlights} {
         switchlights "off"
       }
-      config::setvarvalue "telescope" "lastopenedtimestamp" [utcclock::format now]
       server::setdata "timestamp" [utcclock::combinedformat now]    
       log::info [format "finished opening to cool after %.1f seconds." [utcclock::diff now $start]]
     } message]} {
@@ -871,6 +869,7 @@ namespace eval "telescope" {
   }
   
   proc setpointingmode {mode} {
+set mode "none"
     server::checkstatus
     variable validpointingmodes
     if {[lsearch $validpointingmodes $mode] == -1} {
