@@ -70,8 +70,8 @@ namespace eval "executorserver" {
     return
   }
   
-  proc slaveexecute {blockfile {alertfile ""}} {
-    executor::execute $blockfile $alertfile
+  proc slaveexecute {filetype filename} {
+    executor::execute $filetype $filename
     return
   }
   

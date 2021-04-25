@@ -27,10 +27,9 @@ proc alertvisit {{filters "r"}} {
 
   log::summary "alertvisit: starting."
   
-  variable blockfile
-  variable alertfile
+  variable filename
   
-  set block [alert::readfile $blockfile $alertfile]
+  set block [alert::alertfiletoblock $filename]
   set alert [block::alert $block]
   
   if {[string equal "" [alert::eventtimestamp $alert]]} {
@@ -97,8 +96,8 @@ proc alertvisit {{filters "r"}} {
   
     log::info "alertvisit: dithering $eastoffset E and $northoffset N about aperture $aperture."    
 
-    if {[file exists $alertfile]} {
-      set block [alert::readfile $blockfile $alertfile]
+    if {[file exists $filename]} {
+      set block [alert::alertfiletoblock $filename]
       set alert [block::alert $block]
     }
 
@@ -155,9 +154,6 @@ proc alertvisit {{filters "r"}} {
 proc agnvisit {} {
 
   log::summary "agnvisit: starting."
-  
-  variable blockfile
-  variable alertfile
   
   executor::setsecondaryoffset 0
   executor::setguidingmode "none"
@@ -303,8 +299,8 @@ proc initialfocusvisit {} {
   executor::track
   executor::waituntiltracking
   
-  log::summary "initialfocusvisit: focusing finders."
-  executor::focusfinders 1
+#  log::summary "initialfocusvisit: focusing finders."
+#  executor::focusfinders 1
 
   executor::setpointingmode "finder"
   
