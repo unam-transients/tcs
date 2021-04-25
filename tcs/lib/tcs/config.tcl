@@ -25,6 +25,7 @@
 
 package require "utcclock"
 package require "fromjson"
+package require "tojson"
 package require "log"
 
 package provide "config" 0.0
@@ -72,28 +73,36 @@ namespace eval "config" {
     return $value
   }
   
-  proc setvarvalue {args} {
-    
+  proc setvarvalue {key0 key1 value} {
+  
+    log::info "setting var configuration value \"$key0\" \"$key1\" to \"$value\"."
+  
     variable varvaluedict
 
-    set filename [file join [directories::var] "config.json"]
+    set varconfigfilename [file join [directories::var] "config.json"]
 
-    if {[file exists $filename]} {
-      if {[catch {set varvaluedict [fromjson::readfile $filename]} message]} {
-        log::fatalerror "error reading \"$filename\": $message."
+    if {[file exists $varconfigfilename]} {
+      if {[catch {set varvaluedict [fromjson::readfile $varconfigfilename]} message]} {
+        log::fatalerror "error reading \"$varconfigfilename\": $message."
       }
     }
   
-    set value [lindex $args end]
-    set keys [lrange $args 0 end-1]
+    dict set varvaluedict $key0 $key1 $value
 
-    eval dict set varvaluedict $keys {$value}
-
-    set tmpfilename "$filename.[pid]"    
-    set channel [open $tmpfilename "w"]
-    puts $channel [format "// Written at %s\n%s\n" [utcclock::format now] [tojson::object $varvaluedict]] 
+    set channel [open "$varconfigfilename.[pid]" "w"]
+    puts $channel [format "// Written at %s." [utcclock::format now]]
+    puts $channel "{"
+    set first true
+    foreach key [dict keys $varvaluedict] {
+      if {!$first} {
+        puts $channel "  ,"
+      }
+      set first false
+      puts $channel [format "  %s: %s" [tojson::string $key] [tojson::object [dict get $varvaluedict $key] tojson::string]]
+    }
+    puts $channel "}"
     close $channel
-    file rename -force -- "$filename.[pid]" "$filename"    
+    file rename -force -- "$varconfigfilename.[pid]" "$varconfigfilename"    
   }
   
   ######################################################################
@@ -118,7 +127,7 @@ namespace eval "config" {
       log::fatalerror "error reading \"$varconfigfilename\": $message."
     }
   }
-
+  
   ######################################################################
 
 }
