@@ -39,6 +39,8 @@ config::setdefaultvalue "mount" "controllerport"          10001
 config::setdefaultvalue "mount" "allowedlsterror"         "2s"
 config::setdefaultvalue "mount" "allowedpositionerror"    "4as"
 config::setdefaultvalue "mount" "pointingmodelparameters" [dict create]
+config::setdefaultvalue "mount" "pointingmodelID"         "0"
+config::setdefaultvalue "mount" "pointingmodelIH"         "0"
 config::setdefaultvalue "mount" "allowedguideoffset"      "30as"
 
 # The mount controller soft declination limits are -34:59:59 and +57:59:59
@@ -68,7 +70,6 @@ namespace eval "mount" {
   variable controllerport          [config::getvalue "mount" "controllerport"]
   variable allowedlsterror         [astrometry::parseangle [config::getvalue "mount" "allowedlsterror"]]
   variable allowedpositionerror    [astrometry::parseangle [config::getvalue "mount" "allowedpositionerror"]]
-  variable pointingmodelparameters [config::getvalue "mount" "pointingmodelparameters"]
   variable allowedguideoffset      [astrometry::parseangle [config::getvalue "mount" "allowedguideoffset"]] 
   variable easthalimit             [astrometry::parseangle [config::getvalue "mount" "easthalimit"]    "hms"]
   variable westhalimit             [astrometry::parseangle [config::getvalue "mount" "westhalimit"]    "hms"]
@@ -79,6 +80,12 @@ namespace eval "mount" {
   variable deltapark               [astrometry::parseangle [config::getvalue "mount" "deltapark"]]
   variable haunpark                [astrometry::parseangle [config::getvalue "mount" "haunpark"]]
   variable deltaunpark             [astrometry::parseangle [config::getvalue "mount" "deltaunpark"]]
+
+  ######################################################################
+
+  variable pointingmodelparameters [config::getvalue "mount" "pointingmodelparameters"]
+  set pointingmodelparameters [pointing::setparameter $pointingmodelparameters "ID" [config::getvalue "mount" "pointingmodelID"]]
+  set pointingmodelparameters [pointing::setparameter $pointingmodelparameters "IH" [config::getvalue "mount" "pointingmodelIH"]]
 
   ######################################################################
 
@@ -480,6 +487,8 @@ variable fakecontrollererror false
   proc updatepointingmodel {dIH dID rotation} {
     variable pointingmodelparameters
     set pointingmodelparameters [pointing::updateabsolutemodel $pointingmodelparameters $dIH $dID]
+    config::setvarvalue "mount" "pointingmodelID" [pointing::getparameter $pointingmodelparameters "ID"]
+    config::setvarvalue "mount" "pointingmodelIH" [pointing::getparameter $pointingmodelparameters "IH"]
   }
 
   ######################################################################  

@@ -33,12 +33,17 @@ package require "server"
 
 package provide "mountntm" 0.0
 
-config::setdefaultvalue "mount" "controllerhost"          "mount"
-config::setdefaultvalue "mount" "controllerport"          65432
-config::setdefaultvalue "mount" "allowedpositionerror"    "4as"
-config::setdefaultvalue "mount" "pointingmodelparameters" [dict create]
-config::setdefaultvalue "mount" "allowedguideoffset"      "30as"
-config::setdefaultvalue "mount" "trackingsettledlimit"    "1as"
+config::setdefaultvalue "mount" "controllerhost"             "mount"
+config::setdefaultvalue "mount" "controllerport"             65432
+config::setdefaultvalue "mount" "allowedpositionerror"       "4as"
+config::setdefaultvalue "mount" "pointingmodelparameters0"   [dict create]
+config::setdefaultvalue "mount" "pointingmodelID0"           "0"
+config::setdefaultvalue "mount" "pointingmodelIH0"           "0"
+config::setdefaultvalue "mount" "pointingmodelparameters180" [dict create]
+config::setdefaultvalue "mount" "pointingmodelID180"         "0"
+config::setdefaultvalue "mount" "pointingmodelIH180"         "0"
+config::setdefaultvalue "mount" "allowedguideoffset"         "30as"
+config::setdefaultvalue "mount" "trackingsettledlimit"       "1as"
 
 namespace eval "mount" {
 
@@ -49,8 +54,6 @@ namespace eval "mount" {
   variable controllerhost              [config::getvalue "mount" "controllerhost"]
   variable controllerport              [config::getvalue "mount" "controllerport"]
   variable allowedpositionerror        [astrometry::parseangle [config::getvalue "mount" "allowedpositionerror"]]
-  variable pointingmodelparameters0    [config::getvalue "mount" "pointingmodelparameters0"]
-  variable pointingmodelparameters180  [config::getvalue "mount" "pointingmodelparameters180"]
   variable pointingmodelpolarhole      [astrometry::parsedistance [config::getvalue "mount" "pointingmodelpolarhole"]]
   variable allowedguideoffset          [astrometry::parseoffset [config::getvalue "mount" "allowedguideoffset"]]
   variable axisdhacorrection           [astrometry::parseoffset [config::getvalue "mount" "axisdhacorrection"]]
@@ -67,6 +70,16 @@ namespace eval "mount" {
   variable deltapark                   [astrometry::parseangle [config::getvalue "mount" "deltapark"]]
   variable haunpark                    [astrometry::parseangle [config::getvalue "mount" "haunpark"]]
   variable deltaunpark                 [astrometry::parseangle [config::getvalue "mount" "deltaunpark"]]
+
+  ######################################################################
+
+  variable pointingmodelparameters0   [config::getvalue "mount" "pointingmodelparameters0"]
+  set pointingmodelparameters0 [pointing::setparameter $pointingmodelparameters0 "ID" [config::getvalue "mount" "pointingmodelID0"]]
+  set pointingmodelparameters0 [pointing::setparameter $pointingmodelparameters0 "IH" [config::getvalue "mount" "pointingmodelIH0"]]
+
+  variable pointingmodelparameters180 [config::getvalue "mount" "pointingmodelparameters180"]
+  set pointingmodelparameters180 [pointing::setparameter $pointingmodelparameters180 "ID" [config::getvalue "mount" "pointingmodelID180"]]
+  set pointingmodelparameters180 [pointing::setparameter $pointingmodelparameters180 "IH" [config::getvalue "mount" "pointingmodelIH180"]]
 
   ######################################################################
 
@@ -1235,10 +1248,12 @@ namespace eval "mount" {
     variable pointingmodelparameters180
     if {$rotation == 0} {
       set pointingmodelparameters0 $newpointingmodelparameters
-      config::setvarvalue "mount" "pointingmodelparameters0" $newpointingmodelparameters
+      config::setvarvalue "mount" "pointingmodelID0" [pointing::getparameter $pointingmodelparameters0 "ID"]
+      config::setvarvalue "mount" "pointingmodelIH0" [pointing::getparameter $pointingmodelparameters0 "IH"]
     } else {
       set pointingmodelparameters180 $newpointingmodelparameters
-      config::setvarvalue "mount" "pointingmodelparameters180" $newpointingmodelparameters
+      config::setvarvalue "mount" "pointingmodelID180" [pointing::getparameter $pointingmodelparameters180 "ID"]
+      config::setvarvalue "mount" "pointingmodelIH180" [pointing::getparameter $pointingmodelparameters180 "IH"]
     }
   }
 
