@@ -89,7 +89,8 @@
     "serverpacketport": "5351",
     "swiftalertprojectidentifier": "1000",
     "fermialertprojectidentifier": "1001",
-    "lvcalertprojectidentifier": "1002"
+    "lvcalertprojectidentifier": "1002",
+    "hawcalertprojectidentifier": "1003"
   },
   "supervisor": {
     "withplc": "false",
