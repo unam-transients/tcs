@@ -118,7 +118,8 @@
     "serverpacketport": "5328",
     "swiftalertprojectidentifier": "1000",
     "fermialertprojectidentifier": "1001",
-    "lvcalertprojectidentifier": "1002"
+    "lvcalertprojectidentifier": "1002",
+    "hawcalertprojectidentifier": "1003"
   },
   "supervisor": {
     "withplc": "false",
@@ -181,7 +182,7 @@
   },
   "nefinder": {
     // Finder focuser values determined 20210405.
-    "focuserinitialposition": "1700",
+    "focuserinitialposition": "600",
     // nefinder->C1 pointing model from 20210409.
     "pointingmodelparameters": {
       "ID": "+0.001360",
