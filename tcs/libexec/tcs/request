@@ -28,15 +28,15 @@
 #\
 umask 0; PATH=/usr/local/opt/tcl-tk/bin:$PATH exec tclsh8.6 -encoding "utf-8" "$0" ${1+"$@"}
 
-source [file join [file dirname [info script]] ".." "lib" "tcs" "packages.tcl"]
+source [file join $::env(tcsprefix) "lib" "tcs" "packages.tcl"]
 
 # Load the TCS client package.
 package require "client"
 
 # Parse the arguments. The first argument is the server name and subsequent
 # arguments are the command.
-if {[llength $argv] == 0} {
-  puts stderr "command: invalid arguments."
+if {[llength $argv] < 2} {
+  puts stderr "tcs request: error: invalid arguments."
   exit 1
 }
 set server  [lindex $argv 0]
@@ -44,7 +44,7 @@ set command [lrange $argv 1 end]
 
 # Define a background error handler.
 proc bgerror {message} {
-  puts stderr "command: bgerror: $message"
+  puts stderr "tcs request: bgerror: $message"
   exit 1
 }
 
@@ -53,7 +53,7 @@ proc bgerror {message} {
 if {[catch {
   client::request $server $command
 } result]} {
-  puts stderr "error: $result"
+  puts stderr "tcs request: error: $result"
   exit 1
 }
 
