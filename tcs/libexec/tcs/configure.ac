@@ -25,5 +25,7 @@
 
 AC_INIT(tcs, 0.0, alan@astro.unam.mx)
 
+AC_PROG_CC("gcc -std=c99")
+
 AC_CONFIG_FILES(Makefile)
 AC_OUTPUT
