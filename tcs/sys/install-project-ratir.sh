@@ -151,7 +151,7 @@ mkdir -p /var/ow/
 /usr/local/bin/webcamimageserver -c 640x464+0+16 c http://observa:00.observa@webcam-c/jpg/image.jpg &
 /usr/local/bin/webcamimageserver -c 640x464+0+16 d http://observa:00.observa@webcam-d/jpg/image.jpg &
 /usr/local/bin/webcamimageserver e http://ratir:ratir@webcam-e/cgi-bin/viewer/video.jpg &
-/usr/local/bin/allskyimageserver -p /usr/local &
+/usr/local/bin/tcs allskyimageserver -p /usr/local &
 /usr/local/bin/finderimageserver -p /usr/local &
 EOF
   esac

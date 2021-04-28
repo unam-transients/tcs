@@ -56,7 +56,7 @@ tcs-b)
   /usr/local/bin/owfs -m /var/ow --allow_other --server=localhost:4304
 
   /usr/local/bin/webcamimageserver -p /usr/local &
-  /usr/local/bin/allskyimageserver -p /usr/local &
+  /usr/local/bin/tcs allskyimageserver -p /usr/local &
   /usr/local/bin/finderimageserver -p /usr/local &
 
   PATH=/usr/local/bin:$PATH \

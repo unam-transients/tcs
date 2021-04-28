@@ -160,7 +160,7 @@ EOF
     echo "webcamimageserver b http://coatli:coatli@webcam-b/cgi-bin/viewer/video.jpg &"
     echo "webcamimageserver c http://coatli:coatli@webcam-c/cgi-bin/viewer/video.jpg &"
     echo "webcamimageserver -r -2 -c 640x480+200+500 cz http://coatli:coatli@webcam-c/cgi-bin/viewer/video.jpg &"
-    echo "allskyimageserver http://132.248.4.251:50/~allsky/imagenes/ultima_RED.jpg &"
+    echo "tcs allskyimageserver http://132.248.4.251:50/~allsky/imagenes/ultima_RED.jpg &"
     echo "mkdir -p /usr/local/var/tcs/reboot"
     echo "mkdir -p /usr/local/var/tcs/restart"
     echo "mkdir -p /usr/local/var/tcs/halt"
