@@ -27,7 +27,8 @@
 
 export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
 
-program=$(basename "$0")
+libexecdir="$tcsprefix/libexec/tcs"
+program="tcs $(basename "$0")"
 
 usageerror () {
   echo 1>&2 "usage: $program [-d] [--] servername [...]"
@@ -86,11 +87,11 @@ fi
 
 if $all
 then
-  stopserver -a
-  startserver $startopts -a
+  "$libexecdir"/stopserver -a
+  "$libexecdir"/startserver $startopts -a
 else
-  stopserver -- "$@"
-  startserver $startopts -- "$@"
+  "$libexecdir"/stopserver -- "$@"
+  "$libexecdir"/startserver $startopts -- "$@"
 fi
 
 exit 0

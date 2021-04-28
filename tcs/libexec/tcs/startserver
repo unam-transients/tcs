@@ -27,7 +27,8 @@
 
 export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
 
-program=$(basename "$0")
+libexecdir="$tcsprefix/libexec/tcs"
+program="tcs $(basename "$0")"
 
 usageerror () {
   echo 1>&2 "usage: $program [-d] [--] servername [...]"
@@ -179,11 +180,11 @@ do
     ;;
   *)
     server=${arg}
-    fullserver=${server}server
+    fullserver="$libexecdir"/${server}server
     pids=$(pgrep -u root -f $fullserver)
     if test -z "$pids"
     then
-      if which $fullserver >/dev/null
+      if test -x $fullserver
       then
         if $foreground
         then
