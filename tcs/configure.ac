@@ -64,7 +64,7 @@ AC_SUBST(PROJECT)
 
 ########################################################################
 
-AC_CONFIG_SUBDIRS(bin etc/tcs include lib lib/tcs share/tcs sys var/www/tcs)
+AC_CONFIG_SUBDIRS(bin etc/tcs include lib lib/tcs libexec/tcs share/tcs sys var/www/tcs)
 AC_CONFIG_FILES(Makefile Makefile.prolog Makefile.epilog sudoers rc.local)
 AC_OUTPUT
 

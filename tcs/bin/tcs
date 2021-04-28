@@ -25,109 +25,29 @@
 
 ########################################################################
 
-#\
-umask 0; PATH=/usr/local/opt/tcl-tk/bin:$PATH exec tclsh8.6 -encoding "utf-8" "$0" ${1+"$@"}
+usageerror () {
+  cat <<"EOF" 1>&2
+usage:
 
-source [file join [file dirname [info script]] ".." "lib" "tcs" "packages.tcl"]
-
-package require "genericclient"
-package require "log"
-package require "selectorclient"
-package require "supervisorclient"
-package require "telescopeclient"
-
-# cmdline must be loaded after log.
-package require "cmdline"
-
-set optionsspecification {
-  {w "wait for the telescope activity to be idle or error."}
-  {i "ignore error."}
-}
-set optionsdict [cmdline::getoptions argv $optionsspecification]
-
-set request [string trim $argv]
-
-catch {
-
-  log::info "requesting \"$request\"."
-
-  switch -exact $request {
-    "supervisor-enable" {
-      set server supervisor
-      set request "enable"
-    }
-    "supervisor-disable" {
-      set server supervisor
-      set request "disable"
-    }
-    "supervisor-open" {
-      set server supervisor
-      set request "open"
-    }
-    "supervisor-close" {
-      set server supervisor
-      set request "close"
-    }
-    "autoclose" -
-    "emergencyclose" {
-      set server telescope
-    }
-    "disableselector" {
-      set server selector
-      set request "disable"
-    }
-    "emergencystop" {
-      exec "sudo" "-n" "$prefix/bin/emergencystop"
-      set server selector
-      set request "disable"
-    }
-    "startup" {
-      if {[catch {exec "sudo" "-n" "$prefix/bin/restartserver" "telescope" ">/dev/null" "2>@1"}]} {
-        error "unable to restart telescope server."
-      }
-      after 5000
-      set server telescope
-    }
-    default {
-      set server telescope
-    }
-  }
-  
-  set message [client::request $server $request]
-
-  if {[string equal $message ""]} {
-    puts "ok"
-  } else {
-    puts "ok: $message"
-  }
-
-  if {[dict get $optionsdict "w"]} {
-    while {true} {
-      catch {telescopeclient::update}
-      set status [telescopeclient::getstatus]
-      if {![string equal "ok" $status]} {
-        error "server status is \"$status\"."
-      }
-      set activity [telescopeclient::getdata activity]
-      if {[string equal "error" $activity]} {
-        error "server activity is \"$activity\"."
-      }
-      set requestedactivity [telescopeclient::getdata requestedactivity]
-      if {[string equal $requestedactivity $activity]} {
-        break
-      }
-      after 100
-    }
-  }
-  
-  exit 0
-
-} message
-
-if {[dict get $optionsdict "i"]} {
-  puts stdout "error: $message"
-  exit 0
-} else {
-  puts stderr "error: $message"
+  tcs request server request ...
+EOF
   exit 1
 }
+
+if test $# = 0
+then
+  usageerror
+fi
+
+subcommand="$1"
+shift
+
+bindir="$(dirname "$0")"
+export tcsprefix="$bindir/.."
+
+if test -x "$tcsprefix/libexec/tcs/$subcommand"
+then
+  exec "$tcsprefix/libexec/tcs/$subcommand" "$@"
+else
+  usagerror
+fi
