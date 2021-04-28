@@ -81,7 +81,7 @@ EOF
   echo "webcamimageserver a http://iris.lam.fr/wp-content/uploads/2013/09/cam-iris-1.jpeg &"
   echo "webcamimageserver b http://iris.lam.fr/wp-content/uploads/2013/09/cam-iris-2.jpeg &"
   echo "webcamimageserver c http://iris.lam.fr/wp-content/uploads/2013/09/cam-iris-3.jpeg &"
-  echo "allskyimageserver http://iris.lam.fr/wp-includes/images/ftp_iris/allsky1.jpg &"
+  echo "tcs allskyimageserver http://iris.lam.fr/wp-includes/images/ftp_iris/allsky1.jpg &"
   echo "mkdir -p /usr/local/var/tcs/reboot"
   echo "mkdir -p /usr/local/var/tcs/restart"
   echo "mkdir -p /usr/local/var/tcs/halt"

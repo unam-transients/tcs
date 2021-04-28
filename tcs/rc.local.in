@@ -56,7 +56,7 @@ tcs-b)
   @prefix@/bin/owfs -m /var/ow --allow_other --server=localhost:4304
 
   @prefix@/bin/webcamimageserver -p @prefix@ &
-  @prefix@/bin/allskyimageserver -p @prefix@ &
+  @prefix@/bin/tcs allskyimageserver -p @prefix@ &
   @prefix@/bin/finderimageserver -p @prefix@ &
 
   PATH=@prefix@/bin:$PATH \
