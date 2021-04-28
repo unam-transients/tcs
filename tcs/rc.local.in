@@ -45,7 +45,7 @@ tcs-a)
   @prefix@/bin/instrumentimageserver -p @prefix@ &
 
   PATH=@prefix@/bin:$PATH \
-    @prefix@/bin/startserver -a &
+    @prefix@/bin/tcs startserver -a &
 
 
   ;;
@@ -60,7 +60,7 @@ tcs-b)
   @prefix@/bin/finderimageserver -p @prefix@ &
 
   PATH=@prefix@/bin:$PATH \
-    @prefix@/bin/startserver -a &
+    @prefix@/bin/tcs startserver -a &
 
   ;;
 

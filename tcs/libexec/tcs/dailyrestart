@@ -29,13 +29,13 @@ export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bi
 
 case $(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]') in
 tcs-a)
-  stopserver -a
+  tcs stopserver -a
   sleep 60
-  startserver -a
+  tcs startserver -a
   ;;
 tcs-b)
   sleep 30
-  restartserver -a
+  tcs restartserver -a
   ;;  
 esac
 

@@ -58,7 +58,7 @@ sudo mv /etc/hosts.tmp /etc/hosts
 *  *  *  *  *  /usr/local/bin/checkhalt
 *  *  *  *  *  /usr/local/bin/updateweatherfiles-satino
 *  *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
-00 12 *  *  *  /usr/local/bin/stopserver mount
+00 12 *  *  *  /usr/local/bin/tcs stopserver mount
 00 00 *  *  *  /usr/local/bin/updatevarlatestlink; rsync -aH /usr/local/etc/tcs/blocks /usr/local/var/tcs/latest/
 EOF
 
@@ -86,8 +86,8 @@ EOF
   echo "mkdir -p /usr/local/var/tcs/restart"
   echo "mkdir -p /usr/local/var/tcs/halt"
 
-  echo "startserver -a &"
-  echo "startserver gcntan &"
+  echo "tcs startserver -a &"
+  echo "tcs startserver gcntan &"
   
   echo "exit 0"
 

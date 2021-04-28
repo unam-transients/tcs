@@ -25,7 +25,7 @@
 
 # Manually add these lines to sudoers using sudo visudo.
 
-www-data ALL= NOPASSWD: @prefix@/bin/emergencystop
-www-data ALL= NOPASSWD: @prefix@/bin/restartserver telescope
-www-data ALL= NOPASSWD: @prefix@/bin/stopserver webstatus
-www-data ALL= NOPASSWD: @prefix@/bin/startserver webstatus
+www-data ALL= NOPASSWD: @prefix@/bin/tcs emergencystop
+www-data ALL= NOPASSWD: @prefix@/bin/tcs restartserver telescope
+www-data ALL= NOPASSWD: @prefix@/bin/tcs stopserver webstatus
+www-data ALL= NOPASSWD: @prefix@/bin/tcs startserver webstatus
