@@ -37,17 +37,17 @@ if test -f "$host"
 then
   rm -f "$host"
   sleep 10
-  stopserver -a
-  startserver -a
+  tcs stopserver -a
+  tcs startserver -a
 else
   # We are not on the main host.
   rsync -a --timeout=10 --include="$host" --exclude="*" --remove-source-files rsync://services/tcs/restart/. .
   if test -f "$host"
   then
     rm -f "$host"
-    stopserver -a
+    tcs stopserver -a
     sleep 30
-    startserver -a
+    tcs startserver -a
   fi
 fi
 

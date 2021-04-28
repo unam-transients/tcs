@@ -45,7 +45,7 @@ tcs-a)
   /usr/local/bin/instrumentimageserver -p /usr/local &
 
   PATH=/usr/local/bin:$PATH \
-    /usr/local/bin/startserver -a &
+    /usr/local/bin/tcs startserver -a &
 
 
   ;;
@@ -60,7 +60,7 @@ tcs-b)
   /usr/local/bin/finderimageserver -p /usr/local &
 
   PATH=/usr/local/bin:$PATH \
-    /usr/local/bin/startserver -a &
+    /usr/local/bin/tcs startserver -a &
 
   ;;
 

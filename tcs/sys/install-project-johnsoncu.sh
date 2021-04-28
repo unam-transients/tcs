@@ -106,7 +106,7 @@ EOF
   echo "mkdir -p /usr/local/var/tcs/reboot"
   echo "mkdir -p /usr/local/var/tcs/restart"
   echo "mkdir -p /usr/local/var/tcs/halt"
-  echo "startserver -a &"  
+  echo "tcs startserver -a &"  
   echo "exit 0"
 
 ) |

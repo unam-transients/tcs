@@ -191,7 +191,7 @@ EOF
     echo "sleep 30"
     ;;
   esac
-  echo "startserver -a &"
+  echo "tcs startserver -a &"
   
   echo "exit 0"
 

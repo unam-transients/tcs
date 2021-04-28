@@ -155,7 +155,7 @@ mkdir -p /var/ow/
 /usr/local/bin/finderimageserver -p /usr/local &
 EOF
   esac
-  echo "/usr/local/bin/startserver -a &"
+  echo "/usr/local/bin/tcs startserver -a &"
   echo "exit 0"
 ) |
 sudo cp /dev/stdin /etc/rc.local.tmp
