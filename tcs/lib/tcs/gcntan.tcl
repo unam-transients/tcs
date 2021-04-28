@@ -40,10 +40,11 @@ namespace eval "gcntan" {
   # We should get an imalive packet every 60 seconds.
   variable packettimeout 300000
   
-  variable swiftalertprojectidentifier [config::getvalue "gcntan" "swiftalertprojectidentifier"]
-  variable fermialertprojectidentifier [config::getvalue "gcntan" "fermialertprojectidentifier"]
-  variable lvcalertprojectidentifier   [config::getvalue "gcntan" "lvcalertprojectidentifier"  ]
-  variable hawcalertprojectidentifier  [config::getvalue "gcntan" "hawcalertprojectidentifier" ]
+  variable swiftalertprojectidentifier   [config::getvalue "gcntan" "swiftalertprojectidentifier"  ]
+  variable fermialertprojectidentifier   [config::getvalue "gcntan" "fermialertprojectidentifier"  ]
+  variable lvcalertprojectidentifier     [config::getvalue "gcntan" "lvcalertprojectidentifier"    ]
+  variable hawcalertprojectidentifier    [config::getvalue "gcntan" "hawcalertprojectidentifier"   ]
+  variable icecubealertprojectidentifier [config::getvalue "gcntan" "icecubealertprojectidentifier"]
 
   ######################################################################
 
@@ -210,7 +211,7 @@ namespace eval "gcntan" {
         return "echo"
       }
       
-      "amonhawcburstmonitor" {
+      "hawcburstmonitor" {
         log::info [format "received %s packet." $type]
         variable hawcalertprojectidentifier
         set projectidentifier  $hawcalertprojectidentifier
@@ -228,6 +229,48 @@ namespace eval "gcntan" {
         set retraction         [hawcretraction     $packet]
         respondtogrbalert $test $projectidentifier $blockidentifier $name $origin $identifier $type $timestamp $eventtimestamp $retraction $grb $alpha $delta $equinox $uncertainty
         return "echo"
+      }
+
+      "hawcburstmonitor" {
+        log::info [format "received %s packet." $type]
+        variable hawcalertprojectidentifier
+        set projectidentifier  $hawcalertprojectidentifier
+        set blockidentifier    [hawctrigger        $packet]
+        set name               [hawcgrbname        $packet]
+        set origin             "hawc"
+        set identifier         [hawctrigger        $packet]
+        set test               [hawctest           $packet]
+        set eventtimestamp     [hawceventtimestamp $packet]
+        set alpha              [hawcalpha          $packet]
+        set delta              [hawcdelta          $packet]
+        set equinox            [hawcequinox        $packet]
+        set uncertainty        [hawcuncertainty    $packet]
+        set grb                [hawcgrb            $packet]
+        set retraction         [hawcretraction     $packet]
+        respondtogrbalert $test $projectidentifier $blockidentifier $name $origin $identifier $type $timestamp $eventtimestamp $retraction $grb $alpha $delta $equinox $uncertainty
+        return "echo"
+      }
+
+      "icecubeastrotrackgold" -
+      "icecubeastrotrackbronze" -
+      "icecubecascade" {
+        log::info [format "received %s packet." $type]
+        variable icecubealertprojectidentifier
+        set projectidentifier  $icecubealertprojectidentifier
+        set blockidentifier    [icecubetrigger        $packet]
+        set name               [icecubegrbname        $packet]
+        set origin             "icecube"
+        set identifier         [icecubetrigger        $packet]
+        set test               [icecubetest           $packet]
+        set eventtimestamp     [icecubeeventtimestamp $packet]
+        set alpha              [icecubealpha          $packet]
+        set delta              [icecubedelta          $packet]
+        set equinox            [icecubeequinox        $packet]
+        set uncertainty        [icecubeuncertainty    $packet]
+        set grb                [icecubegrb            $packet]
+        set retraction         [icecuberetraction     $packet]
+        respondtogrbalert $test $projectidentifier $blockidentifier $name $origin $identifier $type $timestamp $eventtimestamp $retraction $grb $alpha $delta $equinox $uncertainty
+        return "echo"      
       }
 
       "lvcpreliminary" -
@@ -830,7 +873,7 @@ namespace eval "gcntan" {
 
   # These procedures are designed to work with the following packet types:
   #
-  #  amonhawcburstmonitor
+  #  hawcburstmonitor
   
   proc hawctest {packet} {
     if {([field0 $packet 18] >> 1) & 0x1} {
@@ -844,7 +887,7 @@ namespace eval "gcntan" {
     # HAWC events are uniquely identified by the combination of the run_id and
     # event_id, which isn't very useful for us as we want a single integer.
     # Therefore, we use the timestamp to generate one.
-    set timestamp [lvceventtimestamp $packet]
+    set timestamp [hawceventtimestamp $packet]
     return [string range [string map {"T" ""} [utcclock::combinedformat $timestamp 0 false]] 0 end-2]
   }
 
@@ -913,6 +956,103 @@ namespace eval "gcntan" {
   }
 
   proc hawcretraction {packet} {
+    if {([field0 $packet 18] >> 5) & 0x1} {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  ######################################################################
+
+  # These procedures are designed to work with the following packet types:
+  #
+  #  icecubeastrotrackgold
+  #  icecubeastrotrackbronze
+  #  icecubecascade
+  
+  proc icecubetest {packet} {
+    if {([field0 $packet 18] >> 1) & 0x1} {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  proc icecubetrigger {packet} {
+    # IceCube events are uniquely identified by the combination of the run_id and
+    # event_id, which isn't very useful for us as we want a single integer.
+    # Therefore, we use the timestamp to generate one.
+    set timestamp [icecubeeventtimestamp $packet]
+    return [string range [string map {"T" ""} [utcclock::combinedformat $timestamp 0 false]] 0 end-2]
+  }
+
+  proc icecubegrbname {packet} {
+    set timestamp [icecubeeventtimestamp $packet]
+    if {[string equal $timestamp ""]} {
+      return ""
+    }
+    if {[scan $timestamp "%d-%d-%dT%d:%d:%f" year month day hours minutes seconds] != 6} {
+      error "unable to scan timestamp \"$timestamp\"."
+    }
+    set dayfraction [expr {($hours + $minutes / 60.0 + $seconds / 3600.0) / 24.0}]
+    set type [type $packet]
+    switch $type {
+      "icecubeastrotrackgold" {
+        set eventtype "gold track"
+      }
+      "icecubeastrotrackbronze" {
+        set eventtype "bronze track"
+      }
+      "icecubecascade" {
+        set eventtype "cascade"
+      }
+    }
+    set identifier [format "Icecube %s %02d%02d%02d.%03d" $eventtype [expr {$year % 100}] $month $day [expr {int($dayfraction * 1000)}]]
+    return $identifier
+  }
+
+  proc icecubeeventtimestamp {packet} {
+    return [utcclock::combinedformat [seconds $packet 5]]
+  }
+  
+  proc icecubealpha {packet} {
+    return [astrometry::foldradpositive [astrometry::degtorad [field4 $packet 7]]]
+  }
+  
+  proc icecubedelta {packet} {
+    return [astrometry::degtorad [field4 $packet 8]]
+  }
+
+  proc icecubeequinox {packet} {
+    return 2000
+  }
+
+  proc icecubeuncertainty {packet} {
+
+    set type [type $packet]
+
+    # We work in degrees here.
+
+    set rawuncertainty [field4 $packet 11]
+    log::info [format "%s: raw uncertainty is %.1fam in radius." $type [expr {$rawuncertainty * 60}]]
+
+    # The notice gives the 90% radius. 
+    set r90 $rawuncertainty
+    log::info [format "%s: 90%% uncertainty is %.1fam in radius." $type [expr {$r90 * 60}]]
+
+    return [format "%.1fam" [expr {$r90 * 60}]]
+  }
+  
+  proc icecubegrb {packet} {
+    if {[icecuberetraction $packet]} {
+      return false
+    } else {
+      return true
+    }
+  }
+
+  proc icecuberetraction {packet} {
     if {([field0 $packet 18] >> 5) & 0x1} {
       return true
     } else {
@@ -1133,22 +1273,22 @@ namespace eval "gcntan" {
     152 "lvcupdate"
     153 "lvctest"
     154 "lvccounterpart"
-    157 "amonicecubecoinc"
-    158 "amonicecubehese"
-    159 "amonicecubetest"
+    157 "icecubecoinc"
+    158 "icecubehese"
+    159 "icecubetest"
     160 "caletgbmfltlc"
     161 "caletgbmgndlc"
     164 "lvcretraction"
-    166 "amonicecubecluster"
+    166 "icecubecluster"
     168 "gwhencoinc"
-    169 "amonicecubeehe"
+    169 "icecubeehe"
     170 "amonantaresfermilatcoinc"
-    171 "amonhawcburstmonitor"
+    171 "hawcburstmonitor"
     172 "amonnuemcoinc"
-    173 "amonicecubeastrotrackgold"
-    174 "amonicecubeastrotrackbronze"
+    173 "icecubeastrotrackgold"
+    174 "icecubeastrotrackbronze"
     175 "sksupernova"
-    176 "amonicecubecascade"
+    176 "icecubecascade"
   }
   
   proc type {packet} {

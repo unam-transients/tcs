@@ -90,7 +90,8 @@
     "swiftalertprojectidentifier": "1000",
     "fermialertprojectidentifier": "1001",
     "lvcalertprojectidentifier": "1002",
-    "hawcalertprojectidentifier": "1003"
+    "hawcalertprojectidentifier": "1003",
+    "icecubealertprojectidentifier": "1004"
   },
   "supervisor": {
     "withplc": "false",
