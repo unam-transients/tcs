@@ -26,17 +26,16 @@
 
 export PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
 
-prefix=$(cd $(dirname "$0")/..; pwd)
-
-# Try to work even if $prefix is read-only.
-if test ! -w "$prefix"
+# Try to work even if $tcsprefix is read-only.
+if test ! -w "$tcsprefix"
 then
-  prefix=/run
+  tcsprefix=/run
 fi
 
-mkdir -p "$prefix"/var/tcs/halt
-cd "$prefix"/var/tcs/halt
+mkdir -p "$tcsprefix"/var/tcs/halt
+cd "$tcsprefix"/var/tcs/halt
 
+# Get the unqualified host name and remove any prefix before "-".
 host="$(uname -n | sed 's/\..*//;s/[^-]*-//')"
 
 # The sleep below aim to ensure that the log server stops after the

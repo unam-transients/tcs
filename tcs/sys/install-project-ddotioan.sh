@@ -75,8 +75,8 @@ sudo mv /etc/hosts.tmp /etc/hosts
 00 21 *  *  *  /usr/local/bin/cleanfiles
 *  *  *  *  *  /usr/local/bin/updatevarlatestlink
 *  *  *  *  *  /usr/local/bin/updatelocalsensorsfiles
-*  *  *  *  *  /usr/local/bin/checkreboot
-*  *  *  *  *  /usr/local/bin/checkrestart
+*  *  *  *  *  /usr/local/bin/tcs checkreboot
+*  *  *  *  *  /usr/local/bin/tcs checkrestart
 EOF
 
   case $host in
@@ -85,7 +85,7 @@ EOF
     ;;  
   *)
     cat <<"EOF"
-*  *  *  *  *  /usr/local/bin/checkhalt
+*  *  *  *  *  /usr/local/bin/tcs checkhalt
 EOF
     ;;
   esac

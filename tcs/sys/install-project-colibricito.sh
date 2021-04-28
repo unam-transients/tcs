@@ -53,9 +53,9 @@ sudo mv /etc/hosts.tmp /etc/hosts
   cat <<"EOF"
 #00 21 *  *  *  /usr/local/bin/cleanfiles
 *  *  *  *  *  /usr/local/bin/updatevarlatestlink
-*  *  *  *  *  /usr/local/bin/checkreboot
-*  *  *  *  *  /usr/local/bin/checkrestart
-*  *  *  *  *  /usr/local/bin/checkhalt
+*  *  *  *  *  /usr/local/bin/tcs checkreboot
+*  *  *  *  *  /usr/local/bin/tcs checkrestart
+*  *  *  *  *  /usr/local/bin/tcs checkhalt
 *  *  *  *  *  /usr/local/bin/updateweatherfiles-satino
 *  *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
 00 12 *  *  *  /usr/local/bin/tcs stopserver mount
