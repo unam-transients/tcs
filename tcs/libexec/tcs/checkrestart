@@ -26,11 +26,10 @@
 
 export PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
 
-prefix=$(cd $(dirname "$0")/..; pwd)
+mkdir -p "$tcsprefix"/var/tcs/restart
+cd "$tcsprefix"/var/tcs/restart
 
-mkdir -p "$prefix"/var/tcs/restart
-cd "$prefix"/var/tcs/restart
-
+# Get the unqualified host name and remove any prefix before "-".
 host="$(uname -n | sed 's/\..*//;s/[^-]*-//')"
 
 if test -f "$host"
