@@ -34,7 +34,6 @@ installbins			:= 		\
 	checkhalt                               \
 	checkreboot                             \
 	checkrestart                            \
-	checkfocus 				\
 	cleanfiles 				\
 	dailyrestart 				\
 	domeserver 				\
@@ -98,6 +97,7 @@ installbins			:= 		\
 	updateowsensorsfiles 			\
 	updatesensorsfiles 			\
 	updatevarlatestlink 			\
+	wait                        \
 	weatherserver 				\
 	webcamimageserver
 

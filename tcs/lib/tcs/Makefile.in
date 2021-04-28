@@ -145,7 +145,6 @@ installs	:=			\
 	telescopecolibricito.tcl	\
 	telescopeddotioan.tcl		\
 	telescopedummy.tcl		\
-	telescoperatir.tcl		\
 	telescoperatiroan.tcl		\
 	telescopeserver.tcl		\
 	temperatures.tcl		\
