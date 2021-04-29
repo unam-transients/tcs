@@ -42,8 +42,8 @@ namespace eval "telescope" {
   variable validpointingmodes { "none" }
   variable validguidingmodes  { "none" }
   variable mechanisms {}
-  variable withlights true
-  variable withheater true
+  variable withlights false
+  variable withheater false
     
   ######################################################################
 
