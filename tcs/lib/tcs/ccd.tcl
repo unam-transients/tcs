@@ -180,7 +180,7 @@ namespace eval "ccd" {
         variable temperaturelimitoutletgroup
         if {![string equal "" $temperaturelimitoutletgroup]} {
           log::error "performing an emergency stop."
-          exec "[directories::prefix]/bin/emergencystop" $temperaturelimitoutletgroup
+          exec "[directories::prefix]/bin/tcs" "emergencystop" $temperaturelimitoutletgroup
         }
         log::error "exiting."
         exit 1
@@ -330,7 +330,7 @@ namespace eval "ccd" {
     variable identifier
     variable pointingmodelparameters
     set pointingmodelparameters [pointing::updaterelativemodel $pointingmodelparameters $dCH $dID]
-    config::setvarvalue $identifier "pointingmodelparameters" $pointingmodelparameters
+#    config::setvarvalue $identifier "pointingmodelparameters" $pointingmodelparameters
   }
 
   ######################################################################
