@@ -87,11 +87,11 @@
   },
   "gcntan": {
     "serverpacketport": "5351",
-    "swiftalertprojectidentifier": "1000",
-    "fermialertprojectidentifier": "1001",
-    "lvcalertprojectidentifier": "1002",
-    "hawcalertprojectidentifier": "1003",
-    "icecubealertprojectidentifier": "1004"
+    "swiftalertprojectidentifier"  : "1001",
+    "fermialertprojectidentifier"  : "1002",
+    "lvcalertprojectidentifier"    : "1003",
+    "hawcalertprojectidentifier"   : "1004",
+    "icecubealertprojectidentifier": "1005"
   },
   "supervisor": {
     "withplc": "false",
