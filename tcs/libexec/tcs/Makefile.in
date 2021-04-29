@@ -67,6 +67,7 @@ installbins			:= 		\
 	instrumentdataserver			\
 	instrumentserver			\
 	lightsserver				\
+	log \
 	logsensors				\
 	logserver				\
 	lvcskymapfindpeak			\
