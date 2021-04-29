@@ -21,7 +21,7 @@ do
         printf "%s " "unknown"
       fi
     done
-    IFS=" " set -- $(fitsdatawindow "$fits")
+    IFS=" " set -- $(tcs fitsdatawindow "$fits")
     sx=$1
     sy=$2
     nx=$3

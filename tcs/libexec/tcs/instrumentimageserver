@@ -95,7 +95,7 @@ do
   if test -f latest.fits && (test ! -f previous.fits || ! cmp -s latest.fits previous.fits)
   then
   
-    IFS=" " set -- $(fitsdatawindow latest.fits)
+    IFS=" " set -- $(tcs fitsdatawindow latest.fits)
     sx=$1
     sy=$2
     nx=$3
