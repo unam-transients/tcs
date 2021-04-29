@@ -29,15 +29,14 @@ export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bi
 
 trap '' HUP
 
-program=$(basename "$0")
+program="tcs $(basename "$0")"
 
 usageerror () {
-  echo 1>&2 "usage: $program [-p prefix] [--] destination"
+  echo 1>&2 "usage: $program [--] destination"
   exit 1
 }
 
-optstring=p:
-prefix=/usr/local
+optstring=
 if ! getopt -qQ -- "$optstring" "$@"
 then
   usageerror
@@ -46,10 +45,6 @@ eval set -- "$(getopt -q -- "$optstring" "$@")"
 while test "$1" != "--"
 do
   case "$1" in
-  -p)
-    prefix="$2"
-    shift 2
-    ;;
   *)
     usageerror
     ;;
@@ -60,11 +55,11 @@ if test $# != 1
 then
   usageerror
 fi
-dst="$1"
+destination="$1"
 
-cd "$prefix"/var/tcs
+cd "$tcsprefix"/var/tcs
 while true
 do
-  rsync -ah *finder "$dst"
+  rsync -ah *finder "$destination"
   sleep 5
 done
