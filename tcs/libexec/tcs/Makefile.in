@@ -115,8 +115,8 @@ installbins_project_ratiroan	:=		\
 	C1server				\
 	C2server				\
 	C3server				\
-	coversserver		\
-	cryostatserver-project-ratiroan		\
+	coversserver	    	\
+	cryostatserver  		\
 	finderdataserver                        \
 	h2rgexpose-project-ratiroan		\
 	inclinometersserver	\
