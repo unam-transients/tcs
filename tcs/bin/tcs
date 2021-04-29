@@ -49,5 +49,5 @@ if test -x "$tcsprefix/libexec/tcs/$subcommand"
 then
   exec "$tcsprefix/libexec/tcs/$subcommand" "$@"
 else
-  usagerror
+  usageerror
 fi
