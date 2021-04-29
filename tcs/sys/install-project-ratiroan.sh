@@ -146,13 +146,13 @@ EOF
     echo "instrumentdataserver -j -d rsync://services/tcs/ &"
     ;;
   ratiroan-control)
-    echo "finderdataserver rsync://services/tcs/ &"
+    echo "tcs finderdataserver rsync://services/tcs/ &"
     ;;
   esac
 
   case $host in
   ratiroan-services)
-    echo "finderimageserver &"
+    echo "tcs finderimageserver &"
     echo "instrumentimageserver C0 detectors &"
     echo "instrumentimageserver C1 detectors &"
     echo "instrumentimageserver C2 tcs-a &"
@@ -163,7 +163,6 @@ EOF
     echo "webcamimageserver -c 640x464+0+16 d http://observa:00.observa@webcam-d/jpg/image.jpg &"
     echo "webcamimageserver e http://ratir:ratir@webcam-e/cgi-bin/viewer/video.jpg &"
     echo "tcs allskyimageserver  http://132.248.4.140/imagenes/ultima_RED.jpg &"
-    echo "finderimageserver &"
     echo "mkdir -p /usr/local/var/tcs/reboot"
     echo "mkdir -p /usr/local/var/tcs/restart"
     echo "mkdir -p /usr/local/var/tcs/halt"
