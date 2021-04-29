@@ -63,9 +63,11 @@
   "selector": {},
   "gcntan": {
     "serverpacketport": "5351",
-    "swiftalertprojectidentifier": "1001",
-    "fermialertprojectidentifier": "1002",
-    "lvcalertprojectidentifier"  : "1003"
+    "swiftalertprojectidentifier"  : "1001",
+    "fermialertprojectidentifier"  : "1002",
+    "lvcalertprojectidentifier"    : "1003",
+    "hawcalertprojectidentifier"   : "1004",
+    "icecubealertprojectidentifier": "1005"
   },
   "swift": {
     "pointingsource": "none"
