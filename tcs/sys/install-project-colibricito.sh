@@ -51,7 +51,7 @@ sudo mv /etc/hosts.tmp /etc/hosts
   echo 'MAILTO=""'
 
   cat <<"EOF"
-#00 21 *  *  *  /usr/local/bin/cleanfiles
+#00 21 *  *  *  /usr/local/bin/tcs cleanfiles
 *  *  *  *  *  /usr/local/bin/updatevarlatestlink
 *  *  *  *  *  /usr/local/bin/tcs checkreboot
 *  *  *  *  *  /usr/local/bin/tcs checkrestart

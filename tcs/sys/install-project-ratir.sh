@@ -100,7 +100,7 @@ sudo mv /etc/hosts.tmp /etc/hosts
     cat <<"EOF"
 00 20 * * * /usr/local/bin/dailyrestart
 *  *  * * * /usr/bin/rsync -a rsync://tcs-b/summary-logs /usr/local/var/tcs/summary-logs
-00 19 * * * /usr/local/bin/cleanfiles
+00 19 * * * /usr/local/bin/tcs cleanfiles
 EOF
   ;;
   tcs-b)
@@ -108,7 +108,7 @@ EOF
 *  *  * * * /usr/local/bin/updateweatherfiles
 *  *  * * * rsync -aH rsync://tcs-a/ratir-logs /usr/local/var/ratir
 *  *  * * * /usr/local/bin/makesummarylog
-00 19 * * * /usr/local/bin/cleanfiles
+00 19 * * * /usr/local/bin/tcs cleanfiles
 00 20 * * * /usr/local/bin/dailyrestart
 *  *  * * * cd /usr/local/bin/var/www/tcs; sh plots.sh >>plots.log 2>&1
 EOF
