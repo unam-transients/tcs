@@ -37,7 +37,7 @@ proc request {request} {
     exec "sudo" "-n" "$prefix/bin/rebootsoon"
     return ""
   } elseif {[string equal $request "emergencystop"]} {
-    exec "sudo" "-n" "$prefix/bin/emergencystop"
+    exec "sudo" "-n" "$prefix/bin/tcs" "emergencystop"
     set server supervisor
     set request "disable"
   } else {
