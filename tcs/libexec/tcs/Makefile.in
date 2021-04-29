@@ -35,7 +35,6 @@ installbins			:= 		\
 	checkreboot                             \
 	checkrestart                            \
 	cleanfiles 				\
-	dailyrestart 				\
 	domeserver 				\
 	emergencystop 				\
 	executorserver 				\
