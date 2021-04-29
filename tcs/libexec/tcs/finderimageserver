@@ -27,15 +27,16 @@
 
 export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
 
-program=$(basename "$0")
+trap '' HUP
+
+program="tcs $(basename "$0")"
 
 usageerror () {
-  echo 1>&2 "usage: $program [-p prefix] [--]"
+  echo 1>&2 "usage: $program [--]"
   exit 1
 }
 
-optstring=p:
-prefix=/usr/local
+optstring=
 if ! getopt -qQ -- "$optstring" "$@"
 then
   usageerror
@@ -44,10 +45,6 @@ eval set -- "$(getopt -q -- "$optstring" "$@")"
 while test "$1" != "--"
 do
   case "$1" in
-  -p)
-    prefix="$2"
-    shift 2
-    ;;
   *)
     usageerror
     ;;
@@ -73,13 +70,13 @@ fi
 while true
 do
   
-  for finder in nefinder sefinder
+  for finder in $(cd "$tcsprefix"/var/tcs/; echo *finder)
   do
   
-    mkdir -p $prefix/var/www/tcs/finder/$finder
-    cd $prefix/var/www/tcs/finder/$finder
+    mkdir -p "$tcsprefix"/var/www/tcs/finder/$finder
+    cd "$tcsprefix"/var/www/tcs/finder/$finder
 
-    ln -f $prefix/var/tcs/$finder/latest.fits .
+    ln -f "$tcsprefix"/var/tcs/$finder/latest.fits .
   
     if test -f latest.fits && (test ! -f previous.fits || ! cmp -s latest.fits previous.fits)
     then
