@@ -65,7 +65,7 @@ EOF
 00  18 *  *  *  /usr/local/bin/updateweatherfiles-oan -a
 *   *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
 00  00 *  *  *  /usr/local/bin/updatevarlatestlink; rsync -aH /usr/local/etc/tcs/blocks /usr/local/var/tcs/latest/
-*/5 *  *  *  * /usr/local/bin/logsensors
+*/5 *  *  *  * /usr/local/bin/tcs logsensors
 *   *  *  *  * cd /usr/local/var/www/tcs/; sh plots.sh >plots.txt 2>&1
 EOF
     ;;

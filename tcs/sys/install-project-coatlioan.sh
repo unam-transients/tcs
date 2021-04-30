@@ -100,7 +100,7 @@ EOF
     ;;
   coatlioan-services)
     cat <<"EOF"
-*/5 *  *  *  * /usr/local/bin/logsensors
+*/5 *  *  *  * /usr/local/bin/tcs logsensors
 *   *  *  *  *  rsync -aH --include="error.txt" --include="warning.txt" --include="summary.txt" --include="info.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw/
 00  *  *  *  *  rsync -aH /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw/
 */5 *  *  *  *  rsync -aH --remove-source-files --include="*/" --include="*.fits.*" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw/

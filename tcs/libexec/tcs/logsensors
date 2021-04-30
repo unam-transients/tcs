@@ -36,25 +36,25 @@ package require "config"
 package require "utcclock"
 
 if {[catch {client::update "sensors"} message]} {
-  puts stderr "logsensors: error: unable to update sensors data: $message"
+  puts stderr "tcs logsensors: error: unable to update sensors data: $message"
   exit 1
 }
 
 set status [client::getstatus "sensors"]
 if {![string equal $status "ok"]} {
-  puts stderr "logsensors: error: sensors status is \"$status\"."
+  puts stderr "tcs logsensors: error: sensors status is \"$status\"."
   exit 1
 }
 
 set directoryname [file join [directories::vartoday] "sensors"]
 if {[catch {file mkdir $directoryname}]} {
-  puts stderr "logsensors: error: unable to make directory \"$directoryname\"."
+  puts stderr "tcs logsensors: error: unable to make directory \"$directoryname\"."
   exit 1
 }
 
 set filename [file join $directoryname [format "sensors-%s.json" [utcclock::combinedformat now 0 false]]]
 if {[catch {set channel [open $filename "w"]}]} {
-  puts stderr "logsensors: error: unable to opening file \"$filename\"."
+  puts stderr "tcs logsensors: error: unable to opening file \"$filename\"."
   exit 1
 }
 
@@ -118,11 +118,11 @@ if {[catch {
   puts $channel "  \]"
   puts $channel "\}"
 } message]} {
-  puts stderr "logsensors: error: while writing sensors data: $message."
+  puts stderr "tcs logsensors: error: while writing sensors data: $message."
   exit 1
 }
 
 if {[catch {close $channel}]} {
-  puts stderr "logsensors: error: while closing file \"$filename\"."
+  puts stderr "tcs logsensors: error: while closing file \"$filename\"."
   exit 1
 }
