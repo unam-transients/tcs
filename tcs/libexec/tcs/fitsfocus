@@ -27,14 +27,14 @@
 
 export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
 
-program=$(basename "$0")
+program="tcs $(basename "$0")"
 
 usageerror () {
-  echo 1>&2 "usage: $program [-z keyword] [-e etcdir] [-s section] [-S saturationlevel] [-m] [-A] [-w wisdom] [--] fitsfile ..."
+  echo 1>&2 "usage: $program [-z keyword] [-s section] [-S saturationlevel] [-m] [-A] [-w wisdom] [--] fitsfile ..."
   exit 1
 }
 
-optstring=e:s:S:mAw:z:
+optstring=s:S:mAw:z:
 fitsfwhmopts=""
 zkeyword="SRQZ0"
 if ! getopt -qQ -- "$optstring" "$@"
@@ -45,10 +45,6 @@ eval set -- "$(getopt -q -- "$optstring" "$@")"
 while test "$1" != "--"
 do
   case "$1" in
-  -e)
-    fitsfwhmopts="$fitsfwhmopts -e \"$2\""
-    shift 2
-    ;;
   -s)
     fitsfwhmopts="$fitsfwhmopts -s \"$2\""
     shift 2
@@ -86,7 +82,7 @@ fi
 
 for fitsfile in "$@"
 do
-  echo $fitsfile $(fitsheadervalue $zkeyword "$fitsfile") $(fitsfwhm $fitsfwhmopts "$fitsfile")
+  echo $fitsfile $(tcs fitsheadervalue $zkeyword "$fitsfile") $(tcs fitsfwhm $fitsfwhmopts "$fitsfile")
 done |
 awk '
 
