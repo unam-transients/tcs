@@ -162,12 +162,12 @@ EOF
 
   case $host in
   ddotioan-services)
-    echo "instrumentimageserver C0 d1 &"
-    echo "instrumentimageserver C1 e1 &"
-    echo "instrumentimageserver C2 d2 &"
-    echo "instrumentimageserver C3 e2 &"
-    echo "instrumentimageserver C4 d3 &"
-    echo "instrumentimageserver C5 e3 &"
+    echo "tcs instrumentimageserver C0 d1 &"
+    echo "tcs instrumentimageserver C1 e1 &"
+    echo "tcs instrumentimageserver C2 d2 &"
+    echo "tcs instrumentimageserver C3 e2 &"
+    echo "tcs instrumentimageserver C4 d3 &"
+    echo "tcs instrumentimageserver C5 e3 &"
     echo "webcamimageserver a http://ddoti:ddoti@webcam-a/cgi-bin/viewer/video.jpg &"
     echo "webcamimageserver b http://ddoti:ddoti@webcam-b/cgi-bin/viewer/video.jpg &"
     echo "webcamimageserver c http://ddoti:ddoti@webcam-c/cgi-bin/viewer/video.jpg &"

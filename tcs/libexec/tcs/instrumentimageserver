@@ -27,15 +27,14 @@
 
 export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
 
-program=$(basename "$0")
+program="tcs $(basename "$0")"
 
 usageerror () {
-  echo 1>&2 "usage: $program [-p prefix] [--] camera [host]"
+  echo 1>&2 "usage: $program [--] camera [host]"
   exit 1
 }
 
-optstring=p:
-prefix=/usr/local
+optstring=
 if ! getopt -qQ -- "$optstring" "$@"
 then
   usageerror
@@ -44,10 +43,6 @@ eval set -- "$(getopt -q -- "$optstring" "$@")"
 while test "$1" != "--"
 do
   case "$1" in
-  -p)
-    prefix="$2"
-    shift 2
-    ;;
   *)
     usageerror
     ;;
@@ -78,7 +73,7 @@ else
   fontargs="-pointsize 10"
 fi
 
-dir="$prefix/var/www/tcs/instrument/$camera"
+dir="$tcsprefix/var/www/tcs/instrument/$camera"
 mkdir -p "$dir"
 cd "$dir"
 
@@ -87,7 +82,7 @@ do
 
   if test -z "$host"
   then
-    ln -f $prefix/var/tcs/$camera/latest.fits .
+    ln -f "$tcsprefix"/var/tcs/$camera/latest.fits .
   else
     rsync --timeout=10 rsync://$host/tcs/$camera/latest.fits . 2>/dev/null
   fi
