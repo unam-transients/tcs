@@ -102,7 +102,7 @@ do
     cr=$(expr $ny / 40)
     cw=$(expr $ny / 400 + 1)
 
-    dateandtime=$(fitsheadervalue SDATE latest.fits | sed 's/T/ /')
+    dateandtime=$(tcs fitsheadervalue SDATE latest.fits | sed 's/T/ /')
     date=$(date -u --date "$dateandtime" +"%Y-%m-%d")
     time=$(date -u --date "$dateandtime" +"%H:%M:%S")
     compactdate=$(date -u --date "$dateandtime" +"%Y%m%d")
