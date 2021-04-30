@@ -27,15 +27,14 @@
 export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
 export LC_ALL=C
 
-program=$(basename "$0")
+program="tcs $(basename "$0")"
 
 usageerror () {
-  echo 1>&2 "usage: $program [-p prefix]"
+  echo 1>&2 "usage: $program"
   exit 1
 }
 
-optstring=p:
-prefix=/usr/local
+optstring=
 if ! getopt -qQ -- "$optstring" "$@"
 then
   usageerror
@@ -44,10 +43,6 @@ eval set -- "$(getopt -q -- "$optstring" "$@")"
 while test "$1" != "--"
 do
   case "$1" in
-  -p)
-    prefix="$2"
-    shift 2
-    ;;
   *)
     usageerror
     ;;
@@ -59,8 +54,8 @@ then
   usageerror
 fi
 
-mkdir -p "$prefix"/var/tcs/weather
-cd "$prefix"/var/tcs/weather
+mkdir -p "$tcsprefix"/var/tcs/weather
+cd "$tcsprefix"/var/tcs/weather
 
 version="a.1"
 
