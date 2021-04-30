@@ -27,9 +27,6 @@ include ../Makefile.prolog
 
 EXTRA_INSTALLS			:=	install-project-$(PROJECT)
 
-install-project-ratir		:
-	sh install-project-ratir.sh
-	
 install-project-ratiroan	:
 	sh install-project-ratiroan.sh
 	
