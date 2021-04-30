@@ -146,10 +146,10 @@ EOF
 
   case $host in
   coatlioan-services)
-    echo "instrumentdataserver -f rsync://transients.astrossp.unam.mx/coatli-raw/ &"
+    echo "tcs instrumentdataserver -f rsync://transients.astrossp.unam.mx/coatli-raw/ &"
     ;;
   coatlioan-e1)
-    echo "instrumentdataserver -f -d rsync://services/tcs/ &"
+    echo "tcs instrumentdataserver -f -d rsync://services/tcs/ &"
     ;;
   esac
 

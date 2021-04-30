@@ -99,7 +99,7 @@ EOF
   
   case $host in
   test-ubuntu-18)
-    echo "instrumentdataserver -f -d rsync://localhost/tcs/ &"
+    echo "tcs instrumentdataserver -f -d rsync://localhost/tcs/ &"
     ;;
   esac
   
