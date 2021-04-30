@@ -30,7 +30,7 @@
 #include <string.h>
 #include <unistd.h>
 
-const char *program = "newpgrp";
+const char *program = "tcs newpgrp";
 
 int
 main(int argc, char **argv)
