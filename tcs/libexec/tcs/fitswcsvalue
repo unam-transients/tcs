@@ -29,7 +29,7 @@
 
 export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
 
-program=$(basename "$0")
+program="tcs $(basename "$0")"
 
 usageerror () {
   echo 1>&2 "usage: $program [--] cpix1 cpix2 [fitsfile ...]"
@@ -68,7 +68,7 @@ esac
 
 for file in "$@"
 do
-  fitsheader -- "$file" | 
+  tcs fitsheader -- "$file" | 
   awk -v cpix1="$cpix1" -v cpix2="$cpix2" '
 
     BEGIN {
