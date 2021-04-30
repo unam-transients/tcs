@@ -27,21 +27,20 @@
 
 export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
 
-program=$(basename "$0")
+program="tcs $(basename "$0")"
 
 usageerror () {
   echo 1>&2 "usage: $program [-b] [-c] [-f] [-w width] [-r radius] [-e etcdir] [-t cpulimit] [--] fitsfile"
   exit 1
 }
 
-optstring=bce:ft:w:r:
+optstring=bcft:w:r:
 cpulimit=unlimited
 clean=false
 blind=false
 force=false
 width=""
 radius=10
-etcdir=/usr/local/etc/tcs
 if ! getopt -qQ -- "$optstring" "$@"
 then
   usageerror
@@ -57,10 +56,6 @@ do
   -c)
     clean=true
     shift 1
-    ;;
-  -e)
-    etcdir="$2"
-    shift 2
     ;;
   -f)
     force=true
@@ -99,13 +94,15 @@ wcsfile="$dirname"/"$basename".wcs
 xyfile="$dirname"/"$basename".xy
 sortedxyfile="$dirname"/"$basename".sxy
 
+etcdir="$tcsprefix"/etc/tcs
+
 if $force
 then
   rm -f "$wcsfile"
 fi
 
-naxis1=$(fitsheadervalue NAXIS1 "$fitsfile")
-naxis2=$(fitsheadervalue NAXIS2 "$fitsfile")
+naxis1=$(tcs fitsheadervalue NAXIS1 "$fitsfile")
+naxis2=$(tcs fitsheadervalue NAXIS2 "$fitsfile")
 
 if test ! -f "$wcsfile"
 then
@@ -122,7 +119,7 @@ then
   sextractorargs="--width $naxis1 --height $naxis2 --x-column X_IMAGE --y-column Y_IMAGE $sortedxyfile"
   if test -z "$width"
   then
-    width=$(fitsheadervalue SDTWD "$fitsfile")
+    width=$(tcs fitsheadervalue SDTWD "$fitsfile")
   fi
   if $blind || test -z "$width"
   then
@@ -132,8 +129,8 @@ then
     scalehigh=$(echo $width | awk '{ print 1.05 * $1 * 60; }')
     scaleargs="--scale-low=$scalelow --scale-high=$scalehigh --scale-units=arcminwidth"
   fi
-  alpha=$(fitsheadervalue STRSTRA "$fitsfile")
-  delta=$(fitsheadervalue STRSTDE "$fitsfile")  
+  alpha=$(tcs fitsheadervalue STRSTRA "$fitsfile")
+  delta=$(tcs fitsheadervalue STRSTDE "$fitsfile")  
   if $blind || test -z "$alpha" || test -z "$delta"
   then
     coordinateargs=""
