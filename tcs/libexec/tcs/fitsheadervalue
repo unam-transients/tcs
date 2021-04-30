@@ -27,7 +27,7 @@
 
 export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
 
-program=$(basename "$0")
+program="tcs $(basename "$0")"
 
 usageerror () {
   echo 1>&2 "usage: $program [-l] [--] key [fitsfile ...]"
@@ -71,7 +71,7 @@ esac
 squote="'"
 for file in "$@"
 do
-  fitsheader -- "$file" |
+  tcs fitsheader -- "$file" |
   sed 's/=/ /' | 
   awk -v key="$key" -v fitsfile="$fitsfile" -v list=$list '
   $1 == key {
