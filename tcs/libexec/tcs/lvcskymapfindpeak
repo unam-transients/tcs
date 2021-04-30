@@ -25,6 +25,32 @@
 
 ########################################################################
 
+program="tcs $(basename "$0")"
+
+usageerror () {
+  echo 1>&2 "usage: $program url"
+  exit 1
+}
+
+optstring=
+if ! getopt -qQ -- "$optstring" "$@"
+then
+  usageerror
+fi
+eval set -- "$(getopt -q -- "$optstring" "$@")"
+while test "$1" != "--"
+do
+  case "$1" in
+  *)
+    usageerror
+    ;;
+  esac
+done
+shift
+if test $# != 1
+then
+  usageerror
+fi
 url="$1"
 
 dir="/tmp/lvcskymapfindpeak-$$"

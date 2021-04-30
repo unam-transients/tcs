@@ -502,14 +502,14 @@ namespace eval "selector" {
     log::summary "responding to lvc alert."    
     if {![string equal $skymapurl ""]} {
       log::info [format "skymap url is %s." $skymapurl]
-      set channel [open "|[directories::bin]/tcs newpgrp  lvcskymapfindpeak $skymapurl" "r"]
+      set channel [open "|[directories::bin]/tcs newpgrp [directories::bin]/tcs lvcskymapfindpeak $skymapurl" "r"]
       chan configure $channel -buffering "line"
       chan configure $channel -encoding "ascii"
       set line [coroutine::gets $channel 0 100]
       catch {close $channel}
       if {[scan $line "%f %f %s" alpha delta equinox] != 3} {
-        log::error "lvcskymapfindpeak failed: $line."
-        error "lvcskymapfindpeak failed: $line."
+        log::error "tcs lvcskymapfindpeak failed: $line."
+        error "tcs lvcskymapfindpeak failed: $line."
       }
       set alpha [astrometry::formatalpha [astrometry::degtorad $alpha]]
       set delta [astrometry::formatdelta [astrometry::degtorad $delta]]
