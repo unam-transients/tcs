@@ -52,14 +52,14 @@ sudo mv /etc/hosts.tmp /etc/hosts
 
   cat <<"EOF"
 #00 21 *  *  *  /usr/local/bin/tcs cleanfiles
-*  *  *  *  *  /usr/local/bin/updatevarlatestlink
+*  *  *  *  *  /usr/local/bin/tcs updatevarlatestlink
 *  *  *  *  *  /usr/local/bin/tcs checkreboot
 *  *  *  *  *  /usr/local/bin/tcs checkrestart
 *  *  *  *  *  /usr/local/bin/tcs checkhalt
-*  *  *  *  *  /usr/local/bin/updateweatherfiles-satino
+*  *  *  *  *  /usr/local/bin/tcs updateweatherfiles-satino
 *  *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
 00 12 *  *  *  /usr/local/bin/tcs stopserver mount
-00 00 *  *  *  /usr/local/bin/updatevarlatestlink; rsync -aH /usr/local/etc/tcs/blocks /usr/local/var/tcs/latest/
+00 00 *  *  *  /usr/local/bin/tcs updatevarlatestlink; rsync -aH /usr/local/etc/tcs/blocks /usr/local/var/tcs/latest/
 EOF
 
 ) | sudo crontab
@@ -134,8 +134,8 @@ sudo rm -f /tmp/sudoers-tcs
   echo 'coatli ALL=(ALL) ALL'
   case $host in
   colibricito-control)
-    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/rebootsoon'
-    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/restartsoon'
+    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs rebootsoon'
+    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs restartsoon'
     ;;
   esac
 ) >/tmp/sudoers-tcs
