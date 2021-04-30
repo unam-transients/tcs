@@ -27,16 +27,15 @@
 
 export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
 
-program=$(basename "$0")
+program="tcs $(basename "$0")"
 
 usageerror () {
-  echo 1>&2 "usage: $program [-p prefix] -i"
-  echo 1>&2 "usage: $program [-p prefix] name [on|off]"
+  echo 1>&2 "usage: $program -i"
+  echo 1>&2 "usage: $program name [on|off]"
   exit 1
 }
 
 optstring=p:i
-prefix=/usr/local
 init=false
 if ! getopt -qQ -- "$optstring" "$@"
 then
@@ -46,10 +45,6 @@ eval set -- "$(getopt -q -- "$optstring" "$@")"
 while test "$1" != "--"
 do
   case "$1" in
-  -p)
-    prefix="$2"
-    shift 2
-    ;;
   -i)
     init=true
     shift
