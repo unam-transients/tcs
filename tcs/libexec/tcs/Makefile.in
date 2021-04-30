@@ -85,7 +85,6 @@ installbins			:= 		\
 	startserver 				\
 	stopserver 				\
 	supervisorserver 			\
-	submitgcnnotice 			\
 	sunserver 				\
 	targetserver 				\
 	telescopeserver 			\
