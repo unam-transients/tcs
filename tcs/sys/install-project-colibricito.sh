@@ -77,7 +77,7 @@ EOF
   # NTP server is passed by the DHCP server.
   echo "ntpd &"
 
-  echo "instrumentimageserver C0 &"
+  echo "tcs instrumentimageserver C0 &"
   echo "webcamimageserver a http://iris.lam.fr/wp-content/uploads/2013/09/cam-iris-1.jpeg &"
   echo "webcamimageserver b http://iris.lam.fr/wp-content/uploads/2013/09/cam-iris-2.jpeg &"
   echo "webcamimageserver c http://iris.lam.fr/wp-content/uploads/2013/09/cam-iris-3.jpeg &"

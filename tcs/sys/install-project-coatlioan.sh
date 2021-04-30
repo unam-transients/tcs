@@ -155,7 +155,7 @@ EOF
 
   case $host in
   coatlioan-services)
-    echo "instrumentimageserver C0 e1 &"
+    echo "tcs instrumentimageserver C0 e1 &"
     echo "webcamimageserver a http://coatli:coatli@webcam-a/cgi-bin/viewer/video.jpg &"
     echo "webcamimageserver b http://coatli:coatli@webcam-b/cgi-bin/viewer/video.jpg &"
     echo "webcamimageserver c http://coatli:coatli@webcam-c/cgi-bin/viewer/video.jpg &"

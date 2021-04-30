@@ -153,10 +153,10 @@ EOF
   case $host in
   ratiroan-services)
     echo "tcs finderimageserver &"
-    echo "instrumentimageserver C0 detectors &"
-    echo "instrumentimageserver C1 detectors &"
-    echo "instrumentimageserver C2 tcs-a &"
-    echo "instrumentimageserver C3 tcs-a &"
+    echo "tcs instrumentimageserver C0 detectors &"
+    echo "tcs instrumentimageserver C1 detectors &"
+    echo "tcs instrumentimageserver C2 tcs-a &"
+    echo "tcs instrumentimageserver C3 tcs-a &"
     echo "webcamimageserver -c 640x464+0+16 a http://observa:00.observa@webcam-a/jpg/image.jpg &"
     echo "webcamimageserver -c 640x464+0+16 b http://observa:00.observa@webcam-b/jpg/image.jpg &"
     echo "webcamimageserver -c 640x464+0+16 c http://observa:00.observa@webcam-c/jpg/image.jpg &"
