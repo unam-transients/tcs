@@ -26,11 +26,7 @@
 
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
-prefix=$(cd $(dirname "$0")/..; pwd)
-
-program=$(basename "$0")
-
-prefix=$(cd $(dirname "$0")/..; pwd)
+program="tcs $(basename "$0")"
 
 host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
 case $host in
@@ -42,8 +38,8 @@ case $host in
   ;;
 esac
 
-mkdir -p "$prefix"/var/tcs/reboot
-cd "$prefix"/var/tcs/reboot
+mkdir -p "$tcsprefix"/var/tcs/reboot
+cd "$tcsprefix"/var/tcs/reboot
 
 if test $# = 0
 then
