@@ -27,15 +27,14 @@
 
 export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
 
-program=$(basename "$0")
+program="tcs $(basename "$0")"
 
 usageerror () {
-  echo 1>&2 "usage: $program [-d catalogdir] [--] catalogname objectname"
+  echo 1>&2 "usage: $program [--] catalogname objectname"
   exit 1
 }
 
-optstring="d:"
-catalogdir=/usr/local/share/tcs/catalog
+optstring=""
 if ! getopt -qQ -- "$optstring" "$@"
 then
   usageerror
@@ -44,10 +43,6 @@ eval set -- "$(getopt -- "$optstring" "$@")"
 while test "$1" != "--"
 do
   case "$1" in
-  -d)
-    catalogdir="$2"
-    shift 2
-    ;;
   *)
     usageerror
     ;;
@@ -60,6 +55,8 @@ then
 fi
 catalogname="$1"
 objectname="$2"
+
+catalogdir="$tcsprefix"/share/tcs/catalog
 
 if test -e "$catalogname"
 then
