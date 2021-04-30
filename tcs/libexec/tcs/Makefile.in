@@ -44,7 +44,6 @@ installbins			:= 		\
 	fitsdatawindow                          \
 	fitsfocus				\
 	fitsfwhm 				\
-	fitsmapfocus				\
 	fitssoftgain 				\
 	fitssolvewcs 				\
 	fitssplice 				\
