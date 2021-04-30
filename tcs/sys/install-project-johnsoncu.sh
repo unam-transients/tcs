@@ -50,8 +50,8 @@ sudo mv /etc/hosts.tmp /etc/hosts
 
   cat <<"EOF"
 00 21 *  *  *  /usr/local/bin/tcs cleanfiles
-*  *  *  *  *  /usr/local/bin/updatevarlatestlink
-*  *  *  *  *  /usr/local/bin/updatelocalsensorsfiles
+*  *  *  *  *  /usr/local/bin/tcs updatevarlatestlink
+*  *  *  *  *  /usr/local/bin/tcs updatelocalsensorsfiles
 *  *  *  *  *  /usr/local/bin/tcs checkreboot
 *  *  *  *  *  /usr/local/bin/tcs checkrestart
 *  *  *  *  *  /usr/local/bin/tcs checkhalt
@@ -60,11 +60,11 @@ EOF
   case $host in
   johnsoncu-control)
     cat <<"EOF"
-*   *  *  *  *  sleep 10; /usr/local/bin/updatesensorsfiles control
-*   *  *  *  *  /usr/local/bin/updateweatherfiles-oan
-00  18 *  *  *  /usr/local/bin/updateweatherfiles-oan -a
+*   *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles control
+*   *  *  *  *  /usr/local/bin/tcs updateweatherfiles-oan
+00  18 *  *  *  /usr/local/bin/tcs updateweatherfiles-oan -a
 *   *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
-00  00 *  *  *  /usr/local/bin/updatevarlatestlink; rsync -aH /usr/local/etc/tcs/blocks /usr/local/var/tcs/latest/
+00  00 *  *  *  /usr/local/bin/tcs updatevarlatestlink; rsync -aH /usr/local/etc/tcs/blocks /usr/local/var/tcs/latest/
 */5 *  *  *  * /usr/local/bin/tcs logsensors
 *   *  *  *  * cd /usr/local/var/www/tcs/; sh plots.sh >plots.txt 2>&1
 EOF
@@ -218,8 +218,8 @@ sudo rm -f /tmp/sudoers-tcs
   echo 'test ALL=(ALL) ALL'
   case $host in
   johnsoncu-control)
-    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/rebootsoon'
-    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/restartsoon'
+    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs rebootsoon'
+    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs restartsoon'
     ;;
   esac
 ) >/tmp/sudoers-tcs

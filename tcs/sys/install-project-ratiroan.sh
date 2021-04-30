@@ -83,8 +83,8 @@ sudo mv /etc/hosts.tmp /etc/hosts
 
   cat <<"EOF"
 00 21 *  *  *  /usr/local/bin/tcs cleanfiles
-*  *  *  *  *  /usr/local/bin/updatevarlatestlink
-*  *  *  *  *  /usr/local/bin/updatelocalsensorsfiles
+*  *  *  *  *  /usr/local/bin/tcs updatevarlatestlink
+*  *  *  *  *  /usr/local/bin/tcs updatelocalsensorsfiles
 *  *  *  *  *  /usr/local/bin/tcs checkreboot
 *  *  *  *  *  /usr/local/bin/tcs checkrestart
 EOF
@@ -103,13 +103,13 @@ EOF
   case $host in
   ratiroan-control)
     cat <<"EOF"
-*   *  *  *  *  sleep 10; /usr/local/bin/updatesensorsfiles services control detectors
-*  *  *  *  *  /usr/local/bin/updateweatherfiles-oan
-00 18 *  *  *  /usr/local/bin/updateweatherfiles-oan -a
+*   *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles services control detectors
+*  *  *  *  *  /usr/local/bin/tcs updateweatherfiles-oan
+00 18 *  *  *  /usr/local/bin/tcs updateweatherfiles-oan -a
 *   *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
 *   *  *  *  *  rsync -aH --delete /usr/local/var/tcs/selector rsync://transients.astrossp.unam.mx/ratir-raw/
 00  *  *  *  *  rsync -aH /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/ratir-raw/ 
-00  00 *  *  *  /usr/local/bin/updatevarlatestlink; rsync -aH /usr/local/etc/tcs/blocks /usr/local/var/tcs/latest/
+00  00 *  *  *  /usr/local/bin/tcs updatevarlatestlink; rsync -aH /usr/local/etc/tcs/blocks /usr/local/var/tcs/latest/
 EOF
     ;;
   ratiroan-services)
