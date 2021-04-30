@@ -27,7 +27,7 @@
 
 export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
 
-program=$(basename "$0")
+program="tcs $(basename "$0")"
 
 usageerror () {
   echo 1>&2 "usage: $program [-N N] [--] fitsfile ..."
@@ -77,7 +77,7 @@ fi
 ) |
 while read section 
 do
-  echo $section $($HOME/svn/tcs/bin/fitsfocus -z SFCPS -A -s $section "$@" | sed '/:/d')
+  echo $section $(tcs fitsfocus -z SFCPS -A -s $section "$@" | sed '/:/d')
 done |
 awk -v N=$N '
 BEGIN {
