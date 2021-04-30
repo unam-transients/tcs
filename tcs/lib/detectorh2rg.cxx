@@ -44,6 +44,7 @@
 static char description[DETECTOR_STR_BUFFER_SIZE] = "";
 static char readmode[DETECTOR_STR_BUFFER_SIZE] = "";
 static char identifier[DETECTOR_STR_BUFFER_SIZE] = "";
+static char execpath[DETECTOR_STR_BUFFER_SIZE] = "";
 
 static unsigned long fullnx = 0;
 static unsigned long fullny = 0;
@@ -102,6 +103,7 @@ detectorrawreset(void)
 ////////////////////////////////////////////////////////////////////////
 
 static char *rawfitspath;
+static char *tcsprefix;
 
 const char *
 detectorrawexpose(double exposuretime, const char *shutter)
@@ -111,11 +113,15 @@ detectorrawexpose(double exposuretime, const char *shutter)
   if (rawfitspath == NULL)
     DETECTOR_ERROR("RAWFITSPATH is not set in the environment.");
   unlink(rawfitspath);
+  tcsprefix = getenv("tcsprefix");
+  if (tcsprefix == NULL)
+    DETECTOR_ERROR("tcsprefix is not set in the environment.");
+  snprintf(execpath, sizeof(execpath), "%s/bin/tcs", tcsprefix);
   pid_t childpid = fork();
   if (childpid == 0) {
     char exposuretimearg[DETECTOR_STR_BUFFER_SIZE];
     snprintf(exposuretimearg, sizeof(exposuretimearg), "%.3f", exposuretime);
-    execlp("h2rgexpose", "h2rgexpose", identifier, rawfitspath, exposuretimearg, readmode, NULL);
+    execl(execpath, "tcs", "h2rgexpose", identifier, rawfitspath, exposuretimearg, readmode, NULL);
   } else if (childpid < 0) {
     DETECTOR_ERROR("fork() failed.");
   }
