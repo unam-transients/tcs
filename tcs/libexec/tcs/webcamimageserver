@@ -27,15 +27,14 @@
 
 export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
 
-program=$(basename "$0")
+program="tcs $(basename "$0")"
 
 usageerror () {
-  echo 1>&2 "usage: $program [-p prefix] [-r angle] [-c crop] [--] id url"
+  echo 1>&2 "usage: $program [-r angle] [-c crop] [--] id url"
   exit 1
 }
 
-optstring=p:r:c:
-prefix=/usr/local
+optstring=r:c:
 crop=""
 angle=""
 if ! getopt -qQ -- "$optstring" "$@"
@@ -46,10 +45,6 @@ eval set -- "$(getopt -q -- "$optstring" "$@")"
 while test "$1" != "--"
 do
   case "$1" in
-  -p)
-    prefix="$2"
-    shift 2
-    ;;
   -r)
     angle="$2"
     shift 2
@@ -107,7 +102,7 @@ do
   compacttime=$(date -u --date "$dateandtime" +"%H%M%S")
   compactdateandtime=$(date -u --date "$dateandtime" +"%Y%m%dT%H%M%S")
   
-  dir=$prefix/var/tcs/$compactdate/webcam/$id/
+  dir="$tcsprefix"/var/tcs/$compactdate/webcam/$id/
   mkdir -p "$dir"
   cd "$dir"
   
