@@ -26,15 +26,14 @@
 
 export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
 
-program=$(basename "$0")
+program="tcs $(basename "$0")"
 
 usageerror () {
-  echo 1>&2 "usage: $program [-p prefix]"
+  echo 1>&2 "usage: $program"
   exit 1
 }
 
-optstring=p:
-prefix=/usr/local
+optstring=
 if ! getopt -qQ -- "$optstring" "$@"
 then
   usageerror
@@ -43,10 +42,6 @@ eval set -- "$(getopt -q -- "$optstring" "$@")"
 while test "$1" != "--"
 do
   case "$1" in
-  -p)
-    prefix="$2"
-    shift 2
-    ;;
   *)
     usageerror
     ;;
@@ -58,8 +53,8 @@ then
   usageerror
 fi
 
-mkdir -p "$prefix"/var/tcs/sensors/local
-cd "$prefix"/var/tcs/sensors/local
+mkdir -p "$tcsprefix"/var/tcs/sensors/local
+cd "$tcsprefix"/var/tcs/sensors/local
 
 update () {
   mkdir -p "$(dirname "$1")"
@@ -69,7 +64,7 @@ update () {
 
 uptime | sed 's/,//g' | awk '{ print $(NF-2); }' | update load
 
-df "$prefix"/var/tcs/ | sed 's/%//g' | awk 'NR == 2 { printf("%.2f\n", $5 / 100.0); }' | update disk-space-used
+df "$tcsprefix"/var/tcs/ | sed 's/%//g' | awk 'NR == 2 { printf("%.2f\n", $5 / 100.0); }' | update disk-space-used
 
 mkdir -p ow
 for device in $(owdir | grep '/[0-9]')
