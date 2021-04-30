@@ -647,7 +647,7 @@ namespace eval "ccd" {
       } else {
         set fitsfwhmarg ""
       }
-      set fitsfwhmchannel [open "|newpgrp fitsfwhm -e \"[directories::etc]\" $fitsfwhmarg -- \"$currentfilename\"" "r"]
+      set fitsfwhmchannel [open "|[directories::bin]/tcs newpgrp fitsfwhm -e \"[directories::etc]\" $fitsfwhmarg -- \"$currentfilename\"" "r"]
       chan configure $fitsfwhmchannel -buffering "line"
       chan configure $fitsfwhmchannel -encoding "ascii"
       set line [coroutine::gets $fitsfwhmchannel 0 100]
@@ -671,7 +671,7 @@ namespace eval "ccd" {
       }
     } elseif {[string equal $type "astrometry"]} {
       variable solvingchannel
-      set solvingchannel [open "|newpgrp fitssolvewcs -c -f -e \"[directories::etc]\" -- \"$currentfilename\"" "r"]
+      set solvingchannel [open "|[directories::bin]/tcs newpgrp fitssolvewcs -c -f -e \"[directories::etc]\" -- \"$currentfilename\"" "r"]
       chan configure $solvingchannel -buffering "line"
       chan configure $solvingchannel -encoding "ascii"
       set line [coroutine::gets $solvingchannel 0 100]
@@ -710,7 +710,7 @@ namespace eval "ccd" {
       [string equal $type "guidenext" ]
     } {
       variable fitsfwhmchannel
-      set fitsfwhmchannel [open "|newpgrp fitsfwhm -e \"[directories::etc]\" -- \"$currentfilename\"" "r"]
+      set fitsfwhmchannel [open "|[directories::bin]/tcs newpgrp fitsfwhm -e \"[directories::etc]\" -- \"$currentfilename\"" "r"]
       chan configure $fitsfwhmchannel -buffering "line"
       chan configure $fitsfwhmchannel -encoding "ascii"
       set line [coroutine::gets $fitsfwhmchannel 0 100]
@@ -744,7 +744,7 @@ namespace eval "ccd" {
       variable fitsdonutschannel
       set guidereferencefitsfilename [server::getdata "guidereferencefitsfilename"]
       error "donut guiding needs fixing to work with disappearing FITS files!"
-      set fitsdonutschannel [open "|newpgrp fitsdonuts -- \"$guidereferencefitsfilename\" \"$currentfilename\"" "r"]
+      set fitsdonutschannel [open "|[directories::bin]/tcs newpgrp fitsdonuts -- \"$guidereferencefitsfilename\" \"$currentfilename\"" "r"]
       chan configure $fitsdonutschannel -buffering "line"
       chan configure $fitsdonutschannel -encoding "ascii"
       set line [coroutine::gets $fitsdonutschannel 0 100]

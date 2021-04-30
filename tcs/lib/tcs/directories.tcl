@@ -41,10 +41,16 @@ namespace eval "directories" {
     return $prefix
   }
   
+  variable bindirectory   [file normalize [file join [prefix] "bin"]]
   variable etcdirectory   [file normalize [file join [prefix] "etc" "tcs"]]
   variable vardirectory   [file normalize [file join [prefix] "var" "tcs"]]
   variable sharedirectory [file normalize [file join [prefix] "share" "tcs"]]
   
+  proc bin {} {
+    variable bindirectory
+    return $bindirectory
+  }
+
   proc etc {} {
     variable etcdirectory
     return $etcdirectory

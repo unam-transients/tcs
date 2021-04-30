@@ -925,7 +925,7 @@ set mode "none"
   
   proc trackcatalogobject {catalogname objectname aperture} {
     variable catalogdirectory
-    set channel [::open "|getcatalogobject -d \"$catalogdirectory\" -- \"$catalogname\" \"$objectname\"" "r"]
+    set channel [::open "|[directories::bin]/tcs getcatalogobject -d \"$catalogdirectory\" -- \"$catalogname\" \"$objectname\"" "r"]
     set line [coroutine::gets $channel]
     catch {::close $channel}
     if {[string equal $line ""]} {
@@ -1079,7 +1079,7 @@ set mode "none"
   
   proc ratirtrackcatalogobject {catalogname objectname} {
     variable catalogdirectory
-    set channel [::open "|getcatalogobject -d \"$catalogdirectory\" -- \"$catalogname\" \"$objectname\"" "r"]
+    set channel [::open "|[directories::bin]/tcs getcatalogobject -d \"$catalogdirectory\" -- \"$catalogname\" \"$objectname\"" "r"]
     set line [coroutine::gets $channel]
     catch {::close $channel}
     if {[string equal $line ""]} {

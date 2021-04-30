@@ -83,7 +83,7 @@ namespace eval "selector" {
   proc getblockfiles {} {
     if {[catch {
       set blockfilesdirectory [getblockfilesdirectory]
-      set channel [open "|getblockfiles \"$blockfilesdirectory\"" "r"]
+      set channel [open "|[directories::bin]/tcs getblockfiles \"$blockfilesdirectory\"" "r"]
       set blockfiles [read $channel]
       close $channel
       set blockfiles [split [string trimright $blockfiles "\n"] "\n"]
@@ -502,7 +502,7 @@ namespace eval "selector" {
     log::summary "responding to lvc alert."    
     if {![string equal $skymapurl ""]} {
       log::info [format "skymap url is %s." $skymapurl]
-      set channel [open "|newpgrp  lvcskymapfindpeak $skymapurl" "r"]
+      set channel [open "|[directories::bin]/tcs newpgrp  lvcskymapfindpeak $skymapurl" "r"]
       chan configure $channel -buffering "line"
       chan configure $channel -encoding "ascii"
       set line [coroutine::gets $channel 0 100]

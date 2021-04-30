@@ -488,7 +488,7 @@ namespace eval "finder" {
     }
     if {[string equal $exposuretype "astrometry"]} {
       variable solvingchannel
-      set solvingchannel [open "|newpgrp fitssolvewcs -c -f -e \"[directories::etc]\" -- \"$finalfilename\"" "r"]
+      set solvingchannel [open "|[directories::bin]/tcs newpgrp fitssolvewcs -c -f -e \"[directories::etc]\" -- \"$finalfilename\"" "r"]
       chan configure $solvingchannel -buffering "line"
       chan configure $solvingchannel -encoding "ascii"
       set line [coroutine::gets $solvingchannel]

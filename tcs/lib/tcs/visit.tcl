@@ -24,6 +24,7 @@
 ########################################################################
 
 package require "astrometry"
+package require "directories"
 package require "log"
 
 package provide "visit" 0.0
@@ -152,7 +153,7 @@ namespace eval "visit" {
           log::debug "target is solar system body $number."
           set command "solarsystembodycoordinates $number [utcclock::jd $seconds]"
           log::debug "running command \"$command\"."
-          set channel [open "|$command" "r"]
+          set channel [open "|[directories::bin]/tcs $command" "r"]
           set args [gets $channel]
           close $channel
           log::debug "result was \"$args\"."
