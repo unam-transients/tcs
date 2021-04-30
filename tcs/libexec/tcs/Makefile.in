@@ -68,7 +68,6 @@ installbins			:= 		\
 	logsensors				\
 	logserver				\
 	lvcskymapfindpeak			\
-	makesummarylog				\
 	moonserver				\
 	mountserver				\
 	newpgrp					\
