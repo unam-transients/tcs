@@ -37,7 +37,7 @@ void
 check_status(void)
 {
   if (status != 0) {
-    fprintf(stderr, "fitssoftgain: fatal error:\n");
+    fprintf(stderr, "tcs fitssoftgain: fatal error:\n");
     fits_report_error(stderr, status);
     if (inputfptr != NULL)
       fits_close_file(inputfptr, &status);
@@ -51,7 +51,7 @@ int
 main(int argc, char *argv[])
 {
   if (argc != 4) {
-    fprintf(stderr, "usage: fitssoftgain input gain output.\n");
+    fprintf(stderr, "usage: tcs fitssoftgain input gain output.\n");
     exit(1);
   }
 
@@ -67,7 +67,7 @@ main(int argc, char *argv[])
   char card[81];
   fits_read_card(inputfptr, "SOFTGAIN", card, &status);
   if (status == 0) {
-    fprintf(stderr, "error: \"%s\" has already been processed by fitssoftgain.\n", inputfile);
+    fprintf(stderr, "tcs fitssoftgain: error: \"%s\" has already been processed by fitssoftgain.\n", inputfile);
     exit(1);  
   }
   status = 0;
@@ -109,7 +109,7 @@ main(int argc, char *argv[])
   // Allocate memory for the pixels.
   double *z = malloc(nx * ny * sizeof(*z));
   if (z == NULL) {
-    fprintf(stderr, "error: unable to allocate memory for pixel data.\n");
+    fprintf(stderr, "tcs fitssoftgain: error: unable to allocate memory for pixel data.\n");
     exit(1);  
   }
   
