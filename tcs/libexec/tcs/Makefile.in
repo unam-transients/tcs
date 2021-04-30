@@ -82,7 +82,6 @@ installbins			:= 		\
 	sensorsserver				\
 	shuttersserver				\
 	solarsystembodycoordinates		\
-	ssh-copy-id-to-lan			\
 	startserver 				\
 	stopserver 				\
 	supervisorserver 			\
