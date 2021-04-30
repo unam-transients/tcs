@@ -42,7 +42,6 @@ installbins			:= 		\
 	finderimageserver 			\
 	fitschpix 				\
 	fitsdatawindow                          \
-	fitsdonuts 				\
 	fitsfocus				\
 	fitsfwhm 				\
 	fitsmapfocus				\
