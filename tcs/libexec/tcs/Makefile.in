@@ -55,7 +55,6 @@ installbins			:= 		\
 	getblockfiles				\
 	getcatalogobject 			\
 	gcntanserver 				\
-	gcntantest				\
 	guiderserver 				\
 	gpio	 				\
 	haltsoon				\
