@@ -33,7 +33,7 @@ int
 main(int argc, char *argv[])
 {
   if (argc != 6) {
-    fprintf(stderr, "usage: %s fits_name wsx wnx wsy wny.\n", argv[0]);
+    fprintf(stderr, "usage: tcs %s fits_name wsx wnx wsy wny.\n", argv[0]);
     exit(1);
   }
 
