@@ -29,15 +29,14 @@ export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bi
 
 trap '' HUP
 
-program=$(basename "$0")
+program="tcs $(basename "$0")"
 
 usageerror () {
-  echo 1>&2 "usage: $program [-p prefix] [-f] [-j] [-z] [-d] [--] destination"
+  echo 1>&2 "usage: $program [-f] [-j] [-z] [-d] [--] destination"
   exit 1
 }
 
-optstring=p:fjzd
-prefix=/usr/local
+optstring=fjzd
 compress="bzip2 -1kf"
 rsync="rsync"
 suffix="bz2"
@@ -49,10 +48,6 @@ eval set -- "$(getopt -q -- "$optstring" "$@")"
 while test "$1" != "--"
 do
   case "$1" in
-  -p)
-    prefix="$2"
-    shift 2
-    ;;
   -z)
     compress="gzip -1f"
     suffix="gz"
@@ -84,7 +79,7 @@ then
 fi
 dst="$1"
 
-cd "$prefix"/var/tcs
+cd "$tcsprefix"/var/tcs
 while true
 do
   find . -name "*C[0-9]?.fits" | 

@@ -147,7 +147,7 @@ EOF
   
    case $host in
    colibricu-detectors)
-     echo "instrumentdataserver -f -d rsync://services/tcs/ &"
+     echo "tcs instrumentdataserver -f -d rsync://services/tcs/ &"
      ;;
    esac
 

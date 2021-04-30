@@ -153,10 +153,10 @@ EOF
 
   case $host in
   ddotioan-services)
-    echo "instrumentdataserver -f rsync://transients.astrossp.unam.mx/ddoti-raw/ &"
+    echo "tcs instrumentdataserver -f rsync://transients.astrossp.unam.mx/ddoti-raw/ &"
     ;;
   ddotioan-[de][123])
-    echo "instrumentdataserver -f -d rsync://services/tcs/ &"
+    echo "tcs instrumentdataserver -f -d rsync://services/tcs/ &"
     ;;
   esac
 

@@ -140,10 +140,10 @@ EOF
 
   case $host in
   ratiroan-services)
-    echo "instrumentdataserver -j rsync://transients.astrossp.unam.mx/ratir-raw/ &"
+    echo "tcs instrumentdataserver -j rsync://transients.astrossp.unam.mx/ratir-raw/ &"
     ;;
   ratiroan-detectors|ratiroan-tcs-a)
-    echo "instrumentdataserver -j -d rsync://services/tcs/ &"
+    echo "tcs instrumentdataserver -j -d rsync://services/tcs/ &"
     ;;
   ratiroan-control)
     echo "tcs finderdataserver rsync://services/tcs/ &"
