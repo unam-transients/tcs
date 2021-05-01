@@ -157,7 +157,7 @@ fi
 
 for arg in "$@"
 do
-  fullserver="$libexecdir"/${server}server
+  fullserver="$libexecdir"/${arg}server
   pids=$(pgrep -u root -f $fullserver)
   if test ! -z "$pids"
   then
