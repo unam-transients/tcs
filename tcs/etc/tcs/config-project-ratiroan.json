@@ -183,7 +183,7 @@
   },
   "nefinder": {
     // Finder focuser values determined 20210405.
-    "focuserinitialposition": "600",
+    //"focuserinitialposition": "600",
     // nefinder->C1 pointing model from 20210409.
     "pointingmodelparameters": {
       "ID": "+0.001360",
@@ -214,8 +214,10 @@
     "filterwheelidentifier":           "null",
     "filterwheelinitialposition":      "0",
     "allowedfilterwheelpositionerror": "0",
-    "focusertype":                     "fli",
-    "focuseridentifier":               "DF0101910",
+//    "focusertype":                     "fli",
+//    "focuseridentifier":               "DF0101910",
+    "focusertype":                     "null",
+    "focuseridentifier":               "null",
     "allowedfocuserpositionerror":     "0",
     "defaultfocusexposuretime":        "1.0",
     "defaultfocusrange":               "600",
@@ -257,8 +259,10 @@
     "filterwheelidentifier":           "null",
     "filterwheelinitialposition":      "0",
     "allowedfilterwheelpositionerror": "0",
-    "focusertype":                     "fli",
-    "focuseridentifier":               "DF0080209",
+//    "focusertype":                     "fli",
+//    "focuseridentifier":               "DF0080209",
+    "focusertype":                     "null",
+    "focuseridentifier":               "null",
     "allowedfocuserpositionerror":     "0",
     "defaultfocusexposuretime":        "1.0",
     "defaultfocusrange":               "600",
