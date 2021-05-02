@@ -182,8 +182,6 @@
   "guider": {
   },
   "nefinder": {
-    // Finder focuser values determined 20210405.
-    //"focuserinitialposition": "600",
     // nefinder->C1 pointing model from 20210409.
     "pointingmodelparameters": {
       "ID": "+0.001360",
@@ -214,8 +212,11 @@
     "filterwheelidentifier":           "null",
     "filterwheelinitialposition":      "0",
     "allowedfilterwheelpositionerror": "0",
-//    "focusertype":                     "fli",
-//    "focuseridentifier":               "DF0101910",
+    // Finder focuser values determined 20210405.
+    //"focuserinitialposition": "600",
+    //"focusertype":                     "fli",
+    //"focuseridentifier":               "DF0101910",
+    "focuserinitialposition":          "0",
     "focusertype":                     "null",
     "focuseridentifier":               "null",
     "allowedfocuserpositionerror":     "0",
@@ -227,8 +228,6 @@
     "temperaturelimitoutletgroup":     "nefinder-ccd"
   },
   "sefinder": {
-    // Finder focuser values determined 20210405.
-    "focuserinitialposition": "1100",
     // sefinder->C1 pointing model from 20210409.
     "pointingmodelparameters": {
       "ID": "-0.010418",
@@ -259,8 +258,11 @@
     "filterwheelidentifier":           "null",
     "filterwheelinitialposition":      "0",
     "allowedfilterwheelpositionerror": "0",
+    // Finder focuser values determined 20210405.
+//    "focuserinitialposition":          "1100",
 //    "focusertype":                     "fli",
 //    "focuseridentifier":               "DF0080209",
+    "focuserinitialposition":          "0",
     "focusertype":                     "null",
     "focuseridentifier":               "null",
     "allowedfocuserpositionerror":     "0",
@@ -574,11 +576,11 @@
       "shutters"              : [["dome-ibb", "a", "5"]],
       "secondary"             : [["dome-ibb", "a", "6"]],
      
-      "nefinder-ccd"          : [["telescope-ibb", "a", "6"]],
-      "nefinder-focuser"      : [["telescope-ibb", "a", "1"]],
-      "sefinder-ccd"          : [["telescope-ibb", "a", "7"]],
-      "sefinder-focuser"      : [["telescope-ibb", "a", "3"]],
-      "finder-usb-rex"        : [["telescope-ibb", "a", "4"]],
+      "nefinder-ccd"          : [["telescope-ibb", "b", "6"]],
+      "nefinder-focuser"      : [["telescope-ibb", "b", "1"]],
+      "sefinder-ccd"          : [["telescope-ibb", "b", "7"]],
+      "sefinder-focuser"      : [["telescope-ibb", "b", "3"]],
+      "finder-usb-rex"        : [["telescope-ibb", "b", "4"]],
   
       "science-ccd-pump"      : [["rack-ibb", "a", "7"]],
       "finder-ccd-pump"       : [["rack-ibb", "a", "8"]],
@@ -616,7 +618,7 @@
   
       "machine-room-owhub"    : [["rack-ibb", "a", "1"]],
       "dome-owhub"            : [["dome-ibb", "a", "8"]],
-      "telescope-owhub"       : [["telescope-ibb", "a", "8"]],
+      "telescope-owhub"       : [["telescope-ibb", "b", "8"]],
       
       "ni-controller"         : [["dome-ibb", "a", "7"]]
     }
