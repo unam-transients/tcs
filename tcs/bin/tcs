@@ -29,8 +29,15 @@ usageerror () {
   cat <<"EOF" 1>&2
 usage:
 
-  tcs request server request ...
+  tcs subcommand ...
+  
+where subcommand is one of:
+
 EOF
+(
+  cd $tcsprefix/libexec/tcs/
+  ls | fmt -72 | sed 's/^/  /' 1>&2
+)
   exit 1
 }
 
