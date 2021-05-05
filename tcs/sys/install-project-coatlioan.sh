@@ -156,10 +156,10 @@ EOF
   case $host in
   coatlioan-services)
     echo "tcs instrumentimageserver C0 e1 &"
-    echo "webcamimageserver a http://coatli:coatli@webcam-a/cgi-bin/viewer/video.jpg &"
-    echo "webcamimageserver b http://coatli:coatli@webcam-b/cgi-bin/viewer/video.jpg &"
-    echo "webcamimageserver c http://coatli:coatli@webcam-c/cgi-bin/viewer/video.jpg &"
-    echo "webcamimageserver -r -2 -c 640x480+200+500 cz http://coatli:coatli@webcam-c/cgi-bin/viewer/video.jpg &"
+    echo "tcs webcamimageserver a http://coatli:coatli@webcam-a/cgi-bin/viewer/video.jpg &"
+    echo "tcs webcamimageserver b http://coatli:coatli@webcam-b/cgi-bin/viewer/video.jpg &"
+    echo "tcs webcamimageserver c http://coatli:coatli@webcam-c/cgi-bin/viewer/video.jpg &"
+    echo "tcs webcamimageserver -r -2 -c 640x480+200+500 cz http://coatli:coatli@webcam-c/cgi-bin/viewer/video.jpg &"
     echo "tcs allskyimageserver http://132.248.4.251:50/~allsky/imagenes/ultima_RED.jpg &"
     echo "mkdir -p /usr/local/var/tcs/reboot"
     echo "mkdir -p /usr/local/var/tcs/restart"

@@ -151,17 +151,23 @@ EOF
   esac
 
   case $host in
+  ratiroan-tcs-a)
+    echo "/etc/init.d/rts2 start &"
+    ;;
+  esac
+
+  case $host in
   ratiroan-services)
     echo "tcs finderimageserver &"
     echo "tcs instrumentimageserver C0 detectors &"
     echo "tcs instrumentimageserver C1 detectors &"
     echo "tcs instrumentimageserver C2 tcs-a &"
     echo "tcs instrumentimageserver C3 tcs-a &"
-    echo "webcamimageserver -c 640x464+0+16 a http://observa:00.observa@webcam-a/jpg/image.jpg &"
-    echo "webcamimageserver -c 640x464+0+16 b http://observa:00.observa@webcam-b/jpg/image.jpg &"
-    echo "webcamimageserver -c 640x464+0+16 c http://observa:00.observa@webcam-c/jpg/image.jpg &"
-    echo "webcamimageserver -c 640x464+0+16 d http://observa:00.observa@webcam-d/jpg/image.jpg &"
-    echo "webcamimageserver e http://ratir:ratir@webcam-e/cgi-bin/viewer/video.jpg &"
+    echo "tcs webcamimageserver -c 640x464+0+16 a http://observa:00.observa@webcam-a/jpg/image.jpg &"
+    echo "tcs webcamimageserver -c 640x464+0+16 b http://observa:00.observa@webcam-b/jpg/image.jpg &"
+    echo "tcs webcamimageserver -c 640x464+0+16 c http://observa:00.observa@webcam-c/jpg/image.jpg &"
+    echo "tcs webcamimageserver -c 640x464+0+16 d http://observa:00.observa@webcam-d/jpg/image.jpg &"
+    echo "tcs webcamimageserver e http://ratir:ratir@webcam-e/cgi-bin/viewer/video.jpg &"
     echo "tcs allskyimageserver  http://132.248.4.140/imagenes/ultima_RED.jpg &"
     echo "mkdir -p /usr/local/var/tcs/reboot"
     echo "mkdir -p /usr/local/var/tcs/restart"

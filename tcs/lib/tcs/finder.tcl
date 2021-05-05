@@ -464,7 +464,7 @@ namespace eval "finder" {
       set ny [dict get $datawindow ny]
       log::debug "ACF fitting region is $sx $nx $sy $ny."
       set fitsfwhmchannel [open \
-        "|fitpsf $finalfilename $sx $nx $sy $ny 16 3 \"[file join [directories::etc] wisdom]\"" \
+        "|[directories::bin]/tcs fitpsf $finalfilename $sx $nx $sy $ny 16 3 \"[file join [directories::etc] wisdom]\"" \
       ]
       chan configure $fitsfwhmchannel -buffering "line"
       chan configure $fitsfwhmchannel -encoding "ascii"
