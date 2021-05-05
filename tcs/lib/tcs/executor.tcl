@@ -239,13 +239,11 @@ namespace eval "executor" {
     variable blockidentifier
     variable visitidentifier
     log::info "exposing $type image for [join $exposuretimes /] seconds (exposure $exposure)."
-    set date [utcclock::formatdate $start false]
-    set dateandtime [utcclock::combinedformat $start 0 false]
     set projectfullidentifier [server::getdata "projectfullidentifier"]
-    set fitsfileprefix "[directories::vartoday]/executor/images/$projectfullidentifier/$blockidentifier/$visitidentifier/$dateandtime"
-    log::info "FITS file prefix is $fitsfileprefix."
-    file mkdir [file dirname $fitsfileprefix]
-    client::request "instrument" "expose $type $fitsfileprefix $exposuretimes"
+    set fitsfiledir "[directories::vartoday]/executor/images/$projectfullidentifier/$blockidentifier/$visitidentifier/"
+    log::info "FITS file directory is $fitsfiledir."
+    file mkdir $fitsfiledir
+    client::request "instrument" "expose $type $fitsfiledir $exposuretimes"
     client::wait "instrument"
     log::info [format "finished exposing $type image (exposure $exposure) after %.1f seconds." [utcclock::diff now $start]]
     set exposure [expr {$exposure + 1}]

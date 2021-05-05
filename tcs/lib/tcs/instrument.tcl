@@ -480,7 +480,7 @@ namespace eval "instrument" {
     log::info "exposing $type images with [join $exposingdetectorlist /] for [join $exposuretimelist /] seconds using [join $nreadslist /] reads."
     log::info "exposing $n images in [lindex $exposingdetectorlist 0]."
     log::info "FITS file directory is $fitsfiledirectory."
-    file mkdir [file dirname $fitsfileprefix]
+    file mkdir [file dirname $fitsfiledirectory]
     foreach detector $exposingdetectorlist nreads $nreadslist { 
       if {[string equal $detector "C2"] || [string equal $detector "C3"]} {
         client::request $detector "setreadmode $nreads"
@@ -817,7 +817,7 @@ namespace eval "instrument" {
       "instrument::movefilterwheelactivitycommand $positions"
   }
   
-  proc expose {type fitsfileprefix args} {
+  proc expose {type fitsfiledir args} {
     server::checkstatus
     server::checkactivity "idle"
     safetyswitch::checksafetyswitch
@@ -859,6 +859,8 @@ namespace eval "instrument" {
     } else {
       set timeoutmilliseconds [expr {1000 * ($maxexposuretime + 300)}]
     }
+    set dateandtime [utcclock::combinedformat now 0 false]
+    set fitsfileprefix "$fitsfiledir/$dateandtime"
     server::newactivitycommand "exposing" "idle" \
       "instrument::exposeactivitycommand $type $fitsfileprefix $exposuretimes" \
       $timeoutmilliseconds
