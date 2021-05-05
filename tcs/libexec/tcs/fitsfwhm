@@ -110,7 +110,7 @@ then
   wsy=$(expr $ymin - 1)
   wnx=$(expr $xmax - $xmin + 1)
   wny=$(expr $ymax - $ymin + 1)
-  fitpsf "$fitsfile" $wsx $wnx $wsy $wny 16 3 "$wisdom" 2>/dev/null
+  tcs fitpsf "$fitsfile" $wsx $wnx $wsy $wny 16 3 "$wisdom" 2>/dev/null
 else
   if test ! -z "$saturationlevel" && test "$saturationlevel" != "none"
   then

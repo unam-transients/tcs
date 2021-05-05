@@ -85,7 +85,7 @@ do
   find . -name "*C[0-9]?.fits" | 
   while read fits
   do
-    fitsheader $fits >$fits.txt
+    tcs fitsheader $fits >$fits.txt
     $compress $fits
     $rsync -aR $fits.txt $fits.$suffix "$dst"
   done
