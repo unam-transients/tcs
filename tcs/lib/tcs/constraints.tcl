@@ -730,8 +730,8 @@ namespace eval "constraints" {
       if {$observedzenithdistance < $minzenithdistance} {
         setwhy [format \
           "zenit distance (%.2fd) at $when is less than the minimum allowed (%.2fd)." \
-          [astrometry::radtodeg $$observedzenithdistance] \
-          [astrometry::radtodeg $$minzenithdistance] \
+          [astrometry::radtodeg $observedzenithdistance] \
+          [astrometry::radtodeg $minzenithdistance] \
         ]
         return false
       }
@@ -767,8 +767,8 @@ namespace eval "constraints" {
       if {$observedzenithdistance > $maxzenithdistance} {
         setwhy [format \
           "zenith distance (%.2fd) at $when is more than the maximum allowed (%.2fd)." \
-          [astrometry::radtodeg $$observedzenithdistance] \
-          [astrometry::radtodeg $$maxzenithdistance] \
+          [astrometry::radtodeg $observedzenithdistance] \
+          [astrometry::radtodeg $maxzenithdistance] \
         ]
         return false
       }
