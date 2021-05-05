@@ -75,8 +75,8 @@ namespace eval "instrumentserver" {
     return
   }
   
-  proc slaveexpose {type fitsfileprefix args} {
-    eval instrument::expose $type $fitsfileprefix $args
+  proc slaveexpose {type fitsfiledir args} {
+    eval instrument::expose $type $fitsfiledir $args
   }
   
   proc slaveanalyze {args} {
@@ -118,11 +118,11 @@ namespace eval "instrumentserver" {
     return
   }
   
-  proc slaveratirexpose {C0exposuretime C1exposuretime C2exposuretime C3exposuretime {C2nreads 1} {C3nreads 1} {type "object"} {prefix "/tmp/"}} {
+  proc slaveratirexpose {C0exposuretime C1exposuretime C2exposuretime C3exposuretime {C2nreads 1} {C3nreads 1} {type "object"} {fitsfileprefix "/tmp/"}} {
     instrument::ratirexpose $C0exposuretime $C1exposuretime $C2exposuretime $C3exposuretime $C2nreads $C3nreads $type $fitsfileprefix
   }
   
-  proc slaveratirexposeloop {n C0exposuretime C1exposuretime C2exposuretime C3exposuretime {C2nreads 1} {C3nreads 1} {type "object"} {prefix "/tmp/"}} {
+  proc slaveratirexposeloop {n C0exposuretime C1exposuretime C2exposuretime C3exposuretime {C2nreads 1} {C3nreads 1} {type "object"} {fitsfileprefix "/tmp/"}} {
     instrument::ratirexposeloop $n $C0exposuretime $C1exposuretime $C2exposuretime $C3exposuretime $C2nreads $C3nreads $type $fitsfileprefix
   }
   
