@@ -647,7 +647,8 @@ namespace eval "ccd" {
       } else {
         set fitsfwhmarg ""
       }
-      set fitsfwhmchannel [open "|[directories::bin]/tcs newpgrp fitsfwhm -e \"[directories::etc]\" $fitsfwhmarg -- \"$currentfilename\"" "r"]
+      log::info "command is [directories::bin]/tcs newpgrp [directories::bin]/tcs fitsfwhm $fitsfwhmarg -- \"$currentfilename\""
+      set fitsfwhmchannel [open "|[directories::bin]/tcs newpgrp [directories::bin]/tcs fitsfwhm $fitsfwhmarg -- \"$currentfilename\"" "r"]
       chan configure $fitsfwhmchannel -buffering "line"
       chan configure $fitsfwhmchannel -encoding "ascii"
       set line [coroutine::gets $fitsfwhmchannel 0 100]
@@ -671,7 +672,7 @@ namespace eval "ccd" {
       }
     } elseif {[string equal $type "astrometry"]} {
       variable solvingchannel
-      set solvingchannel [open "|[directories::bin]/tcs newpgrp fitssolvewcs -c -f -e \"[directories::etc]\" -- \"$currentfilename\"" "r"]
+      set solvingchannel [open "|[directories::bin]/tcs newpgrp [directories::bin]/tcs fitssolvewcs -c -f -- \"$currentfilename\"" "r"]
       chan configure $solvingchannel -buffering "line"
       chan configure $solvingchannel -encoding "ascii"
       set line [coroutine::gets $solvingchannel 0 100]
@@ -710,7 +711,7 @@ namespace eval "ccd" {
       [string equal $type "guidenext" ]
     } {
       variable fitsfwhmchannel
-      set fitsfwhmchannel [open "|[directories::bin]/tcs newpgrp fitsfwhm -e \"[directories::etc]\" -- \"$currentfilename\"" "r"]
+      set fitsfwhmchannel [open "|[directories::bin]/tcs newpgrp [directories::bin]/tcs fitsfwhm -- \"$currentfilename\"" "r"]
       chan configure $fitsfwhmchannel -buffering "line"
       chan configure $fitsfwhmchannel -encoding "ascii"
       set line [coroutine::gets $fitsfwhmchannel 0 100]
