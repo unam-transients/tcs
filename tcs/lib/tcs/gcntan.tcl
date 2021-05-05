@@ -146,7 +146,7 @@ namespace eval "gcntan" {
       "swiftbatgrbposition" -
       "swiftxrtposition" - 
       "swiftuvotposition" {
-        log::info [format "received %s packet." $type]
+        log::summary [format "received %s packet." $type]
         variable swiftalertprojectidentifier
         set projectidentifier  $swiftalertprojectidentifier
         set blockidentifier    [swifttrigger         $packet]
@@ -169,7 +169,7 @@ namespace eval "gcntan" {
       "fermigbmgndpos" -
       "fermigbmfinpos" -
       "fermigbmpostest" {
-        log::info [format "received %s packet." $type]
+        log::summary [format "received %s packet." $type]
         variable fermialertprojectidentifier
         set projectidentifier  $fermialertprojectidentifier
         set blockidentifier    [fermitrigger         $packet]
@@ -192,7 +192,7 @@ namespace eval "gcntan" {
       "fermilatgrbposupd" -
       "fermilatgnd" -
       "fermilatoffline" {
-        log::info [format "received %s packet." $type]
+        log::summary [format "received %s packet." $type]
         variable fermialertprojectidentifier
         set projectidentifier  $fermialertprojectidentifier
         set blockidentifier    [fermitrigger         $packet]
@@ -212,7 +212,7 @@ namespace eval "gcntan" {
       }
       
       "hawcburstmonitor" {
-        log::info [format "received %s packet." $type]
+        log::summary [format "received %s packet." $type]
         variable hawcalertprojectidentifier
         set projectidentifier  $hawcalertprojectidentifier
         set blockidentifier    [hawctrigger        $packet]
@@ -232,7 +232,7 @@ namespace eval "gcntan" {
       }
 
       "hawcburstmonitor" {
-        log::info [format "received %s packet." $type]
+        log::summary [format "received %s packet." $type]
         variable hawcalertprojectidentifier
         set projectidentifier  $hawcalertprojectidentifier
         set blockidentifier    [hawctrigger        $packet]
@@ -254,7 +254,7 @@ namespace eval "gcntan" {
       "icecubeastrotrackgold" -
       "icecubeastrotrackbronze" -
       "icecubecascade" {
-        log::info [format "received %s packet." $type]
+        log::summary [format "received %s packet." $type]
         variable icecubealertprojectidentifier
         set projectidentifier  $icecubealertprojectidentifier
         set blockidentifier    [icecubetrigger        $packet]
@@ -276,7 +276,7 @@ namespace eval "gcntan" {
       "lvcpreliminary" -
       "lvcinitial" -
       "lvcupdate" {
-        log::info [format "received %s packet." $type]
+        log::summary [format "received %s packet." $type]
         return "echo"
         variable lvcalertprojectidentifier
         set projectidentifier  $lvcalertprojectidentifier
@@ -292,7 +292,7 @@ namespace eval "gcntan" {
       }
 
       "lvcretraction" {
-        log::info [format "received %s packet." $type]
+        log::summary [format "received %s packet." $type]
         return "echo"
         variable lvcalertprojectidentifier
         set projectidentifier  $lvcalertprojectidentifier
@@ -307,7 +307,7 @@ namespace eval "gcntan" {
       }
        
       "lvccounterpart" {
-        log::info [format "received %s packet." $type]
+        log::summary [format "received %s packet." $type]
         return "echo"
         variable lvcalertprojectidentifier
         set projectidentifier  $lvcalertprojectidentifier
@@ -343,53 +343,57 @@ namespace eval "gcntan" {
   
   ######################################################################
   
-  proc logresponse {test message} {
+  proc logresponse {test retraction grb message} {
     if {$test} {
       log::debug "test: $message"
+    } elseif {![string equal $retraction ""] && $retraction} {
+      log::summary $message
+    } elseif {![string equal $grb ""] && !$grb} {
+      log::info $message
     } else {
       log::summary $message
     }
   }
   
   proc respondtogrbalert {test projectidentifier blockidentifier name origin identifier type alerttimestamp eventtimestamp retraction grb alpha delta equinox uncertainty} {
-    logresponse $test [format "%s: name is %s." $type $name]
+    logresponse $test $retraction $grb [format "%s: name is %s." $type $name]
     if {$test} {
-      logresponse $test [format "%s: this is a test." $type]
+      logresponse $test $retraction $grb [format "%s: this is a test." $type]
     } else {
-      logresponse $test [format "%s: this is not a test." $type]
+      logresponse $test $retraction $grb [format "%s: this is not a test." $type]
     }
     set enabled ""
     if {![string equal $grb ""]} {
       if {$grb} {
-        logresponse $test [format "%s: this is a GRB." $type]
+        logresponse $test $retraction $grb [format "%s: this is a GRB." $type]
         set enabled true
       } else {
-        logresponse $test [format "%s: this is not a GRB." $type]
+        logresponse $test $retraction $grb [format "%s: this is not a GRB." $type]
         set enabled false
       }
     }
     if {![string equal $retraction ""] && $retraction} {
-      logresponse $test [format "%s: this is a retraction." $type]
+      logresponse $test $retraction $grb [format "%s: this is a retraction." $type]
       set enabled false
     }
-    logresponse $test [format "%s: origin/identifier/type are %s/%s/%s." $type $origin $identifier $type]
-    logresponse $test [format "%s: alert timestamp is %s." $type [utcclock::format $alerttimestamp]] 
+    logresponse $test $retraction $grb [format "%s: origin/identifier/type are %s/%s/%s." $type $origin $identifier $type]
+    logresponse $test $retraction $grb [format "%s: alert timestamp is %s." $type [utcclock::format $alerttimestamp]] 
     if {![string equal $eventtimestamp ""]} {
-      logresponse $test [format "%s: event timestamp is %s." $type [utcclock::format $eventtimestamp]]
-      logresponse $test [format "%s: event delay is %s." $type [utcclock::formatinterval [utcclock::diff $alerttimestamp $eventtimestamp]]]
+      logresponse $test $retraction $grb [format "%s: event timestamp is %s." $type [utcclock::format $eventtimestamp]]
+      logresponse $test $retraction $grb [format "%s: event delay is %s." $type [utcclock::formatinterval [utcclock::diff $alerttimestamp $eventtimestamp]]]
     } else {
-      logresponse $test [format "%s: no event timestamp." $type]
+      logresponse $test $retraction $grb [format "%s: no event timestamp." $type]
     }
-    logresponse $test [format "%s: position is %s %s %s." $type [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox]
-    logresponse $test [format "%s: 90%% uncertainty is %s in radius." $type [astrometry::formatdistance $uncertainty]]
-    logresponse $test [format "%s: project identifier is %s." $type $projectidentifier]
-    logresponse $test [format "%s: block identifier is %d." $type $blockidentifier]
+    logresponse $test $retraction $grb [format "%s: position is %s %s %s." $type [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox]
+    logresponse $test $retraction $grb [format "%s: 90%% uncertainty is %s in radius." $type [astrometry::formatdistance $uncertainty]]
+    logresponse $test $retraction $grb [format "%s: project identifier is %s." $type $projectidentifier]
+    logresponse $test $retraction $grb [format "%s: block identifier is %d." $type $blockidentifier]
     if {$test} {
-      logresponse $test [format "%s: not requesting selector to respond: this is a test packet." $type]
+      logresponse $test $retraction $grb [format "%s: not requesting selector to respond: this is a test packet." $type]
     } elseif {[string equal $projectidentifier ""]} {
-      logresponse $test [format "%s: not requesting selector to respond: no project identifier." $type]
+      logresponse $test $retraction $grb [format "%s: not requesting selector to respond: no project identifier." $type]
     } else {
-      logresponse $test [format "%s: requesting selector to respond." $type]
+      logresponse $test $retraction $grb [format "%s: requesting selector to respond." $type]
       if {[catch {
         client::request "selector" [list respondtoalert $projectidentifier $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty]
       } result]} {
@@ -399,33 +403,33 @@ namespace eval "gcntan" {
   }
   
   proc respondtolvcalert {test projectidentifier blockidentifier name origin identifier type alerttimestamp eventtimestamp retraction skymapurl} {
-    logresponse $test [format "%s: name is %s." $type $name]
+    logresponse $test $retraction true [format "%s: name is %s." $type $name]
     if {$test} {
-      logresponse $test [format "%s: this is a test." $type]
+      logresponse $test $retraction true [format "%s: this is a test." $type]
     } else {
-      logresponse $test [format "%s: this is not a test." $type]
+      logresponse $test $retraction true [format "%s: this is not a test." $type]
     }
     if {![string equal $retraction ""] && $retraction} {
-      logresponse $test [format "%s: this is a retraction." $type]
+      logresponse $test $retraction true [format "%s: this is a retraction." $type]
       set enabled false
     } else {
       set enabled true
     }
-    logresponse $test [format "%s: origin/identifier/type are %s/%s/%s." $type $origin $identifier $type]
-    logresponse $test [format "%s: alert timestamp is %s." $type [utcclock::format $alerttimestamp]] 
-    logresponse $test [format "%s: event timestamp is %s." $type [utcclock::format $eventtimestamp]]
-    logresponse $test [format "%s: event delay is %s." $type [utcclock::formatinterval [utcclock::diff $alerttimestamp $eventtimestamp]]]
+    logresponse $test $retraction true [format "%s: origin/identifier/type are %s/%s/%s." $type $origin $identifier $type]
+    logresponse $test $retraction true [format "%s: alert timestamp is %s." $type [utcclock::format $alerttimestamp]] 
+    logresponse $test $retraction true [format "%s: event timestamp is %s." $type [utcclock::format $eventtimestamp]]
+    logresponse $test $retraction true [format "%s: event delay is %s." $type [utcclock::formatinterval [utcclock::diff $alerttimestamp $eventtimestamp]]]
     if {![string equal $skymapurl ""]} {
-      logresponse $test [format "%s: skymap url is %s." $type $skymapurl]
+      logresponse $test $retraction true [format "%s: skymap url is %s." $type $skymapurl]
     }
-    logresponse $test [format "%s: project identifier is \"%s\"." $type $projectidentifier]
-    logresponse $test [format "%s: block identifier is %d." $type $blockidentifier]
+    logresponse $test $retraction true [format "%s: project identifier is \"%s\"." $type $projectidentifier]
+    logresponse $test $retraction true [format "%s: block identifier is %d." $type $blockidentifier]
     if {$test} {
-      logresponse $test [format "%s: not requesting selector to respond: this is a test packet." $type]
+      logresponse $test $retraction true [format "%s: not requesting selector to respond: this is a test packet." $type]
     } elseif {[string equal $projectidentifier ""]} {
-      logresponse $test [format "%s: not requesting selector to respond: no project identifier." $type]
+      logresponse $test $retraction true [format "%s: not requesting selector to respond: no project identifier." $type]
     } else {
-      logresponse $test [format "%s: requesting selector to respond." $type]
+      logresponse $test $retraction true [format "%s: requesting selector to respond." $type]
       if {[catch {
         client::request "selector" [list respondtolvcalert $projectidentifier $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $skymapurl]
       } result]} {
@@ -559,6 +563,10 @@ namespace eval "gcntan" {
 
   # These procedures are designed to work with the following packet types:
   #
+  #  fermigbmpostest
+  #  fermigbmfltpos
+  #  fermigbmgndpos
+  #  fermigbmfinpos
   #  fermilatgrbpostest
   #  fermilatgrbposupd
   #  fermilatgnd
@@ -654,10 +662,10 @@ namespace eval "gcntan" {
     # 90% of the probability.
     #
     # In this, calculation, we use the result that the probability contained
-    # within a radius r of a 2_D Gaussian with p(x,y) = A exp(-0.5*(r/sigma)^2)
+    # within a radius r of a 2-D Gaussian with p(x,y) = A exp(-0.5*(r/sigma)^2)
     # is (1-exp(-0.5*(r/sigma)^2)).
     #
-    # The mapping from raw 68% uncertainty to true 90% uncertainty, including
+    # The mapping from raw 68% statistical uncertainty to true 90% uncertainty, including
     # systematics, is then:
     #
     #   raw  true
@@ -696,24 +704,25 @@ namespace eval "gcntan" {
     set C 1.81
     set T 4.07
     
-    set s $rawuncertainty
+    set R $rawuncertainty
     
     # Convert from "radius containing 68% of the probability" to a true sigma.
-    set s [expr {$s / sqrt(-2 * log(1-0.68))}]
+    set R [expr {$R / sqrt(-2 * log(1-0.68))}]
     set C [expr {$C / sqrt(-2 * log(1-0.68))}]
     set T [expr {$T / sqrt(-2 * log(1-0.68))}]
 
     # Add the systematic and statistical uncertainties in quadrature.
-    set c [expr {sqrt($s * $s + $C * $C)}]
-    set t [expr {sqrt($s * $s + $T * $T)}]
+    set C [expr {sqrt($R * $R + $C * $C)}]
+    set T [expr {sqrt($R * $R + $T * $T)}]
 
     # Find the radius containing 90% of the probability.
     set P 0.9
     set r 0
     set dr 0.01
     while {true} {
-      set p [expr {$F * (1 - exp(-0.5*($r*$r)/($c*$c))) + (1 - $F) * (1 - exp(-0.5*($r*$r)/($t*$t)))}]
+      set p [expr {$F * (1 - exp(-0.5*($r*$r)/($C*$C))) + (1 - $F) * (1 - exp(-0.5*($r*$r)/($T*$T)))}]
       if {$p > $P} {
+        set r [expr {$r - $dr}]      
         break
       }
       set r [expr {$r + $dr}]
