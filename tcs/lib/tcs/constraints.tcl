@@ -45,12 +45,6 @@ namespace eval "constraints" {
 
   ######################################################################
   
-  proc start {} {
-    setwhy ""
-  }
-  
-  ######################################################################
-
   variable focustimestamp ""
 
   proc focustimestamp {} {
@@ -112,11 +106,11 @@ namespace eval "constraints" {
     variable minzenithdistancelimit
     variable maxzenithdistancelimit
 
-    log::info "checking the target is within the telescope pointing limits at $when ([utcclock::format $seconds])."
-    log::info "target observed HA and delta at $when are [astrometry::formatha [visit::observedha $visit $seconds]] [astrometry::formatdelta [visit::observeddelta $visit $seconds]]."
+    log::debug "checking the target is within the telescope pointing limits at $when ([utcclock::format $seconds])."
+    log::debug "target observed HA and delta at $when are [astrometry::formatha [visit::observedha $visit $seconds]] [astrometry::formatdelta [visit::observeddelta $visit $seconds]]."
 
     set delta [visit::observeddelta $visit $seconds]
-    log::info [format "checking the declination (%s) at $when against the southern limit (%s)." \
+    log::debug [format "checking the declination (%s) at $when against the southern limit (%s)." \
                  [astrometry::formatdelta $delta] \
                  [astrometry::formatdelta $southdeltalimit]]
     if {$delta < $southdeltalimit} {
@@ -127,7 +121,7 @@ namespace eval "constraints" {
       return false
     }
 
-    log::info [format "checking the declination (%s) at $when against the northern limit (%s)." \
+    log::debug [format "checking the declination (%s) at $when against the northern limit (%s)." \
                  [astrometry::formatdelta $delta] \
                  [astrometry::formatdelta $northdeltalimit]]
     if {$delta > $northdeltalimit} {
@@ -139,7 +133,7 @@ namespace eval "constraints" {
     }
 
     set ha [visit::observedha $visit $seconds]
-    log::info [format "checking the HA (%s) at $when against the eastern limit (%s)." \
+    log::debug [format "checking the HA (%s) at $when against the eastern limit (%s)." \
                  [astrometry::formatha $ha] \
                  [astrometry::formatha $easthalimit]]
     if {$ha < $easthalimit} {
@@ -149,7 +143,7 @@ namespace eval "constraints" {
         [astrometry::formatha $easthalimit]]
       return false
     }
-    log::info [format "checking the HA (%s) at $when against the western limit (%s)." \
+    log::debug [format "checking the HA (%s) at $when against the western limit (%s)." \
                  [astrometry::formatha $ha] \
                  [astrometry::formatha $westhalimit]]
     if {$ha > $westhalimit} {
@@ -161,7 +155,7 @@ namespace eval "constraints" {
     }
 
     set zenithdistance [astrometry::zenithdistance $ha $delta]
-    log::info [format "checking the zenith distance (%.2fd) at $when against the minimum allowed (%.2fd)." \
+    log::debug [format "checking the zenith distance (%.2fd) at $when against the minimum allowed (%.2fd)." \
                  [astrometry::radtodeg $zenithdistance] \
                  [astrometry::radtodeg $minzenithdistancelimit]]
     if {$zenithdistance < $minzenithdistancelimit} {
@@ -171,7 +165,7 @@ namespace eval "constraints" {
         [astrometry::radtodeg $minzenithdistancelimit]]
       return false
     }
-    log::info [format "checking the zenith distance (%.2fd) at $when against the maxiumum allowed (%.2fd)." \
+    log::debug [format "checking the zenith distance (%.2fd) at $when against the maxiumum allowed (%.2fd)." \
                  [astrometry::radtodeg $zenithdistance] \
                  [astrometry::radtodeg $maxzenithdistancelimit]]
     if {$zenithdistance > $maxzenithdistancelimit} {
@@ -196,16 +190,16 @@ namespace eval "constraints" {
     }
     set startha [visit::observedha $visit $start]
     set endha   [visit::observedha $visit $end  ]
-    log::info [format "HA at start is %s." [astrometry::formatha $startha]]
-    log::info [format "HA at end is %s." [astrometry::formatha $endha]]
+    log::debug [format "HA at start is %s." [astrometry::formatha $startha]]
+    log::debug [format "HA at end is %s." [astrometry::formatha $endha]]
     if {$startha < 0 && $endha > 0} {
-      log::info [format "checking at transit."]
+      log::debug [format "checking at transit."]
       set alpha [visit::alpha $visit $seconds]
       set delta [visit::delta $visit $seconds]
       set equinox [visit::equinox $visit $seconds]
       set transit [astrometry::nextobservedtransitseconds $alpha $delta $equinox $seconds]
-      log::info [format "START = %s END = %s TRANSIT = %s" [utcclock::format $start] [utcclock::format $end] [utcclock::format $transit]]
-      log::info [format "HA at transit is %s." [astrometry::formatha [visit::observedha $visit $transit]]]
+      log::debug [format "START = %s END = %s TRANSIT = %s" [utcclock::format $start] [utcclock::format $end] [utcclock::format $transit]]
+      log::debug [format "HA at transit is %s." [astrometry::formatha [visit::observedha $visit $transit]]]
       if {
         ![checkwithintelescopepointinglimitsat $visit $constraints $transit "transit"]
       } {
@@ -219,11 +213,11 @@ namespace eval "constraints" {
   
   proc checkmindateat {visit constraints seconds when} {
     if {![hasconstraint $constraints "mindate"]} {
-      log::info "no minimum date constraint."
+      log::debug "no minimum date constraint."
     } else {
       set mindate [getconstraint $constraints "mindate"]
       set mindate [utcclock::scan $mindate]
-      log::info [format \
+      log::debug [format \
         "checking the date (%s) at $when against the minimum allowed (%s)." \
         [utcclock::combinedformat $seconds 0 false] \
         [utcclock::combinedformat $mindate 0 false] \
@@ -247,11 +241,11 @@ namespace eval "constraints" {
   
   proc checkmaxdateat {visit constraints seconds when} {
     if {![hasconstraint $constraints "maxdate"]} {
-      log::info "no maximum date constraint."
+      log::debug "no maximum date constraint."
     } else {
       set maxdate [getconstraint $constraints "maxdate"]
       set maxdate [utcclock::scan $maxdate]
-      log::info [format \
+      log::debug [format \
         "checking the date (%s) at $when against the maximum allowed (%s)." \
         [utcclock::combinedformat $seconds 0 false] \
         [utcclock::combinedformat $maxdate 0 false] \
@@ -275,12 +269,12 @@ namespace eval "constraints" {
   
   proc checkminsunhaat {visit constraints seconds when} {
     if {![hasconstraint $constraints "minsunha"]} {
-      log::info "no minimum Sun HA constraint."
+      log::debug "no minimum Sun HA constraint."
     } else {
       set minha [getconstraint $constraints "minsunha"]
       set minha [astrometry::parseha $minha]
       set sunha [astrometry::ha [astrometry::sunobservedalpha $seconds]]
-      log::info [format \
+      log::debug [format \
         "checking the HA of the Sun (%s) at $when against the minimum allowed (%s)." \
         [astrometry::formatha $sunha] \
         [astrometry::formatha $minha] \
@@ -311,12 +305,12 @@ namespace eval "constraints" {
   
   proc checkmaxsunhaat {visit constraints seconds when} {
     if {![hasconstraint $constraints "minsunha"]} {
-      log::info "no minimum Sun HA constraint."
+      log::debug "no minimum Sun HA constraint."
     } else {
       set maxha [getconstraint $constraints "maxsunha"]
       set maxha [astrometry::parseha $maxha]
       set sunha [astrometry::ha [astrometry::sunobservedalpha $seconds]]
-      log::info [format \
+      log::debug [format \
         "checking the HA of the Sun (%s) at $when against the maximum allowed (%s)." \
         [astrometry::formatha $sunha] \
         [astrometry::formatha $maxha] \
@@ -347,7 +341,7 @@ namespace eval "constraints" {
   
   proc checkminsunzenithdistanceat {visit constraints seconds when} {
     if {![hasconstraint $constraints "minsunzenithdistance"]} {
-      log::info "no minimum Sun zenith distance constraint."
+      log::debug "no minimum Sun zenith distance constraint."
     } else {  
       set minzenithdistance [getconstraint $constraints "minsunzenithdistance"]
       set minzenithdistance [astrometry::parseangle $minzenithdistance]
@@ -355,7 +349,7 @@ namespace eval "constraints" {
       set sundelta [astrometry::sunobserveddelta $seconds]
       set sunha    [astrometry::ha $sunalpha $seconds]
       set sunzenithdistance [astrometry::zenithdistance $sunha $sundelta]
-      log::info [format \
+      log::debug [format \
         "checking the zenith distance of the Sun (%.2fd) at $when against the minimum allowed (%.2fd)." \
         [astrometry::radtodeg $sunzenithdistance] \
         [astrometry::radtodeg $minzenithdistance] \
@@ -386,7 +380,7 @@ namespace eval "constraints" {
   
   proc checkmaxsunzenithdistanceat {visit constraints seconds when} {
     if {![hasconstraint $constraints "maxsunzenithdistance"]} {
-      log::info "no maximum Sun zenith distance constraint."
+      log::debug "no maximum Sun zenith distance constraint."
     } else {  
       set maxzenithdistance [getconstraint $constraints "maxsunzenithdistance"]
       set maxzenithdistance [astrometry::parseangle $maxzenithdistance]
@@ -394,7 +388,7 @@ namespace eval "constraints" {
       set sundelta [astrometry::sunobserveddelta $seconds]
       set sunha    [astrometry::ha $sunalpha $seconds]
       set sunzenithdistance [astrometry::zenithdistance $sunha $sundelta]
-      log::info [format \
+      log::debug [format \
         "checking the zenith distance of the Sun (%.2fd) at $when against the maximum allowed (%.2f)." \
         [astrometry::radtodeg $sunzenithdistance] \
         [astrometry::radtodeg $maxzenithdistance] \
@@ -425,7 +419,7 @@ namespace eval "constraints" {
   
   proc checkminmoondistanceat {visit constraints seconds when} {
     if {![hasconstraint $constraints "minmoondistance"]} {
-      log::info "no minimum Moon distance constraint."
+      log::debug "no minimum Moon distance constraint."
     } else {  
       set mindistance [getconstraint $constraints "minmoondistance"]
       set mindistance [astrometry::parseangle $mindistance]
@@ -434,7 +428,7 @@ namespace eval "constraints" {
       set observedalpha [visit::observedalpha $visit $seconds]
       set observeddelta [visit::observeddelta $visit $seconds]
       set distance [astrometry::distance $moonobservedalpha $moonobserveddelta $observedalpha $observeddelta]
-      log::info [format \
+      log::debug [format \
         "checking the Moon distance of the target (%.2fd) at $when against the minimum allowed (%.2fd)." \
         [astrometry::radtodeg $distance] \
         [astrometry::radtodeg $mindistance] \
@@ -465,7 +459,7 @@ namespace eval "constraints" {
   
   proc checkmaxmoondistanceat {visit constraints seconds when} {
     if {![hasconstraint $constraints "maxmoondistance"]} {
-      log::info "no maximum Moon distance constraint."
+      log::debug "no maximum Moon distance constraint."
     } else {  
       set maxdistance [getconstraint $constraints "maxmoondistance"]
       set maxdistance [astrometry::parseangle $maxdistance]
@@ -474,7 +468,7 @@ namespace eval "constraints" {
       set observedalpha [visit::observedalpha $visit $seconds]
       set observeddelta [visit::observeddelta $visit $seconds]
       set distance [astrometry::distance $moonobservedalpha $moonobserveddelta $observedalpha $observeddelta]
-      log::info [format \
+      log::debug [format \
         "checking the moon distance of the target (%.2fd) at $when against the maximum allowed (%.2fd)." \
         [astrometry::radtodeg $distance] \
         [astrometry::radtodeg $maxdistance] \
@@ -505,12 +499,12 @@ namespace eval "constraints" {
   
   proc checkminhaat {visit constraints seconds when} {
     if {![hasconstraint $constraints "minha"]} {
-      log::info "no minimum HA constraint."
+      log::debug "no minimum HA constraint."
     } else {  
       set minha [getconstraint $constraints "minha"]
       set minha [astrometry::parseha $minha]
       set observedha [visit::observedha $visit $seconds]
-      log::info [format \
+      log::debug [format \
         "checking the HA of the target (%s) at $when against the minimum allowed (%s)." \
         [astrometry::formatha $observedha] \
         [astrometry::formatha $minha] \
@@ -541,12 +535,12 @@ namespace eval "constraints" {
   
   proc checkmaxhaat {visit constraints seconds when} {
     if {![hasconstraint $constraints "maxha"]} {
-      log::info "no maximum HA constraint."
+      log::debug "no maximum HA constraint."
     } else {  
       set maxha [getconstraint $constraints "maxha"]
       set maxha [astrometry::parseha $maxha]
       set observedha [visit::observedha $visit $seconds]
-      log::info [format \
+      log::debug [format \
         "checking the HA of the target (%s) at $when against the maximum allowed (%s)." \
         [astrometry::formatha $observedha] \
         [astrometry::formatha $maxha] \
@@ -577,12 +571,12 @@ namespace eval "constraints" {
   
   proc checkmindeltaat {visit constraints seconds when} {
     if {![hasconstraint $constraints "mindelta"]} {
-      log::info "no minimum delta constraint."
+      log::debug "no minimum delta constraint."
     } else {  
       set mindelta [getconstraint $constraints "mindelta"]
       set mindelta [astrometry::parsedelta $mindelta]
       set observeddelta [visit::observeddelta $visit $seconds]
-      log::info [format \
+      log::debug [format \
         "checking the delta of the target (%s) at $when against the minimum allowed (%s)." \
         [astrometry::formatdelta $observeddelta] \
         [astrometry::formatdelta $mindelta] \
@@ -613,12 +607,12 @@ namespace eval "constraints" {
   
   proc checkmaxdeltaat {visit constraints seconds when} {
     if {![hasconstraint $constraints "maxdelta"]} {
-      log::info "no maximum delta constraint."
+      log::debug "no maximum delta constraint."
     } else {  
       set maxdelta [getconstraint $constraints "maxdelta"]
       set maxdelta [astrometry::parsedelta $maxdelta]
       set observeddelta [visit::observeddelta $visit $seconds]
-      log::info [format \
+      log::debug [format \
         "checking the delta of the target (%s) at $when against the maximum allowed (%s)." \
         [astrometry::formatdelta $observeddelta] \
         [astrometry::formatdelta $maxdelta] \
@@ -649,11 +643,11 @@ namespace eval "constraints" {
   
   proc checkminairmassat {visit constraints seconds when} {
     if {![hasconstraint $constraints "minairmass"]} {
-      log::info "no minimum airmass constraint."
+      log::debug "no minimum airmass constraint."
     } else { 
       set minairmass [getconstraint $constraints "minairmass"]
       set observedairmass [astrometry::airmass [astrometry::zenithdistance [visit::observedha $visit $seconds] [visit::observeddelta $visit $seconds]]]
-      log::info [format \
+      log::debug [format \
         "checking the airmass of the target (%.3f) at $when against the minimum allowed (%.3f)." \
            $observedairmass $minairmass \
         ]
@@ -683,11 +677,11 @@ namespace eval "constraints" {
   
   proc checkmaxairmassat {visit constraints seconds when} {
     if {![hasconstraint $constraints "maxairmass"]} {
-      log::info "no maximum airmass constraint."
+      log::debug "no maximum airmass constraint."
     } else { 
       set maxairmass [getconstraint $constraints "maxairmass"]
       set observedairmass [astrometry::airmass [astrometry::zenithdistance [visit::observedha $visit $seconds] [visit::observeddelta $visit $seconds]]]
-      log::info [format \
+      log::debug [format \
         "checking the airmass of the target (%.3f) at $when against the maximum allowed (%.3f)." \
           $observedairmass $maxairmass \
         ]
@@ -717,12 +711,12 @@ namespace eval "constraints" {
   
   proc checkminzenithdistanceat {visit constraints seconds when} {
     if {![hasconstraint $constraints "minzenithdistance"]} {
-      log::info "no minimum zenith distance constraint."
+      log::debug "no minimum zenith distance constraint."
     } else { 
       set minzenithdistance [getconstraint $constraints "minzenithdistance"]
       set minzenithdistance [astrometry::parseangle $minzenithdistance]
       set observedzenithdistance [astrometry::zenithdistance [visit::observedha $visit $seconds] [visit::observeddelta $visit $seconds]]
-      log::info [format \
+      log::debug [format \
         "checking the zenith distance of the target (%.2fd) at $when against the minimum allowed (%.2fd)." \
           [astrometry::radtodeg $observedzenithdistance] \
           [astrometry::radtodeg $minzenithdistance] \
@@ -754,12 +748,12 @@ namespace eval "constraints" {
   
   proc checkmaxzenithdistanceat {visit constraints seconds when} {
     if {![hasconstraint $constraints "maxzenithdistance"]} {
-      log::info "no maximum zenith distance constraint."
+      log::debug "no maximum zenith distance constraint."
     } else { 
       set maxzenithdistance [getconstraint $constraints "maxzenithdistance"]
       set maxzenithdistance [astrometry::parseangle $maxzenithdistance]
       set observedzenithdistance [astrometry::zenithdistance [visit::observedha $visit $seconds] [visit::observeddelta $visit $seconds]]
-      log::info [format \
+      log::debug [format \
         "checking the zenith distance of the target (%.2fd) at $when against the maximum allowed (%.2fd)." \
           [astrometry::radtodeg $observedzenithdistance] \
           [astrometry::radtodeg $maxzenithdistance] \
@@ -801,11 +795,11 @@ namespace eval "constraints" {
   
   proc checkminskybrightnessat {visit constraints seconds when} {
     if {![hasconstraint $constraints "minskybrightness"]} {
-      log::info "no minimum sky brightness constraint."
+      log::debug "no minimum sky brightness constraint."
     } else {
       set minskybrightness [getconstraint $constraints "minskybrightness"]
       set skybrightness [skybrightness $seconds]
-      log::info "checking the sky brightness ($skybrightness) at $when against the minimum allowed ($minskybrightness)."
+      log::debug "checking the sky brightness ($skybrightness) at $when against the minimum allowed ($minskybrightness)."
       set skybrightnesslist {"dark" "grey" "bright" "astronomicaltwilight" "nauticaltwilight" "civiltwilight" "daylight"}
       set skybrightnessindex    [lsearch -exact $skybrightnesslist $skybrightness]
       set minskybrightnessindex [lsearch -exact $skybrightnesslist $minskybrightness]
@@ -835,11 +829,11 @@ namespace eval "constraints" {
   
   proc checkmaxskybrightnessat {visit constraints seconds when} {
     if {![hasconstraint $constraints "maxskybrightness"]} {
-      log::info "no maximum sky brightness constraint."
+      log::debug "no maximum sky brightness constraint."
     } else {
       set maxskybrightness [getconstraint $constraints "maxskybrightness"]
       set skybrightness [skybrightness $seconds]
-      log::info "checking the sky brightness ($skybrightness) at $when against the maximum allowed ($maxskybrightness)."
+      log::debug "checking the sky brightness ($skybrightness) at $when against the maximum allowed ($maxskybrightness)."
       set skybrightnesslist {"dark" "grey" "bright" "astronomicaltwilight" "nauticaltwilight" "civiltwilight" "daylight"}
       set skybrightnessindex    [lsearch -exact $skybrightnesslist $skybrightness]
       set maxskybrightnessindex [lsearch -exact $skybrightnesslist $maxskybrightness]
@@ -869,11 +863,11 @@ namespace eval "constraints" {
   
   proc checkminfocusdelayat {visit constraints seconds when} {
     if {![hasconstraint $constraints "minfocusdelay"]} {
-      log::info "no minimum focus delay constraint."
+      log::debug "no minimum focus delay constraint."
     } else {
       set mindelay [getconstraint $constraints "minfocusdelay"]
       variable focustimestamp
-      log::info "checking focus delay against the minimum allowed ($mindelay seconds)."
+      log::debug "checking focus delay against the minimum allowed ($mindelay seconds)."
       if {[string equal "" $focustimestamp]} {
         return true
       }
@@ -896,11 +890,11 @@ namespace eval "constraints" {
   
   proc checkmaxfocusdelayat {visit constraints seconds when} {
     if {![hasconstraint $constraints "maxfocusdelay"]} {
-      log::info "no maximum focus delay constraint."
+      log::debug "no maximum focus delay constraint."
     } else {
       set maxdelay [getconstraint $constraints "maxfocusdelay"]
       variable focustimestamp
-      log::info "checking the focus delay against the maximum allowed ($maxdelay seconds)."
+      log::debug "checking the focus delay against the maximum allowed ($maxdelay seconds)."
       if {[string equal "" $focustimestamp]} {
         setwhy "not focused."
         return false
@@ -924,7 +918,7 @@ namespace eval "constraints" {
   
   proc checkalertenabled {alert} {
     if {![string equal "" $alert]} {
-      log::info "checking alert is enabled."
+      log::debug "checking alert is enabled."
       set alertenabled [alert::enabled $alert]
       if {!$alertenabled} {
         setwhy [format "alert is not enabled."]
@@ -937,10 +931,10 @@ namespace eval "constraints" {
   proc checkminalertdelay {alert constraints} {
     if {![string equal "" $alert]} {
       if {![hasconstraint $constraints "minalertdelay"]} {
-        log::info "no minimum alert delay constraint."
+        log::debug "no minimum alert delay constraint."
       } else {
         set mindelay [getconstraint $constraints "minalertdelay"]
-        log::info [format "checking the alert delay against the minimum allowed of %s." [utcclock::formatinterval $mindelay]]
+        log::debug [format "checking the alert delay against the minimum allowed of %s." [utcclock::formatinterval $mindelay]]
         set delay [alert::delay $alert]
         if {$delay < $mindelay} {
           setwhy [format \
@@ -959,10 +953,10 @@ namespace eval "constraints" {
   proc checkmaxalertdelay {alert constraints} {
     if {![string equal "" $alert]} {
       if {![hasconstraint $constraints "maxalertdelay"]} {
-        log::info "no maximum alert delay constraint."
+        log::debug "no maximum alert delay constraint."
       } else {
         set maxdelay [getconstraint $constraints "maxalertdelay"]
-        log::info [format "checking the alert delay against the maximum allowed of %s." [utcclock::formatinterval $maxdelay]]
+        log::debug [format "checking the alert delay against the maximum allowed of %s." [utcclock::formatinterval $maxdelay]]
         set delay [alert::delay $alert]
         if {$delay > $maxdelay} {
           setwhy [format \
@@ -980,11 +974,11 @@ namespace eval "constraints" {
   proc checkminalertuncertainty {alert constraints} {
     if {![string equal "" $alert]} {
       if {![hasconstraint $constraints "minalertuncertainty"]} {
-        log::info "no minimum alert uncertainty constraint."
+        log::debug "no minimum alert uncertainty constraint."
       } else {
         set minuncertainty [getconstraint $constraints "minalertuncertainty"]
         set minuncertainty [astrometry::parsedistance $minuncertainty]
-        log::info [format "checking the alert uncertainty against the minimum allowed of %s." [astrometry::formatdistance $minuncertainty]]
+        log::debug [format "checking the alert uncertainty against the minimum allowed of %s." [astrometry::formatdistance $minuncertainty]]
         set uncertainty [astrometry::parsedistance [alert::uncertainty $alert]]
         if {$uncertainty < $minuncertainty} {
           setwhy [format \
@@ -1002,11 +996,11 @@ namespace eval "constraints" {
   proc checkmaxalertuncertainty {alert constraints} {
     if {![string equal "" $alert]} {
       if {![hasconstraint $constraints "maxalertuncertainty"]} {
-        log::info "no maximum alert uncertainty constraint."
+        log::debug "no maximum alert uncertainty constraint."
       } else {
         set maxuncertainty [getconstraint $constraints "maxalertuncertainty"]
         set maxuncertainty [astrometry::parsedistance $maxuncertainty]
-        log::info [format "checking the alert uncertainty against the maximum allowed of %s." [astrometry::formatdistance $maxuncertainty]]
+        log::debug [format "checking the alert uncertainty against the maximum allowed of %s." [astrometry::formatdistance $maxuncertainty]]
         set uncertainty [astrometry::parsedistance [alert::uncertainty $alert]]
         if {$uncertainty > $maxuncertainty} {
           setwhy [format \
@@ -1023,14 +1017,14 @@ namespace eval "constraints" {
   
   proc checkmustbeonfavoredsideforswiftat {visit constraints seconds when} {
     if {![hasconstraint $constraints "mustbeonfavoredsideforswift"]} {
-      log::info "no mustbeonfavoredsideforswift."
+      log::debug "no mustbeonfavoredsideforswift."
     } elseif {![getconstraint $constraints "mustbeonfavoredsideforswift"]} {
-      log::info "mustbeonfavoredsideforswift is false."
+      log::debug "mustbeonfavoredsideforswift is false."
     } else {
-      log::info "mustbeonfavoredsideforswift is false."
+      log::debug "mustbeonfavoredsideforswift is false."
       set favoredside [swift::favoredside]
       set observedha [visit::observedha $visit $seconds]
-      log::info [format \
+      log::debug [format \
         "checking the HA (%s) at $when is on the favored side for swift (%s)." \
         [astrometry::formatha $observedha] $favoredside \
       ]
@@ -1055,12 +1049,14 @@ namespace eval "constraints" {
   
   ######################################################################
   
-  proc check {visit constraints alert seconds} {
+  proc check {block seconds} {
 
-    log::info [format "visit start is %s." [utcclock::format [getstart $visit $seconds]]]
-    log::info [format "visit end is %s." [utcclock::format [getend $visit $seconds]]]
-    log::info [format "estimated duration is %.0f seconds." [visit::estimatedduration $visit]]
+    setwhy ""
 
+    set constraints [block::constraints $block]
+    set alert       [block::alert       $block]
+    set visits      [block::visits      $block]
+    
     # This must be before checks on position, since disabled alerts might not
     # have positions (if we only catch the retraction, for example).
     if {![checkalertenabled $alert]} {
@@ -1080,82 +1076,100 @@ namespace eval "constraints" {
       return false
     }
 
-    if {![checkwithintelescopepointinglimits $visit $constraints $seconds]} {
+    log::debug [format "checking visits."]
+    if {[llength $visits] == 0} {
+      setwhy "no visits."
       return false
     }
+
+    foreach visit $visits {
+
+      log::debug [format "checking visit %s." [visit::identifier $visit]]
+
+      log::debug [format "visit start is %s." [utcclock::format [getstart $visit $seconds]]]
+      log::debug [format "visit end is %s." [utcclock::format [getend $visit $seconds]]]
+      log::debug [format "estimated duration is %.0f seconds." [visit::estimatedduration $visit]]
+
+      if {![checkwithintelescopepointinglimits $visit $constraints $seconds]} {
+        return false
+      }
     
-    if {![checkminskybrightness $visit $constraints $seconds]} {
-      return false
-    }
-    if {![checkmaxskybrightness $visit $constraints $seconds]} {
-      return false
-    }
+      if {![checkminskybrightness $visit $constraints $seconds]} {
+        return false
+      }
+      if {![checkmaxskybrightness $visit $constraints $seconds]} {
+        return false
+      }
 
-    if {![checkminsunha $visit $constraints $seconds]} {
-      return false
-    }
-    if {![checkmaxsunha $visit $constraints $seconds]} {
-      return false
-    }
-    if {![checkminsunzenithdistance $visit $constraints $seconds]} {
-      return false
-    }
-    if {![checkmaxsunzenithdistance $visit $constraints $seconds]} {
-      return false
-    }
+      if {![checkminsunha $visit $constraints $seconds]} {
+        return false
+      }
+      if {![checkmaxsunha $visit $constraints $seconds]} {
+        return false
+      }
+      if {![checkminsunzenithdistance $visit $constraints $seconds]} {
+        return false
+      }
+      if {![checkmaxsunzenithdistance $visit $constraints $seconds]} {
+        return false
+      }
 
-    if {![checkmindate $visit $constraints $seconds]} {
-      return false
-    }
-    if {![checkmindate $visit $constraints $seconds]} {
-      return false
-    }
+      if {![checkmindate $visit $constraints $seconds]} {
+        return false
+      }
+      if {![checkmindate $visit $constraints $seconds]} {
+        return false
+      }
 
-    if {![checkminfocusdelay $visit $constraints $seconds]} {
-      return false
-    }
-    if {![checkmaxfocusdelay $visit $constraints $seconds]} {
-      return false
-    }
+      if {![checkminfocusdelay $visit $constraints $seconds]} {
+        return false
+      }
+      if {![checkmaxfocusdelay $visit $constraints $seconds]} {
+        return false
+      }
 
-    if {![checkwithintelescopepointinglimits $visit $constraints $seconds]} {
-      return false
-    }
+      if {![checkwithintelescopepointinglimits $visit $constraints $seconds]} {
+        return false
+      }
     
-    if {![checkminha $visit $constraints $seconds]} {
-      return false
-    }
-    if {![checkmaxha $visit $constraints $seconds]} {
-      return false
-    }
-    if {![checkmindelta $visit $constraints $seconds]} {
-      return false
-    }
-    if {![checkmaxdelta $visit $constraints $seconds]} {
-      return false
-    }
-    if {![checkminzenithdistance $visit $constraints $seconds]} {
-      return false
-    }
-    if {![checkmaxzenithdistance $visit $constraints $seconds]} {
-      return false
-    }
-    if {![checkminairmass $visit $constraints $seconds]} {
-      return false
-    }
-    if {![checkmaxairmass $visit $constraints $seconds]} {
-      return false
-    }
+      if {![checkminha $visit $constraints $seconds]} {
+        return false
+      }
+      if {![checkmaxha $visit $constraints $seconds]} {
+        return false
+      }
+      if {![checkmindelta $visit $constraints $seconds]} {
+        return false
+      }
+      if {![checkmaxdelta $visit $constraints $seconds]} {
+        return false
+      }
+      if {![checkminzenithdistance $visit $constraints $seconds]} {
+        return false
+      }
+      if {![checkmaxzenithdistance $visit $constraints $seconds]} {
+        return false
+      }
+      if {![checkminairmass $visit $constraints $seconds]} {
+        return false
+      }
+      if {![checkmaxairmass $visit $constraints $seconds]} {
+        return false
+      }
 
-    if {![checkminmoondistance $visit $constraints $seconds]} {
-      return false
-    }
-    if {![checkmaxmoondistance $visit $constraints $seconds]} {
-      return false
-    }
+      if {![checkminmoondistance $visit $constraints $seconds]} {
+        return false
+      }
+      if {![checkmaxmoondistance $visit $constraints $seconds]} {
+        return false
+      }
     
-    if {![checkmustbeonfavoredsideforswift $visit $constraints $seconds]} {
-      return false
+      if {![checkmustbeonfavoredsideforswift $visit $constraints $seconds]} {
+        return false
+      }
+      
+      set seconds [getend $visit $seconds]
+      
     }
 
     return true  
