@@ -243,7 +243,7 @@ namespace eval "alert" {
     if {[dict exists $alert "enabled"]} {
       return [dict get $alert "enabled"]
     } else {
-      return ""
+      return false
     }
   }
   
