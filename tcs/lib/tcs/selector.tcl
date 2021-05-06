@@ -137,58 +137,60 @@ namespace eval "selector" {
   }
   
   ######################################################################
-  
-  variable block
-  
-  proc selectable {filetype filename seconds} {
-    if {[string equal $filetype "alert"]} {
-      if {[catch {
-        set block [alert::alertfiletoblock $filename]
-      } message]} {
-        log::warning "error while reading alert file \"[file tail $filename]\": $message"
-        return false
-      }
-    } elseif {[string equal $filetype "block"]} {
-      if {[catch {
-        set block [block::readfile $filename]
-      } message]} {
-        log::warning "error while reading block file \"[file tail $filename]\": $message"
-        log::warning "deleting block file \"[file tail $filename]\"."
-        file delete -force $filename
-        return false
-      }
+
+  proc isselectablealertfile {alertfile seconds} {
+    if {[catch {
+      set block [alert::alertfiletoblock $alertfile]
+    } message]} {
+      log::warning "error while reading alert file \"[file tail $alertfile]\": $message"
+      return "invalid alert file."
+    } 
+    if {[constraints::check $block $seconds]} {
+      return ""
     } else {
-      error "selectable: invalid file type \"$filetype\"."
+      return [constraints::why]
     }
-    log::info "considering $filetype file \"[file tail $filename]\"."
-    set alert [block::alert $block]
-    constraints::start
-    foreach visit [block::visits $block] {
-      if {![constraints::check $visit [block::constraints $block] $alert $seconds]} {
-        log::info "rejected $filetype file \"[file tail $filename]\": [constraints::why]"
-        return false
-      }
-      set seconds [expr {$seconds + [visit::estimatedduration $visit]}]
-    }
-    log::info "selected $filetype file \"[file tail $filename]\"."
-    return true
   }
   
   proc selectalertfile {seconds} {
     foreach alertfile [getalertfiles true] {
-      if {[selectable "alert" $alertfile $seconds]} {
+      log::info "considering alert file \"[file tail $alertfile]\"."
+      set why [isselectablealertfile $alertfile $seconds]
+      if {[string equal $why ""]} {
+        log::summary "selected alert file \"[file tail $alertfile]\"."
         return $alertfile
       }
+      log::info "rejected alert file \"[file tail $alertfile]\": $why"
     }
     return ""
   }
     
+  proc isselectableblockfile {blockfile seconds} {
+    if {[catch {
+      set block [block::readfile $blockfile]
+    } message]} {
+      log::warning "error while reading block file \"[file tail $blockfile]\": $message"
+      log::warning "deleting block file \"[file tail $blockfile]\"."
+      file delete -force $blockfile
+      return "invalid block file."
+    } 
+    if {[constraints::check $block $seconds]} {
+      return ""
+    } else {
+      return [constraints::why]
+    }
+  }
+  
   proc selectblockfile {seconds} {
     swift::updatefavoredside
     foreach blockfile [getblockfiles] {
-      if {[selectable "block" $blockfile $seconds]} {
+      log::info "considering block file \"[file tail $blockfile]\"."
+      set why [isselectableblockfile $blockfile $seconds]
+      if {[string equal $why ""]} {
+        log::summary "selected block file \"[file tail $blockfile]\"."
         return $blockfile
       }
+      log::info "rejected block file \"[file tail $blockfile]\": $why"
     }
     return ""
   }
@@ -268,7 +270,7 @@ namespace eval "selector" {
         continue
       }
 
-      log::info "selecting."
+      log::summary "selecting."
       server::setactivity "selecting"
       set seconds [utcclock::seconds]
       if {[string equal "" [constraints::focustimestamp]]} {
@@ -295,7 +297,7 @@ namespace eval "selector" {
       }
 
       if {[string equal $filename ""]} {
-        log::info "no alert or block selected."
+        log::summary "no alert or block selected."
         if {!$idled} {
           log::info "idling."
           server::setactivity "idling"
@@ -315,7 +317,7 @@ namespace eval "selector" {
         continue
       }
 
-      log::info "executing $filetype file \"[file tail $filename]\"."
+      log::summary "executing $filetype file \"[file tail $filename]\"."
       server::setactivity "executing"
       set idled false
       if {[catch {
@@ -327,7 +329,7 @@ namespace eval "selector" {
         set forcereset true
         continue
       }
-      log::info "finished executing $filetype file \"[file tail $filename]\"."
+      log::summary "finished executing $filetype file \"[file tail $filename]\"."
       set delay 0
     }
   
@@ -473,15 +475,18 @@ namespace eval "selector" {
       log::summary "not interrupting the executor: interrupt is false."
     } elseif {[string equal $mode "disabled"]} {
       log::summary "not interrupting the executor: selector is disabled."
-    } elseif {![selectable "alert" $alertfile [utcclock::seconds]]} {
-      log::summary "not interrupting the executor: alert is not selectable."
     } else {
-      log::summary "interrupting the executor."
-      if {[catch {client::request "executor" "stop"} message]} {
-        log::error "unable to interrupt the executor: $message"
+      set why [isselectablealertfile $alertfile [utcclock::seconds]]
+      if {![string equal "" $why]} {
+        log::summary "not interrupting the executor: alert is not selectable: $why"
+      } else {
+        log::summary "interrupting the executor."
+        if {[catch {client::request "executor" "stop"} message]} {
+          log::error "unable to interrupt the executor: $message"
+        }
+        variable alertindex
+        set alertindex 0
       }
-      variable alertindex
-      set alertindex 0
     }
     
     if {!$alertfileexists} {
