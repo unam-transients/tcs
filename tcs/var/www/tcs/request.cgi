@@ -31,10 +31,10 @@ umask 0; PATH=/usr/local/opt/tcl-tk/bin:$PATH exec tclsh8.6 -encoding "utf-8" "$
 proc request {request} {
   global prefix
   if {[string equal $request "restart"]} {
-    exec "sudo" "-n" "$prefix/bin/restartsoon"
+    exec "sudo" "-n" "$prefix/bin/tcs" "restartsoon"
     return ""
   } elseif {[string equal $request "reboot"]} {
-    exec "sudo" "-n" "$prefix/bin/rebootsoon"
+    exec "sudo" "-n" "$prefix/bin/tcs" "rebootsoon"
     return ""
   } elseif {[string equal $request "emergencystop"]} {
     exec "sudo" "-n" "$prefix/bin/tcs" "emergencystop"
