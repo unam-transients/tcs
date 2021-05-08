@@ -54,6 +54,54 @@ namespace eval "gcntan" {
   
   ######################################################################
   
+  proc lognull {message} {
+    return
+  }
+  
+  proc logprocedure {packet} {
+    switch -glob [type $packet] {
+      "swift*" {
+        set test       [swifttest         lognull $packet]
+        set retraction [swiftretraction   lognull $packet]
+        set worthy     [swiftworthy       lognull $packet]
+      }
+      "fermi*" {
+        set test       [fermitest         lognull $packet]
+        set retraction [fermiretraction   lognull $packet]
+        set worthy     [fermiworthy       lognull $packet]
+      }
+      "hawc*" {
+        set test       [hawctest          lognull $packet]
+        set retraction [hawcretraction    lognull $packet]
+        set worthy     [hawcworthy        lognull $packet]
+      }
+      "icecube*" {
+        set test       [icecubetest       lognull $packet]
+        set retraction [icecuberetraction lognull $packet]
+        set worthy     [icecubeworthy     lognull $packet]
+      }
+      "lvc*" {
+        set test       [lvctest           lognull $packet]
+        set retraction [lvcretraction     lognull $packet]
+        set worthy     [lvcworthy         lognull $packet]
+      }
+      default {
+        return log::info
+      }
+    }
+    if {$test} {
+      return log::info
+    } elseif {![string equal $retraction ""] && $retraction} {
+      return log::summary
+    } elseif {![string equal $worthy ""] && !$worthy} {
+      return log::info
+    } else {
+      return log::summary
+    }
+  }
+  
+  ######################################################################
+  
   # GCN/TAN packets are defined in: http://gcn.gsfc.nasa.gov/sock_pkt_def_doc.html
 
   # Symbolic names used here are the names in the GCN/TAN document
@@ -109,7 +157,7 @@ namespace eval "gcntan" {
     log::debug [format "packet is %s." $packet]
     set type [type $packet]
     log::debug [format "packet type is \"%s\"." $type]
-
+    
     switch $type {
 
       "unknown" {
@@ -124,16 +172,16 @@ namespace eval "gcntan" {
       }
 
       "kill" {
-        log::info [format "received %s packet." $type]
+        log::warning [format "received %s packet." $type]
         # Close connection without echoing the packet.
         return "close"
       }
 
       "swiftactualpointdir" {
         log::info [format "received %s packet." $type]
-        set alpha       [swiftalpha   $packet]
-        set delta       [swiftdelta   $packet]
-        set equinox     [swiftequinox $packet]
+        set alpha       [swiftalpha   lognull $packet]
+        set delta       [swiftdelta   lognull $packet]
+        set equinox     [swiftequinox lognull $packet]
         server::setdata "swiftalpha"   $alpha
         server::setdata "swiftdelta"   $delta
         server::setdata "swiftequinox" $equinox
@@ -146,22 +194,23 @@ namespace eval "gcntan" {
       "swiftbatgrbposition" -
       "swiftxrtposition" - 
       "swiftuvotposition" {
-        log::summary [format "received %s packet." $type]
         variable swiftalertprojectidentifier
+        set log [logprocedure $packet]
+        $log [format "received %s packet." $type]
         set projectidentifier  $swiftalertprojectidentifier
-        set blockidentifier    [swifttrigger         $packet]
-        set name               [swiftgrbname         $packet]
+        set blockidentifier    [swifttrigger         $log $packet]
+        set eventname          [swifteventname       $log $packet]
         set origin             "swift"
-        set identifier         [swifttrigger         $packet]
-        set test               [swifttest            $packet]
-        set eventtimestamp     [swifteventtimestamp  $packet]
-        set alpha              [swiftalpha           $packet]
-        set delta              [swiftdelta           $packet]
-        set equinox            [swiftequinox         $packet]
-        set uncertainty        [swiftuncertainty     $packet]
-        set grb                [swiftgrb             $packet]
-        set retraction         [swiftretraction      $packet]
-        respondtogrbalert $test $projectidentifier $blockidentifier $name $origin $identifier $type $timestamp $eventtimestamp $retraction $grb $alpha $delta $equinox $uncertainty
+        set identifier         [swifttrigger         $log $packet]
+        set test               [swifttest            $log $packet]
+        set eventtimestamp     [swifteventtimestamp  $log $packet]
+        set alpha              [swiftalpha           $log $packet]
+        set delta              [swiftdelta           $log $packet]
+        set equinox            [swiftequinox         $log $packet]
+        set uncertainty        [swiftuncertainty     $log $packet]
+        set worthy             [swiftworthy          $log $packet]
+        set retraction         [swiftretraction      $log $packet]
+        respondtoalert $log $test $projectidentifier $blockidentifier $eventname $origin $identifier $type $timestamp $eventtimestamp $retraction $worthy $alpha $delta $equinox $uncertainty
         return "echo"
       }
 
@@ -169,22 +218,23 @@ namespace eval "gcntan" {
       "fermigbmgndpos" -
       "fermigbmfinpos" -
       "fermigbmpostest" {
-        log::summary [format "received %s packet." $type]
         variable fermialertprojectidentifier
+        set log [logprocedure $packet]
+        $log [format "received %s packet." $type]
         set projectidentifier  $fermialertprojectidentifier
-        set blockidentifier    [fermitrigger         $packet]
-        set name               [fermigrbname         $packet]
+        set blockidentifier    [fermitrigger         $log $packet]
+        set eventname          [fermieventname       $log $packet]
         set origin             "fermi"
-        set identifier         [fermitrigger         $packet]
-        set test               [fermitest            $packet]
-        set eventtimestamp     [fermieventtimestamp  $packet]
-        set alpha              [fermialpha           $packet]
-        set delta              [fermidelta           $packet]
-        set equinox            [fermiequinox         $packet]
-        set uncertainty        [fermigbmuncertainty  $packet]
-        set grb                [fermigrb             $packet]
-        set retraction         [fermiretraction      $packet]
-        respondtogrbalert $test $projectidentifier $blockidentifier $name $origin $identifier $type $timestamp $eventtimestamp $retraction $grb $alpha $delta $equinox $uncertainty
+        set identifier         [fermitrigger         $log $packet]
+        set test               [fermitest            $log $packet]
+        set eventtimestamp     [fermieventtimestamp  $log $packet]
+        set alpha              [fermialpha           $log $packet]
+        set delta              [fermidelta           $log $packet]
+        set equinox            [fermiequinox         $log $packet]
+        set uncertainty        [fermigbmuncertainty  $log $packet]
+        set worthy             [fermiworthy          $log $packet]
+        set retraction         [fermiretraction      $log $packet]
+        respondtoalert $log $test $projectidentifier $blockidentifier $eventname $origin $identifier $type $timestamp $eventtimestamp $retraction $worthy $alpha $delta $equinox $uncertainty
         return "echo"
       }
        
@@ -192,137 +242,94 @@ namespace eval "gcntan" {
       "fermilatgrbposupd" -
       "fermilatgnd" -
       "fermilatoffline" {
-        log::summary [format "received %s packet." $type]
         variable fermialertprojectidentifier
+        set log [logprocedure $packet]
+        $log [format "received %s packet." $type]
         set projectidentifier  $fermialertprojectidentifier
-        set blockidentifier    [fermitrigger         $packet]
-        set name               [fermigrbname         $packet]
+        set blockidentifier    [fermitrigger         $log $packet]
+        set eventname          [fermieventname       $log $packet]
         set origin             "fermi"
-        set identifier         [fermitrigger         $packet]
-        set test               [fermitest            $packet]
-        set eventtimestamp     [fermieventtimestamp  $packet]
-        set alpha              [fermialpha           $packet]
-        set delta              [fermidelta           $packet]
-        set equinox            [fermiequinox         $packet]
-        set uncertainty        [fermilatuncertainty  $packet]
-        set grb                [fermigrb             $packet]
-        set retraction         [fermiretraction      $packet]
-        respondtogrbalert $test $projectidentifier $blockidentifier $name $origin $identifier $type $timestamp $eventtimestamp $retraction $grb $alpha $delta $equinox $uncertainty
+        set identifier         [fermitrigger         $log $packet]
+        set test               [fermitest            $log $packet]
+        set eventtimestamp     [fermieventtimestamp  $log $packet]
+        set alpha              [fermialpha           $log $packet]
+        set delta              [fermidelta           $log $packet]
+        set equinox            [fermiequinox         $log $packet]
+        set uncertainty        [fermilatuncertainty  $log $packet]
+        set worthy             [fermiworthy          $log $packet]
+        set retraction         [fermiretraction      $log $packet]
+        respondtoalert $log $test $projectidentifier $blockidentifier $eventname $origin $identifier $type $timestamp $eventtimestamp $retraction $worthy $alpha $delta $equinox $uncertainty
         return "echo"
       }
       
       "hawcburstmonitor" {
-        log::summary [format "received %s packet." $type]
         variable hawcalertprojectidentifier
+        set log [logprocedure $packet]
+        $log [format "received %s packet." $type]
         set projectidentifier  $hawcalertprojectidentifier
-        set blockidentifier    [hawctrigger        $packet]
-        set name               [hawcgrbname        $packet]
+        set blockidentifier    [hawctrigger        $log $packet]
+        set eventname          [hawceventname      $log $packet]
         set origin             "hawc"
-        set identifier         [hawctrigger        $packet]
-        set test               [hawctest           $packet]
-        set eventtimestamp     [hawceventtimestamp $packet]
-        set alpha              [hawcalpha          $packet]
-        set delta              [hawcdelta          $packet]
-        set equinox            [hawcequinox        $packet]
-        set uncertainty        [hawcuncertainty    $packet]
-        set grb                [hawcgrb            $packet]
-        set retraction         [hawcretraction     $packet]
-        respondtogrbalert $test $projectidentifier $blockidentifier $name $origin $identifier $type $timestamp $eventtimestamp $retraction $grb $alpha $delta $equinox $uncertainty
-        return "echo"
-      }
-
-      "hawcburstmonitor" {
-        log::summary [format "received %s packet." $type]
-        variable hawcalertprojectidentifier
-        set projectidentifier  $hawcalertprojectidentifier
-        set blockidentifier    [hawctrigger        $packet]
-        set name               [hawcgrbname        $packet]
-        set origin             "hawc"
-        set identifier         [hawctrigger        $packet]
-        set test               [hawctest           $packet]
-        set eventtimestamp     [hawceventtimestamp $packet]
-        set alpha              [hawcalpha          $packet]
-        set delta              [hawcdelta          $packet]
-        set equinox            [hawcequinox        $packet]
-        set uncertainty        [hawcuncertainty    $packet]
-        set grb                [hawcgrb            $packet]
-        set retraction         [hawcretraction     $packet]
-        respondtogrbalert $test $projectidentifier $blockidentifier $name $origin $identifier $type $timestamp $eventtimestamp $retraction $grb $alpha $delta $equinox $uncertainty
+        set identifier         [hawctrigger        $log $packet]
+        set test               [hawctest           $log $packet]
+        set eventtimestamp     [hawceventtimestamp $log $packet]
+        set alpha              [hawcalpha          $log $packet]
+        set delta              [hawcdelta          $log $packet]
+        set equinox            [hawcequinox        $log $packet]
+        set uncertainty        [hawcuncertainty    $log $packet]
+        set worthy             [hawcworthy         $log $packet]
+        set retraction         [hawcretraction     $log $packet]
+        respondtoalert $log $test $projectidentifier $blockidentifier $eventname $origin $identifier $type $timestamp $eventtimestamp $retraction $worthy $alpha $delta $equinox $uncertainty
         return "echo"
       }
 
       "icecubeastrotrackgold" -
       "icecubeastrotrackbronze" -
       "icecubecascade" {
-        log::summary [format "received %s packet." $type]
         variable icecubealertprojectidentifier
+        set log [logprocedure $packet]
+        $log [format "received %s packet." $type]
         set projectidentifier  $icecubealertprojectidentifier
-        set blockidentifier    [icecubetrigger        $packet]
-        set name               [icecubegrbname        $packet]
+        set blockidentifier    [icecubetrigger        $log $packet]
+        set eventname          [icecubeeventname      $log $packet]
         set origin             "icecube"
-        set identifier         [icecubetrigger        $packet]
-        set test               [icecubetest           $packet]
-        set eventtimestamp     [icecubeeventtimestamp $packet]
-        set alpha              [icecubealpha          $packet]
-        set delta              [icecubedelta          $packet]
-        set equinox            [icecubeequinox        $packet]
-        set uncertainty        [icecubeuncertainty    $packet]
-        set grb                [icecubegrb            $packet]
-        set retraction         [icecuberetraction     $packet]
-        respondtogrbalert $test $projectidentifier $blockidentifier $name $origin $identifier $type $timestamp $eventtimestamp $retraction $grb $alpha $delta $equinox $uncertainty
+        set identifier         [icecubetrigger        $log $packet]
+        set test               [icecubetest           $log $packet]
+        set eventtimestamp     [icecubeeventtimestamp $log $packet]
+        set alpha              [icecubealpha          $log $packet]
+        set delta              [icecubedelta          $log $packet]
+        set equinox            [icecubeequinox        $log $packet]
+        set uncertainty        [icecubeuncertainty    $log $packet]
+        set worthy             [icecubeworthy         $log $packet]
+        set retraction         [icecuberetraction     $log $packet]
+        respondtoalert $log $test $projectidentifier $blockidentifier $eventname $origin $identifier $type $timestamp $eventtimestamp $retraction $worthy $alpha $delta $equinox $uncertainty
         return "echo"      
       }
 
       "lvcpreliminary" -
       "lvcinitial" -
-      "lvcupdate" {
-        log::summary [format "received %s packet." $type]
-        return "echo"
-        variable lvcalertprojectidentifier
-        set projectidentifier  $lvcalertprojectidentifier
-        set blockidentifier    [lvctrigger         $packet]
-        set name               [lvcname            $packet]
-        set origin             "lvc"
-        set identifier         [lvcidentifier      $packet]
-        set eventtimestamp     [lvceventtimestamp  $packet]
-        set test               [lvctest            $packet]
-        set skymapurl          [lvcurl             $packet]
-        respondtolvcalert $test $projectidentifier $blockidentifier $name $origin $identifier $type $timestamp $eventtimestamp false $skymapurl
-        return "echo"
-      }
-
+      "lvcupdate" -
       "lvcretraction" {
-        log::summary [format "received %s packet." $type]
-        return "echo"
         variable lvcalertprojectidentifier
+        set log [logprocedure $packet]
+        $log [format "received %s packet." $type]
+        return "echo"
         set projectidentifier  $lvcalertprojectidentifier
-        set blockidentifier    [lvctrigger          $packet]
-        set name               [lvcname             $packet]
+        set blockidentifier    [lvctrigger         $log $packet]
+        set eventname          [lvcname            $log $packet]
         set origin             "lvc"
-        set identifier         [lvcidentifier       $packet]
-        set eventtimestamp     [lvceventtimestamp   $packet]
-        set test               [lvctest             $packet]
-        respondtolvcalert $test $projectidentifier $blockidentifier $name $origin $identifier $type $timestamp $eventtimestamp true ""
+        set identifier         [lvcidentifier      $log $packet]
+        set eventtimestamp     [lvceventtimestamp  $log $packet]
+        set test               [lvctest            $log $packet]
+        set retraction         [lvcretraction      $log $packet]
+        set skymapurl          [lvcurl             $log $packet]
+        respondtolvcalert $log $test $projectidentifier $blockidentifier $eventname $origin $identifier $type $timestamp $eventtimestamp $retraction $skymapurl
         return "echo"
       }
        
       "lvccounterpart" {
-        log::summary [format "received %s packet." $type]
-        return "echo"
-        variable lvcalertprojectidentifier
-        set projectidentifier  $lvcalertprojectidentifier
-        set blockidentifier    [lvctrigger          $packet]
-        set name               [lvcname             $packet]
-        set origin             "lvc"
-        set identifier         [lvcidentifier       $packet]
-        set eventtimestamp     [lvceventtimestamp   $packet]
-        set test               [lvctest             $packet]
-        log::info [format "%s: test is %s." $type $test]
-        log::info [format "%s: project identifier is \"%s\"." $type $projectidentifier]
-        log::info [format "%s: block identifier is %s." $type $blockidentifier ]
-        log::info [format "%s: name is %s." $type $name]
-        log::info [format "%s: origin/identifier/type are %s/%s/%s." $type $origin $identifier $type]
-        log::info [format "%s: event timestamp is %s." $type $eventtimestamp]
+        set log [logprocedure $packet]
+        $log [format "received %s packet." $type]
         return "echo"
       }
        
@@ -343,95 +350,83 @@ namespace eval "gcntan" {
   
   ######################################################################
   
-  proc logresponse {test retraction grb message} {
+  proc respondtoalert {log test projectidentifier blockidentifier eventname origin identifier type alerttimestamp eventtimestamp retraction worthy alpha delta equinox uncertainty} {
+    $log [format "%s: eventname is %s." $type $eventname]
     if {$test} {
-      log::debug "test: $message"
-    } elseif {![string equal $retraction ""] && $retraction} {
-      log::summary $message
-    } elseif {![string equal $grb ""] && !$grb} {
-      log::info $message
+      $log [format "%s: this is a test." $type]
     } else {
-      log::summary $message
-    }
-  }
-  
-  proc respondtogrbalert {test projectidentifier blockidentifier name origin identifier type alerttimestamp eventtimestamp retraction grb alpha delta equinox uncertainty} {
-    logresponse $test $retraction $grb [format "%s: name is %s." $type $name]
-    if {$test} {
-      logresponse $test $retraction $grb [format "%s: this is a test." $type]
-    } else {
-      logresponse $test $retraction $grb [format "%s: this is not a test." $type]
+      $log [format "%s: this is not a test." $type]
     }
     set enabled ""
-    if {![string equal $grb ""]} {
-      if {$grb} {
-        logresponse $test $retraction $grb [format "%s: this is a GRB." $type]
+    if {![string equal $worthy ""]} {
+      if {$worthy} {
+        $log [format "%s: this is a worthy event." $type]
         set enabled true
       } else {
-        logresponse $test $retraction $grb [format "%s: this is not a GRB." $type]
+        $log [format "%s: this is not a worthy event." $type]
         set enabled false
       }
     }
     if {![string equal $retraction ""] && $retraction} {
-      logresponse $test $retraction $grb [format "%s: this is a retraction." $type]
+      $log [format "%s: this is a retraction." $type]
       set enabled false
     }
-    logresponse $test $retraction $grb [format "%s: origin/identifier/type are %s/%s/%s." $type $origin $identifier $type]
-    logresponse $test $retraction $grb [format "%s: alert timestamp is %s." $type [utcclock::format $alerttimestamp]] 
+    $log [format "%s: origin/identifier/type are %s/%s/%s." $type $origin $identifier $type]
+    $log [format "%s: alert timestamp is %s." $type [utcclock::format $alerttimestamp]] 
     if {![string equal $eventtimestamp ""]} {
-      logresponse $test $retraction $grb [format "%s: event timestamp is %s." $type [utcclock::format $eventtimestamp]]
-      logresponse $test $retraction $grb [format "%s: event delay is %s." $type [utcclock::formatinterval [utcclock::diff $alerttimestamp $eventtimestamp]]]
+      $log [format "%s: event timestamp is %s." $type [utcclock::format $eventtimestamp]]
+      $log [format "%s: event delay is %s." $type [utcclock::formatinterval [utcclock::diff $alerttimestamp $eventtimestamp]]]
     } else {
-      logresponse $test $retraction $grb [format "%s: no event timestamp." $type]
+      $log [format "%s: no event timestamp." $type]
     }
-    logresponse $test $retraction $grb [format "%s: position is %s %s %s." $type [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox]
-    logresponse $test $retraction $grb [format "%s: 90%% uncertainty is %s in radius." $type [astrometry::formatdistance $uncertainty]]
-    logresponse $test $retraction $grb [format "%s: project identifier is %s." $type $projectidentifier]
-    logresponse $test $retraction $grb [format "%s: block identifier is %d." $type $blockidentifier]
+    $log [format "%s: position is %s %s %s." $type [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox]
+    $log [format "%s: 90%% uncertainty is %s in radius." $type [astrometry::formatdistance $uncertainty]]
+    $log [format "%s: project identifier is %s." $type $projectidentifier]
+    $log [format "%s: block identifier is %d." $type $blockidentifier]
     if {$test} {
-      logresponse $test $retraction $grb [format "%s: not requesting selector to respond: this is a test packet." $type]
+      $log [format "%s: not requesting selector to respond: this is a test packet." $type]
     } elseif {[string equal $projectidentifier ""]} {
-      logresponse $test $retraction $grb [format "%s: not requesting selector to respond: no project identifier." $type]
+      $log [format "%s: not requesting selector to respond: no project identifier." $type]
     } else {
-      logresponse $test $retraction $grb [format "%s: requesting selector to respond." $type]
+      $log [format "%s: requesting selector to respond." $type]
       if {[catch {
-        client::request "selector" [list respondtoalert $projectidentifier $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty]
+        client::request "selector" [list respondtoalert $projectidentifier $blockidentifier $eventname $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty]
       } result]} {
         log::warning [format "%s: unable to request selector: %s" $type $result]
       }
     }
   }
   
-  proc respondtolvcalert {test projectidentifier blockidentifier name origin identifier type alerttimestamp eventtimestamp retraction skymapurl} {
-    logresponse $test $retraction true [format "%s: name is %s." $type $name]
+  proc respondtolvcalert {log test projectidentifier blockidentifier eventname origin identifier type alerttimestamp eventtimestamp retraction skymapurl} {
+    $log [format "%s: eventname is %s." $type $eventname]
     if {$test} {
-      logresponse $test $retraction true [format "%s: this is a test." $type]
+      $log [format "%s: this is a test." $type]
     } else {
-      logresponse $test $retraction true [format "%s: this is not a test." $type]
+      $log [format "%s: this is not a test." $type]
     }
     if {![string equal $retraction ""] && $retraction} {
-      logresponse $test $retraction true [format "%s: this is a retraction." $type]
+      $log [format "%s: this is a retraction." $type]
       set enabled false
     } else {
       set enabled true
     }
-    logresponse $test $retraction true [format "%s: origin/identifier/type are %s/%s/%s." $type $origin $identifier $type]
-    logresponse $test $retraction true [format "%s: alert timestamp is %s." $type [utcclock::format $alerttimestamp]] 
-    logresponse $test $retraction true [format "%s: event timestamp is %s." $type [utcclock::format $eventtimestamp]]
-    logresponse $test $retraction true [format "%s: event delay is %s." $type [utcclock::formatinterval [utcclock::diff $alerttimestamp $eventtimestamp]]]
+    $log [format "%s: origin/identifier/type are %s/%s/%s." $type $origin $identifier $type]
+    $log [format "%s: alert timestamp is %s." $type [utcclock::format $alerttimestamp]] 
+    $log [format "%s: event timestamp is %s." $type [utcclock::format $eventtimestamp]]
+    $log [format "%s: event delay is %s." $type [utcclock::formatinterval [utcclock::diff $alerttimestamp $eventtimestamp]]]
     if {![string equal $skymapurl ""]} {
-      logresponse $test $retraction true [format "%s: skymap url is %s." $type $skymapurl]
+      $log [format "%s: skymap url is %s." $type $skymapurl]
     }
-    logresponse $test $retraction true [format "%s: project identifier is \"%s\"." $type $projectidentifier]
-    logresponse $test $retraction true [format "%s: block identifier is %d." $type $blockidentifier]
+    $log [format "%s: project identifier is \"%s\"." $type $projectidentifier]
+    $log [format "%s: block identifier is %d." $type $blockidentifier]
     if {$test} {
-      logresponse $test $retraction true [format "%s: not requesting selector to respond: this is a test packet." $type]
+      $log [format "%s: not requesting selector to respond: this is a test packet." $type]
     } elseif {[string equal $projectidentifier ""]} {
-      logresponse $test $retraction true [format "%s: not requesting selector to respond: no project identifier." $type]
+      $log [format "%s: not requesting selector to respond: no project identifier." $type]
     } else {
-      logresponse $test $retraction true [format "%s: requesting selector to respond." $type]
+      $log [format "%s: requesting selector to respond." $type]
       if {[catch {
-        client::request "selector" [list respondtolvcalert $projectidentifier $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $skymapurl]
+        client::request "selector" [list respondtolvcalert $projectidentifier $blockidentifier $eventname $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $skymapurl]
       } result]} {
         log::warning [format "%s: unable to request selector: %s" $type $result]
       }
@@ -448,7 +443,7 @@ namespace eval "gcntan" {
   #   swiftxrtposition
   #   swiftuvotposition
   
-  proc swifttest {packet} {
+  proc swifttest {log packet} {
     switch [type $packet] {
       "swiftbatgrbpostest" {
         return true
@@ -465,12 +460,12 @@ namespace eval "gcntan" {
     }
   }
 
-  proc swifttrigger {packet} {
+  proc swifttrigger {log packet} {
     return [expr {[field0 $packet 4] & 0xffffff}]
   }
   
-  proc swiftgrbname {packet} {
-    set timestamp [swifteventtimestamp $packet]
+  proc swifteventname {log packet} {
+    set timestamp [swifteventtimestamp $log $packet]
     if {[string equal $timestamp ""]} {
       return ""
     }
@@ -482,7 +477,7 @@ namespace eval "gcntan" {
     return $identifier
   }
 
-  proc swifteventtimestamp {packet} {
+  proc swifteventtimestamp {log packet} {
     switch [type $packet] {
       "swiftbatquicklookposition" -
       "swiftbatgrbposition" -
@@ -499,25 +494,25 @@ namespace eval "gcntan" {
     }
   }
   
-  proc swiftalpha {packet} {
+  proc swiftalpha {log packet} {
     return [astrometry::foldradpositive [astrometry::degtorad [field4 $packet 7]]]
   }
   
-  proc swiftdelta {packet} {
+  proc swiftdelta {log packet} {
     return [astrometry::degtorad [field4 $packet 8]]
   }
   
-  proc swiftequinox {packet} {
+  proc swiftequinox {log packet} {
     return 2000
   }
   
-  proc swiftuncertainty {packet} {
+  proc swiftuncertainty {log packet} {
     # BAT, XRT, and UVOT give 90% radius
     set uncertainty [astrometry::degtorad [field4 $packet 11]]
     return [format "%.1fas" [astrometry::radtoarcsec $uncertainty]]
   }
 
-  proc swiftgrb {packet} {
+  proc swiftworthy {log packet} {
     switch [type $packet] {
       "swiftbatgrbposition" -
       "swiftbatgrbpostest" {
@@ -538,7 +533,7 @@ namespace eval "gcntan" {
     }
   }
   
-  proc swiftretraction {packet} {
+  proc swiftretraction {log packet} {
     switch [type $packet] {
       "swiftbatquicklookposition" {
         return ""
@@ -572,7 +567,7 @@ namespace eval "gcntan" {
   #  fermilatgnd
   #  fermilatoffline
 
-  proc fermitest {packet} {
+  proc fermitest {log packet} {
     switch [type $packet] {
       "fermigbmpostest" -
       "fermilatgrbpostest" {
@@ -592,12 +587,12 @@ namespace eval "gcntan" {
     }
   }
 
-  proc fermitrigger {packet} {
+  proc fermitrigger {log packet} {
     return [field0 $packet 4]
   }
 
-  proc fermigrbname {packet} {
-    set timestamp [fermieventtimestamp $packet]
+  proc fermieventname {log packet} {
+    set timestamp [fermieventtimestamp $log $packet]
     if {[string equal $timestamp ""]} {
       return ""
     }
@@ -617,30 +612,30 @@ namespace eval "gcntan" {
     return $identifier
   }
 
-  proc fermieventtimestamp {packet} {
+  proc fermieventtimestamp {log packet} {
     return [utcclock::combinedformat [seconds $packet 5]]
   }
   
-  proc fermialpha {packet} {
+  proc fermialpha {log packet} {
     return [astrometry::foldradpositive [astrometry::degtorad [field4 $packet 7]]]
   }
   
-  proc fermidelta {packet} {
+  proc fermidelta {log packet} {
     return [astrometry::degtorad [field4 $packet 8]]
   }
 
-  proc fermiequinox {packet} {
+  proc fermiequinox {log packet} {
     return 2000
   }
 
-  proc fermigbmuncertainty {packet} {
+  proc fermigbmuncertainty {log packet} {
 
     set type [type $packet]
 
     # We work in degrees here.
 
     set rawuncertainty [field4 $packet 11]
-    log::info [format "%s: raw uncertainty is %.1fd in radius." $type $rawuncertainty]  
+    $log [format "%s: raw uncertainty is %.1fd in radius." $type $rawuncertainty]  
     
     # We want the radius containing 90% of the probability. There are
     # two complications here.
@@ -729,18 +724,18 @@ namespace eval "gcntan" {
     }
 
     set uncertainty $r
-    log::info [format "%s: 90%% uncertainty is %.1fd in radius." $type $uncertainty]  
+    $log [format "%s: 90%% uncertainty is %.1fd in radius." $type $uncertainty]  
 
     return [format "%.1fd" $uncertainty]
   }
   
-  proc fermilatuncertainty {packet} {
+  proc fermilatuncertainty {log packet} {
     # LAT gives 90% radius.
     set uncertainty [astrometry::degtorad [field4 $packet 11]]
     return [format "%.1fam" [astrometry::radtoarcmin $uncertainty]]
   }
   
-  proc fermiretraction {packet} {
+  proc fermiretraction {log packet} {
     if {([field0 $packet 18] >> 5) & 1} {
       return true
     } else {
@@ -748,16 +743,16 @@ namespace eval "gcntan" {
     }
   }
   
-  proc fermigrb {packet} {
+  proc fermiworthy {log packet} {
     set type [type $packet]
     switch [type $packet] {
       "fermigbmpostest" -
       "fermigbmfltpos" {
-        set sigma [fermigbmtriggersigma $packet]
-        log::info [format "%s: %.1f sigma." $type $sigma]
+        set sigma [fermigbmtriggersigma $log $packet]
+        $log [format "%s: %.1f sigma." $type $sigma]
         set class            [fermigbmclass $packet 23]
         set classprobability [fermigbmclassprobability $packet 23]
-        log::info [format "%s: class is \"%s\" (%.0f%%)." $type $class [expr {$classprobability * 100}]]
+        $log [format "%s: class is \"%s\" (%.0f%%)." $type $class [expr {$classprobability * 100}]]
         if {[string equal $class "grb"]} {
           return true
         } else {
@@ -765,20 +760,20 @@ namespace eval "gcntan" {
         }
       }
       "fermigbmgndpos" {
-        set sigma [fermigbmtriggersigma $packet]
-        log::info [format "%s: trigger sigma is %.1f." $type $sigma]
-        if {[fermiretraction $packet]} {
+        set sigma [fermigbmtriggersigma $log $packet]
+        $log [format "%s: trigger sigma is %.1f." $type $sigma]
+        if {[fermiretraction $log $packet]} {
           return false
         } else {
-          log::info [format "%s: the duration is %s." $type [fermigbmgrbduration $packet]]          
+          $log [format "%s: the duration is %s." $type [fermigbmgrbduration $log $packet]]          
           return true
         }
       }
       "fermigbmfinpos" {
-        if {[fermiretraction $packet]} {
+        if {[fermiretraction $log $packet]} {
           return false
         } else {
-          log::info [format "%s: the duration is %s." $type [fermigbmgrbduration $packet]]          
+          $log [format "%s: the duration is %s." $type [fermigbmgrbduration $log $packet]]          
           return true
         }
       }
@@ -787,9 +782,9 @@ namespace eval "gcntan" {
         set temporalsignificance [field0 $packet 25]
         set imagesignificance    [field0 $packet 26]
         set totalsignificance    [expr {$temporalsignificance + $imagesignificance}]
-        log::info [format "%s: temporal significance is %d." $type $temporalsignificance]
-        log::info [format "%s: image significance is %d."    $type $imagesignificance]
-        log::info [format "%s: total significance is %d."    $type $totalsignificance]
+        $log [format "%s: temporal significance is %d." $type $temporalsignificance]
+        $log [format "%s: image significance is %d."    $type $imagesignificance]
+        $log [format "%s: total significance is %d."    $type $totalsignificance]
         if {$totalsignificance >= 120} {
           return true
         } else {
@@ -801,7 +796,7 @@ namespace eval "gcntan" {
         # significance. I am confused by this. So, for the time being, I
         # am logging it but treating all as GRBs.
         set significance [field2 $packet 26]
-        log::info [format "%s: significance is %.2f." $type $significance]
+        $log [format "%s: significance is %.2f." $type $significance]
         return true
       }
       "fermilatoffline" {
@@ -843,7 +838,7 @@ namespace eval "gcntan" {
     return [expr {(([field0 $packet $i] >> 16) & 0xffff) / 256.0}]
   }
   
-  proc fermigbmtriggersigma {packet} {
+  proc fermigbmtriggersigma {log packet} {
     set type [type $packet]
     switch [type $packet] {
       "fermigbmpostest" -
@@ -859,7 +854,7 @@ namespace eval "gcntan" {
     }
   }
   
-  proc fermigbmgrbduration {packet} {
+  proc fermigbmgrbduration {log packet} {
     set ls [expr {([field0 $packet 18] >> 26) & 0x3}]
     switch $ls {
     0 {
@@ -884,7 +879,7 @@ namespace eval "gcntan" {
   #
   #  hawcburstmonitor
   
-  proc hawctest {packet} {
+  proc hawctest {log packet} {
     if {([field0 $packet 18] >> 1) & 0x1} {
       return true
     } else {
@@ -892,16 +887,16 @@ namespace eval "gcntan" {
     }
   }
 
-  proc hawctrigger {packet} {
+  proc hawctrigger {log packet} {
     # HAWC events are uniquely identified by the combination of the run_id and
     # event_id, which isn't very useful for us as we want a single integer.
     # Therefore, we use the timestamp to generate one.
-    set timestamp [hawceventtimestamp $packet]
+    set timestamp [hawceventtimestamp $log $packet]
     return [string range [string map {"T" ""} [utcclock::combinedformat $timestamp 0 false]] 0 end-2]
   }
 
-  proc hawcgrbname {packet} {
-    set timestamp [hawceventtimestamp $packet]
+  proc hawceventname {log packet} {
+    set timestamp [hawceventtimestamp $log $packet]
     if {[string equal $timestamp ""]} {
       return ""
     }
@@ -913,30 +908,30 @@ namespace eval "gcntan" {
     return $identifier
   }
 
-  proc hawceventtimestamp {packet} {
+  proc hawceventtimestamp {log packet} {
     return [utcclock::combinedformat [seconds $packet 5]]
   }
   
-  proc hawcalpha {packet} {
+  proc hawcalpha {log packet} {
     return [astrometry::foldradpositive [astrometry::degtorad [field4 $packet 7]]]
   }
   
-  proc hawcdelta {packet} {
+  proc hawcdelta {log packet} {
     return [astrometry::degtorad [field4 $packet 8]]
   }
 
-  proc hawcequinox {packet} {
+  proc hawcequinox {log packet} {
     return 2000
   }
 
-  proc hawcuncertainty {packet} {
+  proc hawcuncertainty {log packet} {
 
     set type [type $packet]
 
     # We work in degrees here.
 
     set rawuncertainty [field4 $packet 11]
-    log::info [format "%s: raw uncertainty is %.1fam in radius." $type [expr {$rawuncertainty * 60}]]
+    $log [format "%s: raw uncertainty is %.1fam in radius." $type [expr {$rawuncertainty * 60}]]
 
     # The notice gives the 68% statistical radius. 
 
@@ -951,20 +946,20 @@ namespace eval "gcntan" {
     set sigma [expr {$r68 / sqrt(-2 * log(1-0.68))}]
     set r90 [expr {$sigma * sqrt(-2 * log(1-0.90))}]
 
-    log::info [format "%s: 90%% uncertainty is %.1fam in radius." $type [expr {$r90 * 60}]]
+    $log [format "%s: 90%% uncertainty is %.1fam in radius." $type [expr {$r90 * 60}]]
 
     return [format "%.1fam" [expr {$r90 * 60}]]
   }
   
-  proc hawcgrb {packet} {
-    if {[hawcretraction $packet]} {
+  proc hawcworthy {log packet} {
+    if {[hawcretraction $log $packet]} {
       return false
     } else {
       return true
     }
   }
 
-  proc hawcretraction {packet} {
+  proc hawcretraction {log packet} {
     if {([field0 $packet 18] >> 5) & 0x1} {
       return true
     } else {
@@ -980,7 +975,7 @@ namespace eval "gcntan" {
   #  icecubeastrotrackbronze
   #  icecubecascade
   
-  proc icecubetest {packet} {
+  proc icecubetest {log packet} {
     if {([field0 $packet 18] >> 1) & 0x1} {
       return true
     } else {
@@ -988,16 +983,16 @@ namespace eval "gcntan" {
     }
   }
 
-  proc icecubetrigger {packet} {
+  proc icecubetrigger {log packet} {
     # IceCube events are uniquely identified by the combination of the run_id and
     # event_id, which isn't very useful for us as we want a single integer.
     # Therefore, we use the timestamp to generate one.
-    set timestamp [icecubeeventtimestamp $packet]
+    set timestamp [icecubeeventtimestamp $log $packet]
     return [string range [string map {"T" ""} [utcclock::combinedformat $timestamp 0 false]] 0 end-2]
   }
 
-  proc icecubegrbname {packet} {
-    set timestamp [icecubeeventtimestamp $packet]
+  proc icecubeeventname {log packet} {
+    set timestamp [icecubeeventtimestamp $log $packet]
     if {[string equal $timestamp ""]} {
       return ""
     }
@@ -1021,47 +1016,47 @@ namespace eval "gcntan" {
     return $identifier
   }
 
-  proc icecubeeventtimestamp {packet} {
+  proc icecubeeventtimestamp {log packet} {
     return [utcclock::combinedformat [seconds $packet 5]]
   }
   
-  proc icecubealpha {packet} {
+  proc icecubealpha {log packet} {
     return [astrometry::foldradpositive [astrometry::degtorad [field4 $packet 7]]]
   }
   
-  proc icecubedelta {packet} {
+  proc icecubedelta {log packet} {
     return [astrometry::degtorad [field4 $packet 8]]
   }
 
-  proc icecubeequinox {packet} {
+  proc icecubeequinox {log packet} {
     return 2000
   }
 
-  proc icecubeuncertainty {packet} {
+  proc icecubeuncertainty {log packet} {
 
     set type [type $packet]
 
     # We work in degrees here.
 
     set rawuncertainty [field4 $packet 11]
-    log::info [format "%s: raw uncertainty is %.1fam in radius." $type [expr {$rawuncertainty * 60}]]
+    $log [format "%s: raw uncertainty is %.1fam in radius." $type [expr {$rawuncertainty * 60}]]
 
     # The notice gives the 90% radius. 
     set r90 $rawuncertainty
-    log::info [format "%s: 90%% uncertainty is %.1fam in radius." $type [expr {$r90 * 60}]]
+    $log [format "%s: 90%% uncertainty is %.1fam in radius." $type [expr {$r90 * 60}]]
 
     return [format "%.1fam" [expr {$r90 * 60}]]
   }
   
-  proc icecubegrb {packet} {
-    if {[icecuberetraction $packet]} {
+  proc icecubeworthy {log packet} {
+    if {[icecuberetraction $log $packet]} {
       return false
     } else {
       return true
     }
   }
 
-  proc icecuberetraction {packet} {
+  proc icecuberetraction {log packet} {
     if {([field0 $packet 18] >> 5) & 0x1} {
       return true
     } else {
@@ -1071,7 +1066,7 @@ namespace eval "gcntan" {
 
   ######################################################################
 
-  proc lvcidentifier {packet} {
+  proc lvcidentifier {log packet} {
 
     set date [field0 $packet 4]            
 
@@ -1102,8 +1097,8 @@ namespace eval "gcntan" {
     return [string trimright "${prefix}${date}${suffix0}${suffix1}"]
   }
 
-  proc lvctest {packet} {
-    set identifier [lvcidentifier $packet]
+  proc lvctest {log packet} {
+    set identifier [lvcidentifier $log $packet]
     switch -glob $identifier {
       "S*" -
       "GW" {
@@ -1122,35 +1117,54 @@ namespace eval "gcntan" {
     }
   }
 
-  proc lvcname {packet} {
-    return "LVC [lvcidentifier $packet]"     
+  proc lvcname {log packet} {
+    return "LVC [lvcidentifier $log $packet]"     
   }
 
-  proc lvceventtimestamp {packet} {
+  proc lvceventtimestamp {log packet} {
     return [utcclock::combinedformat [seconds $packet 5]]
   }
 
-  proc lvctrigger {packet} {
+  proc lvctrigger {log packet} {
     # LVC events don't have a formal numerical trigger number, so we use the
     # timestamp to generate one.
-    set timestamp [lvceventtimestamp $packet]
+    set timestamp [lvceventtimestamp $log $packet]
     return [string range [string map {"T" ""} [utcclock::combinedformat $timestamp 0 false]] 0 end-2]
   }
   
-  proc lvcurl {packet} {
-    return [string trimright [format "%s%s%s%s%s%s%s%s%s%s%s" \
-      "https://gracedb.ligo.org/api/superevents/" \
-      [fields $packet 29] \
-      [fields $packet 30] \
-      [fields $packet 31] \
-      [fields $packet 32] \
-      [fields $packet 33] \
-      [fields $packet 34] \
-      [fields $packet 35] \
-      [fields $packet 36] \
-      [fields $packet 37] \
-      [fields $packet 38] \
-   ] "\0"]
+  proc lvcurl {log packet} {
+    if {[lvcretraction $log $packet]} {
+      return ""
+    } else {
+      return [string trimright [format "%s%s%s%s%s%s%s%s%s%s%s" \
+        "https://gracedb.ligo.org/api/superevents/" \
+        [fields $packet 29] \
+        [fields $packet 30] \
+        [fields $packet 31] \
+        [fields $packet 32] \
+        [fields $packet 33] \
+        [fields $packet 34] \
+        [fields $packet 35] \
+        [fields $packet 36] \
+        [fields $packet 37] \
+        [fields $packet 38] \
+     ] "\0"]
+    }
+  }
+  
+  proc lvcworthy {log packet} {
+    return true
+  }
+  
+  proc lvcretraction {log packet} {
+    switch [type $packet] {
+      "lvcretraction" {
+        return true
+      }
+      default {
+        return false
+      }
+    }
   }
 
 ######################################################################
@@ -1363,20 +1377,20 @@ namespace eval "gcntan" {
     if {[catch {readloop $channel} message]} {
       log::error "while serving connection from [servername $address] ($address): $message"
     }
-    log::summary "closing connection from [servername $address] ($address)."
+    log::info "closing connection from [servername $address] ($address)."
     catch {close $channel}
     set serving false
-    log::summary "waiting for connection."
+    log::info "waiting for connection."
   }
 
   proc accept {channel address port} {
-    log::summary "accepting connection from [servername $address] ($address)."
+    log::info "accepting connection from [servername $address] ($address)."
     variable serving
     if {$serving} {
       log::warning "closing connection from [servername $address] ($address): already serving another connection."
       catch {close $channel}
     } else {
-      log::summary "serving connection from [servername $address] ($address)."
+      log::info "serving connection from [servername $address] ($address)."
       after idle coroutine gcntan::servercoroutine "gcntan::server $channel $address"
     }
   }
@@ -1401,7 +1415,7 @@ namespace eval "gcntan" {
 
   proc start {} {
     variable packetport
-    log::summary "waiting for connection."
+    log::info "waiting for connection."
     socket -server gcntan::accept $packetport
     server::setrequestedactivity "idle"
     server::setstatus "starting"
