@@ -192,6 +192,14 @@ EOF
     ;;
   esac
   echo "tcs startserver -a &"
+  case $host in
+  ddotioan-d2)
+    echo "sleep 30"
+    echo "tcs request C2 initialize"
+    echo "sleep 30"
+    echo "tcs request C2 setcooler on"
+    ;;
+  esac
   
   echo "exit 0"
 
