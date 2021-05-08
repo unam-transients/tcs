@@ -333,6 +333,31 @@ proc steppedgridvisit {gridrepeats exposuresperdither exposuretime} {
 
 ########################################################################
 
+proc trackingtestvisit {exposures exposuretime} {
+
+  log::summary "trackingvisit: starting."
+  log::summary [format "trackingvisit: %d × %.0f second exposures." $exposures $exposuretime]
+
+  set binning 1
+  executor::setwindow "1kx1k"
+  executor::setbinning $binning
+  
+  executor::tracktopocentric
+  executor::waituntiltracking
+  
+  set exposure 0
+  while {$exposure < $exposures} {
+    executor::expose object $exposuretime
+    incr exposure
+  }
+
+  log::summary "trackingvisit: finished."
+
+  return true
+}
+
+########################################################################
+
 proc initialfocusvisit {} {
 
   log::summary "initialfocusvisit: starting."
