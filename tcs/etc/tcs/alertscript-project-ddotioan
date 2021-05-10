@@ -21,9 +21,10 @@
 
 ########################################################################
 
-type="$1"
-eventidentifier="$2"
-targetidentifier="$3"
+name="$1"
+origin="$2"
+identifier="$3"
+type="$4"
 
 timestamp="$(date +"%Y-%m-%d %H:%M.%S")"
 
@@ -31,22 +32,22 @@ priority=""
 case $type in
 lvc*)
   priority="emergency"
-  url="https://gracedb.ligo.org/superevents/$eventidentifier"
+  url="https://gracedb.ligo.org/superevents/$identifier"
   group="gw-group"
   ;;
 fermilat*)
   priority="emergency"
-  url="https://gcn.gsfc.nasa.gov/other/$targetidentifier.fermi"
+  url="https://gcn.gsfc.nasa.gov/other/$identifier.fermi"
   group="grb-group"
   ;;
 fermi*)
   priority="emergency"
-  url="https://gcn.gsfc.nasa.gov/other/$targetidentifier.fermi"
+  url="https://gcn.gsfc.nasa.gov/other/$identifier.fermi"
   group="grb-group"
   ;;
 swift*)
   priority="emergency"
-  url="https://gcn.gsfc.nasa.gov/other/$targetidentifier.swift"
+  url="https://gcn.gsfc.nasa.gov/other/$identifier.swift"
   group="grb-group"
   ;;
 hawc*)
@@ -64,16 +65,15 @@ icecube*)
   url="https://bacodine.gsfc.nasa.gov/amon_icecube_gold_bronze_events.html"
   group="grb-group"
   ;;
-
 esac
 
 if test "$priority" != ""
 then
-  echo "$timestamp: DDOTI/OAN has received a $type GCN Notice for $eventidentifier (target $targetidentifier)." |
-  $tcsprefix/tcs sendpushover \
+  echo "$timestamp: DDOTI/OAN has received a GCN Notice for $name ($origin/$type/$identifier)." |
+  $tcsprefix/bin/tcs sendpushover \
     -P "$priority" \
     -U "$url" \
-    -s "DDOTI/OAN $identifier: $type" \
+    -s "DDOTI/OAN $name" \
     "$group"
 fi
 

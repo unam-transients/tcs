@@ -50,7 +50,7 @@ esac
 if test "$priority" != ""
 then
   echo "$timestamp: TEST has received a $origin alert for $name (identifier $identifier type $type)." |
-  $tcsprefix/tcs sendpushover \
+  $tcsprefix/bin/tcs sendpushover \
     -P "$priority" \
     -U "$url" \
     -s "TEST: $origin $type alert for $name" \
