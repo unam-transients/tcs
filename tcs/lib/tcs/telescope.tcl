@@ -1062,14 +1062,6 @@ set mode "none"
       "telescope::unparkactivitycommand"
   }
   
-  proc map {ha delta exposuretime} {
-    set ha    [astrometry::parseha $ha]
-    set delta [astrometry::parsedelta $delta]
-    set alpha [astrometry::foldradpositive [expr {[astrometry::last] - $ha}]]
-    server::newactivitycommand "mapping" "idle" \
-      "telescope::mapactivitycommand $alpha $delta $exposuretime"
-  }
-  
   proc movesecondary {z0 setasinitial} {
     variable withsecondary
     if {!$withsecondary} {
