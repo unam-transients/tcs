@@ -145,22 +145,6 @@ namespace eval "telescopeserver" {
     telescope::setsecondaryoffset $dz
   }
   
-  proc slaveratirtrack {alpha delta equinox {alphaoffset 0} {deltaoffset 0} {epoch "now"} {alpharate 0} {deltarate 0}} {
-    telescope::ratirtrack $alpha $delta $equinox $alphaoffset $deltaoffset $epoch $alpharate $deltarate
-  }
-  
-  proc slaveratirtrackcatalogobject {catalogname objectname} {
-    telescope::ratirtrackcatalogobject $catalogname $objectname
-  }
-
-  proc slaveratirtracktopocentric {ha delta} {
-    telescope::ratirtracktopocentric $ha $delta
-  }
-
-  proc slaveratiroffset {alphaoffset deltaoffset} {
-    telescope::ratiroffset $alphaoffset $deltaoffset
-  }
-
   ######################################################################
 
   proc configureslave {slave} {
@@ -192,11 +176,7 @@ namespace eval "telescopeserver" {
     interp alias $slave correct                     {} telescopeserver::slavecorrect
     interp alias $slave movesecondary               {} telescopeserver::slavemovesecondary
     interp alias $slave setsecondaryoffset          {} telescopeserver::slavesetsecondaryoffset
-    
-    interp alias $slave ratirtrack                  {} telescopeserver::slaveratirtrack
-    interp alias $slave ratirtrackcatalogobject     {} telescopeserver::slaveratirtrackcatalogobject
-    interp alias $slave ratirtracktopocentric       {} telescopeserver::slaveratirtracktopocentric
-    interp alias $slave ratiroffset                 {} telescopeserver::slaveratiroffset
+
   }
 
   ######################################################################
