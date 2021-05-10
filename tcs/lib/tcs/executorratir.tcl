@@ -196,43 +196,6 @@ namespace eval "executor" {
     set exposure [expr {$exposure + 1}]
   }
   
-  proc ratirexpose {C0exposuretime C1exposuretime C2exposuretime C3exposuretime C2nreads C3nreads type} {
-
-    variable exposure
-
-    log::info "exposing $type images (exposure $exposure)."
-
-    if {$C2nreads == 0} {
-      set C2exposuretime "none"
-    }
-    if {$C3nreads == 0} {
-      set C3exposuretime "none"
-    }
-
-    if {[string equal [getguidingmode] "C0"] || [string equal [getguidingmode] "C0donuts"]} {
-      set C0exposuretime "none"
-    }
-    if {[string equal [getguidingmode] "C1"] || [string equal [getguidingmode] "C1donuts"]} {
-      set C1exposuretime "none"
-    }
-
-    set seconds [utcclock::seconds]
-    set date [utcclock::formatdate $seconds false]
-    set dateandtime [utcclock::combinedformat $seconds 0 false]
-    set projectidentifier [project::identifier]
-    set visitidentifier [visit::identifier]
-    set prefix "/images/test/$date/$projectidentifier/$visitidentifier/$dateandtime"
-    log::info "prefix is \"[directories::prefix]\"."
-    file mkdir [file dirname [directories::prefix]]
-
-    client::request "instrument" "expose $C0exposuretime $C1exposuretime $C2exposuretime $C3exposuretime $C2nreads $C3nreads $type [directories::prefix]"
-    client::wait "instrument"
-
-    log::info "finished exposing (exposure $exposure)."
-
-    set exposure [expr {$exposure + 1}]
-  }
-  
   proc exposeobject {C0exposuretime C1exposuretime C2exposuretime C3exposuretime C2nreads C3nreads} {
     expose $C0exposuretime $C1exposuretime $C2exposuretime $C3exposuretime $C2nreads $C3nreads "object"
   }
@@ -271,13 +234,6 @@ namespace eval "executor" {
 
   proc exposebias {} {
     expose 0 0 "none" "none" 0 0  "bias"
-  }
-
-  proc ratirmovefilterwheel {filter} {
-   log::info "moving filter wheel to filter \"$filter\"."
-   client::request "instrument" "movefilterwheel $filter"
-   client::wait "instrument"
-   log::info "finished moving filter wheel."
   }
 
   ######################################################################

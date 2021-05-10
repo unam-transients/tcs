@@ -118,19 +118,6 @@ namespace eval "instrumentserver" {
     return
   }
   
-  proc slaveratirexpose {C0exposuretime C1exposuretime C2exposuretime C3exposuretime {C2nreads 1} {C3nreads 1} {type "object"} {fitsfileprefix "/tmp/"}} {
-    instrument::ratirexpose $C0exposuretime $C1exposuretime $C2exposuretime $C3exposuretime $C2nreads $C3nreads $type $fitsfileprefix
-  }
-  
-  proc slaveratirexposeloop {n C0exposuretime C1exposuretime C2exposuretime C3exposuretime {C2nreads 1} {C3nreads 1} {type "object"} {fitsfileprefix "/tmp/"}} {
-    instrument::ratirexposeloop $n $C0exposuretime $C1exposuretime $C2exposuretime $C3exposuretime $C2nreads $C3nreads $type $fitsfileprefix
-  }
-  
-  proc slaveratirmovefilterwheel {position} {
-    eval instrument::ratirmovefilterwheel $position
-    return
-  }
-  
   proc configureslave {slave} {
     interp alias $slave initialize           {} instrumentserver::slaveinitialize
     interp alias $slave open                 {} instrumentserver::slaveopen
@@ -150,9 +137,6 @@ namespace eval "instrumentserver" {
     interp alias $slave movefilterwheel      {} instrumentserver::slavemovefilterwheel
     interp alias $slave focus                {} instrumentserver::slavefocus
     interp alias $slave mapfocus             {} instrumentserver::slavemapfocus
-    interp alias $slave ratirexpose          {} instrumentserver::slaveratirexpose
-    interp alias $slave ratirexposeloop      {} instrumentserver::slaveratirexposeloop
-    interp alias $slave ratirmovefilterwheel {} instrumentserver::slaveratirmovefilterwheel
   }
 
   ######################################################################
