@@ -34,17 +34,12 @@ swift*)
   url="https://gcn.gsfc.nasa.gov/other/$blockidentifier.swift"
   group="grb-group"
   ;;
-fermilat*)
-  priority="emergency"
-  url="https://gcn.gsfc.nasa.gov/other/$blockidentifier.fermi"
-  group="grb-group"
-  ;;
 esac
 
 if test "$priority" != ""
 then
   echo "$timestamp: RATIR/OAN has received a $type GCN Notice for $eventidentifier (target $blockidentifier)." |
-  sendpushover \
+  $tcsprefix/tcs sendpushover \
     -P "$priority" \
     -U "$url" \
     -s "RATIR/OAN $identifier: $type" \

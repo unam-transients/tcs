@@ -40,21 +40,37 @@ fermilat*)
   group="grb-group"
   ;;
 fermi*)
-  priority="normal"
+  priority="emergency"
   url="https://gcn.gsfc.nasa.gov/other/$targetidentifier.fermi"
   group="grb-group"
   ;;
 swift*)
-  priority="normal"
+  priority="emergency"
   url="https://gcn.gsfc.nasa.gov/other/$targetidentifier.swift"
   group="grb-group"
   ;;
+hawc*)
+  priority="normal"
+  url="https://gcn.gsfc.nasa.gov/amon_hawc_events.html"
+  group="grb-group"
+  ;;
+icecubecascade*)
+  priority="normal"
+  url="https://bacodine.gsfc.nasa.gov/amon_icecube_cascade_events.html"
+  group="grb-group"
+  ;;
+icecube*)
+  priority="normal"
+  url="https://bacodine.gsfc.nasa.gov/amon_icecube_gold_bronze_events.html"
+  group="grb-group"
+  ;;
+
 esac
 
 if test "$priority" != ""
 then
   echo "$timestamp: DDOTI/OAN has received a $type GCN Notice for $eventidentifier (target $targetidentifier)." |
-  sendpushover \
+  $tcsprefix/tcs sendpushover \
     -P "$priority" \
     -U "$url" \
     -s "DDOTI/OAN $identifier: $type" \
