@@ -1015,7 +1015,7 @@ namespace eval "gcntan" {
         set eventtype "cascade"
       }
     }
-    set identifier [format "Icecube %s %02d%02d%02d.%03d" $eventtype [expr {$year % 100}] $month $day [expr {int($dayfraction * 1000)}]]
+    set identifier [format "IceCube %s %02d%02d%02d.%03d" $eventtype [expr {$year % 100}] $month $day [expr {int($dayfraction * 1000)}]]
     return $identifier
   }
 
