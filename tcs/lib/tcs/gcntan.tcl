@@ -907,7 +907,7 @@ namespace eval "gcntan" {
       error "unable to scan timestamp \"$timestamp\"."
     }
     set dayfraction [expr {($hours + $minutes / 60.0 + $seconds / 3600.0) / 24.0}]
-    set identifier [format "HAWC GRB %02d%02d%02d.%03d" [expr {$year % 100}] $month $day [expr {int($dayfraction * 1000)}]]
+    set identifier [format "HAWC %02d%02d%02d.%03d" [expr {$year % 100}] $month $day [expr {int($dayfraction * 1000)}]]
     return $identifier
   }
 
