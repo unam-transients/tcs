@@ -21,9 +21,10 @@
 
 ########################################################################
 
-type="$1"
-eventidentifier="$2"
-blockidentifier="$3"
+name="$1"
+origin="$2"
+identifier="$3"
+type="$4"
 
 timestamp="$(date +"%Y-%m-%d %H:%M.%S")"
 
@@ -31,18 +32,18 @@ priority=""
 case $type in
 swift*)
   priority="emergency"
-  url="https://gcn.gsfc.nasa.gov/other/$blockidentifier.swift"
+  url="https://gcn.gsfc.nasa.gov/other/$identifier.swift"
   group="grb-group"
   ;;
 esac
 
 if test "$priority" != ""
 then
-  echo "$timestamp: RATIR/OAN has received a $type GCN Notice for $eventidentifier (target $blockidentifier)." |
-  $tcsprefix/tcs sendpushover \
+  echo "$timestamp: RATIR/OAN has received a GCN Notice for $name ($origin/$type/$identifier)." |
+  $tcsprefix/bin/tcs sendpushover \
     -P "$priority" \
     -U "$url" \
-    -s "RATIR/OAN $identifier: $type" \
+    -s "RATIR/OAN $name" \
     "$group"
 fi
 
