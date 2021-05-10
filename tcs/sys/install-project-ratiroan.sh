@@ -185,11 +185,15 @@ EOF
   esac
 
   case $host in
-  ratiroan-control|ratiroan-detectors|ratiroan-tcs-a)
+  *-services)
+    echo "tcs startserver log &"
+    ;;
+  *)
     echo "# This sleep gives the services host time to reboot and start the log server."
     echo "sleep 30"
     ;;
   esac
+  echo "tcs log rc.local warning \"$host is booting.\""
   echo "tcs startserver -a &"
   
   echo "exit 0"
