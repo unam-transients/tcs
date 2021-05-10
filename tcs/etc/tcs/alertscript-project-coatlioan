@@ -44,7 +44,7 @@ esac
 if test "$priority" != ""
 then
   echo "$timestamp: COATLI/OAN has received a $type GCN Notice for $eventidentifier (target $blockidentifier)." |
-  sendpushover \
+  $tcsprefix/tcs sendpushover \
     -P "$priority" \
     -U "$url" \
     -s "COATLI/OAN $identifier: $type" \
