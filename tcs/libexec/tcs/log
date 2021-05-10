@@ -33,13 +33,13 @@ source [file join $::env(tcsprefix) "lib" "tcs" "packages.tcl"]
 package require "log"
 
 # Parse the arguments. 
-if {[llength $argv] < 3} {
-  puts stderr "usage: tcs log who type message ..."
+if {[llength $argv] != 3} {
+  puts stderr "usage: tcs log who type message"
   exit 1
 }
 set who     [lindex $argv 0]
 set level   [lindex $argv 1]
-set message [lrange $argv 2 end]
+set message [lindex $argv 2]
 
 if {[catch {
   log::$level $message $who
