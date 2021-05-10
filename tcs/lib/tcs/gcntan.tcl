@@ -311,9 +311,10 @@ namespace eval "gcntan" {
       "lvcupdate" -
       "lvcretraction" {
         variable lvcalertprojectidentifier
+        log::info [format "received %s packet." $type]
+        return "echo"
         set log [logprocedure $packet]
         $log [format "received %s packet." $type]
-        return "echo"
         set projectidentifier  $lvcalertprojectidentifier
         set blockidentifier    [lvctrigger         $log $packet]
         set eventname          [lvcname            $log $packet]
@@ -328,6 +329,8 @@ namespace eval "gcntan" {
       }
        
       "lvccounterpart" {
+        log::info [format "received %s packet." $type]
+        return "echo"
         set log [logprocedure $packet]
         $log [format "received %s packet." $type]
         return "echo"
