@@ -1062,39 +1062,6 @@ set mode "none"
       "telescope::unparkactivitycommand"
   }
   
-  proc ratirtrack {alpha delta equinox {alphaoffset 0} {deltaoffset 0} {epoch now} {alpharate 0} {deltarate 0}} {
-    server::checkstatus
-    server::checkactivity "moving" "tracking" "idle"
-    safetyswitch::checksafetyswitch
-    astrometry::parsealpha   $alpha
-    astrometry::parsedelta   $delta
-    astrometry::parseequinox $equinox
-    astrometry::parseoffset  $alphaoffset
-    astrometry::parseoffset  $deltaoffset
-    astrometry::parserate    $alpharate
-    astrometry::parserate    $deltarate
-    server::newactivitycommand "moving" "tracking" \
-      "telescope::ratirtrackactivitycommand $alpha $delta $equinox $alphaoffset $deltaoffset $epoch $alpharate $deltarate"
-  }
-  
-  proc ratirtrackcatalogobject {catalogname objectname} {
-    variable catalogdirectory
-    set channel [::open "|[directories::bin]/tcs getcatalogobject -d \"$catalogdirectory\" -- \"$catalogname\" \"$objectname\"" "r"]
-    set line [coroutine::gets $channel]
-    catch {::close $channel}
-    if {[string equal $line ""]} {
-      error "object \"$objectname\" not found in catalog \"$catalogname\"."
-    }
-    eval ratirtrack $line
-  }
-  
-  proc ratirtracktopocentric {ha delta} {
-    set ha    [astrometry::parseha $ha]
-    set delta [astrometry::parsedelta $delta]
-    set alpha [astrometry::alpha $ha]
-    ratirtrack [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] now    
-  }
-  
   proc map {ha delta exposuretime} {
     set ha    [astrometry::parseha $ha]
     set delta [astrometry::parsedelta $delta]
