@@ -354,7 +354,7 @@ namespace eval "gcntan" {
   ######################################################################
   
   proc respondtoalert {log test projectidentifier blockidentifier eventname origin identifier type alerttimestamp eventtimestamp retraction worthy alpha delta equinox uncertainty} {
-    $log [format "%s: eventname is %s." $type $eventname]
+    $log [format "%s: event name is %s." $type $eventname]
     if {$test} {
       $log [format "%s: this is a test." $type]
     } else {
@@ -401,7 +401,7 @@ namespace eval "gcntan" {
   }
   
   proc respondtolvcalert {log test projectidentifier blockidentifier eventname origin identifier type alerttimestamp eventtimestamp retraction skymapurl} {
-    $log [format "%s: eventname is %s." $type $eventname]
+    $log [format "%s: event name is %s." $type $eventname]
     if {$test} {
       $log [format "%s: this is a test." $type]
     } else {
