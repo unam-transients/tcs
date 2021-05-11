@@ -280,15 +280,5 @@ namespace eval "alert" {
   } 
   
   ######################################################################
-  
-  proc setexposures {exposuresarg} {
-    variable exposures
-    set exposures $exposuresarg
-  }
 
-  proc exposures {} {
-    variable exposures
-    return $exposures
-  }
-  
 }
