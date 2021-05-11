@@ -106,6 +106,8 @@ EOF
   echo "mkdir -p /usr/local/var/tcs/reboot"
   echo "mkdir -p /usr/local/var/tcs/restart"
   echo "mkdir -p /usr/local/var/tcs/halt"
+  echo "tcs startserver log &"  
+  echo "tcs log rc.local warning \"$host is booting.\""
   echo "tcs startserver -a &"  
   echo "exit 0"
 
