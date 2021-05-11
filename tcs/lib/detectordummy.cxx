@@ -29,6 +29,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <time.h>
 
 #include "detector.h"
 
@@ -51,6 +52,10 @@ static unsigned long windownx = 0;
 static unsigned long windowny = 0;
 
 static unsigned long binning = 1;
+
+////////////////////////////////////////////////////////////////////////
+
+static time_t exposureend = 0;
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -110,6 +115,7 @@ detectorrawexpose(double exposuretime, const char *shutter)
   DETECTOR_CHECK_OPEN();
   if (strcmp(shutter, "open") != 0 && strcmp(shutter, "closed") != 0)
     DETECTOR_ERROR("invalid shutter argument.");
+  exposureend = time(NULL) + exposuretime;
   DETECTOR_OK();
 }
 
@@ -119,6 +125,7 @@ const char *
 detectorrawcancel(void)
 {
   DETECTOR_CHECK_OPEN();
+  exposureend = 0;
   DETECTOR_OK();
 }
 
@@ -127,7 +134,7 @@ detectorrawcancel(void)
 bool
 detectorrawgetreadytoberead(void)
 {
-  return 1;
+  return time(NULL) > exposureend;
 }
 
 ////////////////////////////////////////////////////////////////////////
