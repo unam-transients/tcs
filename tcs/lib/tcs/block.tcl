@@ -35,7 +35,7 @@ namespace eval "block" {
   
   proc identifier {block} {
     if {![dict exists $block "identifier"]} {
-      error "invalid block: missing identifier \"$identifier\"."
+      error "invalid block: missing identifier."
     }
     set identifier [dict get $block "identifier"]
     if {[scan $identifier "%d" value] != 1} {
