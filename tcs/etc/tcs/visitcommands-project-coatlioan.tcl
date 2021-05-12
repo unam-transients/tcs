@@ -80,9 +80,7 @@ proc alertvisit {alertfile} {
   set lastequinox     [visit::equinox]
   set lasteastoffset  [astrometry::parseangle "0as"]
   set lastnorthoffset [astrometry::parseangle "0as"]
-  
-  set exposuretype firstalertobject
-  
+    
   foreach {eastoffset northoffset} {
       0as   0as
     +30as +30as
@@ -136,8 +134,7 @@ proc alertvisit {alertfile} {
       executor::movefilterwheel $filter
       set i 0
       while {$i < $exposuresperdither} {
-        executor::expose $exposuretype $exposuretime
-        set exposuretype object
+        executor::expose "object" $exposuretime
         incr i
       }
     }

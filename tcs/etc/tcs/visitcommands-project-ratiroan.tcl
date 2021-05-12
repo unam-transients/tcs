@@ -58,9 +58,7 @@ proc alertvisit {{filters "r"}} {
   set lastalpha   [alert::alpha [executor::alert]]
   set lastdelta   [alert::delta [executor::alert]]
   set lastequinox [alert::equinox [executor::alert]]
-  
-  set exposuretype firstalertobject
-  
+    
   executor::setpointingmode "none"
   log::summary "alertvisit: correcting pointing."
   executor::correctpointing 80
@@ -120,8 +118,7 @@ proc alertvisit {{filters "r"}} {
       executor::movefilterwheel $filter "none" "none" "none"
       set i 0
       while {$i < $exposuresperdither} {
-        executor::expose $exposuretype 80 80 60 60
-        set exposuretype object
+        executor::expose "object" 80 80 60 60
         incr i
       }
     }

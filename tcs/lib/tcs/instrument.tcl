@@ -548,7 +548,6 @@ namespace eval "instrument" {
     }
     if {
       ![string equal $type "object"] &&
-      ![string equal $type "firstalertobject"] &&
       ![string equal $type "astrometry"] &&
       ![string equal $type "focus"] &&
       ![string equal $type "flat"] &&

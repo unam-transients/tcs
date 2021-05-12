@@ -339,7 +339,6 @@ namespace eval "ccd" {
     variable identifier
     switch $exposuretype {
       "object" -
-      "firstalertobject" -
       "focus" -
       "astrometry" {
         set suffix "o"
@@ -516,7 +515,6 @@ namespace eval "ccd" {
     server::setdata "average"             ""
     server::setdata "standarddeviation"   ""
     if {[string equal $exposuretype "object"          ] || 
-        [string equal $exposuretype "firstalertobject"] || 
         [string equal $exposuretype "flat"            ] || 
         [string equal $exposuretype "astrometry"      ] ||
         [string equal $exposuretype "focus"           ] ||
@@ -558,29 +556,6 @@ namespace eval "ccd" {
       fitsheader::writetcsfitsheader $channel "S"
     } message]} {
       error "while writing FITS header: $message"
-    }
-    if {[string equal $exposuretype "firstalertobject"]} {
-      if {[catch {
-        client::update "executor"
-        set alerteventtimestamp [client::getdata "executor" "alerteventtimestamp"]
-        if {![string equal $alerteventtimestamp ""]} {
-          log::info [format "trigger timestamp is %s." [utcclock::format $alerteventtimestamp]]
-          set delay [utcclock::diff $seconds $alerteventtimestamp]
-          log::summary [format "exposure started %.1f seconds after trigger." $delay]
-        } else {
-          log::summary [format "no trigger timestamp."]
-        }
-        set alertearliesttimestamp [client::getdata "executor" "alertearliesttimestamp"]
-        if {![string equal $alertearliesttimestamp ""]} {
-          log::info [format "earliest alert timestamp is %s." [utcclock::format $alertearliesttimestamp]]
-          set delay [utcclock::diff $seconds $alertearliesttimestamp]
-          log::summary [format "exposure started %.1f seconds after alert." $delay]
-        } else {
-          log::summary [format "no alert timestamp."]
-        }
-      } message]} {
-        log::debug "unable to calculate delays: $message"
-      }
     }
     while {[detector::continueexposure]} {
       coroutine::after 100
@@ -964,7 +939,6 @@ namespace eval "ccd" {
     }
     if {
       ![string equal $exposuretype "object"          ] &&
-      ![string equal $exposuretype "firstalertobject"] &&
       ![string equal $exposuretype "bias"            ] &&
       ![string equal $exposuretype "dark"            ] &&
       ![string equal $exposuretype "flat"            ] &&
