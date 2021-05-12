@@ -39,7 +39,7 @@ proc alertvisit {{filters "r"}} {
   }
   
   set alertdelay [alert::delay [executor::alert]]
-  log::summary [format "alertvisit: alert delay at start is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
+  log::summary [format "alertvisit: alert delay at start of visit is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
   set exposuretime       60
   set exposuresperdither 1
   
@@ -64,7 +64,8 @@ proc alertvisit {{filters "r"}} {
   executor::correctpointing 80
   executor::track
   executor::waituntiltracking
-
+  
+  set first true
   foreach {aperture eastoffset northoffset} {
     riZJcenter -10as -30as
     riYHcenter -10as -30as
@@ -118,6 +119,11 @@ proc alertvisit {{filters "r"}} {
       executor::movefilterwheel $filter "none" "none" "none"
       set i 0
       while {$i < $exposuresperdither} {
+        if {$first} {
+          set alertdelay [alert::delay [executor::alert]]
+          log::summary [format "alertvisit: alert delay at start of first exposure is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
+          set first false
+        }
         executor::expose "object" 80 80 60 60
         incr i
       }
@@ -126,7 +132,7 @@ proc alertvisit {{filters "r"}} {
   }
 
   set alertdelay [alert::delay [executor::alert]]
-  log::summary [format "alertvisit: alert delay at end is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
+  log::summary [format "alertvisit: alert delay at end of visit is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
 
   log::summary "alertvisit: finished."
 
