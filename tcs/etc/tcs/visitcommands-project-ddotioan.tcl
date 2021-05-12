@@ -23,28 +23,22 @@
 
 ########################################################################
 
-proc alertvisit {} {
+proc alertvisit {{filter "w"}} {
 
   log::summary "alertvisit: starting."
   
-  variable filename
-  variable visitidentifier
-  
-  set block [alert::alertfiletoblock $filename]
-  set alert [block::alert $block]
-
-  if {[string equal "" [alert::eventtimestamp $alert]]} {
+  if {[string equal "" [alert::eventtimestamp [executor::alert]]]} {
     log::summary [format "alertvisit: no event timestamp."]
   } else {  
-    log::summary [format "alertvisit: event timestamp is %s." [utcclock::format [alert::eventtimestamp $alert]]]
+    log::summary [format "alertvisit: event timestamp is %s." [utcclock::format [alert::eventtimestamp [executor::alert]]]]
   }
-  if {[string equal "" [alert::alerttimestamp $alert]]} {
+  if {[string equal "" [alert::alerttimestamp [executor::alert]]]} {
     log::summary [format "alertvisit: no alert timestamp."]
   } else {  
-    log::summary [format "alertvisit: alert timestamp is %s." [utcclock::format [alert::alerttimestamp $alert]]]
+    log::summary [format "alertvisit: alert timestamp is %s." [utcclock::format [alert::alerttimestamp [executor::alert]]]]
   }
 
-  set alertdelay [alert::delay $alert]
+  set alertdelay [alert::delay [executor::alert]]
   log::summary [format "alertvisit: alert delay at start is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
   if {$alertdelay < 1800} {
     set exposuretime       30
@@ -62,15 +56,15 @@ proc alertvisit {} {
   
   # The decisions below aim to choose the smallest grid that includes
   # the 90% region, assuming each field is 6.6d x 9.8d.
-  set uncertainty [astrometry::parsedistance [alert::uncertainty $alert]]
+  set uncertainty [astrometry::parsedistance [alert::uncertainty [executor::alert]]]
   log::summary [format "alertvisit: uncertainty is %s." [astrometry::formatdistance $uncertainty 2]]
   if {$uncertainty <= [astrometry::parsedistance "1.65d"]} {
     log::summary "alertvisit: grid is 1 × 1 fields."
-    set visits [list $visitidentifier 0.0d 0.0d]
+    set visits [list 0 0.0d 0.0d]
     set aperture "W"
   } elseif {$uncertainty <= [astrometry::parsedistance "3.3d"]} {
     log::summary "alertvisit: grid is 1 × 1 fields."
-    set visits [list $visitidentifier 0.0d 0.0d]
+    set visits [list 0 0.0d 0.0d]
     set aperture "default"
   } elseif {$uncertainty <= [astrometry::parsedistance "4.9d"]} {
     log::summary "alertvisit: grid is 2 × 1 fields."
@@ -117,22 +111,23 @@ proc alertvisit {} {
     set dithereastrange  "0.33d"
     set dithernorthrange "0.33d"
     
-    if {[file exists $filename]} {
-      set block [alert::alertfiletoblock $filename]
-      set alert [block::alert $block]
+    if {[file exists [executor::filename]]} {
+      executor::setblock [alert::alertfiletoblock [executor::filename]]
+      executor::setalert [block::alert [executor::block]]
     }
 
-    if {![alert::enabled $alert]} {
+    if {![alert::enabled [executor::alert]]} {
       log::summary "alertvisit: the alert is no longer enabled."
       return false
     }
 
-    set alpha   [alert::alpha $alert]
-    set delta   [alert::delta $alert]
-    set equinox [alert::equinox $alert]
+    set alpha   [alert::alpha [executor::alert]]
+    set delta   [alert::delta [executor::alert]]
+    set equinox [alert::equinox [executor::alert]]
     
     if {![string equal $lastalpha ""] && ($alpha != $lastalpha || $delta != $lastdelta || $equinox != $lastequinox)} {
       log::summary "alertvisit: the coordinates have been updated."
+      executor::setvisit [visit::updatevisittargetcoordinates [executor::visit] [visit::makeequatorialtargetcoordinates $alpha $delta $equinox]]
     }
     
     set dithereastoffset  [expr {[astrometry::parsedistance $dithereastrange ] * (rand() - 0.5)}]
@@ -148,6 +143,8 @@ proc alertvisit {} {
     set lastequinox $equinox
 
     foreach {visitidentifier visiteastoffset visitnorthoffset} $visits {
+    
+      executor::setvisit [visit::updatevisitidentifier [executor::visit] $visitidentifier]
     
       set eastoffset  [expr {[astrometry::parseoffset $visiteastoffset ] + [astrometry::parseoffset $dithereastoffset ]}]
       set northoffset [expr {[astrometry::parseoffset $visitnorthoffset] + [astrometry::parseoffset $dithernorthoffset]}]
@@ -165,7 +162,7 @@ proc alertvisit {} {
     incr dither
   }
 
-  set alertdelay [alert::delay $alert]
+  set alertdelay [alert::delay [executor::alert]]
   log::summary [format "alertvisit: alert delay at end is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
 
   log::summary "alertvisit: finished."
@@ -201,7 +198,7 @@ proc alertprologvisit {} {
 
 ########################################################################
 
-proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime} {
+proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime {filters "w"}} {
 
   log::summary "gridvisit: starting."
 
@@ -289,6 +286,8 @@ proc steppedgridvisit {gridrepeats exposuresperdither exposuretime} {
 
   log::summary "steppedgridvisit: starting."
 
+  variable visit
+
   set binning 1
   executor::setwindow "default"
   executor::setbinning $binning
@@ -312,9 +311,9 @@ proc steppedgridvisit {gridrepeats exposuresperdither exposuretime} {
   executor::waituntiltracking
   
   set gridrepeat 0
-  variable visitidentifier
   while {$gridrepeat < $gridrepeats} {
     foreach {visitidentifier eastoffset northoffset} $dithers {
+      executor::setvisit [visit::updatevisitidentifier [executor::visit] $visitidentifier]
       executor::offset $eastoffset $northoffset
       executor::waituntiltracking
       set exposure 0
@@ -521,7 +520,7 @@ proc focusmapvisit {args} {
 
 ########################################################################
 
-proc pointingmapvisit {args} {
+proc pointingmapvisit {} {
 
   log::summary "pointingmapvisit: starting."
   

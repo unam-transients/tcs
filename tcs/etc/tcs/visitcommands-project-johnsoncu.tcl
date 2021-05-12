@@ -23,18 +23,52 @@
 
 ########################################################################
 
-proc alertcommand {filters} {
-  log::summary "alertcommand: starting."
-  executor::move
+proc alertvisit {{filters ""}} {
+
+  log::summary "alertvisit: starting."
+
+  executor::track
   executor::setwindow "default"
   executor::setbinning 1
+
+  set lastalpha   [alert::alpha [executor::alert]]
+  set lastdelta   [alert::delta [executor::alert]]
+  set lastequinox [alert::equinox [executor::alert]]
+
   set i 0
   while {$i < 20} {
-    executor::expose object 60
+
+    if {[file exists [executor::filename]]} {
+      executor::setblock [alert::alertfiletoblock [executor::filename]]
+      executor::setalert [block::alert [executor::block]]
+    }
+
+    if {![alert::enabled [executor::alert]]} {
+      log::summary "alertvisit: the alert is no longer enabled."
+      return false
+    }
+
+    set alpha   [alert::alpha [executor::alert]]
+    set delta   [alert::delta [executor::alert]]
+    set equinox [alert::equinox [executor::alert]]
+
+    if {$alpha != $lastalpha || $delta != $lastdelta || $equinox != $lastequinox} {
+      log::summary "alertvisit: the coordinates have been updated."
+      executor::setvisit [visit::updatevisittargetcoordinates [executor::visit] [visit::makeequatorialtargetcoordinates $alpha $delta $equinox]]
+      executor::track 0as 0as "default"
+      executor::waituntiltracking
+    }
+
+    set lastalpha   $alpha
+    set lastdelta   $delta
+    set lastequinox $equinox
+
+    executor::expose object 10
     incr i
-    coroutine::after 10000
+
   }
-  log::summary "alertcommand: finished."
+
+  log::summary "alertvisit: finished."
   return true
 }
 

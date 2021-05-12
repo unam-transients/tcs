@@ -257,6 +257,13 @@ namespace eval "visit" {
     return [dict get $visit "name"]
   }
   
+  proc targetcoordinates {visit} {
+    if {![dict exists $visit "targetcoordinates"]} {
+      error "invalid visit: no visit target coordinates."
+    }
+    return [dict get $visit "targetcoordinates"]
+  }
+  
   proc estimatedduration {visit} {
     if {![dict exists $visit "estimatedduration"]} {
       error "invalid visit: no estimated duration."
@@ -295,6 +302,26 @@ namespace eval "visit" {
       "alpha"   $alpha       \
       "delta"   $delta       \
       "equinox" $equinox     \
+    ]
+  }
+  
+  proc updatevisittargetcoordinates {oldvisit targetcoordinates} {
+    return [makevisit \
+      [visit::identifier        $oldvisit] \
+      [visit::name              $oldvisit] \
+      $targetcoordinates \
+      [visit::command           $oldvisit] \
+      [visit::estimatedduration $oldvisit] \
+    ]
+  }
+
+  proc updatevisitidentifier {oldvisit identifier} {
+    return [makevisit \
+      $identifier \
+      [visit::name              $oldvisit] \
+      [visit::targetcoordinates $oldvisit] \
+      [visit::command           $oldvisit] \
+      [visit::estimatedduration $oldvisit] \
     ]
   }
 

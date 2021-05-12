@@ -50,13 +50,74 @@ namespace eval "executor" {
   
   ######################################################################
   
-  variable filetype
-  variable filename
-  variable visit
+  variable filetype ""
+  variable filename ""
+  variable project  ""
+  variable block    ""
+  variable alert    ""
+  variable visit    ""
   
-  variable projectfullidentifier
-  variable blockidentifier
-  variable visitidentifier
+  proc setfiles {newfiletype newfilename} {
+    variable filetype
+    variable filename
+    set filetype $newfiletype
+    set filename $newfilename
+    updatefiledata
+  }
+  
+  proc filetype {} {
+    variable filetype
+    return $filetype
+  }
+  
+  proc filename {} {
+    variable filename
+    return $filename
+  }
+  
+  proc setproject {newproject} {
+    variable project
+    set project $newproject
+    updateprojectdata
+  }
+  
+  proc project {} {
+    variable project
+    return $project
+  }
+  
+  proc setblock {newblock} {
+    variable block
+    set block $newblock
+    updateblockdata
+  }
+  
+  proc block {} {
+    variable block
+    return $block
+  }
+  
+  proc setalert {newalert} {
+    variable alert
+    set alert $newalert
+    updatealertdata
+  }
+  
+  proc alert {} {
+    variable alert
+    return $alert
+  }
+  
+  proc setvisit {newvisit} {
+    variable visit
+    set visit $newvisit
+    updatevisitdata
+  }
+  
+  proc visit {} {
+    variable visit
+    return $visit
+  }
   
   ######################################################################
 
@@ -66,13 +127,12 @@ namespace eval "executor" {
     variable trackstart
     set trackstart [utcclock::seconds]
     log::info "moving to track."
-    variable visit
-    set alpha     [visit::alpha $visit]
-    set delta     [visit::delta $visit]
-    set equinox   [visit::equinox $visit]
-    set alpharate [visit::alpharate $visit]
-    set deltarate [visit::deltarate $visit]
-    set epoch     [visit::epoch $visit]
+    set alpha     [visit::alpha [visit]]
+    set delta     [visit::delta [visit]]
+    set equinox   [visit::equinox [visit]]
+    set alpharate [visit::alpharate [visit]]
+    set deltarate [visit::deltarate [visit]]
+    set epoch     [visit::epoch [visit]]
     astrometry::parseoffset $alphaoffset
     astrometry::parseoffset $deltaoffset
     log::info [format \
@@ -95,9 +155,8 @@ namespace eval "executor" {
     variable trackstart
     set trackstart [utcclock::seconds]
     log::info "moving to track topocentric coordinates."
-    variable visit
-    set ha    [visit::observedha $visit]
-    set delta [visit::observeddelta $visit]
+    set ha    [visit::observedha [visit]]
+    set delta [visit::observeddelta [visit]]
     log::info [format \
       "moving to track topocentric coordinates %s %s." \
       [astrometry::formatha $ha] \
@@ -234,13 +293,10 @@ namespace eval "executor" {
   proc expose {type args} {
     set start [utcclock::seconds]
     variable exposure
-    variable exposuretimes $args
-    variable projectfullidentifier
-    variable blockidentifier
-    variable visitidentifier
+    set exposuretimes $args
     log::info "exposing $type image for [join $exposuretimes /] seconds (exposure $exposure)."
     set projectfullidentifier [server::getdata "projectfullidentifier"]
-    set fitsfiledir "[directories::vartoday]/executor/images/$projectfullidentifier/$blockidentifier/$visitidentifier/"
+    set fitsfiledir "[directories::vartoday]/executor/images/[project::fullidentifier [project]]/[block::identifier [block]]/[visit::identifier [visit]]/"
     log::info "FITS file directory is $fitsfiledir."
     file mkdir $fitsfiledir
     client::request "instrument" "expose $type $fitsfiledir $exposuretimes"
@@ -305,12 +361,9 @@ namespace eval "executor" {
   
   proc focus {range step witness args} {
     set start [utcclock::seconds]
-    variable projectfullidentifier
-    variable blockidentifier
-    variable visitidentifier
     log::info "focusing with range $range and step $step."
     set projectfullidentifier [server::getdata "projectfullidentifier"]
-    set fitsfileprefix "[directories::vartoday]/executor/images/$projectfullidentifier/$blockidentifier/$visitidentifier/"
+    set fitsfileprefix "[directories::vartoday]/executor/images/[project::fullidentifier [project]]/[block::identifier [block]]/[visit::identifier [visit]]/"
     log::info "FITS file prefix is $fitsfileprefix."
     file mkdir [file dirname $fitsfileprefix]
     client::request "instrument" "focus $fitsfileprefix $range $step $witness $args"
@@ -320,12 +373,9 @@ namespace eval "executor" {
   
   proc mapfocus {range step args} {
     set start [utcclock::seconds]
-    variable projectfullidentifier
-    variable blockidentifier
-    variable visitidentifier
     log::info "mapping focus with range $range and step $step."
     set projectfullidentifier [server::getdata "projectfullidentifier"]
-    set fitsfileprefix "[directories::vartoday]/executor/images/$projectfullidentifier/$blockidentifier/$visitidentifier/"
+    set fitsfileprefix "[directories::vartoday]/executor/images/[project::fullidentifier [project]]/[block::identifier [block]]/[visit::identifier [visit]]/"
     log::info "FITS file prefix is $fitsfileprefix."
     file mkdir [file dirname $fitsfileprefix]
     client::request "instrument" "mapfocus $fitsfileprefix $range $step $args"
@@ -384,42 +434,50 @@ namespace eval "executor" {
 
   ######################################################################
   
-  proc updatedata {completed filetype filename project block visit} {
+  proc updatefiledata {} {
+    server::setdata "filetype" [filetype]
+    server::setdata "filename" [file tail [filename]]
+    server::setdata "timestamp" [utcclock::combinedformat]
+  }
   
-    server::setdata "completed" $completed
-
-    server::setdata "filetype" $filetype
-    server::setdata "filename" [file tail $filename]
-
-    if {[string equal $project ""]} {
+  proc updateprojectdata {} {
+    if {[string equal [project] ""]} {
       server::setdata "projectfullidentifier" ""
       server::setdata "projectidentifier"     ""
       server::setdata "projectname"           ""
     } else {
-      server::setdata "projectfullidentifier" [project::fullidentifier $project]
-      server::setdata "projectidentifier"     [project::identifier $project]
-      server::setdata "projectname"           [project::name $project]
+      server::setdata "projectfullidentifier" [project::fullidentifier [project]]
+      server::setdata "projectidentifier"     [project::identifier [project]]
+      server::setdata "projectname"           [project::name [project]]
     }
-    
-    if {[string equal $block ""]} {
+  }
+
+  proc updateblockdata {} {
+    if {[string equal [block] ""]} {
       server::setdata "blockidentifier"   ""
       server::setdata "blockname"         ""
     } else {
-      server::setdata "blockidentifier"   [block::identifier $block]
-      server::setdata "blockname"         [block::name $block]
+      server::setdata "blockidentifier"   [block::identifier [block]]
+      server::setdata "blockname"         [block::name [block]]
     }
+    server::setdata "timestamp" [utcclock::combinedformat]
+  }
 
-    if {[string equal $visit ""]} {
+  proc updatevisitdata {} {
+    if {[string equal [visit] ""]} {
       server::setdata "visitidentifier"   ""
       server::setdata "visitname"         ""
       server::setdata "visitcommand"      ""
     } else {
-      server::setdata "visitidentifier"   [visit::identifier $visit]
-      server::setdata "visitname"         [visit::name $visit]
-      server::setdata "visitcommand"      [visit::command $visit]
+      server::setdata "visitidentifier"   [visit::identifier [visit]]
+      server::setdata "visitname"         [visit::name [visit]]
+      server::setdata "visitcommand"      [visit::command [visit]]
     }
-    
-    if {[string equal "" $block] || [string equal "" [block::alert $block]]} {
+    server::setdata "timestamp" [utcclock::combinedformat]
+  }
+  
+  proc updatealertdata {} {
+    if {[string equal "" [executor::alert]]} {
       server::setdata "alertname"           ""
       server::setdata "alertorigin"         ""
       server::setdata "alertidentifier"     ""
@@ -431,28 +489,33 @@ namespace eval "executor" {
       server::setdata "alertequinox"        ""
       server::setdata "alertuncertainty"    ""
     } else {    
-      set alert [block::alert $block]
-      server::setdata "alertname"           [alert::name $alert]
-      server::setdata "alertorigin"         [alert::origin $alert]
-      server::setdata "alertidentifier"     [alert::identifier $alert]
-      server::setdata "alerttype"           [alert::type $alert]
-      server::setdata "alerteventtimestamp" [alert::eventtimestamp $alert]
-      server::setdata "alertalerttimestamp" [alert::alerttimestamp $alert]
-      server::setdata "alertalpha"          [astrometry::parsealpha   [alert::alpha $alert]]
-      server::setdata "alertdelta"          [astrometry::parsedelta   [alert::delta $alert]]
-      server::setdata "alertequinox"        [astrometry::parseequinox [alert::equinox $alert]]
-      server::setdata "alertuncertainty"    [astrometry::parseoffset  [alert::uncertainty $alert]]
+      server::setdata "alertname"           [alert::name [executor::alert]]
+      server::setdata "alertorigin"         [alert::origin [executor::alert]]
+      server::setdata "alertidentifier"     [alert::identifier [executor::alert]]
+      server::setdata "alerttype"           [alert::type [executor::alert]]
+      server::setdata "alerteventtimestamp" [alert::eventtimestamp [executor::alert]]
+      server::setdata "alertalerttimestamp" [alert::alerttimestamp [executor::alert]]
+      server::setdata "alertalpha"          [astrometry::parsealpha   [alert::alpha [executor::alert]]]
+      server::setdata "alertdelta"          [astrometry::parsedelta   [alert::delta [executor::alert]]]
+      server::setdata "alertequinox"        [astrometry::parseequinox [alert::equinox [executor::alert]]]
+      server::setdata "alertuncertainty"    [astrometry::parseoffset  [alert::uncertainty [executor::alert]]]
     }
-    
-    variable projectfullidentifier
-    variable blockidentifier
-    variable visitidentifier
-    set projectfullidentifier [server::getdata "projectfullidentifier"]
-    set blockidentifier       [server::getdata "blockidentifier"]
-    set visitidentifier       [server::getdata "visitidentifier"]
-
     server::setdata "timestamp" [utcclock::combinedformat]
+  }
 
+  proc updatecompleteddata {completed} {
+    server::setdata "completed" $completed
+    if {$completed} {
+      set project ""
+      set block ""
+      set alert ""
+      set visit ""
+      updateprojectdata
+      updateblockdata
+      updatealertdata
+      updatevisitdata    
+    }
+    server::setdata "timestamp" [utcclock::combinedformat]
   }
 
   ######################################################################
@@ -463,7 +526,6 @@ namespace eval "executor" {
   }
   
   proc setpointingmode {pointingmode} {
-  
     client::request "telescope" "setpointingmode $pointingmode"
     client::wait "telescope" 
   }
@@ -480,9 +542,8 @@ namespace eval "executor" {
   
   proc move {} {
     set start [utcclock::seconds]
-    variable visit
-    set ha    [visit::observedha $visit]
-    set delta [visit::observeddelta $visit]
+    set ha    [visit::observedha [visit]]
+    set delta [visit::observeddelta [visit]]
     log::info [format \
       "moving to %s %s." \
       [astrometry::formatha $ha] \
@@ -528,18 +589,16 @@ namespace eval "executor" {
 
   ######################################################################
 
-  proc executeactivitycommand {filetypearg filenamearg} {
+  proc executeactivitycommand {filetype filename} {
   
-    variable filetype
-    variable filename
-    set filetype $filetypearg
-    set filename $filenamearg
-    
-    log::info "executing $filetype file \"[file tail $filename]\"."
+    setfiles $filetype $filename
+
+    log::info "executing [filetype] file \"[file tail [filename]]\"."
 
     set blockstart [utcclock::seconds]
 
-    updatedata false $filetype $filename "" "" ""
+    updatecompleteddata false
+    updatefiledata
 
     set visitcommandsfile [file join [directories::etc] "visitcommands.tcl"]
     if {[catch {
@@ -551,46 +610,44 @@ namespace eval "executor" {
     variable exposure
     set exposure 0
     
-    if {[string equal "alert" $filetype]} {
+    if {[string equal "alert" [filetype]]} {
       if {[catch {
-        set block [alert::alertfiletoblock $filename]
+        set block [alert::alertfiletoblock [filename]]
       } message]} {
-        updatedata true $filetype $filename "" "" ""
-        log::error "while reading alert file \"[file tail $filename]\": $message"
-        log::info "deleting alert file \"[file tail $filename]\"."
-        file delete -force $filename
+        updatecompleteddata true
+        log::error "while reading alert file \"[file tail [filename]]\": $message"
+        log::info "deleting alert file \"[file tail [filename]]\"."
+        file delete -force [filename]
         return
       }
     } else {
       if {[catch {
-        set block [block::readfile $filename]
+        set block [block::readfile [filename]]
       } message]} {
-        updatedata true $filetype $filename "" "" ""
-        log::error "while reading block file \"[file tail $filename]\": $message"
-        log::info "deleting block file \"[file tail $filename]\"."
-        file delete -force $filename
+        updatecompleteddata true
+        log::error "while reading block file \"[file tail [filename]]\": $message"
+        log::info "deleting block file \"[file tail [filename]]\"."
+        file delete -force [filename]
         return
       }
     }
     
-    log::debug "block is $block."
-    
-    set project [block::project $block]
-    updatedata false $filetype $filename $project $block ""
+    setblock $block
+    setproject [block::project [block]]
+    setalert   [block::alert [block]]
 
-    log::summary "executing block [block::identifier $block] (\"[block::name $block]\") of project [project::identifier $project] (\"[project::name [block::project $block]]\")."
+    log::summary "executing block [block::identifier [block]] \"[block::name [block]]\" of project [project::identifier [project]] \"[project::name [block::project [block]]]\"."
 
-    variable visit
-    foreach visit [block::visits $block] {
+    foreach visit [block::visits [block]] {
 
-      updatedata false $filetype $filename $project $block $visit
+      setvisit $visit
 
-      log::summary "executing visit [visit::identifier $visit] (\"[visit::name $visit]\")."
-      log::info "visit command is \"[visit::command $visit]\"."
+      log::summary "executing visit [visit::identifier [visit]] \"[visit::name [visit]]\"."
+      log::info "visit command is \"[visit::command [visit]]\"."
       
       set visitstart [utcclock::seconds]
       if {[catch {
-        eval [visit::command $visit]
+        eval [visit::command [visit]]
       } result]} {
         log::error "while executing visit: $result"
         log::info "aborting block."
@@ -600,17 +657,15 @@ namespace eval "executor" {
 
     }
     
-    if {![block::persistent $block]} {
-      log::info "deleting $filetype file \"[file tail $filename]\"."
-      file delete -force $filename
+    if {![block::persistent [block]]} {
+      log::info "deleting [filetype] file \"[file tail [filename]]\"."
+      file delete -force [filename]
     }
 
-    server::setdata "completed" true
-    server::setdata "timestamp" [utcclock::combinedformat]
-    updatedata true $filetype $filename "" "" ""
+    updatecompleteddata true
 
     log::summary [format "finished executing block after %.1f seconds." [utcclock::diff now $blockstart]]
-    log::summary [format "finished executing $filetype file \"[file tail $filename]\" after %.1f seconds." [utcclock::diff now $blockstart]]
+    log::summary [format "finished executing [filetype] file \"[file tail [filename]]\" after %.1f seconds." [utcclock::diff now $blockstart]]
   }
   
   proc stopactivitycommand {} {
@@ -794,12 +849,13 @@ namespace eval "executor" {
 
   proc start {} {
     server::setrequestedactivity "started"
-    server::setdata "filetype"  ""
-    server::setdata "filename"  ""
-    server::setdata "completed" false
     server::setdata "timestamp" [utcclock::combinedformat]
-    updatedata false "" "" "" "" ""
-    
+    updateprojectdata
+    updateblockdata
+    updatealertdata
+    updatevisitdata
+    updatefiledata
+    updatecompleteddata false
     server::setactivity [server::getrequestedactivity]
     server::setstatus "ok"
   }
