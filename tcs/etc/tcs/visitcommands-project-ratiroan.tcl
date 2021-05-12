@@ -27,23 +27,18 @@ proc alertvisit {{filters "r"}} {
 
   log::summary "alertvisit: starting."
   
-  variable filename
-  
-  set block [alert::alertfiletoblock $filename]
-  set alert [block::alert $block]
-  
-  if {[string equal "" [alert::eventtimestamp $alert]]} {
+  if {[string equal "" [alert::eventtimestamp [executor::alert]]]} {
     log::info [format "alertvisit: no event timestamp."]
   } else {  
-    log::info [format "alertvisit: event timestamp is %s." [utcclock::format [alert::eventtimestamp $alert]]]
+    log::info [format "alertvisit: event timestamp is %s." [utcclock::format [alert::eventtimestamp [executor::alert]]]]
   }
-  if {[string equal "" [alert::alerttimestamp $alert]]} {
+  if {[string equal "" [alert::alerttimestamp [executor::alert]]]} {
     log::info [format "alertvisit: no alert timestamp."]
   } else {  
-    log::info [format "alertvisit: alert timestamp is %s." [utcclock::format [alert::alerttimestamp $alert]]]
+    log::info [format "alertvisit: alert timestamp is %s." [utcclock::format [alert::alerttimestamp [executor::alert]]]]
   }
   
-  set alertdelay [alert::delay $alert]
+  set alertdelay [alert::delay [executor::alert]]
   log::summary [format "alertvisit: alert delay at start is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
   set exposuretime       60
   set exposuresperdither 1
@@ -60,12 +55,9 @@ proc alertvisit {{filters "r"}} {
 
   executor::waituntiltracking
 
-  set lastalpha       [alert::alpha $alert]
-  set lastdelta       [alert::delta $alert]
-  set lastequinox     [alert::equinox $alert]
-  set lasteastoffset  [astrometry::parseangle "0as"]
-  set lastnorthoffset [astrometry::parseangle "0as"]
-  set lastaperture    "default"
+  set lastalpha   [alert::alpha [executor::alert]]
+  set lastdelta   [alert::delta [executor::alert]]
+  set lastequinox [alert::equinox [executor::alert]]
   
   set exposuretype firstalertobject
   
@@ -96,28 +88,26 @@ proc alertvisit {{filters "r"}} {
   
     log::info "alertvisit: dithering $eastoffset E and $northoffset N about aperture $aperture."    
 
-    if {[file exists $filename]} {
-      set block [alert::alertfiletoblock $filename]
-      set alert [block::alert $block]
+    if {[file exists [executor::filename]]} {
+      executor::setblock [alert::alertfiletoblock [executor::filename]]
+      executor::setalert [block::alert [executor::block]]
     }
 
-    if {![alert::enabled $alert]} {
+    if {![alert::enabled [executor::alert]]} {
       log::summary "alertvisit: the alert is no longer enabled."
       return false
     }
 
-    set alpha   [alert::alpha $alert]
-    set delta   [alert::delta $alert]
-    set equinox [alert::equinox $alert]
-
-    set eastoffset  [astrometry::parseangle $eastoffset]
-    set northoffset [astrometry::parseangle $northoffset]
+    set alpha   [alert::alpha [executor::alert]]
+    set delta   [alert::delta [executor::alert]]
+    set equinox [alert::equinox [executor::alert]]
 
     if {$alpha != $lastalpha || $delta != $lastdelta || $equinox != $lastequinox} {
       log::summary "alertvisit: the coordinates have been updated."
+      executor::setvisit [visit::updatevisittargetcoordinates [executor::visit] [visit::makeequatorialtargetcoordinates $alpha $delta $equinox]]
       executor::track $eastoffset $northoffset $aperture
       executor::waituntiltracking
-    } elseif {$eastoffset != $lasteastoffset || $northoffset != $lastnorthoffset || ![string equal $aperture $lastaperture]} {
+    } else {
       executor::offset $eastoffset $northoffset $aperture
       executor::waituntiltracking
     }
@@ -125,9 +115,6 @@ proc alertvisit {{filters "r"}} {
     set lastalpha       $alpha
     set lastdelta       $delta
     set lastequinox     $equinox
-    set lasteastoffset  $eastoffset
-    set lastnorthoffset $northoffset
-    set lastaperture    $aperture
     
     foreach filter $filters {
       executor::movefilterwheel $filter "none" "none" "none"
@@ -141,8 +128,8 @@ proc alertvisit {{filters "r"}} {
 
   }
 
-  set alertdelay [alert::delay $alert]
-  log::summary [format "alertvisit: alert delay at start is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
+  set alertdelay [alert::delay [executor::alert]]
+  log::summary [format "alertvisit: alert delay at end is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
 
   log::summary "alertvisit: finished."
 
@@ -206,7 +193,7 @@ proc agnvisit {} {
 
 ########################################################################
 
-proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime filters} {
+proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime {filters "r"}} {
 
   log::summary "gridvisit: starting."
 

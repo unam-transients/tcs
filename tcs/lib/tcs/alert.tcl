@@ -46,8 +46,6 @@ namespace eval "alert" {
   proc alertfiletoblock {alertfile} {
   
     set defaultalertfile [file join [directories::etc] "alert"]
-
-    log::info "reading alert from \"$defaultalertfile\" and \"$alertfile\"."
       
     # Read the defaults.
     
@@ -62,21 +60,10 @@ namespace eval "alert" {
     }
 
     foreach newalert $newalerts {
-    
-      log::debug "old alert is $oldalert."
-      log::debug "new alert is $newalert."
-      
       set alert       [dict merge $oldalert $newalert]
-
-      log::debug "merged alert is $alert."
-
       set oldalert $alert
-
     }
     
-    log::info [format "alert name is \"%s\"." [alert::name $alert]]
-    log::info [format "alert origin/identifier/type are %s/%s/%s." [alert::origin $alert] [alert::identifier $alert] [alert::type $alert]]
-
     set project [dict create \
       "identifier" [alert::projectidentifier $alert] \
       "name"       "alerts" \
@@ -88,15 +75,6 @@ namespace eval "alert" {
     
     if {[alert::enabled $alert]} {
 
-      log::info [format "alert is enabled."]
-      log::info [format "alert coordinates are %s %s %s with an uncertainty of %s." \
-        [alert::alpha       $alert] \
-        [alert::delta       $alert] \
-        [alert::equinox     $alert] \
-        [alert::uncertainty $alert] \
-      ]
-      log::info [format "alert command is \"%s\"." [alert::command $alert]]
-
       set targetcoordinates [visit::makeequatorialtargetcoordinates [alert::alpha $alert] [alert::delta $alert] [alert::equinox $alert]]
       variable alertprologcommand
       variable alertprologidentifier
@@ -106,17 +84,10 @@ namespace eval "alert" {
       }
       lappend visits [visit::makevisit "0" [alert::name $alert] $targetcoordinates [alert::command $alert] "0m"]
 
-    } else {
-    
-      log::info [format "alert is not enabled."]
-
     }
       
     set block [block::makeblock [alert::identifier $alert] [alert::name $alert] $project $constraints $visits $alert true]
-    
-    log::info "block is: $block"
-    log::info "block is: $block"
-    
+
     return $block
   }
 

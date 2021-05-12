@@ -28,13 +28,8 @@
 // blocks read from the alert file.
 
 {
-  "alert": {
-    "command": "alertcommand \"\""
-  },
-  "constraints": {
-    "maxskybrightness": "astronomicaltwilight",
-    "minmoondistance": "15d",
-    "maxzenithdistance": "72d",
-    "maxfocusdelay": "1200"
-  }
+  "name": "",
+  "command": "alertvisit r",
+  "enabled": "true",
+  "maxalertuncertainty": "5am"
 }
