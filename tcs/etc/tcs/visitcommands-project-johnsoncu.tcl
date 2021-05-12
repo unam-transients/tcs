@@ -36,6 +36,7 @@ proc alertvisit {{filters ""}} {
   set lastequinox [alert::equinox [executor::alert]]
 
   set i 0
+  set first true
   while {$i < 20} {
 
     if {[file exists [executor::filename]]} {
@@ -63,6 +64,11 @@ proc alertvisit {{filters ""}} {
     set lastdelta   $delta
     set lastequinox $equinox
 
+    if {$first} {
+      set alertdelay [alert::delay [executor::alert]]
+      log::summary [format "alertvisit: alert delay at start of first exposure is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
+      set first false
+    }
     executor::expose object 10
     incr i
 

@@ -39,7 +39,7 @@ proc alertvisit {{filter "w"}} {
   }
 
   set alertdelay [alert::delay [executor::alert]]
-  log::summary [format "alertvisit: alert delay at start is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
+  log::summary [format "alertvisit: alert delay at start of visit is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
   if {$alertdelay < 1800} {
     set exposuretime       30
     set exposuresperdither 4
@@ -106,6 +106,7 @@ proc alertvisit {{filter "w"}} {
   set lastequinox ""
   
   set dither 0
+  set first true
   while {$dither < $dithersperfield} {
     
     set dithereastrange  "0.33d"
@@ -153,6 +154,11 @@ proc alertvisit {{filter "w"}} {
 
       set exposure 0
       while {$exposure < $exposuresperdither} {
+        if {$first} {
+          set alertdelay [alert::delay [executor::alert]]
+          log::summary [format "alertvisit: alert delay at start of first exposure is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
+          set first false
+        }
         executor::expose object $exposuretime
         incr exposure
       }
@@ -163,7 +169,7 @@ proc alertvisit {{filter "w"}} {
   }
 
   set alertdelay [alert::delay [executor::alert]]
-  log::summary [format "alertvisit: alert delay at end is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
+  log::summary [format "alertvisit: alert delay at end of visit is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
 
   log::summary "alertvisit: finished."
 
