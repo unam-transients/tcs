@@ -103,12 +103,6 @@ namespace eval "guider" {
           client::request $ccd "stop"
           client::wait $ccd
         }
-        C0donuts -
-        C1donuts {
-          set ccd [string range $guidingmode 0 1]
-          client::request $ccd "stop"
-          client::wait $ccd
-        }
       }
       if {[server::getdata "guidingtime"] > 0} {
         catch {
@@ -180,23 +174,6 @@ namespace eval "guider" {
         server::setdata "guidingmode"  $guidingmode
         server::setdata "exposuretime" $exposuretime
       }
-      C0donuts -
-      C1donuts {
-        set ccd [string range $guidingmode 0 1]
-        set exposuretime 5
-        if {
-          [catch {
-            client::request $ccd "stop"
-            client::request $ccd "expose $exposuretime guidestartdonuts"
-            client::wait $ccd
-          }]
-        } {
-          error "unable to obtain start guiding with $ccd."
-        }
-        log::info "guiding with $ccd."
-        server::setdata "guidingmode"  $guidingmode
-        server::setdata "exposuretime" $exposuretime
-      }
     }
   }
   
@@ -236,24 +213,6 @@ namespace eval "guider" {
         if {
           [catch {
             client::request $ccd "expose $exposuretime guidenext"
-            client::wait $ccd
-          }]
-        } {
-          log::warning "unable to obtain error while guiding with $ccd."
-          server::setdata "easterror"  "unknown"
-          server::setdata "northerror" "unknown"
-          return
-        }
-        server::setdata "easterror"  [client::getdata $ccd "guidestareasterror" ]
-        server::setdata "northerror" [client::getdata $ccd "guidestarnortherror"]
-      }
-      C0donuts -
-      C1donuts {
-        set ccd          [string range $guidingmode 0 1]
-        set exposuretime [server::getdata "exposuretime"]
-        if {
-          [catch {
-            client::request $ccd "expose $exposuretime guidenextdonuts"
             client::wait $ccd
           }]
         } {

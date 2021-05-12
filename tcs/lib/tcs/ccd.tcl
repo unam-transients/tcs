@@ -354,9 +354,7 @@ namespace eval "ccd" {
         set suffix "f"
       }
       "guidestart" -
-      "guidenext" -
-      "guidestartdonuts" -
-      "guidenextdonuts" {
+      "guidenext" {
         set suffix "g"
       }
       default {
@@ -523,9 +521,7 @@ namespace eval "ccd" {
         [string equal $exposuretype "astrometry"      ] ||
         [string equal $exposuretype "focus"           ] ||
         [string equal $exposuretype "guidestart"      ] ||
-        [string equal $exposuretype "guidenext"       ] ||
-        [string equal $exposuretype "guidestartdonuts"] ||
-        [string equal $exposuretype "guidenextdonuts" ]
+        [string equal $exposuretype "guidenext"       ]
     } {
       set shutter open
     } elseif {[string equal $exposuretype "bias"] ||
@@ -736,35 +732,7 @@ namespace eval "ccd" {
         server::setdata "guidestarnortherror" $northerror
         log::debug [format "guide error is %+.2f E and %+.2f N arcsec." [astrometry::radtoarcsec $easterror]  [astrometry::radtoarcsec $northerror]]
       }
-    } elseif {[string equal $type "guidestartdonuts"]} {
-      log::debug [format "guide reference image is \"%s\"." $fitsfilename]
-      server::setdata "guidereferencefitsfilename" $fitsfilename
-      server::setdata "guidestarinitialx" ""
-      server::setdata "guidestarinitialy" ""
-    } elseif {[string equal $type "guidenextdonuts"]} {
-      variable fitsdonutschannel
-      set guidereferencefitsfilename [server::getdata "guidereferencefitsfilename"]
-      error "donut guiding needs fixing to work with disappearing FITS files!"
-      set fitsdonutschannel [open "|[directories::bin]/tcs newpgrp fitsdonuts -- \"$guidereferencefitsfilename\" \"$currentfilename\"" "r"]
-      chan configure $fitsdonutschannel -buffering "line"
-      chan configure $fitsdonutschannel -encoding "ascii"
-      set line [coroutine::gets $fitsdonutschannel 0 100]
-      catch {close $fitsdonutschannel}
-      set fitsdonutschannel {}
-      if {
-        [string equal $line ""] ||
-        [scan $line "%f %f" dx dy] != 2
-      } {
-        log::debug "fitsdonuts failed: \"$line\"."
-      } else {
-        set easterror  [expr {$dx * [astrometry::arcsectorad -0.3]}]
-        set northerror [expr {$dy * [astrometry::arcsectorad +0.3]}]
-        server::setdata "guidestareasterror"  $easterror
-        server::setdata "guidestarnortherror" $northerror
-        log::debug [format "guide error is %+.2f E and %+.2f N arcsec." [astrometry::radtoarcsec $easterror]  [astrometry::radtoarcsec $northerror]]
-      }
     }
-    log::info [format "finished analyzing last exposure after %.1f seconds." [utcclock::diff now $start]]
   }
   
   proc movefilterwheelactivitycommand {newposition forcemove} {
@@ -1003,9 +971,7 @@ namespace eval "ccd" {
       ![string equal $exposuretype "astrometry"      ] &&
       ![string equal $exposuretype "focus"           ] &&
       ![string equal $exposuretype "guidestart"      ] &&
-      ![string equal $exposuretype "guidenext"       ] &&
-      ![string equal $exposuretype "guidestartdonuts"] &&
-      ![string equal $exposuretype "guidenextdonuts" ]
+      ![string equal $exposuretype "guidenext"       ]
     } {
       error "invalid exposure type \"$exposuretype\"."
     }
@@ -1033,9 +999,7 @@ namespace eval "ccd" {
       ![string equal $type "fwhm"           ] &&
       ![string equal $type "astrometry"     ] &&
       ![string equal $type "guidestart"     ] &&
-      ![string equal $type "guidenext"      ] &&
-      ![string equal $type "guidestartdonuts"] &&
-      ![string equal $type "guidenextdonuts" ]
+      ![string equal $type "guidenext"      ]
     } {
       error "invalid analysis type \"$type\"."
     }
