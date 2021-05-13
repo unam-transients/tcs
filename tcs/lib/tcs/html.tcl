@@ -23,8 +23,10 @@
 
 ########################################################################
 
+package require "alert"
 package require "astrometry"
 package require "config"
+package require "fromjson"
 package require "log"
 package require "client"
 package require "utcclock"
@@ -58,19 +60,24 @@ namespace eval "html" {
   
   ######################################################################
   
+  variable htmlfilename
   variable htmlchannel
 
   proc openhtml {filename} {
+    variable htmlfilename
     variable htmlchannel
-    file mkdir [file dirname $filename]
-    set htmlchannel [open "$filename" "w"]
+    set htmlfilename $filename
+    file mkdir [file dirname $htmlfilename]
+    set htmlchannel [open "$htmlfilename.[pid]" "w"]
     chan configure $htmlchannel -translation "crlf"
     chan configure $htmlchannel -encoding "utf-8"
   }
   
   proc closehtml {} {
+    variable htmlfilename
     variable htmlchannel
     close $htmlchannel
+    file rename -force -- "$htmlfilename.[pid]" "$htmlfilename"
   }
   
   proc putshtml {text} {
@@ -1803,6 +1810,45 @@ namespace eval "html" {
   }
 
   ######################################################################
+  
+  proc writealertstable {} {
+    client::request "selector" "writealerts"
+    if {[catch {
+      set alerts [fromjson::readfile [file join [directories::var] "alerts.json"]]    
+    }]} {
+      set alerts ""
+    }
+    putshtml "<table class=\"alerts\">"
+    putshtml "<tr class=\"alerts\">"
+    putshtml "<th class=\"alerts\">Project</th>"
+    putshtml "<th class=\"alerts\">Block</th>"
+    putshtml "<th class=\"alerts\">Name</th>"
+    putshtml "<th class=\"alerts\">&alpha;</th>"
+    putshtml "<th class=\"alerts\">&delta;</th>"
+    putshtml "<th class=\"alerts\">Equinox</th>"
+    putshtml "<th class=\"alerts\">Uncertainty</th>"
+    putshtml "<th class=\"alerts\">Event Time</th>"
+    putshtml "<th class=\"alerts\">Enabled</th>"
+    putshtml "<th class=\"alerts\">Command</th>"
+    putshtml "</tr>"
+    foreach alert $alerts {
+      putshtml "<tr>"
+      putshtml "<td class=\"alerts\">[entify [alert::projectidentifier $alert]]</td>"
+      putshtml "<td class=\"alerts\">[entify [alert::identifier $alert]]</td>"
+      putshtml "<td class=\"alerts\">[entify [alert::name $alert]]</td>"
+      putshtml "<td class=\"alerts\">[entify [alert::alpha $alert]]</td>"
+      putshtml "<td class=\"alerts\">[entify [alert::delta $alert]]</td>"
+      putshtml "<td class=\"alerts\">[entify [alert::equinox $alert]]</td>"
+      putshtml "<td class=\"alerts\">[entify [alert::uncertainty $alert]]</td>"
+      putshtml "<td class=\"alerts\">[entify [alert::eventtimestamp $alert]]</td>"
+      putshtml "<td class=\"alerts\">[entify [alert::enabled $alert]]</td>"
+      putshtml "<td class=\"alerts\">[entify [alert::command $alert]]</td>"
+      putshtml "</tr>"
+    }
+    putshtml "</table>"
+  }
+  
+  ######################################################################
 
   proc writehtmlloop {} {
   
@@ -1832,12 +1878,10 @@ namespace eval "html" {
 
       foreach server [concat "info" "summary" "warning" "error" $servers] {
         coroutine::after 1
-        set filename "$wwwdirectory/status/$server.html"
         if {[catch {
-          openhtml "$filename.[pid]"
+          openhtml "$wwwdirectory/status/$server.html"
           write$server
           closehtml
-          file rename -force -- "$filename.[pid]" "$filename"
         } message]} {
           log::warning "unable to generate HTML status file for \"$server\": $message"
         }
@@ -1869,6 +1913,13 @@ namespace eval "html" {
       }
       
       log::debug "finished writing HTML log files."
+
+      log::debug "writing HTML alert table files."
+      openhtml "$wwwdirectory/status/alerts.html"
+      writealertstable
+      closehtml
+      log::debug "finished writing HTML log files."
+     
 
       set endmilliseconds [utcclock::milliseconds]
       set durationmilliseconds [expr {$endmilliseconds - $startmilliseconds}]

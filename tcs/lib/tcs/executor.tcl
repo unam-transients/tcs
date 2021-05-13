@@ -612,7 +612,7 @@ namespace eval "executor" {
     
     if {[string equal "alert" [filetype]]} {
       if {[catch {
-        set block [alert::alertfiletoblock [filename]]
+        set block [alert::alerttoblock [alert::readalertfile [filename]]]
       } message]} {
         updatecompleteddata true
         log::error "while reading alert file \"[file tail [filename]]\": $message"

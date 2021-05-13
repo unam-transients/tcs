@@ -40,7 +40,7 @@ proc alertvisit {{filters ""}} {
   while {$i < 20} {
 
     if {[file exists [executor::filename]]} {
-      executor::setblock [alert::alertfiletoblock [executor::filename]]
+      executor::setblock [alert::alerttoblock [alert::readalertfile [executor::filename]]]
       executor::setalert [block::alert [executor::block]]
     }
 
