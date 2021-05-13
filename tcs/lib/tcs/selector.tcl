@@ -140,7 +140,7 @@ namespace eval "selector" {
 
   proc isselectablealertfile {alertfile seconds} {
     if {[catch {
-      set block [alert::alertfiletoblock $alertfile]
+      set block [alert::alerttoblock [alert::readalertfile $alertfile]]
     } message]} {
       log::warning "error while reading alert file \"[file tail $alertfile]\": $message"
       return "invalid alert file."
@@ -545,6 +545,23 @@ namespace eval "selector" {
     updatedata
     log::info "finished unsetting focus timestamp."  
     return
+  }
+  
+  proc writealerts {} {
+    set tmpfilename [file join [directories::var] "alerts.json.[pid]"]
+    set channel [open $tmpfilename "w"]
+    puts $channel "\["
+    set first true
+    foreach alertfile [getalertfiles false] {
+      if {!$first} {
+        puts $channel ","
+      }
+      puts $channel [tojson::object [alert::readalertfile $alertfile] tojson::string]
+      set first false
+    }
+    puts $channel "\]"
+    close $channel
+    file rename -force -- $tmpfilename [file join [directories::var] "alerts.json"]
   }
   
   ######################################################################

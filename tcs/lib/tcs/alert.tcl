@@ -43,27 +43,28 @@ namespace eval "alert" {
 
   ######################################################################
   
-  proc alertfiletoblock {alertfile} {
-  
+  proc readalertfile {alertfile} {
     set defaultalertfile [file join [directories::etc] "alert"]
       
     # Read the defaults.
-    
     if {[catch {set oldalert [fromjson::readfile $defaultalertfile false]} message]} {
       error "invalid default alert file: $message"
     }
 
     # Read the alert file and iteratively merge the alerts.
-
     if {[catch {set newalerts [fromjson::readfile $alertfile true]} message]} {
       error "invalid alert file: $message."
     }
-
     foreach newalert $newalerts {
       set alert       [dict merge $oldalert $newalert]
       set oldalert $alert
     }
-    
+
+    return $alert  
+  }
+  
+  proc alerttoblock {alert} {
+  
     set project [dict create \
       "identifier" [alert::projectidentifier $alert] \
       "name"       "alerts" \
