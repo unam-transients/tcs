@@ -342,3 +342,29 @@ EOF
 esac
 
 ################################################################################
+
+# /etc/sudoers.d/tcs
+
+sudo rm -f /tmp/sudoers-tcs
+(
+  echo 'ratir ALL=(ALL) ALL'
+  case $host in
+  ratiroan-services)
+    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs rebootsoon'
+    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs restartsoon'
+    ;;
+  esac
+) >/tmp/sudoers-tcs
+chmod 400 /tmp/sudoers-tcs
+if visudo -cf /tmp/sudoers-tcs
+then
+  sudo cp /tmp/sudoers-tcs /etc/sudoers.d/tcs
+  sudo chmod 400 /etc/sudoers.d/tcs
+else
+  echo 1>&2 "ERROR: sudo file is invalid."
+  exit 1
+fi
+rm -f /tmp/sudoers-tcs
+
+################################################################################
+
