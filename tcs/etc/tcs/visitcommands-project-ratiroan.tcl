@@ -103,6 +103,7 @@ proc alertvisit {{filters "r"}} {
 
     if {$alpha != $lastalpha || $delta != $lastdelta || $equinox != $lastequinox} {
       log::summary "alertvisit: the coordinates have been updated."
+      log::summary [format "alertvisit: new alert coordinates are %s %s %s." [astrometry::formatalpha $alpha]  [astrometry::formatdelta $delta] $equinox]
       executor::setvisit [visit::updatevisittargetcoordinates [executor::visit] [visit::makeequatorialtargetcoordinates $alpha $delta $equinox]]
       executor::track $eastoffset $northoffset $aperture
       executor::waituntiltracking
@@ -122,6 +123,7 @@ proc alertvisit {{filters "r"}} {
         if {$first} {
           set alertdelay [alert::delay [executor::alert]]
           log::summary [format "alertvisit: alert delay at start of first exposure is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
+          log::summary [format "alertvisit: alert coordinates at start of first exposure are %s %s %s." [astrometry::formatalpha $alpha]  [astrometry::formatdelta $delta] $equinox]
           set first false
         }
         executor::expose "object" 80 80 60 60
@@ -132,7 +134,8 @@ proc alertvisit {{filters "r"}} {
   }
 
   set alertdelay [alert::delay [executor::alert]]
-  log::summary [format "alertvisit: alert delay at end of visit is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
+  log::summary [format "alertvisit: alert delay after end of last exposure is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
+  log::summary [format "alertvisit: alert coordinates after end of last exposure are %s %s %s." [astrometry::formatalpha $alpha]  [astrometry::formatdelta $delta] $equinox]
 
   log::summary "alertvisit: finished."
 
