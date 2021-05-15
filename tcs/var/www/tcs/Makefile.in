@@ -36,14 +36,15 @@ installs			:=	\
 installbins			:=	\
 	request.cgi			\
 
-installs_project_ratiroan	:=		\
+installs_project_ratiroan	:=		    \
 	allsky-project-ratiroan.html      	\
 	C0-project-ratiroan.html       		\
 	C1-project-ratiroan.html       		\
 	C2-project-ratiroan.html       		\
 	C3-project-ratiroan.html       		\
-	config-project-ratiroan.js		\
+	config-project-ratiroan.js		    \
 	interface-project-ratiroan.html		\
+	alerts-project-ratiroan.html	    \
 	nefinder-project-ratiroan.html		\
 	sefinder-project-ratiroan.html		\
 	webcam-a-project-ratiroan.html		\
@@ -53,17 +54,17 @@ installs_project_ratiroan	:=		\
 	webcam-e-project-ratiroan.html		\
 	plots-project-ratiroan.sh
 
-installs_project_coatlioan	:=		\
+installs_project_coatlioan	:=		    \
 	allsky-project-coatlioan.html		\
 	C0-project-coatlioan.html       	\
-	config-project-coatlioan.js		\
+	config-project-coatlioan.js		    \
 	interface-project-coatlioan.html	\
 	webcam-a-project-coatlioan.html		\
 	webcam-b-project-coatlioan.html		\
 	webcam-c-project-coatlioan.html		\
 	webcam-cz-project-coatlioan.html
 
-installs_project_ddotioan	:=		\
+installs_project_ddotioan	:=		    \
 	allsky-project-ddotioan.html		\
 	C0-project-ddotioan.html  	     	\
 	C1-project-ddotioan.html  	     	\
@@ -71,23 +72,24 @@ installs_project_ddotioan	:=		\
 	C3-project-ddotioan.html  	     	\
 	C4-project-ddotioan.html  	     	\
 	C5-project-ddotioan.html  	     	\
-	config-project-ddotioan.js		\
+	config-project-ddotioan.js		    \
 	interface-project-ddotioan.html		\
+	alerts-project-ddotioan.html	    \
 	webcam-a-project-ddotioan.html		\
 	webcam-b-project-ddotioan.html		\
 	webcam-c-project-ddotioan.html		\
 	webcam-cz-project-ddotioan.html
 
-installs_project_colibricu	:=		\
+installs_project_colibricu	:=		    \
 	allsky-project-colibricu.html      	\
 	C0-project-colibricu.html  	     	\
-	config-project-colibricu.js		\
+	config-project-colibricu.js		    \
 	interface-project-colibricu.html	\
 	plots-project-colibricu.sh
 
 installs_project_colibricito	:=		\
 	allsky-project-colibricito.html		\
-	C0-project-colibricito.html  	     	\
+	C0-project-colibricito.html  	   	\
 	config-project-colibricito.js		\
 	interface-project-colibricito.html	\
 	webcam-a-project-colibricito.html	\
@@ -96,13 +98,14 @@ installs_project_colibricito	:=		\
 
 installs_project_johnsoncu		:=		\
 	interface-project-johnsoncu.html	\
-	C0-project-johnsoncu.html  	    \
-	config-project-johnsoncu.js		\
+	alerts-project-johnsoncu.html	    \
+	C0-project-johnsoncu.html  	        \
+	config-project-johnsoncu.js		    \
 
-installs_project_test		:=		\
-	interface-project-test.html		\
+installs_project_test		:=		    \
+	interface-project-test.html		    \
 	C0-project-test.html  	     		\
-	config-project-test.js			\
+	config-project-test.js			    \
 
 EXTRA_INSTALLS			:=	\
 	install-webcam-link

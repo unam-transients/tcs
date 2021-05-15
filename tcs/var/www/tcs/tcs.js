@@ -108,6 +108,35 @@ function refreshloghelper(subset, onceonly) {
   });
 }
 
+var refreshalertsinterval = 1000;
+
+function refreshalerts()
+{
+  refreshalertshelper(true);
+}
+
+function refreshalertshelper(onceonly) {
+  var start = milliseconds();
+  var data = {};
+  data.start = start;
+  $.ajax({
+    type: "get",
+    url: "status/alerts.html",
+    data: data,
+    dataType: "html",
+    success: function (data, status, request) {
+      $("div#alerts").html(data);
+    },
+    complete: function (request, status) {
+      if (!onceonly) {
+        var end = milliseconds();
+        var interval = Math.max (0, refreshalertsinterval - (end - start));
+        setTimeout("refreshalertshelper(\"" + refreshalertssubset + "\", false)", interval);
+      }
+    }
+  });
+}
+
 var refreshimagehandler;
 var refreshimageinterval = 1000;
 

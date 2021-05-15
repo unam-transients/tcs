@@ -144,6 +144,10 @@ td.control {
   padding:            0.2em;
 }
 
+table.alerts, tr.alerts, th.alerts, td.alerts {
+  padding: 0.5em;
+}
+
 input {
   width:              14em;
   font-size:          9px;
