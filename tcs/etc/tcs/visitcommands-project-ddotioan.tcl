@@ -341,6 +341,55 @@ proc steppedgridvisit {gridrepeats exposuresperdither exposuretime} {
 
 ########################################################################
 
+proc allskyvisit {} {
+
+  log::summary "allskyvisit: starting."
+
+  set binning 1
+  executor::setwindow "default"
+  executor::setbinning $binning
+  
+  set eastoffsets  {0.0d 0.85d 1.70d 2.55d}
+  set northoffsets {0.0d 0.85d 1.70d 2.55d}
+
+  set gridrepeats 1
+  set exposuresperdither 1
+  set exposuretime 60
+  set gridpoints [expr {[llength $eastoffsets] * [llength $northoffsets]}]  
+
+  log::summary [format "allskyvisit: %d × %.0f second exposures with binning of %d." \
+    [expr {$gridrepeats * $gridpoints * $exposuresperdither}] $exposuretime $binning \
+  ]
+  log::summary [format "allskyvisit: %d grid repeats." $gridrepeats]
+  log::summary [format "allskyvisit: %d dithers per repeat." $gridpoints]
+  log::summary [format "allskyvisit: %d exposures per dither." $exposuresperdither]
+
+  executor::track
+  executor::waituntiltracking
+  
+  set gridrepeat 0
+  while {$gridrepeat < $gridrepeats} {
+    foreach eastoffset $eastoffsets {
+      foreach northoffset $northoffsets {
+        executor::offset $eastoffset $northoffset
+        executor::waituntiltracking
+        set exposure 0
+        while {$exposure < $exposuresperdither} {
+          executor::expose object $exposuretime
+          incr exposure
+        }
+      }
+    }
+    incr gridrepeat
+  }
+
+  log::summary "allskyvisit: finished."
+
+  return true
+}
+
+########################################################################
+
 proc trackingtestvisit {exposures exposuretime} {
 
   log::summary "trackingvisit: starting."
