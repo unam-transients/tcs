@@ -1,6 +1,6 @@
 #!/bin/sh
 
-sed '/^#/d' <<EOF |
+sed '/^#/d' <<EOF >roman-targets.tmp
 # 10 05:32:28.64 -02:34:42.0 -4h -2h OSW
 # 11 05:32:28.64 -02:34:42.0 -1h +1h OSW
 # 12 05:32:28.64 -02:34:42.0 +2h +4h OSW
@@ -18,9 +18,21 @@ sed '/^#/d' <<EOF |
 70 09:33:52.60 +68:37:39.0 Ursa01
 80 08:33:22.50 +61:00:11.2 Ursa02
 EOF
-while read i alpha delta name
+
+sed '/^#/d' <<EOF >roman-visits.tmp
+0 -6h -4h
+#1 -4h -2h
+2 -2h 0h
+#3  0h +2h
+4 +2h +4h
+#5 +4h +6h
+6 +6h +8h
+#7 +8h +10h
+EOF
+
+cat roman-targets.tmp | while read i alpha delta name
 do
-  while read j minha maxha
+  cat roman-visits.tmp | while read j minha maxha 
   do
     blockid=$(expr $i + $j)
 cat >2001-roman-$blockid <<EOF
@@ -68,14 +80,7 @@ cat >2001-roman-$blockid <<EOF
 }
 
 EOF
-  done <<EOF
-0 -6h -4h
-1 -4h -2h
-2 -2h 0h
-3  0h +2h
-4 +2h +4h
-5 +4h +6h
-6 +6h +8h
-7 +8h +10h
-EOF
+  done 
 done
+
+rm roman*.tmp
