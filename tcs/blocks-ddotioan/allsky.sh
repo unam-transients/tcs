@@ -46,14 +46,14 @@ BEGIN {
     for (alpha = 0; alpha < 360; alpha += dalpha / f) {
       z = zenithdistance(0, delta);
       if (z < 85)
-        printf("%02d%02d %+5.1f %5.1f\n", idelta, ialpha, delta, alpha)
+        printf("%02d%02d %+5.1fd %5.1fd\n", idelta, ialpha, delta, alpha)
       ++ialpha;
     }
     ++idelta;
   }
 }
 ' |
-while read blockid alpha delta
+while read blockid delta alpha
 do
   
   cat >d-3000-allsky-$blockid <<EOF
