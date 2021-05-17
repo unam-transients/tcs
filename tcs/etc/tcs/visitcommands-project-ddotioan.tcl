@@ -53,18 +53,22 @@ proc alertvisit {{filter "w"}} {
 
   executor::setbinning $binning
   executor::setwindow "default"
-  
+
   # The decisions below aim to choose the smallest grid that includes
   # the 90% region, assuming each field is 6.6d x 9.8d.
   set uncertainty [astrometry::parsedistance [alert::uncertainty [executor::alert]]]
   log::summary [format "alertvisit: uncertainty is %s." [astrometry::formatdistance $uncertainty 2]]
   if {$uncertainty <= [astrometry::parsedistance "1.65d"]} {
     log::summary "alertvisit: grid is 1 × 1 fields."
-    set visits [list 0 0.0d 0.0d]
+    set visits {
+      0 0.0d 0.0d
+    }
     set aperture "W"
   } elseif {$uncertainty <= [astrometry::parsedistance "3.3d"]} {
     log::summary "alertvisit: grid is 1 × 1 fields."
-    set visits [list 0 0.0d 0.0d]
+    set visits {
+      0 0.0d 0.0d
+    }
     set aperture "default"
   } elseif {$uncertainty <= [astrometry::parsedistance "4.9d"]} {
     log::summary "alertvisit: grid is 2 × 1 fields."
@@ -147,9 +151,15 @@ proc alertvisit {{filter "w"}} {
     foreach {visitidentifier visiteastoffset visitnorthoffset} $visits {
     
       executor::setvisit [visit::updatevisitidentifier [executor::visit] $visitidentifier]
+
+      set eastoffset  [astrometry::parseoffset $visiteastoffset ]
+      set northoffset [astrometry::parseoffset $visitnorthoffset]
     
-      set eastoffset  [expr {[astrometry::parseoffset $visiteastoffset ] + [astrometry::parseoffset $dithereastoffset ]}]
-      set northoffset [expr {[astrometry::parseoffset $visitnorthoffset] + [astrometry::parseoffset $dithernorthoffset]}]
+      set eastoffset [correctedeastoffset $eastoffset $northoffset $delta]
+
+      set eastoffset  [expr {$eastoffset  + [astrometry::parseoffset $dithereastoffset ]}]
+      set northoffset [expr {$northoffset + [astrometry::parseoffset $dithernorthoffset]}]
+            
       executor::track $eastoffset $northoffset $aperture
       executor::waituntiltracking
 
@@ -204,6 +214,33 @@ proc alertprologvisit {} {
 
 }
 
+########################################################################
+
+proc correctedeastoffset {eastoffset northoffset centerdelta} {
+
+  # This procedure corrects the east offset for convergence in alpha
+  # away from the equator. The telescope compensates for the convergence at the
+  # field center. However, the field edges are significantly north and south of
+  # the field center. Therefore, we calculate the delta at the field edge
+  # closest to the equator and multiply the nominal east offset by the ratio
+  # of the cosine of delta at the field center to the field edge.
+
+  # The half size of the field.
+  set halfsizeindelta [astrometry::parsedistance "4.9d"]
+
+  # Determine the delta of the field edge closest to the equator.
+  set northedgedelta [expr {$centerdelta + $northoffset + $halfsizeindelta}]
+  set southedgedelta [expr {$centerdelta + $northoffset - $halfsizeindelta}]
+  if {abs($northedgedelta) < abs($southedgedelta)} {
+    set edgedelta $northedgedelta
+  } else {
+    set edgedelta $southedgedelta
+  }
+  
+  set correctedeastoffset [expr {$eastoffset * cos($centerdelta) / cos($edgedelta)}]
+  
+  return $correctedeastoffset
+}
 
 ########################################################################
 
