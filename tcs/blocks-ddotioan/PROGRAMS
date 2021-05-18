@@ -17,11 +17,15 @@ XXXXX-0014 apertures
 XXXXX-0015 reference image tests
 XXXXX-0016 tracking tests
 
-XXXXX-1000 Swift GRBs
-XXXXX-1001 Fermi GRBs
-XXXXX-1002 GW events
+XXXXX-1001 Swift GRBs
+XXXXX-1002 Fermi GRBs
+XXXXX-1003 GW events
+XXXXX-1004 HAWC events
+XXXXX-1005 IceCube events
 
 2019A-2000 Gómez Maqueo Hot Jupiters
 2019A-2001 Parrot       Asteroids
+
+2021A-2001 Román
 
 XXXXX-3000 All-Sky Imaging
