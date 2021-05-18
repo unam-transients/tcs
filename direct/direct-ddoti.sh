@@ -38,6 +38,7 @@ do
   echo $date
   find $date -mindepth 2 -maxdepth 2 -type d | grep -- '-1' | sed 's:/: :g' | sort
   find $date -mindepth 3 -maxdepth 3 -type d | grep -- '-2' | sed 's:/: :g' | sort
+  find $date -mindepth 2 -maxdepth 2 -type d | grep -- '-3' | sed 's:/: :g' | sort
 done |
 awk '
 
