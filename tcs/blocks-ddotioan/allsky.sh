@@ -55,8 +55,9 @@ BEGIN {
 ' |
 while read blockid delta alpha
 do
-  
-  cat >d-3000-allsky-$blockid <<EOF
+  case $delta in
+  "-35.0d"|"-25.0d"|"-15.0d"|"+75.0d"|"+85.0d")
+    cat >d-3000-allsky-$blockid <<EOF
 {
   "project": {
     "identifier": "3000",
@@ -66,15 +67,15 @@ do
   "name": "allsky at $alpha $delta",
   "visits": [
     {
-      "identifier": "99",
-      "name": "focusing",
+      "identifier": "1000",
+      "name": "prolog",
       "targetcoordinates": {
         "type"   : "equatorial",
         "alpha"  : "$alpha",
         "delta"  : "$delta",
         "equinox": "2000"
       },
-      "command": "focusvisit",
+      "command": "allskyprologvisit",
       "estimatedduration": "5m"
     },
     {
@@ -93,13 +94,13 @@ do
   "constraints": {
     "maxskybrightness": "astronomicaltwilight",
     "minha": "0.0h",
-    "maxha": "0.5h",
+    "maxha": "1.0h",
     "minmoondistance": "45d"
   },
   "persistent": "false"
 }
 EOF
-  cat >e-3000-allsky-$blockid <<EOF
+    cat >e-3000-allsky-$blockid <<EOF
 {
   "project": {
     "identifier": "3000",
@@ -109,15 +110,60 @@ EOF
   "name": "allsky at $alpha $delta",
   "visits": [
     {
-      "identifier": "99",
-      "name": "focusing",
+      "identifier": "1000",
+      "name": "prolog",
       "targetcoordinates": {
         "type"   : "equatorial",
         "alpha"  : "$alpha",
         "delta"  : "$delta",
         "equinox": "2000"
       },
-      "command": "focusvisit",
+      "command": "allskyprologvisit",
+      "estimatedduration": "5m"
+    },
+    {
+      "identifier": "0",
+      "name": "science exposures",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "allskyvisit",
+      "estimatedduration": "20m"
+    }
+  ],
+  "constraints": {
+    "maxskybrightness": "astronomicaltwilight",
+    "minha": "-1.5h",
+    "maxha": "-0.5h",
+    "minmoondistance": "45d"
+  },
+  "persistent": "false"
+}
+EOF
+    ;;
+  "-5.0d"|"+5.0d"|"+15.0d"|"+25.0d"|"+35.0d"|"+45.0d"|"+55.0d"|"+65.0d")
+    cat >f-3000-allsky-$blockid <<EOF
+{
+  "project": {
+    "identifier": "3000",
+    "name": "allsky"
+  },
+  "identifier": "$blockid",
+  "name": "allsky at $alpha $delta",
+  "visits": [
+    {
+      "identifier": "1000",
+      "name": "prolog",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "allskyprologvisit",
       "estimatedduration": "5m"
     },
     {
@@ -142,7 +188,7 @@ EOF
   "persistent": "false"
 }
 EOF
-  cat >f-3000-allsky-$blockid <<EOF
+    cat >g-3000-allsky-$blockid <<EOF
 {
   "project": {
     "identifier": "3000",
@@ -152,15 +198,15 @@ EOF
   "name": "allsky at $alpha $delta",
   "visits": [
     {
-      "identifier": "99",
-      "name": "focusing",
+      "identifier": "1000",
+      "name": "prolog",
       "targetcoordinates": {
         "type"   : "equatorial",
         "alpha"  : "$alpha",
         "delta"  : "$delta",
         "equinox": "2000"
       },
-      "command": "focusvisit",
+      "command": "allskyprologvisit",
       "estimatedduration": "5m"
     },
     {
@@ -185,7 +231,10 @@ EOF
   "persistent": "false"
 }
 EOF
+    ;;
+  esac
 done
 
 sudo mkdir -p /usr/local/var/tcs/blocks
 sudo cp *-3000-* /usr/local/var/tcs/blocks
+

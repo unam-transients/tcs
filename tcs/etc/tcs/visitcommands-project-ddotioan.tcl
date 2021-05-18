@@ -216,7 +216,7 @@ proc alertprologvisit {} {
 
 ########################################################################
 
-proc correctedeastoffset {eastoffset northoffset centerdelta} {
+proc correctedeastoffset {eastoffset northoffset delta} {
 
   # This procedure corrects the east offset for convergence in alpha
   # away from the equator. The telescope compensates for the convergence at the
@@ -224,21 +224,27 @@ proc correctedeastoffset {eastoffset northoffset centerdelta} {
   # the field center. Therefore, we calculate the delta at the field edge
   # closest to the equator and multiply the nominal east offset by the ratio
   # of the cosine of delta at the field center to the field edge.
+  
+  set eastoffset  [astrometry::parseoffset $eastoffset ]
+  set northoffset [astrometry::parseoffset $northoffset]
+  set delta       [astrometry::parsedelta $delta]
 
   # The half size of the field.
   set halfsizeindelta [astrometry::parsedistance "4.9d"]
 
+  set centerdelta [expr {$delta + $northoffset}]
+
   # Determine the delta of the field edge closest to the equator.
-  set northedgedelta [expr {$centerdelta + $northoffset + $halfsizeindelta}]
-  set southedgedelta [expr {$centerdelta + $northoffset - $halfsizeindelta}]
+  set northedgedelta [expr {$centerdelta + $halfsizeindelta}]
+  set southedgedelta [expr {$centerdelta - $halfsizeindelta}]
   if {abs($northedgedelta) < abs($southedgedelta)} {
     set edgedelta $northedgedelta
   } else {
     set edgedelta $southedgedelta
-  }
+  }  
   
   set correctedeastoffset [expr {$eastoffset * cos($centerdelta) / cos($edgedelta)}]
-  
+
   return $correctedeastoffset
 }
 
@@ -425,6 +431,39 @@ proc allskyvisit {} {
   return true
 }
 
+proc allskyprologvisit {} {
+
+  log::summary "allskyprologvisit: starting."
+
+  executor::track
+  executor::waituntiltracking
+
+  # First refocus.
+  
+  client::update "target"
+  set zenithdistance [client::getdata "target" "zenithdistance"]
+  if {$zenithdistance > [astrometry::parsedistance "45d"]} {
+    log::summary "allskyprologvisit: focusing with binning 4."
+    executor::setwindow "2kx2k"
+    executor::setbinning 4
+    executor::focus 12000 1200 false 1
+  }
+
+  log::summary "allskyprologvisit: focusing with binning 1."
+  executor::setwindow "1kx1k"
+  executor::setbinning 1
+  executor::focus 4000 400 true 4
+  executor::setfocused
+
+  # Then correct pointing
+
+  log::summary "allskyprologvisit: correcting pointing."
+  executor::correctpointing 4
+  
+  log::summary "allskyprologvisit: finished."
+
+}
+
 ########################################################################
 
 proc trackingtestvisit {exposures exposuretime} {
@@ -501,7 +540,7 @@ proc initialfocusvisit {} {
 proc correctpointingvisit {} {
   log::summary "correctpointingvisit: starting."
   executor::tracktopocentric
-  executor::setwindow "default"
+  executor::setwindow "1kx1k"
   executor::setbinning 1
   executor::waituntiltracking
   log::summary "correctpointingvisit: correcting."
