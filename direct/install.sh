@@ -3,12 +3,17 @@ transientsoan-ratir)
   DIR=/usr/local/var/ratir/
   sudo mkdir -p $DIR
   sudo cp direct-ratir.sh $DIR/direct.sh
-;;
+  ;;
 transientsoan-coatli)
   DIR=/usr/local/var/coatli/
   sudo mkdir -p $DIR
   sudo cp direct-coatli.sh $DIR/direct.sh
-;;
+  ;;
+ddoti6)
+  DIR=/usr/local/var/ddoti/
+  sudo mkdir -p $DIR
+  sudo cp direct-ddoti.sh $DIR/direct.sh
+  ;;
 esac
 
 (
