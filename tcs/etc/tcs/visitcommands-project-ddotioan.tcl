@@ -441,7 +441,7 @@ proc allskyprologvisit {} {
   # First refocus.
   
   client::update "target"
-  set zenithdistance [client::getdata "target" "zenithdistance"]
+  set zenithdistance [client::getdata "target" "observedzenithdistance"]
   if {$zenithdistance > [astrometry::parsedistance "45d"]} {
     log::summary "allskyprologvisit: focusing with binning 4."
     executor::setwindow "2kx2k"
