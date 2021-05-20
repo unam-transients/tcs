@@ -27,6 +27,25 @@ proc alertvisit {{filters "r"}} {
 
   log::summary "alertvisit: starting."
   
+  set alpha   [visit::alpha   [executor::visit]]
+  set delta   [visit::delta   [executor::visit]]
+  set equinox [visit::equinox [executor::visit]]
+
+  log::info "alertvisit: reading alert."
+
+  if {![file exists [executor::filename]]} {
+    log::summary "alertvisit: the alert is no longer in the queue."
+    return false
+  }
+
+  executor::setblock [alert::alerttoblock [alert::readalertfile [executor::filename]]]
+  executor::setalert [block::alert [executor::block]]
+
+  if {![alert::enabled [executor::alert]]} {
+    log::summary "alertvisit: the alert is no longer enabled."
+    return false
+  }
+
   if {[string equal "" [alert::eventtimestamp [executor::alert]]]} {
     log::info [format "alertvisit: no event timestamp."]
   } else {  
@@ -87,10 +106,17 @@ proc alertvisit {{filters "r"}} {
   
     log::info "alertvisit: dithering $eastoffset E and $northoffset N about aperture $aperture."    
 
-    if {[file exists [executor::filename]]} {
-      executor::setblock [alert::alerttoblock [alert::readalertfile [executor::filename]]]
-      executor::setalert [block::alert [executor::block]]
+    set lastalpha       $alpha
+    set lastdelta       $delta
+    set lastequinox     $equinox
+    
+    if {![file exists [executor::filename]]} {
+      log::summary "alertvisit: the alert is no longer in the queue."
+      break
     }
+
+    executor::setblock [alert::alerttoblock [alert::readalertfile [executor::filename]]]
+    executor::setalert [block::alert [executor::block]]
 
     if {![alert::enabled [executor::alert]]} {
       log::summary "alertvisit: the alert is no longer enabled."
@@ -112,10 +138,6 @@ proc alertvisit {{filters "r"}} {
       executor::waituntiltracking
     }
 
-    set lastalpha       $alpha
-    set lastdelta       $delta
-    set lastequinox     $equinox
-    
     foreach filter $filters {
       executor::movefilterwheel $filter "none" "none" "none"
       set i 0
