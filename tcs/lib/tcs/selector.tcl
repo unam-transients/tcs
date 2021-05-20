@@ -463,7 +463,7 @@ namespace eval "selector" {
     if {![string equal "" $enabled]} {
       puts $channel [format "  \"enabled\": \"%s\"," $enabled]
     }
-    if {![string equal "" $enabled]} {
+    if {![string equal "" $eventtimestamp]} {
       puts $channel [format "  \"eventtimestamp\": \"%s\"," $eventtimestamp]
     }
     puts $channel [format "  \"alerttimestamp\": \"%s\"" $alerttimestamp]
