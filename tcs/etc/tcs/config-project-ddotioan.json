@@ -103,10 +103,6 @@
   "executor": {
     "type": "ddotioan"
   },
-  "alert": {
-    "prologcommand": "alertprologvisit",
-    "prologestimatedduration": "4m"
-  },
   "safetyswitch": {
     "type": "arts"
   },

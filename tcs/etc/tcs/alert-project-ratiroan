@@ -29,11 +29,16 @@
 
 {
   "name": "",
-  "command": "alertvisit r",
   "enabled": "true",
+
+  "command": "alertvisit r",
+  "estimatedduration": "20m",
+  "visitidentifier": "0",
+
   "maxskybrightness": "nauticaltwilight",
   "minmoondistance": "15d",
   "maxzenithdistance": "72d",
   "maxfocusdelay": "3600",
   "maxalertuncertainty": "5am"
+
 }

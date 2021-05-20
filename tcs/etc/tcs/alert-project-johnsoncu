@@ -29,7 +29,15 @@
 
 {
   "name": "",
-  "command": "alertvisit r",
   "enabled": "true",
+
+  "command": "alertvisit r",
+  "estimatedduration": "20m",
+
+  "prologcommand": "alertprologvisit",
+  "prologestimatedduration": "5m",
+  "prologvisitidentifier": "1000",
+
+
   "maxalertuncertainty": "5am"
 }

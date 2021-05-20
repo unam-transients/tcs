@@ -221,6 +221,56 @@ proc agnvisit {} {
 
 ########################################################################
 
+proc snvisit {repeats} {
+
+  log::summary "snvisit: starting."
+  
+  executor::setsecondaryoffset 0
+  executor::setguidingmode "none"
+  executor::setpointingmode "finder"
+
+  executor::track
+
+  executor::setwindow  "default"
+  executor::setbinning 2 2 1 1
+
+  executor::waituntiltracking
+
+  executor::setpointingmode "none"
+  log::summary "snvisit: correcting pointing."
+  executor::correctpointing 80
+  executor::track
+  executor::waituntiltracking
+
+  executor::movefilterwheel "r" "none" "none" "none"
+
+  set repeat 0
+  while {$repeat < $repeats} {
+    incr repeat  
+    foreach {aperture eastoffset northoffset} {
+      riZJcenter    0as   0as
+      riZJcenter  -15as   0as
+      riYHcenter    0as   0as
+      riYHcenter    0as -15as
+      riZJcenter  -30as   0as
+      riZJcenter  -30as -15as
+      riYHcenter    0as -30as
+      riYHcenter  +15as -30as
+    } {
+      log::info "snvisit: dithering $eastoffset E and $northoffset N about aperture $aperture."    
+      executor::offset $eastoffset $northoffset $aperture
+      executor::waituntiltracking
+      executor::expose object 80 80 60 60
+    }
+  }
+
+  log::summary "snvisit: finished."
+
+  return true
+}
+
+########################################################################
+
 proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime {filters "r"}} {
 
   log::summary "gridvisit: starting."

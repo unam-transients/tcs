@@ -29,17 +29,9 @@ package require "visit"
 
 package provide "alert" 0.0
 
-config::setdefaultvalue "alert" "prologcommand"            ""
-config::setdefaultvalue "alert" "prologidentifier"         "1000"
-config::setdefaultvalue "alert" "prologestimatedduration"  "0m"
-
 namespace eval "alert" {
 
   variable svnid {$Id}
-
-  variable alertprologcommand           [config::getvalue "alert" "prologcommand"]
-  variable alertprologidentifier        [config::getvalue "alert" "prologidentifier"]
-  variable alertprologestimatedduration [config::getvalue "alert" "prologestimatedduration"]
 
   ######################################################################
   
@@ -66,28 +58,20 @@ namespace eval "alert" {
   proc alerttoblock {alert} {
   
     set project [dict create \
-      "identifier" [alert::projectidentifier $alert] \
+      "identifier" [projectidentifier $alert] \
       "name"       "alerts" \
     ]
 
-    set constraints [alert::constraints $alert]
-
-    set visits {}
-    
-    if {[alert::enabled $alert]} {
-
-      set targetcoordinates [visit::makeequatorialtargetcoordinates [alert::alpha $alert] [alert::delta $alert] [alert::equinox $alert]]
-      variable alertprologcommand
-      variable alertprologidentifier
-      variable alertprologestimatedduration
-      if {![string equal "" $alertprologcommand]} {
-        lappend visits [visit::makevisit $alertprologidentifier "prolog" $targetcoordinates $alertprologcommand $alertprologestimatedduration]
+    set visits {}    
+    if {[enabled $alert]} {
+      set targetcoordinates [visit::makeequatorialtargetcoordinates [alpha $alert] [delta $alert] [equinox $alert]]
+      if {![string equal "" [prologcommand $alert]]} {
+        lappend visits [visit::makevisit [prologvisitidentifier $alert] "prolog" $targetcoordinates [prologcommand $alert] [prologestimatedduration $alert]]
       }
-      lappend visits [visit::makevisit "0" [alert::name $alert] $targetcoordinates [alert::command $alert] "0m"]
-
+      lappend visits [visit::makevisit [visitidentifier $alert] [name $alert] $targetcoordinates [command $alert] [estimatedduration $alert]]
     }
       
-    set block [block::makeblock [alert::identifier $alert] [alert::name $alert] $project $constraints $visits $alert true]
+    set block [block::makeblock [identifier $alert] [name $alert] $project [constraints $alert] $visits $alert true]
 
     return $block
   }
@@ -157,7 +141,7 @@ namespace eval "alert" {
   
   proc alpha {alert} {
     if {[dict exists $alert "alpha"]} {
-      return [dict get $alert "alpha"]
+      return [astrometry::parsealpha [dict get $alert "alpha"]]
     } else {
       return ""
     }
@@ -165,7 +149,7 @@ namespace eval "alert" {
   
   proc delta {alert} {
     if {[dict exists $alert "delta"]} {
-      return [dict get $alert "delta"]
+      return [astrometry::parsedelta [dict get $alert "delta"]]
     } else {
       return ""
     }
@@ -173,7 +157,7 @@ namespace eval "alert" {
   
   proc equinox {alert} {
     if {[dict exists $alert "equinox"]} {
-      return [dict get $alert "equinox"]
+      return [astrometry::parseequinox [dict get $alert "equinox"]]
     } else {
       return ""
     }
@@ -208,6 +192,46 @@ namespace eval "alert" {
       return [dict get $alert "command"]
     } else {
       return ""
+    }
+  }
+  
+  proc estimatedduration {alert} {
+    if {[dict exists $alert "estimatedduration"]} {
+      return [dict get $alert "estimatedduration"]
+    } else {
+      return "0m"
+    }
+  }
+  
+  proc visitidentifier {alert} {
+    if {[dict exists $alert "visitidentifier"]} {
+      return [dict get $alert "visitidentifier"]
+    } else {
+      return "0"
+    }
+  }
+  
+  proc prologcommand {alert} {
+    if {[dict exists $alert "prologcommand"]} {
+      return [dict get $alert "prologcommand"]
+    } else {
+      return ""
+    }
+  }
+  
+  proc prologestimatedduration {alert} {
+    if {[dict exists $alert "prologestimatedduration"]} {
+      return [dict get $alert "prologestimatedduration"]
+    } else {
+      return "0m"
+    }
+  }
+  
+  proc prologvisitidentifier {alert} {
+    if {[dict exists $alert "prologvisitidentifier"]} {
+      return [dict get $alert "prologvisitidentifier"]
+    } else {
+      return "1000"
     }
   }
   

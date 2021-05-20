@@ -28,9 +28,18 @@
 // blocks read from the alert file.
 
 {
+
   "name": "",
-  "command": "alertvisit",
   "enabled": "true",
+
+  "command": "alertvisit",
+  "estimatedduration": "20m",
+  "visitidentifier": "0",
+  
+  "prologcommand": "alertprologvisit",
+  "prologestimatedduration": "5m",
+  "prologvisitidentifier": "1000",
+
   "maxskybrightness": "nauticaltwilight",
   "minmoondistance": "15d",
   "maxzenithdistance": "72d",

@@ -84,6 +84,20 @@ proc alertvisit {{filters ""}} {
   return true
 }
 
+proc alertprologvisit {} {
+
+  log::summary "alertprologvisit: starting."
+
+  executor::track
+  executor::setwindow "default"
+  executor::setbinning 1
+
+  executor::expose object 10
+
+  log::summary "alertprologvisit: finished."
+  return true
+}
+
 ########################################################################
 
 proc biasesvisit {} {
