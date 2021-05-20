@@ -56,7 +56,7 @@ BEGIN {
 while read blockid delta alpha
 do
   case $delta in
-  "-35.0d"|"-25.0d"|"-15.0d"|"+75.0d"|"+85.0d")
+  "-45.0d"|"-35.0d"|"-25.0d"|"-15.0d"|"+75.0d"|"+85.0d")
     cat >d-3000-allsky-$blockid <<EOF
 {
   "project": {
