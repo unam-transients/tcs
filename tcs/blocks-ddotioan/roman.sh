@@ -20,13 +20,13 @@ sed '/^#/d' <<EOF >roman-targets.tmp
 EOF
 
 sed '/^#/d' <<EOF >roman-visits.tmp
-0 -6h -4h
+#0 -6h -4h
 #1 -4h -2h
-2 -2h 0h
-#3  0h +2h
+#2 -2h 0h
+3  0h +2h
 4 +2h +4h
-#5 +4h +6h
-6 +6h +8h
+5 +4h +6h
+#6 +6h +8h
 #7 +8h +10h
 EOF
 
