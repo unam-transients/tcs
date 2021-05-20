@@ -27,6 +27,25 @@ proc alertvisit {{filter "w"}} {
 
   log::summary "alertvisit: starting."
   
+  set alpha   [visit::alpha   [executor::visit]]
+  set delta   [visit::delta   [executor::visit]]
+  set equinox [visit::equinox [executor::visit]]
+
+  log::info "alertvisit: reading alert."
+
+  if {![file exists [executor::filename]]} {
+    log::summary "alertvisit: the alert is no longer in the queue."
+    return false
+  }
+
+  executor::setblock [alert::alerttoblock [alert::readalertfile [executor::filename]]]
+  executor::setalert [block::alert [executor::block]]
+
+  if {![alert::enabled [executor::alert]]} {
+    log::summary "alertvisit: the alert is no longer enabled."
+    return false
+  }
+
   if {[string equal "" [alert::eventtimestamp [executor::alert]]]} {
     log::summary [format "alertvisit: no event timestamp."]
   } else {  
@@ -63,7 +82,11 @@ proc alertvisit {{filter "w"}} {
     set visits {
       0 0.0d 0.0d
     }
-    set aperture "W"
+    if {[visit::delta [executor::visit]] > 0} {
+      set aperture "NW"
+    } else {
+      set aperture "SW"
+    }
   } elseif {$uncertainty <= [astrometry::parsedistance "3.3d"]} {
     log::summary "alertvisit: grid is 1 × 1 fields."
     set visits {
@@ -105,10 +128,6 @@ proc alertvisit {{filter "w"}} {
     [expr {$fields * $dithersperfield * $exposuresperdither}] $exposuretime \
   ]
 
-  set lastalpha ""
-  set lastdelta ""
-  set lastequinox ""
-  
   set dither 0
   set first true
   while {$dither < $dithersperfield} {
@@ -116,21 +135,29 @@ proc alertvisit {{filter "w"}} {
     set dithereastrange  "0.33d"
     set dithernorthrange "0.33d"
     
-    if {[file exists [executor::filename]]} {
-      executor::setblock [alert::alerttoblock [alert::readalertfile [executor::filename]]]
-      executor::setalert [block::alert [executor::block]]
+    set lastalpha   $alpha
+    set lastdelta   $delta
+    set lastequinox $equinox
+  
+    if {![file exists [executor::filename]]} {
+      log::summary "alertvisit: the alert is no longer in the queue."
+      break
     }
+
+    log::info "alertvisit: reading alert."
+    executor::setblock [alert::alerttoblock [alert::readalertfile [executor::filename]]]
+    executor::setalert [block::alert [executor::block]]
 
     if {![alert::enabled [executor::alert]]} {
       log::summary "alertvisit: the alert is no longer enabled."
-      return false
+      break
     }
 
     set alpha   [alert::alpha [executor::alert]]
     set delta   [alert::delta [executor::alert]]
     set equinox [alert::equinox [executor::alert]]
     
-    if {![string equal $lastalpha ""] && ($alpha != $lastalpha || $delta != $lastdelta || $equinox != $lastequinox)} {
+    if {$alpha != $lastalpha || $delta != $lastdelta || $equinox != $lastequinox} {
       log::summary "alertvisit: the coordinates have been updated."
       log::summary [format "alertvisit: new alert coordinates are %s %s %s." [astrometry::formatalpha $alpha]  [astrometry::formatdelta $delta] $equinox]
       executor::setvisit [visit::updatevisittargetcoordinates [executor::visit] [visit::makeequatorialtargetcoordinates $alpha $delta $equinox]]
