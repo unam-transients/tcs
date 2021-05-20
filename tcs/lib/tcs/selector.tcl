@@ -489,7 +489,7 @@ namespace eval "selector" {
       }
     }
     
-    if {!$alertfileexists} {
+    if {!$alertfileexists && ([string equal "" $enabled] || $enabled)} {
       log::info "running alertscript."
       if {[catch {
         exec "[directories::etc]/alertscript" $name $origin $identifier $type
