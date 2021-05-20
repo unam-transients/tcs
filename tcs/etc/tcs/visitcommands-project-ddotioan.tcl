@@ -31,6 +31,8 @@ proc alertvisit {{filter "w"}} {
   set delta   [visit::delta   [executor::visit]]
   set equinox [visit::equinox [executor::visit]]
 
+  log::info "alertvisit: the coordinates are $alpha $delta $equinox."
+
   log::info "alertvisit: reading alert."
 
   if {![file exists [executor::filename]]} {
@@ -157,6 +159,8 @@ proc alertvisit {{filter "w"}} {
     set delta   [alert::delta [executor::alert]]
     set equinox [alert::equinox [executor::alert]]
     
+    log::info "alertvisit: the coordinates are $alpha $delta $equinox."
+
     if {$alpha != $lastalpha || $delta != $lastdelta || $equinox != $lastequinox} {
       log::summary "alertvisit: the coordinates have been updated."
       log::summary [format "alertvisit: new alert coordinates are %s %s %s." [astrometry::formatalpha $alpha]  [astrometry::formatdelta $delta] $equinox]
