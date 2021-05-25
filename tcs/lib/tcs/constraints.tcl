@@ -420,7 +420,10 @@ namespace eval "constraints" {
   proc checkminmoondistanceat {visit constraints seconds when} {
     if {![hasconstraint $constraints "minmoondistance"]} {
       log::debug "no minimum Moon distance constraint."
-    } else {  
+    } elseif {[string equal "dark" [astrometry::moonskystate $seconds]]} {
+      log::debug "minimum Moon distance constraint but the Moon has set."
+      return true
+    } else {
       set mindistance [getconstraint $constraints "minmoondistance"]
       set mindistance [astrometry::parseangle $mindistance]
       set moonobservedalpha [astrometry::moonobservedalpha $seconds]
@@ -460,6 +463,10 @@ namespace eval "constraints" {
   proc checkmaxmoondistanceat {visit constraints seconds when} {
     if {![hasconstraint $constraints "maxmoondistance"]} {
       log::debug "no maximum Moon distance constraint."
+    } elseif {[string equal "dark" [astrometry::moonskystate $seconds]]} {
+      log::debug "maximum Moon distance constraint but the Moon has set." 
+      set why "maximum Moon distance constraint but the Moon has set."
+      return false
     } else {  
       set maxdistance [getconstraint $constraints "maxmoondistance"]
       set maxdistance [astrometry::parseangle $maxdistance]
