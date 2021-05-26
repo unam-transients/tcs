@@ -142,8 +142,31 @@ namespace eval "instrument" {
     foreach detector $activedetectors {
       client::wait $detector
     }
-    server::setactivity [server::getstoppedactivity]
     log::info [format "finished resetting after %.1f seconds." [utcclock::diff now $start]]
+  }    
+
+  proc recoveractivitycommand {} {
+    set start [utcclock::seconds]
+    log::info "recovering."
+    variable activedetectors
+    foreach detector $activedetectors {
+      client::waituntilstarted $detector
+      client::request $detector "reset"
+    }
+    foreach detector $activedetectors {
+      client::wait $detector
+    }
+    set mustinitialize false
+    foreach detector $activedetectors {
+      if {[string equal [client::getdata $detector "activity"] "started"]} {
+        set mustinitialize true
+      }
+    }
+    if {$mustinitialize} {
+      initializeactivitycommand
+      openactivitycommand
+    }
+    log::info [format "finished recovering after %.1f seconds." [utcclock::diff now $start]]
   }    
 
   proc closeactivitycommand {} {
@@ -438,6 +461,14 @@ namespace eval "instrument" {
       "instrument::resetactivitycommand"
   }
   
+  proc recover {} {
+    server::checkstatus
+    server::checkactivityforreset
+    safetyswitch::checksafetyswitch
+    server::newactivitycommand "recovering" "idle" \
+      "instrument::recoveractivitycommand"
+  }
+
   proc idle {} {
     server::checkstatus
     server::checkactivityforreset

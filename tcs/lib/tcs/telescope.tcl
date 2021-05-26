@@ -168,10 +168,11 @@ namespace eval "telescope" {
     variable finders
     set pointingmode [server::getdata "pointingmode"]
     if {[string equal $pointingmode "finder"]} {
-      foreach server [concat guider $finders] {
+      set servers [concat guider $finders]
+      foreach server $servers {
         client::request $server "stop"
       }
-      foreach server [concat guider $finders] {
+      foreach server $servers {
         client::wait $server
       }
       log::info "attemping to correct the pointing model."
@@ -207,10 +208,11 @@ namespace eval "telescope" {
     set guidingmode [server::getdata "guidingmode"]
     variable finders
     if {![string equal $guidingmode "none"]} {
-      foreach server [concat guider $finders] {
+      set servers [concat guider $finders]
+      foreach server $servers {
         client::request $server "stop"
       }
-      foreach server [concat guider $finders] {
+      foreach server $servers {
         client::wait $server
       }
       log::info "starting guiding."
@@ -233,11 +235,12 @@ namespace eval "telescope" {
     log::info "stopping."
     variable mechanisms
     variable finders
-    foreach mechanism [concat $mechanisms $finders "target"] {
-      client::request $mechanism "stop"
+    set servers [concat $mechanisms $finders "target"]
+    foreach server $servers {
+      client::request $server "stop"
     }
-    foreach mechanism [concat $mechanisms $finders] {
-      client::wait $mechanism
+    foreach server $servers {
+      client::wait $server
     }
     log::info [format "finished stopping after %.1f seconds." [utcclock::diff now $start]]
   }
@@ -247,16 +250,42 @@ namespace eval "telescope" {
     log::info "resetting."
     variable mechanisms
     variable finders
-    foreach mechanism [concat $mechanisms $finders "target"] {
-      client::waituntilstarted $mechanism
-      client::request $mechanism "reset"
+    set servers [concat $mechanisms $finders "target"]
+    foreach server $servers {
+      client::waituntilstarted $server
+      client::request $server "reset"
     }
-    client::request "target" "reset"
-    foreach mechanism [concat $mechanisms $finders] {
-      client::wait $mechanism
+    foreach server $server {
+      client::wait $server
     }
     client::wait "target"
     log::info [format "finished resetting after %.1f seconds." [utcclock::diff now $start]]
+  }
+  
+  proc recoveractivitycommand {} {
+    set start [utcclock::seconds]
+    log::info "recovering."
+    variable mechanisms
+    variable finders
+    set servers [concat $mechanisms $finders "target"]
+    foreach server $servers {
+      client::waituntilstarted $server
+      client::request $server "reset"
+    }
+    foreach server $servers {
+      client::wait $server
+    }
+    set mustinitialize false
+    foreach server $servers {
+      if {[string equal [client::getdata $server "activity"] "started"]} {
+        set mustinitialize true
+      }
+    }
+    if {$mustinitialize} {
+      initializeactivitycommand
+      openactivitycommand
+    }
+    log::info [format "finished recovering after %.1f seconds." [utcclock::diff now $start]]
   }
   
   proc initializeactivitycommand {} {
@@ -275,15 +304,16 @@ namespace eval "telescope" {
       initializeprolog
       variable mechanisms
       variable finders
-      foreach mechanism  [concat $mechanisms $finders "target"] {
-        client::waituntilstarted $mechanism
-        client::resetifnecessary $mechanism
-        initializemechanismprolog $mechanism
-        client::request $mechanism "stop"
-        client::wait $mechanism
-        client::request $mechanism "initialize"
-        client::wait $mechanism
-        initializemechanismepilog $mechanism
+      set servers [concat $mechanisms $finders "target"]
+      foreach server $servers {
+        client::waituntilstarted $server
+        client::resetifnecessary $server
+        initializemechanismprolog $server
+        client::request $server "stop"
+        client::wait $server
+        client::request $server "initialize"
+        client::wait $server
+        initializemechanismepilog $server
       }
       initializeepilog
       if {$withlights} {
@@ -972,6 +1002,13 @@ set mode "none"
     server::checkactivitynot "starting"
     server::newactivitycommand "resetting" [server::getstoppedactivity] \
       "telescope::resetactivitycommand" 1200e3
+  }
+  
+  proc recover {} {
+    server::checkstatus
+    server::checkactivitynot "starting"
+    server::newactivitycommand "recovering" "idle" \
+      "telescope::recoveractivitycommand" 1200e3
   }
   
   proc stop {} {

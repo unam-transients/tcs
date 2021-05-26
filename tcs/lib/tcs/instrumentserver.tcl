@@ -70,6 +70,11 @@ namespace eval "instrumentserver" {
     return
   }
   
+  proc slaverecover {} {
+    instrument::recover
+    return
+  }
+
   proc slaveidle {} {
     instrument::idle
     return
@@ -126,6 +131,7 @@ namespace eval "instrumentserver" {
     interp alias $slave emergencyclose       {} instrumentserver::slaveemergencyclose
     interp alias $slave stop                 {} instrumentserver::slavestop
     interp alias $slave reset                {} instrumentserver::slavereset
+    interp alias $slave recover              {} instrumentserver::slaverecover 
     interp alias $slave idle                 {} instrumentserver::slaveidle
     interp alias $slave movefilterwheel      {} instrumentserver::slavemovefilterwheel
     interp alias $slave expose               {} instrumentserver::slaveexpose

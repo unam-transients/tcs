@@ -45,6 +45,11 @@ namespace eval "executorserver" {
     return
   }
   
+  proc slaverecover {} {
+    executor::recover
+    return
+  }
+  
   proc slaveinitialize {} {
     executor::initialize
     return
@@ -83,6 +88,7 @@ namespace eval "executorserver" {
   proc configureslave {slave} {
     interp alias $slave stop            {} executorserver::slavestop
     interp alias $slave reset           {} executorserver::slavereset
+    interp alias $slave recover         {} executorserver::slaverecover
     interp alias $slave initialize      {} executorserver::slaveinitialize
     interp alias $slave open            {} executorserver::slaveopen
     interp alias $slave opentocool      {} executorserver::slaveopentocool
