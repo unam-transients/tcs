@@ -695,6 +695,21 @@ namespace eval "executor" {
     log::summary [format "finished resetting after %.1f seconds." [utcclock::diff now $start]]
   }
 
+  proc recoveractivitycommand {} {
+    set start [utcclock::seconds]
+    log::summary "recovering."
+    foreach server {telescope instrument} {
+      catch {client::waituntilstarted $server}
+    }
+    foreach server {telescope instrument} {
+      client::request $server "recover"
+    }
+    foreach server {telescope instrument} {
+      client::wait $server
+    }
+    log::summary [format "finished recovering after %.1f seconds." [utcclock::diff now $start]]
+  }
+
   proc initializeactivitycommand {} {
     set start [utcclock::seconds]
     log::summary "initializing."
@@ -793,6 +808,13 @@ namespace eval "executor" {
     server::checkactivityforreset
     server::newactivitycommand "resetting" [server::getstoppedactivity] \
       "executor::resetactivitycommand"
+  }
+  
+  proc recover {} {
+    server::checkstatus
+    server::checkactivityforreset
+    server::newactivitycommand "recovering" "idle" \
+      "executor::recoveractivitycommand" 1800e3
   }
   
   proc initialize {} {

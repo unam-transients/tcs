@@ -207,7 +207,7 @@ namespace eval "selector" {
 
     set idled false
     set delay 0
-    set forcereset false
+    set recover false
 
     server::setstatus "ok" 
     
@@ -221,13 +221,13 @@ namespace eval "selector" {
       if {[string equal $mode "disabled"]} {
         log::debug "blockloop: disabled."
         server::setactivity "idle"
-        set forcereset false
+        set recover false
         coroutine::after 1000
         continue
       }
       
       if {$delay != 0} {
-        log::debug "blockloop: waiting for ${delay}ms."
+        log::debug "blockloop: waiting for $delay ms."
         server::setactivity "waiting"
         coroutine::after $delay
       }
@@ -236,19 +236,19 @@ namespace eval "selector" {
         continue
       }
 
-      if {$forcereset} {
-        log::info "resetting."
-        server::setactivity "resetting"      
+      if {$recover} {
+        log::warning "recovering."
+        server::setactivity "recovering"      
         if {[catch {
-          client::request "executor" "reset"
+          client::request "executor" "recover"
           client::wait "executor"
         } message]} {
-          log::error "unable to reset: $message"
+          log::error "unable to recover: $message"
           set delay 60000
-          set forcereset true
+          set recover true
           continue
         }
-        set forcereset false
+        set recover false
       }
       
       if {[string equal $mode "disabled"]} {
@@ -262,7 +262,7 @@ namespace eval "selector" {
         client::wait "executor"
       } message]} {
         log::error "unable to stop: $message"
-        set forcereset true
+        set recover true
         continue
       }
 
@@ -307,7 +307,7 @@ namespace eval "selector" {
           } message]} {
             log::error "unable to idle: $message"
             set delay 60000
-            set forcereset true
+            set recover true
             continue
           }
           set idled true
@@ -326,7 +326,7 @@ namespace eval "selector" {
       } message]} {
         log::error "unable to execute: $message"
         set delay 60000
-        set forcereset true
+        set recover true
         continue
       }
       log::summary "finished executing $filetype file \"[file tail $filename]\"."
