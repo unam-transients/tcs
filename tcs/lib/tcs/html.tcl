@@ -1874,7 +1874,7 @@ namespace eval "html" {
 
       log::debug "finished updating data."
 
-      log::debug "writing HTML status files."
+      log::debug "writing status files."
 
       foreach server [concat "info" "summary" "warning" "error" $servers] {
         coroutine::after 1
@@ -1883,13 +1883,13 @@ namespace eval "html" {
           write$server
           closehtml
         } message]} {
-          log::warning "unable to generate HTML status file for \"$server\": $message"
+          log::warning "unable to generate status file for \"$server\": $message"
         }
       }
       
-      log::debug "finished writing HTML status log files."
+      log::debug "finished writing status log files."
 
-      log::debug "writing HTML log files."
+      log::debug "writing log files."
 
       file mkdir "$wwwdirectory/log/"
       
@@ -1904,7 +1904,7 @@ namespace eval "html" {
         if {[catch {
           exec "/bin/sh" "$script" "-p" "[directories::prefix]" "$server" >$filename.[pid]
         } message]} {
-          log::warning "unable to generate HTML log file for \"$server\": $message"
+          log::warning "unable to generate log file for \"$server\": $message"
           continue
         }
 
@@ -1912,14 +1912,19 @@ namespace eval "html" {
          
       }
       
-      log::debug "finished writing HTML log files."
+      log::debug "finished writing log files."
 
-      log::debug "writing HTML alert table files."
-      openhtml "$wwwdirectory/status/alerts.html"
-      writealertstable
-      closehtml
-      log::debug "finished writing HTML log files."
-     
+      log::debug "writing alert table files."
+      
+      if {[catch {
+        openhtml "$wwwdirectory/status/alerts.html"
+        writealertstable
+        closehtml
+      } message]} {
+          log::warning "unable to generate alert table files: $message" 
+      }
+      
+      log::debug "finished writing alert table files."
 
       set endmilliseconds [utcclock::milliseconds]
       set durationmilliseconds [expr {$endmilliseconds - $startmilliseconds}]
