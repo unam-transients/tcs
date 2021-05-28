@@ -476,8 +476,8 @@ namespace eval "gcntan" {
       error "unable to scan timestamp \"$timestamp\"."
     }
     set dayfraction [expr {($hours + $minutes / 60.0 + $seconds / 3600.0) / 24.0}]
-    set identifier [format "Swift GRB %02d%02d%02d.%03d" [expr {$year % 100}] $month $day [expr {int($dayfraction * 1000)}]]
-    return $identifier
+    set eventname [format "Swift %02d%02d%02d.%03d (%s)" [expr {$year % 100}] $month $day [expr {int($dayfraction * 1000)}] [swiftclass $log $packet]]
+    return $eventname
   }
 
   proc swifteventtimestamp {log packet} {
@@ -516,6 +516,9 @@ namespace eval "gcntan" {
   }
 
   proc swiftworthy {log packet} {
+    set type [type $packet]
+    set class [swiftclass $log $packet]
+    $log [format "%s: class is \"%s\"." $type $class]
     switch [type $packet] {
       "swiftbatgrbposition" -
       "swiftbatgrbpostest" {
@@ -554,6 +557,14 @@ namespace eval "gcntan" {
       default {
         error "unexpected packet type \"$packet\"."
       }
+    }
+  }
+  
+  proc swiftclass {log packet} {
+    if {[swiftretraction lognull $packet]} {
+      return "retraction"
+    } else {
+      return "GRB"
     }
   }
 
@@ -605,14 +616,14 @@ namespace eval "gcntan" {
     switch -glob [type $packet] {
       "fermigbm*" {
         set dayfractioninthousandths [field0 $packet 32]
-        set identifier [format "Fermi GRB %02d%02d%02d.%03d" [expr {$year % 100}] $month $day $dayfractioninthousandths]
+        set eventname [format "Fermi GBM %02d%02d%02d.%03d (%s)" [expr {$year % 100}] $month $day $dayfractioninthousandths [fermiclass $log $packet]]
       }
       "fermilat*" {
         set dayfraction [expr {($hours + $minutes / 60.0 + $seconds / 3600.0) / 24.0}]
-        set identifier [format "Fermi GRB %02d%02d%02d.%03d" [expr {$year % 100}] $month $day [expr {int($dayfraction * 1000)}]]
+        set eventname [format "Fermi LAT %02d%02d%02d.%03d (%s)" [expr {$year % 100}] $month $day [expr {int($dayfraction * 1000)}] [fermiclass $log $packet]]
       }
     }
-    return $identifier
+    return $eventname
   }
 
   proc fermieventtimestamp {log packet} {
@@ -748,14 +759,13 @@ namespace eval "gcntan" {
   
   proc fermiworthy {log packet} {
     set type [type $packet]
+    set class [fermiclass $log $packet]
+    $log [format "%s: class is \"%s\"." $type $class]
     switch [type $packet] {
       "fermigbmpostest" -
       "fermigbmfltpos" {
         set sigma [fermigbmtriggersigma $log $packet]
         $log [format "%s: %.1f sigma." $type $sigma]
-        set class            [fermigbmclass $packet 23]
-        set classprobability [fermigbmclassprobability $packet 23]
-        $log [format "%s: class is \"%s\" (%.0f%%)." $type $class [expr {$classprobability * 100}]]
         if {[string equal $class "grb"]} {
           return true
         } else {
@@ -782,22 +792,17 @@ namespace eval "gcntan" {
       }
       "fermilatgrbposupd" -
       "fermilatgrbpostest" {
+        # There are so few LAT detections that we might as well treat them all as worthy.
         set temporalsignificance [field0 $packet 25]
         set imagesignificance    [field0 $packet 26]
         set totalsignificance    [expr {$temporalsignificance + $imagesignificance}]
         $log [format "%s: temporal significance is %d." $type $temporalsignificance]
         $log [format "%s: image significance is %d."    $type $imagesignificance]
         $log [format "%s: total significance is %d."    $type $totalsignificance]
-        if {$totalsignificance >= 120} {
-          return true
-        } else {
-          return false
-        }
+        return true
       }
       "fermilatgnd" {
-        # fermilatgnd packets a field that gives the sqrt of the trigger
-        # significance. I am confused by this. So, for the time being, I
-        # am logging it but treating all as GRBs.
+        # There are so few LAT detections that we might as well treat them all as worthy.
         set significance [field2 $packet 26]
         $log [format "%s: significance is %.2f." $type $significance]
         return true
@@ -811,36 +816,6 @@ namespace eval "gcntan" {
     }
   }
 
-  variable fermigbmclassdict {
-    0 "error"
-    1 "unreliablelocation"
-    2 "localparticles"
-    3 "belowhorizon"
-    4 "grb"
-    5 "genericsgr"
-    6 "generictransient"
-    7 "distantparticles"
-    8 "solarflare"
-    9 "cygx1"
-    10 "sgr180620"
-    11 "groj042232"
-    19 "tgf"
-  }
-  
-  proc fermigbmclass {packet i} {
-    set i [expr {[field0 $packet $i] & 0xffff}]
-    variable fermigbmclassdict
-    if {[dict exists $fermigbmclassdict $i]} {
-      return [dict get $fermigbmclassdict $i]
-    } else {
-      return "unknown"
-    } 
-  }
-  
-  proc fermigbmclassprobability {packet i} {
-    return [expr {(([field0 $packet $i] >> 16) & 0xffff) / 256.0}]
-  }
-  
   proc fermigbmtriggersigma {log packet} {
     set type [type $packet]
     switch [type $packet] {
@@ -860,22 +835,87 @@ namespace eval "gcntan" {
   proc fermigbmgrbduration {log packet} {
     set ls [expr {([field0 $packet 18] >> 26) & 0x3}]
     switch $ls {
-    0 {
-      return "uncertain" 
+      0 {
+        return "uncertain" 
+      }
+      1 { 
+        return "short" 
+      }
+      2 {
+        return "long" 
+      }
+      3 { 
+        log::warning "invalid value in l-v-s field."
+        return "uncertain"
+      }
     }
-    1 { 
-      return "short" 
+  }
+  
+  proc fermiclass {log packet} {
+    if {[fermiretraction lognull $packet]} {
+      return "retraction"
     }
-    2 {
-      return "long" 
-    }
-    3 { 
-      log::warning "invalid value in l-v-s field."
-      return "uncertain"
-    }
+    set type [type $packet]
+    switch [type $packet] {
+      "fermigbmpostest" -
+      "fermigbmfltpos" {
+        set i [expr {[field0 $packet 23] & 0xffff}]
+        variable fermigbmclassdict
+        if {[dict exists $fermigbmclassdict $i]} {
+          return [dict get $fermigbmclassdict $i]
+        } else {
+          return "unknown"
+        }   
+      }
+      "fermigbmgndpos" -
+      "fermigbmfinpos" {
+        switch [fermigbmgrbduration $log $packet] {
+          "long" {
+            return "LGRB"
+          }
+          "short" {
+            return "SGRB"
+          }
+          default {
+            return "GRB"
+          }
+        }
+      }
+      default {
+        return "GRB"
+      }
     }
   }
 
+  variable fermigbmclassdict {
+    0 "error"
+    1 "Unreliable Location"
+    2 "Local Particles"
+    3 "Below Horizon"
+    4 "GRB"
+    5 "Generic SGR"
+    6 "Generic Transient"
+    7 "Distant Particles"
+    8 "Solar Flare"
+    9 "Cyg-X1"
+    10 "SGR 1806-20"
+    11 "GRO J0422+32"
+    19 "TGF"
+  }
+  
+  proc fermiclassprobability {packet} {
+    set type [type $packet]
+    switch [type $packet] {
+      "fermigbmpostest" -
+      "fermigbmfltpos" {
+        return [expr {(([field0 $packet 23] >> 16) & 0xffff) / 256.0}]
+      }
+      default {
+        return 1.0
+      }
+    }
+  }
+  
   ######################################################################
 
   # These procedures are designed to work with the following packet types:
@@ -907,8 +947,8 @@ namespace eval "gcntan" {
       error "unable to scan timestamp \"$timestamp\"."
     }
     set dayfraction [expr {($hours + $minutes / 60.0 + $seconds / 3600.0) / 24.0}]
-    set identifier [format "HAWC %02d%02d%02d.%03d" [expr {$year % 100}] $month $day [expr {int($dayfraction * 1000)}]]
-    return $identifier
+    set eventname [format "HAWC %02d%02d%02d.%03d (%s)" [expr {$year % 100}] $month $day [expr {int($dayfraction * 1000)}] [hawcclass $log $packet]]
+    return $eventname
   }
 
   proc hawceventtimestamp {log packet} {
@@ -955,6 +995,9 @@ namespace eval "gcntan" {
   }
   
   proc hawcworthy {log packet} {
+    set type [type $packet]
+    set class [hawcclass $log $packet]
+    $log [format "%s: class is \"%s\"." $type $class]
     if {[hawcretraction $log $packet]} {
       return false
     } else {
@@ -967,6 +1010,14 @@ namespace eval "gcntan" {
       return true
     } else {
       return false
+    }
+  }
+  
+  proc hawcclass {log packet} {
+    if {[hawcretraction lognull $packet]} {
+      return "retraction"
+    } else {
+      return "detection"
     }
   }
 
@@ -1003,20 +1054,8 @@ namespace eval "gcntan" {
       error "unable to scan timestamp \"$timestamp\"."
     }
     set dayfraction [expr {($hours + $minutes / 60.0 + $seconds / 3600.0) / 24.0}]
-    set type [type $packet]
-    switch $type {
-      "icecubeastrotrackgold" {
-        set eventtype "gold track"
-      }
-      "icecubeastrotrackbronze" {
-        set eventtype "bronze track"
-      }
-      "icecubecascade" {
-        set eventtype "cascade"
-      }
-    }
-    set identifier [format "IceCube %s %02d%02d%02d.%03d" $eventtype [expr {$year % 100}] $month $day [expr {int($dayfraction * 1000)}]]
-    return $identifier
+    set eventname [format "IceCube %02d%02d%02d.%03d (%s)" [expr {$year % 100}] $month $day [expr {int($dayfraction * 1000)}] [icecubeclass $log $packet]]
+    return $eventname
   }
 
   proc icecubeeventtimestamp {log packet} {
@@ -1052,6 +1091,9 @@ namespace eval "gcntan" {
   }
   
   proc icecubeworthy {log packet} {
+    set type [type $packet]
+    set class [icecubeclass $log $packet]
+    $log [format "%s: class is \"%s\"." $type $class]
     if {[icecuberetraction $log $packet]} {
       return false
     } else {
@@ -1067,6 +1109,23 @@ namespace eval "gcntan" {
     }
   }
 
+  proc icecubeclass {log packet} {
+    if {[icecuberetraction lognull $packet]} {
+      return "retraction"
+    }
+    set type [type $packet]
+    switch $type {
+      "icecubeastrotrackgold" {
+        return "gold track"
+      }
+      "icecubeastrotrackbronze" {
+        return "bronze track"
+      }
+      "icecubecascade" {
+        return "cascade"
+      }
+    }
+  }
   ######################################################################
 
   proc lvcidentifier {log packet} {
@@ -1121,7 +1180,7 @@ namespace eval "gcntan" {
   }
 
   proc lvcname {log packet} {
-    return "LVC [lvcidentifier $log $packet]"     
+    return "LVC [lvcidentifier $log $packet] ([lvcclass $log $packet])"     
   }
 
   proc lvceventtimestamp {log packet} {
@@ -1156,6 +1215,9 @@ namespace eval "gcntan" {
   }
   
   proc lvcworthy {log packet} {
+    set type [type $packet]
+    set class [lvcclass $log $packet]
+    $log [format "%s: class is \"%s\"." $type $class]
     return true
   }
   
@@ -1167,6 +1229,14 @@ namespace eval "gcntan" {
       default {
         return false
       }
+    }
+  }
+  
+  proc lvcclass {log packet} {
+    if {[lvcretraction lognull $packet]} {
+      return "retraction"
+    } else {
+      return "detection"
     }
   }
 
