@@ -161,6 +161,7 @@ namespace eval "selector" {
         return $alertfile
       }
       log::info "rejected alert file \"[file tail $alertfile]\": $why"
+      coroutine::after 1
     }
     return ""
   }
@@ -191,6 +192,7 @@ namespace eval "selector" {
         return $blockfile
       }
       log::info "rejected block file \"[file tail $blockfile]\": $why"
+      coroutine::after 1
     }
     return ""
   }
