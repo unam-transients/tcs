@@ -105,6 +105,7 @@ EOF
   ddotioan-services)
     cat <<"EOF"
 */5 *  *  *  * /usr/local/bin/tcs logsensors
+*/5 *  *  *  *  sh /usr/local/var/www/tcs/plots.sh
 *   *  *  *  *  rsync -aH --include="error.txt" --include="warning.txt" --include="summary.txt" --include="info.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/ddoti-raw/
 00  *  *  *  *  rsync -aH /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/ddoti-raw/
 */5 *  *  *  *  rsync -aH --remove-source-files --include="*/" --include="*.fits.*" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/ddoti-raw/
