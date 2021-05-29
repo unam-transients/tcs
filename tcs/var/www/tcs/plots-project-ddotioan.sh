@@ -91,6 +91,65 @@ EOF
     set key outside
 
     set terminal pngcairo enhanced size 1200,1800
+    set output "building.png.new"
+
+    set multiplot layout 7,1
+
+    set format x ""
+    set xlabel ""
+
+    set yrange [-30:+50]
+    set ytics -40,10,50
+    set format y "%+g"
+    set ylabel "Temperature (C)"
+    set key on
+
+    plot \
+      "weather.dat"  using 1:2   title "External"    with lines linestyle 1, \
+      "sensors.dat"  using 2:3   title "Shed"        with lines linestyle 2, \
+      "sensors.dat"  using 4:5   title "Rack"        with lines linestyle 3
+    
+    plot \
+      "weather.dat"  using 1:2   title "External"    with lines linestyle 1, \
+      "sensors.dat"  using 6:7   title "Enclosure"   with lines linestyle 2, \
+      "sensors.dat"  using 8:9   title "Box C"       with lines linestyle 3, \
+      "sensors.dat"  using 10:11 title "Box D"       with lines linestyle 4, \
+      "sensors.dat"  using 12:13 title "Box E"       with lines linestyle 5
+
+    set yrange [0:100]
+    set ytics 0,10,100
+    set format y "%g"
+    set ylabel "RH (%)"
+    set key on
+
+    plot \
+      "weather.dat"  using 1:(\$4*100)   title "External"    with lines linestyle 1, \
+      "sensors.dat"  using 14:(\$15*100) title "Shed"        with lines linestyle 2
+    
+    plot \
+      "weather.dat"  using 1:(\$4*100)   title "External"    with lines linestyle 1, \
+      "sensors.dat"  using 18:(\$19*100) title "Enclosure"   with lines linestyle 2, \
+      "sensors.dat"  using 20:(\$21*100) title "Box C"       with lines linestyle 3, \
+      "sensors.dat"  using 22:(\$23*100) title "Box D"       with lines linestyle 4, \
+      "sensors.dat"  using 24:(\$25*100) title "Box E"       with lines linestyle 5
+
+    set yrange [0:100]
+    set ytics 0,10,100
+    set format y "%g"
+    set ylabel "Light Level (%)"
+    set key on
+
+    set format x "%Y%m%dT%H"
+    set xtics rotate by 90 right
+    set xlabel "UTC"
+
+    plot \
+      "sensors.dat"  using 26:(\$27*100) title "Shed"        with lines linestyle 1, \
+      "sensors.dat"  using 28:(\$29*100) title "Enclosure"   with lines linestyle 2
+
+    unset multiplot
+
+    set terminal pngcairo enhanced size 1200,1800
     set output "ccds.png.new"
 
     set multiplot layout 7,1
@@ -107,27 +166,32 @@ EOF
     plot \
       "C0.dat"       using 1:2  title "C0 Detector" with lines linestyle 1, \
       "C0.dat"       using 1:3  title "C0 Housing"  with lines linestyle 2, \
-      "weather.dat"  using 1:2  title "External"    with lines linestyle 3
+      "weather.dat"  using 1:2  title "External"    with lines linestyle 3, \
+      "sensors.dat"  using 6:7  title "Enclosure"   with lines linestyle 4
 
     plot \
       "C1.dat"       using 1:2  title "C1 Detector" with lines linestyle 1, \
       "C1.dat"       using 1:3  title "C1 Housing"  with lines linestyle 2, \
-      "weather.dat"  using 1:2  title "External"    with lines linestyle 3
+      "weather.dat"  using 1:2  title "External"    with lines linestyle 3, \
+      "sensors.dat"  using 6:7  title "Enclosure"   with lines linestyle 4
 
     plot \
       "C2.dat"       using 1:2  title "C2 Detector" with lines linestyle 1, \
       "C2.dat"       using 1:3  title "C2 Housing"  with lines linestyle 2, \
-      "weather.dat"  using 1:2  title "External"    with lines linestyle 3
+      "weather.dat"  using 1:2  title "External"    with lines linestyle 3, \
+      "sensors.dat"  using 6:7  title "Enclosure"   with lines linestyle 4
 
     plot \
       "C3.dat"       using 1:2  title "C3 Detector" with lines linestyle 1, \
       "C3.dat"       using 1:3  title "C3 Housing"  with lines linestyle 2, \
-      "weather.dat"  using 1:2  title "External"    with lines linestyle 3
+      "weather.dat"  using 1:2  title "External"    with lines linestyle 3, \
+      "sensors.dat"  using 6:7  title "Enclosure"   with lines linestyle 4
 
     plot \
       "C4.dat"       using 1:2  title "C4 Detector" with lines linestyle 1, \
       "C4.dat"       using 1:3  title "C4 Housing"  with lines linestyle 2, \
-      "weather.dat"  using 1:2  title "External"    with lines linestyle 3
+      "weather.dat"  using 1:2  title "External"    with lines linestyle 3, \
+      "sensors.dat"  using 6:7  title "Enclosure"   with lines linestyle 4
 
     set format x "%Y%m%dT%H"
     set xtics rotate by 90 right
@@ -136,7 +200,8 @@ EOF
     plot \
       "C5.dat"       using 1:2  title "C5 Detector" with lines linestyle 1, \
       "C5.dat"       using 1:3  title "C5 Housing"  with lines linestyle 2, \
-      "weather.dat"  using 1:2  title "External"    with lines linestyle 3
+      "weather.dat"  using 1:2  title "External"    with lines linestyle 3, \
+      "sensors.dat"  using 6:7  title "Enclosure"   with lines linestyle 4
 
     unset multiplot
 
@@ -182,7 +247,7 @@ EOF
 
 EOF
 
-  for component in ccds weather
+  for component in building ccds weather
   do
     mv $component.png.new $component-$days.png
   done
