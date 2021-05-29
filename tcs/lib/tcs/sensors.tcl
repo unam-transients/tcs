@@ -242,7 +242,7 @@ namespace eval "sensors" {
     variable updatedatapollseconds
     while {true} {
       if {[catch {updatedata} message]} {
-        log::debug "while updating data: $message"
+        log::warning "while updating data: $message"
       } else {
         server::setstatus  "ok"
       }
