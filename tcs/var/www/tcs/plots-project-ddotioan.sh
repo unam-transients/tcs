@@ -128,10 +128,10 @@ EOF
     
     plot \
       "weather.dat"  using 1:(\$4*100)   title "External"    with lines linestyle 1, \
-      "sensors.dat"  using 18:(\$19*100) title "Enclosure"   with lines linestyle 2, \
-      "sensors.dat"  using 20:(\$21*100) title "Box C"       with lines linestyle 3, \
-      "sensors.dat"  using 22:(\$23*100) title "Box D"       with lines linestyle 4, \
-      "sensors.dat"  using 24:(\$25*100) title "Box E"       with lines linestyle 5
+      "sensors.dat"  using 16:(\$17*100) title "Enclosure"   with lines linestyle 2, \
+      "sensors.dat"  using 18:(\$19*100) title "Box C"       with lines linestyle 3, \
+      "sensors.dat"  using 20:(\$21*100) title "Box D"       with lines linestyle 4, \
+      "sensors.dat"  using 22:(\$23*100) title "Box E"       with lines linestyle 5
 
     set yrange [0:100]
     set ytics 0,10,100
@@ -144,8 +144,8 @@ EOF
     set xlabel "UTC"
 
     plot \
-      "sensors.dat"  using 26:(\$27*100) title "Shed"        with lines linestyle 1, \
-      "sensors.dat"  using 28:(\$29*100) title "Enclosure"   with lines linestyle 2
+      "sensors.dat"  using 24:(\$25*100) title "Shed"        with lines linestyle 1, \
+      "sensors.dat"  using 26:(\$27*100) title "Enclosure"   with lines linestyle 2
 
     unset multiplot
 
