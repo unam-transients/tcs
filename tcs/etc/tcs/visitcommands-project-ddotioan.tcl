@@ -489,6 +489,8 @@ proc allskyprologvisit {} {
   # Then correct pointing
 
   log::summary "allskyprologvisit: correcting pointing."
+  executor::setwindow "6kx6k"
+  executor::setbinning 1
   executor::correctpointing 4
   
   log::summary "allskyprologvisit: finished."
@@ -547,20 +549,6 @@ proc initialfocusvisit {} {
   executor::setbinning 1
   executor::expose object 4
 
-#   executor::setwindow "6kx6k"
-#   executor::setbinning 1
-# 
-#   log::summary "initialfocusvisit: attempting to correct pointing at +1h +45d."
-#   visit::settargetcoordinates fixed +1h +45d now
-#   executor::tracktopocentric
-#   executor::waituntiltracking
-#   executor::correctpointing 4
-# 
-#   log::summary "initialfocusvisit: attempting to correct pointing at -1h +45d."
-#   executor::tracktopocentric
-#   executor::waituntiltracking
-#   executor::correctpointing 4
-
   log::summary "initialfocusvisit: finished."
 
   return false
@@ -571,7 +559,7 @@ proc initialfocusvisit {} {
 proc correctpointingvisit {} {
   log::summary "correctpointingvisit: starting."
   executor::tracktopocentric
-  executor::setwindow "1kx1k"
+  executor::setwindow "6kx6k"
   executor::setbinning 1
   executor::waituntiltracking
   log::summary "correctpointingvisit: correcting."
@@ -795,12 +783,12 @@ proc aperturesvisit {} {
   executor::track
   executor::waituntiltracking
   log::summary "aperturesvisit: correcting pointing."
-  executor::correctpointing 1
+  executor::correctpointing 4
   foreach aperture { "default" "W" "NW" "NE" "E" "SE" "SW" } {
     log::summary "aperturesvisit: checking aperture $aperture."
     executor::track 0 0 $aperture
     executor::waituntiltracking
-    executor::expose object 1
+    executor::expose object 4
   }
   log::summary "aperturesvisit: finished."
   return true
