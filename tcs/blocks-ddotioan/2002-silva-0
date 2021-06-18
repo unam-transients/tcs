@@ -1,0 +1,42 @@
+{
+  "project": {
+    "identifier": "2002",
+    "name": "Silva"
+  },
+  "identifier": "0",
+  "name": "Field 16:50:30.0 -02:39:30",
+  "visits": [
+    {
+      "identifier": "2000",
+      "name": "focusing",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "16:50:30.0",
+        "delta"  : "-02:39:30",
+        "equinox": "2000"
+      },
+      "command": "focusvisit",
+      "estimatedduration": "5m"
+    },
+    {
+      "identifier": "0",
+      "name": "science exposures",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "16:50:30.0",
+        "delta"  : "-02:39:30",
+        "equinox": "2000"
+      },
+      "command": "starevisit 25 60",
+      "estimatedduration": "30m"
+    }
+  ],
+  "constraints": {
+    "maxskybrightness": "nauticaltwilight",
+    "minha": "-2.5h",
+    "maxha": "+2.5h",
+    "minmoondistance": "30d",
+    "maxfocusdelay": "3600"
+  },
+  "persistent": "true"
+}
