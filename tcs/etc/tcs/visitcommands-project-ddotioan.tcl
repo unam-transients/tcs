@@ -281,6 +281,34 @@ proc correctedeastoffset {eastoffset northoffset delta} {
 
 ########################################################################
 
+proc starevisit {exposures exposuretime {filters "w"}} {
+
+  log::summary "starevisit: starting."
+
+  set binning 1
+  executor::setwindow "default"
+  executor::setbinning $binning
+  
+  log::summary [format "starevisit: %d × %.0f second exposures with binning of %d." \
+    $exposures $exposuretime $binning \
+  ]
+
+  executor::track
+  executor::waituntiltracking
+  
+  set exposure 0
+  while {$exposure < $exposures} {
+    executor::expose object $exposuretime
+    incr exposure
+  }
+
+  log::summary "starevisit: finished."
+
+  return true
+}
+
+########################################################################
+
 proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime {filters "w"}} {
 
   log::summary "gridvisit: starting."
