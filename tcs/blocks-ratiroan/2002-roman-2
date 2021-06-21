@@ -1,0 +1,28 @@
+{
+ "project": {
+   "identifier": "2002",
+   "name": "Roman IRAS 19520+2759"
+ },
+ "identifier": "2",
+ "name": "IRAS 19520+2759",
+ "visits": [
+   {
+     "identifier": "0",
+     "name": "science",
+     "targetcoordinates": {
+       "type"   : "equatorial",
+       "alpha"  : "19:52:03.45",
+       "delta"  : "+27:59:46.3",
+       "equinox": "2000"
+     },
+     "command": "carlosvisit 1",
+     "estimatedduration": "20m"
+   }
+ ],
+ "constraints": {
+   "maxskybrightness": "astronomicaltwilight",
+   "minha": "-0.5h",
+   "maxfocusdelay": "1800"
+ },
+ "persistent": "false"
+}

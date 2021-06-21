@@ -80,7 +80,7 @@ sh pointing-map.sh
     
     :
      
-    allblocks 0008-pointing-map           w
+    #allblocks 0008-pointing-map           w
 
   fi
 
@@ -90,6 +90,14 @@ sh pointing-map.sh
   #done
   
   allblocks 2000-gonzalez               e
+
+  singleblock 2001-fox-0 h0
+  singleblock 2001-fox-0 h1
+  singleblock 2001-fox-0 h2
+  
+  singleblock 2002-roman-0 h0
+  singleblock 2002-roman-1 h1
+  singleblock 2002-roman-2 h2
 
   allblocks 0004-initial-focus          m
   allblocks 0004-focus                  n
