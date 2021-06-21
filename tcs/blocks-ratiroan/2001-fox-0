@@ -1,0 +1,28 @@
+{
+ "project": {
+   "identifier": "2001",
+   "name": "Fox SNe"
+ },
+ "identifier": "0",
+ "name": "ZTF21AAABWZX",
+ "visits": [
+   {
+     "identifier": "0",
+     "name": "science",
+     "targetcoordinates": {
+       "type"   : "equatorial",
+       "alpha"  : "15:43:11.3863",
+       "delta"  : "+17:48:47.424",
+       "equinox": "2000"
+     },
+     "command": "snvisit 2",
+     "estimatedduration": "30m"
+   }
+ ],
+ "constraints": {
+   "maxskybrightness": "astronomicaltwilight",
+   "maxairmass": "2.0",
+   "maxfocusdelay": "1800"
+ },
+ "persistent": "false"
+}
