@@ -168,7 +168,7 @@ EOF
     echo "tcs instrumentimageserver C2 d2 &"
     echo "tcs instrumentimageserver C3 e2 &"
     echo "tcs instrumentimageserver C4 d3 &"
-    echo "tcs instrumentimageserver C5 e3 &"
+    echo "tcs instrumentimageserver C5 e0 &"
     echo "tcs webcamimageserver a http://ddoti:ddoti@webcam-a/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver b http://ddoti:ddoti@webcam-b/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver c http://ddoti:ddoti@webcam-c/cgi-bin/viewer/video.jpg &"

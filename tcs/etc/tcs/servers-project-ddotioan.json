@@ -30,7 +30,7 @@
   "C2"         : { "host" : "d2"      , "port" : 5002 },
   "C3"         : { "host" : "e2"      , "port" : 5003 },
   "C4"         : { "host" : "d3"      , "port" : 5004 },
-  "C5"         : { "host" : "e3"      , "port" : 5005 },
+  "C5"         : { "host" : "e0"      , "port" : 5005 },
   "covers"     : { "host" : "control" , "port" : 5006 },
   "enclosure"  : { "host" : "control" , "port" : 5007 },
   "executor"   : { "host" : "control" , "port" : 5008 },
