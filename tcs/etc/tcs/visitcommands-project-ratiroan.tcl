@@ -221,6 +221,68 @@ proc agnvisit {} {
 
 ########################################################################
 
+proc carlosvisit {repeats} {
+
+  log::summary "carlosvisit: starting."
+  
+  executor::setsecondaryoffset 0
+  executor::setguidingmode "none"
+  executor::setpointingmode "finder"
+
+  executor::track
+
+  executor::setwindow  "default"
+  executor::setbinning 2 2 1 1
+
+  executor::waituntiltracking
+
+  executor::setpointingmode "none"
+  log::summary "carlosvisit: correcting pointing."
+  executor::correctpointing 80
+  executor::track
+  executor::waituntiltracking
+
+  executor::movefilterwheel "r" "none" "none" "none"
+
+  set repeat 0
+  while {$repeat < $repeats} {
+    incr repeat  
+    foreach {aperture eastoffset northoffset} {
+      riZJcenter -10as -30as
+      riYHcenter -10as -30as
+      riYHcenter -10as   0as
+      riZJcenter -10as   0as
+      riZJcenter -10as +30as
+      riYHcenter -10as +30as
+      riYHcenter  +0as -15as
+      riZJcenter  +0as -15as
+      riZJcenter  +0as +15as
+      riYHcenter  +0as +15as
+      riYHcenter +10as -30as
+      riZJcenter +10as -30as
+      riZJcenter +10as   0as
+      riYHcenter +10as   0as
+      riYHcenter +10as +30as
+      riZJcenter +10as +30as
+      riYHcenter +10as -15as
+      riZJcenter +10as -15as
+      riZJcenter -10as +15as
+      riYHcenter -10as +15as
+    } {
+      log::info "carlosvisit: dithering $eastoffset E and $northoffset N about aperture $aperture."    
+      executor::offset $eastoffset $northoffset $aperture
+      executor::waituntiltracking
+      executor::expose object 30 30 10 3
+    }
+  }
+
+  log::summary "carlosvisit: finished."
+
+  return true
+}
+
+########################################################################
+
 proc snvisit {repeats} {
 
   log::summary "snvisit: starting."
