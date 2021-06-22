@@ -156,7 +156,7 @@ EOF
   ddotioan-services)
     echo "tcs instrumentdataserver -f rsync://transients.astrossp.unam.mx/ddoti-raw/ &"
     ;;
-  ddotioan-[de][123])
+  ddotioan-[de][0123])
     echo "tcs instrumentdataserver -f -d rsync://services/tcs/ &"
     ;;
   esac
