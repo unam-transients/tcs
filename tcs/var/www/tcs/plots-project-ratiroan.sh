@@ -151,16 +151,16 @@ EOF
       ""            using 38:39            title "Cryostat External"   with lines linestyle 6, \
       ""            using 40:41            title "Cold Head External"  with lines linestyle 7
 
-    set yrange [-5:15]
-    set ytics -5,5,15
+    set yrange [-10:15]
+    set ytics -10,5,15
     set format y "%+g"
     set ylabel "Temperature (C)"
     set key on
     plot \
       "sensors.dat" using 1:(\$33-\$15)  title "Compressor Cabinet - Dome"      with lines linestyle 1, \
-      ""            using 1:(\$39-\$33) title "Compressor - Compressor Cabinet" with lines linestyle 2, \
+      ""            using 1:(\$49-\$33) title "Compressor External - Cabinet" with lines linestyle 2, \
       ""            using 1:(\$37-\$35) title "Compressor Return - Supply"      with lines linestyle 3, \
-      ""            using 1:(\$39-\$15)  title "Cryostat - Dome"                with lines linestyle 4, \
+      ""            using 1:(\$39-\$15)  title "Cryostat External - Dome"                with lines linestyle 4, \
       ""            using 1:(\$41-\$15)  title "Cold Head - Dome"               with lines linestyle 5
 
     set yrange [0:350]
