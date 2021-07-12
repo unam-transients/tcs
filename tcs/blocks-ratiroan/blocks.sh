@@ -80,7 +80,7 @@ sh pointing-map.sh
     
     :
      
-    #allblocks 0008-pointing-map           w
+    allblocks 0008-pointing-map           w
 
   fi
 
@@ -88,12 +88,18 @@ sh pointing-map.sh
   #do 
   #  singleblock 2019B-1002-0 e$letter
   #done
+
+  allblocks 2003-del-burgo              d
   
   allblocks 2000-gonzalez               e
 
   singleblock 2001-fox-0 h0
   singleblock 2001-fox-0 h1
   singleblock 2001-fox-0 h2
+  
+  singleblock 2001-fox-1 h0
+  singleblock 2001-fox-1 h1
+  singleblock 2001-fox-1 h2
   
   singleblock 2002-roman-0 h0
   singleblock 2002-roman-1 h1

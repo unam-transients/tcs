@@ -283,6 +283,47 @@ proc carlosvisit {repeats} {
 
 ########################################################################
 
+proc delburgovisit {repeats} {
+
+  log::summary "delburgovisit: starting."
+  
+  executor::setsecondaryoffset 0
+  executor::setguidingmode "none"
+  executor::setpointingmode "finder"
+
+  executor::track
+
+  executor::setwindow  "default"
+  executor::setbinning 2 2 1 1
+
+  executor::waituntiltracking
+
+  executor::setpointingmode "none"
+  log::summary "delburgovisit: correcting pointing."
+  executor::correctpointing 80
+  executor::track
+  executor::waituntiltracking
+
+  executor::movefilterwheel "r" "none" "none" "none"
+
+  set repeat 10
+  foreach offset i {0 50 100 200 400 800} {
+    log::summary "delburgovisit: offsetting secondary by $offset steps."
+    executor::setsecondaryoffset $offset
+    set i 0
+    while {$i < 5} {
+      executor::expose object 5 5 "none" "none"
+      incr i
+    }
+  }
+
+  log::summary "delburgovisit: finished."
+
+  return true
+}
+
+########################################################################
+
 proc snvisit {repeats} {
 
   log::summary "snvisit: starting."
@@ -422,6 +463,7 @@ proc initialfocusvisit {} {
   executor::setsecondaryoffset 0
   executor::setguidingmode "none"
   executor::setpointingmode "none"
+  
 
   executor::track
   executor::waituntiltracking
@@ -439,6 +481,12 @@ proc initialfocusvisit {} {
   log::summary "initialfocusvisit: focusing C1 with binning 8."
   executor::setbinning 8 8 1 1
   executor::focussecondary C1 1 1000 100 false
+  
+#   client::update "secondary"
+#   set z0 [client::getdata "secondary" "requestedz0"]
+#   if {$z0 < 6100 ||  6500 < $z0} {
+#     log::summary "initialfocusvisit: focusing failed."
+#   }
 
   log::summary "initialfocusvisit: finished."
 
@@ -497,7 +545,19 @@ proc focusvisit {} {
   log::summary "focusvisit: focusing with binning 2."
   executor::setbinning 2 2 1 1
   executor::focussecondary C1 4 250 25 true
-  executor::setfocused
+  
+#   client::update "secondary"
+#   set z0 [client::getdata "secondary" "requestedz0"]
+#   if {$z0 < 6100 ||  6500 < $z0} {
+#     log::summary "focusvisit: focusing appears to have failed."
+#     executor::setunfocused
+#     client::request "secondary" "move 6300"
+#   } else {
+#     log::summary "focusvisit: focusing appears to have succeeded."
+#     executor::setfocused
+#   }
+  
+  executor::setfocused  
 
   log::summary "focusvisit: finished."
   return false
