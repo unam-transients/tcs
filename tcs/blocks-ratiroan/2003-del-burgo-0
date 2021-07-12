@@ -1,0 +1,28 @@
+{
+ "project": {
+   "identifier": "2003",
+   "name": del Burgo - exoplanets"
+ },
+ "identifier": "0",
+ "name": "HD 189733",
+ "visits": [
+   {
+     "identifier": "0",
+     "name": "science",
+     "targetcoordinates": {
+       "type"   : "equatorial",
+       "alpha"  : "20:00:43.7130382888",
+       "delta"  : "+22:42:39.071811263",
+       "equinox": "2000"
+     },
+     "command": "delburgovisit 1",
+     "estimatedduration": "20m"
+   }
+ ],
+ "constraints": {
+   "maxskybrightness": "astronomicaltwilight",
+   "maxairmass": 1.5,
+   "maxfocusdelay": "1800"
+ },
+ "persistent": "false"
+}
