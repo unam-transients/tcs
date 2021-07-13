@@ -95,7 +95,7 @@ do
     sy=$2
     nx=$3
     ny=$4
-    crop="${nx}x${ny}+${sx}+${sy}"
+    datacrop="${nx}x${ny}+${sx}+${sy}"
 
     cx=$(expr $nx / 2)
     cy=$(expr $ny / 2)
@@ -111,7 +111,7 @@ do
   
     convert \
       -normalize -negate \
-      -crop $crop \
+      -crop $datacrop +repage \
       latest.fits latest.png
 
     convert \
