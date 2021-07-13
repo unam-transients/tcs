@@ -65,6 +65,14 @@ sudo timedatectl set-timezone UTC
 
 ########################################################################
 
+# Disable power management.
+
+# https://www.unixtutorial.org/disable-sleep-on-ubuntu-server/
+
+sudo systemctl mask sleep.target suspend.target hibernate.target
+
+########################################################################
+
 rm -rf /tmp/install-packages
 mkdir -p /tmp/install-packages
 cd "$(dirname "$0")"
