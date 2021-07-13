@@ -25,75 +25,79 @@
 
 include ../../Makefile.prolog
 
-installs	:=				\
-	config-defaults.json			\
-	fitsfwhm.param 				\
-	fitsfwhm.sex 				\
-	fitssolvewcs.cfg-a			\
-	fitssolvewcs.cfg-b			\
-	fitssolvewcs.conv			\
-	fitssolvewcs.param 			\
+installs	:=				                \
+	config-defaults.json			        \
+	fitsfwhm.param 				            \
+	fitsfwhm.sex 				            \
+	fitssolvewcs.cfg-a			            \
+	fitssolvewcs.cfg-b			            \
+	fitssolvewcs.conv			            \
+	fitssolvewcs.param 			            \
 	fitssolvewcs.sex
 
-installs_project_test		:=		\
-	alert-project-test			\
-	config-project-test.json		\
-	servers-project-test.json		\
+installs_project_test		:=		        \
+	alert-project-test			            \
+	config-project-test.json		        \
+	servers-project-test.json		        \
 	visitcommands-project-test.tcl
 	
-installbins_project_test	:=		\
+installbins_project_test	:=		        \
 	alertscript-project-test
 
-installs_project_johnsoncu		:=		\
-	alert-project-johnsoncu			\
-	config-project-johnsoncu.json		\
-	servers-project-johnsoncu.json		\
+installs_project_johnsoncu		:=		    \
+	alert-project-johnsoncu			        \
+	config-project-johnsoncu.json		    \
+	servers-project-johnsoncu.json		    \
 	visitcommands-project-johnsoncu.tcl
 	
-installbins_project_johnsoncu	:=		\
+installbins_project_johnsoncu	:=		    \
 	alertscript-project-johnsoncu
 
-installs_project_ratiroan	:=		\
-	alert-project-ratiroan		\
-	config-project-ratiroan.json		\
-	servers-project-ratiroan.json   	\
+installs_project_ratiroan	:=		        \
+	alert-project-ratiroan		            \
+	config-project-ratiroan.json		    \
+	servers-project-ratiroan.json   	    \
 	visitcommands-project-ratiroan.tcl
 
-installbins_project_ratiroan	:=		\
+installbins_project_ratiroan	:=		    \
 	alertscript-project-ratiroan	
 
-installs_project_coatlioan	:=		\
-	alert-project-coatlioan		\
-	config-project-coatlioan.json		\
-	servers-project-coatlioan.json		\
+installs_project_coatlioan	:=		        \
+	alert-project-coatlioan		            \
+	config-project-coatlioan.json		    \
+	servers-project-coatlioan.json		    \
 	visitcommands-project-coatlioan.tcl
 
-installbins_project_coatlioan	:=		\
+installbins_project_coatlioan	:=		    \
 	alertscript-project-coatlioan	
 
-installs_project_ddoticu	:=		\
+installs_project_ddoticu	:=		        \
 	config-project-ddoticu.json
 
-installs_project_ddotioan	:=		\
-	alert-project-ddotioan		\
-	config-project-ddotioan.json		\
-	servers-project-ddotioan.json		\
+installs_project_ddotioan	:=		        \
+	alert-project-ddotioan		            \
+	config-project-ddotioan.json		    \
+	servers-project-ddotioan.json		    \
 	visitcommands-project-ddotioan.tcl
 	
-installbins_project_ddotioan	:=		\
+installbins_project_ddotioan	:=		    \
 	alertscript-project-ddotioan
 
-installs_project_colibricu	:=		\
-	config-project-colibricu.json		\
-	servers-project-colibricu.json		\
-	visitcommands-project-colibricu.tcl	\
+installs_project_colibricu	:=		        \
+	config-project-colibricu.json		    \
+	servers-project-colibricu.json		    \
+	visitcommands-project-colibricu.tcl	    \
 	
-installbins_project_colibricu	:=		\
+installbins_project_colibricu	:=		    \
 
-installs_project_colibricito	:=		\
-	alert-project-colibricito		\
-	config-project-colibricito.json
-
+installs_project_colibriohp	:=	        	\
+	alert-project-colibriohp		        \
+	config-project-colibriohp.json		    \
+	servers-project-colibriohp.json		    \
+	visitcommands-project-colibriohp.tcl	\
+	
+installbins_project_colibriohp	:=		    \
+	alertscript-project-colibriohp
 
 INSTALL_DIR	:=	$(prefix)/etc/tcs/
 

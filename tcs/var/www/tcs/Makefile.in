@@ -88,6 +88,11 @@ installs_project_colibricu	:=		    \
 	interface-project-colibricu.html	\
 	plots-project-colibricu.sh
 
+installs_project_colibriohp	:=		    \
+	allsky-project-colibriohp.html     	\
+	config-project-colibriohp.js	    \
+	interface-project-colibriohp.html
+
 installs_project_colibricito	:=		\
 	allsky-project-colibricito.html		\
 	C0-project-colibricito.html  	   	\

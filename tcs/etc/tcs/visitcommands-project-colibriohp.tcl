@@ -2,11 +2,11 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: Makefile.in 3422 2020-02-14 02:31:34Z Alan $
+# $Idvisit: alertvisit-project-ddotioan 3388 2019-11-01 19:50:09Z Alan $
 
 ########################################################################
 
-# Copyright © 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+# Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -23,29 +23,38 @@
 
 ########################################################################
 
-include ../Makefile.prolog
+proc biasesvisit {} {
+  log::summary "biasesvisit: starting."
+  executor::move
+  executor::setwindow "default"
+  executor::setbinning 1
+  set i 0
+  while {$i < 20} {
+    executor::expose bias 0
+    executor::analyze levels
+    incr i
+    coroutine::after 10000
+  }
+  log::summary "biasesvisit: finished."
+  return true
+}
 
-EXTRA_INSTALLS			:=	install-project-$(PROJECT)
+########################################################################
 
-install-project-ratiroan	:
-	sh install-project-ratiroan.sh
-	
-install-project-coatlioan	:
-	sh install-project-coatlioan.sh
+proc darksvisit {} {
+  log::summary "darksvisit: starting."
+  executor::move
+  executor::setwindow "default"
+  executor::setbinning 1
+  set i 0
+  while {$i < 20} {
+    executor::expose dark 60
+    executor::analyze levels
+    incr i
+    coroutine::after 10000
+  }
+  log::summary "darksvisit: finished."
+  return true
+}
 
-install-project-ddotioan	:
-	sh install-project-ddotioan.sh
-
-install-project-colibricu	:
-	sh install-project-colibricu.sh
-
-install-project-colibriohp	:
-	sh install-project-colibriohp.sh
-	
-install-project-johnsoncu	:
-	sh install-project-johnsoncu.sh
-
-install-project-test		:
-	sh install-project-test.sh
-
-include ../Makefile.epilog
+########################################################################

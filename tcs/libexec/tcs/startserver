@@ -96,8 +96,8 @@ ddotioan-d3)
 ddotioan-e0)
   allargs="C5"
   ;;
-colibricito-control)
-  allargs="log 2 html 1 target 1 moon sun weather 1 plc 1 enclosure mount lights C0 1 telescope instrument 1 executor selector supervisor"
+colibricito)
+  allargs="log 2 html 1 target 1 moon sun"
   ;;
 colibricu-services)
   allargs="log 1 html"

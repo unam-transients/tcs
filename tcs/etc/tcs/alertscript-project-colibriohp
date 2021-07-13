@@ -1,12 +1,10 @@
-########################################################################
+#!/bin/sh
 
-# This file is part of the UNAM telescope control system.
-
-# $Id: Makefile.in 3422 2020-02-14 02:31:34Z Alan $
+# $Id: alertscript-project-ratiroan 3522 2020-03-15 23:02:59Z Alan $
 
 ########################################################################
 
-# Copyright © 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+# Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -23,29 +21,30 @@
 
 ########################################################################
 
-include ../Makefile.prolog
+name="$1"
+origin="$2"
+identifier="$3"
+type="$4"
 
-EXTRA_INSTALLS			:=	install-project-$(PROJECT)
+timestamp="$(date +"%Y-%m-%d %H:%M.%S")"
 
-install-project-ratiroan	:
-	sh install-project-ratiroan.sh
-	
-install-project-coatlioan	:
-	sh install-project-coatlioan.sh
+priority=""
+case $type in
+swift*)
+  priority="emergency"
+  url="https://gcn.gsfc.nasa.gov/other/$identifier.swift"
+  group="grb-group"
+  ;;
+esac
 
-install-project-ddotioan	:
-	sh install-project-ddotioan.sh
+if test "$priority" != ""
+then
+  echo "$timestamp: COLIBRÍ/OHP has received a GCN Notice for $name ($origin/$type/$identifier)." |
+  $tcsprefix/bin/tcs sendpushover \
+    -P "$priority" \
+    -U "$url" \
+    -s "COLIBRÍ/OHP $name" \
+    "$group"
+fi
 
-install-project-colibricu	:
-	sh install-project-colibricu.sh
-
-install-project-colibriohp	:
-	sh install-project-colibriohp.sh
-	
-install-project-johnsoncu	:
-	sh install-project-johnsoncu.sh
-
-install-project-test		:
-	sh install-project-test.sh
-
-include ../Makefile.epilog
+exit 0

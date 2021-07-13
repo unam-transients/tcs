@@ -49,8 +49,8 @@ ddotioan-*)
 colibricu-*)
   ./configure --enable-project=colibricu
   ;;
-colibricito-*)
-  ./configure --enable-project=colibricito
+colibricito)
+  ./configure --enable-project=colibriohp
   ;;
 test-*)
   ./configure --enable-project=test

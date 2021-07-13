@@ -109,13 +109,15 @@ clean-colibricu-services				:
 	
 ########################################################################
 
-all-colibricito-control				:	docs-colibricito-control/index.html
-docs-colibricito-control/index.html		:	docs-colibricito-control/index.md
+all-colibricito      				:	docs-colibricito/index.html  \
+                                        docs-colibricito/documentation.html
+docs-colibricito/index.html	        :	docs-colibricito/index.md
+docs-colibricito/documentation.html	:	docs-colibricito/documentation.md
 
-install-colibricito-control			:	install-linux
+install-colibricito     			:	install-linux
 
-clean-colibricito-control				:
-	-rm -f docs-ddotioan-services/*.html
+clean-colibricito   				:
+	-rm -f docs-colibricito/*.html
 	
 ########################################################################
 
