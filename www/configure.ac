@@ -39,7 +39,7 @@ AC_CONFIG_FILES(
   httpd.conf-coatlioan-services
   httpd.conf-ddotioan-services
   httpd.conf-colibricu-services
-  httpd.conf-colibricito-control
+  httpd.conf-colibricito
   httpd.conf-johnsoncu-control
   httpd.conf-test
 )

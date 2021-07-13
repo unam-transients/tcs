@@ -71,6 +71,10 @@ installs_project_colibricito	:=	\
 installs_project_colibricu	:=	\
 	detectorsi.so			\
 	filterwheelfli.so
+	
+installs_prokect_colibriohp :=  \
+	detectordummy.so		\
+	filterwheelnull.so
 
 installs_project_johnsoncu	:=	\
 	detectordummy.so		\

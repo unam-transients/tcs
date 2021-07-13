@@ -39,8 +39,8 @@ ddotioan-services)
 colibricu-services)
   ./configure SITE=colibricu-services
   ;;
-colibricito-control)
-  ./configure SITE=colibricito-control
+colibricito)
+  ./configure SITE=colibricito
   ;;
 tcs-a)
   ./configure SITE=ratir-main
