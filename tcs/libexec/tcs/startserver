@@ -112,7 +112,7 @@ johnsoncu-control)
   allargs="log 1 html gcntan 1 target 1 moon sun sensors weather C0 1 telescope instrument 1 executor selector supervisor"
   ;;
 coatlicu-control)
-  allargs="log 1 html 1 target 1 moon sun sensors weather C0 1 telescope instrument 1 selector"
+  allargs="log 1 html 1 target 1 moon sun sensors weather C0 1 telescope instrument 1 executor selector"
   ;;
 test-ubuntu-18)
   allargs="log 1 html gcntan 1 target 1 moon sun sensors weather C0 1 telescope instrument 1 executor selector supervisor"

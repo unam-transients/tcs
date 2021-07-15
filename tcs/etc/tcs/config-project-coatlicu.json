@@ -32,14 +32,15 @@
   },
   "html": {
     "servers": [
-        "instrument",
-        "moon",
-        "selector",
-        "sensors",
-        "sun",
-        "target",
-        "telescope",
-        "weather"
+      "executor",
+      "instrument",
+      "moon",
+      "selector",
+      "sensors",
+      "sun",
+      "target",
+      "telescope",
+      "weather"
     ]
   },
   "fitsheader": {
