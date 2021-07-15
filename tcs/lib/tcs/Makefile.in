@@ -25,134 +25,135 @@
 
 include ../../Makefile.prolog
 
-installs	:=			\
-	alert.tcl			\
-	astrometry.tcl			\
-	block.tcl			\
-	ccd.tcl				\
-	ccdserver.tcl			\
-	client.tcl			\
-	config.tcl			\
-	constraints.tcl			\
-	controller.tcl			\
-	coroutine.tcl			\
-	covers.tcl			\
-	coverscoatlioan.tcl		\
+installs	:=			        \
+	alert.tcl			        \
+	astrometry.tcl			    \
+	block.tcl			        \
+	ccd.tcl				        \
+	ccdserver.tcl			    \
+	client.tcl			        \
+	config.tcl			        \
+	constraints.tcl			    \
+	controller.tcl			    \
+	coroutine.tcl			    \
+	covers.tcl			        \
+	coverscoatlioan.tcl		    \
 	coversratiroan.tcl			\
-	coversserver.tcl		\
-	cryostat.tcl			\
-	cryostatserver.tcl		\
-	detector.tcl			\
-	detectordummy.tcl		\
-	detectorfli.tcl			\
-	detectorh2rg.tcl		\
-	detectorqsi.tcl			\
-	detectorsi.tcl			\
-	directories.tcl			\
-	dome.tcl			\
-	domeserver.tcl			\
-	enclosure.tcl 			\
-	enclosurearts.tcl 		\
-	enclosureplc.tcl		\
+	coversserver.tcl		    \
+	cryostat.tcl			    \
+	cryostatserver.tcl		    \
+	detector.tcl			    \
+	detectorandor.tcl		    \
+	detectordummy.tcl		    \
+	detectorfli.tcl			    \
+	detectorh2rg.tcl		    \
+	detectorqsi.tcl			    \
+	detectorsi.tcl			    \
+	directories.tcl			    \
+	dome.tcl		        	\
+	domeserver.tcl			    \
+	enclosure.tcl 		    	\
+	enclosurearts.tcl 	    	\
+	enclosureplc.tcl	    	\
 	enclosureserver.tcl 		\
-	environment.tcl			\
-	executor.tcl 			\
+	environment.tcl		    	\
+	executor.tcl 		    	\
 	executorcoatlioan.tcl 		\
 	executorcolibricito.tcl 	\
 	executorddotioan.tcl 		\
 	executorratiroan.tcl 		\
-	executorserver.tcl 		\
-	fans.tcl			\
-	fansserver.tcl			\
-	filterwheel.tcl			\
-	filterwheelfli.tcl		\
-	filterwheelnull.tcl		\
-	filterwheelqsi.tcl		\
-	finder.tcl			\
-	finders.tcl			\
-	finderserver.tcl		\
-	fitfocus.tcl			\
-	fitsheader.tcl			\
-	focuser.tcl			\
-	focuserfli.tcl			\
-	focusernull.tcl			\
-	focuseroptec.tcl		\
-	fromjson.tcl			\
-	gcntan.tcl			\
-	gcntanserver.tcl		\
-	gpio.tcl			\
-	guider.tcl			\
-	guiderserver.tcl		\
-	heater.tcl			\
-	heaterserver.tcl		\
-	html-log.sh			\
-	html.tcl			\
-	htmlserver.tcl			\
-	inclinometers.tcl		\
+	executorserver.tcl 		    \
+	fans.tcl		        	\
+	fansserver.tcl	    		\
+	filterwheel.tcl		    	\
+	filterwheelfli.tcl	    	\
+	filterwheelnull.tcl	       	\
+	filterwheelqsi.tcl		    \
+	finder.tcl		        	\
+	finders.tcl		        	\
+	finderserver.tcl	    	\
+	fitfocus.tcl	    		\
+	fitsheader.tcl	    		\
+	focuser.tcl			        \
+	focuserfli.tcl		    	\
+	focusernull.tcl		    	\
+	focuseroptec.tcl	    	\
+	fromjson.tcl		    	\
+	gcntan.tcl			        \
+	gcntanserver.tcl	    	\
+	gpio.tcl		        	\
+	guider.tcl		        	\
+	guiderserver.tcl	    	\
+	heater.tcl		        	\
+	heaterserver.tcl    		\
+	html-log.sh		        	\
+	html.tcl		        	\
+	htmlserver.tcl		    	\
+	inclinometers.tcl	    	\
 	inclinometersserver.tcl		\
-	instrument.tcl			\
+	instrument.tcl	    		\
 	instrumentserver.tcl		\
-	jsonrpc.tcl			\
-	lights.tcl			\
-	lightsgpio.tcl			\
-	lightsplc.tcl			\
-	lightspower.tcl			\
-	lightsserver.tcl		\
-	log.tcl				\
-	moon.tcl			\
-	moonserver.tcl			\
-	mount.tcl			\
-	mountntm.tcl			\
+	jsonrpc.tcl		        	\
+	lights.tcl		        	\
+	lightsgpio.tcl		    	\
+	lightsplc.tcl		    	\
+	lightspower.tcl		    	\
+	lightsserver.tcl	       	\
+	log.tcl			        	\
+	moon.tcl		        	\
+	moonserver.tcl	       		\
+	mount.tcl			        \
+	mountntm.tcl		    	\
 	mountratiroan.tcl			\
-	mountserver.tcl			\
-	owsensors.tcl			\
-	owsensorsserver.tcl		\
-	packages.tcl			\
-	pirani.tcl			\
-	piraniserver.tcl		\
-	plc.tcl 			\
-	plcserver.tcl 			\
+	mountserver.tcl		    	\
+	owsensors.tcl		    	\
+	owsensorsserver.tcl	    	\
+	packages.tcl		    	\
+	pirani.tcl	        		\
+	piraniserver.tcl	       	\
+	plc.tcl 		        	\
+	plcserver.tcl 	    		\
 	pointing.tcl	        	\
 	power.tcl                 	\
 	powerserver.tcl           	\
-	project.tcl			\
-	queue.tcl			\
-	safetyswitch.tcl		\
+	project.tcl	        		\
+	queue.tcl	        		\
+	safetyswitch.tcl	       	\
 	safetyswitcharts.tcl		\
 	safetyswitchnone.tcl		\
-	safetyswitchplc.tcl		\
-	selector.tcl 			\
-	selectorserver.tcl 		\
-	secondary.tcl			\
-	secondaryoptec.tcl		\
+	safetyswitchplc.tcl	    	\
+	selector.tcl 		    	\
+	selectorserver.tcl 	    	\
+	secondary.tcl			    \
+	secondaryoptec.tcl		    \
 	secondaryratiroan.tcl		\
-	secondaryserver.tcl		\
-	sensors.tcl			\
-	sensorsserver.tcl		\
-	server.tcl			\
-	shutters.tcl			\
-	shuttersserver.tcl		\
-	stack.tcl			\
-	sun.tcl				\
-	sunserver.tcl			\
-	supervisor.tcl			\
+	secondaryserver.tcl		    \
+	sensors.tcl			        \
+	sensorsserver.tcl	    	\
+	server.tcl			        \
+	shutters.tcl		    	\
+	shuttersserver.tcl		    \
+	stack.tcl		        	\
+	sun.tcl			        	\
+	sunserver.tcl	    		\
+	supervisor.tcl	    		\
 	supervisorserver.tcl		\
-	swift.tcl			\
-	target.tcl			\
-	targetserver.tcl		\
-	telescope.tcl			\
+	swift.tcl		        	\
+	target.tcl		        	\
+	targetserver.tcl    		\
+	telescope.tcl		    	\
 	telescopecoatlioan.tcl		\
 	telescopecolibricito.tcl	\
 	telescopeddotioan.tcl		\
-	telescopedummy.tcl		\
+	telescopedummy.tcl		    \
 	telescoperatiroan.tcl		\
-	telescopeserver.tcl		\
-	temperatures.tcl		\
+	telescopeserver.tcl		    \
+	temperatures.tcl		    \
 	temperaturesserver.tcl		\
-	tojson.tcl			\
-	utcclock.tcl			\
-	visit.tcl 			\
-	weather.tcl			\
+	tojson.tcl			        \
+	utcclock.tcl		    	\
+	visit.tcl 		        	\
+	weather.tcl		        	\
 	weatherserver.tcl
 
 INSTALL_DIR	:=	$(prefix)/lib/tcs/

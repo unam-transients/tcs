@@ -81,7 +81,7 @@ installs_project_johnsoncu	    :=	\
 	filterwheelnull.so
 
 installs_project_coatlicu	    :=	\
-	detectordummy.so		        \
+	detectorandor.so		        \
 	filterwheelnull.so
 
 installs_project_test		    :=	\
@@ -101,7 +101,7 @@ F77FLAGS			:=	-O -g -Wall -fPIC
 F77SOFLAGS			:=	-shared
 FLIBS				:=	@FLIBS@
 
-LD				:=	@CXX@
+LD			    	:=	@CXX@
 LDFLAGS		    		:=
 LDSOFLAGS			:=	-shared
 LIBS				:=	@LIBS@
@@ -114,131 +114,140 @@ SWIGLIBS			:=	-L@TCL_LIBDIR@ -ltcl@TCL_VERSION@
 .SUFFIXES			:	.i .cxx .f .o
 %.cxx				:	%.i
 	$(SWIG) $(SWIGFLAGS) -c++ -o $@ $<
-%.o				:	%.c
+%.o			    	:	%.c
 	$(CC) $(CFLAGS) $(DEFS) -c $<
-%.o				:	%.cxx
+%.o				    :	%.cxx
 	$(CXX) $(CXXFLAGS) $(DEFS) -c $<
-%.o				:	%.f
+%.o			    	:	%.f
 	$(F77) $(F77FLAGS) -c $<
 
 ########################################################################
 
-detectorwrap.cxx		:	detectorwrap.i \
-					detector.h
-detectorwrap.o			:	detectorwrap.cxx \
-					detector.h
-detector.o			:	detector.cxx \
-					detector.h
+detectorwrap.cxx		:	detectorwrap.i              \
+					        detector.h
+detectorwrap.o			:	detectorwrap.cxx            \
+        					detector.h
+detector.o  			:	detector.cxx                \
+    		    			detector.h
 
-detectordummy.o			:	detectordummy.cxx \
-					detector.h
-detectordummy.so		:	detectorwrap.o \
-					detector.o \
-					detectordummy.o
-	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o detectordummy.so \
-	  detectorwrap.o detector.o detectordummy.o \
+detectordummy.o			:	detectordummy.cxx           \
+				        	detector.h
+detectordummy.so		:	detectorwrap.o              \
+					        detector.o                  \
+        					detectordummy.o
+	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o detectordummy.so   \
+	  detectorwrap.o detector.o detectordummy.o         \
 	  $(LIBS) $(SWIGLIBS)
 
-detectorfli.o			:	detectorfli.cxx \
-					detector.h
-detectorfli.so			:	detectorwrap.o \
-					detector.o \
-					detectorfli.o
-	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o detectorfli.so \
-	  detectorwrap.o detector.o detectorfli.o \
+detectorfli.o			:	detectorfli.cxx             \
+		        			detector.h
+detectorfli.so			:	detectorwrap.o              \
+				        	detector.o                  \
+        					detectorfli.o
+	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o detectorfli.so     \
+	  detectorwrap.o detector.o detectorfli.o           \
 	  $(LIBS) $(SWIGLIBS)
 
-detectorh2rg.o			:	detectorh2rg.cxx \
-					detector.h
-detectorh2rg.so			:	detectorwrap.o \
-					detector.o \
-					detectorh2rg.o
-	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o detectorh2rg.so \
-	  detectorwrap.o detector.o detectorh2rg.o \
+detectorh2rg.o			:	detectorh2rg.cxx            \
+		        			detector.h
+detectorh2rg.so			:	detectorwrap.o              \
+				        	detector.o                  \
+        					detectorh2rg.o
+	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o detectorh2rg.so    \
+	  detectorwrap.o detector.o detectorh2rg.o          \
 	  -lcfitsio $(LIBS) $(SWIGLIBS)
 
-detectorqsi.o			:	detectorqsi.cxx \
-					detector.h
-detectorqsi.so			:	detectorwrap.o \
-					detector.o \
-					detectorqsi.o
-	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o detectorqsi.so \
-	  detectorwrap.o detector.o detectorqsi.o \
+detectorqsi.o			:	detectorqsi.cxx             \
+		        			detector.h
+detectorqsi.so			:	detectorwrap.o              \
+				        	detector.o                  \
+        					detectorqsi.o
+	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o detectorqsi.so     \
+	  detectorwrap.o detector.o detectorqsi.o           \
 	  -lqsiapi -lftdi1 $(LIBS) $(SWIGLIBS)
 
-detectorsi.o			:	detectorsi.cxx \
-					detector.h
-detectorsi.so			:	detectorwrap.o \
-					detector.o \
-					detectorsi.o
-	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o detectorsi.so \
-	  detectorwrap.o detector.o detectorsi.o \
+detectorsi.o			:	detectorsi.cxx              \
+		        			detector.h
+detectorsi.so			:	detectorwrap.o              \
+				        	detector.o                  \
+        					detectorsi.o
+	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o detectorsi.so      \
+	  detectorwrap.o detector.o detectorsi.o            \
+	  $(LIBS) $(SWIGLIBS)
+	  
+detectorandor.o			:	detectorandor.cxx           \
+				        	detector.h
+detectorandor.so		:	detectorwrap.o              \
+					        detector.o                  \
+        					detectorandor.o
+	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o detectorandor.so   \
+	  detectorwrap.o detector.o detectorandor.o         \
 	  $(LIBS) $(SWIGLIBS)
 
 ########################################################################
 
-focuserwrap.cxx			:	focuserwrap.i \
-					focuser.h
-focuserfli.o			:	focuserfli.cxx \
-					focuser.h
-focuserfli.so			:	focuserwrap.o \
-					focusergeneric.o \
-					focuserfli.o
-	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o focuserfli.so \
-	  focuserwrap.o focusergeneric.o focuserfli.o \
+focuserwrap.cxx			:	focuserwrap.i               \
+        					focuser.h
+focuserfli.o			:	focuserfli.cxx              \
+        					focuser.h
+focuserfli.so			:	focuserwrap.o               \
+        					focusergeneric.o            \
+		        			focuserfli.o
+	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o focuserfli.so      \
+	  focuserwrap.o focusergeneric.o focuserfli.o       \
 	  $(LIBS) $(SWIGLIBS)
 
 ########################################################################
 
-filterwheelwrap.cxx		:	filterwheelwrap.i \
-					filterwheel.h
-filterwheelwrap.o		:	filterwheelwrap.cxx \
-					filterwheel.h
-filterwheel.o			:	filterwheel.cxx \
-					filterwheel.h
+filterwheelwrap.cxx		:	filterwheelwrap.i           \
+				        	filterwheel.h
+filterwheelwrap.o		:	filterwheelwrap.cxx         \
+		        			filterwheel.h
+filterwheel.o			:	filterwheel.cxx             \
+        					filterwheel.h
 
-filterwheelnull.o		:	filterwheelnull.cxx \
-					filterwheel.h
-filterwheelnull.so		:	filterwheelwrap.o \
-					filterwheel.o \
-					filterwheelnull.o
+filterwheelnull.o		:	filterwheelnull.cxx         \
+        					filterwheel.h
+filterwheelnull.so		:	filterwheelwrap.o           \
+        					filterwheel.o               \
+		        			filterwheelnull.o
 	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o filterwheelnull.so \
 	  filterwheelwrap.o filterwheel.o filterwheelnull.o \
 	  $(LIBS) $(SWIGLIBS)
 
-filterwheelqsi.o		:	filterwheelqsi.cxx \
-					filterwheel.h \
-					detector.h
-filterwheelqsi.so		:	filterwheelwrap.o \
-					filterwheel.o \
-					filterwheelqsi.o
-	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o filterwheelqsi.so \
+filterwheelqsi.o		:	filterwheelqsi.cxx          \
+        					filterwheel.h               \
+        					detector.h
+filterwheelqsi.so		:	filterwheelwrap.o           \
+		        			filterwheel.o               \
+				        	filterwheelqsi.o
+	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o filterwheelqsi.so  \
 	  filterwheelwrap.o filterwheel.o filterwheelqsi.o detector.o detectorqsi.o \
 	  -lqsiapi -lftdi1 $(LIBS) $(SWIGLIBS)
 
-filterwheelfli.o		:	filterwheelfli.cxx \
-					filterwheel.h
-filterwheelfli.so		:	filterwheelwrap.o \
-					filterwheel.o \
-					filterwheelfli.o
-	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o filterwheelfli.so \
-	  filterwheelwrap.o filterwheel.o filterwheelfli.o \
+filterwheelfli.o		:	filterwheelfli.cxx          \
+        					filterwheel.h
+filterwheelfli.so		:	filterwheelwrap.o           \
+        					filterwheel.o               \
+        					filterwheelfli.o
+	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o filterwheelfli.so  \
+	  filterwheelwrap.o filterwheel.o filterwheelfli.o  \
 	  $(LIBS) $(SWIGLIBS)
 
 ########################################################################
 
-astrometrywrap.cxx		:	astrometrywrap.i \
-					astrometry.h
-astrometrywrap.o		:	astrometrywrap.cxx \
-					astrometry.h
-astrometry.o			:	astrometry.cxx \
-					astrometry.h
-slalib.o			:	slalib.f
-astrometry.so			:	astrometrywrap.o \
-					astrometry.o \
-					slalib.o
-	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o astrometry.so \
-	  astrometrywrap.o astrometry.o slalib.o \
+astrometrywrap.cxx		:	astrometrywrap.i            \
+        					astrometry.h
+astrometrywrap.o		:	astrometrywrap.cxx          \
+		        			astrometry.h
+astrometry.o			:	astrometry.cxx              \
+				        	astrometry.h
+slalib.o			    :	slalib.f
+astrometry.so			:	astrometrywrap.o            \
+        					astrometry.o                \
+		        			slalib.o
+	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o astrometry.so      \
+	  astrometrywrap.o astrometry.o slalib.o            \
 	  $(LIBS) $(SWIGLIBS) $(FLIBS)
 
 ########################################################################

@@ -85,7 +85,7 @@
   },
   "C0": {
     "telescopedescription": "dummy",
-    "detectortype": "dummy",
+    "detectortype": "andor",
     "detectoridentifier": "",
     "detectorpixelscale": "0.381as",
     "detectorinitialreadmode": "",
