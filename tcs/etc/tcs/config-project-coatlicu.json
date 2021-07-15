@@ -67,17 +67,21 @@
   },
   "instrument": {
     "activedetectors": [
+      "C0"
     ],
     "detectors": [
+      "C0"
     ],
     "idlefilterwheelpositions": [
+      "w"
     ],
     "pointingdetectors": [
+      "C0"
     ],
     "outletgroups": []
   },
   "C0": {
-    "telescopedescription": "TEST",
+    "telescopedescription": "dummy",
     "detectortype": "dummy",
     "detectoridentifier": "",
     "detectorpixelscale": "0.381as",
