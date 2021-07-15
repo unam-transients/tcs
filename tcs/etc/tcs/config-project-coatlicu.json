@@ -32,6 +32,10 @@
   },
   "html": {
     "servers": [
+        "target",
+        "sun",
+        "moon",
+        "weather"
     ]
   },
   "fitsheader": {

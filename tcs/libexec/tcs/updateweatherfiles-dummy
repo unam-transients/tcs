@@ -1,12 +1,13 @@
+#!/bin/sh
 ########################################################################
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: Makefile.in 3422 2020-02-14 02:31:34Z Alan $
+# $Id: updateweatherfiles-oan 3403 2019-11-25 22:16:08Z Alan $
 
 ########################################################################
 
-# Copyright © 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+# Copyright © 2015, 2016, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -23,32 +24,45 @@
 
 ########################################################################
 
-include ../Makefile.prolog
+export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
+export LC_ALL=C
 
-EXTRA_INSTALLS			:=	install-project-$(PROJECT)
+program="tcs $(basename "$0")"
 
-install-project-ratiroan	:
-	sh install-project-ratiroan.sh
-	
-install-project-coatlioan	:
-	sh install-project-coatlioan.sh
+usageerror () {
+  echo 1>&2 "usage: $program"
+  exit 1
+}
 
-install-project-ddotioan	:
-	sh install-project-ddotioan.sh
+optstring=
+if ! getopt -qQ -- "$optstring" "$@"
+then
+  usageerror
+fi
+eval set -- "$(getopt -q -- "$optstring" "$@")"
+while test "$1" != "--"
+do
+  case "$1" in
+  *)
+    usageerror
+    ;;
+  esac
+done
+shift
+if test $# != 0
+then
+  usageerror
+fi
 
-install-project-colibricu	:
-	sh install-project-colibricu.sh
+date=$(date -u)
 
-install-project-colibriohp	:
-	sh install-project-colibriohp.sh
-	
-install-project-johnsoncu	:
-	sh install-project-johnsoncu.sh
+mkdir -p "$tcsprefix"/var/tcs/weather
+cd "$tcsprefix"/var/tcs/weather
 
-install-project-coatlicu	:
-	sh install-project-coatlicu.sh
-
-install-project-test		:
-	sh install-project-test.sh
-
-include ../Makefile.epilog
+filename=$(date -u --date "$date" +"ARC-%Y-%m-%d.txt")
+if test ! -f "$filename"
+then
+  echo >>$filename "# Dummy data"
+  echo >>$filename "#"
+fi
+echo >>$filename $(date -u --date "$date" +"%Y-%m-%d") $(date -u --date "$date" +"%H:%M") 0 0 0 0 0 0 0 0 0 1000
