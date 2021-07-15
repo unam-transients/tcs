@@ -37,6 +37,7 @@
         "sensors",
         "sun",
         "target",
+        "telescope",
         "weather"
     ]
   },
