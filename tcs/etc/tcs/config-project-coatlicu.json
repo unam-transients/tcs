@@ -1,0 +1,255 @@
+////////////////////////////////////////////////////////////////////////
+
+// This file is part of the UNAM telescope control system.
+
+// $Id: config-project-test.json 3603 2020-06-11 03:28:08Z Alan $
+
+////////////////////////////////////////////////////////////////////////
+
+// Copyright © 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+//
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
+//
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+// WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+// WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+// AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+// DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+// PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+// TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+// PERFORMANCE OF THIS SOFTWARE.
+
+////////////////////////////////////////////////////////////////////////
+
+{
+  "site": {
+    "longitude": "-99:10:40",
+    "latitude": "+19:19:33.0",
+    "altitude": "2280.0",
+    "civiltimezone": "America/Mexico_City"
+  },
+  "html": {
+    "servers": [
+    ]
+  },
+  "fitsheader": {
+    "servers": [
+      "target",
+      "sun",
+      "moon",
+      "weather"
+    ]
+  },
+  "supervisor": {
+    "internalhumiditysensor": ""
+  },
+  "selector": {},
+  "swift": {
+    "pointingsource": "none"
+  },
+  "executor": {},
+  "telescope": {
+    "type": "dummy",
+    "idleha": "0h",
+    "idledelta": "0d"
+  },
+  "safetyswitch": {
+    "type": "none"
+  },
+  "instrument": {
+    "activedetectors": [
+      "C0"
+    ],
+    "detectors": [
+      "C0"
+    ],
+    "idlefilterwheelpositions": [
+      "w"
+    ],
+    "pointingdetectors": [
+      "C0"
+    ],
+    "outletgroups": []
+  },
+  "C0": {
+    "telescopedescription": "TEST",
+    "detectortype": "dummy",
+    "detectoridentifier": "",
+    "detectorpixelscale": "0.381as",
+    "detectorinitialreadmode": "",
+    "detectorinitialsoftwaregain": 1,
+    "detectorinitialbinning": 1,
+    "detectorwindows": {
+      "initial": "default",
+      "default": "4kx4k",
+      "center": "1kx1k",
+      "1kx1k": {
+        "sx": 0,
+        "sy": 0,
+        "nx": 1024,
+        "ny": 1024
+      },
+      "2kx2k": {
+        "sx": 1024,
+        "sy": 1024,
+        "nx": 2048,
+        "ny": 2048
+      },
+      "4kx4k": {
+        "sx": 1536,
+        "sy": 1536,
+        "nx": 4096,
+        "ny": 4096
+      }
+    },
+    "detectorfullunbinneddatawindow": {
+      "sx": 0,
+      "sy": 0,
+      "nx": 4096,
+      "ny": 4096
+    },
+    "detectorfullunbinnedbiaswindow": {
+      "sx": 0,
+      "sy": 0,
+      "nx": 0,
+      "ny": 0
+    },
+    "cooleropensetting": "-80",
+    "coolerclosedsetting": "following",
+    "temperaturelimit": 40,
+    "temperaturelimitoutletgroup": "",
+    "filterwheeltype": "null",
+    "filterwheelidentifier": "null",
+    "filterwheelinitialposition": 0,
+    "filterlist": [
+      "w"
+    ],
+    "focusertype": "null",
+    "focuseridentifier": "null",
+    "focuserinitialposition": 0,
+    "focuserbacklashoffset": 0,
+    "focusercorrectionmodel": {},
+    "pointingmodelparameters": {},
+    "isstandalone": false,
+    "fitsfwhmargs": {
+      "1": "-m",
+      "2": "-A",
+      "4": "-A",
+      "8": "-A",
+      "16": "-A"
+    }
+  },
+  "power": {
+    "hosts": {},
+    "outletgroupaddresses": {}
+  },
+  "weather": {
+    "windaveragespeedlimit": "30"
+  },
+  "sensors": {
+    "lognames": [
+      "host-coatlicu-control-load",
+      "host-coatlicu-control-disk-space-used",
+      "C0-detector-detector-temperature",
+      "C0-detector-cooler-set-temperature",
+      "C0-detector-cooler-state",
+      "C0-detector-cooler-power",
+      "C0-filter-wheel-position"
+    ],
+    "sensors": {
+      "host-coatlicu-control-load": {
+        "file": "/usr/local/var/tcs/sensors/coatlicu-control/load",
+        "keyword": "",
+        "prettyname": "load on host coatlicu-control",
+        "subsystem": "tcs",
+        "component": "coatlicu-control",
+        "group": "host-load",
+        "type": "float",
+        "unit": "processes",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-coatlicu-control-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/coatlicu-control/disk-space-used",
+        "keyword": "",
+        "prettyname": "relative disk space used on host coatlicu-control",
+        "subsystem": "tcs",
+        "component": "coatlicu-control",
+        "group": "host-disk-space-used",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "C0-detector-detector-temperature": {
+        "file": "/usr/local/var/tcs/sensors/coatlicu-control/C0-detector-detector-temperature",
+        "keyword": "",
+        "prettyname": "C0 detector temperature",
+        "subsystem": "instrument",
+        "component": "C0",
+        "group": "detector-temperature",
+        "type": "float",
+        "unit": "C",
+        "model": "dummy",
+        "identifier": "0",
+        "firmware": ""
+      },
+      "C0-detector-cooler-set-temperature": {
+        "file": "/usr/local/var/tcs/sensors/coatlicu-control/C0-detector-cooler-set-temperature",
+        "keyword": "",
+        "prettyname": "C0 cooler set temperature",
+        "subsystem": "instrument",
+        "component": "C0",
+        "group": "detector-cooler-set-temperature",
+        "type": "float",
+        "unit": "C",
+        "model": "dummy",
+        "identifier": "0",
+        "firmware": ""
+      },
+      "C0-detector-cooler-power": {
+        "file": "/usr/local/var/tcs/sensors/coatlicu-control/C0-detector-cooler-power",
+        "keyword": "",
+        "prettyname": "C0 relative cooler power",
+        "subsystem": "instrument",
+        "component": "C0",
+        "group": "detector-cooler-power",
+        "type": "float",
+        "unit": "",
+        "model": "dummy",
+        "identifier": "0",
+        "firmware": ""
+      },
+      "C0-detector-cooler-state": {
+        "file": "/usr/local/var/tcs/sensors/coatlicu-control/C0-detector-cooler-state",
+        "keyword": "",
+        "prettyname": "C0 cooler state",
+        "subsystem": "instrument",
+        "component": "C0",
+        "group": "detector-cooler-state",
+        "type": "string",
+        "unit": "state",
+        "model": "dummy",
+        "identifier": "0",
+        "firmware": ""
+      },
+      "C0-filter-wheel-position": {
+        "file": "/usr/local/var/tcs/sensors/coatlicu-control/C0-filter-wheel-position",
+        "keyword": "",
+        "prettyname": "C0 filter wheel position",
+        "subsystem": "instrument",
+        "component": "C0",
+        "group": "detector-filter-wheel-position",
+        "type": "integer",
+        "unit": "",
+        "model": "FLI CFW-14-5",
+        "identifier": "FW0021318",
+        "firmware": ""
+      }
+    }
+  }
+}

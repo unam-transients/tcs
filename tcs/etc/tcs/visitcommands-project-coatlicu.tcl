@@ -2,11 +2,11 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: configure.ac 3442 2020-02-23 05:00:24Z Alan $
+# $Idvisit: alertvisit-project-ddotioan 3388 2019-11-01 19:50:09Z Alan $
 
 ########################################################################
 
-# Copyright © 2011, 2012, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+# Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -23,27 +23,55 @@
 
 ########################################################################
 
-AC_INIT(www, 0.0, alan@astro.unam.mx)
+proc alertcommand {filters} {
+  log::summary "alertcommand: starting."
+  executor::move
+  executor::setwindow "default"
+  executor::setbinning 1
+  set i 0
+  while {$i < 20} {
+    executor::expose object 60
+    incr i
+    coroutine::after 10000
+  }
+  log::summary "alertcommand: finished."
+  return true
+}
 
 ########################################################################
 
-AC_SUBST(SITE)
+proc biasesvisit {} {
+  log::summary "biasesvisit: starting."
+  executor::move
+  executor::setwindow "default"
+  executor::setbinning 1
+  set i 0
+  while {$i < 20} {
+    executor::expose bias 0
+    executor::analyze levels
+    incr i
+    coroutine::after 10000
+  }
+  log::summary "biasesvisit: finished."
+  return true
+}
 
 ########################################################################
 
-AC_CONFIG_FILES(
-  Makefile
-  httpd.conf-ratir-main
-  httpd.conf-ratir-tcs
-  httpd.conf-ratiroan-services
-  httpd.conf-coatlioan-services
-  httpd.conf-ddotioan-services
-  httpd.conf-colibricu-services
-  httpd.conf-colibricito
-  httpd.conf-johnsoncu-control
-  httpd.conf-coatlicu-control
-  httpd.conf-test
-)
-AC_OUTPUT
+proc darksvisit {} {
+  log::summary "darksvisit: starting."
+  executor::move
+  executor::setwindow "default"
+  executor::setbinning 1
+  set i 0
+  while {$i < 20} {
+    executor::expose dark 60
+    executor::analyze levels
+    incr i
+    coroutine::after 10000
+  }
+  log::summary "darksvisit: finished."
+  return true
+}
 
 ########################################################################

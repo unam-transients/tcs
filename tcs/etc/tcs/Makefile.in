@@ -99,6 +99,13 @@ installs_project_colibriohp	:=	        	\
 installbins_project_colibriohp	:=		    \
 	alertscript-project-colibriohp
 
+installs_project_coatlicu       :=	        \
+	config-project-coatlicu.json		    \
+	servers-project-coatlicu.json		    \
+	visitcommands-project-coatlicu.tcl
+	
+installbins_project_colibriohp	:=
+
 INSTALL_DIR	:=	$(prefix)/etc/tcs/
 
 include ../../Makefile.epilog
