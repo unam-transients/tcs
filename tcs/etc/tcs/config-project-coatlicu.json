@@ -38,6 +38,7 @@
       "selector",
       "sensors",
       "sun",
+      "supervisor",
       "target",
       "telescope",
       "weather"
