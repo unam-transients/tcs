@@ -33,6 +33,7 @@
   "html": {
     "servers": [
         "moon",
+        "selector",
         "sensors",
         "sun",
         "target",
