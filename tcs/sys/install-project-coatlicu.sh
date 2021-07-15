@@ -61,8 +61,7 @@ EOF
   coatlicu-control)
     cat <<"EOF"
 *   *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles control
-*   *  *  *  *  /usr/local/bin/tcs updateweatherfiles-oan
-00  18 *  *  *  /usr/local/bin/tcs updateweatherfiles-oan -a
+*   *  *  *  *  /usr/local/bin/tcs updateweatherfiles-dummy
 *   *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
 00  00 *  *  *  /usr/local/bin/tcs updatevarlatestlink; rsync -aH /usr/local/etc/tcs/blocks /usr/local/var/tcs/latest/
 */5 *  *  *  * /usr/local/bin/tcs logsensors

@@ -151,6 +151,10 @@ installbins_project_colibricito	:=		\
 	plcserver-project-colibricito		\
 	updateweatherfiles-satino
 
+installbins_project_coatlicu        :=  \
+	C0server                            \
+	updateweatherfiles-dummy
+	
 CLEAN_FILES			:=	*.o newpgrp
 
 INSTALL_DIR			:=	$(prefix)/libexec/tcs
