@@ -34,71 +34,75 @@ MAINTAINER_CLEAN_FILES		+=	*wrap.cxx
 
 ########################################################################
 
-installs_project_test		:=	\
-	detectorfli.so			\
-	focuserfli.so			\
+installs_project_test	    	:=	\
+	detectorfli.so		        	\
+	focuserfli.so		        	\
 	filterwheelfli.so
 
-installs_project_ratir		:=	\
-	detectorfli.so			\
-	focuserfli.so			\
-	filterwheelfli.so		\
+installs_project_ratir	    	:=	\
+	detectorfli.so		    	    \
+	focuserfli.so		    	    \
+	filterwheelfli.so	    	    \
 	detectorh2rg.so
 
-installs_project_ratiroan	:=	\
-	detectorfli.so			\
-	detectorh2rg.so         \
-	focuserfli.so			\
-	filterwheelfli.so		\
+installs_project_ratiroan   	:=	\
+	detectorfli.so		        	\
+	detectorh2rg.so                 \
+	focuserfli.so		        	\
+	filterwheelfli.so	           	\
 	filterwheelnull.so
 
-installs_project_coatlioan	:=	\
-	detectorfli.so			\
+installs_project_coatlioan	    :=	\
+	detectorfli.so		    	    \
 	filterwheelfli.so
 
-installs_project_ddotioan	:=	\
-	detectorfli.so			\
+installs_project_ddotioan	    :=	\
+	detectorfli.so		    	    \
 	filterwheelnull.so
 
-installs_project_ddoticu	:=	\
-	detectorfli.so			\
+installs_project_ddoticu	    :=	\
+	detectorfli.so			        \
 	filterwheelfli.so
 
 installs_project_colibricito	:=	\
-	detectorqsi.so			\
+	detectorqsi.so			        \
 	filterwheelqsi.so
 	
-installs_project_colibricu	:=	\
-	detectorsi.so			\
+installs_project_colibricu	    :=	\
+	detectorsi.so			        \
 	filterwheelfli.so
 	
-installs_prokect_colibriohp :=  \
-	detectordummy.so		\
+installs_prokect_colibriohp     :=  \
+	detectordummy.so		        \
 	filterwheelnull.so
 
-installs_project_johnsoncu	:=	\
-	detectordummy.so		\
+installs_project_johnsoncu	    :=	\
+	detectordummy.so		        \
 	filterwheelnull.so
 
-installs_project_test		:=	\
-	detectordummy.so		\
+installs_project_coatlicu	    :=	\
+	detectordummy.so		        \
+	filterwheelnull.so
+
+installs_project_test		    :=	\
+	detectordummy.so		        \
 	filterwheelnull.so
 
 ########################################################################
 
 DEFS				:=	@DEFS@
 
-CXX				:=	@CXX@
+CXX			    	:=	@CXX@
 CXXFLAGS			:=	@CXXFLAGS@ -Wall -fPIC -I../include -I/usr/local/include -I/usr/include/tcl8.6
 CXXSOFLAGS			:=	-shared
 
-F77				:=	@F77@
+F77				    :=	@F77@
 F77FLAGS			:=	-O -g -Wall -fPIC
 F77SOFLAGS			:=	-shared
 FLIBS				:=	@FLIBS@
 
 LD				:=	@CXX@
-LDFLAGS				:=
+LDFLAGS		    		:=
 LDSOFLAGS			:=	-shared
 LIBS				:=	@LIBS@
 

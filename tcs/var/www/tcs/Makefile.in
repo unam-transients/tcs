@@ -108,6 +108,12 @@ installs_project_johnsoncu		:=		\
 	C0-project-johnsoncu.html  	        \
 	config-project-johnsoncu.js		    \
 
+installs_project_coatlicu		:=		\
+	interface-project-coatlicu.html	\
+	alerts-project-coatlicu.html	    \
+	C0-project-coatlicu.html  	        \
+	config-project-coatlicu.js		    \
+
 installs_project_test		:=		    \
 	interface-project-test.html		    \
 	C0-project-test.html  	     		\

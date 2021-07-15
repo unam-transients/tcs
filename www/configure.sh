@@ -51,6 +51,9 @@ tcs-b)
 johnsoncu-control)
   ./configure SITE=johnsoncu-control
   ;;
+coatlicu-control)
+  ./configure SITE=coatlicu-control
+  ;;
 test-*)
   ./configure SITE=test
   ;;
