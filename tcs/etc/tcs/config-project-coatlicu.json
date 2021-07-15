@@ -53,7 +53,7 @@
     ]
   },
   "supervisor": {
-    "internalhumiditysensor": ""
+    "internalhumiditysensor": "enclosure-humidity"
   },
   "selector": {},
   "swift": {
@@ -169,6 +169,32 @@
       "C0-filter-wheel-position"
     ],
     "sensors": {
+      "enclosure-temperature": {
+       "file": "/usr/local/var/tcs/sensors/control/ow/26.15971A020000/temperature",
+       "keyword": "ENTM",
+       "prettyname": "enclosure temperature",
+       "subsystem": "enclosure",
+       "component": "enclosure",
+       "group": "environmental-sensors",
+       "type": "float",
+       "unit": "C",
+       "model": "iButtonLink MS-TH",
+       "identifier": "26.15971A020000",
+       "firmware": ""
+      },
+      "enclosure-humidity": {
+       "file": "/usr/local/var/tcs/sensors/control/ow/26.15971A020000/HIH4000/humidity",
+       "keyword": "ENHM",
+       "prettyname": "enclosure relative humidity",
+       "subsystem": "enclosure",
+       "component": "enclosure",
+       "group": "environmental-sensors",
+       "type": "float",
+       "unit": "",
+       "model": "iButtonLink MS-TH",
+       "identifier": "26.15971A020000",
+       "firmware": ""
+      },
       "host-control-load": {
         "file": "/usr/local/var/tcs/sensors/control/load",
         "keyword": "",
