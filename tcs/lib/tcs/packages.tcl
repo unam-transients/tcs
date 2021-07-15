@@ -60,6 +60,8 @@ package ifneeded cryostat              0.0 \
   [list source [file join [file dirname [info script]] cryostat.tcl]]
 package ifneeded cryostatserver        0.0 \
   [list source [file join [file dirname [info script]] cryostatserver.tcl]]
+package ifneeded detectorandor         0.0 \
+  [list source [file join [file dirname [info script]] detectorandor.tcl]]
 package ifneeded detectordummy         0.0 \
   [list source [file join [file dirname [info script]] detectordummy.tcl]]
 package ifneeded detectorfli           0.0 \
