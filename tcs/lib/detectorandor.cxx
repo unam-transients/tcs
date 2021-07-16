@@ -37,7 +37,7 @@
 
 ////////////////////////////////////////////////////////////////////////
 
-static const char *description = "dummy";
+static char description[DETECTOR_STR_BUFFER_SIZE] = "";
 static double detectortemperature = 0;
 static double housingtemperature = 0;
 static double coolerpower = 0;
@@ -101,12 +101,36 @@ detectorrawopen(char *identifier)
   }
   
   sleep(2);
+  
+  char model[DETECTOR_STR_BUFFER_SIZE];
+  status = GetHeadModel(model);
+  if (status != DRV_SUCCESS)
+    DETECTOR_ERROR(msg("unable to get head model (status is %u).", status));  
+  
+  int serialnumber;
+  status = GetCameraSerialNumber(&serialnumber);
+  if (status != DRV_SUCCESS)
+    DETECTOR_ERROR(msg("unable to get serial number (status is %u).", status));
 
+  snprintf(description, sizeof(description), "Andor %s (%d)", model, serialnumber);    
+  
   coolersettemperature = 25.0;
   cooler = "off";
   status = CoolerOFF();
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR(msg("unable to switch off cooler (status is %u).", status));
+    
+  status = SetReadMode(4);
+  if (status != DRV_SUCCESS)
+    DETECTOR_ERROR(msg("unable to select raw read mode (status is %u).", status));
+
+  status = SetAcquisitionMode(1);
+  if (status != DRV_SUCCESS)
+    DETECTOR_ERROR(msg("unable to select raw acquisition mode (status is %u).", status));
+
+  status = SetShutter(1,0,50,50);
+  if (status != DRV_SUCCESS)
+    DETECTOR_ERROR(msg("unable to select raw shutter mode (status is %u).", status));
 
   detectorrawsetisopen(true);
 
