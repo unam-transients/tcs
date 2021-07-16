@@ -94,6 +94,8 @@ EOF
     echo "gpio -i"
   fi
 
+  echo "tcs instrumentimageserver C0 control &"
+
   echo "owserver -c /etc/owfs.conf"
   
   echo "tcs instrumentdataserver -f -d rsync://localhost/tcs/ &"

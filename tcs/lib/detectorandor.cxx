@@ -180,10 +180,28 @@ detectorrawmovefilterwheel(unsigned long position)
 const char *
 detectorrawexpose(double exposuretime, const char *shutter)
 {
+  unsigned int status;
+
   DETECTOR_CHECK_OPEN();
+
   if (strcmp(shutter, "open") != 0 && strcmp(shutter, "closed") != 0)
     DETECTOR_ERROR("invalid shutter argument.");
-  exposureend = time(NULL) + exposuretime;
+
+  status = SetExposureTime(exposuretime);
+  if (status != DRV_SUCCESS)
+    DETECTOR_ERROR(msg("unable to set exposure time (status is %u).", status));
+    
+  if (strcmp(shutter, "open") == 0)
+    status = SetShutter(0, 0, 50, 50);
+  else 
+    status = SetShutter(0, 2, 50, 50);
+  if (status != DRV_SUCCESS)
+    DETECTOR_ERROR(msg("unable to set shutter (status is %u).", status));
+
+  status = StartAcquisition();
+  if (status != DRV_SUCCESS)
+    DETECTOR_ERROR(msg("unable to start acquisition (status is %u).", status));
+
   DETECTOR_OK();
 }
 
@@ -202,7 +220,9 @@ detectorrawcancel(void)
 bool
 detectorrawgetreadytoberead(void)
 {
-  return time(NULL) > exposureend;
+  int status;
+  GetStatus(&status);
+  return status != DRV_ACQUIRING;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -211,19 +231,28 @@ const char *
 detectorrawread(void)
 {
   DETECTOR_CHECK_OPEN();
+
   if (!detectorrawgetreadytoberead())
     DETECTOR_ERROR("the detector is not ready to be read.");
-  detectorrawpixstart();
-  long pix = 0;
+
   unsigned long nx = detectorrawgetpixnx();
   unsigned long ny = detectorrawgetpixny();
+
+  unsigned short pix[ny * nx];
+  unsigned int status;
+  status = GetAcquiredData16(pix, nx * ny);
+  if (status != DRV_SUCCESS)
+    DETECTOR_ERROR(msg("unable to get pixel data (nx is %lu ny is %lu status is %u).", nx, ny, status));
+  
+  detectorrawpixstart();
   for (unsigned long iy = 0; iy < ny; ++iy) {
     for (unsigned long ix = 0; ix < nx; ++ix) {
-      pix = ix;
-      detectorrawpixnext(&pix, 1);
+      long lpix = pix[iy * nx + ix];
+      detectorrawpixnext(&lpix, 1);
     }
   }
   detectorrawpixend();
+  
   DETECTOR_OK();
 }
 
@@ -279,7 +308,7 @@ detectorrawsetbinning(unsigned long newbinning)
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR(msg("unable to get maximum x binning (status is %u)", status));
     
-  int maxbinning;
+  unsigned int maxbinning;
   if (maxbinningx >= maxbinningy)
     maxbinning = maxbinningy;
   else
@@ -294,6 +323,9 @@ detectorrawsetbinning(unsigned long newbinning)
   
   binning = newbinning;
   
+  detectorrawsetpixnx(windownx / binning);
+  detectorrawsetpixny(windowny / binning);
+
   DETECTOR_OK();
 }
 
