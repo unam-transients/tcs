@@ -46,8 +46,8 @@ static const char *cooler = "";
 
 static char readmode[DETECTOR_STR_BUFFER_SIZE] = "";
 
-static unsigned long fullnx = 2048;
-static unsigned long fullny = 2048;
+static unsigned long fullnx = 0;
+static unsigned long fullny = 0;
 static unsigned long windowsx = 0;
 static unsigned long windowsy = 0;
 static unsigned long windownx = 0;
@@ -119,6 +119,14 @@ detectorrawopen(char *identifier)
   status = CoolerOFF();
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR(msg("unable to switch off cooler (status is %u).", status));
+    
+  int nx;
+  int ny;
+  status = GetDetector(&nx, &ny);
+  if (status != DRV_SUCCESS)
+    DETECTOR_ERROR(msg("unable to get detector size (status is %u).", status));
+  fullnx = nx;
+  fullny = ny;  
     
   status = SetReadMode(4);
   if (status != DRV_SUCCESS)
@@ -258,10 +266,34 @@ detectorrawsetwindow(unsigned long newsx, unsigned long newsy, unsigned long new
 const char *
 detectorrawsetbinning(unsigned long newbinning)
 {
+  unsigned int status;  
   DETECTOR_CHECK_OPEN();
+  
+  int maxbinningx;
+  status = GetMaximumBinning(4, 0, &maxbinningx);
+  if (status != DRV_SUCCESS)
+    DETECTOR_ERROR(msg("unable to get maximum x binning (status is %u)", status));
+
+  int maxbinningy;
+  status = GetMaximumBinning(4, 1, &maxbinningy);
+  if (status != DRV_SUCCESS)
+    DETECTOR_ERROR(msg("unable to get maximum x binning (status is %u)", status));
+    
+  int maxbinning;
+  if (maxbinningx >= maxbinningy)
+    maxbinning = maxbinningy;
+  else
+    maxbinning = maxbinningx;
+    
+  if (newbinning > maxbinning)
+    DETECTOR_ERROR(msg("requested binning (%d) exceeds maximum supported binning (%d)", newbinning, maxbinning));
+  
+  status = SetImage(newbinning, newbinning, windowsx + 1, windowsx + windownx, windowsy + 1, windowsy + windowny);
+  if (status != DRV_SUCCESS)
+    DETECTOR_ERROR(msg("unable to set detector window and binning (status is %u)", status));
+  
   binning = newbinning;
-  detectorrawsetpixnx((windownx + binning - 1) / binning);
-  detectorrawsetpixny((windowny + binning - 1) / binning);
+  
   DETECTOR_OK();
 }
 
