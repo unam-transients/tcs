@@ -25,6 +25,8 @@
 ////////////////////////////////////////////////////////////////////////
 
 #include <float.h>
+#include <math.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -55,7 +57,24 @@ static unsigned long binning = 1;
 
 ////////////////////////////////////////////////////////////////////////
 
+#include "atmcdLXd.h"
+
+////////////////////////////////////////////////////////////////////////
+
 static time_t exposureend = 0;
+
+////////////////////////////////////////////////////////////////////////
+
+static char *
+msg(const char *fmt, ...)
+{
+  static char s[1024];
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(s, sizeof(s), fmt, ap);
+  va_end(ap);
+  return s;
+}
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -70,11 +89,27 @@ detectorrawstart(void)
 const char *
 detectorrawopen(char *identifier)
 {
+  unsigned int status;
+
   if (detectorrawgetisopen())
-    DETECTOR_ERROR("a detector is currently OPEN.");
-  detectorrawsetisopen(true);
-  coolersettemperature = 0.0;
+    DETECTOR_ERROR("a detector is currently open.");
+
+  char etcdir[] = "/usr/local/etc/andor";
+  status = Initialize(etcdir);
+  if (status != DRV_SUCCESS) {
+    DETECTOR_ERROR(msg("unable to initialize detector (status is %u)", status));
+  }
+  
+  sleep(2);
+
+  coolersettemperature = 25.0;
   cooler = "off";
+  status = CoolerOFF();
+  if (status != DRV_SUCCESS)
+    DETECTOR_ERROR(msg("unable to switch off cooler (status is %u).", status));
+
+  detectorrawsetisopen(true);
+
   return detectorrawsetwindow(0, 0, 0, 0);
 }
 
@@ -84,6 +119,7 @@ const char *
 detectorrawclose(void)
 {
   detectorrawsetisopen(false);
+  ShutDown();
   DETECTOR_OK();
 }
 
@@ -211,17 +247,26 @@ const char *
 detectorrawupdatestatus(void)
 {
   DETECTOR_CHECK_OPEN();
-  if (strcmp(cooler, "on") == 0) {
-    detectortemperature = coolersettemperature;
-    coolerpower = 1.0;
-  } else if (strcmp(cooler, "following") == 0) {
-    coolersettemperature = housingtemperature;
-    detectortemperature = coolersettemperature;
-    coolerpower = 0.5;
-  } else {
-    detectortemperature = housingtemperature + 10;
-    coolerpower = 0;
+  
+  float temperature;
+  unsigned int status;
+  status = GetTemperatureF(&temperature);
+  if (status == DRV_NOT_INITIALIZED) {
+    DETECTOR_ERROR("detector is not initialized.");
+  } else if (status == DRV_TEMP_OFF) {
+    cooler = "off";
+    detectortemperature = temperature;
+  } else if (
+    status == DRV_TEMP_STABILIZED || 
+    status == DRV_TEMP_NOT_REACHED ||
+    status == DRV_TEMP_DRIFT ||
+    status == DRV_TEMP_NOT_STABILIZED
+  ) {
+    cooler = "on";
+    detectortemperature = temperature;
   }
+  coolerpower = 0;
+
   DETECTOR_OK();
 }
 
@@ -235,12 +280,8 @@ detectorrawgetvalue(const char *name)
     snprintf(value, sizeof(value), "%s", description);
   else if (strcmp(name, "detectortemperature") == 0)
     snprintf(value, sizeof(value), "%+.1f", detectortemperature);
-  else if (strcmp(name, "housingtemperature") == 0)
-    snprintf(value, sizeof(value), "%+.1f", housingtemperature);
   else if (strcmp(name, "coolersettemperature") == 0)
     snprintf(value, sizeof(value), "%+.1f", coolersettemperature);
-  else if (strcmp(name, "coolerpower") == 0)
-    snprintf(value, sizeof(value), "%.2f", coolerpower);
   else if (strcmp(name, "cooler") == 0)
     snprintf(value, sizeof(value), "%s", cooler);
   else if (strcmp(name, "readmode") == 0)
@@ -266,22 +307,34 @@ const char *
 detectorrawsetcooler(const char *newcooler)
 {
   DETECTOR_CHECK_OPEN();
-  if (strcmp(newcooler, "on") == 0) {
-    cooler = "on";
-    DETECTOR_OK();
-  } else if (strcmp(newcooler, "off") == 0) {
+  if (strcmp(newcooler, "off") == 0) {
+    unsigned int status;
+    status = CoolerOFF();
+    if (status != DRV_SUCCESS)
+      DETECTOR_ERROR(msg("unable to switch off cooler (status is %u).", status));
     cooler = "off";
     DETECTOR_OK();
-  } else if (strcmp(newcooler, "following") == 0) {
-    cooler = "following";    
-    coolersettemperature = housingtemperature;
-    DETECTOR_OK();
   } else {
-    char *end;
-    coolersettemperature = strtod(newcooler, &end);
-    if (*end != 0)
-      DETECTOR_ERROR("invalid arguments.");
-    cooler = "on";
+    if (strcmp(newcooler, "following") == 0) {
+      detectorrawupdatestatus();
+      coolersettemperature = housingtemperature;
+    } else if (strcmp(newcooler, "on") != 0) {
+      char *end;
+      double newcoolersettemperature = strtod(newcooler, &end);
+      if (*end != 0)
+        DETECTOR_ERROR("invalid cooler state.");
+      newcoolersettemperature = rint(newcoolersettemperature);
+      coolersettemperature = newcoolersettemperature;      
+      newcooler = "on";
+    }
+    unsigned int status;
+    status = SetTemperature((int) coolersettemperature);
+    if (status != DRV_SUCCESS)
+      DETECTOR_ERROR(msg("unable to set cooler set temperature (status is %u).", status));
+    status = CoolerON();
+    if (status != DRV_SUCCESS)
+      DETECTOR_ERROR(msg("unable to switch on cooler (status is %u).", status));
+    cooler = newcooler;
     DETECTOR_OK();
   }
 }

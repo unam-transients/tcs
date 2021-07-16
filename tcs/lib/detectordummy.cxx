@@ -71,7 +71,7 @@ const char *
 detectorrawopen(char *identifier)
 {
   if (detectorrawgetisopen())
-    DETECTOR_ERROR("a detector is currently OPEN.");
+    DETECTOR_ERROR("a detector is currently open.");
   detectorrawsetisopen(true);
   coolersettemperature = 0.0;
   cooler = "off";
