@@ -33,6 +33,7 @@
   "html": {
     "servers": [
       "moon",
+      "selector",
       "sun",
       "target",
       "weather"
@@ -55,6 +56,10 @@
 //      "sensors",
 //      "weather"
     ]
+  },
+  "selector": {},
+  "swift": {
+    "pointingsource": "none"
   },
   "instrument": {
     "activedetectors": [],
@@ -120,9 +125,6 @@
 //       "HDCD2":   "-0.000225",
 //       "DICD":    "+0.000387"
 //     }
-  },
-  "swift": {
-    "pointingsource": "none"
   },
   "power": {
     "hosts": [],
