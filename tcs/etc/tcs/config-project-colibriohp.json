@@ -34,7 +34,8 @@
     "servers": [
       "moon",
       "sun",
-      "target"
+      "target",
+      "weather"
     ]
   },
   "target": {
@@ -126,5 +127,8 @@
   "power": {
     "hosts": [],
     "outletgroupaddresses": []
+  },
+  "weather": {
+    "windaveragespeedlimit": "30"
   }
 }

@@ -60,7 +60,7 @@ sudo mv /etc/hosts.tmp /etc/hosts
 EOF
 
   case $host in
-  colibrito)
+  colibricito)
     # Do not run checkhalt on the Macs; they do not automatically start again after a halt if we cycle the power.
     ;;  
   *)
@@ -71,11 +71,10 @@ EOF
   esac
   
   case $host in
-  colibrito)
+  colibricito)
     cat <<"EOF"
-*   *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles services control detectors
-#*   *  *  *  *  /usr/local/bin/tcs updateweatherfiles-oan
-#00  18 *  *  *  /usr/local/bin/tcs updateweatherfiles-oan -a
+*   *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles control
+*   *  *  *  *  /usr/local/bin/tcs updateweatherfiles-dummy
 *   *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
 #*   *  *  *  *  rsync -aH --delete /usr/local/var/tcs/selector rsync://transients.astrossp.unam.mx/ddoti-raw/
 #00  *  *  *  *  rsync -aH /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/ddoti-raw/ 
