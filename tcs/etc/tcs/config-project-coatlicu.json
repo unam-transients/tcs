@@ -127,7 +127,7 @@
       "ny": 0
     },
     "cooleropensetting": "-80",
-    "coolerclosedsetting": "following",
+    "coolerclosedsetting": "off",
     "temperaturelimit": 40,
     "temperaturelimitoutletgroup": "",
     "filterwheeltype": "null",
@@ -165,7 +165,6 @@
       "C0-detector-detector-temperature",
       "C0-detector-cooler-set-temperature",
       "C0-detector-cooler-state",
-      "C0-detector-cooler-power",
       "C0-filter-wheel-position"
     ],
     "sensors": {
@@ -243,19 +242,6 @@
         "group": "detector-cooler-set-temperature",
         "type": "float",
         "unit": "C",
-        "model": "dummy",
-        "identifier": "0",
-        "firmware": ""
-      },
-      "C0-detector-cooler-power": {
-        "file": "/usr/local/var/tcs/sensors/control/C0-detector-cooler-power",
-        "keyword": "",
-        "prettyname": "C0 relative cooler power",
-        "subsystem": "instrument",
-        "component": "C0",
-        "group": "detector-cooler-power",
-        "type": "float",
-        "unit": "",
         "model": "dummy",
         "identifier": "0",
         "firmware": ""

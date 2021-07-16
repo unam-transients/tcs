@@ -182,7 +182,7 @@ detectorandor.so		:	detectorwrap.o              \
         					detectorandor.o
 	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o detectorandor.so   \
 	  detectorwrap.o detector.o detectorandor.o         \
-	  $(LIBS) $(SWIGLIBS)
+	  -landor $(LIBS) $(SWIGLIBS)
 
 ########################################################################
 
