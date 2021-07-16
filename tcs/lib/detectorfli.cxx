@@ -176,6 +176,8 @@ detectorrawopen(char *identifier)
   stripspace(serial);
   snprintf(description, sizeof(description), "FLI %s (%s)", model, serial);    
 
+  detectorrawsetisopen(true);
+
   // There is no public FLI API to determine the cooler set temperature.
   // However, when we open the CCD, we turn the cooler off (by setting
   // the hardware setpoint to 100 C) and set the software setpoint to 25
