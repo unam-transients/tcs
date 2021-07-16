@@ -34,6 +34,9 @@ host=$(uname -n | sed 's/\..*//')
   cat <<"EOF"
 # Start of tcs epilog.
 
+192.168.100.22  control colibriohp-control
+192.168.100.23  mount   colibriohp-mount
+
 # End of tcs epilog.
 EOF
 ) | 
