@@ -96,7 +96,7 @@ ddotioan-e0)
   allargs="C5"
   ;;
 colibricito)
-  allargs="sun moon target html log"
+  allargs="weather sun moon target html log"
   ;;
 colibricu-services)
   allargs="html log"
