@@ -93,7 +93,7 @@
     "detectorinitialbinning": 1,
     "detectorwindows": {
       "initial": "default",
-      "default": "4kx4k",
+      "default": "1kx1k",
       "center": "1kx1k",
       "1kx1k": {
         "sx": 0,
@@ -101,24 +101,19 @@
         "nx": 1024,
         "ny": 1024
       },
-      "2kx2k": {
-        "sx": 1024,
-        "sy": 1024,
-        "nx": 2048,
-        "ny": 2048
-      },
-      "4kx4k": {
-        "sx": 1536,
-        "sy": 1536,
-        "nx": 4096,
-        "ny": 4096
+      "1024x1024": "1kx1k",
+      "512x512": {
+        "sx": 256,
+        "sy": 256,
+        "nx": 512,
+        "ny": 512
       }
     },
     "detectorfullunbinneddatawindow": {
       "sx": 0,
       "sy": 0,
-      "nx": 4096,
-      "ny": 4096
+      "nx": 1024,
+      "ny": 1024
     },
     "detectorfullunbinnedbiaswindow": {
       "sx": 0,
