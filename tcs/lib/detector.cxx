@@ -375,7 +375,7 @@ detectorrawappendfitsdata(
     APPENDFITSDATA_ERROR("unable to unlink the temporary FITS file.");
       
   if (dofork)
-    exit(0);
+    _exit(0);
 
   DETECTOR_OK();
 }
