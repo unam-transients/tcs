@@ -40,7 +40,6 @@
 static char description[DETECTOR_STR_BUFFER_SIZE] = "";
 static double detectortemperature = 0;
 static double housingtemperature = 0;
-static double coolerpower = 0;
 static double coolersettemperature = 0;
 static const char *cooler = "";
 
@@ -92,7 +91,7 @@ detectorrawopen(char *identifier)
   unsigned int status;
 
   if (detectorrawgetisopen())
-    DETECTOR_ERROR("a detector is currently open.");
+    DETECTOR_ERROR("a detector is currently open");
 
   char etcdir[] = "/usr/local/etc/andor";
   status = Initialize(etcdir);
@@ -105,12 +104,12 @@ detectorrawopen(char *identifier)
   char model[DETECTOR_STR_BUFFER_SIZE];
   status = GetHeadModel(model);
   if (status != DRV_SUCCESS)
-    DETECTOR_ERROR(msg("unable to get head model (status is %u).", status));  
+    DETECTOR_ERROR(msg("unable to get head model (status is %u)", status));  
   
   int serialnumber;
   status = GetCameraSerialNumber(&serialnumber);
   if (status != DRV_SUCCESS)
-    DETECTOR_ERROR(msg("unable to get serial number (status is %u).", status));
+    DETECTOR_ERROR(msg("unable to get serial number (status is %u)", status));
 
   snprintf(description, sizeof(description), "Andor %s (%d)", model, serialnumber);    
   
@@ -118,27 +117,27 @@ detectorrawopen(char *identifier)
   cooler = "off";
   status = CoolerOFF();
   if (status != DRV_SUCCESS)
-    DETECTOR_ERROR(msg("unable to switch off cooler (status is %u).", status));
+    DETECTOR_ERROR(msg("unable to switch off cooler (status is %u)", status));
     
   int nx;
   int ny;
   status = GetDetector(&nx, &ny);
   if (status != DRV_SUCCESS)
-    DETECTOR_ERROR(msg("unable to get detector size (status is %u).", status));
+    DETECTOR_ERROR(msg("unable to get detector size (status is %u)", status));
   fullnx = nx;
   fullny = ny;  
     
   status = SetReadMode(4);
   if (status != DRV_SUCCESS)
-    DETECTOR_ERROR(msg("unable to select raw read mode (status is %u).", status));
+    DETECTOR_ERROR(msg("unable to select raw read mode (status is %u)", status));
 
   status = SetAcquisitionMode(1);
   if (status != DRV_SUCCESS)
-    DETECTOR_ERROR(msg("unable to select raw acquisition mode (status is %u).", status));
+    DETECTOR_ERROR(msg("unable to select raw acquisition mode (status is %u)", status));
 
   status = SetShutter(1,0,50,50);
   if (status != DRV_SUCCESS)
-    DETECTOR_ERROR(msg("unable to select raw shutter mode (status is %u).", status));
+    DETECTOR_ERROR(msg("unable to select raw shutter mode (status is %u)", status));
 
   detectorrawsetisopen(true);
 
@@ -171,7 +170,7 @@ detectorrawmovefilterwheel(unsigned long position)
 {
   DETECTOR_CHECK_OPEN();
   if (position != 0)
-    DETECTOR_ERROR("unable to move the filter wheel.");
+    DETECTOR_ERROR("unable to move the filter wheel");
   DETECTOR_OK();
 }
 
@@ -185,22 +184,22 @@ detectorrawexpose(double exposuretime, const char *shutter)
   DETECTOR_CHECK_OPEN();
 
   if (strcmp(shutter, "open") != 0 && strcmp(shutter, "closed") != 0)
-    DETECTOR_ERROR("invalid shutter argument.");
+    DETECTOR_ERROR("invalid shutter argument");
 
   status = SetExposureTime(exposuretime);
   if (status != DRV_SUCCESS)
-    DETECTOR_ERROR(msg("unable to set exposure time (status is %u).", status));
+    DETECTOR_ERROR(msg("unable to set exposure time (status is %u)", status));
     
   if (strcmp(shutter, "open") == 0)
     status = SetShutter(0, 0, 50, 50);
   else 
     status = SetShutter(0, 2, 50, 50);
   if (status != DRV_SUCCESS)
-    DETECTOR_ERROR(msg("unable to set shutter (status is %u).", status));
-
+    DETECTOR_ERROR(msg("unable to set shutter (status is %u)", status));
+    
   status = StartAcquisition();
   if (status != DRV_SUCCESS)
-    DETECTOR_ERROR(msg("unable to start acquisition (status is %u).", status));
+    DETECTOR_ERROR(msg("unable to start acquisition (status is %u)", status));
 
   DETECTOR_OK();
 }
@@ -211,7 +210,10 @@ const char *
 detectorrawcancel(void)
 {
   DETECTOR_CHECK_OPEN();
-  exposureend = 0;
+  unsigned int status;
+  status = AbortAcquisition();
+  if (status != DRV_SUCCESS && status != DRV_IDLE)
+    DETECTOR_ERROR(msg("unable to abort acquisition (status is %u)", status));    
   DETECTOR_OK();
 }
 
@@ -233,7 +235,7 @@ detectorrawread(void)
   DETECTOR_CHECK_OPEN();
 
   if (!detectorrawgetreadytoberead())
-    DETECTOR_ERROR("the detector is not ready to be read.");
+    DETECTOR_ERROR("the detector is not ready to be read");
 
   unsigned long nx = detectorrawgetpixnx();
   unsigned long ny = detectorrawgetpixny();
@@ -242,7 +244,7 @@ detectorrawread(void)
   unsigned int status;
   status = GetAcquiredData16(pix, nx * ny);
   if (status != DRV_SUCCESS)
-    DETECTOR_ERROR(msg("unable to get pixel data (nx is %lu ny is %lu status is %u).", nx, ny, status));
+    DETECTOR_ERROR(msg("unable to get pixel data (nx is %lu ny is %lu status is %u)", nx, ny, status));
   
   detectorrawpixstart();
   for (unsigned long iy = 0; iy < ny; ++iy) {
@@ -265,7 +267,7 @@ detectorrawsetreadmode(const char *newreadmode)
   if (strcmp(newreadmode, "") == 0)
     DETECTOR_OK();
   if (strlen(newreadmode) >= DETECTOR_STR_BUFFER_SIZE) {
-    DETECTOR_ERROR("invalid detector read mode.");
+    DETECTOR_ERROR("invalid detector read mode");
   }
   strcpy(readmode, newreadmode);
   DETECTOR_OK();
@@ -340,20 +342,22 @@ detectorrawupdatestatus(void)
   unsigned int status;
   status = GetTemperatureF(&temperature);
   if (status == DRV_NOT_INITIALIZED) {
-    DETECTOR_ERROR("detector is not initialized.");
+    DETECTOR_ERROR("detector is not initialized");
   } else if (status == DRV_TEMP_OFF) {
     cooler = "off";
     detectortemperature = temperature;
-  } else if (
-    status == DRV_TEMP_STABILIZED || 
-    status == DRV_TEMP_NOT_REACHED ||
-    status == DRV_TEMP_DRIFT ||
-    status == DRV_TEMP_NOT_STABILIZED
-  ) {
-    cooler = "on";
-    detectortemperature = temperature;
+  } else if (status == DRV_TEMP_STABILIZED) {
+    cooler = "stabilized";
+  } else if (status == DRV_TEMP_NOT_REACHED) {
+    cooler = "cooling";
+  } else if (status == DRV_TEMP_DRIFT) {
+    cooler = "drifting";
+  } else if (status == DRV_TEMP_NOT_STABILIZED) {
+    cooler = "stabilizing";
+  } else {
+    cooler = "other";
   }
-  coolerpower = 0;
+  detectortemperature = temperature;
 
   DETECTOR_OK();
 }
@@ -399,7 +403,7 @@ detectorrawsetcooler(const char *newcooler)
     unsigned int status;
     status = CoolerOFF();
     if (status != DRV_SUCCESS)
-      DETECTOR_ERROR(msg("unable to switch off cooler (status is %u).", status));
+      DETECTOR_ERROR(msg("unable to switch off cooler (status is %u)", status));
     cooler = "off";
     DETECTOR_OK();
   } else {
@@ -410,7 +414,7 @@ detectorrawsetcooler(const char *newcooler)
       char *end;
       double newcoolersettemperature = strtod(newcooler, &end);
       if (*end != 0)
-        DETECTOR_ERROR("invalid cooler state.");
+        DETECTOR_ERROR("invalid cooler state");
       newcoolersettemperature = rint(newcoolersettemperature);
       coolersettemperature = newcoolersettemperature;      
       newcooler = "on";
@@ -418,10 +422,10 @@ detectorrawsetcooler(const char *newcooler)
     unsigned int status;
     status = SetTemperature((int) coolersettemperature);
     if (status != DRV_SUCCESS)
-      DETECTOR_ERROR(msg("unable to set cooler set temperature (status is %u).", status));
+      DETECTOR_ERROR(msg("unable to set cooler set temperature (status is %u)", status));
     status = CoolerON();
     if (status != DRV_SUCCESS)
-      DETECTOR_ERROR(msg("unable to switch on cooler (status is %u).", status));
+      DETECTOR_ERROR(msg("unable to switch on cooler (status is %u)", status));
     cooler = newcooler;
     DETECTOR_OK();
   }
