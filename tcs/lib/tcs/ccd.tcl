@@ -203,6 +203,12 @@ namespace eval "ccd" {
     server::setdata "detectordatawindow"               [detector::getdatawindow]
     server::setdata "detectorbiaswindow"               [detector::getbiaswindow]
     server::setdata "detectorreadmode"                 [detector::getreadmode]
+    server::setdata "detectoradc"                      [detector::getadc]
+    server::setdata "detectoramplifier"                [detector::getamplifier]
+    server::setdata "detectorvsspeed"                  [detector::getvsspeed]
+    server::setdata "detectorhsspeed"                  [detector::gethsspeed]
+    server::setdata "detectorgain"                     [detector::getgain]
+    server::setdata "detectoremgain"                   [detector::getemgain]
     server::setdata "detectordetectortemperature"      $detectortemperature
     server::setdata "detectordetectorheatercurrent"    [detector::getdetectorheatercurrent]
     server::setdata "detectorhousingtemperature"       $housingtemperature
