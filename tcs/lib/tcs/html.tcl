@@ -384,7 +384,27 @@ namespace eval "html" {
       writehtmlfullrow "Detector"                  [client::getdata $server "detectordescription"]
       writehtmlrow "Exposure time"                 [formatifok "%.3f seconds" [client::getdata $server "exposuretime"]]
       writehtmlfullrow "FITS file"                 [file tail [client::getdata $server "fitsfilename"]]
-      writehtmlrow "Detector read mode"            [client::getdata $server "detectorreadmode"]
+      if {![string equal "" [client::getdata $server "detectorreadmode"]]} {
+        writehtmlrow "Detector read mode"            [client::getdata $server "detectorreadmode"]
+      }
+      if {![string equal "" [client::getdata $server "detectoradc"]]} {
+        writehtmlrow "Detector ADC"                 "[client::getdata $server "detectoradc"]"
+      }
+      if {![string equal "" [client::getdata $server "detectoramplifier"]]} {
+        writehtmlrow "Detector amplifier"           "[client::getdata $server "detectoramplifier"]"
+      }
+      if {![string equal "" [client::getdata $server "detectorvsspeed"]]} {
+        writehtmlrow "Detector VS speed"            "[client::getdata $server "detectorvsspeed"]"
+      }
+      if {![string equal "" [client::getdata $server "detectorhsspeed"]]} {
+        writehtmlrow "Detector HS speed"            "[client::getdata $server "detectorhsspeed"]"
+      }
+      if {![string equal "" [client::getdata $server "detectorgain"]]} {
+        writehtmlrow "Detector gain"                "[client::getdata $server "detectorgain"]"
+      }
+      if {![string equal "" [client::getdata $server "detectoremgain"]]} {
+        writehtmlrow "Detector EM gain"             "[client::getdata $server "detectoremgain"]"
+      }
       writehtmlrow "Detector software gain"        [formatifok "%d" [client::getdata $server "detectorsoftwaregain"]]
       writehtmlfullrow "Detector window"           [client::getdata $server "detectorwindow"]
       writehtmlrow "Detector binning"              [formatifok "%d" [client::getdata $server "detectorbinning"]]

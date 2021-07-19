@@ -38,7 +38,8 @@
   "executor"   : { "host" : "control", "port" : 5010 },
   "selector"   : { "host" : "control", "port" : 5011 },
   "supervisor" : { "host" : "control", "port" : 5012 },
-  "gcntan"     : { "host" : "control", "port" : 5013 }
+  "gcntan"     : { "host" : "control", "port" : 5013 },
+  "mount"      : { "host" : "control", "port" : 5014 }
 }
 
 

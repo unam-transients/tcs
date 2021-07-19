@@ -120,7 +120,7 @@ namespace eval "detector" {
   proc setreadmode {mode} {
     log::debug "setting detector read mode to \"$mode\"."
     checkisopen
-    set result [rawcall detectorrawsetreadmode $mode]
+    set result [detectorrawsetreadmode $mode]
     if {![string equal $result ok]} {
       error $result
     }
@@ -368,7 +368,7 @@ namespace eval "detector" {
     log::debug "reading the exposure."
     set result [detectorrawread]
     if {![string equal $result "ok"]} {
-      error "error while reading the pixel data: $result."
+      error "error while reading the pixel data: $result"
     }
     variable average
     variable standarddeviation
@@ -438,6 +438,12 @@ namespace eval "detector" {
 
   variable description              {}
   variable readmode                 {}
+  variable adc                      {}
+  variable amplifier                {}
+  variable vsspeed                  {}
+  variable hsspeed                  {}
+  variable gain                     {}
+  variable emgain                   {}
   variable softwaregain             {}
   variable rawsaturationlevel       65535
   variable saturationlevel          {}
@@ -467,6 +473,36 @@ namespace eval "detector" {
   proc getreadmode {} {
     variable readmode
     return $readmode
+  }
+
+  proc getamplifier {} {
+    variable amplifier
+    return $amplifier
+  }
+
+  proc getadc {} {
+    variable adc
+    return $adc
+  }
+
+  proc getvsspeed {} {
+    variable vsspeed
+    return $vsspeed
+  }
+
+  proc gethsspeed {} {
+    variable hsspeed
+    return $hsspeed
+  }
+
+  proc getgain {} {
+    variable gain
+    return $gain
+  }
+
+  proc getemgain {} {
+    variable emgain
+    return $emgain
   }
 
   proc getsoftwaregain {} {
@@ -572,6 +608,12 @@ namespace eval "detector" {
   proc updatestatus {} {
     
     variable readmode
+    variable adc
+    variable amplifier
+    variable vsspeed
+    variable hsspeed
+    variable gain
+    variable emgain
     variable softwaregain
     variable saturationlevel
     variable window
@@ -592,6 +634,12 @@ namespace eval "detector" {
     variable coolerlowflow
     
     set readmode                 {}
+    set adc                      {}
+    set amplifier                {}
+    set vsspeed                  {}
+    set hsspeed                  {}
+    set gain                     {}
+    set emgain                   {}
     set softwaregain             {}
     set saturationlevel          {}
     set window                   {}
@@ -624,6 +672,12 @@ namespace eval "detector" {
       "ny" [detectorrawgetvalue "windowny"] \
     ]
     set readmode                 [detectorrawgetvalue "readmode"]
+    set adc                      [detectorrawgetvalue "adc"]
+    set amplifier                [detectorrawgetvalue "amplifier"]
+    set vsspeed                  [detectorrawgetvalue "vsspeed"]
+    set hsspeed                  [detectorrawgetvalue "hsspeed"]
+    set gain                     [detectorrawgetvalue "gain"]
+    set emgain                   [detectorrawgetvalue "emgain"]
     set binning                  [detectorrawgetvalue "binning"]
     set detectortemperature      [detectorrawgetvalue "detectortemperature"]
     set detectorheatercurrent    [detectorrawgetvalue "detectorheatercurrent"]
