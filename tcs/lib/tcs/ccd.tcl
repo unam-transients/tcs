@@ -50,12 +50,12 @@ namespace eval "ccd" {
   variable telescopedescription            [config::getvalue $identifier "telescopedescription"           ]
   variable detectortype                    [config::getvalue $identifier "detectortype"                   ]
   variable detectoridentifier              [config::getvalue $identifier "detectoridentifier"             ]
-  variable detectorinitialreadmode         [config::getvalue $identifier "detectorinitialreadmode"        ]
   variable detectorinitialsoftwaregain     [config::getvalue $identifier "detectorinitialsoftwaregain"    ]
   variable detectorinitialbinning          [config::getvalue $identifier "detectorinitialbinning"         ]
   variable detectorfullunbinneddatawindow  [config::getvalue $identifier "detectorfullunbinneddatawindow" ]
   variable detectorfullunbinnedbiaswindow  [config::getvalue $identifier "detectorfullunbinnedbiaswindow" ]
   variable detectorwindows                 [config::getvalue $identifier "detectorwindows"                ]
+  variable detectorreadmodes               [config::getvalue $identifier "detectorreadmodes"                ]
   variable cooleropensetting               [config::getvalue $identifier "cooleropensetting"              ]
   variable coolerclosedsetting             [config::getvalue $identifier "coolerclosedsetting"            ]
   variable filterwheeltype                 [config::getvalue $identifier "filterwheeltype"                ]
@@ -440,8 +440,12 @@ namespace eval "ccd" {
     detector::setfullunbinneddatawindow $detectorfullunbinneddatawindow
     variable detectorfullunbinnedbiaswindow
     detector::setfullunbinnedbiaswindow $detectorfullunbinnedbiaswindow
-    variable detectorinitialreadmode
-    detector::setreadmode $detectorinitialreadmode
+    variable detectorreadmodes
+    set readmode "initial"
+    while {[dict exists $detectorreadmodes $readmode]} {
+      set readmode [dict get $detectorreadmodes $readmode]
+    }
+    detector::setreadmode $readmode
     variable detectorinitialsoftwaregain
     detector::setsoftwaregain $detectorinitialsoftwaregain
     variable detectorwindows
@@ -1190,6 +1194,10 @@ namespace eval "ccd" {
     log::info "setting read mode to $readmode."
     server::checkstatus
     server::checkactivity "idle"
+    variable detectorreadmodes
+    while {[dict exists $detectorreadmodes $readmode]} {
+      set readmode [dict get $detectorreadmodes $readmode]
+    }
     detector::setreadmode $readmode
     variable detectorwindows
     set window "initial"
