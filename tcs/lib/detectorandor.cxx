@@ -493,7 +493,18 @@ setreadmodehelper(int iadc, int iamplifier, int ivsspeed, int ihsspeed, int igai
   if (status != DRV_SUCCESS)
     return "invalid gain index";
 
-  if (emgain != 0) {
+  if (emgain == 0) {
+    // 0 = Default
+    status = SetEMGainMode(0);
+    if (status != DRV_SUCCESS)
+      return "unable to select EM gain mode.";
+    status = SetEMAdvanced(0);
+    if (status != DRV_SUCCESS)
+      return "unable to unselect EM advanced mode.";
+    status = SetEMCCDGain(emgain);
+    if (status != DRV_SUCCESS)
+      return "invalid EMCCD gain.";
+  } else {
     // 3 = Real EM gain
     status = SetEMGainMode(3);
     if (status != DRV_SUCCESS)
