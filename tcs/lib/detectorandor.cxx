@@ -119,6 +119,27 @@ detectorrawopen(char *identifier)
   
   sleep(2);
   
+  AndorCapabilities cap;
+  cap.ulSize = sizeof(cap);
+  status = GetCapabilities(&cap);
+  if (status != DRV_SUCCESS)
+     DETECTOR_ERROR(msg("GetCapabilities failed (status is %u).", status));
+  const char *cameratype;
+  if (cap.ulCameraType == 1)
+    cameratype = "Andor iXon";
+  else if (cap.ulCameraType == 11)
+    cameratype = "Andor Luca";
+  else if (cap.ulCameraType == 13)
+    cameratype = "Andor iKon";
+  else if (cap.ulCameraType == 21)
+    cameratype = "Andor iXon Ultra";
+  else if (cap.ulCameraType == 21)
+    cameratype = "Andor Ikon XL";
+  else if (cap.ulCameraType == 31)
+    cameratype = "Andor Ikon LR";
+  else
+    cameratype = "Andor";
+
   char model[DETECTOR_STR_BUFFER_SIZE];
   status = GetHeadModel(model);
   if (status != DRV_SUCCESS)
@@ -129,7 +150,7 @@ detectorrawopen(char *identifier)
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR(msg("unable to get serial number (status is %u).", status));
 
-  snprintf(description, sizeof(description), "Andor %s (%d)", model, serialnumber);    
+  snprintf(description, sizeof(description), "%s %s (%d)", cameratype, model, serialnumber);    
   
   coolersettemperature = 25.0;
   cooler = "off";
@@ -263,11 +284,6 @@ detectorrawopen(char *identifier)
       fprintf(fp, "fastest recommended VS speed = %d %f ns\n", ivsspeed, speed * 1e3);
     }    
 
-    AndorCapabilities cap;
-    cap.ulSize = sizeof(cap);
-    status = GetCapabilities(&cap);
-    if (status != DRV_SUCCESS)
-       DETECTOR_ERROR(msg("GetCapabilities failed (status is %u).", status));  
     fprintbits(fp, "ulAcqModes", cap.ulAcqModes);
     fprintbits(fp, "ulReadModes", cap.ulReadModes);
     fprintbits(fp, "ulFTReadModes", cap.ulFTReadModes);
