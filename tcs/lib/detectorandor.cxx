@@ -49,6 +49,7 @@ static int ivsspeed;
 static int ihsspeed;
 static int igain;
 static int emgain;
+static int flipped;
 
 static char amplifier[DETECTOR_STR_BUFFER_SIZE] = "";
 static char vsspeed[DETECTOR_STR_BUFFER_SIZE] = "";
@@ -208,6 +209,10 @@ detectorrawopen(char *identifier)
       if (status != DRV_SUCCESS)
         DETECTOR_ERROR(msg("GetAmpDesc failed (status is %u).", status));
       fprintf(fp, "amplifier %d = %s\n", iamp, desc);
+      status = IsReadoutFlippedByAmplifier(iamp, &flipped);
+      if (status != DRV_SUCCESS)
+        DETECTOR_ERROR(msg("GetReadoutFlippedByAmplifier failed (status is %u).", status));
+      fprintf(fp, "amplifier %d readout flipped = %d\n", iamp, flipped);
     }
     
     for (int ichannel = 0; ichannel < nchannel; ++ichannel) {
@@ -441,10 +446,19 @@ detectorrawread(void)
     DETECTOR_ERROR(msg("unable to get pixel data (nx is %lu ny is %lu status is %u).", nx, ny, status));
   
   detectorrawpixstart();
-  for (unsigned long iy = 0; iy < ny; ++iy) {
-    for (unsigned long ix = 0; ix < nx; ++ix) {
-      long lpix = pix[iy * nx + ix];
-      detectorrawpixnext(&lpix, 1);
+  if (flipped) {
+    for (unsigned long iy = 0; iy < ny; ++iy) {
+      for (unsigned long ix = 0; ix < nx; ++ix) {
+        long lpix = pix[iy * nx + (nx - 1 - ix)];
+        detectorrawpixnext(&lpix, 1);
+      }
+    }
+  } else {
+    for (unsigned long iy = 0; iy < ny; ++iy) {
+      for (unsigned long ix = 0; ix < nx; ++ix) {
+        long lpix = pix[iy * nx - ix];
+        detectorrawpixnext(&lpix, 1);
+      }
     }
   }
   detectorrawpixend();
@@ -554,6 +568,10 @@ detectorrawsetreadmode(const char *newreadmode)
   status = GetEMCCDGain(&emgain);
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR("unable to determine EM gain.");
+  
+  status = IsReadoutFlippedByAmplifier(iamplifier, &flipped);
+  if (status != DRV_SUCCESS)
+    DETECTOR_ERROR("unable to determine in readout is flipped.");
   
   DETECTOR_OK();
 }
