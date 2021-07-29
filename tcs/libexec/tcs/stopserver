@@ -83,7 +83,7 @@ ddotioan-d1)
 ddotioan-e1)
   allargs="C1"
   ;;
-ddotioan-d2)
+ddotioan-d0)
   allargs="C2"
   ;;
 ddotioan-e2)
@@ -96,7 +96,7 @@ ddotioan-e0)
   allargs="C5"
   ;;
 colibricito)
-  allargs="selector weather sun moon target html log"
+  allargs="selector mount weather sun moon target html log"
   ;;
 colibricu-services)
   allargs="html log"

@@ -165,7 +165,7 @@ EOF
   ddotioan-services)
     echo "tcs instrumentimageserver C0 d1 &"
     echo "tcs instrumentimageserver C1 e1 &"
-    echo "tcs instrumentimageserver C2 d2 &"
+    echo "tcs instrumentimageserver C2 d0 &"
     echo "tcs instrumentimageserver C3 e2 &"
     echo "tcs instrumentimageserver C4 d3 &"
     echo "tcs instrumentimageserver C5 e0 &"
