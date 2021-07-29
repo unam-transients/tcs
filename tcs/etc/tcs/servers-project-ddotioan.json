@@ -27,7 +27,7 @@
 {
   "C0"         : { "host" : "d1"      , "port" : 5000 },
   "C1"         : { "host" : "e1"      , "port" : 5001 },
-  "C2"         : { "host" : "d2"      , "port" : 5002 },
+  "C2"         : { "host" : "d0"      , "port" : 5002 },
   "C3"         : { "host" : "e2"      , "port" : 5003 },
   "C4"         : { "host" : "d3"      , "port" : 5004 },
   "C5"         : { "host" : "e0"      , "port" : 5005 },
@@ -44,7 +44,7 @@
   "mount"      : { "host" : "control" , "port" : 5016 },
   "power"      : { "host" : "control" , "port" : 5017 },
   "secondary"  : { "host" : "control" , "port" : 5018 },
-  "selector"  : { "host" : "control" , "port" : 5019 },
+  "selector"   : { "host" : "control" , "port" : 5019 },
   "sensors"    : { "host" : "control" , "port" : 5020 },
   "sun"        : { "host" : "control" , "port" : 5021 },
   "supervisor" : { "host" : "control" , "port" : 5022 },

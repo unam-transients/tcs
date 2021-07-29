@@ -192,7 +192,7 @@
   },
   "instrument": {
     "detectors": [
-      "C0", "C1", "C2", "C3", "C4", "C5"
+      "C0", "C1",  "C2", "C3", "C4", "C5"
     ],
     "activedetectors": [
       "C0", "C1", "C2", "C3", "C4", "C5"
@@ -217,7 +217,10 @@
     "detectortype": "fli",
     "detectoridentifier": "ML2351018",
     "detectorpixelscale": "2.0as",
-    "detectorinitialreadmode": "16MHz",
+    "detectorreadmodes": {
+      "initial": "default",
+      "default": "16MHz"
+    },
     "detectorinitialsoftwaregain": "16",
     "detectorinitialbinning": "1",
     "detectorwindows": {
@@ -288,7 +291,10 @@
     "detectortype": "fli",
     "detectoridentifier": "ML3442818",
     "detectorpixelscale": "2.0as",
-    "detectorinitialreadmode": "16MHz",
+    "detectorreadmodes": {
+      "initial": "default",
+      "default": "16MHz"
+    },
     "detectorinitialsoftwaregain": "16",
     "detectorinitialbinning": "1",
     "detectorwindows": {
@@ -359,7 +365,10 @@
     "detectortype": "fli",
     "detectoridentifier": "ML2120717",
     "detectorpixelscale": "2.0as",
-    "detectorinitialreadmode": "16MHz",
+    "detectorreadmodes": {
+      "initial": "default",
+      "default": "16MHz"
+    },
     "detectorinitialsoftwaregain": "16",
     "detectorinitialbinning": "1",
     "detectorwindows": {
@@ -430,7 +439,10 @@
     "detectortype": "fli",
     "detectoridentifier": "ML4182816",
     "detectorpixelscale": "2.0as",
-    "detectorinitialreadmode": "16MHz",
+    "detectorreadmodes": {
+      "initial": "default",
+      "default": "16MHz"
+    },
     "detectorinitialsoftwaregain": "16",
     "detectorinitialbinning": "1",
     "detectorwindows": {
@@ -501,7 +513,10 @@
     "detectortype": "fli",
     "detectoridentifier": "ML2331018",
     "detectorpixelscale": "2.0as",
-    "detectorinitialreadmode": "16MHz",
+    "detectorreadmodes": {
+      "initial": "default",
+      "default": "16MHz"
+    },
     "detectorinitialsoftwaregain": "16",
     "detectorinitialbinning": "1",
     "detectorwindows": {
@@ -572,7 +587,10 @@
     "detectortype": "fli",
     "detectoridentifier": "ML2341018",
     "detectorpixelscale": "2.0as",
-    "detectorinitialreadmode": "16MHz",
+    "detectorreadmodes": {
+      "initial": "default",
+      "default": "16MHz"
+    },
     "detectorinitialsoftwaregain": "16",
     "detectorinitialbinning": "1",
     "detectorwindows": {
@@ -1165,7 +1183,7 @@
        "firmware": ""
       },
       "C2-detector-detector-temperature": {
-       "file": "/usr/local/var/tcs/sensors/d2/C2-detector-detector-temperature",
+       "file": "/usr/local/var/tcs/sensors/d0/C2-detector-detector-temperature",
        "keyword": "",
        "prettyname": "C2 detector temperature",
        "subsystem": "instrument",
@@ -1204,7 +1222,7 @@
        "firmware": ""
       },
       "C5-detector-detector-temperature": {
-       "file": "/usr/local/var/tcs/sensors/e3/C5-detector-detector-temperature",
+       "file": "/usr/local/var/tcs/sensors/e0/C5-detector-detector-temperature",
        "keyword": "",
        "prettyname": "C5 detector temperature",
        "subsystem": "instrument",
@@ -1243,7 +1261,7 @@
        "firmware": ""
       },
       "C2-detector-housing-temperature": {
-       "file": "/usr/local/var/tcs/sensors/d2/C2-detector-housing-temperature",
+       "file": "/usr/local/var/tcs/sensors/d0/C2-detector-housing-temperature",
        "keyword": "",
        "prettyname": "C2 housing temperature",
        "subsystem": "instrument",
@@ -1282,7 +1300,7 @@
        "firmware": ""
       },
       "C5-detector-housing-temperature": {
-       "file": "/usr/local/var/tcs/sensors/e3/C5-detector-housing-temperature",
+       "file": "/usr/local/var/tcs/sensors/e0/C5-detector-housing-temperature",
        "keyword": "",
        "prettyname": "C5 housing temperature",
        "subsystem": "instrument",
@@ -1321,7 +1339,7 @@
        "firmware": ""
       },
       "C2-detector-cooler-set-temperature": {
-       "file": "/usr/local/var/tcs/sensors/d2/C2-detector-cooler-set-temperature",
+       "file": "/usr/local/var/tcs/sensors/d0/C2-detector-cooler-set-temperature",
        "keyword": "",
        "prettyname": "C2 cooler set temperature",
        "group": "detector-cooler-set-temperature",
@@ -1360,7 +1378,7 @@
        "firmware": ""
       },
       "C5-detector-cooler-set-temperature": {
-       "file": "/usr/local/var/tcs/sensors/e3/C5-detector-cooler-set-temperature",
+       "file": "/usr/local/var/tcs/sensors/e0/C5-detector-cooler-set-temperature",
        "keyword": "",
        "prettyname": "C5 cooler set temperature",
        "subsystem": "instrument",
@@ -1399,7 +1417,7 @@
        "firmware": ""
       },
       "C2-detector-cooler-power": {
-       "file": "/usr/local/var/tcs/sensors/d2/C2-detector-cooler-power",
+       "file": "/usr/local/var/tcs/sensors/d0/C2-detector-cooler-power",
        "keyword": "",
        "prettyname": "C2 relative cooler power",
        "subsystem": "instrument",
@@ -1438,7 +1456,7 @@
        "firmware": ""
       },
       "C5-detector-cooler-power": {
-       "file": "/usr/local/var/tcs/sensors/e3/C5-detector-cooler-power",
+       "file": "/usr/local/var/tcs/sensors/e0/C5-detector-cooler-power",
        "keyword": "",
        "prettyname": "C5 relative cooler power",
        "subsystem": "instrument",
@@ -1477,7 +1495,7 @@
        "firmware": ""
       },
       "C2-detector-cooler-state": {
-       "file": "/usr/local/var/tcs/sensors/d2/C2-detector-cooler-state",
+       "file": "/usr/local/var/tcs/sensors/d0/C2-detector-cooler-state",
        "keyword": "",
        "prettyname": "C2 cooler state",
        "subsystem": "instrument",
@@ -1516,7 +1534,7 @@
        "firmware": ""
       },
       "C5-detector-cooler-state": {
-       "file": "/usr/local/var/tcs/sensors/e3/C5-detector-cooler-state",
+       "file": "/usr/local/var/tcs/sensors/e0/C5-detector-cooler-state",
        "keyword": "",
        "prettyname": "C5 cooler state",
        "subsystem": "instrument",
@@ -1555,7 +1573,7 @@
        "firmware": ""
       },
       "C2-focuser-position": {
-       "file": "/usr/local/var/tcs/sensors/d2/C2-focuser-position",
+       "file": "/usr/local/var/tcs/sensors/d0/C2-focuser-position",
        "keyword": "",
        "prettyname": "C2 focuser position",
        "subsystem": "instrument",
@@ -1594,7 +1612,7 @@
        "firmware": ""
       },
       "C5-focuser-position": {
-       "file": "/usr/local/var/tcs/sensors/e3/C5-focuser-position",
+       "file": "/usr/local/var/tcs/sensors/e0/C5-focuser-position",
        "keyword": "",
        "prettyname": "C5 focuser position",
        "subsystem": "instrument",
@@ -1960,13 +1978,13 @@
 //   C4-focuser-position                { file /usr/local/var/tcs/sensors/d3/C4-focuser-position                      keyword ""   prettyname "C4 focuser position"       group "detector-C4" type "integer" unit ""  model "Starlight Instruments Focus Boss II" identifier ""          firmware "" }
 //   C4-filter-wheel-position           { file /usr/local/var/tcs/sensors/d3/C4-filter-wheel-position                 keyword ""   prettyname "C4 filter wheel position"  group "detector-C4" type "integer" unit ""  model ""                                    identifier ""          firmware "" }
 //
-//   C5-detector-detector-temperature   { file /usr/local/var/tcs/sensors/e3/C5-detector-detector-temperature         keyword ""   prettyname "C5 detector temperature"   group "detector-C5" type "float"   unit "C" model "FLI ML50100"                         identifier "ML2341018" firmware "" }
-//   C5-detector-housing-temperature    { file /usr/local/var/tcs/sensors/e3/C5-detector-housing-temperature          keyword ""   prettyname "C5 housing temperature"    group "detector-C5" type "float"   unit "C" model "FLI ML50100"                         identifier "ML2341018" firmware "" }
-//   C5-detector-cooler-set-temperature { file /usr/local/var/tcs/sensors/e3/C5-detector-cooler-set-temperature       keyword ""   prettyname "C5 cooler set temperature" group "detector-C5" type "float"   unit "C" model "FLI ML50100"                         identifier "ML2341018" firmware "" }
-//   C5-detector-cooler-power           { file /usr/local/var/tcs/sensors/e3/C5-detector-cooler-power                 keyword ""   prettyname "C5 relative cooler power"  group "detector-C5" type "float"   unit ""  model "FLI ML50100"                         identifier "ML2341018" firmware "" }
-//   C5-detector-cooler-state           { file /usr/local/var/tcs/sensors/e3/C5-detector-cooler-state                 keyword ""   prettyname "C5 cooler state"           group "detector-C5" type "string"  unit ""  model "FLI ML50100"                         identifier "ML2341018" firmware "" }
-//   C5-focuser-position                { file /usr/local/var/tcs/sensors/e3/C5-focuser-position                      keyword ""   prettyname "C5 focuser position"       group "detector-C5" type "integer" unit ""  model "Starlight Instruments Focus Boss II" identifier ""          firmware "" }
-//   C5-filter-wheel-position           { file /usr/local/var/tcs/sensors/e3/C5-filter-wheel-position                 keyword ""   prettyname "C5 filter wheel position"  group "detector-C5" type "integer" unit ""  model ""                                    identifier ""          firmware "" }
+//   C5-detector-detector-temperature   { file /usr/local/var/tcs/sensors/e0/C5-detector-detector-temperature         keyword ""   prettyname "C5 detector temperature"   group "detector-C5" type "float"   unit "C" model "FLI ML50100"                         identifier "ML2341018" firmware "" }
+//   C5-detector-housing-temperature    { file /usr/local/var/tcs/sensors/e0/C5-detector-housing-temperature          keyword ""   prettyname "C5 housing temperature"    group "detector-C5" type "float"   unit "C" model "FLI ML50100"                         identifier "ML2341018" firmware "" }
+//   C5-detector-cooler-set-temperature { file /usr/local/var/tcs/sensors/e0/C5-detector-cooler-set-temperature       keyword ""   prettyname "C5 cooler set temperature" group "detector-C5" type "float"   unit "C" model "FLI ML50100"                         identifier "ML2341018" firmware "" }
+//   C5-detector-cooler-power           { file /usr/local/var/tcs/sensors/e0/C5-detector-cooler-power                 keyword ""   prettyname "C5 relative cooler power"  group "detector-C5" type "float"   unit ""  model "FLI ML50100"                         identifier "ML2341018" firmware "" }
+//   C5-detector-cooler-state           { file /usr/local/var/tcs/sensors/e0/C5-detector-cooler-state                 keyword ""   prettyname "C5 cooler state"           group "detector-C5" type "string"  unit ""  model "FLI ML50100"                         identifier "ML2341018" firmware "" }
+//   C5-focuser-position                { file /usr/local/var/tcs/sensors/e0/C5-focuser-position                      keyword ""   prettyname "C5 focuser position"       group "detector-C5" type "integer" unit ""  model "Starlight Instruments Focus Boss II" identifier ""          firmware "" }
+//   C5-filter-wheel-position           { file /usr/local/var/tcs/sensors/e0/C5-filter-wheel-position                 keyword ""   prettyname "C5 filter wheel position"  group "detector-C5" type "integer" unit ""  model ""                                    identifier ""          firmware "" }
 //
 // }
 //
