@@ -1728,7 +1728,15 @@ namespace eval "html" {
     }
 
     if {[lsearch -exact $servers "shutters"] != -1} {
-      if {[string equal [client::getstatus "shutters"] "ok"]} {
+      set internalhumiditysensor [config::getvalue "supervisor" "internalhumiditysensor"]
+      if {[string equal $internalhumiditysensor ""]} {
+        set internalhumidity ""
+      } else {
+        set internalhumidity [formatpercentifok "%.0f%%" [client::getdata "sensors" $internalhumiditysensor]]
+      }
+      if {![string equal [client::getstatus "shutters"] "ok"]} {
+        writehtmlfullrow "Shutters" 
+      } else {
         set uppershutter [client::getdata "shutters" "uppershutter"]
         set lowershutter [client::getdata "shutters" "lowershutter"]
         if {[string equal "open" $lowershutter] && [string equal "open" $uppershutter]} {
@@ -1738,25 +1746,35 @@ namespace eval "html" {
         } else {
           set shutters "intermediate"
         }
-        writehtmlrow "Shutters" $shutters
-      } else {
-        writehtmlrow "Shutters"
+        if {[string equal "$internalhumidity" ""]} {
+          writehtmlfullrow "Shutters" "$shutters"
+        } else {
+          writehtmlfullrow "Shutters" "$shutters ($internalhumidity)"
+        }
       }
     }
     
     if {[lsearch -exact $servers "enclosure"] != -1} {
-      if {[string equal [client::getstatus "enclosure"] "ok"]} {
-        writehtmlrow "Enclosure" [client::getdata "enclosure" "enclosure"]
+      set internalhumiditysensor [config::getvalue "supervisor" "internalhumiditysensor"]
+      if {[string equal $internalhumiditysensor ""]} {
+        set internalhumidity ""
       } else {
-        writehtmlrow "Enclosure" 
+        set internalhumidity [formatpercentifok "%.0f%%" [client::getdata "sensors" $internalhumiditysensor]]
+      }
+      if {![string equal [client::getstatus "enclosure"] "ok"]} {
+        writehtmlfullrow "Enclosure" 
+      } elseif {[string equal "$internalhumidity" ""]} {
+        writehtmlfullrow "Enclosure" [client::getdata "enclosure" "enclosure"]
+      } else {
+        writehtmlfullrow "Enclosure" "[client::getdata "enclosure" "enclosure"] ($internalhumidity)"
       }
     }
 
     if {[lsearch -exact $servers "covers"] != -1} {
       if {[string equal [client::getstatus "covers"] "ok"]} {
-        writehtmlrow "Covers" [client::getdata "covers" "covers"]
+        writehtmlfullrow "Covers" [client::getdata "covers" "covers"]
       } else {
-        writehtmlrow "Covers" 
+        writehtmlfullrow "Covers" 
       }
     }
 
