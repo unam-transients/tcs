@@ -29,9 +29,9 @@ prefix=${1:-/usr/local}
 
 ########################################################################
 
-sudo apt-get -y update
-sudo apt-get -y upgrade
-sudo apt-get -y dist-upgrade
+#sudo apt-get -y update
+#sudo apt-get -y upgrade
+#sudo apt-get -y dist-upgrade
 
 sudo apt-get -y install nano
 sudo apt-get -y install ntp
