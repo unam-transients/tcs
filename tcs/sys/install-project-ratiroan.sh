@@ -103,6 +103,7 @@ EOF
   case $host in
   ratiroan-control)
     cat <<"EOF"
+00  *  *  *  *  owserver -c /etc/owfs.conf
 *   *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles services control detectors
 *  *  *  *  *  /usr/local/bin/tcs updateweatherfiles-oan
 00 18 *  *  *  /usr/local/bin/tcs updateweatherfiles-oan -a
