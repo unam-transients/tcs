@@ -23,6 +23,9 @@
 
 ########################################################################
 
+
+Need to run this to authenticate: controller::pushcommand "AUTH PLAIN \"admin\" \"admin\"\n"
+
 package require "astrometry"
 package require "config"
 package require "controller"
@@ -31,12 +34,15 @@ package require "log"
 package require "pointing"
 package require "server"
 
-package provide "mountntm" 0.0
+package provide "mountopentsi" 0.0
 
 config::setdefaultvalue "mount" "controllerhost"             "mount"
 config::setdefaultvalue "mount" "controllerport"             65432
+config::setdefaultvalue "mount" "authcommand"                "AUTH PLAIN \"admin\" \"admin\""
+
 config::setdefaultvalue "mount" "allowedpositionerror"       "4as"
 config::setdefaultvalue "mount" "pointingmodelparameters0"   [dict create]
+config::setdefaultvalue "mount" "pointingmodelpolarhole"     "0"
 config::setdefaultvalue "mount" "pointingmodelID0"           "0"
 config::setdefaultvalue "mount" "pointingmodelIH0"           "0"
 config::setdefaultvalue "mount" "pointingmodelparameters180" [dict create]
@@ -67,6 +73,8 @@ namespace eval "mount" {
 
   variable controllerhost              [config::getvalue "mount" "controllerhost"]
   variable controllerport              [config::getvalue "mount" "controllerport"]
+  variable authcommand                 [config::getvalue "mount" "authcommand"] 
+  
   variable allowedpositionerror        [astrometry::parseangle [config::getvalue "mount" "allowedpositionerror"]]
   variable pointingmodelpolarhole      [astrometry::parsedistance [config::getvalue "mount" "pointingmodelpolarhole"]]
   variable allowedguideoffset          [astrometry::parseoffset [config::getvalue "mount" "allowedguideoffset"]]
@@ -111,26 +119,8 @@ namespace eval "mount" {
   set controller::port                        $controllerport
   set controller::connectiontype              "persistent"
   set controller::statuscommand "$statuscommandidentifier GET [join {
-    HA.REALPOS
-    HA.TARGETDISTANCE
-    HA.MOTION_STATE
-    HA.TRAJECTORY.RUN
-    HA.TRAJECTORY.FREEPOINTS
-    HA.REFERENCED
-    HA.ERROR_STATE
-    DEC.REALPOS
-    DEC.TARGETDISTANCE
-    DEC.MOTION_STATE
-    DEC.TRAJECTORY.RUN
-    DEC.TRAJECTORY.FREEPOINTS
-    DEC.REFERENCED
-    DEC.ERROR_STATE
-    LOCAL.REFERENCED
-    CABINET.ERROR_STATE
-    CABINET.POWER_STATE
-    CABINET.REFERENCED
-    CABINET.STATUS.LIST
-    } ";"]\n"
+    TELESCOPE.POWER
+  } ";"]\n"
   set controller::timeoutmilliseconds         10000
   set controller::intervalmilliseconds        50
   set controller::updatedata                  mount::updatecontrollerdata
@@ -275,6 +265,8 @@ namespace eval "mount" {
 
     set controllerresponse [string trim $controllerresponse]
     set controllerresponse [string trim $controllerresponse "\0"]
+    
+    log::info "controller response: \"$controllerresponse\"."
 
     if {[isignoredcontrollerresponse $controllerresponse]} {
       return false
