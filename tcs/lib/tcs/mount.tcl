@@ -188,7 +188,11 @@ namespace eval "mount" {
 
   proc start {} {
     controller::startcommandloop
+    after 1000
+    controller::pushcommand "AUTH PLAIN \"admin\" \"admin\"\n"
+    after 1000
     controller::startstatusloop
+    after 1000
     server::newactivitycommand "starting" "started" mount::startactivitycommand
   }
 
