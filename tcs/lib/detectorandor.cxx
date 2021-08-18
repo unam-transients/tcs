@@ -50,6 +50,7 @@ static int ihsspeed;
 static int igain;
 static int emgain;
 static int flipped;
+static double actualexposuretime;
 
 static char amplifier[DETECTOR_STR_BUFFER_SIZE] = "";
 static char vsspeed[DETECTOR_STR_BUFFER_SIZE] = "";
@@ -385,16 +386,22 @@ detectorrawexpose(double exposuretime, const char *shutter)
   if (strcmp(shutter, "open") != 0 && strcmp(shutter, "closed") != 0)
     DETECTOR_ERROR("invalid shutter argument");
 
-  status = SetExposureTime(exposuretime);
-  if (status != DRV_SUCCESS)
-    DETECTOR_ERROR(msg("unable to set exposure time (status is %u).", status));
-    
   if (strcmp(shutter, "open") == 0)
     status = SetShutter(0, 0, 50, 50);
   else 
     status = SetShutter(0, 2, 50, 50);
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR(msg("unable to set shutter (status is %u).", status));
+
+  status = SetExposureTime(exposuretime);
+  if (status != DRV_SUCCESS)
+    DETECTOR_ERROR(msg("unable to set exposure time (status is %u).", status));
+    
+  float exposure, accumulate, kinetic;
+  status = GetAcquisitionTimings(&exposure, &accumulate, &kinetic);
+  if (status != DRV_SUCCESS)
+    DETECTOR_ERROR(msg("unable to get exposure time (status is %u).", status));
+  actualexposuretime = exposure;    
     
   status = StartAcquisition();
   if (status != DRV_SUCCESS)
@@ -714,6 +721,8 @@ detectorrawgetvalue(const char *name)
     snprintf(value, sizeof(value), "%lu", windowny);
   else if (strcmp(name, "binning") == 0)
     snprintf(value, sizeof(value), "%lu", binning);
+  else if (strcmp(name, "actualexposuretime") == 0)
+    snprintf(value, sizeof(value), "%.3f", actualexposuretime);
   else
     snprintf(value, sizeof(value), "%s", detectorrawgetdatavalue(name));
   return value;
