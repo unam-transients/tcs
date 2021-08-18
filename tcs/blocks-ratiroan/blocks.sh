@@ -89,7 +89,7 @@ sh pointing-map.sh
   #  singleblock 2019B-1002-0 e$letter
   #done
 
-  allblocks 2003-del-burgo              d
+  #allblocks 2003-del-burgo              d
   
   allblocks 2000-gonzalez               e
 
@@ -104,6 +104,8 @@ sh pointing-map.sh
   singleblock 2002-roman-0 h0
   singleblock 2002-roman-1 h1
   singleblock 2002-roman-2 h2
+
+  singleblock 2004-garcia-0 i0
 
   allblocks 0004-initial-focus          m
   allblocks 0004-focus                  n
