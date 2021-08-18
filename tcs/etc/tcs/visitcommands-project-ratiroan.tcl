@@ -293,8 +293,8 @@ proc delburgovisit {repeats} {
 
   executor::track
 
-  executor::setwindow  "default"
   executor::setbinning 2 2 1 1
+  executor::setwindow "default"
 
   executor::waituntiltracking
 
@@ -304,12 +304,17 @@ proc delburgovisit {repeats} {
   executor::track
   executor::waituntiltracking
 
+  executor::setbinning 1 1 1 1
+  executor::setwindow "default"
+
   executor::movefilterwheel "r" "none" "none" "none"
 
   set repeat 10
-  foreach offset i {0 50 100 200 400 800} {
+  foreach offset {0 50 100 200 400 800} {
     log::summary "delburgovisit: offsetting secondary by $offset steps."
     executor::setsecondaryoffset $offset
+    executor::track
+    executor::waituntiltracking
     set i 0
     while {$i < 5} {
       executor::expose object 5 5 "none" "none"
