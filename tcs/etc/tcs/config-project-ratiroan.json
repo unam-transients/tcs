@@ -62,6 +62,8 @@
     "southdeltalimit": "-33:00:00",
     "northdeltalimit": "+57:45:00",
     "easthalimit": "-05:20:20",
+    // Relaxed limit for GRB 210407A.
+    // "westhalimit": "+05:28:00",
     "westhalimit": "+05:20:20",
     "maxzenithdistancelimit": "79d",
     "idleha": "0h",
@@ -146,6 +148,8 @@
   },
   "mount": {
     "type": "ratiroan",
+    // Relaxed limit for GRB 210407A.
+    // "westhalimit": "+05:28:00",
     // C1 pointing model is from 20210409.
     "pointingmodelparameters": {
       "IH": "-0.003156",
@@ -303,7 +307,10 @@
     "detectortype": "fli",
     "detectoridentifier": "PL0212309",
     "detectorpixelscale": "0.159as",
-    "detectorinitialreadmode": "1MHz",
+    "detectorreadmodes": {
+      "initial": "default",
+      "default": "1MHz"
+    },
     "detectorinitialsoftwaregain": "4",
     "detectorinitialbinning": "2",
     "detectorwindows": {
@@ -368,7 +375,10 @@
     "detectortype": "fli",
     "detectoridentifier": "PL0154809",
     "detectorpixelscale": "0.159as",
-    "detectorinitialreadmode": "1MHz",
+    "detectorreadmodes": {
+      "initial": "default",
+      "default": "1MHz"
+    },
     "detectorinitialsoftwaregain": "4",
     "detectorinitialbinning": "2",
     "detectorwindows": {
@@ -424,7 +434,10 @@
     "detectortype": "h2rg",
     "detectoridentifier": "C2",
     "detectorpixelscale": "0.30as",
-    "detectorinitialreadmode": "1",
+    "detectorreadmodes": {
+      "initial": "default",
+      "default": "1"
+    },
     "detectorinitialsoftwaregain": "2",
     "detectorinitialbinning": "1",
     "detectorwindows": {
@@ -480,7 +493,10 @@
     "detectortype": "h2rg",
     "detectoridentifier": "C3",
     "detectorpixelscale": "0.30as",
-    "detectorinitialreadmode": "1",
+    "detectorreadmodes": {
+      "initial": "default",
+      "default": "1"
+    },
     "detectorinitialsoftwaregain": "2",
     "detectorinitialbinning": "1",
     "detectorwindows": {
