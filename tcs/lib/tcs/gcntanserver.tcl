@@ -45,20 +45,20 @@ namespace eval "gcntanserver" {
     return
   }
   
-  proc slaverespondtogrbalert {test projectidentifier blockidentifier name origin identifier type timestamp eventtimestamp retraction grb alpha delta equinox uncertainty} {
-    gcntan::respondtogrbalert $test $projectidentifier $blockidentifier $name $origin $identifier $type $timestamp $eventtimestamp $retraction $grb $alpha $delta $equinox $uncertainty
+  proc slaverespondtoalert {log test projectidentifier blockidentifier eventname origin identifier type alerttimestamp eventtimestamp retraction worthy alpha delta equinox uncertainty} {
+    gcntan::respondtoalert $log $test $projectidentifier $blockidentifier $eventname $origin $identifier $type $alerttimestamp $eventtimestamp $retraction $worthy $alpha $delta $equinox $uncertainty
     return
   }
 
-  proc slaverespondtolvcalert {test projectidentifier blockidentifier name origin identifier type timestamp eventtimestamp retraction skymapurl} {
-    gcntan::respondtolvcalert $test $projectidentifier $blockidentifier $name $origin $identifier $type $timestamp $eventtimestamp $retraction $skymapurl
+  proc slaverespondtolvcalert {log test projectidentifier blockidentifier eventname origin identifier type alerttimestamp eventtimestamp retraction skymapurl} {
+    gcntan::respondtolvcalert $log $test $projectidentifier $blockidentifier $eventname $origin $identifier $type $alerttimestamp $eventtimestamp $retraction $skymapurl
     return
   }
 
   proc configureslave {slave} {
     interp alias $slave stop              {} gcntanserver::slavestop
     interp alias $slave reset             {} gcntanserver::slavereset
-    interp alias $slave respondtogrbalert {} gcntanserver::slaverespondtogrbalert
+    interp alias $slave respondtoalert    {} gcntanserver::slaverespondtoalert
     interp alias $slave respondtolvcalert {} gcntanserver::slaverespondtolvcalert
   }
 
