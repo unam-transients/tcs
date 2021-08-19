@@ -44,6 +44,9 @@ cd "$tcsprefix"/var/tcs/halt
 if test $# = 0
 then
   case "$host" in
+  coatlicu-*)
+    set control instrument
+    ;;
   coatlioan-services)
     set services control c0 d0 e0 e1
     ;;
