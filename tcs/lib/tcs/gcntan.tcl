@@ -519,30 +519,19 @@ namespace eval "gcntan" {
     set type [type $packet]
     set class [swiftclass $log $packet]
     $log [format "%s: class is \"%s\"." $type $class]
-    switch [type $packet] {
-      "swiftbatgrbposition" -
-      "swiftbatgrbpostest" {
-        if {([field0 $packet 18] >> 1) & 1} {
-          return true
-        } else {
-          return false
-        }
-      }
-      "swiftbatquicklookposition" -
-      "swiftxrtposition" -
-      "swiftuvotposition" {
-        return ""
-      }
-      default {
-        error "unexpected packet type \"$packet\"."
-      }
+    if {[swiftretraction lognull $packet]} {
+      return false
+    } elseif {[swiftcataloged lognull $packet]} {
+      return false
+    } else {
+      return ""
     }
   }
   
   proc swiftretraction {log packet} {
     switch [type $packet] {
       "swiftbatquicklookposition" {
-        return ""
+        return false
       }
       "swiftbatgrbpostest" -
       "swiftbatgrbposition" -
@@ -560,9 +549,32 @@ namespace eval "gcntan" {
     }
   }
   
+  proc swiftcataloged {log packet} {
+    switch [type $packet] {
+      "swiftbatquicklookposition" {
+        return false
+      }
+      "swiftbatgrbpostest" -
+      "swiftbatgrbposition" -
+      "swiftxrtposition" -
+      "swiftuvotposition" {
+        if {([field0 $packet 18] >> 8) & 1} {
+          return true
+        } else {
+          return false
+        }
+      }
+      default {
+        error "unexpected packet type \"$packet\"."
+      }
+    }
+  }
+  
   proc swiftclass {log packet} {
     if {[swiftretraction lognull $packet]} {
       return "retraction"
+    } elseif {[swiftcataloged lognull $packet]} {
+      return "cataloged"
     } else {
       return "GRB"
     }
