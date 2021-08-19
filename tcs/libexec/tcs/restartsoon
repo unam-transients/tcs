@@ -45,6 +45,9 @@ if test $# = 0
 then
   host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
   case "$host" in
+  coatlicu-*)
+    set control instrument
+    ;;
   coatlioan-*)
     set services control c0 d0 e0 e1
     ;;

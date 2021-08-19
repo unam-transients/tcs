@@ -35,6 +35,7 @@ host=$(uname -n | sed 's/\..*//')
 # Start of tcs epilog.
 
 192.168.100.6 coatlicu-control control
+192.168.100.7 coatlicu-instrument instrument
 EOF
 ) | 
 sudo cp /dev/stdin /etc/hosts.tmp
@@ -94,18 +95,32 @@ EOF
     echo "gpio -i"
   fi
 
-  echo "tcs instrumentimageserver C0 control &"
+  # For some reason we have to start rsync explicitly.
+  echo "service rsync start"
 
+  case $host in
+  coatlicu-control)
+    echo "tcs instrumentimageserver C0 instrument &"
+    echo "tcs instrumentdataserver -f -d rsync://instrument/tcs/ &"
+  esac
+  
   echo "owserver -c /etc/owfs.conf"
   
-  echo "tcs instrumentdataserver -f -d rsync://localhost/tcs/ &"
   
   echo "mkdir -p /usr/local/var/tcs/reboot"
   echo "mkdir -p /usr/local/var/tcs/restart"
   echo "mkdir -p /usr/local/var/tcs/halt"
-  echo "tcs startserver log &"  
+  case $host in
+  *-control)
+    echo "tcs startserver log &"
+    ;;
+  *)
+    echo "# This sleep gives the services host time to reboot and start the log server."
+    echo "sleep 30"
+    ;;
+  esac
   echo "tcs log rc.local warning \"$host is booting.\""
-  echo "tcs startserver -a &"  
+  echo "tcs startserver -a &"
   echo "exit 0"
 
 ) |

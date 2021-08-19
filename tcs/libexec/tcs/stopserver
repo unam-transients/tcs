@@ -111,7 +111,10 @@ johnsoncu-control)
   allargs="supervisor selector executor instrument telescope C0 weather sensors sun moon target gcntan html log"
   ;;
 coatlicu-control)
-  allargs="supervisor selector executor instrument telescope C0 weather sensors sun moon target html log"
+  allargs="supervisor selector executor telescope weather sensors sun moon target html log"
+  ;;
+coatlicu-instrument)
+  allargs="instrument C0"
   ;;
 test-ubuntu-18)
   allargs="supervisor selector executor instrument telescope C0 weather sensors sun moon target gcntan html log"

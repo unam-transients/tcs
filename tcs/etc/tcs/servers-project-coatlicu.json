@@ -25,17 +25,17 @@
 ////////////////////////////////////////////////////////////////////////
 
 {
-  "log"        : { "host" : "localhost"  , "port" : 5000 },
-  "html"       : { "host" : "localhost"  , "port" : 5001 },
-  "moon"       : { "host" : "localhost"  , "port" : 5002 },
-  "sun"        : { "host" : "localhost"  , "port" : 5003 },
-  "target"     : { "host" : "localhost"  , "port" : 5004 },
-  "weather"    : { "host" : "localhost"  , "port" : 5005 },
-  "C0"         : { "host" : "localhost"  , "port" : 5006 },
-  "sensors"    : { "host" : "localhost"  , "port" : 5007 },
-  "instrument" : { "host" : "localhost"  , "port" : 5008 },
-  "telescope"  : { "host" : "localhost"  , "port" : 5009 },
-  "executor"   : { "host" : "localhost"  , "port" : 5010 },
-  "selector"   : { "host" : "localhost"  , "port" : 5011 },
-  "supervisor" : { "host" : "localhost"  , "port" : 5012 }
+  "log"        : { "host" : "control"   , "port" : 5000 },
+  "html"       : { "host" : "control"   , "port" : 5001 },
+  "moon"       : { "host" : "control"   , "port" : 5002 },
+  "sun"        : { "host" : "control"   , "port" : 5003 },
+  "target"     : { "host" : "control"   , "port" : 5004 },
+  "weather"    : { "host" : "control"   , "port" : 5005 },
+  "C0"         : { "host" : "instrument", "port" : 5006 },
+  "sensors"    : { "host" : "control"   , "port" : 5007 },
+  "instrument" : { "host" : "instrument", "port" : 5008 },
+  "telescope"  : { "host" : "control"   , "port" : 5009 },
+  "executor"   : { "host" : "control"   , "port" : 5010 },
+  "selector"   : { "host" : "control"   , "port" : 5011 },
+  "supervisor" : { "host" : "control"   , "port" : 5012 }
 }
