@@ -385,7 +385,7 @@ namespace eval "detector" {
   proc openfitsheader {fitsfilename} {
     variable bscale
     variable bzero
-    set naxis [list [detectorrawgetpixnx] [detectorrawgetpixny]]
+    set naxis [list [detectorrawgetpixnx] [detectorrawgetpixny] [detectorrawgetpixnz]]
     return [fitsheader::open $fitsfilename 16 $naxis $bscale $bzero]
   }
   
@@ -444,6 +444,8 @@ namespace eval "detector" {
   variable hsspeed                  {}
   variable gain                     {}
   variable emgain                   {}
+  variable frametime                {}
+  variable cycletime                {}
   variable softwaregain             {}
   variable rawsaturationlevel       65535
   variable saturationlevel          {}
@@ -503,6 +505,16 @@ namespace eval "detector" {
   proc getemgain {} {
     variable emgain
     return $emgain
+  }
+  
+  proc getframetime {} {
+    variable frametime
+    return $frametime
+  }
+  
+  proc getcycletime {} {
+    variable cycletime
+    return $cycletime
   }
 
   proc getsoftwaregain {} {
@@ -614,6 +626,8 @@ namespace eval "detector" {
     variable hsspeed
     variable gain
     variable emgain
+    variable frametime
+    variable cycletime
     variable softwaregain
     variable saturationlevel
     variable window
@@ -640,6 +654,8 @@ namespace eval "detector" {
     set hsspeed                  {}
     set gain                     {}
     set emgain                   {}
+    set frametime                {}
+    set cycletime                {}
     set softwaregain             {}
     set saturationlevel          {}
     set window                   {}
@@ -678,6 +694,8 @@ namespace eval "detector" {
     set hsspeed                  [detectorrawgetvalue "hsspeed"]
     set gain                     [detectorrawgetvalue "gain"]
     set emgain                   [detectorrawgetvalue "emgain"]
+    set frametime                [detectorrawgetvalue "frametime"]
+    set cycletime                [detectorrawgetvalue "cycletime"]
     set binning                  [detectorrawgetvalue "binning"]
     set detectortemperature      [detectorrawgetvalue "detectortemperature"]
     set detectorheatercurrent    [detectorrawgetvalue "detectorheatercurrent"]

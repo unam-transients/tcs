@@ -44,6 +44,7 @@ static unsigned long softwaregain = 1;
 static unsigned long pixi = 0;
 static unsigned long pixnx = 0;
 static unsigned long pixny = 0;
+static unsigned long pixnz = 1;
 static long *pix = NULL;
 
 static unsigned long pixdatawindowsx = 0;
@@ -97,7 +98,7 @@ detectorrawpixstart(void)
 {
   pixi = 0;
   free(pix);
-  pix = (long *) malloc(pixnx * pixny * sizeof(*pix));
+  pix = (long *) malloc(pixnx * pixny * pixnz * sizeof(*pix));
   if (pix == 0)
     DETECTOR_ERROR("unable to allocate memory for the detector pixel values.");
   DETECTOR_OK();
@@ -107,7 +108,7 @@ const char *
 detectorrawpixnext(const long *newpix, unsigned long n)
 {
   for (unsigned long i = 0; i < n; ++i, ++pixi) {
-    if (pixi == pixnx * pixny)
+    if (pixi == pixnx * pixny * pixnz)
       DETECTOR_ERROR("too much pixel data.");
     pix[pixi] = newpix[i];
   }
@@ -162,7 +163,7 @@ detectorrawpixnexthex(const char *newhexpix)
 const char *
 detectorrawpixend(void)
 {
-  if (pixi < pixnx * pixny)
+  if (pixi < pixnx * pixny * pixnz)
     DETECTOR_ERROR("too few pixel data.");
   updatestatistics();
   DETECTOR_OK();
@@ -200,6 +201,13 @@ detectorrawsetpixny(unsigned long ny)
   DETECTOR_OK();
 }
 
+const char *
+detectorrawsetpixnz(unsigned long nz)
+{
+  pixnz = nz;
+  DETECTOR_OK();
+}
+
 unsigned long
 detectorrawgetpixnx(void)
 {
@@ -212,6 +220,12 @@ detectorrawgetpixny(void)
   return pixny;
 }
 
+unsigned long
+detectorrawgetpixnz(void)
+{
+  return pixnz;
+}
+
 ////////////////////////////////////////////////////////////////////////
 
 static void
@@ -220,12 +234,14 @@ updatestatistics(void)
   double s0 = 0;
   double s1 = 0;
   double s2 = 0;
-  for (unsigned long iy = pixdatawindowsx; iy < pixdatawindowsy + pixdatawindowny; ++iy) {
-    for (unsigned long ix = pixdatawindowsx; ix < pixdatawindowsx + pixdatawindownx; ++ix) {
-      double z = pix[iy * pixnx + ix];
-      s0 += 1;
-      s1 += z;
-      s2 += z * z;
+  for (unsigned long iz = 0; iz < pixnz; ++iz) {
+    for (unsigned long iy = pixdatawindowsx; iy < pixdatawindowsy + pixdatawindowny; ++iy) {
+      for (unsigned long ix = pixdatawindowsx; ix < pixdatawindowsx + pixdatawindownx; ++ix) {
+        double z = pix[iy * pixnx + ix];
+        s0 += 1;
+        s1 += z;
+        s2 += z * z;
+      }
     }
   }
   if (s0 == 0) {
@@ -239,7 +255,7 @@ updatestatistics(void)
       standarddeviation = sqrt(variance);
     else
       standarddeviation = 0;
-  }
+  }  
   average /= softwaregain;
   standarddeviation /= softwaregain;
 }
@@ -310,7 +326,7 @@ detectorrawappendfitsdata(
     }
   }
     
-  unsigned long pixn = pixnx * pixny;
+  unsigned long pixn = pixnx * pixny * pixnz;
   for (unsigned long i = 0; i < pixn; ++i) {
     long z = floor((double) pix[i] / (double) softwaregain);
     short s16 = floor((z - bzero) / bscale);
