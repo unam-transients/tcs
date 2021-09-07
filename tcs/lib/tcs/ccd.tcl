@@ -209,6 +209,8 @@ namespace eval "ccd" {
     server::setdata "detectorhsspeed"                  [detector::gethsspeed]
     server::setdata "detectorgain"                     [detector::getgain]
     server::setdata "detectoremgain"                   [detector::getemgain]
+    server::setdata "detectorframetime"                [detector::getframetime]
+    server::setdata "detectorcycletime"                [detector::getcycletime]
     server::setdata "detectordetectortemperature"      $detectortemperature
     server::setdata "detectordetectorheatercurrent"    [detector::getdetectorheatercurrent]
     server::setdata "detectorhousingtemperature"       $housingtemperature
@@ -574,6 +576,12 @@ namespace eval "ccd" {
     if {[catch {
       fitsheader::writeccdfitsheader $channel [server::getdata "identifier"] "E"
       fitsheader::writetcsfitsheader $channel "E"
+      if {![string equal "" [server::getdata "detectorframetime"]]} {
+        fitsheader::writekeyandvalue $channel "FRMTIME"  double [server::getdata "detectorframetime"]
+      }
+      if {![string equal "" [server::getdata "detectorcycletime"]]} {
+        fitsheader::writekeyandvalue $channel "CYCTIME"  double [server::getdata "detectorcycletime"]
+      }
       detector::closefitsheader $channel
     } message]} {
       error "while writing FITS header: $message"

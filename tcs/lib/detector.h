@@ -81,8 +81,10 @@ extern bool        detectorrawgetisopen(void);
 extern const char *detectorrawsetsoftwaregain(unsigned long);
 extern const char *detectorrawsetpixnx(unsigned long);
 extern const char *detectorrawsetpixny(unsigned long);
+extern const char *detectorrawsetpixnz(unsigned long);
 extern unsigned long detectorrawgetpixnx(void);
 extern unsigned long detectorrawgetpixny(void);
+extern unsigned long detectorrawgetpixnz(void);
 
 extern const char *detectorrawsetpixdatawindow(unsigned long, unsigned long, unsigned long, unsigned long);
 

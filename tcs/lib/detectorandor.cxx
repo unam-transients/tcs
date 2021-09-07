@@ -50,7 +50,9 @@ static int ihsspeed;
 static int igain;
 static int emgain;
 static int flipped;
-static double actualexposuretime;
+static double frametime = 0;
+static double cycletime = 0;
+static int nframe = 0;
 
 static char amplifier[DETECTOR_STR_BUFFER_SIZE] = "";
 static char vsspeed[DETECTOR_STR_BUFFER_SIZE] = "";
@@ -118,9 +120,9 @@ detectorrawopen(char *identifier)
   if (status != DRV_SUCCESS) {
     DETECTOR_ERROR(msg("unable to initialize detector (status is %u).", status));
   }
-  
+
   sleep(2);
-  
+
   AndorCapabilities cap;
   cap.ulSize = sizeof(cap);
   status = GetCapabilities(&cap);
@@ -145,43 +147,39 @@ detectorrawopen(char *identifier)
   char model[DETECTOR_STR_BUFFER_SIZE];
   status = GetHeadModel(model);
   if (status != DRV_SUCCESS)
-    DETECTOR_ERROR(msg("unable to get head model (status is %u).", status));  
-  
+    DETECTOR_ERROR(msg("unable to get head model (status is %u).", status));
+
   int serialnumber;
   status = GetCameraSerialNumber(&serialnumber);
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR(msg("unable to get serial number (status is %u).", status));
 
-  snprintf(description, sizeof(description), "%s %s (%d)", cameratype, model, serialnumber);    
-  
+  snprintf(description, sizeof(description), "%s %s (%d)", cameratype, model, serialnumber);
+
   coolersettemperature = 25.0;
   cooler = "off";
   status = CoolerOFF();
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR(msg("unable to switch off cooler (status is %u).", status));
-    
+
   int nx;
   int ny;
   status = GetDetector(&nx, &ny);
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR(msg("unable to get detector size (status is %u).", status));
   fullnx = nx;
-  fullny = ny;  
-    
+  fullny = ny;
+
   status = SetReadMode(4);
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR(msg("unable to select raw read mode (status is %u).", status));
-
-  status = SetAcquisitionMode(1);
-  if (status != DRV_SUCCESS)
-    DETECTOR_ERROR(msg("unable to select raw acquisition mode (status is %u).", status));
 
   status = SetShutter(1,0,50,50);
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR(msg("unable to select raw shutter mode (status is %u).", status));
 
   detectorrawsetisopen(true);
-  
+
   {
     FILE *fp = fopen("/tmp/andor.txt", "w");
     unsigned int status;
@@ -189,21 +187,21 @@ detectorrawopen(char *identifier)
     int nchannel;
     status = GetNumberADChannels(&nchannel);
     if (status != DRV_SUCCESS)
-      DETECTOR_ERROR(msg("GetNumberADChannels failed (status is %u).", status));  
+      DETECTOR_ERROR(msg("GetNumberADChannels failed (status is %u).", status));
     fprintf(fp, "number of AD channels = %d\n", nchannel);
-    
+
     int namp;
     status = GetNumberAmp(&namp);
     if (status != DRV_SUCCESS)
-      DETECTOR_ERROR(msg("GetNumberAmp failed (status is %u).", status));  
+      DETECTOR_ERROR(msg("GetNumberAmp failed (status is %u).", status));
     fprintf(fp, "number of amplifiers = %d\n", namp);
-    
+
     int npreampgain;
     status = GetNumberPreAmpGains(&npreampgain);
     if (status != DRV_SUCCESS)
-      DETECTOR_ERROR(msg("GetNumberPreAmpGains failed (status is %u).", status));  
+      DETECTOR_ERROR(msg("GetNumberPreAmpGains failed (status is %u).", status));
     fprintf(fp, "number of preamp gains = %d\n", npreampgain);
-    
+
     for (int iamp = 0; iamp < namp; ++iamp) {
       char desc[256];
       status = GetAmpDesc(iamp, desc, sizeof(desc));
@@ -215,13 +213,13 @@ detectorrawopen(char *identifier)
         DETECTOR_ERROR(msg("GetReadoutFlippedByAmplifier failed (status is %u).", status));
       fprintf(fp, "amplifier %d readout flipped = %d\n", iamp, flipped);
     }
-    
+
     for (int ichannel = 0; ichannel < nchannel; ++ichannel) {
 
       int bits;
       status = GetBitDepth(ichannel, &bits);
       if (status != DRV_SUCCESS)
-        DETECTOR_ERROR(msg("GetBitDepth failed (status is %u).", status));  
+        DETECTOR_ERROR(msg("GetBitDepth failed (status is %u).", status));
       fprintf(fp, "bit depth of AD channel %d = %d\n", ichannel, bits);
 
       for (int itype = 0; itype < 2; ++itype) {
@@ -235,16 +233,16 @@ detectorrawopen(char *identifier)
         int nhsspeed;
         status = GetNumberHSSpeeds(ichannel, itype, &nhsspeed);
         if (status != DRV_SUCCESS)
-          DETECTOR_ERROR(msg("GetNumberHSSpeeds failed (status is %u).", status));  
+          DETECTOR_ERROR(msg("GetNumberHSSpeeds failed (status is %u).", status));
         fprintf(fp, "number of HS speeds for AD channel %d (%s) = %d\n", ichannel, type, nhsspeed);
 
         for (int ihsspeed = 0; ihsspeed < nhsspeed; ++ihsspeed) {
           float speed;
           status = GetHSSpeed(ichannel, itype, ihsspeed, &speed);
           if (status != DRV_SUCCESS)
-            DETECTOR_ERROR(msg("GetHSSpeed failed (status is %u).", status));  
+            DETECTOR_ERROR(msg("GetHSSpeed failed (status is %u).", status));
           fprintf(fp, "HS speed %d for AD channel %d (%s) = %f\n", ihsspeed, ichannel, type, speed);
-          
+
           int available;
           for (int ipreampgain = 0; ipreampgain < npreampgain; ++ipreampgain) {
             status = IsPreAmpGainAvailable(ichannel, itype, ihsspeed, ipreampgain, &available);
@@ -260,35 +258,35 @@ detectorrawopen(char *identifier)
               fprintf(fp, "gain %d is not available\n", ipreampgain);
             }
           }
-    
+
         }
 
       }
 
     }
-    
+
     int nvsspeed;
     status = GetNumberVSSpeeds(&nvsspeed);
     if (status != DRV_SUCCESS)
-       DETECTOR_ERROR(msg("GetNumberVSSpeeds failed (status is %u).", status));  
+       DETECTOR_ERROR(msg("GetNumberVSSpeeds failed (status is %u).", status));
     fprintf(fp, "number of VS speeds = %d\n", nvsspeed);
 
     for (int ivsspeed = 0; ivsspeed < nvsspeed; ++ivsspeed) {
       float speed;
       status = GetVSSpeed(ivsspeed, &speed);
       if (status != DRV_SUCCESS)
-        DETECTOR_ERROR(msg("GetVSSpeed failed (status is %u).", status));  
+        DETECTOR_ERROR(msg("GetVSSpeed failed (status is %u).", status));
       fprintf(fp, "VS speed %d = %f ns\n", ivsspeed, speed * 1e3);
     }
-    
+
     {
       float speed;
       int ivsspeed;
       status = GetFastestRecommendedVSSpeed(&ivsspeed, &speed);
       if (status != DRV_SUCCESS)
-        DETECTOR_ERROR(msg("GetFastestRecommendedVSSpeed failed (status is %u).", status));  
+        DETECTOR_ERROR(msg("GetFastestRecommendedVSSpeed failed (status is %u).", status));
       fprintf(fp, "fastest recommended VS speed = %d %f ns\n", ivsspeed, speed * 1e3);
-    }    
+    }
 
     fprintbits(fp, "ulAcqModes", cap.ulAcqModes);
     fprintbits(fp, "ulReadModes", cap.ulReadModes);
@@ -302,12 +300,12 @@ detectorrawopen(char *identifier)
     fprintbits(fp, "ulPixelMode", cap.ulPixelMode);
     fprintbits(fp, "ulSetFunctions", cap.ulSetFunctions);
     fprintbits(fp, "ulGetFunctions", cap.ulGetFunctions);
-    
+
     // Select EMCCD register
     status = SetOutputAmplifier(0);
     if (status != DRV_SUCCESS)
       DETECTOR_ERROR(msg("SetOutputAmplifier failed (status is %u).", status));
-    
+
     for (int imode = 0; imode <= 3; ++imode) {
       status = SetEMGainMode(imode);
       if (status != DRV_SUCCESS)
@@ -320,8 +318,8 @@ detectorrawopen(char *identifier)
 
     // Select EMCCD register
     status = SetEMAdvanced(1);
-      if (status != DRV_SUCCESS)
-        DETECTOR_ERROR(msg("SetEMAdvanced failed (status is %u).", status));
+    if (status != DRV_SUCCESS)
+      DETECTOR_ERROR(msg("SetEMAdvanced failed (status is %u).", status));
 
     for (int imode = 0; imode <= 3; ++imode) {
       status = SetEMGainMode(imode);
@@ -335,8 +333,8 @@ detectorrawopen(char *identifier)
 
     // Select convencional CCD register
     status = SetOutputAmplifier(1);
-      if (status != DRV_SUCCESS)
-        DETECTOR_ERROR(msg("SetOutputAmplifier failed (status is %u).", status));
+    if (status != DRV_SUCCESS)
+      DETECTOR_ERROR(msg("SetOutputAmplifier failed (status is %u).", status));
 
     fclose(fp);
   }
@@ -388,21 +386,54 @@ detectorrawexpose(double exposuretime, const char *shutter)
 
   if (strcmp(shutter, "open") == 0)
     status = SetShutter(0, 0, 50, 50);
-  else 
+  else
     status = SetShutter(0, 2, 50, 50);
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR(msg("unable to set shutter (status is %u).", status));
 
-  status = SetExposureTime(exposuretime);
-  if (status != DRV_SUCCESS)
-    DETECTOR_ERROR(msg("unable to set exposure time (status is %u).", status));
-    
-  float exposure, accumulate, kinetic;
-  status = GetAcquisitionTimings(&exposure, &accumulate, &kinetic);
+  if (emgain == 0) {
+  
+    status = SetAcquisitionMode(1);
+    if (status != DRV_SUCCESS)
+      DETECTOR_ERROR(msg("unable to select single-scan acquisition mode (status is %u).", status));
+
+    status = SetExposureTime(exposuretime);
+    if (status != DRV_SUCCESS)
+      DETECTOR_ERROR(msg("unable to set exposure time (status is %u).", status));
+
+  } else {
+  
+    status = SetAcquisitionMode(5);
+    if (status != DRV_SUCCESS)
+      DETECTOR_ERROR(msg("unable to select run-till-abort acquisition mode (status is %u).", status));
+  
+    status = SetExposureTime(0);
+    if (status != DRV_SUCCESS)
+      DETECTOR_ERROR(msg("unable to set exposure time (status is %u).", status));
+
+    status = SetKineticCycleTime(0);
+    if (status != DRV_SUCCESS)
+      DETECTOR_ERROR(msg("unable to select run-till-abort acquisition mode (status is %u).", status));
+  }
+
+  float exposure, accumulate, cycle;
+  status = GetAcquisitionTimings(&exposure, &accumulate, &cycle);
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR(msg("unable to get exposure time (status is %u).", status));
-  actualexposuretime = exposure;    
-    
+  frametime = exposure;
+  cycletime = cycle;
+  
+  if (emgain == 0) {
+    nframe = 1;
+  } else {
+    nframe = exposuretime / frametime;
+    if (nframe == 0)
+      nframe = 1;
+  }
+
+  detectorrawsetpixnz(nframe);
+  detectorrawpixstart();
+
   status = StartAcquisition();
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR(msg("unable to start acquisition (status is %u).", status));
@@ -419,7 +450,7 @@ detectorrawcancel(void)
   unsigned int status;
   status = AbortAcquisition();
   if (status != DRV_SUCCESS && status != DRV_IDLE)
-    DETECTOR_ERROR(msg("unable to abort acquisition (status is %u).", status));    
+    DETECTOR_ERROR(msg("unable to abort acquisition (status is %u).", status));
   DETECTOR_OK();
 }
 
@@ -428,9 +459,47 @@ detectorrawcancel(void)
 bool
 detectorrawgetreadytoberead(void)
 {
-  int status;
-  GetStatus(&status);
-  return status != DRV_ACQUIRING;
+  if (emgain == 0) {
+    int status;
+    GetStatus(&status);
+    return status != DRV_ACQUIRING;
+  } else {
+  
+    while (1) {
+
+      unsigned long nx = detectorrawgetpixnx();
+      unsigned long ny = detectorrawgetpixny();
+
+      unsigned short pix[ny * nx];
+      unsigned int status;
+      status = GetOldestImage16(pix, nx * ny);
+      if (status == DRV_NO_NEW_DATA)
+        break;
+    
+      if (status != DRV_SUCCESS)
+        DETECTOR_ERROR(msg("unable to get pixel data (nx is %lu ny is %lu status is %u).", nx, ny, status));
+
+      if (flipped) {
+        for (unsigned long iy = 0; iy < ny; ++iy) {
+          for (unsigned long ix = 0; ix < nx; ++ix) {
+            long lpix = pix[iy * nx + (nx - 1 - ix)];
+            detectorrawpixnext(&lpix, 1);
+          }
+        }
+      } else {
+        for (unsigned long iy = 0; iy < ny; ++iy) {
+          for (unsigned long ix = 0; ix < nx; ++ix) {
+            long lpix = pix[iy * nx - ix];
+            detectorrawpixnext(&lpix, 1);
+          }
+        }
+      }
+    }
+  
+    int i;
+    GetTotalNumberImagesAcquired(&i);
+    return i >= nframe;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -443,33 +512,45 @@ detectorrawread(void)
   if (!detectorrawgetreadytoberead())
     DETECTOR_ERROR("the detector is not ready to be read.");
 
-  unsigned long nx = detectorrawgetpixnx();
-  unsigned long ny = detectorrawgetpixny();
+  if (emgain == 0) {
 
-  unsigned short pix[ny * nx];
-  unsigned int status;
-  status = GetAcquiredData16(pix, nx * ny);
-  if (status != DRV_SUCCESS)
-    DETECTOR_ERROR(msg("unable to get pixel data (nx is %lu ny is %lu status is %u).", nx, ny, status));
-  
-  detectorrawpixstart();
-  if (flipped) {
-    for (unsigned long iy = 0; iy < ny; ++iy) {
-      for (unsigned long ix = 0; ix < nx; ++ix) {
-        long lpix = pix[iy * nx + (nx - 1 - ix)];
-        detectorrawpixnext(&lpix, 1);
+    unsigned long nx = detectorrawgetpixnx();
+    unsigned long ny = detectorrawgetpixny();
+
+    unsigned short pix[ny * nx];
+    unsigned int status;
+    status = GetAcquiredData16(pix, nx * ny);
+    if (status != DRV_SUCCESS)
+      DETECTOR_ERROR(msg("unable to get pixel data (nx is %lu ny is %lu status is %u).", nx, ny, status));
+
+    if (flipped) {
+      for (unsigned long iy = 0; iy < ny; ++iy) {
+        for (unsigned long ix = 0; ix < nx; ++ix) {
+          long lpix = pix[iy * nx + (nx - 1 - ix)];
+          detectorrawpixnext(&lpix, 1);
+        }
+      }
+    } else {
+      for (unsigned long iy = 0; iy < ny; ++iy) {
+        for (unsigned long ix = 0; ix < nx; ++ix) {
+          long lpix = pix[iy * nx - ix];
+          detectorrawpixnext(&lpix, 1);
+        }
       }
     }
+    detectorrawpixend();
+
   } else {
-    for (unsigned long iy = 0; iy < ny; ++iy) {
-      for (unsigned long ix = 0; ix < nx; ++ix) {
-        long lpix = pix[iy * nx - ix];
-        detectorrawpixnext(&lpix, 1);
-      }
-    }
+
+    unsigned int status;
+    status = AbortAcquisition();
+    if (status != DRV_SUCCESS && status != DRV_IDLE)
+      DETECTOR_ERROR(msg("unable to abort acquisition (status is %u).", status));
+
+    detectorrawpixend();
+
   }
-  detectorrawpixend();
-  
+
   DETECTOR_OK();
 }
 
@@ -483,19 +564,19 @@ setreadmodehelper(int iadc, int iamplifier, int ivsspeed, int ihsspeed, int igai
   status = SetADChannel(iadc);
   if (status != DRV_SUCCESS)
     return "invalid ADC index.";
-  
+
   status = SetOutputAmplifier(iamplifier);
   if (status != DRV_SUCCESS)
     return "invalid amplifier index.";
-  
+
   status = SetVSSpeed(ivsspeed);
   if (status != DRV_SUCCESS)
     return "invalid VS speed index.";
-  
+
   status = SetHSSpeed(iamplifier, ihsspeed);
   if (status != DRV_SUCCESS)
     return "invalid HS speed index.";
-  
+
   status = SetPreAmpGain(igain);
   if (status != DRV_SUCCESS)
     return "invalid gain index";
@@ -511,6 +592,9 @@ setreadmodehelper(int iadc, int iamplifier, int ivsspeed, int ihsspeed, int igai
     status = SetEMCCDGain(emgain);
     if (status != DRV_SUCCESS)
       return "invalid EMCCD gain.";
+    status = SetFrameTransferMode(0);
+    if (status != DRV_SUCCESS)
+      return "unable to select non-frametransfer mode";
   } else {
     // 3 = Real EM gain
     status = SetEMGainMode(3);
@@ -522,8 +606,11 @@ setreadmodehelper(int iadc, int iamplifier, int ivsspeed, int ihsspeed, int igai
     status = SetEMCCDGain(emgain);
     if (status != DRV_SUCCESS)
       return "invalid EMCCD gain.";
+    status = SetFrameTransferMode(1);
+    if (status != DRV_SUCCESS)
+      return "unable to select frametransfer mode";
   }
-  
+
   return "";
 }
 
@@ -531,21 +618,21 @@ const char *
 detectorrawsetreadmode(const char *newreadmode)
 {
   DETECTOR_CHECK_OPEN();
-  
+
   int newiadc;
   int newiamplifier;
   int newivsspeed;
   int newihsspeed;
   int newigain;
   int newemgain;
-  
-  if (sscanf(newreadmode, "%d-%d-%d-%d-%d-%d", 
+
+  if (sscanf(newreadmode, "%d-%d-%d-%d-%d-%d",
     &newiadc, &newiamplifier, &newivsspeed, &newihsspeed, &newigain, &newemgain) != 6)
     DETECTOR_ERROR("invalid detector read mode.");
 
-  const char *msg = 
+  const char *msg =
     setreadmodehelper(newiadc, newiamplifier, newivsspeed, newihsspeed, newigain, newemgain);
-  
+
   if (strcmp(msg, "") != 0) {
     setreadmodehelper(iadc, iamplifier, ivsspeed, ihsspeed, igain, emgain);
     DETECTOR_ERROR(msg);
@@ -560,7 +647,7 @@ detectorrawsetreadmode(const char *newreadmode)
 
   strcpy(readmode, newreadmode);
 
-  int status;  
+  int status;
   status = GetAmpDesc(iamplifier, amplifier, sizeof(amplifier));
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR("unable to determine amplifier.");
@@ -568,9 +655,9 @@ detectorrawsetreadmode(const char *newreadmode)
     snprintf(amplifier, sizeof(amplifier), "conventional");
   if(strcmp(amplifier, "Electron Multiplying") == 0)
     snprintf(amplifier, sizeof(amplifier), "EM");
-    
+
   float speed;
-  
+
   status = GetVSSpeed(ivsspeed, &speed);
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR("unable to determine VS speed.");
@@ -586,11 +673,11 @@ detectorrawsetreadmode(const char *newreadmode)
   status = GetEMCCDGain(&emgain);
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR("unable to determine EM gain.");
-  
+
   status = IsReadoutFlippedByAmplifier(iamplifier, &flipped);
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR("unable to determine in readout is flipped.");
-  
+
   DETECTOR_OK();
 }
 
@@ -610,7 +697,7 @@ detectorrawsetwindow(unsigned long newsx, unsigned long newsy, unsigned long new
   windowsy = newsy;
   windownx = newnx;
   windowny = newny;
-  return detectorrawsetbinning(1); 
+  return detectorrawsetbinning(1);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -618,9 +705,9 @@ detectorrawsetwindow(unsigned long newsx, unsigned long newsy, unsigned long new
 const char *
 detectorrawsetbinning(unsigned long newbinning)
 {
-  unsigned int status;  
+  unsigned int status;
   DETECTOR_CHECK_OPEN();
-  
+
   int maxbinningx;
   status = GetMaximumBinning(4, 0, &maxbinningx);
   if (status != DRV_SUCCESS)
@@ -630,22 +717,22 @@ detectorrawsetbinning(unsigned long newbinning)
   status = GetMaximumBinning(4, 1, &maxbinningy);
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR(msg("unable to get maximum x binning (status is %u).", status));
-    
+
   unsigned int maxbinning;
   if (maxbinningx >= maxbinningy)
     maxbinning = maxbinningy;
   else
     maxbinning = maxbinningx;
-    
+
   if (newbinning > maxbinning)
     DETECTOR_ERROR(msg("requested binning (%d) exceeds maximum supported binning (%d)", newbinning, maxbinning));
 
   status = SetImage(newbinning, newbinning, windowsx + 1, windowsx + windownx, windowsy + 1, windowsy + windowny);
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR(msg("unable to set detector window and binning (status is %u).", status));
-  
+
   binning = newbinning;
-  
+
   detectorrawsetpixnx(windownx / binning);
   detectorrawsetpixny(windowny / binning);
 
@@ -658,7 +745,7 @@ const char *
 detectorrawupdatestatus(void)
 {
   DETECTOR_CHECK_OPEN();
-  
+
   float temperature;
   unsigned int status;
   status = GetTemperatureF(&temperature);
@@ -688,7 +775,7 @@ detectorrawupdatestatus(void)
 const char *
 detectorrawgetvalue(const char *name)
 {
-  static char value[DETECTOR_STR_BUFFER_SIZE]; 
+  static char value[DETECTOR_STR_BUFFER_SIZE];
   if (strcmp(name, "description") == 0)
     snprintf(value, sizeof(value), "%s", description);
   else if (strcmp(name, "detectortemperature") == 0)
@@ -721,8 +808,10 @@ detectorrawgetvalue(const char *name)
     snprintf(value, sizeof(value), "%lu", windowny);
   else if (strcmp(name, "binning") == 0)
     snprintf(value, sizeof(value), "%lu", binning);
-  else if (strcmp(name, "actualexposuretime") == 0)
-    snprintf(value, sizeof(value), "%.3f", actualexposuretime);
+  else if (strcmp(name, "frametime") == 0)
+    snprintf(value, sizeof(value), "%.6f", frametime);
+  else if (strcmp(name, "cycletime") == 0)
+    snprintf(value, sizeof(value), "%.6f", cycletime);
   else
     snprintf(value, sizeof(value), "%s", detectorrawgetdatavalue(name));
   return value;
@@ -751,7 +840,7 @@ detectorrawsetcooler(const char *newcooler)
       if (*end != 0)
         DETECTOR_ERROR("invalid cooler state");
       newcoolersettemperature = rint(newcoolersettemperature);
-      coolersettemperature = newcoolersettemperature;      
+      coolersettemperature = newcoolersettemperature;
       newcooler = "on";
     }
     unsigned int status;

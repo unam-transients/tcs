@@ -405,6 +405,12 @@ namespace eval "html" {
       if {![string equal "" [client::getdata $server "detectoremgain"]]} {
         writehtmlrow "Detector EM gain"             "[client::getdata $server "detectoremgain"]"
       }
+      if {![string equal "" [client::getdata $server "detectorframetime"]]} {
+        writehtmlrow "Detector frame time" [format "%.1f ms" [expr {1e3 * [client::getdata $server "detectorframetime"]}]]
+      }
+      if {![string equal "" [client::getdata $server "detectorcycletime"]]} {
+        writehtmlrow "Detector cycle time" [format "%.1f ms" [expr {1e3 * [client::getdata $server "detectorcycletime"]}]]
+      }
       writehtmlrow "Detector software gain"        [formatifok "%d" [client::getdata $server "detectorsoftwaregain"]]
       writehtmlfullrow "Detector window"           [client::getdata $server "detectorwindow"]
       writehtmlrow "Detector binning"              [formatifok "%d" [client::getdata $server "detectorbinning"]]
