@@ -382,10 +382,10 @@ namespace eval "html" {
     if {[string equal [client::getstatus $server] "ok"]} {
       writehtmlfullrow "Telescope"                 [client::getdata $server "telescopedescription"]
       writehtmlfullrow "Detector"                  [client::getdata $server "detectordescription"]
-      writehtmlrow "Exposure time"                 [formatifok "%.3f seconds" [client::getdata $server "exposuretime"]]
+      writehtmlrow "Exposure time"                 [formatifok "%.3f s" [client::getdata $server "exposuretime"]]
       writehtmlfullrow "FITS file"                 [file tail [client::getdata $server "fitsfilename"]]
       if {![string equal "" [client::getdata $server "detectorreadmode"]]} {
-        writehtmlrow "Detector read mode"            [client::getdata $server "detectorreadmode"]
+        writehtmlfullrow "Detector read mode"            [client::getdata $server "detectorreadmode"]
       }
       if {![string equal "" [client::getdata $server "detectoradc"]]} {
         writehtmlrow "Detector ADC"                 "[client::getdata $server "detectoradc"]"
@@ -927,13 +927,13 @@ namespace eval "html" {
 
     if {[string equal [client::getstatus "guider"] "ok"]} {
       writehtmlrow "Guiding" \
-        [formatifok "%.0f seconds" [client::getdata "guider" "guidingtime"]]
+        [formatifok "%.0f s" [client::getdata "guider" "guidingtime"]]
       writehtmlrow "Finder" \
         [client::getdata "guider" "finder"]
       writehtmlrow "Exposure time" \
-        [formatifok "%.2f seconds" [client::getdata "guider" "exposuretime"]]
+        [formatifok "%.2f s" [client::getdata "guider" "exposuretime"]]
       writehtmlrow "Mean cadence" \
-        [formatifok "%.2f seconds" [client::getdata "guider" "meancadence"]]
+        [formatifok "%.2f s" [client::getdata "guider" "meancadence"]]
       writehtmlrow "East Gain" \
         [formatifok "%+.2f" [client::getdata "guider" "eastgain"]]
       writehtmlrow "North Gain" \
@@ -1286,7 +1286,7 @@ namespace eval "html" {
     if {[string equal [client::getstatus $server] "ok"]} {
       writehtmlfullrow "Telescope"                 [client::getdata $server "telescopedescription"]
       writehtmlfullrow "Detector"                  [client::getdata $server "detectordescription"]
-      writehtmlrow "Exposure time"                 [formatifok "%.3f seconds" [client::getdata $server "exposuretime"]]
+      writehtmlrow "Exposure time"                 [formatifok "%.3f s" [client::getdata $server "exposuretime"]]
       writehtmlfullrow "FITS file"                 [file tail [client::getdata $server "fitsfilename"]]
       writehtmlrow "Detector read mode"            [client::getdata $server "detectorreadmode"]
       writehtmlrow "Detector software gain"        [formatifok "%d" [client::getdata $server "detectorsoftwaregain"]]
