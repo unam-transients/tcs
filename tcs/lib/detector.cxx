@@ -24,6 +24,7 @@
 
 ////////////////////////////////////////////////////////////////////////
 
+#include <limits.h>
 #include <math.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -39,13 +40,13 @@
 
 static bool isopen = false;
 
-static unsigned long softwaregain = 1;
+static unsigned short softwaregain = 1;
 
 static unsigned long pixi = 0;
 static unsigned long pixnx = 0;
 static unsigned long pixny = 0;
 static unsigned long pixnz = 1;
-static long *pix = NULL;
+static unsigned short *pix = NULL;
 
 static unsigned long pixdatawindowsx = 0;
 static unsigned long pixdatawindowsy = 0;
@@ -66,7 +67,7 @@ detectorrawgetdatavalue(const char *name)
 {
   static char value[DETECTOR_STR_BUFFER_SIZE];
   if (strcmp(name, "softwaregain") == 0)
-    snprintf(value, sizeof(value), "%lu", softwaregain);
+    snprintf(value, sizeof(value), "%u", (unsigned int) softwaregain);
   else if (strcmp(name, "average") == 0)
     snprintf(value, sizeof(value), "%.2f", average);
   else if (strcmp(name, "standarddeviation") == 0)
@@ -98,7 +99,7 @@ detectorrawpixstart(void)
 {
   pixi = 0;
   free(pix);
-  pix = (long *) malloc(pixnx * pixny * pixnz * sizeof(*pix));
+  pix = (unsigned short *) malloc(pixnx * pixny * pixnz * sizeof(*pix));
   if (pix == 0)
     DETECTOR_ERROR("unable to allocate memory for the detector pixel values.");
   DETECTOR_OK();
@@ -110,7 +111,9 @@ detectorrawpixnext(const long *newpix, unsigned long n)
   for (unsigned long i = 0; i < n; ++i, ++pixi) {
     if (pixi == pixnx * pixny * pixnz)
       DETECTOR_ERROR("too much pixel data.");
-    pix[pixi] = newpix[i];
+    if (newpix[i] < 0 || newpix[i] / softwaregain > USHRT_MAX)
+      DETECTOR_ERROR("pixel data out of range.");    
+    pix[pixi] = newpix[i] / softwaregain;
   }
   DETECTOR_OK();
 }
@@ -256,8 +259,6 @@ updatestatistics(void)
     else
       standarddeviation = 0;
   }  
-  average /= softwaregain;
-  standarddeviation /= softwaregain;
 }
 
 const char *
@@ -328,8 +329,7 @@ detectorrawappendfitsdata(
     
   unsigned long pixn = pixnx * pixny * pixnz;
   for (unsigned long i = 0; i < pixn; ++i) {
-    long z = floor((double) pix[i] / (double) softwaregain);
-    short s16 = floor((z - bzero) / bscale);
+    short s16 = floor(((double) pix[i] - bzero) / bscale);
     fputs16(s16, fp);
   }
   for (unsigned long i = (pixn * 2) % 2880; i % 2880 != 0; ++i)
