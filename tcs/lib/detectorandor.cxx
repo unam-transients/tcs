@@ -426,7 +426,7 @@ detectorrawexpose(double exposuretime, const char *shutter)
   if (emgain == 0) {
     nframe = 1;
   } else {
-    nframe = exposuretime / frametime;
+    nframe = ceil(exposuretime / frametime);
     if (nframe == 0)
       nframe = 1;
   }
