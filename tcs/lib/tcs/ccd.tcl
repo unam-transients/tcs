@@ -542,6 +542,7 @@ namespace eval "ccd" {
     set seconds [utcclock::seconds]
     log::info [format "started exposing after %.1f seconds." [utcclock::diff now $start]]
     log::info [format "started writing FITS header (start) after %.1f seconds." [utcclock::diff now $start]]
+    updatedata
     if {[catch {
       set channel [detector::openfitsheader $tmpfilename]
       fitsheader::writekeyandvalue $channel "DATE-OBS" date $seconds
@@ -552,6 +553,12 @@ namespace eval "ccd" {
       fitsheader::writekeyandvalue $channel "ORIGNAME" string [file tail $finalfilename]
       fitsheader::writekeysandvaluesforproject $channel
       fitsheader::writekeyandvalue $channel "EXPTIME"  double [expr {double($exposuretime)}]
+      if {![string equal "" [server::getdata "detectorframetime"]]} {
+        fitsheader::writekeyandvalue $channel "FRMTIME"  double [server::getdata "detectorframetime"]
+      }
+      if {![string equal "" [server::getdata "detectorcycletime"]]} {
+        fitsheader::writekeyandvalue $channel "CYCTIME"  double [server::getdata "detectorcycletime"]
+      }
       fitsheader::writekeyandvalue $channel "EXPTYPE"  string $exposuretype
       fitsheader::writekeyandvalue $channel "FILTER"   string [server::getdata "filter"]
       fitsheader::writekeyandvalue $channel "CCD_NAME" string [server::getdata "identifier"]
@@ -573,15 +580,10 @@ namespace eval "ccd" {
       coroutine::after 100
     }
     log::info [format "started writing FITS header (end) after %.1f seconds." [utcclock::diff now $start]]
+    updatedata
     if {[catch {
       fitsheader::writeccdfitsheader $channel [server::getdata "identifier"] "E"
       fitsheader::writetcsfitsheader $channel "E"
-      if {![string equal "" [server::getdata "detectorframetime"]]} {
-        fitsheader::writekeyandvalue $channel "FRMTIME"  double [server::getdata "detectorframetime"]
-      }
-      if {![string equal "" [server::getdata "detectorcycletime"]]} {
-        fitsheader::writekeyandvalue $channel "CYCTIME"  double [server::getdata "detectorcycletime"]
-      }
       detector::closefitsheader $channel
     } message]} {
       error "while writing FITS header: $message"
