@@ -625,9 +625,10 @@ detectorrawsetreadmode(const char *newreadmode)
   int newihsspeed;
   int newigain;
   int newemgain;
+  int newsoftwaregain;
 
-  if (sscanf(newreadmode, "%d-%d-%d-%d-%d-%d",
-    &newiadc, &newiamplifier, &newivsspeed, &newihsspeed, &newigain, &newemgain) != 6)
+  if (sscanf(newreadmode, "%d-%d-%d-%d-%d-%d-%d",
+    &newiadc, &newiamplifier, &newivsspeed, &newihsspeed, &newigain, &newemgain, &newsoftwaregain) != 7)
     DETECTOR_ERROR("invalid detector read mode.");
 
   const char *msg =
@@ -678,7 +679,7 @@ detectorrawsetreadmode(const char *newreadmode)
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR("unable to determine in readout is flipped.");
 
-  DETECTOR_OK();
+  return detectorrawsetsoftwaregain(newsoftwaregain);
 }
 
 ////////////////////////////////////////////////////////////////////////
