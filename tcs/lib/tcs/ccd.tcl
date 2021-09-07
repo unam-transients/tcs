@@ -538,9 +538,9 @@ namespace eval "ccd" {
               [string equal $exposuretype "dark"]} {
       set shutter closed
     }
-    set seconds [utcclock::seconds]
-    log::info [format "started exposure after %.1f seconds." [utcclock::diff $seconds $start]]
     detector::startexposure $exposuretime $shutter
+    set seconds [utcclock::seconds]
+    log::info [format "started exposing after %.1f seconds." [utcclock::diff now $start]]
     log::info [format "started writing FITS header (start) after %.1f seconds." [utcclock::diff now $start]]
     if {[catch {
       set channel [detector::openfitsheader $tmpfilename]
