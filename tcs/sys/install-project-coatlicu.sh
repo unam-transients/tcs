@@ -101,7 +101,10 @@ EOF
   case $host in
   coatlicu-control)
     echo "tcs instrumentimageserver C0 instrument &"
-    echo "tcs instrumentdataserver -f -d rsync://instrument/tcs/ &"
+    ;;
+  coatlicu-instrument)
+    echo "tcs instrumentdataserver -f -d rsync://control/tcs/ &"
+    ;;
   esac
   
   echo "owserver -c /etc/owfs.conf"
