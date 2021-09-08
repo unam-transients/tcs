@@ -110,9 +110,9 @@
     },
     "detectorfullunbinneddatawindow": {
       "sx": 0,
-      "sy": 0,
+      "sy": 1,
       "nx": 1024,
-      "ny": 1024
+      "ny": 1023
     },
     "detectorfullunbinnedbiaswindow": {
       "sx": 0,
