@@ -237,10 +237,11 @@ updatestatistics(void)
   double s0 = 0;
   double s1 = 0;
   double s2 = 0;
+  
   for (unsigned long iz = 0; iz < pixnz; ++iz) {
-    for (unsigned long iy = pixdatawindowsx; iy < pixdatawindowsy + pixdatawindowny; ++iy) {
+    for (unsigned long iy = pixdatawindowsy; iy < pixdatawindowsy + pixdatawindowny; ++iy) {
       for (unsigned long ix = pixdatawindowsx; ix < pixdatawindowsx + pixdatawindownx; ++ix) {
-        double z = pix[iy * pixnx + ix];
+        double z = pix[iz * pixny * pixnx + iy * pixnx + ix];
         s0 += 1;
         s1 += z;
         s2 += z * z;
@@ -258,7 +259,7 @@ updatestatistics(void)
       standarddeviation = sqrt(variance);
     else
       standarddeviation = 0;
-  }  
+  }
 }
 
 const char *
