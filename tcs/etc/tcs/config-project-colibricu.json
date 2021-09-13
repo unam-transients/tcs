@@ -176,8 +176,9 @@
     "filterwheelidentifier": "CFW-14-5",
     "filterwheelinitialposition": 0,
     "filterlist": [
-      "g",
+      // 2021-09-13: r and g were accidentally installed in the wrong slots at OHP.
       "r",
+      "g",
       "i",
       "z",
       "y"
@@ -437,14 +438,12 @@
       "pdu2-current",
       "pdu3-current",
       "C0-detector-detector-temperature",
-      "C0-detector-housing-temperature",
       "C0-detector-cold-end-temperature",
       "C0-detector-chamber-pressure",
       "C0-detector-compressor-supply-pressure",
       "C0-detector-compressor-return-pressure",
       "C0-detector-cooler-set-temperature",
       "C0-detector-cooler-state",
-      "C0-detector-cooler-power",
       "C0-filter-wheel-position",
       "C0-service-cabinet-internal-temperature",
       "C0-service-cabinet-internal-humidity",
@@ -738,17 +737,6 @@
         "identifier": "167",
         "firmware": ""
       },
-      "C0-detector-housing-temperature": {
-        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-housing-temperature",
-        "keyword": "",
-        "prettyname": "C0 housing temperature",
-        "group": "detector-C0",
-        "type": "float",
-        "unit": "C",
-        "model": "SI 1100",
-        "identifier": "167",
-        "firmware": ""
-      },
       "C0-detector-cold-end-temperature": {
         "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-cold-end-temperature",
         "keyword": "",
@@ -789,17 +777,6 @@
         "group": "detector-C0",
         "type": "float",
         "unit": "C",
-        "model": "SI 1100",
-        "identifier": "167",
-        "firmware": ""
-      },
-      "C0-detector-cooler-power": {
-        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-cooler-power",
-        "keyword": "",
-        "prettyname": "C0 relative cooler power",
-        "group": "detector-C0",
-        "type": "float",
-        "unit": "",
         "model": "SI 1100",
         "identifier": "167",
         "firmware": ""
