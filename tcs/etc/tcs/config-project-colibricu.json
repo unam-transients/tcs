@@ -91,12 +91,15 @@
       "blue"                : [[ "pdu1", "a", "6"]],
       "sparelinux"          : [[ "pdu1", "a", "7"]],
       "sparewindows"        : [[ "pdu1", "a", "8"]],
-      "close-electronics"   : [[ "pdu3", "a", "1"]],
-      "blue-service-cabinet": [[ "pdu3", "a", "2"]],
-      "led"                 : [[ "pdu3", "a", "3"]]
+      "close-electronics"   : [[ "pdu2", "a", "1"]],
+      "blue-service-cabinet": [[ "pdu2", "a", "2"]],
+      "blue-compressor"     : [[ "pdu2", "a", "3"]]
     }
   },
   "instrument": {
+    "activedetectors": [
+      "C0"
+    ],
     "detectors": [
       "C0"
     ],
@@ -113,7 +116,10 @@
     "detectortype": "si",
     "detectoridentifier": "blue:2055",
     "detectorpixelscale": "0.381as",
-    "detectorinitialreadmode": "0",
+    "detectorreadmodes": {
+      "initial"   : "default",
+      "default"   : "0"
+    },
     "detectorinitialsoftwaregain": 1,
     "detectorinitialbinning": 1,
     "detectorwindows": {
@@ -160,19 +166,22 @@
     "coolerclosedsetting": "current",
     "temperaturelimit": 40,
     "temperaturelimitoutletgroup": "blue-service-cabinet",
+//    "filterwheeltype": "null",
+//    "filterwheelidentifier": "null",
+//    "filterwheelinitialposition": 0,
+//    "filterlist": [
+//      "open"
+//    ],
     "filterwheeltype": "fli",
     "filterwheelidentifier": "CFW-14-5",
     "filterwheelinitialposition": 0,
     "filterlist": [
-      "dark",
-      "open",
-      "open",
-      "open",
-      "open"
+      "g",
+      "r",
+      "i",
+      "z",
+      "y"
     ],
-//     "filterwheeltype": "null",
-//     "filterwheelidentifier": "null",
-//     "filterlist": [ "w" ],
     "focusertype": "null",
     "focuseridentifier": "null",
     "focuserinitialposition": 0,
