@@ -50,8 +50,8 @@ get user colibri
 set outlet 1 name firewall
 set outlet 2 name access
 set outlet 3 name services
-set outlet 4 name services
-set outlet 5 name control
+set outlet 4 name control
+set outlet 5 name detectors
 set outlet 6 name blue
 set outlet 7 name sparelinux
 set outlet 8 name sparewindows
@@ -83,7 +83,7 @@ get user colibri
 
 set outlet 1 name close-electronics
 set outlet 2 name blue-service-cabinet
-set outlet 3 name -
+set outlet 3 name blue-compressor
 set outlet 4 name -
 set outlet 5 name -
 set outlet 6 name -
