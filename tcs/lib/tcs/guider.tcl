@@ -166,6 +166,8 @@ namespace eval "guider" {
             client::request $ccd "stop"
             client::request $ccd "expose $exposuretime guidestart"
             client::wait $ccd
+            client::request $ccd "analyse guidestart"
+            client::wait $ccd
           }]
         } {
           error "unable to obtain start guiding with $ccd."
@@ -213,6 +215,8 @@ namespace eval "guider" {
         if {
           [catch {
             client::request $ccd "expose $exposuretime guidenext"
+            client::wait $ccd
+            client::request $ccd "analyse guidenext"
             client::wait $ccd
           }]
         } {
