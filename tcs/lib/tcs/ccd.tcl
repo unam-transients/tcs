@@ -721,8 +721,8 @@ namespace eval "ccd" {
       } elseif {[string equal $type "guidenext"]} {
         set dx [expr {$x - [server::getdata "guidestarinitialx"]}]
         set dy [expr {$y - [server::getdata "guidestarinitialy"]}]
-        set easterror  [expr {$dx * [astrometry::arcsectorad +0.3]}]
-        set northerror [expr {$dy * [astrometry::arcsectorad -0.3]}]
+        set easterror  [expr {$dx * [astrometry::arcsectorad +0.15] * [server::getdata "detectorbinning"]}]
+        set northerror [expr {$dy * [astrometry::arcsectorad -0.15] * [server::getdata "detectorbinning"]}]
         server::setdata "guidestareasterror"  $easterror
         server::setdata "guidestarnortherror" $northerror
         log::debug [format "guide error is %+.2f E and %+.2f N arcsec." [astrometry::radtoarcsec $easterror]  [astrometry::radtoarcsec $northerror]]
