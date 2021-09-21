@@ -166,7 +166,7 @@ namespace eval "guider" {
             client::request $ccd "stop"
             client::request $ccd "expose $exposuretime guidestart"
             client::wait $ccd
-            client::request $ccd "analyse guidestart"
+            client::request $ccd "analyze guidestart"
             client::wait $ccd
           }]
         } {
@@ -216,7 +216,7 @@ namespace eval "guider" {
           [catch {
             client::request $ccd "expose $exposuretime guidenext"
             client::wait $ccd
-            client::request $ccd "analyse guidenext"
+            client::request $ccd "analyze guidenext"
             client::wait $ccd
           }]
         } {
