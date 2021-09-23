@@ -89,7 +89,7 @@ sh pointing-map.sh
   #  singleblock 2019B-1002-0 e$letter
   #done
 
-  #allblocks 2003-del-burgo              d
+  allblocks 2003-del-burgo              d
   
   allblocks 2000-gonzalez               e
 

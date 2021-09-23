@@ -289,7 +289,7 @@ proc delburgovisit {repeats} {
   
   executor::setsecondaryoffset 0
   executor::setguidingmode "none"
-  executor::setpointingmode "finder"
+  executor::setpointingmode "none"
 
   executor::track
 
@@ -301,25 +301,24 @@ proc delburgovisit {repeats} {
   executor::setpointingmode "none"
   log::summary "delburgovisit: correcting pointing."
   executor::correctpointing 80
+  
+  executor::movefilterwheel "r" "none" "none" "none"
+  executor::setbinning 1 2 1 1
+  executor::setwindow "default"
+  
+  executor::setguidingmode "C1"
   executor::track
   executor::waituntiltracking
 
-  executor::setbinning 1 1 1 1
-  executor::setwindow "default"
+  executor::setsecondaryoffset 100
+  executor::track
+  executor::waituntiltracking
 
-  executor::movefilterwheel "r" "none" "none" "none"
-
-  set repeat 10
-  foreach offset {0 50 100 200 400 800} {
-    log::summary "delburgovisit: offsetting secondary by $offset steps."
-    executor::setsecondaryoffset $offset
-    executor::track
-    executor::waituntiltracking
-    set i 0
-    while {$i < 5} {
-      executor::expose object 5 5 "none" "none"
-      incr i
-    }
+  log::summary "delburgovisit: exposing sequence."
+  set i 0
+  while {$i < 100} {
+    executor::expose object 2 "none" "none" "none"
+    incr i
   }
 
   log::summary "delburgovisit: finished."
