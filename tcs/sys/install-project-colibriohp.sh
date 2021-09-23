@@ -2,7 +2,7 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: install-project-colibricu.sh 3614 2020-06-22 19:37:17Z Alan $
+# $Id: install-project-colibriohp.sh 3614 2020-06-22 19:37:17Z Alan $
 
 ########################################################################
 
@@ -30,14 +30,21 @@ host=$(uname -n | sed 's/\..*//')
 # /etc/hosts
 
 (
-  sed -n '/^# Start of tcs epilog./q;p' /etc/hosts
+  sed '/^# Start of tcs epilog./q' /etc/hosts
   cat <<"EOF"
 # Start of tcs epilog.
 
-192.168.100.22  control colibriohp-control
-192.168.100.23  mount   colibriohp-mount
-
-# End of tcs epilog.
+192.168.100.1     firewall                colibriohp-firewall
+192.168.100.50    access                  colibriohp-access
+192.168.100.51    pdu1                    colibriohp-pdu1
+192.168.100.52    pdu2                    colibriohp-pdu2
+192.168.100.53    sparepdu                colibriohp-sparepdu
+192.168.100.54    services                colibriohp-services
+192.168.100.55    control                 colibriohp-control
+192.168.100.56    detectors               colibriohp-detectors
+192.168.100.57    blue                    colibriohp-blue
+192.168.100.58    sparelinux              colibriohp-sparelinux
+192.168.100.59    sparewindows            colibriohp-sparewindows
 EOF
 ) | 
 sudo cp /dev/stdin /etc/hosts.tmp
@@ -60,7 +67,7 @@ sudo mv /etc/hosts.tmp /etc/hosts
 EOF
 
   case $host in
-  colibricito)
+  colibriohp-access)
     # Do not run checkhalt on the Macs; they do not automatically start again after a halt if we cycle the power.
     ;;  
   *)
@@ -71,14 +78,19 @@ EOF
   esac
   
   case $host in
-  colibricito)
+  colibriohp-control)
     cat <<"EOF"
-*   *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles control
-*   *  *  *  *  /usr/local/bin/tcs updateweatherfiles-dummy
+*   *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles services control detectors
+*   *  *  *  *  /usr/local/bin/tcs updateweatherfiles-oan
+00  18 *  *  *  /usr/local/bin/tcs updateweatherfiles-oan -a
 *   *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
 #*   *  *  *  *  rsync -aH --delete /usr/local/var/tcs/selector rsync://transients.astrossp.unam.mx/ddoti-raw/
 #00  *  *  *  *  rsync -aH /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/ddoti-raw/ 
 00  00 *  *  *  /usr/local/bin/tcs updatevarlatestlink; rsync -aH /usr/local/etc/tcs/blocks /usr/local/var/tcs/latest/
+EOF
+    ;;
+  colibriohp-services)
+    cat <<"EOF"
 */5 *  *  *  * /usr/local/bin/tcs logsensors
 *   *  *  *  * cd /usr/local/var/www/tcs/; sh plots.sh >plots.txt 2>&1
 #*   *  *  *  *  rsync -aH --include="error.txt" --include="warning.txt" --include="summary.txt" --include="info.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/ddoti-raw/
@@ -101,52 +113,52 @@ EOF
   # The Minnowboard Turbos come up with / read-only after power cycling.
   # Don't know why, but it causes all sorts of problems.
 #   case $host in
-#   colibricu-[acde][0123])
+#   colibriohp-[acde][0123])
 #     echo "test -w /etc || mount -o remount,rw /"
 #     ;;
 #   esac
 
 #   case $host in
-#   colibricu-access)
-#     echo "hostname colibricu-access"
+#   colibriohp-access)
+#     echo "hostname colibriohp-access"
 #     ;;
 #   esac
 
 #   case $host in
-#   colibricu-[cde][0123])
+#   colibriohp-[cde][0123])
 #     echo "gpio -i"
 #     ;;
 #   esac
 #   case $host in
-#   colibricu-c0)
+#   colibriohp-c0)
 #     echo "gpio enclosure-lights off"
 #     echo "gpio enclosure-heater off"
 #     ;;
-#   colibricu-[de]0)
+#   colibriohp-[de]0)
 #     echo "gpio telescope-fans off"
 #     ;;
 #   esac
 
   case $host in
-  colibricito)
+  colibriohp-control|colibriohp-detectors)
     echo "owserver -c /etc/owfs.conf"
     ;;
   esac
   
-#    case $host in
-#    colibricu-detectors)
-#      echo "tcs instrumentdataserver -f -d rsync://services/tcs/ &"
-#      ;;
-#    esac
+   case $host in
+   colibriohp-detectors)
+     echo "tcs instrumentdataserver -f -d rsync://services/tcs/ &"
+     ;;
+   esac
 
   case $host in
-  colibricito)
-#     echo "tcs instrumentimageserver C0 detectors &"
+  colibriohp-services)
+     echo "tcs instrumentimageserver C0 detectors &"
 #     echo "tcs webcamimageserver a http://ddoti:ddoti@webcam-a/cgi-bin/viewer/video.jpg &"
 #     echo "tcs webcamimageserver b http://ddoti:ddoti@webcam-b/cgi-bin/viewer/video.jpg &"
 #     echo "tcs webcamimageserver c http://ddoti:ddoti@webcam-c/cgi-bin/viewer/video.jpg &"
 #     echo "tcs webcamimageserver -r 1 -c 640x480+480+600 cz http://ddoti:ddoti@webcam-c/cgi-bin/viewer/video.jpg &"
-    echo "tcs allskyimageserver http://iris.lam.fr/wp-includes/images/ftp_iris/allsky01.jpg &"
+    echo "tcs allskyimageserver http://iris.lam.fr/wp-includes/images/ftp_iris/allsky1.jpg &"
     echo "mkdir -p /usr/local/var/tcs/reboot"
     echo "mkdir -p /usr/local/var/tcs/restart"
     echo "mkdir -p /usr/local/var/tcs/halt"
@@ -154,7 +166,7 @@ EOF
   esac
 
   case $host in
-  colibricito)
+  colibriohp-services)
     ;;
   *)
     echo "# This sleep gives the services host time to reboot and start the log server."
@@ -267,13 +279,49 @@ fi
 
 ################################################################################
 
+# Run /etc/rc.local at startup.
+
+# This is a bit more involved than just running /bin/sh /etc/rc.local.
+# First, we need to wait to the host name to be correctly set, as
+# commands run from /etc/rc.local may depend on this. Second, we need to
+# wait for any background tasks to finish.
+
+case $host in
+colibriohp-control|colibriohp-data)
+  sudo cp /dev/stdin <<"EOF" /Library/LaunchDaemons/local.localhost.startup.plist
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>             <string>local.localhost.rc.local</string>
+  <key>Disabled</key>          <false/>
+  <key>RunAtLoad</key>         <true/>
+  <key>KeepAlive</key>         <false/>
+  <key>LaunchOnlyOnce</key>    <true/>
+  <key>StandardOutPath</key>   <string>/var/log/rc.local.log</string>
+  <key>StandardErrorPath</key> <string>/var/log/rc.local.log</string>
+  <key>ProgramArguments</key>
+    <array>
+      <string>/bin/sh</string>
+      <string>-xc</string>
+      <string>while test $(uname -n) = localhost; do sleep 1; done; . /etc/rc.local; wait</string>
+  </array>
+</dict>
+</plist>
+EOF
+  sudo chmod u=rw,go=r /Library/LaunchDaemons/local.localhost.startup.plist
+  ;;
+esac
+
+################################################################################
+
 # /etc/sudoers.d/tcs
 
 sudo rm -f /tmp/sudoers-tcs
 (
   echo 'ddoti ALL=(ALL) ALL'
   case $host in
-  colibricito)
+  colibriohp-services)
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs rebootsoon'
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs restartsoon'
     ;;

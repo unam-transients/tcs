@@ -2,7 +2,7 @@
 
 // This file is part of the UNAM telescope localhost system.
 
-// $Id: servers-project-colibricu.json 3613 2020-06-20 20:21:43Z Alan $
+// $Id: servers-project-colibriohp.json 3613 2020-06-20 20:21:43Z Alan $
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -26,67 +26,67 @@
 
 {
   "log": {
-    "host": "localhost",
+    "host": "services",
     "port": 5000
   },
   "target": {
-    "host": "localhost",
+    "host": "control",
     "port": 5001
   },
   "moon": {
-    "host": "localhost",
+    "host": "control",
     "port": 5002
   },
   "sun": {
-    "host": "localhost",
+    "host": "control",
     "port": 5003
   },
   "weather": {
-    "host": "localhost",
+    "host": "control",
     "port": 5004
   },
   "sensors": {
-    "host": "localhost",
+    "host": "control",
     "port": 5005
   },
   "html": {
-    "host": "localhost",
+    "host": "services",
     "port": 5006
   },
   "C0": {
-    "host": "localhost",
+    "host": "detectors",
     "port": 5007
   },
   "C1": {
-    "host": "localhost",
+    "host": "detectors",
     "port": 5008
   },
   "C2": {
-    "host": "localhost",
+    "host": "detectors",
     "port": 5009
   },
   "C3": {
-    "host": "localhost",
+    "host": "detectors",
     "port": 5010
   },
   "selector": {
-    "host": "localhost",
+    "host": "control",
     "port": 5011
   },
   "executor": {
-    "host": "localhost",
+    "host": "control",
     "port": 5012
   },
   "telescope": {
-    "host": "localhost",
+    "host": "control",
     "port": 5013
   },
   "instrument": {
-    "host": "localhost",
+    "host": "control",
     "port": 5014
   },
   "power": {
-    "host": "localhost",
+    "host": "control",
     "port": 5015
   }
 }

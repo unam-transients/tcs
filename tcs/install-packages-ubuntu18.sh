@@ -141,6 +141,8 @@ sudo apt-get -y install tcllib
 
 ########################################################################
 
+exit
+
 # Install ligo.skymap
 
 sudo apt-get -y install build-essential libpq-dev libssl-dev openssl libffi-dev zlib1g-dev

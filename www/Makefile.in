@@ -109,15 +109,15 @@ clean-colibricu-services				:
 	
 ########################################################################
 
-all-colibricito      				:	docs-colibricito/index.html  \
-                                        docs-colibricito/documentation.html
-docs-colibricito/index.html	        :	docs-colibricito/index.md
-docs-colibricito/documentation.html	:	docs-colibricito/documentation.md
+all-colibriohp-services				:	docs-colibriohp-services/index.html		\
+							docs-colibriohp-services/documentation.html
+docs-colibriohp-services/index.html		:	docs-colibriohp-services/index.md
+docs-colibriohp-services/documentation.html	:	docs-colibriohp-services/documentation.md
 
-install-colibricito     			:	install-linux
+install-colibriohp-services			:	install-linux
 
-clean-colibricito   				:
-	-rm -f docs-colibricito/*.html
+clean-colibriohp-services				:
+	-rm -f docs-colibriohp-services/*.html
 	
 ########################################################################
 

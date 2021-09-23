@@ -98,13 +98,13 @@ ddotioan-e0)
 colibricito)
   allargs="selector mount weather sun moon target html log"
   ;;
-colibricu-services)
+colibriohp-services)
   allargs="html log"
   ;;
-colibricu-control)
+colibriohp-control)
   allargs="selector executor instrument telescope weather sun moon target power sensors"
   ;;
-colibricu-detectors)
+colibriohp-detectors)
   allargs="C0"
   ;;
 johnsoncu-control)

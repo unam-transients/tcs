@@ -1,0 +1,100 @@
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+# $Id: httpd.conf-colibricu-services.in 3616 2020-06-22 20:03:44Z Alan $
+
+########################################################################
+
+# Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+ServerAdmin alan@astro.unam.mx
+ServerName colibriohp-services
+
+<Directory @prefix@/var/www/>
+  Options Indexes FollowSymLinks
+  AllowOverride None
+  Require all granted
+</Directory>
+
+<Directory "@prefix@/var/www/tcs">
+  AllowOverride None
+  Options +ExecCGI -MultiViews
+  AddHandler cgi-script cgi
+  Require all granted
+</Directory>
+
+<VirtualHost *:80>
+
+  ServerName colibriohp-services
+  DocumentRoot /usr/local/var/www/
+
+  ############################################################
+
+  <LocationMatch ^/>
+    Deny from All
+    Allow from 132.248.1
+    Allow from 132.248.3
+    Allow from 132.248.4
+    Allow from 10.0.1
+    Allow from 192.168
+    Allow from 127.0.0
+    Allow from ::1
+  </LocationMatch>
+
+  <LocationMatch ^/(tcs|proxy)/>
+    AuthType Basic
+    AuthName "COLIBRI/OHP Web Site"
+    AuthUserFile @prefix@/etc/htpasswd/colibriohp
+    Require valid-user
+    Deny from All
+    Allow from 132.248.4
+    Allow from 10.0.1
+    Allow from 192.168
+    Allow from 127.0.0
+    Allow from ::1
+  </LocationMatch>
+
+  ############################################################
+  
+  LogLevel info proxy:debug
+
+  <Location /proxy/pdu1/>
+    ProxyPass         http://pdu1/
+    ProxyPassReverse  /
+    ProxyHTMLEnable   On
+    ProxyHTMLURLMap   http://pdu1 /proxy/pdu1/
+    ProxyHTMLURLMap   /           /proxy/pdu1/
+    RequestHeader    unset  Accept-Encoding
+  </Location>
+
+  <Location /proxy/pdu2/>
+    ProxyPass         http://pdu2/
+    ProxyPassReverse  /
+    ProxyHTMLEnable   On
+    ProxyHTMLURLMap   http://pdu2 /proxy/pdu2/
+    ProxyHTMLURLMap   /           /proxy/pdu2/
+    RequestHeader    unset  Accept-Encoding
+  </Location>
+
+  ############################################################
+
+</VirtualHost>
+
+ErrorLog ${APACHE_LOG_DIR}/error.log
+CustomLog ${APACHE_LOG_DIR}/access.log combined
