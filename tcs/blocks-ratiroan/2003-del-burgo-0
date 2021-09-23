@@ -11,8 +11,8 @@
      "name": "science",
      "targetcoordinates": {
        "type"   : "equatorial",
-       "alpha"  : "20:00:43.7130382888",
-       "delta"  : "+22:42:39.071811263",
+       "alpha"  : "20:00:38",
+       "delta"  : "+22:42:08",
        "equinox": "2000"
      },
      "command": "delburgovisit 1",
