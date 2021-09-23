@@ -83,7 +83,7 @@ get user colibri
 
 set outlet 1 name close-electronics
 set outlet 2 name blue-service-cabinet
-set outlet 3 name blue-compressor
+set outlet 3 name -
 set outlet 4 name -
 set outlet 5 name -
 set outlet 6 name -
