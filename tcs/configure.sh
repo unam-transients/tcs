@@ -49,7 +49,7 @@ ddotioan-*)
 colibricu-*)
   ./configure --enable-project=colibricu
   ;;
-colibricito)
+colibriohp-*)
   ./configure --enable-project=colibriohp
   ;;
 coatlicu-*)

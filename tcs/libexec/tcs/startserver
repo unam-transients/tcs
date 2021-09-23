@@ -99,13 +99,13 @@ ddotioan-e0)
 colibricito)
   allargs="log 2 html 1 target 1 moon sun weather 1 mount 1 selector"
   ;;
-colibricu-services)
+colibriohp-services)
   allargs="log 1 html"
   ;;
-colibricu-control)
+colibriohp-control)
   allargs="sensors power weather 1 target 1 moon sun 1 telescope instrument 1 executor selector"
   ;;
-colibricu-detectors)
+colibriohp-detectors)
   allargs="C0"
   ;;
 johnsoncu-control)

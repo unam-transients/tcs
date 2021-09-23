@@ -2,7 +2,7 @@
 
 // This file is part of the UNAM telescope control system.
 
-// $Id: BOILERPLATE 3370 2019-10-30 02:46:01Z Alan $
+// $Id: servers-project-colibriohp.json 3613 2020-06-20 20:21:43Z Alan $
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -25,21 +25,56 @@
 ////////////////////////////////////////////////////////////////////////
 
 {
-  "log"        : { "host" : "control", "port" : 5000 },
-  "html"       : { "host" : "control", "port" : 5001 },
-  "moon"       : { "host" : "control", "port" : 5002 },
-  "sun"        : { "host" : "control", "port" : 5003 },
-  "target"     : { "host" : "control", "port" : 5004 },
-  "weather"    : { "host" : "control", "port" : 5005 },
-  "C0"         : { "host" : "control", "port" : 5006 },
-  "sensors"    : { "host" : "control", "port" : 5007 },
-  "instrument" : { "host" : "control", "port" : 5008 },
-  "telescope"  : { "host" : "control", "port" : 5009 },
-  "executor"   : { "host" : "control", "port" : 5010 },
-  "selector"   : { "host" : "control", "port" : 5011 },
-  "supervisor" : { "host" : "control", "port" : 5012 },
-  "gcntan"     : { "host" : "control", "port" : 5013 },
-  "mount"      : { "host" : "control", "port" : 5014 }
+  "log": {
+    "host": "services",
+    "port": 5000
+  },
+  "target": {
+    "host": "control",
+    "port": 5001
+  },
+  "moon": {
+    "host": "control",
+    "port": 5002
+  },
+  "sun": {
+    "host": "control",
+    "port": 5003
+  },
+  "weather": {
+    "host": "control",
+    "port": 5004
+  },
+  "sensors": {
+    "host": "control",
+    "port": 5005
+  },
+  "html": {
+    "host": "services",
+    "port": 5006
+  },
+  "C0": {
+    "host": "detectors",
+    "port": 5007
+  },
+  "selector": {
+    "host": "control",
+    "port": 5011
+  },
+  "executor": {
+    "host": "control",
+    "port": 5012
+  },
+  "telescope": {
+    "host": "control",
+    "port": 5013
+  },
+  "instrument": {
+    "host": "control",
+    "port": 5014
+  },
+  "power": {
+    "host": "control",
+    "port": 5015
+  }
 }
-
-

@@ -135,12 +135,9 @@ installbins_project_ddotioan	:=		\
 	enclosureserver				\
 	updateweatherfiles-oan
 	
-installbins_project_colibricu	:=		\
+installbins_project_colibriohp	:=		\
 	C0server				\
-	C1server				\
-	C2server				\
-	C3server				\
-	updateweatherfiles-oan
+	updateweatherfiles-dummy
 	
 installbins_project_ddoticu	:=		\
 	C0server
@@ -151,10 +148,6 @@ installbins_project_colibricito	:=		\
 	plcserver-project-colibricito		\
 	updateweatherfiles-satino
 
-installbins_project_colibriohp	    :=	\
-	C0server				            \
-	updateweatherfiles-dummy
-	
 installbins_project_coatlicu        :=  \
 	C0server                            \
 	updateweatherfiles-dummy

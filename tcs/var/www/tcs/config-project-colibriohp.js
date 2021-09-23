@@ -2,7 +2,7 @@
 
 // This file is part of the UNAM telescope control system.
 
-// $Id: config-project-colibricu.js 3444 2020-02-23 16:53:46Z Alan $
+// $Id: config-project-colibriohp.js 3444 2020-02-23 16:53:46Z Alan $
 
 ////////////////////////////////////////////////////////////////////////
 

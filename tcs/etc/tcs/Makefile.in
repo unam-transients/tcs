@@ -83,12 +83,12 @@ installs_project_ddotioan	:=		        \
 installbins_project_ddotioan	:=		    \
 	alertscript-project-ddotioan
 
-installs_project_colibricu	:=		        \
-	config-project-colibricu.json		    \
-	servers-project-colibricu.json		    \
-	visitcommands-project-colibricu.tcl	    \
+installs_project_colibriohp	:=		        \
+	config-project-colibriohp.json		    \
+	servers-project-colibriohp.json		    \
+	visitcommands-project-colibriohp.tcl	\
 	
-installbins_project_colibricu	:=		    \
+installbins_project_colibriohp	:=		    \
 
 installs_project_colibriohp	:=	        	\
 	alert-project-colibriohp		        \

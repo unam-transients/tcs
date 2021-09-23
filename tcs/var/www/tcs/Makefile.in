@@ -90,8 +90,10 @@ installs_project_colibricu	:=		    \
 
 installs_project_colibriohp	:=		    \
 	allsky-project-colibriohp.html     	\
+	C0-project-colibriohp.html  	   	\
 	config-project-colibriohp.js	    \
-	interface-project-colibriohp.html
+	interface-project-colibriohp.html   \
+	plots-project-colibriohp.sh
 
 installs_project_colibricito	:=		\
 	allsky-project-colibricito.html		\
