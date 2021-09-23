@@ -15,7 +15,7 @@
        "delta"  : "+43:41:36.0",
        "equinox": "2000"
      },
-     "command": "agnvisit 2",
+     "command": "agnvisit",
      "estimatedduration": "30m"
    }
  ],
