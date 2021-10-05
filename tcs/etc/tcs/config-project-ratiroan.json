@@ -282,7 +282,7 @@
       "C0", "C1", "C2", "C3"
     ],
     "activedetectors": [
-      "C0", "C1"
+      "C0", "C1", "C2", "C3"
     ],
     "pointingdetectors": [
       "C1"
