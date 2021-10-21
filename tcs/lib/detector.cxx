@@ -111,9 +111,12 @@ detectorrawpixnext(const long *newpix, unsigned long n)
   for (unsigned long i = 0; i < n; ++i, ++pixi) {
     if (pixi == pixnx * pixny * pixnz)
       DETECTOR_ERROR("too much pixel data.");
-    if (newpix[i] < 0 || newpix[i] / softwaregain > USHRT_MAX)
-      DETECTOR_ERROR("pixel data out of range.");    
-    pix[pixi] = newpix[i] / softwaregain;
+    if (newpix[i] < 0)
+      pix[pixi] = 0;
+    else if (newpix[i] / softwaregain > USHRT_MAX)
+      pix[pixi] = USHRT_MAX;
+    else
+      pix[pixi] = newpix[i] / softwaregain;
   }
   DETECTOR_OK();
 }
@@ -167,7 +170,7 @@ const char *
 detectorrawpixend(void)
 {
   if (pixi < pixnx * pixny * pixnz)
-    DETECTOR_ERROR("too few pixel data.");
+    DETECTOR_ERROR("too little pixel data.");
   updatestatistics();
   DETECTOR_OK();
 }
