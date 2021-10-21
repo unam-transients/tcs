@@ -489,7 +489,7 @@ detectorrawgetreadytoberead(void)
       } else {
         for (unsigned long iy = 0; iy < ny; ++iy) {
           for (unsigned long ix = 0; ix < nx; ++ix) {
-            long lpix = pix[iy * nx - ix];
+            long lpix = pix[iy * nx + ix];
             detectorrawpixnext(&lpix, 1);
           }
         }
@@ -533,7 +533,7 @@ detectorrawread(void)
     } else {
       for (unsigned long iy = 0; iy < ny; ++iy) {
         for (unsigned long ix = 0; ix < nx; ++ix) {
-          long lpix = pix[iy * nx - ix];
+          long lpix = pix[iy * nx + ix];
           detectorrawpixnext(&lpix, 1);
         }
       }
