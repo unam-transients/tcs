@@ -136,7 +136,8 @@ installbins_project_ddotioan	:=		\
 	updateweatherfiles-oan
 	
 installbins_project_colibriohp	:=		\
-	C0server				\
+	C0server				            \
+	plcserver                           \
 	updateweatherfiles-dummy
 	
 installbins_project_ddoticu	:=		\

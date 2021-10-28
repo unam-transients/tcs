@@ -238,7 +238,7 @@ proc carlosvisit {repeats} {
 
   executor::setpointingmode "none"
   log::summary "carlosvisit: correcting pointing."
-  executor::correctpointing 80
+  executor::correctpointing 30
   executor::track
   executor::waituntiltracking
 
@@ -310,9 +310,9 @@ proc delburgovisit {repeats} {
   executor::track
   executor::waituntiltracking
 
-  executor::setsecondaryoffset 100
-  executor::track
-  executor::waituntiltracking
+#  executor::setsecondaryoffset 100
+#  executor::track
+#  executor::waituntiltracking
 
   log::summary "delburgovisit: exposing sequence."
   set i 0
@@ -322,6 +322,81 @@ proc delburgovisit {repeats} {
   }
 
   log::summary "delburgovisit: finished."
+
+  return true
+}
+
+########################################################################
+
+proc pointingcorrectionvisit {} {
+
+  log::summary "pointingcorrectionvisit: starting."
+  
+  executor::setsecondaryoffset 0
+  executor::setguidingmode "none"
+  executor::setpointingmode "finder"
+
+  executor::track
+
+  executor::setwindow  "default"
+  executor::setbinning 2 2 1 1
+
+  executor::waituntiltracking
+
+  executor::setpointingmode "none"
+  log::summary "pointingcorrectionvisit: correcting pointing."
+  executor::correctpointing 30
+
+  log::summary "pointingcorrectionvisit: finished."
+
+  return true
+}
+
+########################################################################
+
+proc tapiavisit {} {
+
+  log::summary "tapiavisit: starting."
+  
+  executor::setsecondaryoffset 0
+  executor::setguidingmode "none"
+  executor::setpointingmode "finder"
+
+  executor::track
+
+  executor::setwindow  "default"
+  executor::setbinning 2 2 1 1
+  executor::movefilterwheel "r" "none" "none" "none"
+
+  executor::waituntiltracking
+
+  log::summary "tapiavisit: taking science exposures."
+
+  foreach repeat {0 1} {
+  
+    foreach {aperture eastoffset northoffset} {
+      riZJcenter   0as   0as
+      riYHcenter   0as   0as
+      riZJcenter   0as +10as
+      riYHcenter   0as +10as
+      riZJcenter   0as -10as
+      riYHcenter   0as -10as
+      riZJcenter +10as   0as
+      riYHcenter +10as   0as
+      riZJcenter -10as   0as
+      riYHcenter -10as   0as
+    } {
+  
+      executor::offset $eastoffset $northoffset $aperture
+      executor::waituntiltracking
+    
+      executor::expose object 1 1 1 1
+
+    }
+
+  }
+
+  log::summary "tapiavisit: finished."
 
   return true
 }

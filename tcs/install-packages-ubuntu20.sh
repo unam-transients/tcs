@@ -31,7 +31,7 @@ prefix=${1:-/usr/local}
 
 sudo apt-get -y update
 sudo apt-get -y upgrade
-#sudo apt-get -y dist-upgrade
+sudo apt-get -y dist-upgrade
  
 sudo systemctl stop systemd-timesyncd
 sudo systemctl disable systemd-timesyncd

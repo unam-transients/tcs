@@ -43,7 +43,7 @@ namespace eval "plc" {
 
   set controller::host                        $controllerhost
   set controller::port                        $controllerport
-  set controller::statuscommand               "GeneralStatus\nWeatherStatus\n"
+  set controller::statuscommand               "AK1@\r"
   set controller::timeoutmilliseconds         5000
   set controller::intervalmilliseconds        500
   set controller::updatedata                  plc::updatecontrollerdata
@@ -53,8 +53,19 @@ namespace eval "plc" {
 
   ######################################################################
 
-  server::setdata "lights"            ""
-  server::setdata "lastlights"        ""
+  server::setdata "mode"              ""
+  server::setdata "mustbeclosed"      ""
+  server::setdata "alarm"             ""
+  server::setdata "aagalarm"          ""
+  server::setdata "rainalarm"         ""
+  server::setdata "windalarm"         ""
+  server::setdata "humidityalarm"     ""
+  server::setdata "watchdogalarm"     ""
+  server::setdata "upsalarm"          ""
+  server::setdata "roof"              ""
+  server::setdata "lastroof"          ""
+  server::setdata "door"              ""
+  server::setdata "lastdoor"          ""
   server::setdata "timestamp"         ""
   server::setdata "stoppedtimestamp"  ""
 
@@ -91,21 +102,33 @@ namespace eval "plc" {
     
     log::debug [format "controller response $controllerresponseindex = %s" $controllerresponse]
 
+    if {[string first "," $controllerresponse] != -1} {
+      set hascomma true
+    } else {
+      set hascomma false
+    }
+    if {
+      ($hascomma && $controllerresponseindex != 1) ||
+      (!$hascomma && $controllerresponseindex == 1)
+    } {
+      set controllerresponseresync true
+    }
+
     if {$controllerresponseindex == 0} {
-      set controllerresponse0 $controllerresponse
+      set controllerresponse "0b$controllerresponse"
+      set controllerresponse0 [expr {$controllerresponse}]
       set controllerresponseindex 1
       return false
-    } elseif {$controllerresponseindex == 1} {
+    } elseif {$hascomma} {
       set controllerresponse1 $controllerresponse
       set controllerresponseindex 2
       return false
     } else {
-      set controllerresponse2 $controllerresponse
+      set controllerresponse "0b$controllerresponse"
+      set controllerresponse2 [expr {$controllerresponse}]
       set controllerresponseindex 0
     }
     
-
-if {false} {
     if {$controllerresponseresync} {
       set controllerresponseresync false
       return false
@@ -228,12 +251,9 @@ if {false} {
         log::summary "the enclosure may be open."
       }
     }
-}
     
     server::setstatus "ok"
-
     server::setdata "timestamp"         $timestamp
-if {false} {
     server::setdata "lasttimestamp"     $lasttimestamp
     server::setdata "roof"              $roof
     server::setdata "lastroof"          $lastroof
@@ -251,7 +271,7 @@ if {false} {
     server::setdata "humidityalarm"     $humidityalarm
     server::setdata "upsalarm"          $upsalarm
     server::setdata "watchdogalarm"     $watchdogalarm
-}    
+    
     return true
   }
   
@@ -309,8 +329,8 @@ if {false} {
   proc startactivitycommand {} {
     set start [utcclock::seconds]
     log::info "starting."
-#    controller::sendcommand "CA1@\n"
-#    setrequestedroofanddoor ""
+    controller::sendcommand "CA1@\n"
+    setrequestedroofanddoor ""
     set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
   }
@@ -438,7 +458,6 @@ if {false} {
   ######################################################################
 
   proc start {} {
-    set controller::connectiontype "persistent"
     controller::startcommandloop
     controller::startstatusloop
     server::newactivitycommand "starting" "idle" plc::startactivitycommand

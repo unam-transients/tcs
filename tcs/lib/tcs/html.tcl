@@ -691,6 +691,7 @@ namespace eval "html" {
 
     putshtml "<table class=\"status\">"
 
+if {false} {
     if {[string equal [client::getstatus "plc"] "ok"]} {
       writehtmlrow "Mode"        [client::getdata "plc" "mode"]
       if {[client::getdata "plc" "mustbeclosed"]} {
@@ -709,6 +710,7 @@ namespace eval "html" {
       writehtmlrowwithemph "Humidity alarm" [alarmemph [client::getdata "plc" "humidityalarm"]] [client::getdata "plc" "humidityalarm"]
       writehtmlrowwithemph "Watchdog alarm" [alarmemph [client::getdata "plc" "watchdogalarm"]] [client::getdata "plc" "watchdogalarm"]
     }
+}
 
     putshtml "</table>"
 
@@ -1689,7 +1691,8 @@ namespace eval "html" {
       }
       writehtmlfullrowwithemph "Weather" $emph $text
     }
-    
+
+if {false} {
     if {[lsearch -exact $servers "plc"] != -1} {
       if {![string equal [client::getstatus "plc"] "ok"]} {
         set text "[client::getstatus "plc"]"
@@ -1705,6 +1708,7 @@ namespace eval "html" {
       }
       writehtmlfullrowwithemph "PLC" $emph $text
     }
+}
 
     if {[lsearch -exact $servers "sun"] != -1} {
       if {[string equal [client::getstatus "sun"] "ok"]} {

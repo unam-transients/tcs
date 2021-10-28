@@ -102,7 +102,7 @@ colibriohp-services)
   allargs="html log"
   ;;
 colibriohp-control)
-  allargs="selector executor instrument telescope weather sun moon target power sensors"
+  allargs="selector executor instrument telescope weather sun moon target power plc sensors"
   ;;
 colibriohp-detectors)
   allargs="C0"
