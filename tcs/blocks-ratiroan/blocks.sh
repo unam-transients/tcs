@@ -88,6 +88,10 @@ sh pointing-map.sh
   #do 
   #  singleblock 2019B-1002-0 e$letter
   #done
+  
+  singleblock 1000-* b
+
+  singleblock 2005-tapia-0 c
 
   allblocks 2003-del-burgo              d
   

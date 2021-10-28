@@ -1,0 +1,40 @@
+{
+ "project": {
+   "identifier": "2005",
+   "name": "Tapia Mol 12"
+ },
+ "identifier": "0",
+ "name": "Mol 12",
+ "visits": [
+   {
+     "identifier": "1000",
+     "name": "pointing correction",
+     "targetcoordinates": {
+       "type"   : "equatorial",
+       "alpha"  : "05:40:24.2",
+       "delta"  : "+23:50:55",
+       "equinox": "2000"
+     },
+     "command": "pointingcorrectionvisit",
+     "estimatedduration": "2m"
+   },
+   {
+     "identifier": "0",
+     "name": "science",
+     "targetcoordinates": {
+       "type"   : "equatorial",
+       "alpha"  : "05:40:24.2",
+       "delta"  : "+23:50:55",
+       "equinox": "2000"
+     },
+     "command": "tapiavisit",
+     "estimatedduration": "5m"
+   }
+ ],
+ "constraints": {
+   "maxskybrightness": "astronomicaltwilight",
+   "maxairmass": "2.0",
+   "maxfocusdelay": "1800"
+ },
+ "persistent": "false"
+}
