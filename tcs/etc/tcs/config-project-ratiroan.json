@@ -452,7 +452,7 @@
     },
     "detectorfullunbinneddatawindow": {
       "sx": "0",
-      "sy": "0",
+      "sy": "32",
       "nx": "2048",
       "ny": "2048"
     },
@@ -511,7 +511,7 @@
     },
     "detectorfullunbinneddatawindow": {
       "sx": "0",
-      "sy": "0",
+      "sy": "32",
       "nx": "2048",
       "ny": "2048"
     },

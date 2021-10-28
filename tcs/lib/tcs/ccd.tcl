@@ -714,18 +714,19 @@ namespace eval "ccd" {
       } {
         log::debug "fitsfwhm failed: \"$line\"."
       } elseif {[string equal $type "guidestart"]} {
-        log::debug [format "guide star initial position is (%.1f,%.1f) pixels." $x $y]
+        log::info [format "guide star initial position is (%.1f,%.1f) pixels." $x $y]
         server::setdata "guidereferenceimage" $fitsfilename
         server::setdata "guidestarinitialx" $x
         server::setdata "guidestarinitialy" $y
       } elseif {[string equal $type "guidenext"]} {
+        log::info [format "guide star current position is (%.1f,%.1f) pixels." $x $y]
         set dx [expr {$x - [server::getdata "guidestarinitialx"]}]
         set dy [expr {$y - [server::getdata "guidestarinitialy"]}]
         set easterror  [expr {$dx * [astrometry::arcsectorad +0.15] * [server::getdata "detectorbinning"]}]
         set northerror [expr {$dy * [astrometry::arcsectorad -0.15] * [server::getdata "detectorbinning"]}]
         server::setdata "guidestareasterror"  $easterror
         server::setdata "guidestarnortherror" $northerror
-        log::debug [format "guide error is %+.2f E and %+.2f N arcsec." [astrometry::radtoarcsec $easterror]  [astrometry::radtoarcsec $northerror]]
+        log::info [format "guide error is %+.2f E and %+.2f N arcsec." [astrometry::radtoarcsec $easterror]  [astrometry::radtoarcsec $northerror]]
       }
     }
   }

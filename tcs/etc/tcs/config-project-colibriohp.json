@@ -40,6 +40,7 @@
       "executor",
       "instrument",
       "moon",
+      "plc",
       "power",
       "selector",
       "sensors",
@@ -63,6 +64,10 @@
   },
   "safetyswitch": {
     "type": "none"
+  },
+  "plc": {
+    "controllerhost": "192.168.100.28",
+    "controllerport": "200"
   },
   "power": {
     "hosts": {
@@ -92,7 +97,6 @@
   },
   "instrument": {
     "activedetectors": [
-      "C0"
     ],
     "detectors": [
       "C0"

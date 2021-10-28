@@ -83,6 +83,7 @@ namespace eval "controller" {
     chan configure $channel -blocking false
     chan configure $channel -buffering "line"
     chan configure $channel -encoding "ascii"
+    chan configure $channel -translation "binary"
   }
 
   proc closechannel {} {
