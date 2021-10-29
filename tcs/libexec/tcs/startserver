@@ -63,7 +63,7 @@ coatlioan-a0)
 coatlioan-c0)
   allargs="lights heater"
   ;;
-coatlioan-e1)
+coatlioan-instrument)
   allargs="C0"
   ;;
 ddotioan-control)

@@ -104,18 +104,18 @@ sudo apt-get -y install libcfitsio-dev libcfitsio-bin
 
 # Install fliusb and libfli
 
-# sudo apt-get -y install libelf-dev
-# cd fliusb-1.3.2-mod/
-# make
-# sudo cp fliusb.ko /lib/modules/$(uname -r)/kernel
-# sudo depmod
-# cd ..
-# 
-# cd libfli/
-# make
-# sudo cp libfli.a $prefix/lib/
-# sudo cp libfli.h $prefix/include/
-# cd ..
+sudo apt-get -y install libelf-dev
+cd fliusb-1.3.2-mod/
+make
+sudo cp fliusb.ko /lib/modules/$(uname -r)/kernel
+sudo depmod
+cd ..
+
+cd libfli/
+make
+sudo cp libfli.a $prefix/lib/
+sudo cp libfli.h $prefix/include/
+cd ..
 
 ########################################################################
 

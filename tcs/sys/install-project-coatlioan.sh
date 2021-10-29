@@ -25,7 +25,7 @@
 
 ################################################################################
 
-host=$(uname -n | sed 's/\..*//')
+host=$(uname -n | sed 's/\..*//;s/.*-//')
 
 ################################################################################
 
@@ -49,7 +49,8 @@ host=$(uname -n | sed 's/\..*//')
 10.0.1.11       c0                      coatlioan-c0
 10.0.1.12       d0                      coatlioan-d0
 10.0.1.13       e0                      coatlioan-e0
-10.0.1.14       e1                      coatlioan-e1 C0-host
+10.0.1.14       e1                      coatlioan-e1
+10.0.1.15       instrument              coatlioan-instrument C0-host
 10.0.1.20       webcam-a                coatlioan-webcam-a
 10.0.1.21       webcam-b                coatlioan-webcam-b
 10.0.1.99       spare                   coatlioan-spare
@@ -77,7 +78,7 @@ sudo mv /etc/hosts.tmp /etc/hosts
 EOF
 
   case $host in
-  coatlioan-access)
+  access)
     # Do not run checkhalt on the Macs; they do not automatically start again after a halt if we cycle the power.
     ;;  
   *)
@@ -87,9 +88,9 @@ EOF
   esac
 
   case $host in
-  coatlioan-control)
+  control)
     cat <<"EOF"
-*  *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles services control c0 d0 e0 e1
+*  *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles services control c0 d0 e0 e1 instrument
 *  *  *  *  *  /usr/local/bin/tcs updateweatherfiles-oan
 00 18 *  *  *  /usr/local/bin/tcs updateweatherfiles-oan -a
 *  *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
@@ -98,7 +99,7 @@ EOF
 00 00 *  *  *  /usr/local/bin/tcs updatevarlatestlink; rsync -aH /usr/local/etc/tcs/blocks /usr/local/var/tcs/latest/
 EOF
     ;;
-  coatlioan-services)
+  services)
     cat <<"EOF"
 */5 *  *  *  * /usr/local/bin/tcs logsensors
 *   *  *  *  *  rsync -aH --include="error.txt" --include="warning.txt" --include="summary.txt" --include="info.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw/
@@ -120,42 +121,41 @@ EOF
   echo "PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
   case $host in
-  coatlioan-access)
+  access)
     echo "hostname coatlioan-access"
     ;;
   esac
 
   case $host in
-  coatlioan-[cdf][01])
+  [cdf][01])
     echo "gpio -i"
     ;;
   esac
   case $host in
-  coatlioan-c0)
+  c0)
     echo "gpio enclosure-lights off"
     echo "gpio enclosure-heater off"
     ;;
   esac
   
   case $host in
-  coatlioan-[cde]0|coatlioan-control)
-    echo "mkdir -p /var/ow"
-    echo "owfs"
+  [cde]0|control|instrument)
+    echo "owserver -c /etc/owfs.conf"
     ;;
   esac
 
   case $host in
-  coatlioan-services)
+  services)
     echo "tcs instrumentdataserver -f rsync://transients.astrossp.unam.mx/coatli-raw/ &"
     ;;
-  coatlioan-e1)
+  instrument)
     echo "tcs instrumentdataserver -f -d rsync://services/tcs/ &"
     ;;
   esac
 
   case $host in
-  coatlioan-services)
-    echo "tcs instrumentimageserver C0 e1 &"
+  services)
+    echo "tcs instrumentimageserver C0 instrument &"
     echo "tcs webcamimageserver a http://coatli:coatli@webcam-a/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver b http://coatli:coatli@webcam-b/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver c http://coatli:coatli@webcam-c/cgi-bin/viewer/video.jpg &"
@@ -166,9 +166,11 @@ EOF
     echo "mkdir -p /usr/local/var/tcs/halt"
     ;;
   esac
+  
+  echo "service rsync start"
 
   case $host in
-  coatlioan-[cde][01]|coatlioan-control)
+  [cde][01]|control|instrument)
     echo "# This sleep gives the main host time to reboot and start the log server."
     echo "sleep 30"
     ;;
@@ -182,28 +184,31 @@ sudo cp /dev/stdin /etc/rc.local.tmp
 sudo chmod o=rwx,go=rx /etc/rc.local.tmp
 sudo mv /etc/rc.local.tmp /etc/rc.local
 
+sudo update-rc.d owserver disable
+
 ################################################################################
 
-# /etc/owfs
+# /etc/owfs.conf
 
 case $host in
-control|c0|d0|e0)
+services|control)
+  sudo cp /dev/stdin <<"EOF" /etc/owfs.conf.tmp
+server: device = /dev/ttyFTDI
+server: port = localhost:4304
+! server: server = localhost:4304
+EOF
+  ;;
+*)
   sudo cp /dev/stdin <<"EOF" /etc/owfs.conf.tmp
 server: link = /dev/ttyFTDI
 server: port = localhost:4304
 ! server: server = localhost:4304
-owfs: mountpoint = /var/ow
-owfs: allow_other
-http: port = 2121
-ftp: port = 2120
 EOF
-  sudo chmod o=rw,go=r /etc/owfs.conf.tmp
-  sudo mv /etc/owfs.conf.tmp /etc/owfs.conf
-  ;;
-*)
-  sudo rm -f /etc/owfs.conf
   ;;
 esac
+sudo chmod o=rw,go=r /etc/owfs.conf.tmp
+sudo mv /etc/owfs.conf.tmp /etc/owfs.conf
+
 
 ################################################################################
 
@@ -297,7 +302,7 @@ fi
 # wait for any background tasks to finish.
 
 case $host in
-coatlioan-access)
+access)
   sudo cp /dev/stdin <<"EOF" /Library/LaunchDaemons/local.localhost.startup.plist
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -331,7 +336,7 @@ sudo rm -f /tmp/sudoers-tcs
 (
   echo 'coatli ALL=(ALL) ALL'
   case $host in
-  coatlioan-services)
+  services)
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs rebootsoon'
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs restartsoon'
     ;;

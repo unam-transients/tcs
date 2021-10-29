@@ -42,7 +42,7 @@ namespace eval "telescope" {
   variable validpointingmodes { none }
   variable validguidingmodes  { none }
   
-  variable mechanism<s { mount enclosure secondary }
+  variable mechanisms { mount enclosure secondary }
   variable withlights true
   variable withheater true
     
