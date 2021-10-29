@@ -62,7 +62,7 @@ coatlioan-a0)
 coatlioan-c0)
   allargs="heater lights"
   ;;
-coatlioan-e1)
+coatlioan-instrument)
   allargs="C0"
   ;;
 ddotioan-services)

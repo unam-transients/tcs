@@ -24,57 +24,11 @@
 ////////////////////////////////////////////////////////////////////////
 
 {
-  "C0": {
-    "telescopedescription": "OAN/SPM COATLI 50-cm f/8",
-    "detectortype": "fli",
-    "detectoridentifier": "ML0053812",
-    "detectorpixelscale": "0.34as",
-    "detectorinitialreadmode": "1MHz",
-    "detectorinitialsoftwaregain": "8",
-    "detectorinitialbinning": "1",
-    "detectorwindows": {
-      "initial": "default",
-      "default": "full",
-      "1kx1k": {
-        "sx": 626,
-        "sy": 258,
-        "nx": 1024,
-        "ny": 1024
-      }
-    },
-    "detectorfullunbinneddatawindow": {
-      "sx": 46,
-      "sy": 34,
-      "nx": 2184,
-      "ny": 1472
-    },
-    "detectorfullunbinnedbiaswindow": {
-      "sx": 4,
-      "sy": 34,
-      "nx": 36,
-      "ny": 1472
-    },
-    "cooleropensetting": "-30",
-    "coolerclosedsetting": "following",
-    "temperaturelimit": "40",
-    "filterwheeltype": "fli",
-    "filterwheelidentifier": "CFW-1-5-001",
-    "filterlist": [
-      "w",
-      "BB",
-      "BV",
-      "BR",
-      "BI"
-    ],
-    "filterwheelidleposition": "w",
-    "focusertype": "null",
-    "focuseridentifier": "null",
-    "focuserinitialposition": "0",
-    "focuserbacklashoffset": "0",
-    "focusercorrectionmodel": {},
-    "pointingmodelparameters": {},
-    "isstandalone": "false",
-    "fitsfwhmargs": {}
+  "site": {
+    "latitude": "+31:02:43.0",
+    "longitude": "-115:28:00",
+    "altitude": "2790.0",
+    "civiltimezone": "America/Tijuana"
   },
   "html": {
     "servers": [
@@ -112,6 +66,629 @@
       ]
     }
   },
+  "gcntan": {
+    "serverpacketport": "5349",
+    "swiftalertprojectidentifier"  : "1001",
+    "fermialertprojectidentifier"  : "1002",
+    "lvcalertprojectidentifier"    : "1003",
+    "hawcalertprojectidentifier"   : "1004",
+    "icecubealertprojectidentifier": "1005"
+  },
+  "supervisor": {
+    "withplc": "false",
+    "internalhumiditysensor": "enclosure-humidity",
+    "openoffsetseconds": "0",
+    "opentocooloffsetseconds": "1800"
+  },
+  "selector": {},
+  "executor": {
+    "type": "coatlioan"
+  },
+  "safetyswitch": {
+    "type": "arts"
+  },
+  "telescope": {
+    "type": "coatlioan",
+    "idleha": "0h",
+    "idledelta": "75d",
+    "closeexplicitly": "true",
+    "finders": []
+  },
+  "enclosure": {
+    "type": "arts",
+    "controllerhost": "serial",
+    "controllerport": "10003",
+    "closeexplicitly": "true",
+    "openposition": "180",
+    "opentocoolposition": "60"
+  },
+  "mount": {
+    "type": "ntm",
+//    "mounthapark": "12h",
+//    "mountdeltapark": "60d",
+//    "mounthaunpark": "12h",
+//    "mountdeltaunpark": "150d",
+//    "mountaxisdhacorrection": "1.16as",
+//    "mountsouthdeltalimit": "-90:00:00",
+//    "mountnorthdeltalimit": "+90:00:00",
+//    "mounteasthalimit": "-12:00:00",
+//    "mountwesthalimit": "+12:00:00",
+//    "mountzenithdistancelimit": "90d",
+//    "mountmeridianhalimit": "+00:30:00",
+//    "mountpolardeltalimit": "+65d",
+//
+// // From 201812-03-coatli-g.
+//
+//    "mountpointingmodelparameters0": "{",
+//   IH -0.0047074467568086805
+//   ID -0.0006618650923221631
+//   CH -0.0013811582112297114
+//   NP -0.0003649609463357323
+//   MA -8.107187723873346e-05
+//   ME 9.736141424008034e-05
+//   TF -0.00014833918077742815
+//   HHSH -0.00032356320972907527
+//   HHCH 0.00026459521657681986
+//   HDSD -0.00018171280583113204
+//   HDCD -0.0001394768131429088
+// }
+//
+//    "mountpointingmodelparameters180": "{",
+//   IH -0.005243483878157062
+//   ID 0.0012134831766377348
+//   CH 0.001405515667754249
+//   NP 0.00026902975803691823
+//   MA -5.939026506712456e-06
+//   ME -1.1410919291664726e-05
+//   TF -9.215452732261461e-05
+//   HHSH -0.00035014949261470566
+//   HHCH -0.00036314151358259825
+//   HDSD -0.0003567316493432653
+//   HDCD -0.00023831058571033273
+// }
+    "hapark": "12h",
+    "deltapark": "60d",
+    "haunpark": "12h",
+    "deltaunpark": "150d",
+    "axisdhacorrection": "1.16as",
+    "axisddeltacorrection": "0as",
+    "southdeltalimit": "-90:00:00",
+    "northdeltalimit": "+90:00:00",
+    "easthalimit": "-12:00:00",
+    "westhalimit": "+12:00:00",
+    "zenithdistancelimit": "90d",
+    "meridianhalimit": "+00:30:00",
+    "polardeltalimit": "+65d",
+    "pointingmodelpolarhole": "1d",
+   // Pointing model from 20181203.
+   "pointingmodelparameters0": {
+      "IH": "-0.0047074467568086805",
+      "ID": "-0.0006618650923221631",
+      "CH": "-0.0013811582112297114",
+      "NP": "-0.0003649609463357323",
+      "MA": "-8.107187723873346e-05",
+      "ME": "9.736141424008034e-05",
+      "TF": "-0.00014833918077742815",
+      "HHSH": "-0.00032356320972907527",
+      "HHCH": "0.00026459521657681986",
+      "HDSD": "-0.00018171280583113204",
+      "HDCD": "-0.0001394768131429088"
+    },
+    "pointingmodelparameters180": {
+      "IH": "-0.005243483878157062",
+      "ID": "0.0012134831766377348",
+      "CH": "0.001405515667754249",
+      "NP": "0.00026902975803691823",
+      "MA": "-5.939026506712456e-06",
+      "ME": "-1.1410919291664726e-05",
+      "TF": "-9.215452732261461e-05",
+      "HHSH": "-0.00035014949261470566",
+      "HHCH": "-0.00036314151358259825",
+      "HDSD": "-0.0003567316493432653",
+      "HDCD": "-0.00023831058571033273"
+    }
+  },
+  "power": {
+    "hosts": {
+      "ibb-127": {
+        "type": "ibootbar",
+        "outlets": "8",
+        "inlets": "2"
+      },
+      "ibb-220": {
+        "type": "ibootbar",
+        "outlets": "8",
+        "inlets": "1"
+      }
+    },
+    "outletgroupaddresses": {
+      "firewall":   [["ibb-127", "a", "5"]],
+      "access":     [["ibb-127", "a", "2"]],
+      "services":   [["ibb-127", "a", "6"]],
+      "control":    [["ibb-127", "a", "7"]],
+      "mount":      [["ibb-127", "a", "4"]],
+      "serial":     [["ibb-127", "a", "8"]],
+      "enclosure":  [["ibb-220", "a", "1"]],
+      "secondary":  [["ibb-220", "a", "2"]],
+      "platform":   [["ibb-127", "a", "1"]],
+      "instrument": [["ibb-127", "a", "3"]]
+    }
+  },
+  "sensors": {
+    "lognames": [
+      "shed-temperature",
+      "enclosure-temperature",
+      "box-c-temperature",
+      "box-d-temperature",
+      "box-e-temperature",
+      "shed-humidity",
+      "enclosure-humidity",
+      "box-c-humidity",
+      "box-d-humidity",
+      "box-e-humidity",
+      "shed-light-level",
+      "enclosure-light-level"
+    ],
+    "sensors": {
+      "shed-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.0FC8CF000000/temperature",
+        "keyword": "SHTM",
+        "prettyname": "shed temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.0FC8CF000000",
+        "firmware": ""
+      },
+      "rack-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.4EBD40010000/temperature",
+        "keyword": "RCTM",
+        "prettyname": "rack emperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.4EBD40010000",
+        "firmware": ""
+      },
+      "enclosure-temperature": {
+        "file": "/usr/local/var/tcs/sensors/c0/ow/26.F897E1010000/temperature",
+        "keyword": "ENTM",
+        "prettyname": "enclosure temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.F897E1010000",
+        "firmware": ""
+      },
+      "box-c-temperature": {
+        "file": "/usr/local/var/tcs/sensors/c0/ow/26.DFB040010000/temperature",
+        "keyword": "BCTM",
+        "prettyname": "box C temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.3E9840010000",
+        "firmware": ""
+      },
+      "box-d-temperature": {
+        "file": "/usr/local/var/tcs/sensors/d0/ow/26.68A740010000/temperature",
+        "keyword": "BDTM",
+        "prettyname": "box D temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.68A740010000",
+        "firmware": ""
+      },
+      "box-e-temperature": {
+        "file": "/usr/local/var/tcs/sensors/e0/ow/26.44A040010000/temperature",
+        "keyword": "BETM",
+        "prettyname": "box E temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.44A040010000",
+        "firmware": ""
+      },
+      "shed-humidity": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.0FC8CF000000/HIH4000/humidity",
+        "keyword": "SHHM",
+        "prettyname": "shed relative humidity",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.0FC8CF000000",
+        "firmware": ""
+      },
+      "enclosure-humidity": {
+        "file": "/usr/local/var/tcs/sensors/c0/ow/26.F897E1010000/HIH4000/humidity",
+        "keyword": "ENHM",
+        "prettyname": "enclosure",
+        "relative": "humidity",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.F897E1010000",
+        "firmware": ""
+      },
+      "box-c-humidity": {
+        "file": "/usr/local/var/tcs/sensors/c0/ow/26.DFB040010000/HIH4000/humidity",
+        "keyword": "BCHM",
+        "prettyname": "box C relative humidity",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.DFB040010000",
+        "firmware": ""
+      },
+      "box-d-humidity": {
+        "file": "/usr/local/var/tcs/sensors/d0/ow/26.68A740010000/HIH4000/humidity",
+        "keyword": "BDHM",
+        "prettyname": "box D relative humidity",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.68A740010000",
+        "firmware": ""
+      },
+      "box-e-humidity": {
+        "file": "/usr/local/var/tcs/sensors/e0/ow/26.44A040010000/HIH4000/humidity",
+        "keyword": "BEHM",
+        "prettyname": "box E relative humidity",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.44A040010000",
+        "firmware": ""
+      },
+      "shed-light-level": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.389840010000/VAD",
+        "keyword": "SHLL",
+        "prettyname": "shed light level",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.389840010000",
+        "firmware": ""
+      },
+      "enclosure-light-level": {
+        "file": "/usr/local/var/tcs/sensors/c0/ow/26.47A740010000/VAD",
+        "keyword": "ENLL",
+        "prettyname": "enclosure",
+        "light": "level",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.47A740010000",
+        "firmware": ""
+      },
+      "host-services-load": {
+        "file": "/usr/local/var/tcs/sensors/services/load",
+        "keyword": "",
+        "prettyname": "load on host services",
+        "group": "host-services",
+        "type": "float",
+        "unit": "processes",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-control-load": {
+        "file": "/usr/local/var/tcs/sensors/control/load",
+        "keyword": "",
+        "prettyname": "load on host control",
+        "group": "host-control",
+        "type": "float",
+        "unit": "processes",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-instrument-load": {
+        "file": "/usr/local/var/tcs/sensors/instrument/load",
+        "keyword": "",
+        "prettyname": "load on host instrument",
+        "group": "host-instrument",
+        "type": "float",
+        "unit": "processes",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-c0-load": {
+        "file": "/usr/local/var/tcs/sensors/c0/load",
+        "keyword": "",
+        "prettyname": "load on host c0",
+        "group": "host-c0",
+        "type": "float",
+        "unit": "processes",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-d0-load": {
+        "file": "/usr/local/var/tcs/sensors/d0/load",
+       "keyword": "",
+       "prettyname": "load on host d0",
+       "group": "host-d0",
+       "type": "float",
+       "unit": "processes",
+       "model": "",
+       "identifier": "",
+       "firmware": ""
+      },
+      "host-e0-load": {
+        "file": "/usr/local/var/tcs/sensors/e0/load",
+        "keyword": "",
+        "prettyname": "load on host e0",
+        "group": "host-e0",
+        "type": "float",
+        "unit": "processes",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-e1-load": {
+        "file": "/usr/local/var/tcs/sensors/e1/load",
+        "keyword": "",
+        "prettyname": "load on host e1",
+        "group": "host-e1",
+        "type": "float",
+        "unit": "processes",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-services-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/services/disk-space-used",
+        "keyword": "",
+        "prettyname": "relative disk space used on host services",
+        "group": "host-services",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-control-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/control/disk-space-used",
+        "keyword": "",
+        "prettyname": "relative disk space used on host control",
+        "group": "host-control",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-instrument-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/instrument/disk-space-used",
+        "keyword": "",
+        "prettyname": "relative disk space used on host instrument",
+        "group": "host-instrument",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-c0-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/c0/disk-space-used",
+        "keyword": "",
+        "prettyname": "relative disk space used on host c0",
+        "group": "host-c0",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-d0-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/d0/disk-space-used",
+        "keyword": "",
+        "prettyname": "relative disk space used on host d0",
+        "group": "host-d0",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-e0-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/e0/disk-space-used",
+        "keyword": "",
+        "prettyname": "relative disk space used on host e0",
+        "group": "host-e0",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-e1-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/e1/disk-space-used",
+        "keyword": "",
+        "prettyname": "relative disk space used on host e1",
+        "group": "host-e1",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "C0-detector-detector-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/C0-detector-detector-temperature",
+        "keyword": "",
+        "prettyname": "C0 detector temperature",
+        "subsystem": "instrument",
+        "component": "C0",
+        "group": "detector-temperature",
+        "type": "float",
+        "unit": "C",
+        "model": "dummy",
+        "identifier": "0",
+        "firmware": ""
+      },
+      "C0-detector-cooler-set-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/C0-detector-cooler-set-temperature",
+        "keyword": "",
+        "prettyname": "C0 cooler set temperature",
+        "subsystem": "instrument",
+        "component": "C0",
+        "group": "detector-cooler-set-temperature",
+        "type": "float",
+        "unit": "C",
+        "model": "dummy",
+        "identifier": "0",
+        "firmware": ""
+      },
+      "C0-detector-cooler-state": {
+        "file": "/usr/local/var/tcs/sensors/instrument/C0-detector-cooler-state",
+        "keyword": "",
+        "prettyname": "C0 cooler state",
+        "subsystem": "instrument",
+        "component": "C0",
+        "group": "detector-cooler-state",
+        "type": "string",
+        "unit": "state",
+        "model": "dummy",
+        "identifier": "0",
+        "firmware": ""
+      },
+      "C0-filter-wheel-position": {
+        "file": "/usr/local/var/tcs/sensors/instrument/C0-filter-wheel-position",
+        "keyword": "",
+        "prettyname": "C0 filter wheel position",
+        "group": "detector-C0",
+        "type": "integer",
+        "unit": "",
+        "model": "FLI CFW-1-8",
+        "identifier": "CFW-1-8-001",
+        "firmware": ""
+      }
+    }
+  },
+  "lights": {
+    "type": "gpio",
+    "gpiopath": "/sys/class/gpio/gpio481/value"
+  },
+  "heater": {
+    "type": "gpio",
+    "gpiopath": "/sys/class/gpio/gpio476/value"
+  },
+  "instrument": {
+    "detectors": [
+      "C0"
+    ],
+    "activedetectors": [
+      "C0"
+    ],
+    "pointingdetectors": [
+      "C0"
+    ],
+    "outletgroups": []
+  },
+  "fitsheader": {
+    "servers": [
+      "target",
+      "moon",
+      "sun",
+      "mount",
+      "sensors",
+      "weather"
+    ]
+  },
+  "C0": {
+    "telescopedescription": "OAN/SPM COATLI 50-cm f/8",
+    "detectortype": "andor",
+    "detectoridentifier": "",
+    "detectorpixelscale": "0.381as",
+    "detectorinitialsoftwaregain": 1,
+    "detectorinitialbinning": 1,
+    "detectorwindows": {
+      "initial": "default",
+      "default": "1kx1k",
+      "center": "1kx1k",
+      "1kx1k": {
+        "sx": 0,
+        "sy": 0,
+        "nx": 1024,
+        "ny": 1024
+      },
+      "1024x1024": "1kx1k",
+      "512x512": {
+        "sx": 256,
+        "sy": 256,
+        "nx": 512,
+        "ny": 512
+      }
+    },
+    "detectorfullunbinneddatawindow": {
+      "sx": 0,
+      "sy": 1,
+      "nx": 1024,
+      "ny": 1023
+    },
+    "detectorfullunbinnedbiaswindow": {
+      "sx": 0,
+      "sy": 0,
+      "nx": 0,
+      "ny": 0
+    },
+    "detectorreadmodes": {
+      "initial"   : "default",
+      "default"   : "1MHz-1",
+      "em-30MHz-0": "0-0-3-0-0-1000-8",
+      "em-30MHz-1": "0-0-3-0-1-640-16",
+      "em-20MHz-0": "0-0-3-1-0-500-4",
+      "em-20MHz-1": "0-0-3-1-1-320-8",
+      "em-10MHz-0": "0-0-3-2-0-250-2",
+      "em-10MHz-1": "0-0-3-2-1-160-4",
+      "em-1MHz-0" : "0-0-3-3-0-100-1",
+      "em-1MHz-1" : "0-0-3-3-1-40-2",
+      "1MHz-0"    : "0-1-3-0-0-0-1",
+      "1MHz-1"    : "0-1-3-0-1-0-2",
+      "100kHz-0"  : "0-1-3-1-0-0-1",
+      "100kHz-1"  : "0-1-3-1-1-0-2"
+    },
+    "cooleropensetting": "-60",
+    "coolerclosedsetting": "off",
+    "temperaturelimit": 40,
+    "temperaturelimitoutletgroup": "",
+    "filterwheeltype": "fli",
+    "filterwheelidentifier": "CFW-1-8-001",
+    "filterwheelinitialposition": 0,
+    "filterlist": [
+      "g", "r", "i", "z", "470/10", "515/10", "640/10", "656/3"
+    ],
+    "focusertype": "null",
+    "focuseridentifier": "null",
+    "focuserinitialposition": 0,
+    "focuserbacklashoffset": 0,
+    "focusercorrectionmodel": {},
+    "pointingmodelparameters": {},
+    "isstandalone": false,
+    "fitsfwhmargs": {
+      "1": "-m",
+      "2": "-A",
+      "4": "-A",
+      "8": "-A",
+      "16": "-A"
+    }
+  },
   "secondary": {
     "type": "optec",
     "controllerhost": "serial",
@@ -124,12 +701,6 @@
     "dztweak": "-25",
     "dzdT": "-9.26",
     "temperaturesensor": "enclosure-temperature"
-  },
-  "site": {
-    "latitude": "+31:02:43.0",
-    "longitude": "-115:28:00",
-    "altitude": "2790.0",
-    "civiltimezone": "America/Tijuana"
   },
   "weather": {
     "windaveragespeedlimit": "20"
