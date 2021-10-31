@@ -385,7 +385,14 @@ namespace eval "detector" {
   proc openfitsheader {fitsfilename} {
     variable bscale
     variable bzero
-    set naxis [list [detectorrawgetpixnx] [detectorrawgetpixny] [detectorrawgetpixnz]]
+    set nx [detectorrawgetpixnx] 
+    set ny [detectorrawgetpixny] 
+    set nz [detectorrawgetpixnz]
+    if {$nz == 1} {
+      set naxis [list $nx $ny]
+    } else {
+      set naxis [list $nx $ny $nz]
+    }
     return [fitsheader::open $fitsfilename 16 $naxis $bscale $bzero]
   }
   
