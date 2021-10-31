@@ -244,7 +244,7 @@
         "firmware": ""
       },
       "box-e-temperature": {
-        "file": "/usr/local/var/tcs/sensors/e0/ow/26.44A040010000/temperature",
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.44A040010000/temperature",
         "keyword": "BETM",
         "prettyname": "box E temperature",
         "group": "environmental-sensors",
@@ -300,7 +300,7 @@
         "firmware": ""
       },
       "box-e-humidity": {
-        "file": "/usr/local/var/tcs/sensors/e0/ow/26.44A040010000/HIH4000/humidity",
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.44A040010000/HIH4000/humidity",
         "keyword": "BEHM",
         "prettyname": "box E relative humidity",
         "group": "environmental-sensors",
@@ -388,28 +388,6 @@
        "identifier": "",
        "firmware": ""
       },
-      "host-e0-load": {
-        "file": "/usr/local/var/tcs/sensors/e0/load",
-        "keyword": "",
-        "prettyname": "load on host e0",
-        "group": "host-e0",
-        "type": "float",
-        "unit": "processes",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
-      "host-e1-load": {
-        "file": "/usr/local/var/tcs/sensors/e1/load",
-        "keyword": "",
-        "prettyname": "load on host e1",
-        "group": "host-e1",
-        "type": "float",
-        "unit": "processes",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
       "host-services-disk-space-used": {
         "file": "/usr/local/var/tcs/sensors/services/disk-space-used",
         "keyword": "",
@@ -459,28 +437,6 @@
         "keyword": "",
         "prettyname": "relative disk space used on host d0",
         "group": "host-d0",
-        "type": "float",
-        "unit": "",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
-      "host-e0-disk-space-used": {
-        "file": "/usr/local/var/tcs/sensors/e0/disk-space-used",
-        "keyword": "",
-        "prettyname": "relative disk space used on host e0",
-        "group": "host-e0",
-        "type": "float",
-        "unit": "",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
-      "host-e1-disk-space-used": {
-        "file": "/usr/local/var/tcs/sensors/e1/disk-space-used",
-        "keyword": "",
-        "prettyname": "relative disk space used on host e1",
-        "group": "host-e1",
         "type": "float",
         "unit": "",
         "model": "",
