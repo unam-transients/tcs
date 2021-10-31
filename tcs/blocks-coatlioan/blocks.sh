@@ -115,29 +115,6 @@ sh 2019A-2000-0.sh
   #  singleblock 2019B-1002-0 e$letter
   #done
   
-  singleblock 2019B-1100-0 f0
-  singleblock 2019B-1100-0 f1
-  singleblock 2019B-1100-0 f2
-  singleblock 2019B-1100-0 f3
-  singleblock 2019B-1100-0 f4
-  singleblock 2019B-1100-0 f5
-  singleblock 2019B-1100-0 f6
-  singleblock 2019B-1100-0 f7
-  singleblock 2019B-1100-0 f8
-  singleblock 2019B-1100-0 f9
-
-  allblocks 0011-sky-brightness         l
-  allblocks 0004-initial-focus          n0
-  allblocks 0004-focus-swift            n1
-  allblocks 0004-focus-not-swift        n2
-
-  allblocks 0001-twilight-flats-evening s
-
-  allblocks 0002-biases-east            t
-  allblocks 0002-biases-west            t
-
-  allblocks 0003-darks-east              u
-  allblocks 0003-darks-west              u
-
+  allblocks 0004-initial-focus          n
 
 ) | sudo sh

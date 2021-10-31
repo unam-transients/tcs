@@ -52,7 +52,7 @@
     ]
   },
   "target": {
-    "maxzenithdistancelimit": "85d",
+    "maxzenithdistancelimit": "72d",
     "idleha": "0h",
     "idledelta": "30d",
     "pointingapertures": {
@@ -104,50 +104,8 @@
   },
   "mount": {
     "type": "ntm",
-//    "mounthapark": "12h",
-//    "mountdeltapark": "60d",
-//    "mounthaunpark": "12h",
-//    "mountdeltaunpark": "150d",
-//    "mountaxisdhacorrection": "1.16as",
-//    "mountsouthdeltalimit": "-90:00:00",
-//    "mountnorthdeltalimit": "+90:00:00",
-//    "mounteasthalimit": "-12:00:00",
-//    "mountwesthalimit": "+12:00:00",
-//    "mountzenithdistancelimit": "90d",
-//    "mountmeridianhalimit": "+00:30:00",
-//    "mountpolardeltalimit": "+65d",
-//
-// // From 201812-03-coatli-g.
-//
-//    "mountpointingmodelparameters0": "{",
-//   IH -0.0047074467568086805
-//   ID -0.0006618650923221631
-//   CH -0.0013811582112297114
-//   NP -0.0003649609463357323
-//   MA -8.107187723873346e-05
-//   ME 9.736141424008034e-05
-//   TF -0.00014833918077742815
-//   HHSH -0.00032356320972907527
-//   HHCH 0.00026459521657681986
-//   HDSD -0.00018171280583113204
-//   HDCD -0.0001394768131429088
-// }
-//
-//    "mountpointingmodelparameters180": "{",
-//   IH -0.005243483878157062
-//   ID 0.0012134831766377348
-//   CH 0.001405515667754249
-//   NP 0.00026902975803691823
-//   MA -5.939026506712456e-06
-//   ME -1.1410919291664726e-05
-//   TF -9.215452732261461e-05
-//   HHSH -0.00035014949261470566
-//   HHCH -0.00036314151358259825
-//   HDSD -0.0003567316493432653
-//   HDCD -0.00023831058571033273
-// }
-    "hapark": "12h",
-    "deltapark": "60d",
+    "hapark": "6h",
+    "deltapark": "90d",
     "haunpark": "12h",
     "deltaunpark": "150d",
     "axisdhacorrection": "1.16as",
@@ -156,7 +114,7 @@
     "northdeltalimit": "+90:00:00",
     "easthalimit": "-12:00:00",
     "westhalimit": "+12:00:00",
-    "zenithdistancelimit": "90d",
+    "zenithdistancelimit": "75d",
     "meridianhalimit": "+00:30:00",
     "polardeltalimit": "+65d",
     "pointingmodelpolarhole": "1d",
@@ -615,7 +573,7 @@
     "telescopedescription": "OAN/SPM COATLI 50-cm f/8",
     "detectortype": "andor",
     "detectoridentifier": "",
-    "detectorpixelscale": "0.381as",
+    "detectorpixelscale": "0.67as",
     "detectorinitialsoftwaregain": 1,
     "detectorinitialbinning": 1,
     "detectorwindows": {
