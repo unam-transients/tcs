@@ -1,6 +1,7 @@
 #!/bin/sh
 
-rm -f 0008-pointing-map-*
+# Pointing map visits typically take about 20 seconds when the slew is short and
+# 60 seconds when the slew is longer.
 
 awk '
 BEGIN {
@@ -21,37 +22,59 @@ function acos(x) {
 function atan(x) {
   return atan2(x,1);
 }
-function zenithdistance(h, delta) {
-  h = degtorad(h);
+function zenithdistance(ha, delta) {
+  ha = degtorad(ha);
   delta = degtorad(delta);
-  latitude = degtorad(31.045055555555556);
-  z = acos(sin(latitude) * sin(delta) + cos(latitude) * cos(delta) * cos(h));
+  latitude = degtorad(31);
+  z = acos(sin(latitude) * sin(delta) + cos(latitude) * cos(delta) * cos(ha));
   return radtodeg(z);
 }
 BEGIN {
-  targetid = 0;
-  for (h = -170; h <= 170; h += 10)
-    for (delta = -50; delta < 90; delta += 10) {
-      z = zenithdistance(h, delta)
-      if (z < 80)
-        printf("%03d %+.1fd %+.1fd %.1fd\n", targetid++, h, delta, z);
+  dha = 20;
+  ddelta = 20;
+  blockid = 0;
+  iha = 0;
+  for (ha = -180 + 0.5 * dha; ha < 180; ha += dha) {
+    startdelta = -55;
+    if (iha % 2 == 1) 
+      startdelta += 0.5 * ddelta;
+    iha += 1;
+    for (delta = startdelta; delta < 90; delta += ddelta) {
+      z = zenithdistance(ha, delta)
+      if (z < 85)
+        printf("%04d %+.1fd %+.1fd %.1fd\n", blockid++, ha, delta, z);
     }
+  }
 }
 ' |
-while read targetid h delta z
+while read blockid ha delta z
 do
-    cat >0008-pointing-map-$targetid <<EOF
-proposal::setidentifier "[utcclock::semester]-0008"
-block::setidentifier "0"
-visit::setidentifier "0"
-visit::setname "pointing map at $h $delta"
-block::settotalexposures 0
-visit::settargetcoordinates fixed $h $delta now
-
-constraints::setmaxskybrightness "nauticaltwilight"
-constraints::setmustbeonfavoredsideforswift true
-constraints::setmaxfocusdelay 3600
-
-visit::setcommand "pointingmapvisit"
+    cat >0008-pointing-map-$blockid <<EOF
+{
+  "project": {
+    "identifier": "0008",
+    "name": "pointing map"
+  },
+  "identifier": "$blockid",
+  "name": "pointing map at $ha $delta",
+  "visits": [
+    {
+      "identifier": "0",
+      "name": "pointing map",
+      "targetcoordinates": {
+        "type"   : "fixed",
+        "ha"     : "$ha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "pointingmapvisit",
+      "estimatedduration": "1m"
+    }
+  ],
+  "constraints": {
+    "maxfocusdelay": "21600",
+    "maxskybrightness": "astronomicaltwilight"
+  }
+}
 EOF
 done

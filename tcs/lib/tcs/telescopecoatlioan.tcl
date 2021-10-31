@@ -47,6 +47,34 @@ namespace eval "telescope" {
   variable withheater true
     
   ######################################################################
+
+  proc initializeprolog {} {
+  }
+
+  proc initializeepilog {} {
+  }
+
+  proc openprolog {} {
+  }
+
+  proc openepilog {} {
+  }
+
+  proc closeprolog {} {
+  }
+
+  proc closeepilog {} {
+  }
+
+  ######################################################################
+
+  proc initializemechanismprolog {mechanism} {
+  }
+
+  proc initializemechanismepilog {mechanism} {
+  }
+
+  ######################################################################
 }
 
 source [file join [directories::prefix] "lib" "tcs" "telescope.tcl"]

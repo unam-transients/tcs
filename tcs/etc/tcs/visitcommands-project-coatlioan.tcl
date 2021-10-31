@@ -230,7 +230,7 @@ proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime filters} 
 
 ########################################################################
 
-proc initialfocusvisit {ALPHA DELTA alpha delta} {
+proc initialfocusvisit {} {
 
   log::summary "initialfocusvisit: starting."
   
@@ -240,86 +240,48 @@ proc initialfocusvisit {ALPHA DELTA alpha delta} {
   setsecondaryoffset 0
 
   log::summary "initialfocusvisit: moving to brighter star."
-  visit::settargetcoordinates equatorial $ALPHA $DELTA 2000
   track
-  setreadmode 6MHz
+#  setreadmode 6MHz
   setwindow "default"
-  setbinning 8
-  movefilterwheel "$focusfilter"
-  waituntiltracking
-  log::summary "initialfocusvisit: focusing with binning 8."
-  focussecondary C0 1 500 50 false
-  log::summary "initialfocusvisit: focusing with binning 4."
   setbinning 4
-  focussecondary C0 1 250 25 false
+#  movefilterwheel "$focusfilter"
+  waituntiltracking
+  log::summary "initialfocusvisit: focusing with binning 4."
+  focussecondary C0 1 500 50 false
+  
+}
 
-  log::summary "initialfocusvisit: correcting pointing."
-  setreadmode 1MHz
-  movefilterwheel "$correctpointingfilter"
-  correctpointing 30
+proc initialpointingcorrectionvisit {} {
 
-  log::summary "initialfocusvisit: moving to fainter star."
-  visit::settargetcoordinates equatorial $alpha $delta 2000
+  log::summary "initialpointingcorrectionvisit: moving to fainter star."
   track
-  setreadmode 6MHz
-  setwindow "1kx1k"
+  setwindow "default"
   setbinning 1
-  movefilterwheel "$focusfilter"
+#  movefilterwheel "$focusfilter"
   waituntiltracking
-  log::summary "initialfocusvisit: focusing with binning 1."
-  focussecondary C0 4 100 10 true
+  correctpointing 10
 
-  setfocused
-
-  log::summary "initialfocusvisit: correcting pointing in east."
-  visit::settargetcoordinates fixed -1h +30d now
-  tracktopocentric
-  setreadmode 1MHz
-  setwindow "default"
-  setbinning 2
-  movefilterwheel "$correctpointingfilter"
-  waituntiltracking
-  correctpointing 30
-
-  log::summary "initialfocusvisit: correcting pointing in west."
-  visit::settargetcoordinates fixed +1h +30d now
-  tracktopocentric
-  setreadmode 1MHz
-  setwindow "default"
-  setbinning 2
-  movefilterwheel "$correctpointingfilter"
-  waituntiltracking
-  correctpointing 30
-
-  log::summary "initialfocusvisit: finished."
+  log::summary "initialpointingcorrectionvisit: finished."
 
   return false
 }
 
-########################################################################
-
 proc focusvisit {} {
 
-  log::summary "focusvisit: starting."
-
-  set focusfilter BI
-
-  setsecondaryoffset 0
-
+  log::summary "initialfocusvisit: moving to fainter star."
   track
-  setreadmode 6MHz
-  setwindow "1kx1k"
-  setbinning 4
-  movefilterwheel "$focusfilter"
-  waituntiltracking
-  log::summary "focusvisit: focusing with binning 4."
-  focussecondary C0 1 250 25 false
+#  setreadmode 6MHz
+#  setwindow "1kx1k"
   setbinning 1
-  log::summary "focusvisit: focusing with binning 1."
-  focussecondary C0 4 100 10 true
+#  movefilterwheel "$focusfilter"
+  waituntiltracking
+  log::summary "initialfocusvisit: focusing with binning 1."
+  focussecondary C0 1 100 10 true
+
   setfocused
 
-  log::summary "focusvisit: finished."
+  log::summary "initialfocusvisit: finished."
+
   return false
 }
 
@@ -378,14 +340,12 @@ proc pointingmapvisit {} {
   setsecondaryoffset 0
   tracktopocentric
 
-  setreadmode 1MHz
   setwindow "default"
-  setbinning 2
-  movefilterwheel "w"
+  setbinning 1
 
   waituntiltracking
 
-  expose object 60
+  expose object 10
 
   log::summary "pointingmapvisit: finished."
   return true
