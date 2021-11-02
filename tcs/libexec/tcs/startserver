@@ -64,7 +64,7 @@ coatlioan-c0)
   allargs="lights heater"
   ;;
 coatlioan-instrument)
-  allargs="C0"
+  allargs="5 C0"
   ;;
 ddotioan-control)
   allargs="sensors power weather 1 target 1 moon sun 1 enclosure mount 1 telescope instrument 1 executor selector supervisor"
