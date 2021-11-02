@@ -1,11 +1,24 @@
-proposal::setidentifier "[utcclock::semester]-0003"
-block::setidentifier "0"
-visit::setidentifier "0"
-visit::setname "darks"
-block::settotalexposures 0
-visit::settargetcoordinates fixed +3h 30d
-
-constraints::setmaxskybrightness "nauticaltwilight"
-constraints::setmustbeonfavoredsideforswift true
-
-visit::setcommand "darksvisit"
+{
+  "project": {
+    "identifier": "0003",
+    "name": "darks"
+  },
+  "identifier": "0",
+  "visits": [
+    {
+      "identifier": "0",
+      "name": "darks",
+      "targetcoordinates": {
+        "type": "fixed",
+        "ha":   "+3h",
+        "delta": "+30d"
+      },
+      "command": "darksvisit",
+      "estimatedduration": "5m"
+    }
+  ],
+  "constraints": {
+    "maxskybrightness": "civiltwilight",
+    "mustbeonfavoredsideforswift": "true"
+  }
+}

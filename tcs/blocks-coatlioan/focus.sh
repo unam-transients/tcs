@@ -23,8 +23,8 @@ do
   "name": "initial focusing and pointing correction near ${suffix}h +25d",
   "visits": [
     {
-      "identifier": "0",
-      "name": "initial coarse focus",
+      "identifier": "1000",
+      "name": "initial focus",
       "targetcoordinates": {
         "type"   : "equatorial",
         "alpha"  : "$ALPHA",
@@ -35,20 +35,42 @@ do
       "estimatedduration": "10m"
     },
     {
-      "identifier": "1",
-      "name": "initial pointing correction",
+      "identifier": "1001",
+      "name": "initial pointing correction near +1h +45d",
+      "targetcoordinates": {
+        "type"   : "fixed",
+        "ha"     : "+1h",
+        "delta"  : "+45d"
+      },
+      "command": "initialpointingcorrectionvisit",
+      "estimatedduration": "1m"
+    },
+    {
+      "identifier": "1002",
+      "name": "initial pointing correction near -1h +45d",
+      "targetcoordinates": {
+        "type"   : "fixed",
+        "ha"     : "-1h",
+        "delta"  : "+45d"
+      },
+      "command": "initialpointingcorrectionvisit",
+      "estimatedduration": "1m"
+    },
+    {
+      "identifier": "1003",
+      "name": "pointing correction",
       "targetcoordinates": {
         "type"   : "equatorial",
         "alpha"  : "$alpha",
         "delta"  : "$delta",
         "equinox": "2000"
       },
-      "command": "initialpointingcorrectionvisit",
-      "estimatedduration": "5m"
+      "command": "pointingcorrectionvisit",
+      "estimatedduration": "1m"
     },
     {
-      "identifier": "2",
-      "name": "initial fine focus",
+      "identifier": "0",
+      "name": "fine focus",
       "targetcoordinates": {
         "type"   : "equatorial",
         "alpha"  : "$alpha",
@@ -57,18 +79,6 @@ do
       },
       "command": "focusvisit",
       "estimatedduration": "5m"
-//    },
-//    {
-//      "identifier": "3",
-//      "name": "apertures",
-//      "targetcoordinates": {
-//        "type"   : "equatorial",
-//        "alpha"  : "$alpha",
-//        "delta"  : "$delta",
-//        "equinox": "2000"
-//      },
-//      "command": "aperturesvisit",
-//      "estimatedduration": "15m"
     }
   ],
   "constraints": {
@@ -92,6 +102,18 @@ EOF
   "name": "focusing near ${suffix}h +25d",
   "visits": [
     {
+      "identifier": "1000",
+      "name": "pointing correction",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "pointingcorrectionvisit",
+      "estimatedduration": "1m"
+    },
+    {
       "identifier": "0",
       "name": "fine focus",
       "targetcoordinates": {
@@ -112,6 +134,74 @@ EOF
     "minfocusdelay": "1200"
   },
   "persistent": "true"
+}
+EOF
+
+  cat <<EOF >0007-donut-$suffix
+{
+  "project": {
+    "identifier": "0007",
+    "name": "donut tests"
+  },
+  "identifier": "$blockid",
+  "name": "donut test near ${suffix}h +25d",
+  "visits": [
+    {
+      "identifier": "1000",
+      "name": "pointing correction",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "pointingcorrectionvisit",
+      "estimatedduration": "1m"
+    },
+    {
+      "identifier": "1001",
+      "name": "fine focus",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "focusvisit",
+      "estimatedduration": "5m"
+    },
+    {
+      "identifier": "1002",
+      "name": "pointing correction",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$ALPHA",
+        "delta"  : "$DELTA",
+        "equinox": "2000"
+      },
+      "command": "pointingcorrectionvisit",
+      "estimatedduration": "1m"
+    },
+    {
+      "identifier": "0",
+      "name": "donuts",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$ALPHA",
+        "delta"  : "$DELTA",
+        "equinox": "2000"
+      },
+      "command": "donutvisit",
+      "estimatedduration": "5m"
+    }
+  ],
+  "constraints": {
+    "maxskybrightness": "nauticaltwilight",
+    "maxairmass": "2.0",
+    "minmoondistance": "15d",
+    "maxfocusdelay": "1200"
+  },
+  "persistent": "false"
 }
 EOF
 
