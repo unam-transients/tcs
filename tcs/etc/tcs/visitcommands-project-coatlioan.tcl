@@ -23,64 +23,77 @@
 
 ########################################################################
 
-proc alertvisit {alertfile} {
+proc alertvisit {{filters "r"}} {
 
   log::summary "alertvisit: starting."
+  log::summary "alertvisit: filters are $filters."
   
-  if {[string equal "" [alert::eventtimestamp]]} {
+  set alpha   [visit::alpha   [executor::visit]]
+  set delta   [visit::delta   [executor::visit]]
+  set equinox [visit::equinox [executor::visit]]
+
+  log::info "alertvisit: reading alert."
+
+  if {![file exists [executor::filename]]} {
+    log::summary "alertvisit: the alert is no longer in the queue."
+    return false
+  }
+
+  executor::setblock [alert::alerttoblock [alert::readalertfile [executor::filename]]]
+  executor::setalert [block::alert [executor::block]]
+
+  if {![alert::enabled [executor::alert]]} {
+    log::summary "alertvisit: the alert is no longer enabled."
+    return false
+  }
+
+  if {[string equal "" [alert::eventtimestamp [executor::alert]]]} {
     log::info [format "alertvisit: no event timestamp."]
   } else {  
-    log::info [format "alertvisit: event timestamp is %s." [utcclock::format [alert::eventtimestamp]]]
+    log::info [format "alertvisit: event timestamp is %s." [utcclock::format [alert::eventtimestamp [executor::alert]]]]
   }
-  if {[string equal "" [alert::alerttimestamp]]} {
+  if {[string equal "" [alert::alerttimestamp [executor::alert]]]} {
     log::info [format "alertvisit: no alert timestamp."]
   } else {  
-    log::info [format "alertvisit: alert timestamp is %s." [utcclock::format [alert::alerttimestamp]]]
+    log::info [format "alertvisit: alert timestamp is %s." [utcclock::format [alert::alerttimestamp [executor::alert]]]]
   }
   
-  switch -glob [proposal::identifier] {
-    *-1002 {
-      set filters {"BB" "BR"}
-      set binning            2
-      set exposuretime       30
-      set exposuresperdither 2
-    }
-    default {
-      set filters {"w"}
-      set alertdelay [alert::delay]
-      log::summary [format "alertvisit: alert delay is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
-      if {$alertdelay < 1800} {
-        set binning            2
-        set exposuretime       5
-        set exposuresperdither 10
-      } else {
-        set binning            2
-        set exposuretime       30
-        set exposuresperdither 2
-      }
-    }
+  set alertdelay [alert::delay [executor::alert]]
+  log::summary [format "alertvisit: alert delay at start of visit is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
+  if {$alertdelay < 1800} {
+    set binning            1
+    set exposuretime       5
+    set exposuresperdither 10
+  } else {
+    set binning            1
+    set exposuretime       15
+    set exposuresperdither 4
+  }
+  set exposuresperfilterperdither [expr {int($exposuresperdither / [llength $filters])}]
+  if {$exposuresperfilterperdither == 0} {
+    set exposuresperfilterperdither 1
   }
   log::summary [format "alertvisit: taking %.0f second exposures with binning of %d in %s." $exposuretime $binning $filters]
-  log::summary [format "alertvisit: taking %d exposures per dither." $exposuresperdither]
+  log::summary [format "alertvisit: taking %d exposures per filter per dither." $exposuresperfilterperdither]
   
   executor::setsecondaryoffset 0
+  executor::setguidingmode "none"
+  executor::setpointingmode "none"
+
   executor::track
 
-  executor::setreadmode 1MHz
-  executor::setwindow  "default"
+  executor::setreadmode "default"
+  executor::setwindow "default"
   executor::setbinning $binning
   executor::movefilterwheel [lindex $filters 0]
 
   executor::waituntiltracking
-  log::summary [format "alertvisit: correcting pointing."]
-  correctpointing 30
 
-  set lastalpha       [visit::alpha]
-  set lastdelta       [visit::delta]
-  set lastequinox     [visit::equinox]
-  set lasteastoffset  [astrometry::parseangle "0as"]
-  set lastnorthoffset [astrometry::parseangle "0as"]
+  set lastalpha   [alert::alpha [executor::alert]]
+  set lastdelta   [alert::delta [executor::alert]]
+  set lastequinox [alert::equinox [executor::alert]]
     
+  set first true
   foreach {eastoffset northoffset} {
       0as   0as
     +30as +30as
@@ -95,51 +108,63 @@ proc alertvisit {alertfile} {
   
     log::info "alertvisit: dithering $eastoffset E and $northoffset N."    
 
-    if {[file exists $alertfile]} {
-      if {[catch {source $alertfile} message]} {
-        log::error "alertvisit: error while loading alert file \"$alertfile\"visit: $message"
-        return false
-      }
-      executor::updatedata
+    set lastalpha       $alpha
+    set lastdelta       $delta
+    set lastequinox     $equinox
+    
+    if {![file exists [executor::filename]]} {
+      log::summary "alertvisit: the alert is no longer in the queue."
+      break
     }
 
-    if {![alert::enabled]} {
+    executor::setblock [alert::alerttoblock [alert::readalertfile [executor::filename]]]
+    executor::setalert [block::alert [executor::block]]
+
+    if {![alert::enabled [executor::alert]]} {
       log::summary "alertvisit: the alert is no longer enabled."
       return false
     }
 
-    set alpha   [visit::alpha]
-    set delta   [visit::delta]
-    set equinox [visit::equinox]
-
-    set eastoffset  [astrometry::parseangle $eastoffset]
-    set northoffset [astrometry::parseangle $northoffset]
+    set alpha   [alert::alpha [executor::alert]]
+    set delta   [alert::delta [executor::alert]]
+    set equinox [alert::equinox [executor::alert]]
 
     if {$alpha != $lastalpha || $delta != $lastdelta || $equinox != $lastequinox} {
       log::summary "alertvisit: the coordinates have been updated."
+      log::summary [format "alertvisit: new alert coordinates are %s %s %s." [astrometry::formatalpha $alpha]  [astrometry::formatdelta $delta] $equinox]
+      executor::setvisit [visit::updatevisittargetcoordinates [executor::visit] [visit::makeequatorialtargetcoordinates $alpha $delta $equinox]]
       executor::track $eastoffset $northoffset "default"
       executor::waituntiltracking
-    } elseif {$eastoffset != $lasteastoffset || $northoffset != $lastnorthoffset} {
+    } else {
       executor::offset $eastoffset $northoffset "default"
       executor::waituntiltracking
     }
 
-    set lastalpha       $alpha
-    set lastdelta       $delta
-    set lastequinox     $equinox
-    set lasteastoffset $eastoffset
-    set lastnorthoffset $northoffset
-    
     foreach filter $filters {
       executor::movefilterwheel $filter
       set i 0
-      while {$i < $exposuresperdither} {
+      while {$i < $exposuresperfilterperdither} {
+        if {$first} {
+          set alertdelay [alert::delay [executor::alert]]
+          log::summary [format "alertvisit: alert delay at start of first exposure is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
+          log::summary [format "alertvisit: alert coordinates at start of first exposure are %s %s %s." [astrometry::formatalpha $alpha]  [astrometry::formatdelta $delta] $equinox]
+        }
         executor::expose "object" $exposuretime
+        if {$first} {
+          log::summary "alertvisit: correcting pointing."
+          executor::correctpointing 0
+          log::summary "alertvisit: finished correcting pointing."
+        }
+        set first false
         incr i
       }
     }
 
   }
+
+  set alertdelay [alert::delay [executor::alert]]
+  log::summary [format "alertvisit: alert delay after end of last exposure is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
+  log::summary [format "alertvisit: alert coordinates after end of last exposure are %s %s %s." [astrometry::formatalpha $alpha]  [astrometry::formatdelta $delta] $equinox]
 
   log::summary "alertvisit: finished."
 
@@ -232,99 +257,122 @@ proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime filters} 
 
 proc initialfocusvisit {} {
 
+  set filter       "i"
+  set exposuretime 1
+
   log::summary "initialfocusvisit: starting."
   
-  set focusfilter BI
-  set correctpointingfilter w
-
   setsecondaryoffset 0
 
-  log::summary "initialfocusvisit: moving to brighter star."
   track
-#  setreadmode 6MHz
+  setreadmode "default"
   setwindow "default"
   setbinning 4
-#  movefilterwheel "$focusfilter"
+  movefilterwheel "$filter"
   waituntiltracking
   log::summary "initialfocusvisit: focusing with binning 4."
-  focussecondary C0 1 500 50 false
+  focussecondary C0 $exposuretime 500 50 false
   
+  log::summary "initialfocusvisit: finished."
+
+  return true
 }
 
-proc initialpointingcorrectionvisit {} {
-
-  log::summary "initialpointingcorrectionvisit: moving to fainter star."
-  track
-  setwindow "default"
-  setbinning 1
-#  movefilterwheel "$focusfilter"
-  waituntiltracking
-  correctpointing 10
-
-  log::summary "initialpointingcorrectionvisit: finished."
-
-  return false
-}
+########################################################################
 
 proc focusvisit {} {
 
-  log::summary "initialfocusvisit: moving to fainter star."
+  set filter       "i"
+  set exposuretime 1
+
+  log::summary "focusvisit: starting."
   track
-#  setreadmode 6MHz
-#  setwindow "1kx1k"
+  setreadmode "default"
+  setwindow "default"
   setbinning 1
-#  movefilterwheel "$focusfilter"
+  movefilterwheel $filter
   waituntiltracking
+
   log::summary "initialfocusvisit: focusing with binning 1."
-  focussecondary C0 1 100 10 true
+  focussecondary C0 $exposuretime 100 10 true
 
   setfocused
 
-  log::summary "initialfocusvisit: finished."
+  log::summary "focusvisit: finished."
 
-  return false
+  return true
+}
+
+########################################################################
+
+proc initialpointingcorrectionvisit {} {
+
+  set filter       "r"
+  set exposuretime 30
+
+  log::summary "initialpointingcorrectionvisit: starting."
+
+  tracktopocentric
+  setreadmode "default"
+  setwindow "default"
+  setbinning 1
+  movefilterwheel $filter
+  waituntiltracking
+
+  log::summary "initialpointingcorrectionvisit: correcting pointing."
+  correctpointing $exposuretime
+
+  log::summary "initialpointingcorrectionvisit: finished."
+  return true
+}
+
+########################################################################
+
+proc pointingcorrectionvisit {} {
+
+  set filter       "r"
+  set exposuretime 5
+
+  log::summary "correctpointingvisit: starting."
+
+  track
+  setreadmode "default"
+  setwindow "default"
+  setbinning 1
+  movefilterwheel $filter
+  waituntiltracking
+
+  log::summary "correctpointingvisit: correcting pointing."
+  correctpointing $exposuretime
+
+  log::summary "correctpointingvisit: finished."
+  return true
 }
 
 ########################################################################
 
 proc donutvisit {} {
 
+  set filter       "i"
+  set exposuretime 5
+
   log::summary "donutvisit: starting."
-
-  setsecondaryoffset +600
-  track
-
-  setreadmode 6MHz
+  setreadmode "default"
+  setwindow "default"
   setbinning 1
-  movefilterwheel "$focusfilter"
-
-  waituntiltracking
-  expose object 5
+  movefilterwheel $filter
 
   setsecondaryoffset +400
-  offset
+  track
   waituntiltracking
-  expose object 5
-
-  setsecondaryoffset +200
-  offset
-  waituntiltracking
-  expose object 5
-
-  setsecondaryoffset -200
-  offset
-  waituntiltracking
-  expose object 5
+  expose object $exposuretime
 
   setsecondaryoffset -400
   offset
   waituntiltracking
-  expose object 5
+  expose object $exposuretime
 
-  setsecondaryoffset -600
-  offset
-  waituntiltracking
-  expose object 5
+  setsecondaryoffset 0
 
   log::summary "donutvisit: finished."
 
@@ -335,17 +383,21 @@ proc donutvisit {} {
 
 proc pointingmapvisit {} {
 
+  set filter       "r"
+  set exposuretime 5
+
   log::summary "pointingmapvisit: starting."
 
   setsecondaryoffset 0
   tracktopocentric
 
   setwindow "default"
+  setreadmode "default"
   setbinning 1
-
+  movefilterwheel $filter
   waituntiltracking
 
-  expose object 10
+  expose object $exposuretime
 
   log::summary "pointingmapvisit: finished."
   return true
@@ -353,72 +405,53 @@ proc pointingmapvisit {} {
 
 ########################################################################
 
-proc twilightflatsvisit {} {
+proc twilightflatsvisit {filter targetngood} {
 
   log::summary "twilightflatsvisit: starting."
 
-  setsecondaryoffset 0
-  move
+  executor::setsecondaryoffset 0
+  executor::move
 
-  setreadmode 6MHz
-  setwindow "default"
-  setbinning 1
-  
-  set maxlevel 7000
-  set minlevel 2000
-  set targetlevel 4000
-  
-  set minexposuretime 10
-  set maxexposuretime 20
+  executor::setreadmode "default"
+  executor::setwindow "default"
+  executor::setbinning 1
 
-#    "BV" 2 7
-#    "BI" 4 7
-#    "BR" 3 7
-#    "BB" 1 7
-#    "w"  0 15
-  foreach {filter visitidentifier targetngood} {
-    "BV" 2 7
-    "BI" 4 7
-    "BB" 1 7
-    "BR" 3 7
-    "w"  0 15
-  } {
-    log::info "twilightflatsvisit: starting with filter $filter."
-    visit::setidentifier $visitidentifier
-    movefilterwheel $filter
-    set exposuretime $minexposuretime
-    set ngood 0
-    set mingoodlevel $maxlevel
-    set maxgoodlevel $minlevel
-    while {true} {
-      expose flat $exposuretime
-      analyze levels
-      set level [exposureaverage C0]
-      log::info [format "twilightflatsvisit: level is %.1f DN in filter $filter in $exposuretime seconds." $level]
-      if {$level > $maxlevel} {
-        log::info "twilightflatsvisit: level is too bright."
-      } elseif {$level < $minlevel} {
-        log::info "twilightflatsvisit: level is too faint."
-        if {$exposuretime == $maxexposuretime} {
-          break
-        }
-      } else {
-        log::info "twilightflatsvisit: level is good."
-        incr ngood
-        set mingoodlevel [expr {min($level,$mingoodlevel)}]
-        set maxgoodlevel [expr {max($level,$maxgoodlevel)}]
-        if {$ngood == $targetngood} {
-          break
-        }
-      }
-      set exposuretime [expr {min($maxexposuretime,max($minexposuretime,int($exposuretime * $targetlevel / $level)))}]
-    }
-    log::info "twilightflatsvisit: finished with filter $filter."
-    if {$ngood == 0} {
-      log::summary [format "twilightflatsvisit: $ngood good flats with filter $filter."]
+  set maxlevel 16000
+  set minlevel 3500
+  
+  set exposuretime 10
+  
+  log::info "twilightflatsvisit: filter $filter."
+  executor::movefilterwheel $filter
+
+  set ngood 0
+  set mingoodlevel $maxlevel
+  set maxgoodlevel $minlevel
+  while {true} {
+    executor::expose flat $exposuretime
+    executor::analyze levels
+    set level [executor::exposureaverage C0]
+    log::info [format "twilightflatsvisit: level is %.1f DN in filter $filter in $exposuretime seconds." $level]
+    if {$level > $maxlevel} {
+      log::info "twilightflatsvisit: level is too bright."
+    } elseif {$level < $minlevel} {
+      log::info "twilightflatsvisit: level is too faint."
+      break
     } else {
-      log::summary [format "twilightflatsvisit: $ngood good flats with filter $filter (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
+      log::info "twilightflatsvisit: level is good."
+      incr ngood
+      set mingoodlevel [expr {min($level,$mingoodlevel)}]
+      set maxgoodlevel [expr {max($level,$maxgoodlevel)}]
+      if {$ngood == $targetngood} {
+        break
+      }
     }
+  }
+
+  if {$ngood == 0} {
+    log::summary [format "twilightflatsvisit: $ngood good flats with filter $filter."]
+  } else {
+    log::summary [format "twilightflatsvisit: $ngood good flats with filter $filter (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
   }
 
   log::summary "twilightflatsvisit: finished."
@@ -426,23 +459,21 @@ proc twilightflatsvisit {} {
   return true
 }
 
+
 ########################################################################
 
 proc biasesvisit {} {
   log::summary "biasesvisit: starting."
   setsecondaryoffset 0
   move
-  movefilterwheel "w" 
+  movefilterwheel 0
   foreach {readmode binning visitidentifier} {
-    1MHz 1 0
-    1MHz 2 1
-    6MHz 1 2
-    6MHz 2 3
+    "default" 1 0
   } { 
     setreadmode $readmode
     setwindow "default"
     setbinning $binning
-    visit::setidentifier $visitidentifier
+    executor::setvisit [visit::updatevisitidentifier [executor::visit] $visitidentifier]
     set i 0
     while {$i < 20} {
       expose bias 0
@@ -460,17 +491,14 @@ proc darksvisit {} {
   log::summary "darksvisit: starting."
   setsecondaryoffset 0
   move
-  movefilterwheel "w" 
+  movefilterwheel 0
   foreach {readmode binning visitidentifier} {
-    1MHz 1 0
-    1MHz 2 1
-    6MHz 1 2
-    6MHz 2 3
+    "default" 1 0
   } { 
     setreadmode $readmode
     setwindow "default"
     setbinning $binning
-    visit::setidentifier $visitidentifier
+    executor::setvisit [visit::updatevisitidentifier [executor::visit] $visitidentifier]
     set i 0
     while {$i < 5} {
       expose dark 60
@@ -483,27 +511,3 @@ proc darksvisit {} {
 }
 
 ########################################################################
-
-proc skybrightnessvisit {} {
-  log::summary "skybrightnessvisit: starting."
-  executor::setsecondaryoffset 0
-  executor::tracktopocentric
-  executor::setreadmode 1MHz
-  executor::setwindow "default"
-  executor::setbinning 2
-  executor::movefilterwheel "w"
-  executor::waituntiltracking
-  foreach {filter exposuretime visitidentifier} {
-    "w"  10 0
-    "BB" 30 1
-    "BV" 30 2
-    "BR" 30 3
-    "BI" 30 4
-  } {
-    executor::movefilterwheel $filter
-    visit::setidentifier $visitidentifier
-    executor::expose object $exposuretime
-  }
-  log::summary "skybrightnessvisit: finished."  
-  return true
-}
