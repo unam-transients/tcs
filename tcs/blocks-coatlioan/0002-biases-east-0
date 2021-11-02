@@ -1,11 +1,24 @@
-proposal::setidentifier "[utcclock::semester]-0002"
-block::setidentifier "0"
-visit::setidentifier "0"
-visit::setname "biases"
-block::settotalexposures 0
-visit::settargetcoordinates fixed -3h +30d
-
-constraints::setmaxskybrightness "civiltwilight"
-constraints::setmustbeonfavoredsideforswift true
-
-visit::setcommand "biasesvisit"
+{
+  "project": {
+    "identifier": "0002",
+    "name": "biases"
+  },
+  "identifier": "0",
+  "visits": [
+    {
+      "identifier": "0",
+      "name": "biases",
+      "targetcoordinates": {
+        "type": "fixed",
+        "ha":   "-3h",
+        "delta": "+30d"
+      },
+      "command": "biasesvisit",
+      "estimatedduration": "1m"
+    }
+  ],
+  "constraints": {
+    "maxskybrightness": "civiltwilight",
+    "mustbeonfavoredsideforswift": "true"
+  }
+}

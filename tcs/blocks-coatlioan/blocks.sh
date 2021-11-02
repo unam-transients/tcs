@@ -92,29 +92,17 @@ sh 2019A-2000-0.sh
     
     :
   
-    # allblocks 2019A-1002 c
-
-    # allblocks 2017A-0008-pointing-map           a
-
-    # singleblock 2019A-2001-0 a0
-
-    # allblocks 2019A-2000-0 b0
-    # singleblock 2019A-2000-1 b1
-    # singleblock 2019A-2000-2 b1
-    # singleblock 2019A-2000-3 b1
-   
-
-    # allblocks 2017A-0010 e
-  
     allblocks 0008-pointing-map           w
 
   fi
 
-  #for letter in a b c d e f g h i j k l m n o p q r s t u v w x y z
-  #do 
-  #  singleblock 2019B-1002-0 e$letter
-  #done
+  allblocks 0004-initial-focus          m
+  allblocks 0004-focus                  n
+  #allblocks 0007-donut                  o
   
-  allblocks 0004-initial-focus          n
+  allblocks 0001-twilight-flats-evening x
+  allblocks 0002-biases                 y
+  allblocks 0003-darks                  z
+
 
 ) | sudo sh

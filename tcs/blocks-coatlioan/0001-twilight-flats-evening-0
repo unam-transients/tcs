@@ -1,12 +1,102 @@
-proposal::setidentifier "[utcclock::semester]-0001"
-block::setidentifier "0"
-visit::setidentifier "0"
-visit::setname "twilight flats"
-block::settotalexposures 0
-visit::settargetcoordinates fixed -3h +30d
-
-constraints::setminmoondistance "30d"
-constraints::setmaxskybrightness "civiltwilight"
-constraints::setminskybrightness "civiltwilight"
-
-visit::setcommand "twilightflatsvisit"
+{
+  "project": {
+    "identifier": "0001",
+    "name": "twilight flats"
+  },
+  "identifier": "0",
+  "visits": [
+    {
+      "identifier": "7",
+      "name": "twilight flats -- 656/3",
+      "targetcoordinates": {
+        "type": "fixed",
+        "ha": "-3h",
+        "delta": "+45d"
+      },
+      "command": "twilightflatsvisit 656/3 7",
+      "estimatedduration": "2m"
+    },
+    {
+      "identifier": "6",
+      "name": "twilight flats -- 640/10",
+      "targetcoordinates": {
+        "type": "fixed",
+        "ha": "-3h",
+        "delta": "+45d"
+      },
+      "command": "twilightflatsvisit 640/10 7",
+      "estimatedduration": "2m"
+    },
+    {
+      "identifier": "5",
+      "name": "twilight flats -- 515/10",
+      "targetcoordinates": {
+        "type": "fixed",
+        "ha": "-3h",
+        "delta": "+45d"
+      },
+      "command": "twilightflatsvisit 515/10 7",
+      "estimatedduration": "2m"
+    },
+    {
+      "identifier": "4",
+      "name": "twilight flats -- 470/10",
+      "targetcoordinates": {
+        "type": "fixed",
+        "ha": "-3h",
+        "delta": "+45d"
+      },
+      "command": "twilightflatsvisit 470/10 7",
+      "estimatedduration": "2m"
+    },
+    {
+      "identifier": "3",
+      "name": "twilight flats -- z",
+      "targetcoordinates": {
+        "type": "fixed",
+        "ha": "-3h",
+        "delta": "+45d"
+      },
+      "command": "twilightflatsvisit z 7",
+      "estimatedduration": "2m"
+    },
+    {
+      "identifier": "2",
+      "name": "twilight flats -- i",
+      "targetcoordinates": {
+        "type": "fixed",
+        "ha": "-3h",
+        "delta": "+45d"
+      },
+      "command": "twilightflatsvisit i 7",
+      "estimatedduration": "2m"
+    },
+    {
+      "identifier": "1",
+      "name": "twilight flats -- r",
+      "targetcoordinates": {
+        "type": "fixed",
+        "ha": "-3h",
+        "delta": "+45d"
+      },
+      "command": "twilightflatsvisit r 7",
+      "estimatedduration": "2m"
+    },
+    {
+      "identifier": "0",
+      "name": "twilight flats -- g",
+      "targetcoordinates": {
+        "type": "fixed",
+        "ha": "-3h",
+        "delta": "+45d"
+      },
+      "command": "twilightflatsvisit g 7",
+      "estimatedduration": "2m"
+    }
+  ],
+  "constraints": {
+    "minmoondistance": "30d",
+    "maxskybrightness": "daylight",
+    "minskybrightness": "civiltwilight"
+  }
+}
