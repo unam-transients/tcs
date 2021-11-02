@@ -1028,7 +1028,7 @@ namespace eval "constraints" {
     } elseif {![getconstraint $constraints "mustbeonfavoredsideforswift"]} {
       log::debug "mustbeonfavoredsideforswift is false."
     } else {
-      log::debug "mustbeonfavoredsideforswift is false."
+      log::debug "mustbeonfavoredsideforswift is true."
       set favoredside [swift::favoredside]
       set observedha [visit::observedha $visit $seconds]
       log::debug [format \
