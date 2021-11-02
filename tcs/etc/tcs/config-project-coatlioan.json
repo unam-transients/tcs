@@ -105,7 +105,7 @@
   "mount": {
     "type": "ntm",
     "hapark": "6h",
-    "deltapark": "90d",
+    "deltapark": "85d",
     "haunpark": "12h",
     "deltaunpark": "150d",
     "axisdhacorrection": "1.16as",
@@ -520,6 +520,7 @@
       "target",
       "moon",
       "sun",
+      "secondary",
       "mount",
       "sensors",
       "weather"
@@ -529,7 +530,7 @@
     "telescopedescription": "OAN/SPM COATLI 50-cm f/8",
     "detectortype": "andor",
     "detectoridentifier": "",
-    "detectorpixelscale": "0.67as",
+    "detectorpixelscale": "0.678as",
     "detectorinitialsoftwaregain": 1,
     "detectorinitialbinning": 1,
     "detectorwindows": {
@@ -564,7 +565,7 @@
     },
     "detectorreadmodes": {
       "initial"   : "default",
-      "default"   : "1MHz-1",
+      "default"   : "1MHz-0",
       "em-30MHz-0": "0-0-3-0-0-1000-8",
       "em-30MHz-1": "0-0-3-0-1-640-16",
       "em-20MHz-0": "0-0-3-1-0-500-4",
@@ -579,7 +580,7 @@
       "100kHz-1"  : "0-1-3-1-1-0-2"
     },
     "cooleropensetting": "-60",
-    "coolerclosedsetting": "off",
+    "coolerclosedsetting": "20",
     "temperaturelimit": 40,
     "temperaturelimitoutletgroup": "",
     "filterwheeltype": "fli",
