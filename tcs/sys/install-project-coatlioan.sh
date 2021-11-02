@@ -51,6 +51,7 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 10.0.1.13       e0                      coatlioan-e0
 10.0.1.14       e1                      coatlioan-e1
 10.0.1.15       instrument              coatlioan-instrument C0-host
+10.0.1.16       platform                coatlioan-platform
 10.0.1.20       webcam-a                coatlioan-webcam-a
 10.0.1.21       webcam-b                coatlioan-webcam-b
 10.0.1.99       spare                   coatlioan-spare
@@ -90,7 +91,7 @@ EOF
   case $host in
   control)
     cat <<"EOF"
-*  *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles services control c0 d0 instrument
+*  *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles services control c0 d0 platform instrument
 *  *  *  *  *  /usr/local/bin/tcs updateweatherfiles-oan
 00 18 *  *  *  /usr/local/bin/tcs updateweatherfiles-oan -a
 *  *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
@@ -139,7 +140,7 @@ EOF
   esac
   
   case $host in
-  [cde]0|control|instrument)
+  [cde]0|control|platform|instrument)
     echo "owserver -c /etc/owfs.conf"
     ;;
   esac
@@ -170,7 +171,7 @@ EOF
   echo "service rsync start"
 
   case $host in
-  [cde][01]|control|instrument)
+  [cde][01]|control|platform|instrument)
     echo "# This sleep gives the main host time to reboot and start the log server."
     echo "sleep 30"
     ;;
@@ -191,7 +192,7 @@ sudo update-rc.d owserver disable
 # /etc/owfs.conf
 
 case $host in
-services|control)
+services|control|platform)
   sudo cp /dev/stdin <<"EOF" /etc/owfs.conf.tmp
 server: device = /dev/ttyFTDI
 server: port = localhost:4304
