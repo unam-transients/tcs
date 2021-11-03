@@ -38,4 +38,4 @@ function zenithdistance(ha, delta) {
   if (-90 <= delta && delta <= 90 && z <= 90 && rotation == selectrotation) {
     printf("%s\n", $0);
   } 
-}' "$@"
+}'
