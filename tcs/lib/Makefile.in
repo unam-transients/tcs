@@ -53,7 +53,7 @@ installs_project_ratiroan   	:=	\
 	filterwheelnull.so
 
 installs_project_coatlioan	    :=	\
-	detectorfli.so		    	    \
+	detectorandor.so		    	\
 	filterwheelfli.so
 
 installs_project_ddotioan	    :=	\
