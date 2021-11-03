@@ -70,7 +70,7 @@ do
     },
     {
       "identifier": "0",
-      "name": "fine focus",
+      "name": "focus",
       "targetcoordinates": {
         "type"   : "equatorial",
         "alpha"  : "$alpha",
@@ -115,7 +115,7 @@ EOF
     },
     {
       "identifier": "0",
-      "name": "fine focus",
+      "name": "focus",
       "targetcoordinates": {
         "type"   : "equatorial",
         "alpha"  : "$alpha",
@@ -160,7 +160,7 @@ EOF
     },
     {
       "identifier": "1001",
-      "name": "fine focus",
+      "name": "focus",
       "targetcoordinates": {
         "type"   : "equatorial",
         "alpha"  : "$alpha",
@@ -197,7 +197,7 @@ EOF
   ],
   "constraints": {
     "maxskybrightness": "nauticaltwilight",
-    "maxairmass": "2.0",
+    "maxairmass": "1.2",
     "minmoondistance": "15d",
     "maxfocusdelay": "1200"
   },
