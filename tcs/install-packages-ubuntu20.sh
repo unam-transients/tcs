@@ -143,7 +143,7 @@ sudo apt-get -y install astrometry.net
 
 # Install sextractor
 
-sudo apt-get -y install sextractor
+sudo apt-get -y install source-extractor
 
 ########################################################################
 
