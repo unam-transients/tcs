@@ -30,8 +30,8 @@ function zenithdistance(ha, delta) {
   return radtodeg(z);
 }
 BEGIN {
-  dha = 20;
-  ddelta = 20;
+  dha = 10;
+  ddelta = 10;
   blockid = 0;
   iha = 0;
   for (ha = -180 + 0.5 * dha; ha < 180; ha += dha) {
@@ -41,7 +41,7 @@ BEGIN {
     iha += 1;
     for (delta = startdelta; delta < 90; delta += ddelta) {
       z = zenithdistance(ha, delta)
-      if (z < 85)
+      if (z < 72)
         printf("%04d %+.1fd %+.1fd %.1fd\n", blockid++, ha, delta, z);
     }
   }
