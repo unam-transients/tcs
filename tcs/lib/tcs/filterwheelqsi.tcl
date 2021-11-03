@@ -77,7 +77,7 @@ namespace eval "filterwheel" {
     if {[updatestatus] && $position != $newposition} {
       log::warning "the filter wheel did not move correctly; position is $position."
     }
-    log::info "filterwheel: move: done."
+    log::debug "filterwheel: move: done."
     variable stoppedtimestamp
     set stoppedtimestamp ""
     return
