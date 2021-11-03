@@ -24,15 +24,15 @@ do
   "visits": [
     {
       "identifier": "1000",
-      "name": "initial focus",
+      "name": "coarse focus",
       "targetcoordinates": {
         "type"   : "equatorial",
         "alpha"  : "$ALPHA",
         "delta"  : "$DELTA",
         "equinox": "2000"
       },
-      "command": "initialfocusvisit",
-      "estimatedduration": "10m"
+      "command": "coarsefocusvisit",
+      "estimatedduration": "1m"
     },
     {
       "identifier": "1001",
@@ -78,7 +78,7 @@ do
         "equinox": "2000"
       },
       "command": "focusvisit",
-      "estimatedduration": "5m"
+      "estimatedduration": "1m"
     }
   ],
   "constraints": {
@@ -123,7 +123,7 @@ EOF
         "equinox": "2000"
       },
       "command": "focusvisit",
-      "estimatedduration": "5m"
+      "estimatedduration": "1m"
     }
   ],
   "constraints": {
@@ -168,7 +168,7 @@ EOF
         "equinox": "2000"
       },
       "command": "focusvisit",
-      "estimatedduration": "5m"
+      "estimatedduration": "1m"
     },
     {
       "identifier": "1002",
@@ -192,7 +192,171 @@ EOF
         "equinox": "2000"
       },
       "command": "donutvisit",
-      "estimatedduration": "5m"
+      "estimatedduration": "1m"
+    }
+  ],
+  "constraints": {
+    "maxskybrightness": "nauticaltwilight",
+    "maxairmass": "1.2",
+    "minmoondistance": "15d",
+    "maxfocusdelay": "1200"
+  },
+  "persistent": "false"
+}
+EOF
+
+  cat <<EOF >0012-focus-offsets-$suffix
+{
+  "project": {
+    "identifier": "0012",
+    "name": "focus offsets"
+  },
+  "identifier": "$blockid",
+  "name": "focus offsets near ${suffix}h +25d",
+  "visits": [
+    {
+      "identifier": "1000",
+      "name": "pointing correction",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "pointingcorrectionvisit",
+      "estimatedduration": "1m"
+    },
+    {
+      "identifier": "0",
+      "name": "focus in g",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "focusvisit g 1",
+      "estimatedduration": "1m"
+    },
+    {
+      "identifier": "1",
+      "name": "focus in r",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "focusvisit r 1",
+      "estimatedduration": "1m"
+    },
+    {
+      "identifier": "3",
+      "name": "focus in i",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "focusvisit i 1",
+      "estimatedduration": "1m"
+    },
+    {
+      "identifier": "4",
+      "name": "focus in z",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "focusvisit z 1",
+      "estimatedduration": "1m"
+    },
+    {
+      "identifier": "1001",
+      "name": "coarse focus in 640/10",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "coarsefocusvisit 640/10 5",
+      "estimatedduration": "1m"
+    },
+    {
+      "identifier": "4",
+      "name": "focus in 470/10",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "focusvisit 470/10 5",
+      "estimatedduration": "2m"
+    },
+    {
+      "identifier": "5",
+      "name": "focus in 515/10",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "focusvisit 515/10 5",
+      "estimatedduration": "2m"
+    },
+    {
+      "identifier": "6",
+      "name": "focus in 640/10",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "focusvisit 640/10 5",
+      "estimatedduration": "2m"
+    },
+    {
+      "identifier": "7",
+      "name": "focus in 656/3",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "focusvisit 656/3 5",
+      "estimatedduration": "2m"
+    },
+    {
+      "identifier": "1002",
+      "name": "coarse focus",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "coarsefocusvisit",
+      "estimatedduration": "1m"
+    },
+    {
+      "identifier": "1003",
+      "name": "focus",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "focusvisit",
+      "estimatedduration": "1m"
     }
   ],
   "constraints": {
