@@ -366,6 +366,17 @@
         "identifier": "",
         "firmware": ""
       },
+      "host-platform-load": {
+        "file": "/usr/local/var/tcs/sensors/platform/load",
+        "keyword": "",
+        "prettyname": "load on host platform",
+        "group": "host-platform",
+        "type": "float",
+        "unit": "processes",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
       "host-c0-load": {
         "file": "/usr/local/var/tcs/sensors/c0/load",
         "keyword": "",
@@ -415,6 +426,17 @@
         "keyword": "",
         "prettyname": "relative disk space used on host instrument",
         "group": "host-instrument",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-platform-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/platform/disk-space-used",
+        "keyword": "",
+        "prettyname": "relative disk space used on host platform",
+        "group": "host-platform",
         "type": "float",
         "unit": "",
         "model": "",
