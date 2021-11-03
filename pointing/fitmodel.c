@@ -7,8 +7,8 @@
 #define FIT_MA    ABSOLUTE
 #define FIT_ME    ABSOLUTE
 #define FIT_TF    1
-#define FIT_FO    0
-#define FIT_DAF   0
+#define FIT_FO    1
+#define FIT_DAF   1
 #define FIT_HHSH  ABSOLUTE
 #define FIT_HHCH  ABSOLUTE
 #define FIT_HHSH2 ABSOLUTE
@@ -478,37 +478,37 @@ show_model(void)
   }
 
   printf("Config parameters:\n");
-  printf("      \"%s\": \"%+.6f\"\n", "IH"   , IH   );
-  printf("      \"%s\": \"%+.6f\"\n", "ID"   , ID   );
-  printf("      \"%s\": \"%+.6f\"\n", "CH"   , CH   );
-  printf("      \"%s\": \"%+.6f\"\n", "NP"   , NP   );
-  printf("      \"%s\": \"%+.6f\"\n", "MA"   , MA   );
-  printf("      \"%s\": \"%+.6f\"\n", "ME"   , ME   );
-  printf("      \"%s\": \"%+.6f\"\n", "TF"   , TF   );
-  printf("      \"%s\": \"%+.6f\"\n", "FO"   , FO   );
-  printf("      \"%s\": \"%+.6f\"\n", "DAF"  , DAF  );
-  printf("      \"%s\": \"%+.6f\"\n", "HHSH" , HHSH );
-  printf("      \"%s\": \"%+.6f\"\n", "HHCH" , HHCH );
-  printf("      \"%s\": \"%+.6f\"\n", "HHSH2", HHSH2);
-  printf("      \"%s\": \"%+.6f\"\n", "HHCH2", HHCH2);
-  printf("      \"%s\": \"%+.6f\"\n", "HDSD" , HDSD );
-  printf("      \"%s\": \"%+.6f\"\n", "HDCD" , HDCD );
-  printf("      \"%s\": \"%+.6f\"\n", "HDSD2", HDSD2);
-  printf("      \"%s\": \"%+.6f\"\n", "HDCD2", HDCD2);
-  printf("      \"%s\": \"%+.6f\"\n", "PXD"  , PXD  );
-  printf("      \"%s\": \"%+.6f\"\n", "PXH"  , PXH  );
-  printf("      \"%s\": \"%+.6f\"\n", "PXD2" , PXD2 );
-  printf("      \"%s\": \"%+.6f\"\n", "PXDH" , PXDH );
-  printf("      \"%s\": \"%+.6f\"\n", "PXH2" , PXH2 );
-  printf("      \"%s\": \"%+.6f\"\n", "PDD"  , PDD  );
-  printf("      \"%s\": \"%+.6f\"\n", "PDH"  , PDH  );
-  printf("      \"%s\": \"%+.6f\"\n", "PDD2" , PDD2 );
-  printf("      \"%s\": \"%+.6f\"\n", "PDDH" , PDDH );
-  printf("      \"%s\": \"%+.6f\"\n", "PDH2" , PDH2 );
-  printf("      \"%s\": \"%+.6f\"\n", "DICD" , DICD );
-  printf("      \"%s\": \"%+.6f\"\n", "C0"   , C0   );
-  printf("      \"%s\": \"%+.6f\"\n", "C1"   , C1   );
-  printf("      \"%s\": \"%+.6f\"\n", "C2"   , C2   );
+  printf("      \"%s\": \"%+.6f\",\n", "IH"   , IH   );
+  printf("      \"%s\": \"%+.6f\",\n", "ID"   , ID   );
+  printf("      \"%s\": \"%+.6f\",\n", "CH"   , CH   );
+  printf("      \"%s\": \"%+.6f\",\n", "NP"   , NP   );
+  printf("      \"%s\": \"%+.6f\",\n", "MA"   , MA   );
+  printf("      \"%s\": \"%+.6f\",\n", "ME"   , ME   );
+  printf("      \"%s\": \"%+.6f\",\n", "TF"   , TF   );
+  printf("      \"%s\": \"%+.6f\",\n", "FO"   , FO   );
+  printf("      \"%s\": \"%+.6f\",\n", "DAF"  , DAF  );
+  printf("      \"%s\": \"%+.6f\",\n", "HHSH" , HHSH );
+  printf("      \"%s\": \"%+.6f\",\n", "HHCH" , HHCH );
+  printf("      \"%s\": \"%+.6f\",\n", "HHSH2", HHSH2);
+  printf("      \"%s\": \"%+.6f\",\n", "HHCH2", HHCH2);
+  printf("      \"%s\": \"%+.6f\",\n", "HDSD" , HDSD );
+  printf("      \"%s\": \"%+.6f\",\n", "HDCD" , HDCD );
+  printf("      \"%s\": \"%+.6f\",\n", "HDSD2", HDSD2);
+  printf("      \"%s\": \"%+.6f\",\n", "HDCD2", HDCD2);
+  printf("      \"%s\": \"%+.6f\",\n", "PXD"  , PXD  );
+  printf("      \"%s\": \"%+.6f\",\n", "PXH"  , PXH  );
+  printf("      \"%s\": \"%+.6f\",\n", "PXD2" , PXD2 );
+  printf("      \"%s\": \"%+.6f\",\n", "PXDH" , PXDH );
+  printf("      \"%s\": \"%+.6f\",\n", "PXH2" , PXH2 );
+  printf("      \"%s\": \"%+.6f\",\n", "PDD"  , PDD  );
+  printf("      \"%s\": \"%+.6f\",\n", "PDH"  , PDH  );
+  printf("      \"%s\": \"%+.6f\",\n", "PDD2" , PDD2 );
+  printf("      \"%s\": \"%+.6f\",\n", "PDDH" , PDDH );
+  printf("      \"%s\": \"%+.6f\",\n", "PDH2" , PDH2 );
+  printf("      \"%s\": \"%+.6f\",\n", "DICD" , DICD );
+  printf("      \"%s\": \"%+.6f\",\n", "C0"   , C0   );
+  printf("      \"%s\": \"%+.6f\",\n", "C1"   , C1   );
+  printf("      \"%s\": \"%+.6f\",\n", "C2"   , C2   );
   printf("      \"%s\": \"%+.6f\"\n", "C3"   , C3   );
   
 
