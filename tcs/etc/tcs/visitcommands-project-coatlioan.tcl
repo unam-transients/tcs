@@ -293,7 +293,7 @@ proc focusvisit {} {
   movefilterwheel $filter
   waituntiltracking
 
-  log::summary "initialfocusvisit: focusing with binning 1."
+  log::summary "focusvisit: focusing with binning 1."
   focussecondary C0 $exposuretime 100 10 true
 
   setfocused
