@@ -374,8 +374,7 @@ namespace eval "detector" {
     variable standarddeviation
     set average           [detectorrawgetvalue "average"]
     set standarddeviation [detectorrawgetvalue "standarddeviation"]
-    log::info [format "average is %.2f." $average]
-    log::info [format "standard deviation is %.2f." $standarddeviation]
+    log::info [format "level is %.1f ± %.1f DN." $average $standarddeviation]
     log::debug "finished reading the exposure."
     return
   }
