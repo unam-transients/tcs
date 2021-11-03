@@ -150,7 +150,7 @@ proc alertvisit {{filters "r"}} {
           log::summary [format "alertvisit: alert coordinates at start of first exposure are %s %s %s." [astrometry::formatalpha $alpha]  [astrometry::formatdelta $delta] $equinox]
         }
         executor::expose "object" $exposuretime
-        if {$first} {
+        if {false && $first} {
           log::summary "alertvisit: correcting pointing."
           executor::correctpointing 0
           log::summary "alertvisit: finished correcting pointing."
@@ -180,9 +180,9 @@ proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime filters} 
   executor::setsecondaryoffset 0
   executor::track
 
-  executor::setreadmode 1MHz
+  executor::setreadmode "default"
   executor::setwindow "default"
-  executor::setbinning 2
+  executor::setbinning 1
 
   executor::waituntiltracking
   
@@ -255,12 +255,9 @@ proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime filters} 
 
 ########################################################################
 
-proc initialfocusvisit {} {
+proc coarsefocusvisit {{filter "i"} {exposuretime 1}} {
 
-  set filter       "i"
-  set exposuretime 1
-
-  log::summary "initialfocusvisit: starting."
+  log::summary "coarsefocusvisit: starting."
   
   setsecondaryoffset 0
 
@@ -270,20 +267,17 @@ proc initialfocusvisit {} {
   setbinning 4
   movefilterwheel "$filter"
   waituntiltracking
-  log::summary "initialfocusvisit: focusing with binning 4."
+  log::summary "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning 4."
   focussecondary C0 $exposuretime 500 50 false
   
-  log::summary "initialfocusvisit: finished."
+  log::summary "coarsefocusvisit: finished."
 
   return true
 }
 
 ########################################################################
 
-proc focusvisit {} {
-
-  set filter       "i"
-  set exposuretime 1
+proc focusvisit {{filter "i"} {exposuretime 1}} {
 
   log::summary "focusvisit: starting."
   track
@@ -293,7 +287,7 @@ proc focusvisit {} {
   movefilterwheel $filter
   waituntiltracking
 
-  log::summary "focusvisit: focusing with binning 1."
+  log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
   focussecondary C0 $exposuretime 100 10 true
 
   setfocused
