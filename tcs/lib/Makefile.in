@@ -34,55 +34,86 @@ MAINTAINER_CLEAN_FILES		+=	*wrap.cxx
 
 ########################################################################
 
+UNAME_M=$(shell uname -m)
+UNAME_N=$(shell uname -n)
+
+ifeq ($(UNAME_M),x86_64)
 installs_project_test	    	:=	\
 	detectorfli.so		        	\
 	focuserfli.so		        	\
 	filterwheelfli.so
+else
+installs_project_test    	    :=
+endif
 
+ifeq ($(UNAME_M),x86_64)
 installs_project_ratir	    	:=	\
 	detectorfli.so		    	    \
 	focuserfli.so		    	    \
 	filterwheelfli.so	    	    \
 	detectorh2rg.so
+else
+installs_project_ratir   	    :=
+endif
 
+ifeq ($(UNAME_M),x86_64)
 installs_project_ratiroan   	:=	\
 	detectorfli.so		        	\
 	detectorh2rg.so                 \
 	focuserfli.so		        	\
 	filterwheelfli.so	           	\
 	filterwheelnull.so
+else
+installs_project_ratiroan	    :=
+endif
 
+ifeq ($(UNAME_N),coatlioan-instrument)
 installs_project_coatlioan	    :=	\
 	detectorandor.so		    	\
 	filterwheelfli.so
+else
+installs_project_coatlioan	    :=
+endif
 
+ifeq ($(UNAME_M),x86_64)
 installs_project_ddotioan	    :=	\
 	detectorfli.so		    	    \
 	filterwheelnull.so
+else
+installs_project_ddotioan	    :=
+endif
 
+ifeq ($(UNAME_M),x86_64)
 installs_project_ddoticu	    :=	\
 	detectorfli.so			        \
 	filterwheelfli.so
+else
+installs_project_ddoticu	    :=
+endif
 
-installs_project_colibricito	:=	\
-	detectorqsi.so			        \
-	filterwheelqsi.so
-	
+ifeq ($(UNAME_M),x86_64)
 installs_project_colibriohp	    :=	\
 	detectorsi.so			        \
 	filterwheelfli.so
+else
+installs_project_colibriohp	    :=
+endif
 	
+ifeq ($(UNAME_M),x86_64)
 installs_project_johnsoncu	    :=	\
 	detectordummy.so		        \
 	filterwheelnull.so
+else
+installs_project_johnsoncu	    :=
+endif
 
+ifeq ($(UNAME_M),x86_64)
 installs_project_coatlicu	    :=	\
 	detectorandor.so		        \
 	filterwheelnull.so
-
-installs_project_test		    :=	\
-	detectordummy.so		        \
-	filterwheelnull.so
+else
+installs_project_coatlicu	    :=
+endif
 
 ########################################################################
 
