@@ -91,14 +91,17 @@ sh 2019A-2000-0.sh
   then
     
     :
+    
+    #singleblock 2021B-2001-costero-0    f
   
-    allblocks 0008-pointing-map           w
+    allblocks 0012-focus-offsets         v
+    #allblocks 0008-pointing-map         w
+    #allblocks 0007-donut                o
 
   fi
 
   allblocks 0004-initial-focus          m
   allblocks 0004-focus                  n
-  #allblocks 0007-donut                  o
   
   allblocks 0001-twilight-flats-evening x
   allblocks 0002-biases                 y
