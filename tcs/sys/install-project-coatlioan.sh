@@ -128,12 +128,12 @@ EOF
   esac
 
   case $host in
-  [cdf][01])
+  [cdf][01]|platform)
     echo "gpio -i"
     ;;
   esac
   case $host in
-  c0)
+  c0|platform)
     echo "gpio enclosure-lights off"
     echo "gpio enclosure-heater off"
     ;;

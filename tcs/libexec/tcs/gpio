@@ -63,10 +63,22 @@ then
   usageerror
 fi
 
+host=$(uname -n | tr A-Z a-z | sed 's/\..*//')
+
 if $init
 then
-  # 481 must be last as it is enable.
-  for gpio in 480 483 482 472 473 475 476 481
+  case $host in
+  *-platform)
+    # Raspeberry Pi
+    gpios="19 26"
+    ;;
+  *)
+    # Assume Minnowboard
+    # 481 must be last as it is enable.
+    gpios="480 483 482 472 473 475 476 481"
+    ;;
+  esac
+  for gpio in $gpios
   do
     echo $gpio >/sys/class/gpio/export
     echo out >/sys/class/gpio/gpio$gpio/direction
@@ -77,10 +89,15 @@ fi
 
 name="$1"
 value="$2"
-host=$(uname -n | tr A-Z a-z | sed 's/\..*//')
 case $name:$host in
-472:*|473:*|475:*|476:*|480:*|481:*|482:*|483:*)
+19:*|26:*|472:*|473:*|475:*|476:*|480:*|481:*|482:*|483:*)
   gpio=$name
+  ;;
+enclosure-lights:coatlioan-platform)
+  gpio=19
+  ;;
+enclosure-heater:coatlioan-platform)
+  gpio=26
   ;;
 enclosure-lights:coatlioan-c0|enclosure-lights:ddotioan-c0|telescope-fans:ddotioan-d0|telescope-fans:ddotioan-e0)
   gpio=481
