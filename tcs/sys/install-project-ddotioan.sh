@@ -23,7 +23,7 @@
 
 ########################################################################
 
-host=$(uname -n | sed 's/\..*//')
+host=$(uname -n | sed 's/\..*//;s/.*-//')
 
 ################################################################################
 
@@ -55,6 +55,7 @@ host=$(uname -n | sed 's/\..*//')
 10.0.1.19       e3                      ddotioan-e3 C5-host
 10.0.1.20       webcam-a                ddotioan-webcam-a
 10.0.1.21       webcam-b                ddotioan-webcam-b
+10.0.1.22       platform                ddotioan-platform
 10.0.1.99       spare                   ddotioan-spare
 
 132.248.4.26    webcam-c                ddotioan-webcam-c
@@ -80,7 +81,7 @@ sudo mv /etc/hosts.tmp /etc/hosts
 EOF
 
   case $host in
-  ddotioan-access)
+  access)
     # Do not run checkhalt on the Macs; they do not automatically start again after a halt if we cycle the power.
     ;;  
   *)
@@ -91,9 +92,9 @@ EOF
   esac
   
   case $host in
-  ddotioan-control)
+  control)
     cat <<"EOF"
-*   *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles services control c0 d0 d1 d2 d3 e0 e1 e2 e3
+*   *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles services control platform c0 d0 d1 d2 d3 e0 e1 e2 e3
 *   *  *  *  *  /usr/local/bin/tcs updateweatherfiles-oan
 00  18 *  *  *  /usr/local/bin/tcs updateweatherfiles-oan -a
 *   *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
@@ -102,7 +103,7 @@ EOF
 00  00 *  *  *  /usr/local/bin/tcs updatevarlatestlink; rsync -aH /usr/local/etc/tcs/blocks /usr/local/var/tcs/latest/
 EOF
     ;;
-  ddotioan-services)
+  services)
     cat <<"EOF"
 */5 *  *  *  * /usr/local/bin/tcs logsensors
 */5 *  *  *  *  sh /usr/local/var/www/tcs/plots.sh
@@ -126,43 +127,40 @@ EOF
   # The Minnowboard Turbos come up with / read-only after power cycling.
   # Don't know why, but it causes all sorts of problems.
   case $host in
-  ddotioan-[acde][0123])
+  [acde][0123])
     echo "test -w /etc || mount -o remount,rw /"
     ;;
   esac
 
   case $host in
-  ddotioan-access)
+  access)
     echo "hostname ddotioan-access"
     ;;
   esac
 
   case $host in
-  ddotioan-[cde][0123])
+  [cde][0123])
     echo "gpio -i"
     ;;
   esac
   case $host in
-  ddotioan-c0)
+  platform|c0)
     echo "gpio enclosure-lights off"
     echo "gpio enclosure-heater off"
-    ;;
-  ddotioan-[de]0)
-    echo "gpio telescope-fans off"
     ;;
   esac
 
   case $host in
-  ddotioan-services)
+  services)
     echo "tcs instrumentdataserver -f rsync://transients.astrossp.unam.mx/ddoti-raw/ &"
     ;;
-  ddotioan-[de][0123])
+  [de][0123])
     echo "tcs instrumentdataserver -f -d rsync://services/tcs/ &"
     ;;
   esac
 
   case $host in
-  ddotioan-services)
+  services)
     echo "tcs instrumentimageserver C0 d1 &"
     echo "tcs instrumentimageserver C1 e1 &"
     echo "tcs instrumentimageserver C2 d0 &"
@@ -181,7 +179,7 @@ EOF
   esac
 
   case $host in
-  ddotioan-control|ddotioan-c0|ddotioan-d0|ddotioan-e0)
+  control|platform|c0|d0|e0)
     echo "owserver -c /etc/owfs.conf"
     ;;
   esac
@@ -212,7 +210,7 @@ sudo update-rc.d owserver disable
 # /etc/owfs.conf
 
 case $host in
-ddotioan-services|ddotioan-control)
+services|control|platform)
   sudo cp /dev/stdin <<"EOF" /etc/owfs.conf.tmp
 server: device = /dev/ttyFTDI
 server: port = localhost:4304
@@ -323,7 +321,7 @@ fi
 # wait for any background tasks to finish.
 
 case $host in
-ddotioan-control|ddotioan-data)
+access)
   sudo cp /dev/stdin <<"EOF" /Library/LaunchDaemons/local.localhost.startup.plist
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -357,7 +355,7 @@ sudo rm -f /tmp/sudoers-tcs
 (
   echo 'ddoti ALL=(ALL) ALL'
   case $host in
-  ddotioan-services)
+  services)
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs rebootsoon'
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs restartsoon'
     ;;
