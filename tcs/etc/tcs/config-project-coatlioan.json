@@ -325,7 +325,8 @@
       "box-d-humidity",
       "box-e-humidity",
       "shed-light-level",
-      "enclosure-light-level"
+      "enclosure-light-level",
+      "enclosure-pressure"
     ],
     "sensors": {
       "shed-temperature": {
@@ -351,14 +352,14 @@
         "firmware": ""
       },
       "enclosure-temperature": {
-        "file": "/usr/local/var/tcs/sensors/platform/ow/26.F897E1010000/temperature",
+        "file": "/usr/local/var/tcs/sensors/platform/ow/7E.3E3900001000/EDS0068/temperature",
         "keyword": "ENTM",
         "prettyname": "enclosure temperature",
         "group": "environmental-sensors",
         "type": "float",
         "unit": "C",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.F897E1010000",
+        "model": "EDS OW-ENV-THPL",
+        "identifier": "7E.3E3900001000",
         "firmware": ""
       },
       "box-c-temperature": {
@@ -406,15 +407,15 @@
         "firmware": ""
       },
       "enclosure-humidity": {
-        "file": "/usr/local/var/tcs/sensors/platform/ow/26.F897E1010000/HIH4000/humidity",
+        "file": "/usr/local/var/tcs/sensors/platform/ow/7E.3E3900001000/EDS0068/humidity",
         "keyword": "ENHM",
         "prettyname": "enclosure",
         "relative": "humidity",
         "group": "environmental-sensors",
         "type": "float",
         "unit": "",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.F897E1010000",
+        "model": "EDS OW-ENV-THPL",
+        "identifier": "7E.3E3900001000",
         "firmware": ""
       },
       "box-c-humidity": {
@@ -462,15 +463,25 @@
         "firmware": ""
       },
       "enclosure-light-level": {
-        "file": "/usr/local/var/tcs/sensors/platform/ow/26.47A740010000/VAD",
+        "file": "/usr/local/var/tcs/sensors/platform/ow/7E.3E3900001000/EDS0068/light",
         "keyword": "ENLL",
-        "prettyname": "enclosure",
-        "light": "level",
+        "prettyname": "enclosure light level",
         "group": "environmental-sensors",
         "type": "float",
-        "unit": "",
-        "model": "iButtonLink MS-TL",
-        "identifier": "26.47A740010000",
+        "unit": "lux",
+        "model": "EDS OW-ENV-THPL",
+        "identifier": "7E.3E3900001000",
+        "firmware": ""
+      },
+      "enclosure-pressure": {
+        "file": "/usr/local/var/tcs/sensors/platform/ow/7E.3E3900001000/EDS0068/pressure",
+        "keyword": "ENPR",
+        "prettyname": "enclosure pressure",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "mbar",
+        "model": "EDS OW-ENV-THPL",
+        "identifier": "7E.3E3900001000",
         "firmware": ""
       },
       "host-services-load": {
