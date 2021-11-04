@@ -225,9 +225,9 @@ namespace eval "executor" {
         set binning      [client::getdata $detector "detectorbinning"]
         set filter       [client::getdata $detector "filter"]
         if {[string equal "$fwhm" ""]} {
-          log::info "$fitsfilename: FWHM is unknown with binning $binning in filter $filter at secondary position $z0 in ${exposuretime}s."
+          log::info [format "$fitsfilename: FWHM is unknown with binning $binning in filter $filter at secondary position $z0 in %.0f seconds." $exposuretime]
         } else {
-          log::info "$fitsfilename: FWHM is $fwhm pixels with binning $binning in filter $filter at secondary position $z0 in ${exposuretime}s."
+          log::info [format "$fitsfilename: FWHM is %.2f pixels with binning $binning in filter $filter at secondary position $z0 in %.0f seconds." $fwhm $exposuretime]
           lappend z0list   $z0
           lappend fwhmlist $fwhm
         }
@@ -263,9 +263,9 @@ namespace eval "executor" {
           set binning      [client::getdata $detector "detectorbinning"]
           set filter       [client::getdata $detector "filter"]
           if {[string equal "$fwhm" ""]} {
-            log::summary "$fitsfilename: witness FWHM is unknown with binning $binning in filter $filter at secondary position $z0 in ${exposuretime}s."
+            log::summary [format "$fitsfilename: witness FWHM is unknown with binning $binning in filter $filter at secondary position $z0 at secondary position $z0 in %.0f seconds." $exposuretime]
           } else {
-            log::summary "$fitsfilename: witness FWHM is $fwhm pixels with binning $binning in filter $filter at secondary position $z0 in ${exposuretime}s."
+            log::summary [format "$fitsfilename: witness FWHM is %.2f pixels with binning $binning in filter $filter at secondary position $z0 in %.0f seconds." $fwhm $exposuretime]
             if {[catch {
               client::update "secondary"
               set T [client::getdata "secondary" "T"]
@@ -296,8 +296,7 @@ namespace eval "executor" {
     set exposuretimes $args
     log::info "exposing $type image for [join $exposuretimes /] seconds (exposure $exposure)."
     set projectfullidentifier [server::getdata "projectfullidentifier"]
-    set fitsfiledir "[directories::vartoday]/executor/images/[project::fullidentifier [project]]/[block::identifier [block]]/[visit::identifier [visit]]/"
-    log::info "FITS file directory is $fitsfiledir."
+    set fitsfiledir "[directories::vartoday]/executor/images/[project::fullidentifier [project]]/[block::identifier [block]]/[visit::identifier [visit]]"
     file mkdir $fitsfiledir
     client::request "instrument" "expose $type $fitsfiledir $exposuretimes"
     client::wait "instrument"
@@ -346,7 +345,9 @@ namespace eval "executor" {
     set positions $args
     log::info "moving filter wheel to [join $positions /]."
     client::request "instrument" "movefilterwheel $positions"
+    client::request "secondary"  "moveforfilter [lindex $positions 0]"
     client::wait "instrument"
+    client::wait "secondary"
     log::info [format "finished moving filter wheel after %.1f seconds." [utcclock::diff now $start]]
   }
 

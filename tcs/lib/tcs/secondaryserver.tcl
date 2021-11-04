@@ -61,6 +61,11 @@ namespace eval "secondaryserver" {
     return
   }
 
+  proc slavemoveforfilter {filter} {
+    secondary::moveforfilter $filter
+    return
+  }
+
   proc slavesetoffset {dzoffset} {
     secondary::setoffset $dzoffset
     return
@@ -72,6 +77,7 @@ namespace eval "secondaryserver" {
     interp alias $slave stop             {} secondaryserver::slavestop
     interp alias $slave movewithoutcheck {} secondaryserver::slavemovewithoutcheck
     interp alias $slave move             {} secondaryserver::slavemove
+    interp alias $slave moveforfilter    {} secondaryserver::slavemoveforfilter
     interp alias $slave setoffset        {} secondaryserver::slavesetoffset
   }
 

@@ -48,6 +48,9 @@ namespace eval "secondary" {
   variable minz              [config::getvalue "secondary" "minz"             ]
   variable maxz              [config::getvalue "secondary" "maxz"             ]
   
+  variable filterlist        [config::getvalue "C0" "filterlist"]
+  variable dzfilterlist      [config::getvalue "C0" "dzfilterlist"]
+  
   ######################################################################
 
   server::setdata "z"                 ""
@@ -55,7 +58,8 @@ namespace eval "secondary" {
   server::setdata "minz"              $minz
   server::setdata "maxz"              $maxz
   server::setdata "requestedz0"       ""
-  server::setdata "requesteddzoffset" 0
+  server::setdata "dzfilter"          0
+  server::setdata "dzoffset"          0
   server::setdata "T"                 ""
   server::setdata "timestamp"         ""
   server::setdata "stoppedtimestamp"  ""
@@ -133,24 +137,19 @@ namespace eval "secondary" {
  
   proc setrequestedz {} {
     set z0 [server::getdata "requestedz0"]
-    set dzoffset [server::getdata "requesteddzoffset"]
+    set dzfilter [server::getdata "dzfilter"]
+    set dzoffset [server::getdata "dzoffset"]
     if {[string equal $z0 ""]} {
       set dzT ""
       set dzP ""
-      set zT  ""
-      set zP  ""
       set z   ""
     } else {
       set dzT [dzT]
       set dzP [dzP]
-      set zT  [expr {$z0 + $dzT}]
-      set zP  [expr {$z0 + $dzP}]
-      set z   [expr {$z0 + $dzT + $dzP + $dzoffset}]
+      set z   [expr {$z0 + $dzfilter + $dzT + $dzP + $dzoffset}]
     }
     server::setdata "dzT"         $dzT
     server::setdata "dzP"         $dzP
-    server::setdata "requestedzT" $zT
-    server::setdata "requestedzP" $zP
     server::setdata "requestedz"  $z
   }
   
@@ -221,13 +220,41 @@ namespace eval "secondary" {
     setrequestedz0 $z0
     server::newactivitycommand "moving" "idle" "secondary::moveactivitycommand true"
   }
+  
+  proc moveforfilter {filter} {
+    server::checkstatus
+    server::checkactivityformove
+    variable filterlist
+    variable dzfilterlist
+    if {![string is integer -strict $filter]} {
+      set position [lsearch -exact $filterlist $filter]
+      if {$position == -1} {
+        error "invalid filter \"$filter\"."
+      }
+    } elseif {0 <= $filter || $filter < [llength $filter]} {
+      set position $filter
+    } else {
+      error "invalid filter \"$filter\"."
+    }
+    set lastdzfilter [server::getdata "dzfilter"]
+    if {[llength $dzfilterlist] == 0} {
+      set dzfilter 0
+    } else {
+      set dzfilter [lindex $dzfilterlist $position]
+    }
+    server::setdata "dzfilter" $dzfilter
+    if {$dzfilter != $lastdzfilter} {
+      move z0 false
+    }
+    return
+  }
 
   proc setoffset {dzoffset} {
     server::checkstatus
     if {![string is integer -strict $dzoffset]} {
       error "invalid offset \"$dzoffset\"."
     }
-    server::setdata "requesteddzoffset" $dzoffset
+    server::setdata "dzoffset" $dzoffset
     return
   }
 

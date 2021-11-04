@@ -554,10 +554,11 @@ namespace eval "fitsheader" {
   proc writekeysandvaluesforsecondary {channel prefix} {
     writekeysandvaluesforcomponent $channel secondary $prefix "SC" {
       requestedz0       RQZ0  double
-      requestedzP       RQDZP double
-      requestedzT       RQDZT double
       requestedz        RQZ   double
-      requesteddzoffset RQDZO double
+      dzT               DZT   double
+      dzP               DZP   double
+      dzoffset          DZO   double
+      dzfilter          DZF   double
       z                 Z     double
       zerror            ZE    double
       zlowerlimit       ZLL   boolean
