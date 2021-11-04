@@ -392,7 +392,7 @@ namespace eval "detector" {
     } else {
       set naxis [list $nx $ny $nz]
     }
-    return [fitsheader::open $fitsfilename 32 $naxis $bscale $bzero]
+    return [fitsheader::open $fitsfilename 16 $naxis $bscale $bzero]
   }
   
   proc closefitsheader {channel} {
