@@ -184,358 +184,13 @@
       "instrument": [["ibb-127", "a", "3"]]
     }
   },
-  "sensors": {
-    "lognames": [
-      "shed-temperature",
-      "enclosure-temperature",
-      "box-c-temperature",
-      "box-d-temperature",
-      "box-e-temperature",
-      "shed-humidity",
-      "enclosure-humidity",
-      "box-c-humidity",
-      "box-d-humidity",
-      "box-e-humidity",
-      "shed-light-level",
-      "enclosure-light-level"
-    ],
-    "sensors": {
-      "shed-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.0FC8CF000000/temperature",
-        "keyword": "SHTM",
-        "prettyname": "shed temperature",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "C",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.0FC8CF000000",
-        "firmware": ""
-      },
-      "rack-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.4EBD40010000/temperature",
-        "keyword": "RCTM",
-        "prettyname": "rack emperature",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "C",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.4EBD40010000",
-        "firmware": ""
-      },
-      "enclosure-temperature": {
-        "file": "/usr/local/var/tcs/sensors/c0/ow/26.F897E1010000/temperature",
-        "keyword": "ENTM",
-        "prettyname": "enclosure temperature",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "C",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.F897E1010000",
-        "firmware": ""
-      },
-      "box-c-temperature": {
-        "file": "/usr/local/var/tcs/sensors/c0/ow/26.DFB040010000/temperature",
-        "keyword": "BCTM",
-        "prettyname": "box C temperature",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "C",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.3E9840010000",
-        "firmware": ""
-      },
-      "box-d-temperature": {
-        "file": "/usr/local/var/tcs/sensors/d0/ow/26.68A740010000/temperature",
-        "keyword": "BDTM",
-        "prettyname": "box D temperature",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "C",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.68A740010000",
-        "firmware": ""
-      },
-      "box-e-temperature": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.44A040010000/temperature",
-        "keyword": "BETM",
-        "prettyname": "box E temperature",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "C",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.44A040010000",
-        "firmware": ""
-      },
-      "shed-humidity": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.0FC8CF000000/HIH4000/humidity",
-        "keyword": "SHHM",
-        "prettyname": "shed relative humidity",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.0FC8CF000000",
-        "firmware": ""
-      },
-      "enclosure-humidity": {
-        "file": "/usr/local/var/tcs/sensors/c0/ow/26.F897E1010000/HIH4000/humidity",
-        "keyword": "ENHM",
-        "prettyname": "enclosure",
-        "relative": "humidity",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.F897E1010000",
-        "firmware": ""
-      },
-      "box-c-humidity": {
-        "file": "/usr/local/var/tcs/sensors/c0/ow/26.DFB040010000/HIH4000/humidity",
-        "keyword": "BCHM",
-        "prettyname": "box C relative humidity",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.DFB040010000",
-        "firmware": ""
-      },
-      "box-d-humidity": {
-        "file": "/usr/local/var/tcs/sensors/d0/ow/26.68A740010000/HIH4000/humidity",
-        "keyword": "BDHM",
-        "prettyname": "box D relative humidity",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.68A740010000",
-        "firmware": ""
-      },
-      "box-e-humidity": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.44A040010000/HIH4000/humidity",
-        "keyword": "BEHM",
-        "prettyname": "box E relative humidity",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.44A040010000",
-        "firmware": ""
-      },
-      "shed-light-level": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.389840010000/VAD",
-        "keyword": "SHLL",
-        "prettyname": "shed light level",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "",
-        "model": "iButtonLink MS-TL",
-        "identifier": "26.389840010000",
-        "firmware": ""
-      },
-      "enclosure-light-level": {
-        "file": "/usr/local/var/tcs/sensors/c0/ow/26.47A740010000/VAD",
-        "keyword": "ENLL",
-        "prettyname": "enclosure",
-        "light": "level",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "",
-        "model": "iButtonLink MS-TL",
-        "identifier": "26.47A740010000",
-        "firmware": ""
-      },
-      "host-services-load": {
-        "file": "/usr/local/var/tcs/sensors/services/load",
-        "keyword": "",
-        "prettyname": "load on host services",
-        "group": "host-services",
-        "type": "float",
-        "unit": "processes",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
-      "host-control-load": {
-        "file": "/usr/local/var/tcs/sensors/control/load",
-        "keyword": "",
-        "prettyname": "load on host control",
-        "group": "host-control",
-        "type": "float",
-        "unit": "processes",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
-      "host-instrument-load": {
-        "file": "/usr/local/var/tcs/sensors/instrument/load",
-        "keyword": "",
-        "prettyname": "load on host instrument",
-        "group": "host-instrument",
-        "type": "float",
-        "unit": "processes",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
-      "host-platform-load": {
-        "file": "/usr/local/var/tcs/sensors/platform/load",
-        "keyword": "",
-        "prettyname": "load on host platform",
-        "group": "host-platform",
-        "type": "float",
-        "unit": "processes",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
-      "host-c0-load": {
-        "file": "/usr/local/var/tcs/sensors/c0/load",
-        "keyword": "",
-        "prettyname": "load on host c0",
-        "group": "host-c0",
-        "type": "float",
-        "unit": "processes",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
-      "host-d0-load": {
-        "file": "/usr/local/var/tcs/sensors/d0/load",
-       "keyword": "",
-       "prettyname": "load on host d0",
-       "group": "host-d0",
-       "type": "float",
-       "unit": "processes",
-       "model": "",
-       "identifier": "",
-       "firmware": ""
-      },
-      "host-services-disk-space-used": {
-        "file": "/usr/local/var/tcs/sensors/services/disk-space-used",
-        "keyword": "",
-        "prettyname": "relative disk space used on host services",
-        "group": "host-services",
-        "type": "float",
-        "unit": "",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
-      "host-control-disk-space-used": {
-        "file": "/usr/local/var/tcs/sensors/control/disk-space-used",
-        "keyword": "",
-        "prettyname": "relative disk space used on host control",
-        "group": "host-control",
-        "type": "float",
-        "unit": "",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
-      "host-instrument-disk-space-used": {
-        "file": "/usr/local/var/tcs/sensors/instrument/disk-space-used",
-        "keyword": "",
-        "prettyname": "relative disk space used on host instrument",
-        "group": "host-instrument",
-        "type": "float",
-        "unit": "",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
-      "host-platform-disk-space-used": {
-        "file": "/usr/local/var/tcs/sensors/platform/disk-space-used",
-        "keyword": "",
-        "prettyname": "relative disk space used on host platform",
-        "group": "host-platform",
-        "type": "float",
-        "unit": "",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
-      "host-c0-disk-space-used": {
-        "file": "/usr/local/var/tcs/sensors/c0/disk-space-used",
-        "keyword": "",
-        "prettyname": "relative disk space used on host c0",
-        "group": "host-c0",
-        "type": "float",
-        "unit": "",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
-      "host-d0-disk-space-used": {
-        "file": "/usr/local/var/tcs/sensors/d0/disk-space-used",
-        "keyword": "",
-        "prettyname": "relative disk space used on host d0",
-        "group": "host-d0",
-        "type": "float",
-        "unit": "",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
-      "C0-detector-detector-temperature": {
-        "file": "/usr/local/var/tcs/sensors/instrument/C0-detector-detector-temperature",
-        "keyword": "",
-        "prettyname": "C0 detector temperature",
-        "subsystem": "instrument",
-        "component": "C0",
-        "group": "detector-temperature",
-        "type": "float",
-        "unit": "C",
-        "model": "dummy",
-        "identifier": "0",
-        "firmware": ""
-      },
-      "C0-detector-cooler-set-temperature": {
-        "file": "/usr/local/var/tcs/sensors/instrument/C0-detector-cooler-set-temperature",
-        "keyword": "",
-        "prettyname": "C0 cooler set temperature",
-        "subsystem": "instrument",
-        "component": "C0",
-        "group": "detector-cooler-set-temperature",
-        "type": "float",
-        "unit": "C",
-        "model": "dummy",
-        "identifier": "0",
-        "firmware": ""
-      },
-      "C0-detector-cooler-state": {
-        "file": "/usr/local/var/tcs/sensors/instrument/C0-detector-cooler-state",
-        "keyword": "",
-        "prettyname": "C0 cooler state",
-        "subsystem": "instrument",
-        "component": "C0",
-        "group": "detector-cooler-state",
-        "type": "string",
-        "unit": "state",
-        "model": "dummy",
-        "identifier": "0",
-        "firmware": ""
-      },
-      "C0-filter-wheel-position": {
-        "file": "/usr/local/var/tcs/sensors/instrument/C0-filter-wheel-position",
-        "keyword": "",
-        "prettyname": "C0 filter wheel position",
-        "group": "detector-C0",
-        "type": "integer",
-        "unit": "",
-        "model": "FLI CFW-1-8",
-        "identifier": "CFW-1-8-001",
-        "firmware": ""
-      }
-    }
-  },
   "lights": {
     "type": "gpio",
-    "gpiopath": "/sys/class/gpio/gpio481/value"
+    "gpiopath": "/sys/class/gpio/gpio19/value"
   },
   "heater": {
     "type": "gpio",
-    "gpiopath": "/sys/class/gpio/gpio476/value"
+    "gpiopath": "/sys/class/gpio/gpio26/value"
   },
   "instrument": {
     "detectors": [
@@ -623,6 +278,9 @@
     "filterlist": [
       "g", "r", "i", "z", "470/10", "515/10", "640/10", "656/3"
     ],
+    "dzfilterlist": [
+      0, 0, 0, 0, -70, -70, -70, -70
+    ],
     "focusertype": "null",
     "focuseridentifier": "null",
     "focuserinitialposition": 0,
@@ -653,5 +311,306 @@
   },
   "weather": {
     "windaveragespeedlimit": "20"
+  },
+  "sensors": {
+    "lognames": [
+      "shed-temperature",
+      "enclosure-temperature",
+      "box-c-temperature",
+      "box-d-temperature",
+      "box-e-temperature",
+      "shed-humidity",
+      "enclosure-humidity",
+      "box-c-humidity",
+      "box-d-humidity",
+      "box-e-humidity",
+      "shed-light-level",
+      "enclosure-light-level"
+    ],
+    "sensors": {
+      "shed-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.0FC8CF000000/temperature",
+        "keyword": "SHTM",
+        "prettyname": "shed temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.0FC8CF000000",
+        "firmware": ""
+      },
+      "rack-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.4EBD40010000/temperature",
+        "keyword": "RCTM",
+        "prettyname": "rack emperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.4EBD40010000",
+        "firmware": ""
+      },
+      "enclosure-temperature": {
+        "file": "/usr/local/var/tcs/sensors/platform/ow/26.F897E1010000/temperature",
+        "keyword": "ENTM",
+        "prettyname": "enclosure temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.F897E1010000",
+        "firmware": ""
+      },
+      "box-c-temperature": {
+        "file": "/usr/local/var/tcs/sensors/platform/ow/26.DFB040010000/temperature",
+        "keyword": "BCTM",
+        "prettyname": "box C temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.3E9840010000",
+        "firmware": ""
+      },
+      "box-d-temperature": {
+        "file": "/usr/local/var/tcs/sensors/d0/ow/26.68A740010000/temperature",
+        "keyword": "BDTM",
+        "prettyname": "box D temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.68A740010000",
+        "firmware": ""
+      },
+      "box-e-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.44A040010000/temperature",
+        "keyword": "BETM",
+        "prettyname": "box E temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.44A040010000",
+        "firmware": ""
+      },
+      "shed-humidity": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.0FC8CF000000/HIH4000/humidity",
+        "keyword": "SHHM",
+        "prettyname": "shed relative humidity",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.0FC8CF000000",
+        "firmware": ""
+      },
+      "enclosure-humidity": {
+        "file": "/usr/local/var/tcs/sensors/platform/ow/26.F897E1010000/HIH4000/humidity",
+        "keyword": "ENHM",
+        "prettyname": "enclosure",
+        "relative": "humidity",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.F897E1010000",
+        "firmware": ""
+      },
+      "box-c-humidity": {
+        "file": "/usr/local/var/tcs/sensors/platform/ow/26.DFB040010000/HIH4000/humidity",
+        "keyword": "BCHM",
+        "prettyname": "box C relative humidity",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.DFB040010000",
+        "firmware": ""
+      },
+      "box-d-humidity": {
+        "file": "/usr/local/var/tcs/sensors/d0/ow/26.68A740010000/HIH4000/humidity",
+        "keyword": "BDHM",
+        "prettyname": "box D relative humidity",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.68A740010000",
+        "firmware": ""
+      },
+      "box-e-humidity": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.44A040010000/HIH4000/humidity",
+        "keyword": "BEHM",
+        "prettyname": "box E relative humidity",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.44A040010000",
+        "firmware": ""
+      },
+      "shed-light-level": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.389840010000/VAD",
+        "keyword": "SHLL",
+        "prettyname": "shed light level",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.389840010000",
+        "firmware": ""
+      },
+      "enclosure-light-level": {
+        "file": "/usr/local/var/tcs/sensors/platform/ow/26.47A740010000/VAD",
+        "keyword": "ENLL",
+        "prettyname": "enclosure",
+        "light": "level",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.47A740010000",
+        "firmware": ""
+      },
+      "host-services-load": {
+        "file": "/usr/local/var/tcs/sensors/services/load",
+        "keyword": "",
+        "prettyname": "load on host services",
+        "group": "host-services",
+        "type": "float",
+        "unit": "processes",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-control-load": {
+        "file": "/usr/local/var/tcs/sensors/control/load",
+        "keyword": "",
+        "prettyname": "load on host control",
+        "group": "host-control",
+        "type": "float",
+        "unit": "processes",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-instrument-load": {
+        "file": "/usr/local/var/tcs/sensors/instrument/load",
+        "keyword": "",
+        "prettyname": "load on host instrument",
+        "group": "host-instrument",
+        "type": "float",
+        "unit": "processes",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-platform-load": {
+        "file": "/usr/local/var/tcs/sensors/platform/load",
+        "keyword": "",
+        "prettyname": "load on host platform",
+        "group": "host-platform",
+        "type": "float",
+        "unit": "processes",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-services-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/services/disk-space-used",
+        "keyword": "",
+        "prettyname": "relative disk space used on host services",
+        "group": "host-services",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-control-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/control/disk-space-used",
+        "keyword": "",
+        "prettyname": "relative disk space used on host control",
+        "group": "host-control",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-instrument-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/instrument/disk-space-used",
+        "keyword": "",
+        "prettyname": "relative disk space used on host instrument",
+        "group": "host-instrument",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-platform-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/platform/disk-space-used",
+        "keyword": "",
+        "prettyname": "relative disk space used on host platform",
+        "group": "host-platform",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "C0-detector-detector-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/C0-detector-detector-temperature",
+        "keyword": "",
+        "prettyname": "C0 detector temperature",
+        "subsystem": "instrument",
+        "component": "C0",
+        "group": "detector-temperature",
+        "type": "float",
+        "unit": "C",
+        "model": "dummy",
+        "identifier": "0",
+        "firmware": ""
+      },
+      "C0-detector-cooler-set-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/C0-detector-cooler-set-temperature",
+        "keyword": "",
+        "prettyname": "C0 cooler set temperature",
+        "subsystem": "instrument",
+        "component": "C0",
+        "group": "detector-cooler-set-temperature",
+        "type": "float",
+        "unit": "C",
+        "model": "dummy",
+        "identifier": "0",
+        "firmware": ""
+      },
+      "C0-detector-cooler-state": {
+        "file": "/usr/local/var/tcs/sensors/instrument/C0-detector-cooler-state",
+        "keyword": "",
+        "prettyname": "C0 cooler state",
+        "subsystem": "instrument",
+        "component": "C0",
+        "group": "detector-cooler-state",
+        "type": "string",
+        "unit": "state",
+        "model": "dummy",
+        "identifier": "0",
+        "firmware": ""
+      },
+      "C0-filter-wheel-position": {
+        "file": "/usr/local/var/tcs/sensors/instrument/C0-filter-wheel-position",
+        "keyword": "",
+        "prettyname": "C0 filter wheel position",
+        "group": "detector-C0",
+        "type": "integer",
+        "unit": "",
+        "model": "FLI CFW-1-8",
+        "identifier": "CFW-1-8-001",
+        "firmware": ""
+      }
+    }
   }
 }

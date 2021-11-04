@@ -129,13 +129,13 @@ EOF
 
   case $host in
   [cdf][01]|platform)
-    echo "gpio -i"
+    echo "tcs gpio -i"
     ;;
   esac
   case $host in
   c0|platform)
-    echo "gpio enclosure-lights off"
-    echo "gpio enclosure-heater off"
+    echo "tcs gpio enclosure-lights off"
+    echo "tcs gpio enclosure-heater off"
     ;;
   esac
   
