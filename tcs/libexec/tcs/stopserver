@@ -50,20 +50,17 @@ ratiroan-detectors)
 ratiroan-tcs-a)
   allargs="C2 C3"
   ;;
-coatlioan-control)
-  allargs="sensors power supervisor selector executor instrument telescope mount enclosure secondary weather sun moon target"
-  ;;
 coatlioan-services)
   allargs="gcntan html log"
   ;;
-coatlioan-a0)
-  allargs=""
-  ;;
-coatlioan-c0)
-  allargs="heater lights"
+coatlioan-control)
+  allargs="sensors power supervisor selector executor instrument telescope mount enclosure secondary weather sun moon target"
   ;;
 coatlioan-instrument)
   allargs="C0"
+  ;;
+coatlioan-platform)
+  allargs="heater lights"
   ;;
 ddotioan-services)
   allargs="gcntan html log"
