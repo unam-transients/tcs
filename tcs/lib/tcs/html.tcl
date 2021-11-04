@@ -1010,10 +1010,9 @@ if {false} {
     if {[string equal [client::getstatus "secondary"] "ok"]} {
       writehtmlrow "Requested position (z0)" [formatifok "%d" [client::getdata "secondary" "requestedz0"]]
       writehtmlrow "Temperature correction (dzT)" [formatifok "%+d" [client::getdata "secondary" "dzT"]]
-      writehtmlrow "Requested position (zT)" [formatifok "%d" [client::getdata "secondary" "requestedzT"]]
       writehtmlrow "Position correction (dzP)" [formatifok "%+d" [client::getdata "secondary" "dzP"]]
-      writehtmlrow "Requested position (zP)" [formatifok "%d" [client::getdata "secondary" "requestedzP"]]
-      writehtmlrow "Requested offset (dzO)" [formatifok "%+d" [client::getdata "secondary" "requesteddzoffset"]]
+      writehtmlrow "Filter correction" [formatifok "%+d" [client::getdata "secondary" "dzfilter"]]
+      writehtmlrow "Offset" [formatifok "%+d" [client::getdata "secondary" "dzoffset"]]
       writehtmlrow "Requested position (z)" [formatifok "%d" [client::getdata "secondary" "requestedz"]]
       writehtmlrow "Current position (z)" [formatifok "%d" [client::getdata "secondary" "z"]]
       writehtmlrow "Current error in position (z)" [formatifok "%+d" [client::getdata "secondary" "zerror"]]
