@@ -30,7 +30,7 @@ load [file join [directories::prefix] "lib" "detectorfli.so"] "detector"
 namespace eval "detector" {
   
   variable bscale 1.0
-  variable bzero  0.0
+  variable bzero  32768.0
 
   proc detectorrawstart {} {
     if {[catch {exec "sudo" "/sbin/modprobe" "fliusb" "buffersize=4194304"}]} {
