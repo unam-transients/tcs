@@ -233,11 +233,11 @@ proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime filters} 
 
   set gridrepeat 0
   while {$gridrepeat < $gridrepeats} {
-    foreach {eastoffset northoffset} $dithers {
-      executor::offset $eastoffset $northoffset "default"
-      executor::waituntiltracking
-      foreach filter $filters {
-        executor::movefilterwheel $filter
+    foreach filter $filters {
+      executor::movefilterwheel $filter
+      foreach {eastoffset northoffset} $dithers {
+        executor::offset $eastoffset $northoffset "default"
+        executor::waituntiltracking
         set exposure 0
         while {$exposure < $exposuresperdither} {
           executor::expose object $exposuretime
