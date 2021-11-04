@@ -156,7 +156,7 @@ detectorrawopen(char *identifier)
 
   snprintf(description, sizeof(description), "%s %s (%d)", cameratype, model, serialnumber);
 
-  coolersettemperature = 25.0;
+  coolersettemperature = 20.0;
   cooler = "off";
   status = CoolerOFF();
   if (status != DRV_SUCCESS)
@@ -174,7 +174,7 @@ detectorrawopen(char *identifier)
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR(msg("unable to select raw read mode (status is %u).", status));
 
-  status = SetShutter(1,0,50,50);
+  status = SetShutter(0, 2, 50, 50);
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR(msg("unable to select raw shutter mode (status is %u).", status));
 
@@ -300,6 +300,9 @@ detectorrawopen(char *identifier)
     fprintbits(fp, "ulPixelMode", cap.ulPixelMode);
     fprintbits(fp, "ulSetFunctions", cap.ulSetFunctions);
     fprintbits(fp, "ulGetFunctions", cap.ulGetFunctions);
+    fprintbits(fp, "ulFeatures", cap.ulFeatures);
+    fprintf(fp, "AC_FEATURES_SHUTTER is %d\n", (int) ((cap.ulFeatures >> 3) & 1));
+    fprintf(fp, "AC_FEATURES_SHUTTEREX is %d\n", (int) ((cap.ulFeatures >> 4) & 1));
 
     // Select EMCCD register
     status = SetOutputAmplifier(0);
@@ -389,7 +392,7 @@ detectorrawexpose(double exposuretime, const char *shutter)
   else
     status = SetShutter(0, 2, 50, 50);
   if (status != DRV_SUCCESS)
-    DETECTOR_ERROR(msg("unable to set shutter (status is %u).", status));
+    DETECTOR_ERROR(msg("unable to set shutter mode (status is %u).", status));
 
   if (emgain == 0) {
   
