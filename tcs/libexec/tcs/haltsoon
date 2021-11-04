@@ -48,7 +48,7 @@ then
     set control instrument
     ;;
   coatlioan-services)
-    set services control instrument c0 d0 e0 e1
+    set services control platform instrument
     ;;
   ddotioan-services)
     set services control c0 d0 d1 d2 d3 e0 e1 e2 e3

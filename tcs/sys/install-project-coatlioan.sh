@@ -46,10 +46,6 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 10.0.1.8        pc                      coatlioan-pc
 10.0.1.9        control                 coatlioan-control
 10.0.1.10       airport-express         coatlioan-airport-express
-10.0.1.11       c0                      coatlioan-c0
-10.0.1.12       d0                      coatlioan-d0
-10.0.1.13       e0                      coatlioan-e0
-10.0.1.14       e1                      coatlioan-e1
 10.0.1.15       instrument              coatlioan-instrument C0-host
 10.0.1.16       platform                coatlioan-platform
 10.0.1.20       webcam-a                coatlioan-webcam-a
@@ -91,7 +87,7 @@ EOF
   case $host in
   control)
     cat <<"EOF"
-*  *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles services control c0 d0 platform instrument
+*  *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles services control platform instrument
 *  *  *  *  *  /usr/local/bin/tcs updateweatherfiles-oan
 00 18 *  *  *  /usr/local/bin/tcs updateweatherfiles-oan -a
 *  *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
@@ -128,19 +124,19 @@ EOF
   esac
 
   case $host in
-  [cdf][01]|platform)
+  platform)
     echo "tcs gpio -i"
     ;;
   esac
   case $host in
-  c0|platform)
+  platform)
     echo "tcs gpio enclosure-lights off"
     echo "tcs gpio enclosure-heater off"
     ;;
   esac
   
   case $host in
-  [cde]0|control|platform|instrument)
+  control|platform|instrument)
     echo "owserver -c /etc/owfs.conf"
     ;;
   esac
@@ -171,7 +167,7 @@ EOF
   echo "service rsync start"
 
   case $host in
-  [cde][01]|control|platform|instrument)
+  control|platform|instrument)
     echo "# This sleep gives the main host time to reboot and start the log server."
     echo "sleep 30"
     ;;

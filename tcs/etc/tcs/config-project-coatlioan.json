@@ -317,12 +317,10 @@
       "shed-temperature",
       "enclosure-temperature",
       "box-c-temperature",
-      "box-d-temperature",
       "box-e-temperature",
       "shed-humidity",
       "enclosure-humidity",
       "box-c-humidity",
-      "box-d-humidity",
       "box-e-humidity",
       "shed-light-level",
       "enclosure-light-level",
@@ -373,17 +371,6 @@
         "identifier": "26.3E9840010000",
         "firmware": ""
       },
-      "box-d-temperature": {
-        "file": "/usr/local/var/tcs/sensors/d0/ow/26.68A740010000/temperature",
-        "keyword": "BDTM",
-        "prettyname": "box D temperature",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "C",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.68A740010000",
-        "firmware": ""
-      },
       "box-e-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.44A040010000/temperature",
         "keyword": "BETM",
@@ -427,17 +414,6 @@
         "unit": "",
         "model": "iButtonLink MS-TH",
         "identifier": "26.DFB040010000",
-        "firmware": ""
-      },
-      "box-d-humidity": {
-        "file": "/usr/local/var/tcs/sensors/d0/ow/26.68A740010000/HIH4000/humidity",
-        "keyword": "BDHM",
-        "prettyname": "box D relative humidity",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.68A740010000",
         "firmware": ""
       },
       "box-e-humidity": {
