@@ -30,7 +30,7 @@ load [file join [directories::prefix] "lib" "detectorqsi.so"] "detector"
 namespace eval "detector" {
   
   variable bscale 1.0
-  variable bzero  32768.0
+  variable bzero  0.0
 
   proc detectorrawstart {} {
     if {[catch {exec "sudo" "/bin/chmod" "-R" "a=rwX" "/dev/bus/usb/"}]} {
