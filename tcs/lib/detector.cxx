@@ -46,7 +46,7 @@ static unsigned long pixi = 0;
 static unsigned long pixnx = 0;
 static unsigned long pixny = 0;
 static unsigned long pixnz = 1;
-static unsigned short *pix = NULL;
+static long *pix = NULL;
 
 static unsigned long pixdatawindowsx = 0;
 static unsigned long pixdatawindowsy = 0;
@@ -99,7 +99,7 @@ detectorrawpixstart(void)
 {
   pixi = 0;
   free(pix);
-  pix = (unsigned short *) malloc(pixnx * pixny * pixnz * sizeof(*pix));
+  pix = (long *) malloc(pixnx * pixny * pixnz * sizeof(*pix));
   if (pix == 0)
     DETECTOR_ERROR("unable to allocate memory for the detector pixel values.");
   DETECTOR_OK();
@@ -288,19 +288,18 @@ detectorrawsetpixdatawindow(unsigned long sx, unsigned long sy, unsigned long nx
   } while (0)
 
 static void
-fputu16(FILE *fp, unsigned short u)
+fputu32(unsigned long ul, FILE *fp)
 {
-  fputc(u / 0x100, fp);
-  fputc(u % 0x100, fp);
+  fputc((ul >> 24) & 0xff, fp);
+  fputc((ul >> 16) & 0xff, fp);
+  fputc((ul >>  8) & 0xff, fp);
+  fputc((ul >>  0) & 0xff, fp);
 }
 
 static void
-fputs16(short s, FILE *fp)
+fputs32(long l, FILE *fp)
 {
-  if (s >= 0)
-    fputu16(fp, s);
-  else
-    fputu16(fp, 0x10000 + s);
+  fputu32(l, fp);
 }
 
 const char *
@@ -333,10 +332,10 @@ detectorrawappendfitsdata(
     
   unsigned long pixn = pixnx * pixny * pixnz;
   for (unsigned long i = 0; i < pixn; ++i) {
-    short s16 = floor(((double) pix[i] - bzero) / bscale);
-    fputs16(s16, fp);
+    long l = floor(((double) pix[i] - bzero) / bscale);
+    fputs32(l, fp);
   }
-  for (unsigned long i = (pixn * 2) % 2880; i % 2880 != 0; ++i)
+  for (unsigned long i = (pixn * 4) % 2880; i % 2880 != 0; ++i)
     fputc(0, fp);
 
   if (fclose(fp) != 0)
