@@ -609,7 +609,6 @@
         "prettyname": "instrument external light level",
         "group": "environmental-sensors",
         "type": "float",
-        "unit": "mbar",
         "unit": "lx",
         "model": "EDS OW-ENV-THPL",
         "identifier": "7E.983100001000",
