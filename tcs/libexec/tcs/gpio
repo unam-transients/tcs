@@ -68,7 +68,7 @@ host=$(uname -n | tr A-Z a-z | sed 's/\..*//')
 if $init
 then
   case $host in
-  *-platform)
+  coatlioan-platform|ddotioan-platform)
     # Raspeberry Pi
     gpios="19 26"
     ;;
@@ -93,10 +93,10 @@ case $name:$host in
 19:*|26:*|472:*|473:*|475:*|476:*|480:*|481:*|482:*|483:*)
   gpio=$name
   ;;
-enclosure-lights:coatlioan-platform)
+enclosure-lights:coatlioan-platform|enclosure-lights:ddotioan-platform)
   gpio=19
   ;;
-enclosure-heater:coatlioan-platform)
+enclosure-heater:coatlioan-platform|enclosure-heater:ddotioan-platform)
   gpio=26
   ;;
 enclosure-lights:coatlioan-c0|enclosure-lights:ddotioan-c0|telescope-fans:ddotioan-d0|telescope-fans:ddotioan-e0)

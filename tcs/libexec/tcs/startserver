@@ -72,7 +72,7 @@ ddotioan-services)
 ddotioan-a0)
   allargs=""
   ;;
-ddotioan-c0)
+ddotioan-platform)
   allargs="lights heater"
   ;;
 ddotioan-d1)

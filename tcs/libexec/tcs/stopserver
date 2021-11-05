@@ -71,7 +71,7 @@ ddotioan-control)
 ddotioan-a0)
   allargs=""
   ;;
-ddotioan-c0)
+ddotioan-platform)
   allargs="heater lights"
   ;;
 ddotioan-d1)
