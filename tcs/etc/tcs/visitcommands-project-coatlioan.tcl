@@ -299,10 +299,7 @@ proc focusvisit {{filter "i"} {exposuretime 1}} {
 
 ########################################################################
 
-proc initialpointingcorrectionvisit {} {
-
-  set filter       "r"
-  set exposuretime 30
+proc initialpointingcorrectionvisit {{filter "i"} {exposuretime 30}} {
 
   log::summary "initialpointingcorrectionvisit: starting."
 
@@ -322,10 +319,7 @@ proc initialpointingcorrectionvisit {} {
 
 ########################################################################
 
-proc pointingcorrectionvisit {} {
-
-  set filter       "r"
-  set exposuretime 5
+proc pointingcorrectionvisit {{filter "i"} {exposuretime 5}} {
 
   log::summary "correctpointingvisit: starting."
 
@@ -345,10 +339,7 @@ proc pointingcorrectionvisit {} {
 
 ########################################################################
 
-proc donutvisit {} {
-
-  set filter       "i"
-  set exposuretime 5
+proc donutvisit {{filter "i"} {exposuretime 5} {offset 400}} {
 
   log::summary "donutvisit: starting."
   setreadmode "default"
@@ -356,12 +347,12 @@ proc donutvisit {} {
   setbinning 1
   movefilterwheel $filter
 
-  setsecondaryoffset +400
+  setsecondaryoffset $offset
   track
   waituntiltracking
   expose object $exposuretime
 
-  setsecondaryoffset -400
+  setsecondaryoffset -$offset
   offset
   waituntiltracking
   expose object $exposuretime
@@ -375,10 +366,7 @@ proc donutvisit {} {
 
 ########################################################################
 
-proc pointingmapvisit {} {
-
-  set filter       "r"
-  set exposuretime 5
+proc pointingmapvisit {{filter "i"} {exposuretime 5} } {
 
   log::summary "pointingmapvisit: starting."
 
