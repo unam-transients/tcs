@@ -167,9 +167,17 @@ EOF
   echo "service rsync start"
 
   case $host in
-  control|platform|instrument)
-    echo "# This sleep gives the main host time to reboot and start the log server."
+  control)
+    echo "# This sleep gives the services host time to reboot and start the log server."
     echo "sleep 30"
+    ;;
+  platform)
+    echo "# This sleep gives the services host time to reboot and start the log server."
+    echo "sleep 60"
+    ;;
+  instrument)
+    echo "# This sleep gives the services host time to reboot and start the log server."
+    echo "sleep 90"
     ;;
   esac
   echo "tcs startserver -a &"
