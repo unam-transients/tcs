@@ -75,6 +75,23 @@ static unsigned long binning = 1;
 
 ////////////////////////////////////////////////////////////////////////
 
+static FILE *logfp;
+
+static void
+log(const char *fmt, ...)
+{
+  if (logfp == NULL)
+    logfp = fopen("/tmp/andor.txt", "w");
+  va_list ap;
+  va_start(ap, fmt);
+  vfprintf(logfp, fmt, ap);
+  va_end(ap);
+  fputc('\n', logfp);
+  fflush(logfp);
+}
+
+////////////////////////////////////////////////////////////////////////
+
 static char *
 msg(const char *fmt, ...)
 {
@@ -97,14 +114,13 @@ detectorrawstart(void)
 ////////////////////////////////////////////////////////////////////////
 
 const static void
-fprintbits(FILE *fp, const char *name, unsigned int u)
+logbits(const char *name, unsigned int u)
 {
-  fprintf(fp, "%s: set bits are", name);
+  log("%s: set bits are:", name);
   for (int i = 0; i < 32; ++i) {
     if ((u >> i) & 1)
-      fprintf(fp, " %d", i);
+      log("- %d", i);
   }
-  fprintf(fp, "\n");
 }
 
 const char *
@@ -181,37 +197,36 @@ detectorrawopen(char *identifier)
   detectorrawsetisopen(true);
 
   {
-    FILE *fp = fopen("/tmp/andor.txt", "w");
     unsigned int status;
 
     int nchannel;
     status = GetNumberADChannels(&nchannel);
     if (status != DRV_SUCCESS)
       DETECTOR_ERROR(msg("GetNumberADChannels failed (status is %u).", status));
-    fprintf(fp, "number of AD channels = %d\n", nchannel);
+    log("number of AD channels = %d.", nchannel);
 
     int namp;
     status = GetNumberAmp(&namp);
     if (status != DRV_SUCCESS)
       DETECTOR_ERROR(msg("GetNumberAmp failed (status is %u).", status));
-    fprintf(fp, "number of amplifiers = %d\n", namp);
+    log("number of amplifiers = %d.", namp);
 
     int npreampgain;
     status = GetNumberPreAmpGains(&npreampgain);
     if (status != DRV_SUCCESS)
       DETECTOR_ERROR(msg("GetNumberPreAmpGains failed (status is %u).", status));
-    fprintf(fp, "number of preamp gains = %d\n", npreampgain);
+    log("number of preamp gains = %d.", npreampgain);
 
     for (int iamp = 0; iamp < namp; ++iamp) {
       char desc[256];
       status = GetAmpDesc(iamp, desc, sizeof(desc));
       if (status != DRV_SUCCESS)
         DETECTOR_ERROR(msg("GetAmpDesc failed (status is %u).", status));
-      fprintf(fp, "amplifier %d = %s\n", iamp, desc);
+      log("amplifier %d = %s.", iamp, desc);
       status = IsReadoutFlippedByAmplifier(iamp, &flipped);
       if (status != DRV_SUCCESS)
         DETECTOR_ERROR(msg("GetReadoutFlippedByAmplifier failed (status is %u).", status));
-      fprintf(fp, "amplifier %d readout flipped = %d\n", iamp, flipped);
+      log("amplifier %d readout flipped = %d.", iamp, flipped);
     }
 
     for (int ichannel = 0; ichannel < nchannel; ++ichannel) {
@@ -220,7 +235,7 @@ detectorrawopen(char *identifier)
       status = GetBitDepth(ichannel, &bits);
       if (status != DRV_SUCCESS)
         DETECTOR_ERROR(msg("GetBitDepth failed (status is %u).", status));
-      fprintf(fp, "bit depth of AD channel %d = %d\n", ichannel, bits);
+      log("bit depth of AD channel %d = %d.", ichannel, bits);
 
       for (int itype = 0; itype < 2; ++itype) {
 
@@ -234,14 +249,14 @@ detectorrawopen(char *identifier)
         status = GetNumberHSSpeeds(ichannel, itype, &nhsspeed);
         if (status != DRV_SUCCESS)
           DETECTOR_ERROR(msg("GetNumberHSSpeeds failed (status is %u).", status));
-        fprintf(fp, "number of HS speeds for AD channel %d (%s) = %d\n", ichannel, type, nhsspeed);
+        log("number of HS speeds for AD channel %d (%s) = %d.", ichannel, type, nhsspeed);
 
         for (int ihsspeed = 0; ihsspeed < nhsspeed; ++ihsspeed) {
           float speed;
           status = GetHSSpeed(ichannel, itype, ihsspeed, &speed);
           if (status != DRV_SUCCESS)
             DETECTOR_ERROR(msg("GetHSSpeed failed (status is %u).", status));
-          fprintf(fp, "HS speed %d for AD channel %d (%s) = %f\n", ihsspeed, ichannel, type, speed);
+          log("HS speed %d for AD channel %d (%s) = %f.", ihsspeed, ichannel, type, speed);
 
           int available;
           for (int ipreampgain = 0; ipreampgain < npreampgain; ++ipreampgain) {
@@ -253,9 +268,9 @@ detectorrawopen(char *identifier)
               status = GetPreAmpGain(ipreampgain, &gain);
               if (status != DRV_SUCCESS)
                 DETECTOR_ERROR(msg("GetPreampGain failed (status is %u).", status));
-              fprintf(fp, "gain %d is available = %f\n", ipreampgain, gain);
+              log("gain %d is available = %f.", ipreampgain, gain);
             } else {
-              fprintf(fp, "gain %d is not available\n", ipreampgain);
+              log("gain %d is not available.", ipreampgain);
             }
           }
 
@@ -269,14 +284,14 @@ detectorrawopen(char *identifier)
     status = GetNumberVSSpeeds(&nvsspeed);
     if (status != DRV_SUCCESS)
        DETECTOR_ERROR(msg("GetNumberVSSpeeds failed (status is %u).", status));
-    fprintf(fp, "number of VS speeds = %d\n", nvsspeed);
+    log("number of VS speeds = %d.", nvsspeed);
 
     for (int ivsspeed = 0; ivsspeed < nvsspeed; ++ivsspeed) {
       float speed;
       status = GetVSSpeed(ivsspeed, &speed);
       if (status != DRV_SUCCESS)
         DETECTOR_ERROR(msg("GetVSSpeed failed (status is %u).", status));
-      fprintf(fp, "VS speed %d = %f ns\n", ivsspeed, speed * 1e3);
+      log("VS speed %d = %f.", ivsspeed, speed * 1e3);
     }
 
     {
@@ -285,24 +300,24 @@ detectorrawopen(char *identifier)
       status = GetFastestRecommendedVSSpeed(&ivsspeed, &speed);
       if (status != DRV_SUCCESS)
         DETECTOR_ERROR(msg("GetFastestRecommendedVSSpeed failed (status is %u).", status));
-      fprintf(fp, "fastest recommended VS speed = %d %f ns\n", ivsspeed, speed * 1e3);
+      log("fastest recommended VS speed = %d %f.", ivsspeed, speed * 1e3);
     }
 
-    fprintbits(fp, "ulAcqModes", cap.ulAcqModes);
-    fprintbits(fp, "ulReadModes", cap.ulReadModes);
-    fprintbits(fp, "ulFTReadModes", cap.ulFTReadModes);
-    fprintbits(fp, "ulTriggerModes", cap.ulTriggerModes);
-    fprintf(fp, "ulCameraType = %u\n", cap.ulCameraType);
+    logbits("ulAcqModes", cap.ulAcqModes);
+    logbits("ulReadModes", cap.ulReadModes);
+    logbits("ulFTReadModes", cap.ulFTReadModes);
+    logbits("ulTriggerModes", cap.ulTriggerModes);
+    log("ulCameraType = %d.", cap.ulCameraType);
     if (cap.ulCameraType == 21)
-      fprintf(fp, "Camera is Andor iXon Ultra\n");
+      log("Camera is Andor iXon Ultra.");
     else
-      fprintf(fp, "Camera is other.\n");
-    fprintbits(fp, "ulPixelMode", cap.ulPixelMode);
-    fprintbits(fp, "ulSetFunctions", cap.ulSetFunctions);
-    fprintbits(fp, "ulGetFunctions", cap.ulGetFunctions);
-    fprintbits(fp, "ulFeatures", cap.ulFeatures);
-    fprintf(fp, "AC_FEATURES_SHUTTER is %d\n", (int) ((cap.ulFeatures >> 3) & 1));
-    fprintf(fp, "AC_FEATURES_SHUTTEREX is %d\n", (int) ((cap.ulFeatures >> 4) & 1));
+      log("Camera is other.\n");
+    logbits("ulPixelMode", cap.ulPixelMode);
+    logbits("ulSetFunctions", cap.ulSetFunctions);
+    logbits("ulGetFunctions", cap.ulGetFunctions);
+    logbits("ulFeatures", cap.ulFeatures);
+    log("AC_FEATURES_SHUTTER is %d.", (int) ((cap.ulFeatures >> 3) & 1));
+    log("AC_FEATURES_SHUTTEREX is %d.", (int) ((cap.ulFeatures >> 4) & 1));
 
     // Select EMCCD register
     status = SetOutputAmplifier(0);
@@ -316,7 +331,7 @@ detectorrawopen(char *identifier)
       int low;
       int high;
       status = GetEMGainRange(&low, &high);
-      fprintf(fp, "gain range for EM mode %d is %d to %d\n", imode, low, high);
+      log("gain range for EM mode %d is %d to %d.", imode, low, high);
     }
 
     // Select EMCCD register
@@ -331,7 +346,7 @@ detectorrawopen(char *identifier)
       int low;
       int high;
       status = GetEMGainRange(&low, &high);
-      fprintf(fp, "gain range for EM mode %d (advanced) is %d to %d\n", imode, low, high);
+      log("gain range for EM mode %d (advanced) is %d to %d.", imode, low, high);
     }
 
     // Select convencional CCD register
@@ -339,7 +354,6 @@ detectorrawopen(char *identifier)
     if (status != DRV_SUCCESS)
       DETECTOR_ERROR(msg("SetOutputAmplifier failed (status is %u).", status));
 
-    fclose(fp);
   }
 
   return detectorrawsetwindow(0, 0, 0, 0);
@@ -377,12 +391,23 @@ detectorrawmovefilterwheel(unsigned long position)
 
 ////////////////////////////////////////////////////////////////////////
 
+static long framesum[1024][1024];
+static long frame[1024][1024];
+static int iframe;
+
 const char *
 detectorrawexpose(double exposuretime, const char *shutter)
 {
   unsigned int status;
 
+  unsigned long nx = detectorrawgetpixnx();
+  unsigned long ny = detectorrawgetpixny();
+
   DETECTOR_CHECK_OPEN();
+  
+  log("detectorrawexpose: exposuretime = %.3f seconds.", exposuretime);
+  log("detectorrawexpose: shutter = \"%s\".", shutter);
+  log("detectorrawexpose: emgain = %d.", emgain);
 
   if (strcmp(shutter, "open") != 0 && strcmp(shutter, "closed") != 0)
     DETECTOR_ERROR("invalid shutter argument");
@@ -426,6 +451,7 @@ detectorrawexpose(double exposuretime, const char *shutter)
   frametime = exposure;
   cycletime = cycle;
   
+  iframe = 0;
   if (emgain == 0) {
     nframe = 1;
   } else {
@@ -434,12 +460,17 @@ detectorrawexpose(double exposuretime, const char *shutter)
       nframe = 1;
   }
 
-  detectorrawsetpixnz(nframe);
+  //detectorrawsetpixnz(nframe);
+  detectorrawsetpixnz(1);
   detectorrawpixstart();
 
   status = StartAcquisition();
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR(msg("unable to start acquisition (status is %u).", status));
+    
+  for (unsigned long iy = 0; iy < ny; ++iy)
+    for (unsigned long ix = 0; ix < nx; ++ix)
+      framesum[iy][ix] = 0;
 
   DETECTOR_OK();
 }
@@ -462,46 +493,64 @@ detectorrawcancel(void)
 bool
 detectorrawgetreadytoberead(void)
 {
+  log("detectorrawgetreadytoberead: emgain = %d.", emgain);
+
+  unsigned long nx = detectorrawgetpixnx();
+  unsigned long ny = detectorrawgetpixny();
+
   if (emgain == 0) {
+
+    log("detectorrawgetreadytoberead: checking for end of exposure.");
+
     int status;
     GetStatus(&status);
     return status != DRV_ACQUIRING;
+
   } else {
   
     while (1) {
+    
+      if (iframe == nframe)
+        break;
 
-      unsigned long nx = detectorrawgetpixnx();
-      unsigned long ny = detectorrawgetpixny();
-
-      unsigned short pix[ny * nx];
       unsigned int status;
+      unsigned short pix[ny * nx];
+
+      log("detectorrawgetreadytoberead: checking for new frame.");
+
       status = GetOldestImage16(pix, nx * ny);
       if (status == DRV_NO_NEW_DATA)
         break;
     
       if (status != DRV_SUCCESS)
         DETECTOR_ERROR(msg("unable to get pixel data (nx is %lu ny is %lu status is %u).", nx, ny, status));
+        
+      log("detectorrawgetreadytoberead: processing frame %d.", iframe);
+      ++iframe;
 
       if (flipped) {
         for (unsigned long iy = 0; iy < ny; ++iy) {
           for (unsigned long ix = 0; ix < nx; ++ix) {
-            long lpix = pix[iy * nx + (nx - 1 - ix)];
-            detectorrawpixnext(&lpix, 1);
+            frame[iy][ix] = pix[iy * nx + (nx - 1 - ix)];
           }
         }
       } else {
         for (unsigned long iy = 0; iy < ny; ++iy) {
           for (unsigned long ix = 0; ix < nx; ++ix) {
-            long lpix = pix[iy * nx + ix];
-            detectorrawpixnext(&lpix, 1);
+            frame[iy][ix] = pix[iy * nx + ix];
           }
         }
       }
+
+      for (unsigned long iy = 0; iy < ny; ++iy) {
+        for (unsigned long ix = 0; ix < nx; ++ix) {
+          framesum[iy][ix] += frame[iy][ix];
+        }
+      }
+
     }
   
-    int i;
-    GetTotalNumberImagesAcquired(&i);
-    return i >= nframe;
+    return iframe == nframe;
   }
 }
 
@@ -510,6 +559,11 @@ detectorrawgetreadytoberead(void)
 const char *
 detectorrawread(void)
 {
+  log("detectorrawread: emgain = %d.", emgain);
+
+  unsigned long nx = detectorrawgetpixnx();
+  unsigned long ny = detectorrawgetpixny();
+
   DETECTOR_CHECK_OPEN();
 
   if (!detectorrawgetreadytoberead())
@@ -517,8 +571,7 @@ detectorrawread(void)
 
   if (emgain == 0) {
 
-    unsigned long nx = detectorrawgetpixnx();
-    unsigned long ny = detectorrawgetpixny();
+    log("detectorrawgetreadytoberead: reading exposure.");
 
     unsigned short pix[ny * nx];
     unsigned int status;
@@ -545,11 +598,19 @@ detectorrawread(void)
 
   } else {
 
+    log("detectorrawgetreadytoberead: processing sum of frames.");
+
     unsigned int status;
     status = AbortAcquisition();
     if (status != DRV_SUCCESS && status != DRV_IDLE)
       DETECTOR_ERROR(msg("unable to abort acquisition (status is %u).", status));
 
+    for (unsigned long iy = 0; iy < ny; ++iy) {
+      for (unsigned long ix = 0; ix < nx; ++ix) {
+        long lpix = framesum[iy][ix] / nframe;
+        detectorrawpixnext(&lpix, 1);
+      }
+    }
     detectorrawpixend();
 
   }
@@ -621,6 +682,8 @@ const char *
 detectorrawsetreadmode(const char *newreadmode)
 {
   DETECTOR_CHECK_OPEN();
+  
+  log("detectorrawsetreadmode: newreadmode = \"%s\".", newreadmode);
 
   int newiadc;
   int newiamplifier;
@@ -638,6 +701,7 @@ detectorrawsetreadmode(const char *newreadmode)
     setreadmodehelper(newiadc, newiamplifier, newivsspeed, newihsspeed, newigain, newemgain);
 
   if (strcmp(msg, "") != 0) {
+    log("detectorrawsetreadmode: reverting to old readmode.");
     setreadmodehelper(iadc, iamplifier, ivsspeed, ihsspeed, igain, emgain);
     DETECTOR_ERROR(msg);
   }
@@ -677,6 +741,7 @@ detectorrawsetreadmode(const char *newreadmode)
   status = GetEMCCDGain(&emgain);
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR("unable to determine EM gain.");
+  log("detectorrawsetreadmode: emgain = %d.", emgain);
 
   status = IsReadoutFlippedByAmplifier(iamplifier, &flipped);
   if (status != DRV_SUCCESS)
