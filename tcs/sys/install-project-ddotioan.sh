@@ -44,7 +44,6 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 10.0.1.8        pc                      ddotioan-pc
 10.0.1.9        control                 ddotioan-control
 10.0.1.10       airport-express         ddotioan-airport-express
-10.0.1.11       c0                      ddotioan-c0
 10.0.1.12       d0                      ddotioan-d0
 10.0.1.13       d1                      ddotioan-d1 C0-host
 10.0.1.14       d2                      ddotioan-d2 C2-host
@@ -94,7 +93,7 @@ EOF
   case $host in
   control)
     cat <<"EOF"
-*   *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles services control platform c0 d0 d1 d2 d3 e0 e1 e2 e3
+*   *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles services control platform d0 d1 d2 d3 e0 e1 e2 e3
 *   *  *  *  *  /usr/local/bin/tcs updateweatherfiles-oan
 00  18 *  *  *  /usr/local/bin/tcs updateweatherfiles-oan -a
 *   *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
@@ -139,14 +138,20 @@ EOF
   esac
 
   case $host in
-  [cde][0123])
-    echo "gpio -i"
+  platform|[cde][0123])
+    echo "tcs gpio -i"
     ;;
   esac
   case $host in
   platform|c0)
-    echo "gpio enclosure-lights off"
-    echo "gpio enclosure-heater off"
+    echo "tcs gpio enclosure-lights off"
+    echo "tcs gpio enclosure-heater off"
+    ;;
+  esac
+
+  case $host in
+  control|platform|c0|d0|e0)
+    echo "owserver -c /etc/owfs.conf"
     ;;
   esac
 
@@ -178,24 +183,24 @@ EOF
     ;;
   esac
 
-  case $host in
-  control|platform|c0|d0|e0)
-    echo "owserver -c /etc/owfs.conf"
-    ;;
-  esac
+  echo "service rsync start"
 
   case $host in
-  *-services)
-    echo "tcs startserver log &"
-    ;;
-  *)
+  control)
     echo "# This sleep gives the services host time to reboot and start the log server."
     echo "sleep 30"
     ;;
+  platform)
+    echo "# This sleep gives the services host time to reboot and start the log server."
+    echo "sleep 60"
+    ;;
+  instrument)
+    echo "# This sleep gives the services host time to reboot and start the log server."
+    echo "sleep 90"
+    ;;
   esac
-  echo "tcs log rc.local warning \"$host is booting.\""
   echo "tcs startserver -a &"
-
+  
   echo "exit 0"
 
 ) |
