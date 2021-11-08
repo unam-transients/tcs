@@ -23,7 +23,7 @@
 
 ########################################################################
 
-proc alertvisit {{filters "r"}} {
+proc alertvisit {{filters "r"} {readmode "default"}} {
 
   log::summary "alertvisit: starting."
   log::summary "alertvisit: filters are $filters."
@@ -82,7 +82,7 @@ proc alertvisit {{filters "r"}} {
 
   executor::track
 
-  executor::setreadmode "default"
+  executor::setreadmode $readmode
   executor::setwindow "default"
   executor::setbinning $binning
   executor::movefilterwheel [lindex $filters 0]
@@ -173,14 +173,14 @@ proc alertvisit {{filters "r"}} {
 
 ########################################################################
 
-proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime filters} {
+proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime filters {readmode "default"}} {
 
   log::summary "gridvisit: starting."
 
   executor::setsecondaryoffset 0
   executor::track
 
-  executor::setreadmode "default"
+  executor::setreadmode $readmode
   executor::setwindow "default"
   executor::setbinning 1
 
@@ -288,7 +288,13 @@ proc focusvisit {{filter "i"} {exposuretime 1}} {
   waituntiltracking
 
   log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
+  log::summary "focusvisit: mode is 1MHz-0."
+  setreadmode "1MHz-0"
   focussecondary C0 $exposuretime 100 10 true
+  log::summary "focusvisit: mode is em-20MHz-0-100."
+  setreadmode "em-20MHz-0-100"
+  focussecondary C0 $exposuretime 100 10 true
+  
 
   setfocused
 
@@ -450,7 +456,14 @@ proc biasesvisit {} {
   move
   movefilterwheel 0
   foreach {readmode binning visitidentifier} {
-    "default" 1 0
+    "1MHz-0"  1 0
+    "1MHz-1"  1 1
+    "em-10MHz-0" 1 2
+    "em-10MHz-1" 1 3
+    "em-20MHz-0" 1 4
+    "em-20MHz-1" 1 5
+    "em-30MHz-0" 1 6
+    "em-30MHz-1" 1 7
   } { 
     setreadmode $readmode
     setwindow "default"
@@ -475,7 +488,7 @@ proc darksvisit {} {
   move
   movefilterwheel 0
   foreach {readmode binning visitidentifier} {
-    "default" 1 0
+    "1MHz-0"  1 0
   } { 
     setreadmode $readmode
     setwindow "default"
