@@ -192,10 +192,10 @@
   },
   "instrument": {
     "detectors": [
-//      "C0", "C1",  "C2", "C3", "C4", "C5"
+      "C0", "C1",  "C2", "C3", "C4", "C5"
     ],
     "activedetectors": [
-//      "C0", "C1", "C2", "C3", "C4", "C5"
+      "C0", "C1", "C2", "C3", "C4", "C5"
     ],
     "pointingdetectors": [
       "C2", "C3"
@@ -268,7 +268,7 @@
       "w"
     ],
     "focusertype": "optec",
-    "focuseridentifier": "/dev/ttyFTDI",
+    "focuseridentifier": "/dev/ttyFTDI-C0",
     "focuserinitialposition": "32767",
     "focuserbacklashoffset": "3000",
     "focusercorrectionmodel": {
@@ -342,7 +342,7 @@
       "w"
     ],
     "focusertype": "optec",
-    "focuseridentifier": "/dev/ttyFTDI",
+    "focuseridentifier": "/dev/ttyFTDI-C1",
     "focuserinitialposition": "32767",
     "focuserbacklashoffset": "3000",
     "focusercorrectionmodel": {
@@ -416,7 +416,7 @@
       "w"
     ],
     "focusertype": "optec",
-    "focuseridentifier": "/dev/ttyFTDI",
+    "focuseridentifier": "/dev/ttyFTDI-C2",
     "focuserinitialposition": "32767",
     "focuserbacklashoffset": "3000",
     "focusercorrectionmodel": {
@@ -490,7 +490,7 @@
       "w"
     ],
     "focusertype": "optec",
-    "focuseridentifier": "/dev/ttyFTDI",
+    "focuseridentifier": "/dev/ttyFTDI-C3",
     "focuserinitialposition": "32767",
     "focuserbacklashoffset": "3000",
     "focusercorrectionmodel": {
@@ -564,7 +564,7 @@
       "w"
     ],
     "focusertype": "optec",
-    "focuseridentifier": "/dev/ttyFTDI",
+    "focuseridentifier": "/dev/ttyFTDI-C4",
     "focuserinitialposition": "32767",
     "focuserbacklashoffset": "3000",
     "focusercorrectionmodel": {
@@ -638,7 +638,7 @@
       "w"
     ],
     "focusertype": "optec",
-    "focuseridentifier": "/dev/ttyFTDI",
+    "focuseridentifier": "/dev/ttyFTDI-C5",
     "focuserinitialposition": "32767",
     "focuserbacklashoffset": "3000",
     "focusercorrectionmodel": {
@@ -752,7 +752,7 @@
        "firmware": ""
       },
       "box-d-temperature": {
-       "file": "/usr/local/var/tcs/sensors/d0/ow/26.2495E1010000/temperature",
+       "file": "/usr/local/var/tcs/sensors/instrument0/ow/26.2495E1010000/temperature",
        "keyword": "BDTM",
        "prettyname": "box D temperature",
        "subsystem": "instrument",
@@ -765,7 +765,7 @@
        "firmware": ""
       },
       "box-e-temperature": {
-       "file": "/usr/local/var/tcs/sensors/e0/ow/26.3469E1010000/temperature",
+       "file": "/usr/local/var/tcs/sensors/instrument1/ow/26.3469E1010000/temperature",
        "keyword": "BETM",
        "prettyname": "box E temperature",
        "subsystem": "instrument",
@@ -816,7 +816,7 @@
        "firmware": ""
       },
       "box-d-humidity": {
-       "file": "/usr/local/var/tcs/sensors/d0/ow/26.2495E1010000/HIH4000/humidity",
+       "file": "/usr/local/var/tcs/sensors/instrument0/ow/26.2495E1010000/HIH4000/humidity",
        "keyword": "BDHM",
        "prettyname": "box D relative humidity",
        "subsystem": "instrument",
@@ -829,7 +829,7 @@
        "firmware": ""
       },
       "box-e-humidity": {
-       "file": "/usr/local/var/tcs/sensors/e0/ow/26.3469E1010000/HIH4000/humidity",
+       "file": "/usr/local/var/tcs/sensors/instrument1/ow/26.3469E1010000/HIH4000/humidity",
        "keyword": "BEHM",
        "prettyname": "box E relative humidity",
        "subsystem": "instrument",
@@ -928,12 +928,12 @@
        "identifier": "",
        "firmware": ""
       },
-      "host-d0-load": {
-       "file": "/usr/local/var/tcs/sensors/d0/load",
+      "host-instrument0-load": {
+       "file": "/usr/local/var/tcs/sensors/instrument0/load",
        "keyword": "",
-       "prettyname": "load on host d0",
+       "prettyname": "load on host instrument0",
        "subsystem": "control-system",
-       "component": "host-d0",
+       "component": "host-instrument0",
        "group": "load",
        "type": "float",
        "unit": "processes",
@@ -941,90 +941,12 @@
        "identifier": "",
        "firmware": ""
       },
-      "host-d1-load": {
-       "file": "/usr/local/var/tcs/sensors/d1/load",
+      "host-instrument1-load": {
+       "file": "/usr/local/var/tcs/sensors/instrument1/load",
        "keyword": "",
-       "prettyname": "load on host d1",
+       "prettyname": "load on host instrument1",
        "subsystem": "control-system",
-       "component": "host-d1",
-       "group": "load",
-       "type": "float",
-       "unit": "processes",
-       "model": "",
-       "identifier": "",
-       "firmware": ""
-      },
-      "host-d2-load": {
-       "file": "/usr/local/var/tcs/sensors/d2/load",
-       "keyword": "",
-       "prettyname": "load on host d2",
-       "subsystem": "control-system",
-       "component": "host-d2",
-       "group": "load",
-       "type": "float",
-       "unit": "processes",
-       "model": "",
-       "identifier": "",
-       "firmware": ""
-      },
-      "host-d3-load": {
-       "file": "/usr/local/var/tcs/sensors/d3/load",
-       "keyword": "",
-       "prettyname": "load on host d3",
-       "subsystem": "control-system",
-       "component": "host-d3",
-       "group": "load",
-       "type": "float",
-       "unit": "processes",
-       "model": "",
-       "identifier": "",
-       "firmware": ""
-      },
-      "host-e0-load": {
-       "file": "/usr/local/var/tcs/sensors/e0/load",
-       "keyword": "",
-       "prettyname": "load on host e0",
-       "subsystem": "control-system",
-       "component": "host-e0",
-       "group": "load",
-       "type": "float",
-       "unit": "processes",
-       "model": "",
-       "identifier": "",
-       "firmware": ""
-      },
-      "host-e1-load": {
-       "file": "/usr/local/var/tcs/sensors/e1/load",
-       "keyword": "",
-       "prettyname": "load on host e1",
-       "subsystem": "control-system",
-       "component": "host-e1",
-       "group": "load",
-       "type": "float",
-       "unit": "processes",
-       "model": "",
-       "identifier": "",
-       "firmware": ""
-      },
-      "host-e2-load": {
-       "file": "/usr/local/var/tcs/sensors/e2/load",
-       "keyword": "",
-       "prettyname": "load on host e2",
-       "subsystem": "control-system",
-       "component": "host-e2",
-       "group": "load",
-       "type": "float",
-       "unit": "processes",
-       "model": "",
-       "identifier": "",
-       "firmware": ""
-      },
-      "host-e3-load": {
-       "file": "/usr/local/var/tcs/sensors/e3/load",
-       "keyword": "",
-       "prettyname": "load on host e2",
-       "subsystem": "control-system",
-       "component": "host-e3",
+       "component": "host-instrument1",
        "group": "load",
        "type": "float",
        "unit": "processes",
@@ -1084,12 +1006,12 @@
        "identifier": "",
        "firmware": ""
       },
-      "host-d0-disk-space-used": {
-       "file": "/usr/local/var/tcs/sensors/d0/disk-space-used",
+      "host-instrument0-disk-space-used": {
+       "file": "/usr/local/var/tcs/sensors/instrument0/disk-space-used",
        "keyword": "",
-       "prettyname": "relative disk space used on host d0",
+       "prettyname": "relative disk space used on host instrument0",
        "subsystem": "control-system",
-       "component": "host-d0",
+       "component": "host-instrument0",
        "group": "disk-space",
        "type": "float",
        "unit": "",
@@ -1097,90 +1019,12 @@
        "identifier": "",
        "firmware": ""
       },
-      "host-d1-disk-space-used": {
-       "file": "/usr/local/var/tcs/sensors/d1/disk-space-used",
+      "host-instrument1-disk-space-used": {
+       "file": "/usr/local/var/tcs/sensors/instrument1/disk-space-used",
        "keyword": "",
-       "prettyname": "relative disk space used on host d1",
+       "prettyname": "relative disk space used on host instrument1",
        "subsystem": "control-system",
-       "component": "host-d1",
-       "group": "disk-space",
-       "type": "float",
-       "unit": "",
-       "model": "",
-       "identifier": "",
-       "firmware": ""
-      },
-      "host-d2-disk-space-used": {
-       "file": "/usr/local/var/tcs/sensors/d2/disk-space-used",
-       "keyword": "",
-       "prettyname": "relative disk space used on host d2",
-       "subsystem": "control-system",
-       "component": "host-d2",
-       "group": "disk-space",
-       "type": "float",
-       "unit": "",
-       "model": "",
-       "identifier": "",
-       "firmware": ""
-      },
-      "host-d3-disk-space-used": {
-       "file": "/usr/local/var/tcs/sensors/d3/disk-space-used",
-       "keyword": "",
-       "prettyname": "relative disk space used on host d3",
-       "subsystem": "control-system",
-       "component": "host-d3",
-       "group": "disk-space",
-       "type": "float",
-       "unit": "",
-       "model": "",
-       "identifier": "",
-       "firmware": ""
-      },
-      "host-e0-disk-space-used": {
-       "file": "/usr/local/var/tcs/sensors/e0/disk-space-used",
-       "keyword": "",
-       "prettyname": "relative disk space used on host e0",
-       "subsystem": "control-system",
-       "component": "host-e0",
-       "group": "disk-space",
-       "type": "float",
-       "unit": "",
-       "model": "",
-       "identifier": "",
-       "firmware": ""
-      },
-      "host-e1-disk-space-used": {
-       "file": "/usr/local/var/tcs/sensors/e1/disk-space-used",
-       "keyword": "",
-       "prettyname": "relative disk space used on host e1",
-       "subsystem": "control-system",
-       "component": "host-e1",
-       "group": "disk-space",
-       "type": "float",
-       "unit": "",
-       "model": "",
-       "identifier": "",
-       "firmware": ""
-      },
-      "host-e2-disk-space-used": {
-       "file": "/usr/local/var/tcs/sensors/e2/disk-space-used",
-       "keyword": "",
-       "prettyname": "relative disk space used on host e2",
-       "subsystem": "control-system",
-       "component": "host-e2",
-       "group": "disk-space",
-       "type": "float",
-       "unit": "",
-       "model": "",
-       "identifier": "",
-       "firmware": ""
-      },
-      "host-e3-disk-space-used": {
-       "file": "/usr/local/var/tcs/sensors/e3/disk-space-used",
-       "keyword": "",
-       "prettyname": "relative disk space used on host e3",
-       "subsystem": "control-system",
-       "component": "host-e3",
+       "component": "host-instrument1",
        "group": "disk-space",
        "type": "float",
        "unit": "",
@@ -1189,7 +1033,7 @@
        "firmware": ""
       },
       "C0-detector-detector-temperature": {
-       "file": "/usr/local/var/tcs/sensors/d1/C0-detector-detector-temperature",
+       "file": "/usr/local/var/tcs/sensors/instrument0/C0-detector-detector-temperature",
        "keyword": "",
        "prettyname": "C0 detector temperature",
        "subsystem": "instrument",
@@ -1202,7 +1046,7 @@
        "firmware": ""
       },
       "C1-detector-detector-temperature": {
-       "file": "/usr/local/var/tcs/sensors/e1/C1-detector-detector-temperature",
+       "file": "/usr/local/var/tcs/sensors/instrument1/C1-detector-detector-temperature",
        "keyword": "",
        "prettyname": "C1 detector temperature",
        "subsystem": "instrument",
@@ -1215,7 +1059,7 @@
        "firmware": ""
       },
       "C2-detector-detector-temperature": {
-       "file": "/usr/local/var/tcs/sensors/d0/C2-detector-detector-temperature",
+       "file": "/usr/local/var/tcs/sensors/instrument0/C2-detector-detector-temperature",
        "keyword": "",
        "prettyname": "C2 detector temperature",
        "subsystem": "instrument",
@@ -1228,7 +1072,7 @@
        "firmware": ""
       },
       "C3-detector-detector-temperature": {
-       "file": "/usr/local/var/tcs/sensors/e2/C3-detector-detector-temperature",
+       "file": "/usr/local/var/tcs/sensors/instrument1/C3-detector-detector-temperature",
        "keyword": "",
        "prettyname": "C3 detector temperature",
        "subsystem": "instrument",
@@ -1241,7 +1085,7 @@
        "firmware": ""
       },
       "C4-detector-detector-temperature": {
-       "file": "/usr/local/var/tcs/sensors/d3/C4-detector-detector-temperature",
+       "file": "/usr/local/var/tcs/sensors/instrument0/C4-detector-detector-temperature",
        "keyword": "",
        "prettyname": "C4 detector temperature",
        "subsystem": "instrument",
@@ -1254,7 +1098,7 @@
        "firmware": ""
       },
       "C5-detector-detector-temperature": {
-       "file": "/usr/local/var/tcs/sensors/e0/C5-detector-detector-temperature",
+       "file": "/usr/local/var/tcs/sensors/instrument1/C5-detector-detector-temperature",
        "keyword": "",
        "prettyname": "C5 detector temperature",
        "subsystem": "instrument",
@@ -1267,7 +1111,7 @@
        "firmware": ""
       },
       "C0-detector-housing-temperature": {
-       "file": "/usr/local/var/tcs/sensors/d1/C0-detector-housing-temperature",
+       "file": "/usr/local/var/tcs/sensors/instrument0/C0-detector-housing-temperature",
        "keyword": "",
        "prettyname": "C0 housing temperature",
        "subsystem": "instrument",
@@ -1280,7 +1124,7 @@
        "firmware": ""
       },
       "C1-detector-housing-temperature": {
-       "file": "/usr/local/var/tcs/sensors/e1/C1-detector-housing-temperature",
+       "file": "/usr/local/var/tcs/sensors/instrument1/C1-detector-housing-temperature",
        "keyword": "",
        "prettyname": "C1 housing temperature",
        "subsystem": "instrument",
@@ -1293,7 +1137,7 @@
        "firmware": ""
       },
       "C2-detector-housing-temperature": {
-       "file": "/usr/local/var/tcs/sensors/d0/C2-detector-housing-temperature",
+       "file": "/usr/local/var/tcs/sensors/instrument0/C2-detector-housing-temperature",
        "keyword": "",
        "prettyname": "C2 housing temperature",
        "subsystem": "instrument",
@@ -1306,7 +1150,7 @@
        "firmware": ""
       },
       "C3-detector-housing-temperature": {
-       "file": "/usr/local/var/tcs/sensors/e2/C3-detector-housing-temperature",
+       "file": "/usr/local/var/tcs/sensors/instrument1/C3-detector-housing-temperature",
        "keyword": "",
        "prettyname": "C3 housing temperature",
        "subsystem": "instrument",
@@ -1319,7 +1163,7 @@
        "firmware": ""
       },
       "C4-detector-housing-temperature": {
-       "file": "/usr/local/var/tcs/sensors/d3/C4-detector-housing-temperature",
+       "file": "/usr/local/var/tcs/sensors/instrument0/C4-detector-housing-temperature",
        "keyword": "",
        "prettyname": "C4 housing temperature",
        "subsystem": "instrument",
@@ -1332,7 +1176,7 @@
        "firmware": ""
       },
       "C5-detector-housing-temperature": {
-       "file": "/usr/local/var/tcs/sensors/e0/C5-detector-housing-temperature",
+       "file": "/usr/local/var/tcs/sensors/instrument1/C5-detector-housing-temperature",
        "keyword": "",
        "prettyname": "C5 housing temperature",
        "subsystem": "instrument",
@@ -1345,7 +1189,7 @@
        "firmware": ""
       },
       "C0-detector-cooler-set-temperature": {
-       "file": "/usr/local/var/tcs/sensors/d1/C0-detector-cooler-set-temperature",
+       "file": "/usr/local/var/tcs/sensors/instrument0/C0-detector-cooler-set-temperature",
        "keyword": "",
        "prettyname": "C0 cooler set temperature",
        "subsystem": "instrument",
@@ -1358,7 +1202,7 @@
        "firmware": ""
       },
       "C1-detector-cooler-set-temperature": {
-       "file": "/usr/local/var/tcs/sensors/e1/C1-detector-cooler-set-temperature",
+       "file": "/usr/local/var/tcs/sensors/instrument1/C1-detector-cooler-set-temperature",
        "keyword": "",
        "prettyname": "C1 cooler set temperature",
        "subsystem": "instrument",
@@ -1371,7 +1215,7 @@
        "firmware": ""
       },
       "C2-detector-cooler-set-temperature": {
-       "file": "/usr/local/var/tcs/sensors/d0/C2-detector-cooler-set-temperature",
+       "file": "/usr/local/var/tcs/sensors/instrument0/C2-detector-cooler-set-temperature",
        "keyword": "",
        "prettyname": "C2 cooler set temperature",
        "group": "detector-cooler-set-temperature",
@@ -1384,7 +1228,7 @@
        "firmware": ""
       },
       "C3-detector-cooler-set-temperature": {
-       "file": "/usr/local/var/tcs/sensors/e2/C3-detector-cooler-set-temperature",
+       "file": "/usr/local/var/tcs/sensors/instrument1/C3-detector-cooler-set-temperature",
        "keyword": "",
        "prettyname": "C3 cooler set temperature",
        "subsystem": "instrument",
@@ -1397,7 +1241,7 @@
        "firmware": ""
       },
       "C4-detector-cooler-set-temperature": {
-       "file": "/usr/local/var/tcs/sensors/d3/C4-detector-cooler-set-temperature",
+       "file": "/usr/local/var/tcs/sensors/instrument0/C4-detector-cooler-set-temperature",
        "keyword": "",
        "prettyname": "C4 cooler set temperature",
        "subsystem": "instrument",
@@ -1410,7 +1254,7 @@
        "firmware": ""
       },
       "C5-detector-cooler-set-temperature": {
-       "file": "/usr/local/var/tcs/sensors/e0/C5-detector-cooler-set-temperature",
+       "file": "/usr/local/var/tcs/sensors/instrument1/C5-detector-cooler-set-temperature",
        "keyword": "",
        "prettyname": "C5 cooler set temperature",
        "subsystem": "instrument",
@@ -1423,7 +1267,7 @@
        "firmware": ""
       },
       "C0-detector-cooler-power": {
-       "file": "/usr/local/var/tcs/sensors/d1/C0-detector-cooler-power",
+       "file": "/usr/local/var/tcs/sensors/instrument0/C0-detector-cooler-power",
        "keyword": "",
        "prettyname": "C0 relative cooler power",
        "subsystem": "instrument",
@@ -1436,7 +1280,7 @@
        "firmware": ""
       },
       "C1-detector-cooler-power": {
-       "file": "/usr/local/var/tcs/sensors/e1/C1-detector-cooler-power",
+       "file": "/usr/local/var/tcs/sensors/instrument1/C1-detector-cooler-power",
        "keyword": "",
        "prettyname": "C1 relative cooler power",
        "subsystem": "instrument",
@@ -1449,7 +1293,7 @@
        "firmware": ""
       },
       "C2-detector-cooler-power": {
-       "file": "/usr/local/var/tcs/sensors/d0/C2-detector-cooler-power",
+       "file": "/usr/local/var/tcs/sensors/instrument0/C2-detector-cooler-power",
        "keyword": "",
        "prettyname": "C2 relative cooler power",
        "subsystem": "instrument",
@@ -1462,7 +1306,7 @@
        "firmware": ""
       },
       "C3-detector-cooler-power": {
-       "file": "/usr/local/var/tcs/sensors/e2/C3-detector-cooler-power",
+       "file": "/usr/local/var/tcs/sensors/instrument1/C3-detector-cooler-power",
        "keyword": "",
        "prettyname": "C3 relative cooler power",
        "subsystem": "instrument",
@@ -1475,7 +1319,7 @@
        "firmware": ""
       },
       "C4-detector-cooler-power": {
-       "file": "/usr/local/var/tcs/sensors/d3/C4-detector-cooler-power",
+       "file": "/usr/local/var/tcs/sensors/instrument0/C4-detector-cooler-power",
        "keyword": "",
        "prettyname": "C4 relative cooler power",
        "subsystem": "instrument",
@@ -1488,7 +1332,7 @@
        "firmware": ""
       },
       "C5-detector-cooler-power": {
-       "file": "/usr/local/var/tcs/sensors/e0/C5-detector-cooler-power",
+       "file": "/usr/local/var/tcs/sensors/instrument1/C5-detector-cooler-power",
        "keyword": "",
        "prettyname": "C5 relative cooler power",
        "subsystem": "instrument",
@@ -1501,7 +1345,7 @@
        "firmware": ""
       },
       "C0-detector-cooler-state": {
-       "file": "/usr/local/var/tcs/sensors/d1/C0-detector-cooler-state",
+       "file": "/usr/local/var/tcs/sensors/instrument0/C0-detector-cooler-state",
        "keyword": "",
        "prettyname": "C0 cooler state",
        "subsystem": "instrument",
@@ -1514,7 +1358,7 @@
        "firmware": ""
       },
       "C1-detector-cooler-state": {
-       "file": "/usr/local/var/tcs/sensors/e1/C1-detector-cooler-state",
+       "file": "/usr/local/var/tcs/sensors/instrument1/C1-detector-cooler-state",
        "keyword": "",
        "prettyname": "C1 cooler state",
        "subsystem": "instrument",
@@ -1527,7 +1371,7 @@
        "firmware": ""
       },
       "C2-detector-cooler-state": {
-       "file": "/usr/local/var/tcs/sensors/d0/C2-detector-cooler-state",
+       "file": "/usr/local/var/tcs/sensors/instrument0/C2-detector-cooler-state",
        "keyword": "",
        "prettyname": "C2 cooler state",
        "subsystem": "instrument",
@@ -1540,7 +1384,7 @@
        "firmware": ""
       },
       "C3-detector-cooler-state": {
-       "file": "/usr/local/var/tcs/sensors/e2/C3-detector-cooler-state",
+       "file": "/usr/local/var/tcs/sensors/instrument1/C3-detector-cooler-state",
        "keyword": "",
        "prettyname": "C3 cooler state",
        "subsystem": "instrument",
@@ -1553,7 +1397,7 @@
        "firmware": ""
       },
       "C4-detector-cooler-state": {
-       "file": "/usr/local/var/tcs/sensors/d3/C4-detector-cooler-state",
+       "file": "/usr/local/var/tcs/sensors/instrument0/C4-detector-cooler-state",
        "keyword": "",
        "prettyname": "C4 cooler state",
        "subsystem": "instrument",
@@ -1566,7 +1410,7 @@
        "firmware": ""
       },
       "C5-detector-cooler-state": {
-       "file": "/usr/local/var/tcs/sensors/e0/C5-detector-cooler-state",
+       "file": "/usr/local/var/tcs/sensors/instrument1/C5-detector-cooler-state",
        "keyword": "",
        "prettyname": "C5 cooler state",
        "subsystem": "instrument",
@@ -1579,7 +1423,7 @@
        "firmware": ""
       },
       "C0-focuser-position": {
-       "file": "/usr/local/var/tcs/sensors/d1/C0-focuser-position",
+       "file": "/usr/local/var/tcs/sensors/instrument0/C0-focuser-position",
        "keyword": "",
        "prettyname": "C0 focuser position",
        "subsystem": "instrument",
@@ -1592,7 +1436,7 @@
        "firmware": ""
       },
       "C1-focuser-position": {
-       "file": "/usr/local/var/tcs/sensors/e1/C1-focuser-position",
+       "file": "/usr/local/var/tcs/sensors/instrument1/C1-focuser-position",
        "keyword": "",
        "prettyname": "C1 focuser position",
        "subsystem": "instrument",
@@ -1605,7 +1449,7 @@
        "firmware": ""
       },
       "C2-focuser-position": {
-       "file": "/usr/local/var/tcs/sensors/d0/C2-focuser-position",
+       "file": "/usr/local/var/tcs/sensors/instrument0/C2-focuser-position",
        "keyword": "",
        "prettyname": "C2 focuser position",
        "subsystem": "instrument",
@@ -1618,7 +1462,7 @@
        "firmware": ""
       },
       "C3-focuser-position": {
-       "file": "/usr/local/var/tcs/sensors/e2/C3-focuser-position",
+       "file": "/usr/local/var/tcs/sensors/instrument1/C3-focuser-position",
        "keyword": "",
        "prettyname": "C3 focuser position",
        "subsystem": "instrument",
@@ -1631,7 +1475,7 @@
        "firmware": ""
       },
       "C4-focuser-position": {
-       "file": "/usr/local/var/tcs/sensors/d3/C4-focuser-position",
+       "file": "/usr/local/var/tcs/sensors/instrument0/C4-focuser-position",
        "keyword": "",
        "prettyname": "C4 focuser position",
        "subsystem": "instrument",
@@ -1644,7 +1488,7 @@
        "firmware": ""
       },
       "C5-focuser-position": {
-       "file": "/usr/local/var/tcs/sensors/e0/C5-focuser-position",
+       "file": "/usr/local/var/tcs/sensors/instrument1/C5-focuser-position",
        "keyword": "",
        "prettyname": "C5 focuser position",
        "subsystem": "instrument",
