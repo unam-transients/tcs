@@ -44,17 +44,11 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 10.0.1.8        pc                      ddotioan-pc
 10.0.1.9        control                 ddotioan-control
 10.0.1.10       airport-express         ddotioan-airport-express
-10.0.1.12       d0                      ddotioan-d0
-10.0.1.13       d1                      ddotioan-d1 C0-host
-10.0.1.14       d2                      ddotioan-d2 C2-host
-10.0.1.15       d3                      ddotioan-d3 C4-host
-10.0.1.16       e0                      ddotioan-e0
-10.0.1.17       e1                      ddotioan-e1 C1-host
-10.0.1.18       e2                      ddotioan-e2 C3-host
-10.0.1.19       e3                      ddotioan-e3 C5-host
 10.0.1.20       webcam-a                ddotioan-webcam-a
 10.0.1.21       webcam-b                ddotioan-webcam-b
 10.0.1.22       platform                ddotioan-platform
+10.0.1.23       instrument0             ddotioan-instrument0
+10.0.1.24       instrument1             ddotioan-instrument1
 10.0.1.99       spare                   ddotioan-spare
 
 132.248.4.26    webcam-c                ddotioan-webcam-c
@@ -93,7 +87,7 @@ EOF
   case $host in
   control)
     cat <<"EOF"
-*   *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles services control platform d0 d1 d2 d3 e0 e1 e2 e3
+*   *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles services control platform instrument0 instrument1
 *   *  *  *  *  /usr/local/bin/tcs updateweatherfiles-oan
 00  18 *  *  *  /usr/local/bin/tcs updateweatherfiles-oan -a
 *   *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
@@ -143,14 +137,14 @@ EOF
     ;;
   esac
   case $host in
-  platform|c0)
+  platform)
     echo "tcs gpio enclosure-lights off"
     echo "tcs gpio enclosure-heater off"
     ;;
   esac
 
   case $host in
-  control|platform|c0|d0|e0)
+  control|platform|instrument0|instrument1)
     echo "owserver -c /etc/owfs.conf"
     ;;
   esac
@@ -159,19 +153,19 @@ EOF
   services)
     echo "tcs instrumentdataserver -f rsync://transients.astrossp.unam.mx/ddoti-raw/ &"
     ;;
-  [de][0123])
+  instrument0|instrument1)
     echo "tcs instrumentdataserver -f -d rsync://services/tcs/ &"
     ;;
   esac
 
   case $host in
   services)
-    echo "tcs instrumentimageserver C0 d1 &"
-    echo "tcs instrumentimageserver C1 e1 &"
-    echo "tcs instrumentimageserver C2 d0 &"
-    echo "tcs instrumentimageserver C3 e2 &"
-    echo "tcs instrumentimageserver C4 d3 &"
-    echo "tcs instrumentimageserver C5 e0 &"
+    echo "tcs instrumentimageserver C0 instrument0 &"
+    echo "tcs instrumentimageserver C1 instrument1 &"
+    echo "tcs instrumentimageserver C2 instrument0 &"
+    echo "tcs instrumentimageserver C3 instrument1 &"
+    echo "tcs instrumentimageserver C4 instrument0 &"
+    echo "tcs instrumentimageserver C5 instrument1 &"
     echo "tcs webcamimageserver a http://ddoti:ddoti@webcam-a/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver b http://ddoti:ddoti@webcam-b/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver c http://ddoti:ddoti@webcam-c/cgi-bin/viewer/video.jpg &"
@@ -217,14 +211,14 @@ sudo update-rc.d owserver disable
 case $host in
 services|control|platform)
   sudo cp /dev/stdin <<"EOF" /etc/owfs.conf.tmp
-server: device = /dev/ttyFTDI
+server: device = /dev/ttyFTDI-ow
 server: port = localhost:4304
 ! server: server = localhost:4304
 EOF
   ;;
 *)
   sudo cp /dev/stdin <<"EOF" /etc/owfs.conf.tmp
-server: link = /dev/ttyFTDI
+server: link = /dev/ttyFTDI-ow
 server: port = localhost:4304
 ! server: server = localhost:4304
 EOF
@@ -276,7 +270,16 @@ fi
 if test -d /etc/udev/rules.d
 then
   sudo cp /dev/stdin <<"EOF" /etc/udev/rules.d/99-ttyFTDI.rules
-SUBSYSTEMS=="usb", ATTRS{manufacturer}=="FTDI", ATTRS{product}=="FT232R USB UART", SYMLINK+="ttyFTDI"
+SUBSYSTEMS=="usb", ATTRS{manufacturer}=="Optec, Inc.", ATTRS{product}=="Optec USB/Serial Cable", ATTRS{serial}=="OP3B50N4", SYMLINK+="ttyFTDI-C0"
+SUBSYSTEMS=="usb", ATTRS{manufacturer}=="FTDI", ATTRS{product}=="FT232R USB UART", ATTRS{serial}=="A9030XY9", SYMLINK+="ttyFTDI-C1"
+SUBSYSTEMS=="usb", ATTRS{manufacturer}=="FTDI", ATTRS{product}=="FT232R USB UART", ATTRS{serial}=="A700OTVD", SYMLINK+="ttyFTDI-C2"
+SUBSYSTEMS=="usb", ATTRS{manufacturer}=="Optec, Inc.", ATTRS{product}=="Optec USB/Serial Cable", ATTRS{serial}=="OP2UG7A9", SYMLINK+="ttyFTDI-C3"
+SUBSYSTEMS=="usb", ATTRS{manufacturer}=="Optec, Inc.", ATTRS{product}=="Optec USB/Serial Cable", ATTRS{serial}=="OP2R2SBH", SYMLINK+="ttyFTDI-C4"
+SUBSYSTEMS=="usb", ATTRS{manufacturer}=="Optec, Inc.", ATTRS{product}=="Optec USB/Serial Cable", ATTRS{serial}=="OP2UOY1D", SYMLINK+="ttyFTDI-C5"
+SUBSYSTEMS=="usb", ATTRS{manufacturer}=="FTDI", ATTRS{product}=="FT232R USB UART", ATTRS{serial}=="AJ02WIFQ", SYMLINK+="ttyFTDI-ow"
+SUBSYSTEMS=="usb", ATTRS{manufacturer}=="FTDI", ATTRS{product}=="FT232R USB UART", ATTRS{serial}=="A700L5IY", SYMLINK+="ttyFTDI-ow"
+SUBSYSTEMS=="usb", ATTRS{manufacturer}=="FTDI", ATTRS{product}=="FT232R USB UART", ATTRS{serial}=="AI03X2BM", SYMLINK+="ttyFTDI-ow"
+SUBSYSTEMS=="usb", ATTRS{manufacturer}=="FTDI", ATTRS{product}=="FT232R USB UART", ATTRS{serial}=="AI03X2BD", SYMLINK+="ttyFTDI-ow"
 SUBSYSTEMS=="usb", ATTRS{manufacturer}=="Optec, Inc.", ATTRS{product}=="Optec USB/Serial Cable", SYMLINK+="ttyFTDI"
 EOF
 fi
@@ -313,6 +316,10 @@ restrict 127.0.0.1
 restrict ::1
 
 server firewall iburst
+server 0.ubuntu.pool.ntp.org
+server 1.ubuntu.pool.ntp.org
+server 3.ubuntu.pool.ntp.org
+server 4.ubuntu.pool.ntp.org
 EOF
 fi
 
