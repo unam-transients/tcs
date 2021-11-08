@@ -294,6 +294,11 @@ restrict 127.0.0.1
 restrict ::1
 
 server firewall iburst
+
+server 0.ubnt.pool.ntp.org
+server 1.ubnt.pool.ntp.org
+server 2.ubnt.pool.ntp.org
+server 3.ubnt.pool.ntp.org
 EOF
 fi
 
