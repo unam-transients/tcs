@@ -684,7 +684,7 @@ namespace eval "mount" {
 
 
     if {[string equal [server::getrequestedactivity] "tracking"] && !$tracking} {
-      log::info [format \
+      log::debug [format \
         "moving to track: mount tracking error is %+.1fas (%+.1fas east and %+.1fas north)." \
         [astrometry::radtoarcsec $mounttrackingerror] \
         [astrometry::radtoarcsec $mounteasttrackingerror] \
