@@ -354,7 +354,7 @@ proc pointingcorrectionvisit {} {
 
 ########################################################################
 
-proc tapiavisit {} {
+proc tapiavisit {exposuretime repeats} {
 
   log::summary "tapiavisit: starting."
   
@@ -372,8 +372,8 @@ proc tapiavisit {} {
 
   log::summary "tapiavisit: taking science exposures."
 
-  foreach repeat {0 1} {
-  
+  set i 0
+  while {$i < $repeats}
     foreach {aperture eastoffset northoffset} {
       riZJcenter   0as   0as
       riYHcenter   0as   0as
@@ -390,9 +390,11 @@ proc tapiavisit {} {
       executor::offset $eastoffset $northoffset $aperture
       executor::waituntiltracking
     
-      executor::expose object 1 1 1 1
+      executor::expose object $exposuretime $exposuretime $exposuretime $exposuretime
 
     }
+
+    incr i
 
   }
 

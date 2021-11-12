@@ -27,8 +27,20 @@
        "delta"  : "+23:50:55",
        "equinox": "2000"
      },
-     "command": "tapiavisit",
-     "estimatedduration": "5m"
+     "command": "tapiavisit 1 3",
+     "estimatedduration": "10m"
+   },
+   {
+     "identifier": "1",
+     "name": "science",
+     "targetcoordinates": {
+       "type"   : "equatorial",
+       "alpha"  : "05:40:24.2",
+       "delta"  : "+23:50:55",
+       "equinox": "2000"
+     },
+     "command": "tapiavisit 60 1",
+     "estimatedduration": "15m"
    }
  ],
  "constraints": {
