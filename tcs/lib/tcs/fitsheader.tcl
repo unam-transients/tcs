@@ -39,7 +39,7 @@ namespace eval "fitsheader" {
 
   ######################################################################
 
-  proc open {filename bitpix naxis {bscale 1} {bzero 0}} {
+  proc open {filename bitpix naxis {bscale 1} {bzero 0} {nframe 1} {frametime 0.0}} {
   
     if {[catch {set channel [::open $filename "w"]} message]} {
       error "unable to open FITS file \"$filename\": $message"
@@ -52,8 +52,11 @@ namespace eval "fitsheader" {
     for {set i 0} {$i < [llength $naxis]} {incr i} {
       writekeyandvalue $channel NAXIS[expr {$i + 1}] integer [lindex $naxis $i]
     }
-    writekeyandvalue $channel BSCALE double $bscale
-    writekeyandvalue $channel BZERO  double $bzero
+    writekeyandvalue $channel BSCALE double  $bscale
+    writekeyandvalue $channel BZERO  double  $bzero
+    
+    writekeyandvalue $channel NFRM    integer $nframe
+    writekeyandvalue $channel FRMTIME double  $frametime
 
     set seconds [utcclock::seconds]
     writekeyandvalue $channel "DATE" date   $seconds
@@ -270,6 +273,7 @@ namespace eval "fitsheader" {
       telescopedescription           TLDS  string
       detectordescription            DTDS  string
       detectorwidth                  DTWD  angle
+      detectorframetime              DTFT  double
       detectorreadmode               DTRM  string
       detectorsoftwaregain           DTSG  double
       detectorbinning                DTBN  integer

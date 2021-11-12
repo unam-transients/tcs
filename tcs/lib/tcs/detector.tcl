@@ -386,13 +386,10 @@ namespace eval "detector" {
     variable bzero
     set nx [detectorrawgetpixnx] 
     set ny [detectorrawgetpixny] 
-    set nz [detectorrawgetpixnz]
-    if {$nz == 1} {
-      set naxis [list $nx $ny]
-    } else {
-      set naxis [list $nx $ny $nz]
-    }
-    return [fitsheader::open $fitsfilename 16 $naxis $bscale $bzero]
+    set naxis [list $nx $ny]
+    set nframe [detectorrawgetpixnframe]
+    set frametime [getframetime]
+   return [fitsheader::open $fitsfilename 16 $naxis $bscale $bzero $nframe $frametime]
   }
   
   proc closefitsheader {channel} {

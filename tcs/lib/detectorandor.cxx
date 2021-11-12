@@ -462,8 +462,7 @@ detectorrawexpose(double exposuretime, const char *shutter)
       nframe = 1;
   }
 
-  //detectorrawsetpixnz(nframe);
-  detectorrawsetpixnz(1);
+  detectorrawsetpixnframe(nframe);
   detectorrawpixstart();
 
   status = StartAcquisition();
