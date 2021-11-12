@@ -371,6 +371,34 @@ namespace eval "ccd" {
     return "$fitsfileprefix$identifier$suffix.fits"
   }
 
+  proc getfitscubefilename {exposuretype fitsfileprefix} {
+    variable identifier
+    switch $exposuretype {
+      "object" -
+      "focus" -
+      "astrometry" {
+        set suffix "oc"
+      }
+      "bias" {
+        set suffix "bc"
+      }
+      "dark" {
+        set suffix "dc"
+      }
+      "flat" {
+        set suffix "fc"
+      }
+      "guidestart" -
+      "guidenext" {
+        set suffix "gc"
+      }
+      default {
+        set suffix "xc"
+      }
+    }
+    return "$fitsfileprefix$identifier$suffix.fits"
+  }
+
   ######################################################################
 
   proc stopexposing {} {

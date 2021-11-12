@@ -45,7 +45,7 @@ static unsigned short softwaregain = 1;
 static unsigned long pixi = 0;
 static unsigned long pixnx = 0;
 static unsigned long pixny = 0;
-static unsigned long pixnz = 1;
+static unsigned long pixnframe = 1;
 static unsigned short *pix = NULL;
 
 static unsigned long pixdatawindowsx = 0;
@@ -99,7 +99,7 @@ detectorrawpixstart(void)
 {
   pixi = 0;
   free(pix);
-  pix = (unsigned short *) malloc(pixnx * pixny * pixnz * sizeof(*pix));
+  pix = (unsigned short *) malloc(pixnx * pixny * sizeof(*pix));
   if (pix == 0)
     DETECTOR_ERROR("unable to allocate memory for the detector pixel values.");
   DETECTOR_OK();
@@ -109,7 +109,7 @@ const char *
 detectorrawpixnext(const long *newpix, unsigned long n)
 {
   for (unsigned long i = 0; i < n; ++i, ++pixi) {
-    if (pixi == pixnx * pixny * pixnz)
+    if (pixi == pixnx * pixny)
       DETECTOR_ERROR("too much pixel data.");
     if (newpix[i] < 0)
       pix[pixi] = 0;
@@ -169,7 +169,7 @@ detectorrawpixnexthex(const char *newhexpix)
 const char *
 detectorrawpixend(void)
 {
-  if (pixi < pixnx * pixny * pixnz)
+  if (pixi < pixnx * pixny)
     DETECTOR_ERROR("too little pixel data.");
   updatestatistics();
   DETECTOR_OK();
@@ -208,9 +208,9 @@ detectorrawsetpixny(unsigned long ny)
 }
 
 const char *
-detectorrawsetpixnz(unsigned long nz)
+detectorrawsetpixnframe(unsigned long nframe)
 {
-  pixnz = nz;
+  pixnframe = nframe;
   DETECTOR_OK();
 }
 
@@ -227,9 +227,9 @@ detectorrawgetpixny(void)
 }
 
 unsigned long
-detectorrawgetpixnz(void)
+detectorrawgetpixnframe(void)
 {
-  return pixnz;
+  return pixnframe;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -241,14 +241,12 @@ updatestatistics(void)
   double s1 = 0;
   double s2 = 0;
   
-  for (unsigned long iz = 0; iz < pixnz; ++iz) {
-    for (unsigned long iy = pixdatawindowsy; iy < pixdatawindowsy + pixdatawindowny; ++iy) {
-      for (unsigned long ix = pixdatawindowsx; ix < pixdatawindowsx + pixdatawindownx; ++ix) {
-        double z = pix[iz * pixny * pixnx + iy * pixnx + ix];
-        s0 += 1;
-        s1 += z;
-        s2 += z * z;
-      }
+  for (unsigned long iy = pixdatawindowsy; iy < pixdatawindowsy + pixdatawindowny; ++iy) {
+    for (unsigned long ix = pixdatawindowsx; ix < pixdatawindowsx + pixdatawindownx; ++ix) {
+      double z = pix[iy * pixnx + ix];
+      s0 += 1;
+      s1 += z;
+      s2 += z * z;
     }
   }
   if (s0 == 0) {
@@ -331,7 +329,7 @@ detectorrawappendfitsdata(
     }
   }
     
-  unsigned long pixn = pixnx * pixny * pixnz;
+  unsigned long pixn = pixnx * pixny;
   for (unsigned long i = 0; i < pixn; ++i) {
     short s16 = floor(((double) pix[i] - bzero) / bscale);
     fputs16(s16, fp);
