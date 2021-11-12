@@ -82,7 +82,10 @@ dst="$1"
 cd "$tcsprefix"/var/tcs
 while true
 do
-  find . -name "*C[0-9]?.fits" | 
+  (
+    find . -name "*C[0-9]?.fits"
+    find . -name "*C[0-9]?c.fits"
+  ) | 
   while read fits
   do
     tcs fitsheader $fits >$fits.txt

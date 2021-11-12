@@ -93,4 +93,8 @@ extern const char *detectorrawpixnext(const long *, unsigned long);
 extern const char *detectorrawpixnexthex(const char *);
 extern const char *detectorrawpixend(void);
 
-extern const char *detectorrawappendfitsdata(const char *, const char *, const char *, const char *, int, double, double);
+extern const char *detectorrawcubepixstart(void);
+extern const char *detectorrawcubepixnext(const long *, unsigned long);
+extern const char *detectorrawcubepixend(void);
+
+extern const char *detectorrawappendfitsdata(const char *, const char *, const char *, const char *, const char *, const char *, int, double, double);

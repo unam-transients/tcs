@@ -42,11 +42,15 @@ static bool isopen = false;
 
 static unsigned short softwaregain = 1;
 
-static unsigned long pixi = 0;
 static unsigned long pixnx = 0;
 static unsigned long pixny = 0;
 static unsigned long pixnframe = 1;
+
+static unsigned long pixi = 0;
 static unsigned short *pix = NULL;
+
+static unsigned long cubepixi = 0;
+static unsigned short *cubepix = NULL;
 
 static unsigned long pixdatawindowsx = 0;
 static unsigned long pixdatawindowsy = 0;
@@ -170,6 +174,44 @@ const char *
 detectorrawpixend(void)
 {
   if (pixi < pixnx * pixny)
+    DETECTOR_ERROR("too little pixel data.");
+  updatestatistics();
+  DETECTOR_OK();
+}
+
+////////////////////////////////////////////////////////////////////////
+
+const char *
+detectorrawcubepixstart(void)
+{
+  cubepixi = 0;
+  free(cubepix);
+  cubepix = (unsigned short *) malloc(pixnx * pixny * pixnframe * sizeof(*pix));
+  if (cubepix == 0)
+    DETECTOR_ERROR("unable to allocate memory for the detector pixel values.");
+  DETECTOR_OK();
+}
+
+const char *
+detectorrawcubepixnext(const long *newpix, unsigned long n)
+{
+  for (unsigned long i = 0; i < n; ++i, ++cubepixi) {
+    if (pixi == pixnx * pixny * pixnframe)
+      DETECTOR_ERROR("too much pixel data.");
+    if (newpix[i] < 0)
+      cubepix[cubepixi] = 0;
+    else if (newpix[i] / softwaregain > USHRT_MAX)
+      cubepix[cubepixi] = USHRT_MAX;
+    else
+      cubepix[cubepixi] = newpix[i] / softwaregain;
+  }
+  DETECTOR_OK();
+}
+
+const char *
+detectorrawcubepixend(void)
+{
+  if (pixi < pixnx * pixny * pixnframe)
     DETECTOR_ERROR("too little pixel data.");
   updatestatistics();
   DETECTOR_OK();
@@ -303,16 +345,25 @@ fputs16(short s, FILE *fp)
 
 const char *
 detectorrawappendfitsdata(
-  const char *tmpfilename, const char *finalfilename, const char *latestfilename, const char *currentfilename,
+  const char *tmpfitsfilename, const char *finalfitsfilename, const char *latestfilename, const char *currentfilename,
+  const char *tmpfitscubefilename, const char *finalfitscubefilename,
   int dofork, double bscale, double bzero
 )
 {
   // Open the temporary file before potentially forking in order to be
   // able to report an error to the parent.
   
-  FILE *fp = fopen(tmpfilename, "ab");
+  FILE *fp = fopen(tmpfitsfilename, "ab");
   if (fp == NULL) {
     DETECTOR_ERROR("unable to open the temporary FITS file.");
+  }
+  
+  FILE *cubefp = NULL;
+  if (strcmp(tmpfitscubefilename, "") != 0) {
+    cubefp = fopen(tmpfitscubefilename, "ab");
+    if (cubefp == NULL) {
+      DETECTOR_ERROR("unable to open the temporary FITS cube file.");
+    }
   }
   
   // Wait for any children, to prevent defunct processes.
@@ -340,6 +391,21 @@ detectorrawappendfitsdata(
   if (fclose(fp) != 0)
     APPENDFITSDATA_ERROR("error writing the temporary FITS file.");
     
+  if (cubefp != NULL) {
+  
+    unsigned long cubepixn = pixnx * pixny * pixnframe;
+    for (unsigned long i = 0; i < cubepixn; ++i) {
+      short s16 = floor(((double) cubepix[i] - bzero) / bscale);
+      fputs16(s16, cubefp);
+    }
+    for (unsigned long i = (cubepixn * 2) % 2880; i % 2880 != 0; ++i)
+      fputc(0, cubefp);
+
+    if (fclose(cubefp) != 0)
+      APPENDFITSDATA_ERROR("error writing the temporary FITS cube file.");
+  }
+  
+    
   // Create the latest link, if requested.
 
   if (strcmp(latestfilename, "") != 0) {
@@ -347,7 +413,7 @@ detectorrawappendfitsdata(
     strcpy(tmplatestfilename, latestfilename);
     strcat(tmplatestfilename, ".tmp");
     unlink(tmplatestfilename);
-    if (link(tmpfilename, tmplatestfilename) == -1) {
+    if (link(tmpfitsfilename, tmplatestfilename) == -1) {
       unlink(tmplatestfilename);
       static char s[1024];
       sprintf(s, "unable to create a link to the latest file: %s.", strerror(errno));
@@ -368,7 +434,7 @@ detectorrawappendfitsdata(
     strcpy(tmpcurrentfilename, currentfilename);
     strcat(tmpcurrentfilename, ".tmp");
     unlink(tmpcurrentfilename);
-    if (link(tmpfilename, tmpcurrentfilename) == -1) {
+    if (link(tmpfitsfilename, tmpcurrentfilename) == -1) {
       unlink(tmpcurrentfilename);
       static char s[1024];
       sprintf(s, "unable to create a link to the current file: %s.", strerror(errno));
@@ -387,10 +453,17 @@ detectorrawappendfitsdata(
   // Therefore, it is vital that we create it after we have created the
   // latest and current links.
 
-  if (link(tmpfilename, finalfilename) == -1)
+  if (link(tmpfitsfilename, finalfitsfilename) == -1)
     APPENDFITSDATA_ERROR("unable to create a link to the final FITS file.");
-  if (unlink(tmpfilename) == -1)
+  if (unlink(tmpfitsfilename) == -1)
     APPENDFITSDATA_ERROR("unable to unlink the temporary FITS file.");
+      
+  if (cubefp != NULL) {
+    if (link(tmpfitscubefilename, finalfitscubefilename) == -1)
+      APPENDFITSDATA_ERROR("unable to create a link to the final FITS cube file.");
+    if (unlink(tmpfitscubefilename) == -1)
+      APPENDFITSDATA_ERROR("unable to unlink the temporary FITS cube file.");
+  }
       
   if (dofork)
     _exit(0);

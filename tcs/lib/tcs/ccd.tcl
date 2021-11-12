@@ -522,18 +522,77 @@ namespace eval "ccd" {
     return [format "\[%d:%d,%d:%d\]" [expr {$sx + 1}] [expr {$sx + $nx}] [expr {$sy + 1}] [expr {$sy + $ny}]]
   }
   
+  proc writefitsheaderprolog {channel seconds fitsfilename exposuretime exposuretype} {
+    fitsheader::writekeyandvalue $channel "DATE-OBS" date    $seconds
+    fitsheader::writekeyandvalue $channel "MJD-OBS"  double  [format "%.8f" [utcclock::mjd $seconds]]
+    fitsheader::writekeyandvalue $channel "ORIGIN"   string  "OAN/SPM"
+    fitsheader::writekeyandvalue $channel "TELESCOP" string  [server::getdata "telescopedescription"]
+    fitsheader::writekeyandvalue $channel "INSTRUME" string  [server::getdata "identifier"]
+    fitsheader::writekeyandvalue $channel "ORIGNAME" string  [file tail $fitsfilename]
+    fitsheader::writekeyandvalue $channel "EXPTIME"  double  [expr {double($exposuretime)}]
+    fitsheader::writekeyandvalue $channel "NFRM"     integer [detector::getnframe]
+    if {![string equal "" [server::getdata "detectorframetime"]]} {
+      fitsheader::writekeyandvalue $channel "FRMTIME"  double [server::getdata "detectorframetime"]
+    }
+    if {![string equal "" [server::getdata "detectorcycletime"]]} {
+      fitsheader::writekeyandvalue $channel "CYCTIME"  double [server::getdata "detectorcycletime"]
+    }
+    fitsheader::writekeyandvalue $channel "EXPTYPE"  string $exposuretype
+    fitsheader::writekeyandvalue $channel "FILTER"   string [server::getdata "filter"]
+    fitsheader::writekeyandvalue $channel "CCD_NAME" string [server::getdata "identifier"]
+    fitsheader::writekeyandvalue $channel "BINNING"  string [server::getdata "detectorbinning"]
+    fitsheader::writekeyandvalue $channel "READMODE" string [server::getdata "detectorreadmode"]
+    fitsheader::writekeyandvalue $channel "SOFTGAIN" double [server::getdata "detectorsoftwaregain"]
+    fitsheader::writekeyandvalue $channel "DATASAT"  double [server::getdata "detectorsaturationlevel"]
+    fitsheader::writekeyandvalue $channel "CCDSEC"   string [formatirafsection [server::getdata "detectordatawindow"]]
+    fitsheader::writekeyandvalue $channel "DATASEC"  string [formatirafsection [server::getdata "detectordatawindow"]]
+    if {![string equal "" [server::getdata "detectorbiaswindow"]]} {
+      fitsheader::writekeyandvalue $channel "BIASSEC"  string [formatirafsection [server::getdata "detectorbiaswindow"]]
+    }
+    fitsheader::writekeysandvaluesforproject $channel
+    fitsheader::writeccdfitsheader $channel [server::getdata "identifier"] "S"
+    fitsheader::writetcsfitsheader $channel "S"
+  }
+  
+  proc writefitsheaderepilog {channel} {
+    fitsheader::writeccdfitsheader $channel [server::getdata "identifier"] "E"
+    fitsheader::writetcsfitsheader $channel "E"  
+  }
+  
+  proc withcube {} {
+    set emgain [detector::getemgain]
+    if {$emgain == 0} {
+      return false
+    } else {
+      return true
+    }
+  }
+  
   proc exposeactivitycommand {exposuretime exposuretype fitsfileprefix} {
+
     variable identifier
+
     set start [utcclock::seconds]
     log::info "exposing $exposuretype image for $exposuretime seconds."
+
     stopexposing
     stopsolving
-    set finalfilename [getfitsfilename $exposuretype $fitsfileprefix]
-    if {[catch {file mkdir [file dirname $finalfilename]}]} {
-      error "unable to create the directory \"[file dirname $finalfilename]\"."
+
+    set finalfitsfilename [getfitsfilename $exposuretype $fitsfileprefix]
+    log::info [format "FITS file is %s." $finalfitsfilename]
+    set tmpfitsfilename "$finalfitsfilename.tmp"
+    if {[withcube]} {
+      set finalfitscubefilename [getfitscubefilename $exposuretype $fitsfileprefix]
+      log::info [format "FITS cube file is %s." $finalfitscubefilename]
+      set tmpfitscubefilename "$finalfitscubefilename.tmp"
+    } else {
+      set finalfitscubefilename ""
+      set tmpfitscubefilename ""
     }
-    log::info [format "FITS file is %s." $finalfilename]
-    set tmpfilename "$finalfilename.tmp"
+    if {[catch {file mkdir [file dirname $finalfitsfilename]}]} {
+      error "unable to create the directory \"[file dirname $finalfitsfilename]\"."
+    }
+
     # The difference between the latest file and the current file is
     # that, once created, the latest file always exists and is replaced
     # atomically at the end of an exposure. The current file, on the
@@ -542,8 +601,9 @@ namespace eval "ccd" {
     set latestfilename [file join [directories::var] $identifier "latest.fits"]
     set currentfilename [file join [directories::var] $identifier "current.fits"]
     file delete -force -- $currentfilename
+
     server::setdata "exposuretime"        $exposuretime
-    server::setdata "fitsfilename"        $finalfilename
+    server::setdata "fitsfilename"        $finalfitsfilename
     server::setdata "solvedalpha"         ""
     server::setdata "solveddelta"         ""
     server::setdata "solvedequinox"       ""
@@ -554,6 +614,7 @@ namespace eval "ccd" {
     server::setdata "fwhm"                ""
     server::setdata "average"             ""
     server::setdata "standarddeviation"   ""
+
     if {[string equal $exposuretype "object"          ] || 
         [string equal $exposuretype "flat"            ] || 
         [string equal $exposuretype "astrometry"      ] ||
@@ -570,43 +631,28 @@ namespace eval "ccd" {
     set seconds [utcclock::seconds]
     log::info [format "started exposing after %.1f seconds." [utcclock::diff now $start]]
     log::info [format "started writing FITS header (start) after %.1f seconds." [utcclock::diff now $start]]
+
     updatedata
     if {[catch {
-      set channel [detector::openfitsheader $tmpfilename]
-      fitsheader::writekeyandvalue $channel "DATE-OBS" date $seconds
-      fitsheader::writekeyandvalue $channel "MJD-OBS"  double [format "%.8f" [utcclock::mjd $seconds]]
-      fitsheader::writekeyandvalue $channel "ORIGIN"   string "OAN/SPM"
-      fitsheader::writekeyandvalue $channel "TELESCOP" string [server::getdata "telescopedescription"]
-      fitsheader::writekeyandvalue $channel "INSTRUME" string [server::getdata "identifier"]
-      fitsheader::writekeyandvalue $channel "ORIGNAME" string [file tail $finalfilename]
-      fitsheader::writekeysandvaluesforproject $channel
-      fitsheader::writekeyandvalue $channel "EXPTIME"  double [expr {double($exposuretime)}]
-      if {![string equal "" [server::getdata "detectorframetime"]]} {
-        fitsheader::writekeyandvalue $channel "FRMTIME"  double [server::getdata "detectorframetime"]
-      }
-      if {![string equal "" [server::getdata "detectorcycletime"]]} {
-        fitsheader::writekeyandvalue $channel "CYCTIME"  double [server::getdata "detectorcycletime"]
-      }
-      fitsheader::writekeyandvalue $channel "EXPTYPE"  string $exposuretype
-      fitsheader::writekeyandvalue $channel "FILTER"   string [server::getdata "filter"]
-      fitsheader::writekeyandvalue $channel "CCD_NAME" string [server::getdata "identifier"]
-      fitsheader::writekeyandvalue $channel "BINNING" string [server::getdata "detectorbinning"]
-      fitsheader::writekeyandvalue $channel "READMODE" string [server::getdata "detectorreadmode"]
-      fitsheader::writekeyandvalue $channel "SOFTGAIN" double [server::getdata "detectorsoftwaregain"]
-      fitsheader::writekeyandvalue $channel "DATASAT"  double [server::getdata "detectorsaturationlevel"]
-      fitsheader::writekeyandvalue $channel "CCDSEC"   string [formatirafsection [server::getdata "detectordatawindow"]]
-      fitsheader::writekeyandvalue $channel "DATASEC"  string [formatirafsection [server::getdata "detectordatawindow"]]
-      if {![string equal "" [server::getdata "detectorbiaswindow"]]} {
-        fitsheader::writekeyandvalue $channel "BIASSEC"  string [formatirafsection [server::getdata "detectorbiaswindow"]]
-      }
-      fitsheader::writeccdfitsheader $channel [server::getdata "identifier"] "S"
-      fitsheader::writetcsfitsheader $channel "S"
+      set channel [detector::openfitsheader $tmpfitsfilename]
+      writefitsheaderprolog $channel $seconds $finalfitsfilename $exposuretime $exposuretype
     } message]} {
       error "while writing FITS header: $message"
     }
+
+    if {[withcube]} {
+      if {[catch {
+        set cubechannel [detector::openfitscubeheader $tmpfitscubefilename]
+        writefitsheaderprolog $cubechannel $seconds $finalfitsfilename $exposuretime $exposuretype
+      } message]} {
+        error "while writing FITS header: $message"
+      }
+    }
+
     while {[detector::continueexposure]} {
       coroutine::after 100
     }
+
     log::info [format "started writing FITS header (end) after %.1f seconds." [utcclock::diff now $start]]
     updatedata
     if {[catch {
@@ -616,14 +662,25 @@ namespace eval "ccd" {
     } message]} {
       error "while writing FITS header: $message"
     }
+    if {[withcube]} {
+      if {[catch {
+        fitsheader::writeccdfitsheader $cubechannel [server::getdata "identifier"] "E"
+        fitsheader::writetcsfitsheader $cubechannel "E"
+        detector::closefitsheader $cubechannel
+      } message]} {
+        error "while writing FITS header: $message"
+      }
+    }
+
     log::info [format "started reading after %.1f seconds." [utcclock::diff now $start]]
     server::setactivity "reading"
     if {[catch {detector::readexposure} message]} {
       error "while reading exposure: $message"
     }    
-    server::setactivity "writing"
+
     log::info [format "started writing after %.1f seconds." [utcclock::diff now $start]]
-    if {[catch {detector::writeexposure $tmpfilename $finalfilename $latestfilename $currentfilename true} message]} {
+    server::setactivity "writing"
+    if {[catch {detector::writeexposure $tmpfitsfilename $finalfitsfilename $latestfilename $currentfilename $tmpfitscubefilename $finalfitscubefilename true} message]} {
       error "while writing FITS data: $message"
     }
     log::info [format "finished exposing after %.1f seconds." [utcclock::diff now $start]]

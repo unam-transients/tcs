@@ -314,7 +314,7 @@
     "temperaturesensor": "enclosure-temperature"
   },
   "weather": {
-    "windaveragespeedlimit": "20"
+    "windaveragespeedlimit": "25"
   },
   "sensors": {
     "lognames": [
