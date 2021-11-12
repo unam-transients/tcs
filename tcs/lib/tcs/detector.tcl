@@ -140,6 +140,12 @@ namespace eval "detector" {
   }
   
   ######################################################################
+  
+  proc getnframe {} {
+    return [detectorrawgetpixnframe]
+  }
+  
+  ######################################################################
 
   variable fullunbinneddatawindow ""
   variable fullunbinnedbiaswindow ""
@@ -387,9 +393,17 @@ namespace eval "detector" {
     set nx [detectorrawgetpixnx] 
     set ny [detectorrawgetpixny] 
     set naxis [list $nx $ny]
-    set nframe [detectorrawgetpixnframe]
-    set frametime [getframetime]
-   return [fitsheader::open $fitsfilename 16 $naxis $bscale $bzero $nframe $frametime]
+    return [fitsheader::open $fitsfilename 16 $naxis $bscale $bzero]
+  }
+  
+  proc openfitscubeheader {fitsfilename} {
+    variable bscale
+    variable bzero
+    set nx [detectorrawgetpixnx] 
+    set ny [detectorrawgetpixny] 
+    set nz [getnframe]
+    set naxis [list $nx $ny $nz]
+    return [fitsheader::open $fitsfilename 16 $naxis $bscale $bzero]
   }
   
   proc closefitsheader {channel} {
@@ -397,7 +411,7 @@ namespace eval "detector" {
     return [fitsheader::close $channel]
   }
   
-  proc writeexposure {tmpfilename finalfilename {latestfilename ""} {currentfilename ""} {fork false}} {
+  proc writeexposure {tmpfilename finalfilename {latestfilename ""} {currentfilename ""} {tmpcubefilename ""}  {finalcubefilename ""} {fork false}} {
     log::debug "writing the exposure."
     checkisopen
     if {[string equal $tmpfilename ""]} {
@@ -408,9 +422,9 @@ namespace eval "detector" {
     }
     if {[string equal $finalfilename ""]} {
       error "the final file name is \"\"."
-      if {[catch {file mkdir [file dirname $finalfilename]}]} {
-        error "unable to write the exposure data: cannot create the directory \"[file dirname $finalfilename]\"."
-      }
+    }
+    if {[catch {file mkdir [file dirname $finalfilename]}]} {
+      error "unable to write the exposure data: cannot create the directory \"[file dirname $finalfilename]\"."
     }
     if {![string equal $latestfilename ""]} {
       if {[catch {file mkdir [file dirname $latestfilename]}]} {
@@ -422,6 +436,14 @@ namespace eval "detector" {
         error "unable to write the exposure data: cannot create the directory \"[file dirname $currentfilename]\"."
       }
     }
+    if {![string equal $tmpcubefilename ""] && ![file exists $tmpcubefilename]} {
+      error "the temporary cube file \"$tmpcubefilename\" does not exist."
+    }
+    if {![string equal $finalcubefilename ""]} {
+      if {[catch {file mkdir [file dirname $finalcubefilename]}]} {
+        error "unable to write the exposure data: cannot create the directory \"[file dirname $finalcubefilename]\"."
+      }
+    }
     variable bscale
     variable bzero
     if {$fork} {
@@ -429,7 +451,7 @@ namespace eval "detector" {
     } else {
       set dofork 0
     }
-    set result [detectorrawappendfitsdata $tmpfilename $finalfilename $latestfilename $currentfilename $dofork $bscale $bzero]
+    set result [detectorrawappendfitsdata $tmpfilename $finalfilename $latestfilename $currentfilename $tmpcubefilename $finalcubefilename $dofork $bscale $bzero]
     if {![string equal $result "ok"]} {
       error "unable to write the exposure data: $result"
     }    

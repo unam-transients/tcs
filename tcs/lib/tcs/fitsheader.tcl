@@ -55,9 +55,6 @@ namespace eval "fitsheader" {
     writekeyandvalue $channel BSCALE double  $bscale
     writekeyandvalue $channel BZERO  double  $bzero
     
-    writekeyandvalue $channel NFRM    integer $nframe
-    writekeyandvalue $channel FRMTIME double  $frametime
-
     set seconds [utcclock::seconds]
     writekeyandvalue $channel "DATE" date   $seconds
     writekeyandvalue $channel "MJD"  double [format "%.8f" [utcclock::mjd $seconds]]

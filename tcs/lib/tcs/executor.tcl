@@ -506,16 +506,17 @@ namespace eval "executor" {
 
   proc updatecompleteddata {completed} {
     server::setdata "completed" $completed
-    if {$completed} {
-      set project ""
-      set block ""
-      set alert ""
-      set visit ""
-      updateprojectdata
-      updateblockdata
-      updatealertdata
-      updatevisitdata    
-    }
+  }
+  
+  proc cleardata {} {
+    set project ""
+    set block ""
+    set alert ""
+    set visit ""
+    updateprojectdata
+    updateblockdata
+    updatealertdata
+    updatevisitdata    
     server::setdata "timestamp" [utcclock::combinedformat]
   }
 
@@ -615,7 +616,7 @@ namespace eval "executor" {
       if {[catch {
         set block [alert::alerttoblock [alert::readalertfile [filename]]]
       } message]} {
-        updatecompleteddata true
+        updatecompleteddata false
         log::error "while reading alert file \"[file tail [filename]]\": $message"
         log::info "deleting alert file \"[file tail [filename]]\"."
         file delete -force [filename]
@@ -625,7 +626,7 @@ namespace eval "executor" {
       if {[catch {
         set block [block::readfile [filename]]
       } message]} {
-        updatecompleteddata true
+        updatecompleteddata false
         log::error "while reading block file \"[file tail [filename]]\": $message"
         log::info "deleting block file \"[file tail [filename]]\"."
         file delete -force [filename]
@@ -758,6 +759,7 @@ namespace eval "executor" {
         set error true
       }
     }
+    updatecompleteddata false
     if {$error} {
       error "unable to close."
     }
@@ -772,6 +774,7 @@ namespace eval "executor" {
       catch {client::request $server "emergencyclose"}
       catch {client::wait $server}
     }
+    updatecompleteddata false
     log::summary [format "finished emergency closing after %.1f seconds." [utcclock::diff now $start]]
   }
 

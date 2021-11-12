@@ -397,6 +397,7 @@ static long frame[1024][1024];
 static int iframe;
 static int iyref;
 static int ixref;
+static int dosaa;
 
 const char *
 detectorrawexpose(double exposuretime, const char *shutter)
@@ -423,6 +424,8 @@ detectorrawexpose(double exposuretime, const char *shutter)
 
   if (emgain == 0) {
   
+    dosaa = strcmp(shutter, "open") == 0;
+  
     status = SetAcquisitionMode(1);
     if (status != DRV_SUCCESS)
       DETECTOR_ERROR(msg("unable to select single-scan acquisition mode (status is %u).", status));
@@ -432,6 +435,8 @@ detectorrawexpose(double exposuretime, const char *shutter)
       DETECTOR_ERROR(msg("unable to set exposure time (status is %u).", status));
 
   } else {
+  
+    dosaa = 0;
   
     status = SetAcquisitionMode(5);
     if (status != DRV_SUCCESS)
@@ -464,6 +469,8 @@ detectorrawexpose(double exposuretime, const char *shutter)
 
   detectorrawsetpixnframe(nframe);
   detectorrawpixstart();
+  if (emgain != 0)
+    detectorrawcubepixstart();
 
   status = StartAcquisition();
   if (status != DRV_SUCCESS)
@@ -537,12 +544,33 @@ detectorrawgetreadytoberead(void)
         }
       }
       
-      int ixmax, iymax, zmax;
-      if (iframe == 0) {
-        int margin = 64;
+      for (unsigned long iy = 0; iy < ny; ++iy)
+        for (unsigned long ix = 0; ix < nx; ++ix)
+          detectorrawcubepixnext(&frame[iy][ix], 1);
+
+      if (dosaa) {
+
+        int ixmax, iymax, zmax;
+        if (iframe == 0) {
+          int margin = 64;
+          zmax = 0;
+          for (int iy = margin; iy < 1024 - margin; ++iy) {
+            for (int ix = margin; ix < 1024 - margin; ++ix) {
+              if (frame[iy][ix] > zmax) {
+                ixmax = ix;
+                iymax = iy;
+                zmax = frame[iy][ix];
+              }
+            }
+          }
+          ixref = ixmax;
+          iyref = iymax;
+        }
+      
+        int searchsize = 16;
         zmax = 0;
-        for (int iy = margin; iy < 1024 - margin; ++iy) {
-          for (int ix = margin; ix < 1024 - margin; ++ix) {
+        for (int iy = iyref - searchsize; iy <= iyref + searchsize; ++iy) {
+          for (int ix = ixref - searchsize; ix <= ixref + searchsize; ++ix) {
             if (frame[iy][ix] > zmax) {
               ixmax = ix;
               iymax = iy;
@@ -550,35 +578,32 @@ detectorrawgetreadytoberead(void)
             }
           }
         }
-        ixref = ixmax;
-        iyref = iymax;
-      }
       
-      int searchsize = 16;
-      zmax = 0;
-      for (int iy = iyref - searchsize; iy <= iyref + searchsize; ++iy) {
-        for (int ix = ixref - searchsize; ix <= ixref + searchsize; ++ix) {
-          if (frame[iy][ix] > zmax) {
-            ixmax = ix;
-            iymax = iy;
-            zmax = frame[iy][ix];
+        log("detectorrawgetreadytoberead: frame %4d: max at (%d,%d) is %d.", (int) iframe, (int) iymax, (int) ixmax, (int) zmax);      
+        log("detectorrawgetreadytoberead: frame %4d: shift is (%+d,%+d).", (int) iframe, (int) (iymax - iyref), (int) (ixmax - ixref));
+
+        for (unsigned long iy = 0; iy < ny; ++iy) {
+          for (unsigned long ix = 0; ix < nx; ++ix) {
+            int jy = iy + (iymax - iyref);
+            int jx = ix + (ixmax - ixref);
+            if (0 <= jy && jy < 1024 && 0 <= jx && jx < 1024) {
+              framesum[iy][ix] += frame[jy][jx];
+              framen[iy][ix]   += 1;
+            }
           }
         }
-      }
-      
-      log("detectorrawgetreadytoberead: frame %4d: max at (%d,%d) is %d.", (int) iframe, (int) iymax, (int) ixmax, (int) zmax);      
-      log("detectorrawgetreadytoberead: frame %4d: shift is (%+d,%+d).", (int) iframe, (int) (iymax - iyref), (int) (ixmax - ixref));
 
-      for (unsigned long iy = 0; iy < ny; ++iy) {
-        for (unsigned long ix = 0; ix < nx; ++ix) {
-          int jy = iy + (iymax - iyref);
-          int jx = ix + (ixmax - ixref);
-          if (0 <= jy && jy < 1024 && 0 <= jx && jx < 1024) {
-            framesum[iy][ix] += frame[jy][jx];
+      } else {
+      
+        for (unsigned long iy = 0; iy < ny; ++iy) {
+          for (unsigned long ix = 0; ix < nx; ++ix) {
+            framesum[iy][ix] += frame[iy][ix];
             framen[iy][ix]   += 1;
           }
         }
+
       }
+      
 
       ++iframe;
     }
@@ -645,6 +670,8 @@ detectorrawread(void)
       }
     }
     detectorrawpixend();
+    
+    detectorrawcubepixend();
 
   }
 
