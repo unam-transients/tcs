@@ -27,7 +27,7 @@
        "delta"  : "-05:23:22.8",
        "equinox": "2000"
      },
-     "command": "gridvisit 1 9 1 5 {g r i z 470/10 515/10 640/10 656/3} em-20MHz-0-100",
+     "command": "gridvisit 1 9 1 5 {g r i z 470/10 515/10 640/10 656/3} em-30MHz-0-100",
      "estimatedduration": "10m"
    }
  ],
