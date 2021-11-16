@@ -324,15 +324,16 @@
     "lognames": [
       "shed-temperature",
       "enclosure-temperature",
-      "box-c-temperature",
-      "box-e-temperature",
+      "platform-box-temperature",
+      "instrument-box-temperature",
       "shed-humidity",
       "enclosure-humidity",
-      "box-c-humidity",
-      "box-e-humidity",
+      "platform-box-humidity",
+      "instrument-box-humidity",
       "shed-light-level",
       "enclosure-light-level",
-      "enclosure-pressure"
+      "enclosure-pressure",
+      "rack-temperature"
     ],
     "sensors": {
       "shed-temperature": {
@@ -349,7 +350,7 @@
       "rack-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/ow/26.4EBD40010000/temperature",
         "keyword": "RCTM",
-        "prettyname": "rack emperature",
+        "prettyname": "rack temperature",
         "group": "environmental-sensors",
         "type": "float",
         "unit": "C",
@@ -368,7 +369,7 @@
         "identifier": "7E.3E3900001000",
         "firmware": ""
       },
-      "box-c-temperature": {
+      "platform-box-temperature": {
         "file": "/usr/local/var/tcs/sensors/platform/ow/26.DFB040010000/temperature",
         "keyword": "BCTM",
         "prettyname": "box C temperature",
@@ -379,7 +380,7 @@
         "identifier": "26.3E9840010000",
         "firmware": ""
       },
-      "box-e-temperature": {
+      "instrument-box-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.44A040010000/temperature",
         "keyword": "BETM",
         "prettyname": "box E temperature",
@@ -413,7 +414,7 @@
         "identifier": "7E.3E3900001000",
         "firmware": ""
       },
-      "box-c-humidity": {
+      "platform-box-humidity": {
         "file": "/usr/local/var/tcs/sensors/platform/ow/26.DFB040010000/HIH4000/humidity",
         "keyword": "BCHM",
         "prettyname": "box C relative humidity",
@@ -424,7 +425,7 @@
         "identifier": "26.DFB040010000",
         "firmware": ""
       },
-      "box-e-humidity": {
+      "instrument-box-humidity": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.44A040010000/HIH4000/humidity",
         "keyword": "BEHM",
         "prettyname": "box E relative humidity",
