@@ -560,8 +560,8 @@ namespace eval "ccd" {
   }
   
   proc withcube {} {
-    set emgain [detector::getemgain]
-    if {$emgain == 0} {
+    set amplifier [detector::getamplifier]
+    if {[string equal $amplifier "conventional"]} {
       return false
     } else {
       return true
@@ -638,6 +638,7 @@ namespace eval "ccd" {
       writefitsheaderprolog $channel $seconds $finalfitsfilename $exposuretime $exposuretype
     } message]} {
       error "while writing FITS header: $message"
+      catch {close $channel}
     }
 
     if {[withcube]} {
@@ -646,6 +647,8 @@ namespace eval "ccd" {
         writefitsheaderprolog $cubechannel $seconds $finalfitsfilename $exposuretime $exposuretype
       } message]} {
         error "while writing FITS header: $message"
+        catch {close $channel}
+        catch {close $cubechannel}
       }
     }
 
@@ -661,6 +664,8 @@ namespace eval "ccd" {
       detector::closefitsheader $channel
     } message]} {
       error "while writing FITS header: $message"
+      catch {close $channel}
+      catch {close $cubechannel}
     }
     if {[withcube]} {
       if {[catch {
@@ -669,6 +674,7 @@ namespace eval "ccd" {
         detector::closefitsheader $cubechannel
       } message]} {
         error "while writing FITS header: $message"
+        catch {close $cubechannel}
       }
     }
 
