@@ -2,11 +2,9 @@
 
 // This file is part of the UNAM telescope control system.
 
-// $Id: config-project-coatlioan.json 3613 2020-06-20 20:21:43Z Alan $
-
 ////////////////////////////////////////////////////////////////////////
 
-// Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+// Copyright © 2018, 2019, 2021 Alan M. Watson <alan@astro.unam.mx>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -118,7 +116,7 @@
     "meridianhalimit": "+00:30:00",
     "polardeltalimit": "+65d",
     "pointingmodelpolarhole": "1d",
-   // Pointing model 20211103b.
+   // Pointing model "20211103"b.
    "pointingmodelparameters0": {
       "IH": "-0.005214",
       "ID": "-0.000634",
@@ -220,37 +218,43 @@
     "detectortype": "andor",
     "detectoridentifier": "",
     "detectorpixelscale": "0.678as",
-    "detectorinitialsoftwaregain": 1,
-    "detectorinitialbinning": 1,
+    "detectorinitialsoftwaregain": "1",
+    "detectorinitialbinning": "1",
     "detectorwindows": {
       "initial": "default",
       "default": "1kx1k",
       "center": "1kx1k",
       "1kx1k": {
-        "sx": 0,
-        "sy": 0,
-        "nx": 1024,
-        "ny": 1024
+        "sx": "0",
+        "sy": "0",
+        "nx": "1024",
+        "ny": "1024"
       },
       "1024x1024": "1kx1k",
       "512x512": {
-        "sx": 256,
-        "sy": 256,
-        "nx": 512,
-        "ny": 512
+        "sx": "256",
+        "sy": "256",
+        "nx": "512",
+        "ny": "512"
+      },
+      "256x256": {
+        "sx": "384",
+        "sy": "384",
+        "nx": "256",
+        "ny": "256"
       }
     },
     "detectorfullunbinneddatawindow": {
-      "sx": 0,
-      "sy": 1,
-      "nx": 1024,
-      "ny": 1023
+      "sx": "0",
+      "sy": "1",
+      "nx": "1024",
+      "ny": "1023"
     },
     "detectorfullunbinnedbiaswindow": {
-      "sx": 0,
-      "sy": 0,
-      "nx": 0,
-      "ny": 0
+      "sx": "0",
+      "sy": "0",
+      "nx": "0",
+      "ny": "0"
     },
     "detectorreadmodes": {
       "initial"       : "default",
@@ -274,21 +278,21 @@
     },
     "cooleropensetting": "-60",
     "coolerclosedsetting": "20",
-    "temperaturelimit": 40,
+    "temperaturelimit": "",
     "temperaturelimitoutletgroup": "",
     "filterwheeltype": "fli",
     "filterwheelidentifier": "CFW-1-8-001",
-    "filterwheelinitialposition": 0,
+    "filterwheelinitialposition": "0",
     "filterlist": [
       "g", "r", "i", "z", "470/10", "515/10", "640/10", "656/3"
     ],
     "dzfilterlist": [
-      0, 0, 0, 0, -70, -70, -70, -70
+      "0", "0", "0", "0", "-70", "-70", "-70", "-70"
     ],
     "focusertype": "null",
     "focuseridentifier": "null",
-    "focuserinitialposition": 0,
-    "focuserbacklashoffset": 0,
+    "focuserinitialposition": "0",
+    "focuserbacklashoffset": "0",
     "focusercorrectionmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": false,
