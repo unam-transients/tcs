@@ -24,7 +24,7 @@ do
   "visits": [
     {
       "identifier": "1000",
-      "name": "coarse focus",
+      "name": "coarse focus i 10",
       "targetcoordinates": {
         "type"   : "equatorial",
         "alpha"  : "$ALPHA",
@@ -77,7 +77,7 @@ do
         "delta"  : "$delta",
         "equinox": "2000"
       },
-      "command": "focusvisit",
+      "command": "focusvisit i 5",
       "estimatedduration": "1m"
     }
   ],
@@ -124,6 +124,42 @@ EOF
       },
       "command": "focusvisit",
       "estimatedduration": "1m"
+    },
+    {
+      "identifier": "1001",
+      "name": "focus",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "focusvisit i 5 em-10MHz-0-100",
+      "estimatedduration": "2m"
+    },
+    {
+      "identifier": "1002",
+      "name": "focus",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "focusvisit i 5 em-20MHz-0-100",
+      "estimatedduration": "2m"
+    },
+    {
+      "identifier": "1003",
+      "name": "focus",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "focusvisit i 5 em-30MHz-0-100",
+      "estimatedduration": "2m"
     }
   ],
   "constraints": {
