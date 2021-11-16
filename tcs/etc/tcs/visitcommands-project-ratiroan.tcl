@@ -373,7 +373,7 @@ proc tapiavisit {exposuretime repeats} {
   log::summary "tapiavisit: taking science exposures."
 
   set i 0
-  while {$i < $repeats}
+  while {$i < $repeats} {
     foreach {aperture eastoffset northoffset} {
       riZJcenter   0as   0as
       riYHcenter   0as   0as
