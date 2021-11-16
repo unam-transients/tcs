@@ -363,6 +363,7 @@ namespace  eval log {
       file rename -force $tmpfilename $filename
     } message]} {
       log::warning "error: while writing sensors file: $message"
+      catch {close $channel}
       file delete force $tmpfilename
       return
     }
