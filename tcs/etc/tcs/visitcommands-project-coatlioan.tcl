@@ -277,25 +277,20 @@ proc coarsefocusvisit {{filter "i"} {exposuretime 1}} {
 
 ########################################################################
 
-proc focusvisit {{filter "i"} {exposuretime 1}} {
+proc focusvisit {{filter "i"} {exposuretime 1} {readmode default}} {
 
   log::summary "focusvisit: starting."
   track
-  setreadmode "default"
+  setreadmode $readmode
   setwindow "default"
   setbinning 1
   movefilterwheel $filter
   waituntiltracking
 
   log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
-  log::summary "focusvisit: mode is 1MHz-0."
-  setreadmode "1MHz-0"
-  focussecondary C0 $exposuretime 100 10 true
-  log::summary "focusvisit: mode is em-20MHz-0-100."
-  setreadmode "em-20MHz-0-100"
+  log::summary "focusvisit: readmode is $readmode."
   focussecondary C0 $exposuretime 100 10 true
   
-
   setfocused
 
   log::summary "focusvisit: finished."
