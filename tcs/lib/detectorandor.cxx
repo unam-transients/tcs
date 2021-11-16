@@ -422,21 +422,9 @@ detectorrawexpose(double exposuretime, const char *shutter)
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR(msg("unable to set shutter mode (status is %u).", status));
 
-  if (emgain == 0) {
+  if (strcmp(amplifier, "EM") == 0) {
   
     dosaa = strcmp(shutter, "open") == 0;
-  
-    status = SetAcquisitionMode(1);
-    if (status != DRV_SUCCESS)
-      DETECTOR_ERROR(msg("unable to select single-scan acquisition mode (status is %u).", status));
-
-    status = SetExposureTime(exposuretime);
-    if (status != DRV_SUCCESS)
-      DETECTOR_ERROR(msg("unable to set exposure time (status is %u).", status));
-
-  } else {
-  
-    dosaa = 0;
   
     status = SetAcquisitionMode(5);
     if (status != DRV_SUCCESS)
@@ -449,6 +437,19 @@ detectorrawexpose(double exposuretime, const char *shutter)
     status = SetKineticCycleTime(0);
     if (status != DRV_SUCCESS)
       DETECTOR_ERROR(msg("unable to select run-till-abort acquisition mode (status is %u).", status));
+
+  } else {
+  
+    dosaa = 0;
+  
+    status = SetAcquisitionMode(1);
+    if (status != DRV_SUCCESS)
+      DETECTOR_ERROR(msg("unable to select single-scan acquisition mode (status is %u).", status));
+
+    status = SetExposureTime(exposuretime);
+    if (status != DRV_SUCCESS)
+      DETECTOR_ERROR(msg("unable to set exposure time (status is %u).", status));
+
   }
 
   float exposure, accumulate, cycle;
@@ -459,12 +460,12 @@ detectorrawexpose(double exposuretime, const char *shutter)
   cycletime = cycle;
   
   iframe = 0;
-  if (emgain == 0) {
-    nframe = 1;
-  } else {
+  if (strcmp(amplifier, "EM") == 0) {
     nframe = ceil(exposuretime / frametime);
     if (nframe == 0)
       nframe = 1;
+  } else {
+    nframe = 1;
   }
 
   detectorrawsetpixnframe(nframe);
@@ -507,13 +508,7 @@ detectorrawgetreadytoberead(void)
   unsigned long nx = detectorrawgetpixnx();
   unsigned long ny = detectorrawgetpixny();
 
-  if (emgain == 0) {
-
-    int status;
-    GetStatus(&status);
-    return status != DRV_ACQUIRING;
-
-  } else {
+  if (strcmp(amplifier, "EM") == 0) {
   
     while (1) {
     
@@ -606,10 +601,19 @@ detectorrawgetreadytoberead(void)
       
 
       ++iframe;
+      
     }
-  
+
     return iframe == nframe;
-  }
+
+  } else {
+
+    int status;
+    GetStatus(&status);
+    return status != DRV_ACQUIRING;
+
+  } 
+
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -617,7 +621,7 @@ detectorrawgetreadytoberead(void)
 const char *
 detectorrawread(void)
 {
-  log("detectorrawread: emgain = %d.", emgain);
+  log("detectorrawread: iamplifier = %d.", iamplifier);
 
   unsigned long nx = detectorrawgetpixnx();
   unsigned long ny = detectorrawgetpixny();
@@ -627,9 +631,28 @@ detectorrawread(void)
   if (!detectorrawgetreadytoberead())
     DETECTOR_ERROR("the detector is not ready to be read.");
 
-  if (emgain == 0) {
+  if (strcmp(amplifier, "EM") == 0) {
 
-    log("detectorrawgetreadytoberead: reading exposure.");
+    log("detectorrawgetreadytoberead: processing sum of frames.");
+
+    unsigned int status;
+    status = AbortAcquisition();
+    if (status != DRV_SUCCESS && status != DRV_IDLE)
+      DETECTOR_ERROR(msg("unable to abort acquisition (status is %u).", status));
+
+    for (unsigned long iy = 0; iy < ny; ++iy) {
+      for (unsigned long ix = 0; ix < nx; ++ix) {
+        long lpix = framesum[iy][ix] / framen[iy][ix];
+        detectorrawpixnext(&lpix, 1);
+      }
+    }
+    detectorrawpixend();
+    
+    detectorrawcubepixend();
+
+  } else {
+
+   log("detectorrawgetreadytoberead: reading exposure.");
 
     unsigned short pix[ny * nx];
     unsigned int status;
@@ -653,25 +676,6 @@ detectorrawread(void)
       }
     }
     detectorrawpixend();
-
-  } else {
-
-    log("detectorrawgetreadytoberead: processing sum of frames.");
-
-    unsigned int status;
-    status = AbortAcquisition();
-    if (status != DRV_SUCCESS && status != DRV_IDLE)
-      DETECTOR_ERROR(msg("unable to abort acquisition (status is %u).", status));
-
-    for (unsigned long iy = 0; iy < ny; ++iy) {
-      for (unsigned long ix = 0; ix < nx; ++ix) {
-        long lpix = framesum[iy][ix] / framen[iy][ix];
-        detectorrawpixnext(&lpix, 1);
-      }
-    }
-    detectorrawpixend();
-    
-    detectorrawcubepixend();
 
   }
 
@@ -705,21 +709,7 @@ setreadmodehelper(int iadc, int iamplifier, int ivsspeed, int ihsspeed, int igai
   if (status != DRV_SUCCESS)
     return "invalid gain index";
 
-  if (emgain == 0) {
-    // 0 = Default
-    status = SetEMGainMode(0);
-    if (status != DRV_SUCCESS)
-      return "unable to select EM gain mode.";
-    status = SetEMAdvanced(0);
-    if (status != DRV_SUCCESS)
-      return "unable to unselect EM advanced mode.";
-    status = SetEMCCDGain(emgain);
-    if (status != DRV_SUCCESS)
-      return "invalid EMCCD gain.";
-    status = SetFrameTransferMode(0);
-    if (status != DRV_SUCCESS)
-      return "unable to select non-frametransfer mode";
-  } else {
+  if (iamplifier == 0) {
     // 3 = Real EM gain
     status = SetEMGainMode(3);
     if (status != DRV_SUCCESS)
@@ -733,6 +723,20 @@ setreadmodehelper(int iadc, int iamplifier, int ivsspeed, int ihsspeed, int igai
     status = SetFrameTransferMode(1);
     if (status != DRV_SUCCESS)
       return "unable to select frametransfer mode";
+  } else {
+    // 0 = Default
+    status = SetEMGainMode(0);
+    if (status != DRV_SUCCESS)
+      return "unable to select EM gain mode.";
+    status = SetEMAdvanced(0);
+    if (status != DRV_SUCCESS)
+      return "unable to unselect EM advanced mode.";
+    status = SetEMCCDGain(1);
+    if (status != DRV_SUCCESS)
+      return "invalid EMCCD gain.";
+    status = SetFrameTransferMode(0);
+    if (status != DRV_SUCCESS)
+      return "unable to select non-frametransfer mode";
   }
 
   return "";
