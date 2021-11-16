@@ -93,9 +93,9 @@ sh 2019A-2000-0.sh
     :
     
   
-    allblocks 0012-focus-offsets         v
+    #allblocks 0012-focus-offsets         v
     #allblocks 0008-pointing-map         w
-    allblocks 0007-donut                o
+    #allblocks 0007-donut                o
 
   fi
 
