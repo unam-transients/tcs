@@ -376,6 +376,8 @@ detectorrawappendfitsdata(
       DETECTOR_ERROR("unable to fork.");
     } else if (pid != 0) {
       fclose(fp);
+      if (cubefp != NULL)
+        fclose(cubefp);
       DETECTOR_OK();
     }
   }
