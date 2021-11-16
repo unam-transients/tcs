@@ -25,6 +25,14 @@
 
 include ../../../Makefile.prolog
 
+########################################################################
+
+.SUFFIXES:  .md .html
+.md.html			:
+	./make-html "$*".md >"$*".html
+	
+########################################################################
+
 installs			:=	\
 	.htaccess			\
 	blank.png			\
@@ -62,7 +70,9 @@ installs_project_coatlioan	:=		    \
 	webcam-a-project-coatlioan.html		\
 	webcam-b-project-coatlioan.html		\
 	webcam-c-project-coatlioan.html		\
-	webcam-cz-project-coatlioan.html
+	webcam-cz-project-coatlioan.html    \
+	plots-project-coatlioan.html        \
+	plots-project-coatlioan.sh
 
 installs_project_ddotioan	:=		    \
 	allsky-project-ddotioan.html		\
@@ -135,3 +145,6 @@ install-webcam-link		:
 	sudo mkdir -p $(INSTALL_DIR)
 	sudo rm -f $(INSTALL_DIR)/webcam
 	sudo ln -s $(prefix)/var/tcs/latest/webcam $(INSTALL_DIR)
+	
+plots-project-coatlioan.html    : plots-project-coatlioan.md
+

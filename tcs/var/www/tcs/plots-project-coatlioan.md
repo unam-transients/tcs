@@ -2,7 +2,7 @@
 
 This file is part of the UNAM telescope control system.
 
-$Id: BOILERPLATE 3370 2019-10-30 02:46:01Z Alan $
+$Id: index.md 3616 2020-06-22 20:03:44Z Alan $
 
 ------------------------------------------------------------------------
 
@@ -23,15 +23,28 @@ PERFORMANCE OF THIS SOFTWARE.
 
 ----------------------------------------------------------------------->
 
-# COATLI/OAN
+# COATLI/OAN Plots
 
-This is the mountain-top web site for the COATLI project at the
-[OAN/SPM](http://www.astrossp.unam.mx).
+* CCDs: 
+  + [1 day](plots/ccds-1.png) 
+  + [4 days](plots/ccds-4.png) 
+  + [30 days](plots/ccds-30.png) 
+  + [120 days](plots/ccds-120.png)
+  + [360 days](plots/ccds-360.png) 
+  + [1600 days](plots/ccds-1600.png)
+* Shed and Enclosure: 
+  + [1 day](plots/building-1.png)
+  + [4 days](plots/building-4.png)
+  + [30 days](plots/building-30.png)
+  + [120 days](plots/instrument-120.png)
+  + [360 days](plots/building-360.png)
+  + [1600 days](plots/building-1600.png)
+* Weather:
+  + [1 day](plots/weather-1.png)
+  + [4 days](plots/weather-4.png)
+  + [30 days](plots/weather-30.png)
+  + [120 days](plots/weather-120.png)
+  + [360 days](plots/weather-360.png)
+  + [1600 days](plots/weather-1600.png)
 
-* [Interface](/tcs/interface.html)
-* [Documentation](documentation.html)
-* [Analysis](http://transients.astrossp.unam.mx/coatli/)
-
-<hr/>
-
-$Id: index.md 3016 2017-12-07 05:25:27Z alan $
+</hr>
