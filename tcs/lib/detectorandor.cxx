@@ -416,7 +416,7 @@ detectorrawexpose(double exposuretime, const char *shutter)
     DETECTOR_ERROR("invalid shutter argument");
 
   if (strcmp(shutter, "open") == 0)
-    status = SetShutter(0, 0, 50, 50);
+    status = SetShutter(0, 1, 50, 50);
   else
     status = SetShutter(0, 2, 50, 50);
   if (status != DRV_SUCCESS)
@@ -734,9 +734,9 @@ setreadmodehelper(int iadc, int iamplifier, int ivsspeed, int ihsspeed, int igai
     status = SetEMCCDGain(1);
     if (status != DRV_SUCCESS)
       return "invalid EMCCD gain.";
-    status = SetFrameTransferMode(0);
+    status = SetFrameTransferMode(1);
     if (status != DRV_SUCCESS)
-      return "unable to select non-frametransfer mode";
+      return "unable to select frametransfer mode";
   }
 
   return "";
