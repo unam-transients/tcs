@@ -58,6 +58,7 @@ config::setdefaultvalue "mount" "hapark"                     "0h"
 config::setdefaultvalue "mount" "deltapark"                  "90h"
 config::setdefaultvalue "mount" "haunpark"                   "0h"
 config::setdefaultvalue "mount" "deltaunpark"                "0d"
+config::setdefaultvalue "mount" "maxcorrection"              "1d"
 
 namespace eval "mount" {
 
@@ -84,6 +85,7 @@ namespace eval "mount" {
   variable deltapark                   [astrometry::parseangle [config::getvalue "mount" "deltapark"]]
   variable haunpark                    [astrometry::parseangle [config::getvalue "mount" "haunpark"]]
   variable deltaunpark                 [astrometry::parseangle [config::getvalue "mount" "deltaunpark"]]
+  variable maxcorrection               [astrometry::parseangle [config::getvalue "mount" "maxcorrection"]]
 
   ######################################################################
 
