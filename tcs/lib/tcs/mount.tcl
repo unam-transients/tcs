@@ -161,20 +161,30 @@ namespace eval "mount" {
     log::info "requested mount observed position is [astrometry::formatalpha $requestedobservedalpha] [astrometry::formatdelta $requestedobserveddelta]."
     set mountalphaerror [server::getdata "mountalphaerror"]
     set mountdeltaerror [server::getdata "mountdeltaerror"]
-    set dalpha [astrometry::foldradsymmetric [expr {$requestedobservedalpha - $solvedmountobservedalpha + $mountalphaerror}]]
-    set ddelta [astrometry::foldradsymmetric [expr {$requestedobserveddelta - $solvedmountobserveddelta + $mountdeltaerror}]]
+    set mountobservedalpha [astrometry::foldradpositive  [expr {$requestedobservedalpha + $mountalphaerror}]]
+    set mountobserveddelta [astrometry::foldradsymmetric [expr {$requestedobserveddelta + $mountdeltaerror}]]
+    log::info "mount observed position is [astrometry::formatalpha $mountobservedalpha] [astrometry::formatdelta $mountobserveddelta]."
+    set d [astrometry::distance $mountobservedalpha $mountobserveddelta $solvedmountobservedalpha $solvedmountobserveddelta]
+    log::info [format "correction is %s." [astrometry::formatdistance $d]]
+    set dalpha [astrometry::foldradsymmetric [expr {$mountobservedalpha - $solvedmountobservedalpha}]]
+    set ddelta [astrometry::foldradsymmetric [expr {$mountobserveddelta - $solvedmountobserveddelta}]]
     set alphaoffset [expr {$dalpha * cos($solvedmountobserveddelta)}]
     set deltaoffset $ddelta
     log::info [format "correction is %s E and %s N." [astrometry::formatoffset $alphaoffset] [astrometry::formatoffset $deltaoffset]]
-    server::setdata "lastcorrectiontimestamp" [utcclock::format]
-    server::setdata "lastcorrectiondalpha"    $dalpha
-    server::setdata "lastcorrectionddelta"    $ddelta
-    set dha [expr {-($dalpha)}]
-    updatepointingmodel $dha $ddelta [server::getdata "mountrotation"]
-    updaterequestedpositiondata
-    set requestedobservedalpha [server::getdata "requestedobservedalpha"]
-    set requestedobserveddelta [server::getdata "requestedobserveddelta"]
-    log::info "requested mount observed position is [astrometry::formatalpha $requestedobservedalpha] [astrometry::formatdelta $requestedobserveddelta]."  
+    variable maxcorrection
+    if {$d >= $maxcorrection} {
+      log::warning [format "ignoring corrction: the correction distance of %s is larger than the maximum allowed of %s." [astrometry::formatdistance $d] [astrometry::formatdistance $maxcorrection]]
+    } else {
+      server::setdata "lastcorrectiontimestamp" [utcclock::format]
+      server::setdata "lastcorrectiondalpha"    $dalpha
+      server::setdata "lastcorrectionddelta"    $ddelta
+      set dha [expr {-($dalpha)}]
+      updatepointingmodel $dha $ddelta [server::getdata "mountrotation"]
+      updaterequestedpositiondata
+      set requestedobservedalpha [server::getdata "requestedobservedalpha"]
+      set requestedobserveddelta [server::getdata "requestedobserveddelta"]
+      log::info "requested mount observed position is [astrometry::formatalpha $requestedobservedalpha] [astrometry::formatdelta $requestedobserveddelta]."  
+    }
     log::info [format "finished correcting after %.1f seconds." [utcclock::diff now $start]]
     return
   }
