@@ -190,9 +190,10 @@ detectorrawopen(char *identifier)
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR(msg("unable to select raw read mode (status is %u).", status));
 
-  status = SetShutter(0, 2, 50, 50);
+  // Leave the shutter open. It sometimes fails to open properly at night.
+  status = SetShutter(0, 1, 0, 0);
   if (status != DRV_SUCCESS)
-    DETECTOR_ERROR(msg("unable to select raw shutter mode (status is %u).", status));
+    DETECTOR_ERROR(msg("unable to select open shutter mode (status is %u).", status));
 
   detectorrawsetisopen(true);
 
@@ -414,13 +415,6 @@ detectorrawexpose(double exposuretime, const char *shutter)
 
   if (strcmp(shutter, "open") != 0 && strcmp(shutter, "closed") != 0)
     DETECTOR_ERROR("invalid shutter argument");
-
-  if (strcmp(shutter, "open") == 0)
-    status = SetShutter(0, 1, 50, 50);
-  else
-    status = SetShutter(0, 2, 50, 50);
-  if (status != DRV_SUCCESS)
-    DETECTOR_ERROR(msg("unable to set shutter mode (status is %u).", status));
 
   if (strcmp(amplifier, "EM") == 0) {
   
@@ -731,9 +725,9 @@ setreadmodehelper(int iadc, int iamplifier, int ivsspeed, int ihsspeed, int igai
     status = SetEMAdvanced(0);
     if (status != DRV_SUCCESS)
       return "unable to unselect EM advanced mode.";
-    status = SetEMCCDGain(1);
-    if (status != DRV_SUCCESS)
-      return "invalid EMCCD gain.";
+//    status = SetEMCCDGain(1);
+//    if (status != DRV_SUCCESS)
+//      return "invalid EMCCD gain.";
     status = SetFrameTransferMode(1);
     if (status != DRV_SUCCESS)
       return "unable to select frametransfer mode";
