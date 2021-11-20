@@ -30,6 +30,8 @@ package require "log"
 package require "coroutine"
 package require "server"
 
+config::setdefaultvalue "secondary" "dzfilter" {}
+
 namespace eval "secondary" {
 
   variable svnid {$Id}
@@ -48,8 +50,7 @@ namespace eval "secondary" {
   variable minz              [config::getvalue "secondary" "minz"             ]
   variable maxz              [config::getvalue "secondary" "maxz"             ]
   
-  variable filterlist        [config::getvalue "C0" "filterlist"]
-  variable dzfilterlist      [config::getvalue "C0" "dzfilterlist"]
+  variable dzfilterdict      [config::getvalue "secondary" "dzfilter"]
   
   ######################################################################
 
@@ -224,24 +225,16 @@ namespace eval "secondary" {
   proc moveforfilter {filter} {
     server::checkstatus
     server::checkactivityformove
-    variable filterlist
-    variable dzfilterlist
-    if {![string is integer -strict $filter]} {
-      set position [lsearch -exact $filterlist $filter]
-      if {$position == -1} {
-        error "invalid filter \"$filter\"."
-      }
-    } elseif {0 <= $filter || $filter < [llength $filter]} {
-      set position $filter
-    } else {
+    variable dzfilter
+    variable dzfilterdict
+    if {[llength $dzfilterdict] == 0} {
+      set dzfilter 0
+    } elseif {![dict exists $dzfilterdict $filter]} {
       error "invalid filter \"$filter\"."
+    } else {
+      set dzfilter [dict get $dzfilterdict $filter]
     }
     set lastdzfilter [server::getdata "dzfilter"]
-    if {[llength $dzfilterlist] == 0} {
-      set dzfilter 0
-    } else {
-      set dzfilter [lindex $dzfilterlist $position]
-    }
     server::setdata "dzfilter" $dzfilter
     if {$dzfilter != $lastdzfilter} {
       move z0 false
