@@ -255,7 +255,7 @@ proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime filters {
 
 ########################################################################
 
-proc coarsefocusvisit {{filter "i"} {exposuretime 1}} {
+proc coarsefocusvisit {{filter "i"} {exposuretime 1} {readmode default}} {
 
   log::summary "coarsefocusvisit: starting."
   
@@ -300,7 +300,7 @@ proc focusvisit {{filter "i"} {exposuretime 1} {readmode default}} {
 
 ########################################################################
 
-proc initialpointingcorrectionvisit {{filter "i"} {exposuretime 30}} {
+proc initialpointingcorrectionvisit {{filter "i"} {exposuretime 30} {readmode default}} {
 
   log::summary "initialpointingcorrectionvisit: starting."
 
@@ -320,7 +320,7 @@ proc initialpointingcorrectionvisit {{filter "i"} {exposuretime 30}} {
 
 ########################################################################
 
-proc pointingcorrectionvisit {{filter "i"} {exposuretime 5}} {
+proc pointingcorrectionvisit {{filter "i"} {exposuretime 5} {readmode default}} {
 
   log::summary "correctpointingvisit: starting."
 
@@ -367,7 +367,7 @@ proc donutvisit {{filter "i"} {exposuretime 5} {offset 400}} {
 
 ########################################################################
 
-proc pointingmapvisit {{filter "i"} {exposuretime 5} } {
+proc pointingmapvisit {{filter "i"} {exposuretime 5} {readmode default}} {
 
   log::summary "pointingmapvisit: starting."
 
@@ -395,7 +395,7 @@ proc twilightflatsvisit {filter targetngood} {
   executor::setsecondaryoffset 0
   executor::move
 
-  executor::setreadmode "default"
+  executor::setreadmode "1MHz-0"
   executor::setwindow "default"
   executor::setbinning 1
 
