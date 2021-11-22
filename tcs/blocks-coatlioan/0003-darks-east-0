@@ -14,11 +14,12 @@
         "delta": "+30d"
       },
       "command": "darksvisit",
-      "estimatedduration": "5m"
+      "estimatedduration": "10m"
     }
   ],
   "constraints": {
     "maxskybrightness": "civiltwilight",
     "mustbeonfavoredsideforswift": "true"
-  }
+  },
+  "persistent": "true"
 }
