@@ -449,16 +449,10 @@ proc biasesvisit {} {
   log::summary "biasesvisit: starting."
   setsecondaryoffset 0
   move
-  movefilterwheel 0
+  movefilterwheel "dark"
   foreach {readmode binning visitidentifier} {
     "1MHz-0"  1 0
     "1MHz-1"  1 1
-    "em-10MHz-0" 1 2
-    "em-10MHz-1" 1 3
-    "em-20MHz-0" 1 4
-    "em-20MHz-1" 1 5
-    "em-30MHz-0" 1 6
-    "em-30MHz-1" 1 7
   } { 
     setreadmode $readmode
     setwindow "default"
@@ -481,20 +475,27 @@ proc darksvisit {} {
   log::summary "darksvisit: starting."
   setsecondaryoffset 0
   move
-  movefilterwheel 0
+  movefilterwheel "dark"
   foreach {readmode binning visitidentifier} {
-    "1MHz-0"  1 0
+    "1MHz-0"         1 0
+    "1MHz-1"         1 1
+    "em-10MHz-0"     1 2
+    "em-10MHz-1"     1 3
+    "em-20MHz-0"     1 4
+    "em-20MHz-1"     1 5
+    "em-30MHz-0"     1 6
+    "em-30MHz-1"     1 7
+    "em-10MHz-0-100" 1 8
+    "em-20MHz-0-100" 1 9
+    "em-30MHz-0-100" 1 10
   } { 
     setreadmode $readmode
     setwindow "default"
     setbinning $binning
     executor::setvisit [visit::updatevisitidentifier [executor::visit] $visitidentifier]
     set i 0
-    while {$i < 5} {
-      expose dark 60
-      analyze levels
-      incr i
-    }
+    expose dark 60
+    analyze levels
   }
   log::summary "darksvisit: finished."
   return true

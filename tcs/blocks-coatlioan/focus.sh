@@ -124,42 +124,6 @@ EOF
       },
       "command": "focusvisit",
       "estimatedduration": "1m"
-    },
-    {
-      "identifier": "1001",
-      "name": "focus",
-      "targetcoordinates": {
-        "type"   : "equatorial",
-        "alpha"  : "$alpha",
-        "delta"  : "$delta",
-        "equinox": "2000"
-      },
-      "command": "focusvisit i 5 em-10MHz-0-100",
-      "estimatedduration": "2m"
-    },
-    {
-      "identifier": "1002",
-      "name": "focus",
-      "targetcoordinates": {
-        "type"   : "equatorial",
-        "alpha"  : "$alpha",
-        "delta"  : "$delta",
-        "equinox": "2000"
-      },
-      "command": "focusvisit i 5 em-20MHz-0-100",
-      "estimatedduration": "2m"
-    },
-    {
-      "identifier": "1003",
-      "name": "focus",
-      "targetcoordinates": {
-        "type"   : "equatorial",
-        "alpha"  : "$alpha",
-        "delta"  : "$delta",
-        "equinox": "2000"
-      },
-      "command": "focusvisit i 5 em-30MHz-0-100",
-      "estimatedduration": "2m"
     }
   ],
   "constraints": {
@@ -271,8 +235,8 @@ EOF
         "delta"  : "$delta",
         "equinox": "2000"
       },
-      "command": "focusvisit g 1",
-      "estimatedduration": "1m"
+      "command": "focusvisit 0 5 em-30MHz-0-100",
+      "estimatedduration": "2m"
     },
     {
       "identifier": "1",
@@ -283,8 +247,8 @@ EOF
         "delta"  : "$delta",
         "equinox": "2000"
       },
-      "command": "focusvisit r 1",
-      "estimatedduration": "1m"
+      "command": "focusvisit 1 5 em-30MHz-0-100",
+      "estimatedduration": "2m"
     },
     {
       "identifier": "3",
@@ -295,8 +259,8 @@ EOF
         "delta"  : "$delta",
         "equinox": "2000"
       },
-      "command": "focusvisit i 1",
-      "estimatedduration": "1m"
+      "command": "focusvisit 2 5 em-30MHz-0-100",
+      "estimatedduration": "2m"
     },
     {
       "identifier": "4",
@@ -307,8 +271,8 @@ EOF
         "delta"  : "$delta",
         "equinox": "2000"
       },
-      "command": "focusvisit z 1",
-      "estimatedduration": "1m"
+      "command": "focusvisit 3 5 em-30MHz-0-100",
+      "estimatedduration": "2m"
     },
     {
       "identifier": "1001",
@@ -319,8 +283,8 @@ EOF
         "delta"  : "$delta",
         "equinox": "2000"
       },
-      "command": "coarsefocusvisit 640/10 5",
-      "estimatedduration": "1m"
+      "command": "coarsefocusvisit 6 5",
+      "estimatedduration": "2m"
     },
     {
       "identifier": "4",
@@ -331,21 +295,10 @@ EOF
         "delta"  : "$delta",
         "equinox": "2000"
       },
-      "command": "focusvisit 470/10 5",
+      "command": "focusvisit 470/10 5 em-30MHz-0-100",
       "estimatedduration": "2m"
     },
-    {
-      "identifier": "5",
-      "name": "focus in 515/10",
-      "targetcoordinates": {
-        "type"   : "equatorial",
-        "alpha"  : "$alpha",
-        "delta"  : "$delta",
-        "equinox": "2000"
-      },
-      "command": "focusvisit 515/10 5",
-      "estimatedduration": "2m"
-    },
+    // 515/10 was removed on 2021-11-21.
     {
       "identifier": "6",
       "name": "focus in 640/10",
@@ -355,7 +308,7 @@ EOF
         "delta"  : "$delta",
         "equinox": "2000"
       },
-      "command": "focusvisit 640/10 5",
+      "command": "focusvisit 6 5 em-30MHz-0-100",
       "estimatedduration": "2m"
     },
     {
@@ -367,7 +320,7 @@ EOF
         "delta"  : "$delta",
         "equinox": "2000"
       },
-      "command": "focusvisit 656/3 5",
+      "command": "focusvisit 7 5 em-30MHz-0-100",
       "estimatedduration": "2m"
     },
     {
@@ -399,7 +352,7 @@ EOF
     "maxskybrightness": "nauticaltwilight",
     "maxairmass": "1.2",
     "minmoondistance": "15d",
-    "maxfocusdelay": "1200"
+    "maxfocusdelay": "3600"
   },
   "persistent": "false"
 }
