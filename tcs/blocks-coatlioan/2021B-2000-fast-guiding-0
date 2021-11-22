@@ -1,0 +1,53 @@
+{
+ "project": {
+   "identifier": "2000",
+   "name": "Fast Guiding Tests"
+ },
+ "identifier": "0",
+ "name": "Fast Guiding Tests — M15",
+ "visits": [
+   {
+     "identifier": "1000",
+     "name": "pointing correction",
+     "targetcoordinates": {
+       "type"   : "equatorial",
+       "alpha"  : "21:29:58.33",
+       "delta"  : "12:13:01.2",
+       "equinox": "2000"
+     },
+     "command": "pointingcorrectionvisit i 5",
+     "estimatedduration": "1m"
+   },
+   {
+     "identifier": "1001",
+     "name": "focus",
+     "targetcoordinates": {
+       "type"   : "equatorial",
+       "alpha"  : "21:29:58.33",
+       "delta"  : "12:13:01.2",
+       "equinox": "2000"
+     },
+     "command": "focusvisit z 5 em-30MHz-0-100",
+     "estimatedduration": "2m"
+   },
+   {
+     "identifier": "0",
+     "name": "science",
+     "targetcoordinates": {
+       "type"   : "equatorial",
+       "alpha"  : "21:29:58.33",
+       "delta"  : "12:13:01.2",
+       "equinox": "2000"
+     },
+     "command": "gridvisit 1 9 1 5 {g r i z} em-30MHz-0-100",
+     "estimatedduration": "5m"
+   }
+ ],
+ "constraints": {
+   "maxskybrightness": "astronomicaltwilight",
+   "minha": "-3.0h",
+   "maxha": "+3.0h",
+   "maxfocusdelay": "1200"
+ },
+ "persistent": "false"
+}
