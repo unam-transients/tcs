@@ -464,7 +464,7 @@ detectorrawexpose(double exposuretime, const char *shutter)
 
   detectorrawsetpixnframe(nframe);
   detectorrawpixstart();
-  if (emgain != 0)
+  if (strcmp(amplifier, "EM") == 0)
     detectorrawcubepixstart();
 
   status = StartAcquisition();
