@@ -12,6 +12,7 @@ COATLI Program Identifiers
 0010 Landolt Standards
 0011 Sky brightness
 0012 focus offsets
+0013 gain
 
 2017A-1000 Swift/BAT GRBs
 2017A-1001 Fermi/LAT GRBs

@@ -255,7 +255,7 @@ proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime filters {
 
 ########################################################################
 
-proc coarsefocusvisit {{filter "i"} {exposuretime 1} {readmode default}} {
+proc coarsefocusvisit {{filter "i"} {exposuretime 1} {readmode "default"}} {
 
   log::summary "coarsefocusvisit: starting."
   
@@ -277,7 +277,7 @@ proc coarsefocusvisit {{filter "i"} {exposuretime 1} {readmode default}} {
 
 ########################################################################
 
-proc focusvisit {{filter "i"} {exposuretime 1} {readmode default}} {
+proc focusvisit {{filter "i"} {exposuretime 1} {readmode "default"}} {
 
   log::summary "focusvisit: starting."
   track
@@ -300,7 +300,7 @@ proc focusvisit {{filter "i"} {exposuretime 1} {readmode default}} {
 
 ########################################################################
 
-proc initialpointingcorrectionvisit {{filter "i"} {exposuretime 30} {readmode default}} {
+proc initialpointingcorrectionvisit {{filter "i"} {exposuretime 30} {readmode "default"}} {
 
   log::summary "initialpointingcorrectionvisit: starting."
 
@@ -320,7 +320,7 @@ proc initialpointingcorrectionvisit {{filter "i"} {exposuretime 30} {readmode de
 
 ########################################################################
 
-proc pointingcorrectionvisit {{filter "i"} {exposuretime 5} {readmode default}} {
+proc pointingcorrectionvisit {{filter "i"} {exposuretime 5} {readmode "default"}} {
 
   log::summary "correctpointingvisit: starting."
 
@@ -343,7 +343,7 @@ proc pointingcorrectionvisit {{filter "i"} {exposuretime 5} {readmode default}} 
 proc donutvisit {{filter "i"} {exposuretime 5} {offset 400}} {
 
   log::summary "donutvisit: starting."
-  setreadmode "default"
+  setreadmode "conventionaldefault"
   setwindow "default"
   setbinning 1
   movefilterwheel $filter
@@ -367,7 +367,7 @@ proc donutvisit {{filter "i"} {exposuretime 5} {offset 400}} {
 
 ########################################################################
 
-proc pointingmapvisit {{filter "i"} {exposuretime 5} {readmode default}} {
+proc pointingmapvisit {{filter "i"} {exposuretime 5} {readmode "default"}} {
 
   log::summary "pointingmapvisit: starting."
 
@@ -396,7 +396,7 @@ proc twilightflatsvisit {filter targetngood} {
   executor::move
 
   executor::setreadmode "1MHz-0"
-  executor::setwindow "default"
+  executor::setwindow "conventionaldefault"
   executor::setbinning 1
 
   set maxlevel 16000
@@ -493,11 +493,74 @@ proc darksvisit {} {
     setwindow "default"
     setbinning $binning
     executor::setvisit [visit::updatevisitidentifier [executor::visit] $visitidentifier]
-    set i 0
     expose dark 60
     analyze levels
   }
   log::summary "darksvisit: finished."
+  return true
+}
+
+########################################################################
+
+proc gainvisit {} {
+  log::summary "gainvisit: starting."
+  setsecondaryoffset 0
+  move
+  foreach {readmode binning visitidentifier filter exposuretime} {
+    "1MHz-0-raw"     1 0 "653/3"  0.1
+    "1MHz-1-raw"     1 1 "653/3"  0.1
+    "em-10MHz-0-raw" 1 2 "640/10" 1
+    "em-10MHz-1-raw" 1 3 "640/10" 1
+    "em-20MHz-0-raw" 1 4 "640/10" 1
+    "em-20MHz-1-raw" 1 5 "640/10" 1
+    "em-30MHz-0-raw" 1 6 "640/10" 1
+    "em-30MHz-1-raw" 1 7 "640/10" 1
+  } { 
+    movefilterwheel $filter
+    setreadmode $readmode
+    setwindow "default"
+    setbinning $binning
+    executor::setvisit [visit::updatevisitidentifier [executor::visit] $visitidentifier]
+    set i 0
+    while {$i < 6} {
+      expose flat $exposuretime
+      analyze levels
+      incr i
+    }
+  }
+  log::summary "gainvisit: finished."
+  return true
+}
+
+########################################################################
+
+proc readnoisevisit {} {
+  log::summary "readnoisevisit: starting."
+  setsecondaryoffset 0
+  move
+  movefilterwheel "dark"
+  foreach {readmode binning visitidentifier exposuretime} {
+    "1MHz-0-raw"     1 0 0
+    "1MHz-1-raw"     1 1 0
+    "em-10MHz-0-raw" 1 2 0
+    "em-10MHz-1-raw" 1 3 0
+    "em-20MHz-0-raw" 1 4 0
+    "em-20MHz-1-raw" 1 5 0
+    "em-30MHz-0-raw" 1 6 0
+    "em-30MHz-1-raw" 1 7 0
+  } { 
+    setreadmode $readmode
+    setwindow "default"
+    setbinning $binning
+    executor::setvisit [visit::updatevisitidentifier [executor::visit] $visitidentifier]
+    set i 0
+    while {$i < 6} {
+      expose bias $exposuretime
+      analyze levels
+      incr i
+    }
+  }
+  log::summary "readnoisevisit: finished."
   return true
 }
 
