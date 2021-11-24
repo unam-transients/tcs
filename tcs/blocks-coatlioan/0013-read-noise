@@ -1,0 +1,22 @@
+{
+  "project": {
+    "identifier": "0013",
+    "name": "gain"
+  },
+  "identifier": "1",
+  "visits": [
+    {
+      "identifier": "0",
+      "name": "read noise",
+      "targetcoordinates": {
+        "type": "fixed",
+        "ha":   "-6h",
+        "delta": "+85d"
+      },
+      "command": "readnoisevisit",
+      "estimatedduration": "2m"
+    }
+  ],
+  "constraints": {
+  }
+}

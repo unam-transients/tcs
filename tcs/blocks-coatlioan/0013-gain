@@ -1,0 +1,22 @@
+{
+  "project": {
+    "identifier": "0013",
+    "name": "gain"
+  },
+  "identifier": "0",
+  "visits": [
+    {
+      "identifier": "0",
+      "name": "gain",
+      "targetcoordinates": {
+        "type": "fixed",
+        "ha":   "-6h",
+        "delta": "+85d"
+      },
+      "command": "gainvisit",
+      "estimatedduration": "2m"
+    }
+  ],
+  "constraints": {
+  }
+}
