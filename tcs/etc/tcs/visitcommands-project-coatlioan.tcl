@@ -507,8 +507,8 @@ proc gainvisit {} {
   setsecondaryoffset 0
   move
   foreach {readmode binning visitidentifier filter exposuretime} {
-    "1MHz-0-raw"     1 0 "653/3"  0.1
-    "1MHz-1-raw"     1 1 "653/3"  0.1
+    "1MHz-0-raw"     1 0 "656/3"  0.1
+    "1MHz-1-raw"     1 1 "656/3"  0.1
     "em-10MHz-0-raw" 1 2 "640/10" 1
     "em-10MHz-1-raw" 1 3 "640/10" 1
     "em-20MHz-0-raw" 1 4 "640/10" 1
