@@ -27,17 +27,7 @@
       "command": "twilightflatsvisit 640/10 7",
       "estimatedduration": "2m"
     },
-    {
-      "identifier": "5",
-      "name": "twilight flats -- 515/10",
-      "targetcoordinates": {
-        "type": "fixed",
-        "ha": "-3h",
-        "delta": "+45d"
-      },
-      "command": "twilightflatsvisit 515/10 7",
-      "estimatedduration": "2m"
-    },
+    // 515/10 was removed on 2021-11-21.
     {
       "identifier": "4",
       "name": "twilight flats -- 470/10",
