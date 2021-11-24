@@ -231,14 +231,12 @@ detectorrawread(void)
     cam.get_ImageArray(usbuf),
     "unable to read the detector.");
   long lbuf[nx];
-  detectorrawpixstart();
   for (unsigned long iy = 0; iy < ny; ++iy) {
     for (unsigned long ix = 0; ix < nx; ++ix)
       lbuf[ix] = usbuf[iy * nx + ix];
     detectorrawpixnext(lbuf, nx);
   }    
   free(usbuf);
-  detectorrawpixend();
   DETECTOR_OK();
 }
 

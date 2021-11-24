@@ -182,14 +182,12 @@ detectorrawread(void)
     DETECTOR_ERROR("unable to read the raw FITS file.");
 
   long lbuf[nx];
-  detectorrawpixstart();
   for (unsigned long iy = 0; iy < ny; ++iy) {
     for (unsigned long ix = 0; ix < nx; ++ix) {
       lbuf[ix] = floor(fbuf[iy * nx + ix]);
     }
     detectorrawpixnext(lbuf, nx);
   }
-  detectorrawpixend();
 
   free(fbuf);
 

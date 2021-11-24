@@ -582,12 +582,18 @@ namespace eval "ccd" {
     log::info [format "FITS file is %s." $finalfitsfilename]
     set tmpfitsfilename "$finalfitsfilename.tmp"
     if {[withcube]} {
-      set finalfitscubefilename [getfitscubefilename $exposuretype $fitsfileprefix]
+      set finalfitscubefilename    [getfitscubefilename $exposuretype $fitsfileprefix]
       log::info [format "FITS cube file is %s." $finalfitscubefilename]
-      set tmpfitscubefilename "$finalfitscubefilename.tmp"
+      set finalfitscubehdrfilename "$finalfitscubefilename.hdr"
+      set finalfitscubepixfilename "$finalfitscubefilename.pix"
+      set tmpfitscubehdrfilename   "$finalfitscubehdrfilename.tmp"
+      set tmpfitscubepixfilename   "$finalfitscubepixfilename.tmp"
     } else {
-      set finalfitscubefilename ""
-      set tmpfitscubefilename ""
+      set finalfitscubefilename    ""
+      set finalfitscubehdrfilename ""
+      set finalfitscubepixfilename ""
+      set tmpfitscubehdrfilename   ""
+      set tmpfitscubepixfilename   ""
     }
     if {[catch {file mkdir [file dirname $finalfitsfilename]}]} {
       error "unable to create the directory \"[file dirname $finalfitsfilename]\"."
@@ -627,7 +633,7 @@ namespace eval "ccd" {
               [string equal $exposuretype "dark"]} {
       set shutter closed
     }
-    detector::startexposure $exposuretime $shutter
+    detector::startexposure $exposuretime $shutter $tmpfitscubepixfilename
     set seconds [utcclock::seconds]
     log::info [format "started exposing after %.1f seconds." [utcclock::diff now $start]]
     log::info [format "started writing FITS header (start) after %.1f seconds." [utcclock::diff now $start]]
@@ -643,12 +649,12 @@ namespace eval "ccd" {
 
     if {[withcube]} {
       if {[catch {
-        set cubechannel [detector::openfitscubeheader $tmpfitscubefilename]
-        writefitsheaderprolog $cubechannel $seconds $finalfitsfilename $exposuretime $exposuretype
+        set cubehdrchannel [detector::openfitscubeheader $tmpfitscubehdrfilename]
+        writefitsheaderprolog $cubehdrchannel $seconds $finalfitscubefilename $exposuretime $exposuretype
       } message]} {
         error "while writing FITS header: $message"
         catch {close $channel}
-        catch {close $cubechannel}
+        catch {close $cubehdrchannel}
       }
     }
 
@@ -665,16 +671,16 @@ namespace eval "ccd" {
     } message]} {
       error "while writing FITS header: $message"
       catch {close $channel}
-      catch {close $cubechannel}
+      catch {close $cubehdrchannel}
     }
     if {[withcube]} {
       if {[catch {
-        fitsheader::writeccdfitsheader $cubechannel [server::getdata "identifier"] "E"
-        fitsheader::writetcsfitsheader $cubechannel "E"
-        detector::closefitsheader $cubechannel
+        fitsheader::writeccdfitsheader $cubehdrchannel [server::getdata "identifier"] "E"
+        fitsheader::writetcsfitsheader $cubehdrchannel "E"
+        detector::closefitsheader $cubehdrchannel
       } message]} {
         error "while writing FITS header: $message"
-        catch {close $cubechannel}
+        catch {close $cubehdrchannel}
       }
     }
 
@@ -686,7 +692,7 @@ namespace eval "ccd" {
 
     log::info [format "started writing after %.1f seconds." [utcclock::diff now $start]]
     server::setactivity "writing"
-    if {[catch {detector::writeexposure $tmpfitsfilename $finalfitsfilename $latestfilename $currentfilename $tmpfitscubefilename $finalfitscubefilename true} message]} {
+    if {[catch {detector::writeexposure $tmpfitsfilename $finalfitsfilename $latestfilename $currentfilename $tmpfitscubehdrfilename $finalfitscubehdrfilename $tmpfitscubepixfilename $finalfitscubepixfilename false} message]} {
       error "while writing FITS data: $message"
     }
     log::info [format "finished exposing after %.1f seconds." [utcclock::diff now $start]]

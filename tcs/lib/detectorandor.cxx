@@ -463,9 +463,6 @@ detectorrawexpose(double exposuretime, const char *shutter)
   }
 
   detectorrawsetpixnframe(nframe);
-  detectorrawpixstart();
-  if (strcmp(amplifier, "EM") == 0)
-    detectorrawcubepixstart();
 
   status = StartAcquisition();
   if (status != DRV_SUCCESS)
@@ -519,23 +516,21 @@ detectorrawgetreadytoberead(void)
       if (status != DRV_SUCCESS)
         DETECTOR_ERROR(msg("unable to get pixel data (nx is %lu ny is %lu status is %u).", nx, ny, status));
 
-      if (flipped) {
-        for (unsigned long iy = 0; iy < ny; ++iy) {
-          for (unsigned long ix = 0; ix < nx; ++ix) {
+      for (unsigned long iy = 0; iy < ny; ++iy) {
+        if (flipped) {
+          for (unsigned long ix = 0; ix < nx; ++ix)
             frame[iy][ix] = pix[iy * nx + (nx - 1 - ix)];
-          }
-        }
-      } else {
-        for (unsigned long iy = 0; iy < ny; ++iy) {
-          for (unsigned long ix = 0; ix < nx; ++ix) {
+        } else {
+          for (unsigned long ix = 0; ix < nx; ++ix)
             frame[iy][ix] = pix[iy * nx + ix];
-          }
         }
       }
       
+      double cubebzero  = 32768;
+      double cubebscale = 1;
+
       for (unsigned long iy = 0; iy < ny; ++iy)
-        for (unsigned long ix = 0; ix < nx; ++ix)
-          detectorrawcubepixnext(&frame[iy][ix], 1);
+        detectorrawcubepixnext(&frame[iy][0], nx, cubebzero, cubebscale);
 
       if (dosaa) {
 
@@ -554,6 +549,7 @@ detectorrawgetreadytoberead(void)
           }
           ixref = ixmax;
           iyref = iymax;
+          log("detectorrawgetreadytoberead: frame %4d: max at (%d,%d) is %d.", (int) iframe, (int) iymax, (int) ixmax, (int) zmax);      
         }
       
         int searchsize = 16;
@@ -627,22 +623,20 @@ detectorrawread(void)
 
   if (strcmp(amplifier, "EM") == 0) {
 
-    log("detectorrawgetreadytoberead: processing sum of frames.");
+    log("detectorrawgetreadytoberead: aborting exposure.");
 
     unsigned int status;
     status = AbortAcquisition();
     if (status != DRV_SUCCESS && status != DRV_IDLE)
       DETECTOR_ERROR(msg("unable to abort acquisition (status is %u).", status));
 
+    log("detectorrawgetreadytoberead: processing sum of frames.");
+
     for (unsigned long iy = 0; iy < ny; ++iy) {
-      for (unsigned long ix = 0; ix < nx; ++ix) {
-        long lpix = framesum[iy][ix] / framen[iy][ix];
-        detectorrawpixnext(&lpix, 1);
-      }
+      for (unsigned long ix = 0; ix < nx; ++ix)
+        frame[iy][ix] = framen[iy][ix] == 0 ? 0 : framesum[iy][ix] / framen[iy][ix];
+      detectorrawpixnext(&frame[iy][0], nx);
     }
-    detectorrawpixend();
-    
-    detectorrawcubepixend();
 
   } else {
 
@@ -654,24 +648,20 @@ detectorrawread(void)
     if (status != DRV_SUCCESS)
       DETECTOR_ERROR(msg("unable to get pixel data (nx is %lu ny is %lu status is %u).", nx, ny, status));
 
-    if (flipped) {
-      for (unsigned long iy = 0; iy < ny; ++iy) {
-        for (unsigned long ix = 0; ix < nx; ++ix) {
-          long lpix = pix[iy * nx + (nx - 1 - ix)];
-          detectorrawpixnext(&lpix, 1);
-        }
+    for (unsigned long iy = 0; iy < ny; ++iy) {
+      if (flipped) {
+        for (unsigned long ix = 0; ix < nx; ++ix)
+          frame[iy][ix] = pix[iy * nx + (nx - 1 - ix)];
+      } else {
+        for (unsigned long ix = 0; ix < nx; ++ix)
+          frame[iy][ix] = pix[iy * nx + ix];
       }
-    } else {
-      for (unsigned long iy = 0; iy < ny; ++iy) {
-        for (unsigned long ix = 0; ix < nx; ++ix) {
-          long lpix = pix[iy * nx + ix];
-          detectorrawpixnext(&lpix, 1);
-        }
-      }
+      detectorrawpixnext(&frame[iy][0], nx);
     }
-    detectorrawpixend();
 
   }
+
+  log("detectorrawread: iamplifier = %d.", iamplifier);
 
   DETECTOR_OK();
 }

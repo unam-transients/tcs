@@ -145,7 +145,6 @@ detectorrawread(void)
   DETECTOR_CHECK_OPEN();
   if (!detectorrawgetreadytoberead())
     DETECTOR_ERROR("the detector is not ready to be read.");
-  detectorrawpixstart();
   long pix = 0;
   unsigned long nx = detectorrawgetpixnx();
   unsigned long ny = detectorrawgetpixny();
@@ -155,7 +154,6 @@ detectorrawread(void)
       detectorrawpixnext(&pix, 1);
     }
   }
-  detectorrawpixend();
   DETECTOR_OK();
 }
 
