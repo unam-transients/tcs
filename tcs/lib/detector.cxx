@@ -44,13 +44,13 @@ static unsigned short softwaregain = 1;
 
 static unsigned long pixnx = 0;
 static unsigned long pixny = 0;
-static unsigned long pixnframe = 1;
+static unsigned long long pixnframe = 1;
 
 static unsigned long pixi = 0;
 static unsigned short *pix = NULL;
 
-static unsigned long cubepixi = 0;
-static unsigned short *cubepix = NULL;
+static unsigned long long cubepixi = 0;
+static FILE *cubepixfp = NULL;
 
 static unsigned long pixdatawindowsx = 0;
 static unsigned long pixdatawindowsy = 0;
@@ -59,10 +59,6 @@ static unsigned long pixdatawindowny = 0;
 
 static double average = 0;
 static double standarddeviation = 0;
-
-////////////////////////////////////////////////////////////////////////
-
-static void updatestatistics(void);
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -175,45 +171,6 @@ detectorrawpixend(void)
 {
   if (pixi < pixnx * pixny)
     DETECTOR_ERROR("too little pixel data.");
-  updatestatistics();
-  DETECTOR_OK();
-}
-
-////////////////////////////////////////////////////////////////////////
-
-const char *
-detectorrawcubepixstart(void)
-{
-  cubepixi = 0;
-  free(cubepix);
-  cubepix = (unsigned short *) malloc(pixnx * pixny * pixnframe * sizeof(*pix));
-  if (cubepix == 0)
-    DETECTOR_ERROR("unable to allocate memory for the detector pixel values.");
-  DETECTOR_OK();
-}
-
-const char *
-detectorrawcubepixnext(const long *newpix, unsigned long n)
-{
-  for (unsigned long i = 0; i < n; ++i, ++cubepixi) {
-    if (pixi == pixnx * pixny * pixnframe)
-      DETECTOR_ERROR("too much pixel data.");
-    if (newpix[i] < 0)
-      cubepix[cubepixi] = 0;
-    else if (newpix[i] / softwaregain > USHRT_MAX)
-      cubepix[cubepixi] = USHRT_MAX;
-    else
-      cubepix[cubepixi] = newpix[i] / softwaregain;
-  }
-  DETECTOR_OK();
-}
-
-const char *
-detectorrawcubepixend(void)
-{
-  if (pixi < pixnx * pixny * pixnframe)
-    DETECTOR_ERROR("too little pixel data.");
-  updatestatistics();
   DETECTOR_OK();
 }
 
@@ -276,8 +233,8 @@ detectorrawgetpixnframe(void)
 
 ////////////////////////////////////////////////////////////////////////
 
-static void
-updatestatistics(void)
+const char *
+detectorrawupdatestatistics(void)
 {
   double s0 = 0;
   double s1 = 0;
@@ -303,6 +260,7 @@ updatestatistics(void)
     else
       standarddeviation = 0;
   }
+  DETECTOR_OK();
 }
 
 const char *
@@ -346,7 +304,6 @@ fputs16(short s, FILE *fp)
 const char *
 detectorrawappendfitsdata(
   const char *tmpfitsfilename, const char *finalfitsfilename, const char *latestfilename, const char *currentfilename,
-  const char *tmpfitscubefilename, const char *finalfitscubefilename,
   int dofork, double bscale, double bzero
 )
 {
@@ -356,14 +313,6 @@ detectorrawappendfitsdata(
   FILE *fp = fopen(tmpfitsfilename, "ab");
   if (fp == NULL) {
     DETECTOR_ERROR("unable to open the temporary FITS file.");
-  }
-  
-  FILE *cubefp = NULL;
-  if (strcmp(tmpfitscubefilename, "") != 0) {
-    cubefp = fopen(tmpfitscubefilename, "ab");
-    if (cubefp == NULL) {
-      DETECTOR_ERROR("unable to open the temporary FITS cube file.");
-    }
   }
   
   // Wait for any children, to prevent defunct processes.
@@ -376,8 +325,6 @@ detectorrawappendfitsdata(
       DETECTOR_ERROR("unable to fork.");
     } else if (pid != 0) {
       fclose(fp);
-      if (cubefp != NULL)
-        fclose(cubefp);
       DETECTOR_OK();
     }
   }
@@ -392,21 +339,6 @@ detectorrawappendfitsdata(
 
   if (fclose(fp) != 0)
     APPENDFITSDATA_ERROR("error writing the temporary FITS file.");
-    
-  if (cubefp != NULL) {
-  
-    unsigned long cubepixn = pixnx * pixny * pixnframe;
-    for (unsigned long i = 0; i < cubepixn; ++i) {
-      short s16 = floor(((double) cubepix[i] - bzero) / bscale);
-      fputs16(s16, cubefp);
-    }
-    for (unsigned long i = (cubepixn * 2) % 2880; i % 2880 != 0; ++i)
-      fputc(0, cubefp);
-
-    if (fclose(cubefp) != 0)
-      APPENDFITSDATA_ERROR("error writing the temporary FITS cube file.");
-  }
-  
     
   // Create the latest link, if requested.
 
@@ -459,14 +391,7 @@ detectorrawappendfitsdata(
     APPENDFITSDATA_ERROR("unable to create a link to the final FITS file.");
   if (unlink(tmpfitsfilename) == -1)
     APPENDFITSDATA_ERROR("unable to unlink the temporary FITS file.");
-      
-  if (cubefp != NULL) {
-    if (link(tmpfitscubefilename, finalfitscubefilename) == -1)
-      APPENDFITSDATA_ERROR("unable to create a link to the final FITS cube file.");
-    if (unlink(tmpfitscubefilename) == -1)
-      APPENDFITSDATA_ERROR("unable to unlink the temporary FITS cube file.");
-  }
-      
+    
   if (dofork)
     _exit(0);
 
@@ -474,3 +399,51 @@ detectorrawappendfitsdata(
 }
 
 ////////////////////////////////////////////////////////////////////////
+
+const char *
+detectorrawcubepixstart(const char *fitscubepixfilename)
+{
+  cubepixi = 0;
+  if (cubepixfp != NULL)
+    fclose(cubepixfp);
+  cubepixfp = fopen(fitscubepixfilename, "wb");
+  if (cubepixfp == NULL)
+    DETECTOR_ERROR("unable to open file for the detector pixel values.");
+  DETECTOR_OK();
+}
+
+const char *
+detectorrawcubepixnext(const long *newpix, unsigned long n, double bzero, double bscale)
+{
+  unsigned long long pixn = pixnx * pixny * pixnframe;
+  for (unsigned long i = 0; i < n; ++i, ++cubepixi) {
+    if (cubepixi == pixn)
+      DETECTOR_ERROR("too much pixel data.");
+    unsigned short upix;
+    if (newpix[i] < 0)
+      upix = 0;
+    else if (newpix[i] / softwaregain > USHRT_MAX)
+      upix = USHRT_MAX;
+    else
+      upix = newpix[i] / softwaregain;
+    short spix = floor(((double) upix - bzero) / bscale);
+    fputs16(spix, cubepixfp);
+  }
+  DETECTOR_OK();
+}
+
+const char *
+detectorrawcubepixend(void)
+{
+  unsigned long long pixn = pixnx * pixny * pixnframe;
+  if (cubepixi < pixn)
+    DETECTOR_ERROR("too little pixel data.");
+  for (unsigned long i = (pixn * 2) % 2880; i % 2880 != 0; ++i)
+    fputc(0, cubepixfp);
+  fclose(cubepixfp);
+  cubepixfp = NULL;
+  DETECTOR_OK();
+}
+
+////////////////////////////////////////////////////////////////////////
+

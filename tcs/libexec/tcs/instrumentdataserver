@@ -82,6 +82,18 @@ dst="$1"
 cd "$tcsprefix"/var/tcs
 while true
 do
+  ls -l latest/C0
+  find . -name "*C[0-9]?c.fits.hdr" |
+  while read hdr
+  do
+    fits=$(echo $hdr | sed 's/.hdr$//')
+    pix=$(echo $hdr | sed 's/.hdr$/.pix/') 
+    if test -f $pix
+    then
+      cat $hdr $pix >$fits
+      rm -f $hdr $pix
+    fi
+  done
   (
     find . -name "*C[0-9]?.fits"
     find . -name "*C[0-9]?c.fits"

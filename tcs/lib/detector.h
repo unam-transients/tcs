@@ -66,6 +66,7 @@ extern const char *detectorrawexpose(double, const char *);
 extern const char *detectorrawcancel(void);
 extern bool        detectorrawgetreadytoberead(void);
 extern const char *detectorrawread(void);
+extern const char *detectorrawupdatestatistics(void);
 
 extern const char *detectorrawfilterwheelmove(unsigned long);
 extern const char *detectorrawfilterwheelupdatestatus(void);
@@ -93,8 +94,8 @@ extern const char *detectorrawpixnext(const long *, unsigned long);
 extern const char *detectorrawpixnexthex(const char *);
 extern const char *detectorrawpixend(void);
 
-extern const char *detectorrawcubepixstart(void);
-extern const char *detectorrawcubepixnext(const long *, unsigned long);
+extern const char *detectorrawcubepixstart(const char *);
+extern const char *detectorrawcubepixnext(const long *, unsigned long, double, double);
 extern const char *detectorrawcubepixend(void);
 
-extern const char *detectorrawappendfitsdata(const char *, const char *, const char *, const char *, const char *, const char *, int, double, double);
+extern const char *detectorrawappendfitsdata(const char *, const char *, const char *, const char *, int, double, double);

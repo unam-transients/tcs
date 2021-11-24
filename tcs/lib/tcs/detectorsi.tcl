@@ -1113,11 +1113,6 @@ namespace eval "detector" {
     variable rawacquiring
     variable rawretrieving
 
-    set result [detectorrawpixstart]
-    if {![string equal $result "ok"]} {
-      return $result
-    }
-
     log::debug "detectorrawread: waiting while reading the detector."
     while {true} {
       rawputsiimagecommandpacket "inquireacquisitionstatus"
@@ -1149,14 +1144,6 @@ namespace eval "detector" {
     set end [utcclock::seconds]
     log::debug [format "detectorrawread: retrieving the image took %.2f seconds." [expr {$end - $start}]]
 
-    set start [utcclock::seconds]
-    set result [detectorrawpixend]
-    if {![string equal $result "ok"]} {
-      return $result
-    }    
-    set end [utcclock::seconds]
-    log::debug [format "detectorrawread: detectorrawpixend took %.2f seconds." [expr {$end - $start}]]
-    
     log::debug "detectorrawread: done."
 
     return "ok"

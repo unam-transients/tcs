@@ -333,12 +333,16 @@ namespace eval "detector" {
 
   ######################################################################
 
-  proc startexposure {exposuretime shutter} {
+  proc startexposure {exposuretime shutter fitscubepixfilename} {
     log::debug "starting the exposure."
     checkisopen
     set result [detectorrawexpose $exposuretime $shutter]
     if {![string equal $result ok]} {
       error "unable to start the exposure."
+    }
+    detectorrawpixstart
+    if {![string equal $fitscubepixfilename ""]} {
+      detectorrawcubepixstart $fitscubepixfilename
     }
   }
   
@@ -376,6 +380,7 @@ namespace eval "detector" {
     if {![string equal $result "ok"]} {
       error "error while reading the pixel data: $result"
     }
+    detectorrawupdatestatistics
     variable average
     variable standarddeviation
     set average           [detectorrawgetvalue "average"]
@@ -411,7 +416,7 @@ namespace eval "detector" {
     return [fitsheader::close $channel]
   }
   
-  proc writeexposure {tmpfilename finalfilename {latestfilename ""} {currentfilename ""} {tmpcubefilename ""}  {finalcubefilename ""} {fork false}} {
+  proc writeexposure {tmpfilename finalfilename {latestfilename ""} {currentfilename ""} {tmpcubehdrfilename ""}  {finalcubehdrfilename ""}  {tmpcubepixfilename ""}  {finalcubepixfilename ""} {fork false}} {
     log::debug "writing the exposure."
     checkisopen
     if {[string equal $tmpfilename ""]} {
@@ -436,12 +441,20 @@ namespace eval "detector" {
         error "unable to write the exposure data: cannot create the directory \"[file dirname $currentfilename]\"."
       }
     }
-    if {![string equal $tmpcubefilename ""] && ![file exists $tmpcubefilename]} {
-      error "the temporary cube file \"$tmpcubefilename\" does not exist."
+    if {![string equal $tmpcubehdrfilename ""] && ![file exists $tmpcubehdrfilename]} {
+      error "the temporary cube hdr file \"$tmpcubehdrfilename\" does not exist."
     }
-    if {![string equal $finalcubefilename ""]} {
-      if {[catch {file mkdir [file dirname $finalcubefilename]}]} {
-        error "unable to write the exposure data: cannot create the directory \"[file dirname $finalcubefilename]\"."
+    if {![string equal $tmpcubepixfilename ""] && ![file exists $tmpcubepixfilename]} {
+      error "the temporary cube pix file \"$tmpcubepixfilename\" does not exist."
+    }
+    if {![string equal $finalcubehdrfilename ""]} {
+      if {[catch {file mkdir [file dirname $finalcubehdrfilename]}]} {
+        error "unable to write the exposure data: cannot create the directory \"[file dirname $finalcubehdrfilename]\"."
+      }
+    }
+    if {![string equal $finalcubepixfilename ""]} {
+      if {[catch {file mkdir [file dirname $finalcubepixfilename]}]} {
+        error "unable to write the exposure data: cannot create the directory \"[file dirname $finalcubepixfilename]\"."
       }
     }
     variable bscale
@@ -451,7 +464,15 @@ namespace eval "detector" {
     } else {
       set dofork 0
     }
-    set result [detectorrawappendfitsdata $tmpfilename $finalfilename $latestfilename $currentfilename $tmpcubefilename $finalcubefilename $dofork $bscale $bzero]
+    detectorrawpixend
+    if {![string equal $tmpcubehdrfilename ""]} {
+      file rename -force $tmpcubehdrfilename $finalcubehdrfilename
+    }
+    if {![string equal $tmpcubepixfilename ""]} {
+      detectorrawcubepixend
+      file rename -force $tmpcubepixfilename $finalcubepixfilename
+    }
+    set result [detectorrawappendfitsdata $tmpfilename $finalfilename $latestfilename $currentfilename $dofork $bscale $bzero]
     if {![string equal $result "ok"]} {
       error "unable to write the exposure data: $result"
     }    
