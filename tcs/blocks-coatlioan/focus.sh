@@ -279,8 +279,8 @@ EOF
       "name": "coarse focus in 640/10",
       "targetcoordinates": {
         "type"   : "equatorial",
-        "alpha"  : "$alpha",
-        "delta"  : "$delta",
+        "alpha"  : "$ALPHA",
+        "delta"  : "$DELTA",
         "equinox": "2000"
       },
       "command": "coarsefocusvisit 6 5",
@@ -291,8 +291,8 @@ EOF
       "name": "focus in 470/10",
       "targetcoordinates": {
         "type"   : "equatorial",
-        "alpha"  : "$alpha",
-        "delta"  : "$delta",
+        "alpha"  : "$ALPHA",
+        "delta"  : "$DELTA",
         "equinox": "2000"
       },
       "command": "focusvisit 470/10 5 em-30MHz-0-100",
@@ -304,8 +304,8 @@ EOF
       "name": "focus in 640/10",
       "targetcoordinates": {
         "type"   : "equatorial",
-        "alpha"  : "$alpha",
-        "delta"  : "$delta",
+        "alpha"  : "$ALPHA",
+        "delta"  : "$DELTA",
         "equinox": "2000"
       },
       "command": "focusvisit 6 5 em-30MHz-0-100",
@@ -316,8 +316,8 @@ EOF
       "name": "focus in 656/3",
       "targetcoordinates": {
         "type"   : "equatorial",
-        "alpha"  : "$alpha",
-        "delta"  : "$delta",
+        "alpha"  : "$ALPHA",
+        "delta"  : "$DELTA",
         "equinox": "2000"
       },
       "command": "focusvisit 7 5 em-30MHz-0-100",
@@ -328,8 +328,8 @@ EOF
       "name": "coarse focus",
       "targetcoordinates": {
         "type"   : "equatorial",
-        "alpha"  : "$alpha",
-        "delta"  : "$delta",
+        "alpha"  : "$ALPHA",
+        "delta"  : "$DELTA",
         "equinox": "2000"
       },
       "command": "coarsefocusvisit",
