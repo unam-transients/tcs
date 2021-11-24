@@ -168,6 +168,7 @@ namespace eval "secondary" {
       } else {
         controller::sendcommand [format "FO%04d" $dzstep]
       }
+      coroutine::after 1000
       waituntilnotmoving
       set z [server::getdata "z"]
     }
