@@ -283,7 +283,6 @@ namespace eval "telescope" {
     }
     if {$mustinitialize} {
       initializeactivitycommand
-      openactivitycommand
     }
     log::info [format "finished recovering after %.1f seconds." [utcclock::diff now $start]]
   }
