@@ -18,7 +18,7 @@
     }
   ],
   "constraints": {
-    "maxskybrightness": "civiltwilight",
+    "maxskybrightness": "bright",
     "mustbeonfavoredsideforswift": "true"
   },
   "persistent": "true"
