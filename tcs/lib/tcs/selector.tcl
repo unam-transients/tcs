@@ -244,6 +244,8 @@ namespace eval "selector" {
         if {[catch {
           client::request "executor" "recover"
           client::wait "executor"
+          client::request "executor" "open"
+          client::wait "executor"
         } message]} {
           log::error "unable to recover: $message"
           set delay 60000
