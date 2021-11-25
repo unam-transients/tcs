@@ -395,8 +395,8 @@ proc twilightflatsvisit {filter targetngood} {
   executor::setsecondaryoffset 0
   executor::move
 
-  executor::setreadmode "1MHz-0"
-  executor::setwindow "conventionaldefault"
+  executor::setreadmode "conventionaldefault"
+  executor::setwindow "default"
   executor::setbinning 1
 
   set maxlevel 16000
