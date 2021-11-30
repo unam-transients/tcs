@@ -81,12 +81,20 @@ static void
 log(const char *fmt, ...)
 {
   if (logfp == NULL)
-    logfp = fopen("/tmp/andor.txt", "w");
+    logfp = fopen("/tmp/detectorandor.txt", "w");
+
+  time_t t = time(NULL);
+  char buf[1024];
+  if (strftime(buf, sizeof(buf), "%F %T", gmtime(&t)) != 0)
+    fprintf(logfp, "%s: ", buf);
+  
   va_list ap;
   va_start(ap, fmt);
   vfprintf(logfp, fmt, ap);
   va_end(ap);
+
   fputc('\n', logfp);
+
   fflush(logfp);
 }
 
@@ -127,12 +135,15 @@ const char *
 detectorrawopen(char *identifier)
 {
   unsigned int status;
+  
+  log("detectorrawopen: starting.");
 
   if (detectorrawgetisopen())
     DETECTOR_ERROR("a detector is currently open");
 
   char etcdir[] = "/usr/local/etc/andor";
   status = Initialize(etcdir);
+  log("Initialize(%s): status = %d.", etcdir, status);
   if (status != DRV_SUCCESS) {
     DETECTOR_ERROR(msg("unable to initialize detector (status is %u).", status));
   }
@@ -674,60 +685,85 @@ setreadmodehelper(int iadc, int iamplifier, int ivsspeed, int ihsspeed, int igai
   int status;
 
   status = SetADChannel(iadc);
+  log("setreadmodehelper: SetADChannel(%d): status = %d.", iadc, status);
   if (status != DRV_SUCCESS)
     return "invalid ADC index.";
 
   status = SetOutputAmplifier(iamplifier);
+  log("setreadmodehelper: SetOutputAmplifier(%d): status = %d.", iamplifier, status);
   if (status != DRV_SUCCESS)
     return "invalid amplifier index.";
 
   status = SetVSSpeed(ivsspeed);
+  log("setreadmodehelper: SetVSSpeed(%d): status = %d.", ivsspeed, status);
   if (status != DRV_SUCCESS)
     return "invalid VS speed index.";
 
   status = SetHSSpeed(iamplifier, ihsspeed);
+  log("setreadmodehelper: SetHSSpeed(%d, %d): status = %d.", iamplifier, ihsspeed, status);
   if (status != DRV_SUCCESS)
     return "invalid HS speed index.";
 
   status = SetPreAmpGain(igain);
+  log("setreadmodehelper: SetPreAmpGain(%d): status = %d.", igain, status);
   if (status != DRV_SUCCESS)
     return "invalid gain index";
 
   status = SetFrameTransferMode(1);
+  log("setreadmodehelper: SetFrameTransferMode(1): status = %d.", status);
   if (status != DRV_SUCCESS)
     return "unable to select frametransfer mode";
 
   if (iamplifier != 0) {
     // 0 = Default
     status = SetEMGainMode(0);
+    log("setreadmodehelper: SetEMGainMode(0): status = %d.", status);
     if (status != DRV_SUCCESS)
       return "unable to select EM gain mode.";
     status = SetEMAdvanced(0);
+    log("setreadmodehelper: SetEMAdvanced(0): status = %d.", status);
     if (status != DRV_SUCCESS)
       return "unable to unselect EM advanced mode.";
-//    status = SetEMCCDGain(1);
-//    if (status != DRV_SUCCESS)
-//      return "invalid EMCCD gain.";
   } else if (emgain == 0 || emgain == 1) {
     // 0 = set the DAC directly
     status = SetEMGainMode(0);
+    log("setreadmodehelper: SetEMGainMode(0): status = %d.", status);
     if (status != DRV_SUCCESS)
       return "unable to select EM gain mode.";
     status = SetEMAdvanced(0);
+    log("setreadmodehelper: SetEMAdvanced(0): status = %d.", status);
     if (status != DRV_SUCCESS)
       return "unable to unselect EM advanced mode.";
+    int emgainmin, emgainmax;
+    status = GetEMGainRange(&emgainmin, &emgainmax);
+    log("setreadmodehelper: GetEMGainRange(): status = %d.", status);
+    if (status != DRV_SUCCESS)
+      return "unable to get EMCCD gain range.";
+    log("setreadmodehelper: emgainmin = %d emgainmax = %d", emgainmin, emgainmax);
     status = SetEMCCDGain(0);
+    log("setreadmodehelper: SetEMCCDGain(%d): status = %d.", 0, status);
     if (status != DRV_SUCCESS)
       return "invalid EMCCD gain.";        
   } else {
     // 3 = use "Real EM gain" control
     status = SetEMGainMode(3);
+    log("setreadmodehelper: SetEMGainMode(3): status = %d.", status);
     if (status != DRV_SUCCESS)
       return "unable to select EM gain mode.";
     status = SetEMAdvanced(1);
+    log("setreadmodehelper: SetEMAdvanced(1): status = %d.", status);
     if (status != DRV_SUCCESS)
       return "unable to select EM advanced mode.";
+    int emgainmin, emgainmax;
+    status = GetEMGainRange(&emgainmin, &emgainmax);
+    log("setreadmodehelper: GetEMGainRange(): status = %d.", status);
+    if (status != DRV_SUCCESS)
+      return "unable to get EMCCD gain range.";
+    log("setreadmodehelper: emgainmin = %d emgainmax = %d", emgainmin, emgainmax);
+    if (emgain > emgainmax)
+      emgain = emgainmax;
     status = SetEMCCDGain(emgain);
+    log("setreadmodehelper: SetEMCCDGain(%d): status = %d.", emgain, status);
     if (status != DRV_SUCCESS)
       return "invalid EMCCD gain.";
   }
@@ -742,8 +778,10 @@ detectorrawsetreadmode(const char *newreadmode)
   
   log("detectorrawsetreadmode: newreadmode = \"%s\".", newreadmode);
   
-  if (strcmp(newreadmode, readmode) == 0)
-    return DETECTOR_OK();
+  if (strcmp("", readmode) == 0)
+    newreadmode = "0-1-3-0-0-1-1";
+  else if (strcmp(newreadmode, readmode) == 0)
+    DETECTOR_OK();
 
   int newiadc;
   int newiamplifier;
