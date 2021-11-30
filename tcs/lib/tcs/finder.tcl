@@ -483,7 +483,7 @@ namespace eval "finder" {
         set x [format "%.2f" $x]
         set y [format "%.2f" $y]
         set binning [server::getdata "detectorbinning"]        
-        log::info "FWHM is $fwhm pixels with binning $binning in ${exposuretime}s."
+        log::info "FWHM is $fwhm pixels with binning $binning in ${exposuretime} seconds."
       }
     }
     if {[string equal $exposuretype "astrometry"]} {
