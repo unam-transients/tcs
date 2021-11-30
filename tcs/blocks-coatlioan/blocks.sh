@@ -93,7 +93,7 @@ sh 2019A-2000-0.sh
     :
     
   
-    allblocks 0012-focus-offsets         v
+    #allblocks 0012-focus-offsets         v
     #allblocks 0008-pointing-map         w
     #allblocks 0007-donut                o
 
@@ -108,6 +108,7 @@ sh 2019A-2000-0.sh
   
   allblocks 0001-twilight-flats-evening x
   allblocks 0002-biases                 y
+  allblocks 0013-readnoise              y
   allblocks 0003-darks                  z
 
 
