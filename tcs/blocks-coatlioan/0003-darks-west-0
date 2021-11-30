@@ -20,6 +20,5 @@
   "constraints": {
     "maxskybrightness": "bright",
     "mustbeonfavoredsideforswift": "true"
-  },
-  "persistent": "true"  
+  }
 }
