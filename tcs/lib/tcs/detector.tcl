@@ -41,7 +41,7 @@ namespace eval "detector" {
   proc open {identifierarg} {
     variable identifier
     set identifier $identifierarg
-    log::info "opening detector $identifier."
+    log::info "opening detector \"$identifier\"."
     if {[detectorrawgetisopen]} {
       error "a detector is already open."
     }
