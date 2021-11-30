@@ -102,14 +102,14 @@ do
   do
     tcs fitsheader $fits >$fits.txt
     $compress $fits
-    $rsync -aR $fits.txt $fits.$suffix "$dst"
+    $rsync -aR --bwlimit=25M $fits.txt $fits.$suffix "$dst"
   done
   (
     find . -name "*C[0-9]?.fits.txt"
     find . -name "*C[0-9]?.fits.$suffix"
   ) | while read file
   do
-    $rsync -aR $file "$dst"
+    $rsync -aR --bwlimit=25M $file "$dst"
   done
   rsync -l latest "$dst"
   sleep 5
