@@ -756,7 +756,7 @@ namespace eval "ccd" {
         set binning      [server::getdata "detectorbinning"]
         set filter       [server::getdata "filter"]
         set exposuretime [server::getdata "exposuretime"]
-        log::info "FWHM is $fwhm pixels with binning $binning in filter $filter in ${exposuretime}s."
+        log::info "FWHM is $fwhm pixels with binning $binning in filter $filter in ${exposuretime} seconds."
       }
     } elseif {[string equal $type "astrometry"]} {
       variable solvingchannel
@@ -997,12 +997,12 @@ namespace eval "ccd" {
       set binning      [server::getdata "detectorbinning"]
       set rawposition  [server::getdata "focuserrawposition"]
       if {![string equal $fwhm ""]} {
-        log::summary "$fitsfilename: witness FWHM is $fwhm pixels with binning $binning in filter $filter at position $position (raw position $rawposition) in ${exposuretime}s."
+        log::summary "$fitsfilename: witness FWHM is $fwhm pixels with binning $binning in filter $filter at position $position (raw position $rawposition) in ${exposuretime} seconds."
         variable identifier
         config::setvarvalue $identifier "focuserinitialposition" $position
         config::setvarvalue $identifier "lastfocustimestamp"     [utcclock::format now]
       } else {
-        log::summary "$fitsfilename: witness FWHM is unknown with binning $binning in filter $filter at position $position (raw position $rawposition) in ${exposuretime}s."
+        log::summary "$fitsfilename: witness FWHM is unknown with binning $binning in filter $filter at position $position (raw position $rawposition) in ${exposuretime} seconds."
       }
     }
     
