@@ -693,21 +693,11 @@ setreadmodehelper(int iadc, int iamplifier, int ivsspeed, int ihsspeed, int igai
   if (status != DRV_SUCCESS)
     return "invalid gain index";
 
-  if (iamplifier == 0) {
-    // 3 = Real EM gain
-    status = SetEMGainMode(3);
-    if (status != DRV_SUCCESS)
-      return "unable to select EM gain mode.";
-    status = SetEMAdvanced(1);
-    if (status != DRV_SUCCESS)
-      return "unable to select EM advanced mode.";
-    status = SetEMCCDGain(emgain);
-    if (status != DRV_SUCCESS)
-      return "invalid EMCCD gain.";
-    status = SetFrameTransferMode(1);
-    if (status != DRV_SUCCESS)
-      return "unable to select frametransfer mode";
-  } else {
+  status = SetFrameTransferMode(1);
+  if (status != DRV_SUCCESS)
+    return "unable to select frametransfer mode";
+
+  if (iamplifier != 0) {
     // 0 = Default
     status = SetEMGainMode(0);
     if (status != DRV_SUCCESS)
@@ -718,9 +708,28 @@ setreadmodehelper(int iadc, int iamplifier, int ivsspeed, int ihsspeed, int igai
 //    status = SetEMCCDGain(1);
 //    if (status != DRV_SUCCESS)
 //      return "invalid EMCCD gain.";
-    status = SetFrameTransferMode(1);
+  } else if (emgain == 0 || emgain == 1) {
+    // 0 = set the DAC directly
+    status = SetEMGainMode(0);
     if (status != DRV_SUCCESS)
-      return "unable to select frametransfer mode";
+      return "unable to select EM gain mode.";
+    status = SetEMAdvanced(0);
+    if (status != DRV_SUCCESS)
+      return "unable to unselect EM advanced mode.";
+    status = SetEMCCDGain(0);
+    if (status != DRV_SUCCESS)
+      return "invalid EMCCD gain.";        
+  } else {
+    // 3 = use "Real EM gain" control
+    status = SetEMGainMode(3);
+    if (status != DRV_SUCCESS)
+      return "unable to select EM gain mode.";
+    status = SetEMAdvanced(1);
+    if (status != DRV_SUCCESS)
+      return "unable to select EM advanced mode.";
+    status = SetEMCCDGain(emgain);
+    if (status != DRV_SUCCESS)
+      return "invalid EMCCD gain.";
   }
 
   return "";
@@ -732,6 +741,9 @@ detectorrawsetreadmode(const char *newreadmode)
   DETECTOR_CHECK_OPEN();
   
   log("detectorrawsetreadmode: newreadmode = \"%s\".", newreadmode);
+  
+  if (strcmp(newreadmode, readmode) == 0)
+    return DETECTOR_OK();
 
   int newiadc;
   int newiamplifier;
