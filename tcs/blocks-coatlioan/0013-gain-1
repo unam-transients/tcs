@@ -1,9 +1,9 @@
 {
   "project": {
     "identifier": "0013",
-    "name": "gain"
+    "name": "gain and read noise"
   },
-  "identifier": "0",
+  "identifier": "1",
   "visits": [
     {
       "identifier": "0",
@@ -18,5 +18,6 @@
     }
   ],
   "constraints": {
-  }
+  },
+  "persistent": "true"
 }
