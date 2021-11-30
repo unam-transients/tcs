@@ -19,6 +19,5 @@
   ],
   "constraints": {
     "maxskybrightness": "bright"
-  },
-  "persistent": "true"
+  }
 }
