@@ -525,6 +525,7 @@ proc gainvisit {} {
     while {$i < 6} {
       expose flat $exposuretime
       analyze levels
+      coroutine::after 1000
       incr i
     }
   }
@@ -557,6 +558,7 @@ proc readnoisevisit {} {
     while {$i < 6} {
       expose bias $exposuretime
       analyze levels
+      coroutine::after 1000
       incr i
     }
   }
