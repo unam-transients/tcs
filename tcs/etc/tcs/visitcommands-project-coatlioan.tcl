@@ -23,7 +23,7 @@
 
 ########################################################################
 
-proc alertvisit {{filters "r"} {readmode "default"}} {
+proc alertvisit {{filters "r"} {readmode "fastguidingdefault"}} {
 
   log::summary "alertvisit: starting."
   log::summary "alertvisit: filters are $filters."
@@ -173,7 +173,7 @@ proc alertvisit {{filters "r"} {readmode "default"}} {
 
 ########################################################################
 
-proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime filters {readmode "default"}} {
+proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime filters {readmode "fastguidingdefault"}} {
 
   log::summary "gridvisit: starting."
 
@@ -255,7 +255,7 @@ proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime filters {
 
 ########################################################################
 
-proc coarsefocusvisit {{filter "i"} {exposuretime 1} {readmode "default"}} {
+proc coarsefocusvisit {{filter "i"} {exposuretime 1} {readmode "conventionaldefault"}} {
 
   log::summary "coarsefocusvisit: starting."
   
@@ -277,7 +277,7 @@ proc coarsefocusvisit {{filter "i"} {exposuretime 1} {readmode "default"}} {
 
 ########################################################################
 
-proc focusvisit {{filter "i"} {exposuretime 1} {readmode "default"}} {
+proc focusvisit {{filter "i"} {exposuretime 1} {readmode "fastguidingdefault"}} {
 
   log::summary "focusvisit: starting."
   track
@@ -300,7 +300,7 @@ proc focusvisit {{filter "i"} {exposuretime 1} {readmode "default"}} {
 
 ########################################################################
 
-proc initialpointingcorrectionvisit {{filter "i"} {exposuretime 30} {readmode "default"}} {
+proc initialpointingcorrectionvisit {{filter "i"} {exposuretime 30} {readmode "fastguidingdefault"}} {
 
   log::summary "initialpointingcorrectionvisit: starting."
 
@@ -320,7 +320,7 @@ proc initialpointingcorrectionvisit {{filter "i"} {exposuretime 30} {readmode "d
 
 ########################################################################
 
-proc pointingcorrectionvisit {{filter "i"} {exposuretime 5} {readmode "default"}} {
+proc pointingcorrectionvisit {{filter "i"} {exposuretime 5} {readmode "fastguidingdefault"}} {
 
   log::summary "correctpointingvisit: starting."
 
@@ -367,7 +367,7 @@ proc donutvisit {{filter "i"} {exposuretime 5} {offset 400}} {
 
 ########################################################################
 
-proc pointingmapvisit {{filter "i"} {exposuretime 5} {readmode "default"}} {
+proc pointingmapvisit {{filter "i"} {exposuretime 5} {readmode "fastguidingdefault"}} {
 
   log::summary "pointingmapvisit: starting."
 
