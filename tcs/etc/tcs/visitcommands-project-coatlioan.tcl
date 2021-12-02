@@ -173,7 +173,7 @@ proc alertvisit {{filters "r"} {readmode "fastguidingdefault"}} {
 
 ########################################################################
 
-proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime filters {readmode "fastguidingdefault"}} {
+proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime filters {readmode "fastguidingdefault"} {focuswitness false}} {
 
   log::summary "gridvisit: starting."
 
@@ -241,6 +241,9 @@ proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime filters {
         set exposure 0
         while {$exposure < $exposuresperdither} {
           executor::expose object $exposuretime
+          if {$focuswitness} {
+            executor::focuswitness
+          }
           incr exposure
         }
       }
@@ -255,7 +258,7 @@ proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime filters {
 
 ########################################################################
 
-proc coarsefocusvisit {{filter "i"} {exposuretime 1} {readmode "conventionaldefault"}} {
+proc coarsefocusvisit {{filter "i"} {exposuretime 5} {readmode "conventionaldefault"}} {
 
   log::summary "coarsefocusvisit: starting."
   
@@ -277,7 +280,7 @@ proc coarsefocusvisit {{filter "i"} {exposuretime 1} {readmode "conventionaldefa
 
 ########################################################################
 
-proc focusvisit {{filter "i"} {exposuretime 1} {readmode "fastguidingdefault"}} {
+proc focusvisit {{filter "i"} {exposuretime 5} {readmode "fastguidingdefault"}} {
 
   log::summary "focusvisit: starting."
   track
@@ -289,11 +292,20 @@ proc focusvisit {{filter "i"} {exposuretime 1} {readmode "fastguidingdefault"}} 
 
   log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
   log::summary "focusvisit: readmode is $readmode."
-  focussecondary C0 $exposuretime 100 10 true
+  focussecondary C0 $exposuretime 100 10 false
   
   setfocused
 
   log::summary "focusvisit: finished."
+
+  return true
+}
+
+########################################################################
+
+proc focuswitnessvisit {{filter "i"} {exposuretime 5} {readmode "fastguidingdefault"}} {
+
+  gridvisit 1 9 1 $exposuretime $filter $readmode true
 
   return true
 }
@@ -320,7 +332,7 @@ proc initialpointingcorrectionvisit {{filter "i"} {exposuretime 30} {readmode "f
 
 ########################################################################
 
-proc pointingcorrectionvisit {{filter "i"} {exposuretime 5} {readmode "fastguidingdefault"}} {
+proc pointingcorrectionvisit {{filter "i"} {exposuretime 15} {readmode "fastguidingdefault"}} {
 
   log::summary "correctpointingvisit: starting."
 
@@ -450,9 +462,10 @@ proc biasesvisit {} {
   setsecondaryoffset 0
   move
   movefilterwheel "dark"
+#     "1MHz-0"  1 0
+#     "1MHz-1"  1 1
   foreach {readmode binning visitidentifier} {
     "1MHz-0"  1 0
-    "1MHz-1"  1 1
   } { 
     setreadmode $readmode
     setwindow "default"
@@ -476,18 +489,19 @@ proc darksvisit {} {
   setsecondaryoffset 0
   move
   movefilterwheel "dark"
+#     "1MHz-0"         1 0
+#     "1MHz-1"         1 1
+#     "em-10MHz-0"     1 2
+#     "em-10MHz-1"     1 3
+#     "em-20MHz-0"     1 4
+#     "em-20MHz-1"     1 5
+#     "em-30MHz-0"     1 6
+#     "em-30MHz-1"     1 7
+#     "em-10MHz-0-100" 1 8
+#     "em-20MHz-0-100" 1 9
+#     "em-30MHz-0-100" 1 10
   foreach {readmode binning visitidentifier} {
-    "1MHz-0"         1 0
-    "1MHz-1"         1 1
-    "em-10MHz-0"     1 2
-    "em-10MHz-1"     1 3
-    "em-20MHz-0"     1 4
-    "em-20MHz-1"     1 5
     "em-30MHz-0"     1 6
-    "em-30MHz-1"     1 7
-    "em-10MHz-0-100" 1 8
-    "em-20MHz-0-100" 1 9
-    "em-30MHz-0-100" 1 10
   } { 
     setreadmode $readmode
     setwindow "default"
@@ -506,15 +520,16 @@ proc gainvisit {} {
   log::summary "gainvisit: starting."
   setsecondaryoffset 0
   move
+#     "1MHz-0"     1 0 "656/3"  0.1
+#     "1MHz-1"     1 1 "656/3"  0.1
+#     "em-10MHz-0" 1 2 "656/3"  1
+#     "em-10MHz-1" 1 3 "656/3"  1
+#     "em-20MHz-0" 1 4 "640/10" 1
+#     "em-20MHz-1" 1 5 "640/10" 1
+#     "em-30MHz-0" 1 6 "640/10" 1
+#     "em-30MHz-1" 1 7 "640/10" 1
   foreach {readmode binning visitidentifier filter exposuretime} {
-    "1MHz-0-raw"     1 0 "656/3"  0.1
-    "1MHz-1-raw"     1 1 "656/3"  0.1
-    "em-10MHz-0-raw" 1 2 "640/10" 1
-    "em-10MHz-1-raw" 1 3 "640/10" 1
-    "em-20MHz-0-raw" 1 4 "640/10" 1
-    "em-20MHz-1-raw" 1 5 "640/10" 1
-    "em-30MHz-0-raw" 1 6 "640/10" 1
-    "em-30MHz-1-raw" 1 7 "640/10" 1
+    "em-30MHz-0" 1 6 "z" 1
   } { 
     movefilterwheel $filter
     setreadmode $readmode
@@ -540,15 +555,16 @@ proc readnoisevisit {} {
   setsecondaryoffset 0
   move
   movefilterwheel "dark"
+#     "1MHz-0"     1 0 0
+#     "1MHz-1"     1 1 0
+#     "em-10MHz-0" 1 2 0
+#     "em-10MHz-1" 1 3 0
+#     "em-20MHz-0" 1 4 0
+#     "em-20MHz-1" 1 5 0
+#     "em-30MHz-0" 1 6 0
+#     "em-30MHz-1" 1 7 0
   foreach {readmode binning visitidentifier exposuretime} {
-    "1MHz-0-raw"     1 0 0
-    "1MHz-1-raw"     1 1 0
-    "em-10MHz-0-raw" 1 2 0
-    "em-10MHz-1-raw" 1 3 0
-    "em-20MHz-0-raw" 1 4 0
-    "em-20MHz-1-raw" 1 5 0
-    "em-30MHz-0-raw" 1 6 0
-    "em-30MHz-1-raw" 1 7 0
+    "em-30MHz-0" 1 6 0
   } { 
     setreadmode $readmode
     setwindow "default"
