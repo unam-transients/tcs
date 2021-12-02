@@ -443,6 +443,12 @@ detectorrawexpose(double exposuretime, const char *shutter)
     if (status != DRV_SUCCESS)
       DETECTOR_ERROR(msg("unable to select run-till-abort acquisition mode (status is %u).", status));
 
+    // Clear the buffer.
+    do {
+      unsigned short pix[ny * nx];
+      status = GetOldestImage16(pix, nx * ny);
+    } while (status == DRV_SUCCESS);
+
   } else {
   
     dosaa = 0;
