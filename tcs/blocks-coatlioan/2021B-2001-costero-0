@@ -27,11 +27,83 @@
        "delta"  : "-05:23:22.8",
        "equinox": "2000"
      },
-     "command": "focusvisit z 5 em-30MHz-0-100",
+     "command": "focusvisit z 5",
      "estimatedduration": "2m"
    },
    {
      "identifier": "0",
+     "name": "science - g",
+     "targetcoordinates": {
+       "type"   : "equatorial",
+       "alpha"  : "05:35:16.46",
+       "delta"  : "-05:23:22.8",
+       "equinox": "2000"
+     },
+     "command": "gridvisit 1 9 1 5 g",
+     "estimatedduration": "1m"
+   },
+   {
+     "identifier": "1",
+     "name": "science - r",
+     "targetcoordinates": {
+       "type"   : "equatorial",
+       "alpha"  : "05:35:16.46",
+       "delta"  : "-05:23:22.8",
+       "equinox": "2000"
+     },
+     "command": "gridvisit 1 9 1 5 r",
+     "estimatedduration": "1m"
+   },
+   {
+     "identifier": "2",
+     "name": "science - i",
+     "targetcoordinates": {
+       "type"   : "equatorial",
+       "alpha"  : "05:35:16.46",
+       "delta"  : "-05:23:22.8",
+       "equinox": "2000"
+     },
+     "command": "gridvisit 1 9 1 5 i",
+     "estimatedduration": "1m"
+   },
+   {
+     "identifier": "3",
+     "name": "science - z",
+     "targetcoordinates": {
+       "type"   : "equatorial",
+       "alpha"  : "05:35:16.46",
+       "delta"  : "-05:23:22.8",
+       "equinox": "2000"
+     },
+     "command": "gridvisit 1 9 1 5 z",
+     "estimatedduration": "1m"
+   },
+   {
+     "identifier": "4",
+     "name": "science - 470/10",
+     "targetcoordinates": {
+       "type"   : "equatorial",
+       "alpha"  : "05:35:16.46",
+       "delta"  : "-05:23:22.8",
+       "equinox": "2000"
+     },
+     "command": "gridvisit 1 9 1 5 470/10",
+     "estimatedduration": "1m"
+   },
+   {
+     "identifier": "5",
+     "name": "science - 640/10",
+     "targetcoordinates": {
+       "type"   : "equatorial",
+       "alpha"  : "05:35:16.46",
+       "delta"  : "-05:23:22.8",
+       "equinox": "2000"
+     },
+     "command": "gridvisit 1 9 1 5 640/10",
+     "estimatedduration": "1m"
+   },
+   {
+     "identifier": "6",
      "name": "science",
      "targetcoordinates": {
        "type"   : "equatorial",
@@ -39,8 +111,8 @@
        "delta"  : "-05:23:22.8",
        "equinox": "2000"
      },
-     "command": "gridvisit 1 9 1 5 {g r i z 470/10 640/10 656/3} em-30MHz-0-100",
-     "estimatedduration": "10m"
+     "command": "gridvisit 1 9 1 5 656/3",
+     "estimatedduration": "1m"
    }
  ],
  "constraints": {
