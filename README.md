@@ -1,8 +1,8 @@
 # TCS
 
-TCS is for the robotic control system for telescopes and instruments.
+TCS is a robotic control system for astronomical telescopes and instruments.
 
-It runs the
+It currently runs the
 [RATIR]([http://ratir.astroscu.unam.mx/),
 [COATLI](http://coatli.astroscu.unam.mx/), and
 [DDOTI](http://ddoti.astroscu.unam.mx) telescopes at the Mexican [Observatorio
