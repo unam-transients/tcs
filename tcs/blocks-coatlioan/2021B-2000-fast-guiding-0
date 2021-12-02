@@ -11,8 +11,8 @@
      "name": "pointing correction",
      "targetcoordinates": {
        "type"   : "equatorial",
-       "alpha"  : "21:29:58.33",
-       "delta"  : "12:13:01.2",
+       "alpha"  : "21:30:42.83",
+       "delta"  : "+11:59:37.2",
        "equinox": "2000"
      },
      "command": "pointingcorrectionvisit i 5",
@@ -23,24 +23,60 @@
      "name": "focus",
      "targetcoordinates": {
        "type"   : "equatorial",
-       "alpha"  : "21:29:58.33",
-       "delta"  : "12:13:01.2",
+       "alpha"  : "21:30:42.83",
+       "delta"  : "+11:59:37.2",
        "equinox": "2000"
      },
-     "command": "focusvisit z 5 em-30MHz-0-100",
+     "command": "focusvisit i 5",
      "estimatedduration": "2m"
    },
    {
      "identifier": "0",
-     "name": "science",
+     "name": "science - g",
      "targetcoordinates": {
        "type"   : "equatorial",
        "alpha"  : "21:29:58.33",
        "delta"  : "12:13:01.2",
        "equinox": "2000"
      },
-     "command": "gridvisit 1 9 1 5 {g r i z} em-30MHz-0-100",
-     "estimatedduration": "5m"
+     "command": "gridvisit 1 9 1 5 g",
+     "estimatedduration": "1m"
+   },
+   {
+     "identifier": "1",
+     "name": "science - r",
+     "targetcoordinates": {
+       "type"   : "equatorial",
+       "alpha"  : "21:29:58.33",
+       "delta"  : "12:13:01.2",
+       "equinox": "2000"
+     },
+     "command": "gridvisit 1 9 1 5 r",
+     "estimatedduration": "1m"
+   },
+   {
+     "identifier": "2",
+     "name": "science - i",
+     "targetcoordinates": {
+       "type"   : "equatorial",
+       "alpha"  : "21:29:58.33",
+       "delta"  : "12:13:01.2",
+       "equinox": "2000"
+     },
+     "command": "gridvisit 1 9 1 5 i",
+     "estimatedduration": "1m"
+   },
+   {
+     "identifier": "3",
+     "name": "science - z",
+     "targetcoordinates": {
+       "type"   : "equatorial",
+       "alpha"  : "21:29:58.33",
+       "delta"  : "12:13:01.2",
+       "equinox": "2000"
+     },
+     "command": "gridvisit 1 9 1 5 z",
+     "estimatedduration": "1m"
    }
  ],
  "constraints": {
