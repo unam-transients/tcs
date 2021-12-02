@@ -128,7 +128,8 @@ namespace eval "supervisor" {
 
         set maybeopen false
         set maybeopentocool false
-        set why "closed"
+        set why "mode is closed"
+        set why "mode is closed"
         
       } elseif {
         ![string equal $mode "open"] &&
@@ -295,7 +296,7 @@ namespace eval "supervisor" {
       
       if {[string equal [client::getdata "executor" "activity"] "started"]} {
         set start [utcclock::seconds]
-        log::summary "initializing."
+        log::summary "initializing ($why)."
         server::setrequestedactivity "idle"
         server::setactivity "initializing"
         set open       false
@@ -326,7 +327,7 @@ namespace eval "supervisor" {
       if {$mustdisable} {
 
         set start [utcclock::seconds]
-        log::summary "disabling."
+        log::summary "disabling ($why)."
         server::setrequestedactivity "idle"
         set mode "disabled"
         updatedata
@@ -344,7 +345,7 @@ namespace eval "supervisor" {
           continue
         }
         set start [utcclock::seconds]
-        log::summary "opening."
+        log::summary "opening ($why)."
         server::setrequestedactivity "idle"
         server::setactivity "opening"
         set open        false
@@ -382,7 +383,7 @@ namespace eval "supervisor" {
           continue
         }
         set start [utcclock::seconds]
-        log::summary "opening to cool."
+        log::summary "opening to cool ($why)."
         server::setrequestedactivity "idle"
         server::setactivity "opening"
         set open        false
@@ -419,7 +420,7 @@ namespace eval "supervisor" {
           continue
         }
         set start [utcclock::seconds]
-        log::summary "closing."
+        log::summary "closing ($why)."
         server::setrequestedactivity "idle"
         server::setactivity "closing"
         set open       false
