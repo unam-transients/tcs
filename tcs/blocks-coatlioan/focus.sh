@@ -24,7 +24,7 @@ do
   "visits": [
     {
       "identifier": "1000",
-      "name": "coarse focus i 10",
+      "name": "coarse focus",
       "targetcoordinates": {
         "type"   : "equatorial",
         "alpha"  : "$ALPHA",
@@ -69,7 +69,7 @@ do
       "estimatedduration": "1m"
     },
     {
-      "identifier": "0",
+      "identifier": "1004",
       "name": "focus",
       "targetcoordinates": {
         "type"   : "equatorial",
@@ -77,7 +77,19 @@ do
         "delta"  : "$delta",
         "equinox": "2000"
       },
-      "command": "focusvisit i 5",
+      "command": "focusvisit",
+      "estimatedduration": "1m"
+    },
+    {
+      "identifier": "0",
+      "name": "focus witness",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "focuswitnessvisit",
       "estimatedduration": "1m"
     }
   ],
@@ -114,7 +126,7 @@ EOF
       "estimatedduration": "1m"
     },
     {
-      "identifier": "0",
+      "identifier": "1001",
       "name": "focus",
       "targetcoordinates": {
         "type"   : "equatorial",
@@ -123,6 +135,18 @@ EOF
         "equinox": "2000"
       },
       "command": "focusvisit",
+      "estimatedduration": "1m"
+    },
+    {
+      "identifier": "0",
+      "name": "focus witness",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "focuswitnessvisit",
       "estimatedduration": "1m"
     }
   ],
