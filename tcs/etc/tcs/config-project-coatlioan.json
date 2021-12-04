@@ -167,6 +167,11 @@
         "type": "ibootbar",
         "outlets": "8",
         "inlets": "1"
+      },
+      "ib-detector": {
+        "type": "iboot",
+        "outlets": 1,
+        "inlets": 1
       }
     },
     "outletgroupaddresses": {
@@ -179,7 +184,8 @@
       "enclosure":  [["ibb-220", "a", "1"]],
       "secondary":  [["ibb-220", "a", "2"]],
       "platform":   [["ibb-127", "a", "1"]],
-      "instrument": [["ibb-127", "a", "3"]]
+      "instrument": [["ibb-127", "a", "3"]],
+      "detector":   [["ib-detector", "a", "0"]]
     }
   },
   "lights": {
