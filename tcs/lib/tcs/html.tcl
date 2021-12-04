@@ -772,7 +772,7 @@ if {false} {
       writehtmlrow "Open"                [client::getdata "supervisor" "open"]
       writehtmlrow "Open to cool"        [client::getdata "supervisor" "opentocool"]
       writehtmlrow "Closed"              [client::getdata "supervisor" "closed"]
-      writehtmlrow "Why"                 [client::getdata "supervisor" "why"]
+      writehtmlfullrow "Why"             [client::getdata "supervisor" "why"]
     }
 
     putshtml "</table>"
@@ -986,7 +986,10 @@ if {false} {
 
     if {[string equal [client::getstatus "power"] "ok"]} {
       foreach host [dict keys $powerhosts] {
-        writehtmlfullrow "Host $host current" [format "%.1f A" [client::getdata "power" "$host-current"]]
+        set current [client::getdata "power" "$host-current"]
+        if {![string equal "" $current]} {
+          writehtmlfullrow "Host $host current" [format "%.1f A" $current]
+        }
       }
       foreach outletgroup [dict keys $poweroutletgroupaddresses] {
         writehtmlfullrow "Outlet $outletgroup" [join [client::getdata "power" "$outletgroup"] " "]

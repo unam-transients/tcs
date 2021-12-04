@@ -320,7 +320,15 @@ namespace eval "power" {
     } else {
       log::debug "$host: successfully updated."
     }
-    server::setdata "$host-current" [format "%.1f" $totalcurrent]
+    switch $type {
+      "iboot" {
+        server::setdata "$host-current" ""
+      }
+      "ibootbar" -
+      "ibootpdu" {
+        server::setdata "$host-current" [format "%.1f" $totalcurrent]
+      }
+    }
     
     close $channel
   }
