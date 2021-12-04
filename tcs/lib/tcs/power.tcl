@@ -124,12 +124,15 @@ namespace eval "power" {
 
     switch $state {
       "off" {
+        set letterstate  "f"
         set numericstate 0
       }
       "on" {
+        set letterstate  "n"
         set numericstate 1
       }
       "cycle" {
+        set letterstate "c"
         set numericstate 2
       }
       default {
@@ -143,6 +146,9 @@ namespace eval "power" {
     set type [gethosttype $host] 
 
     switch $type {
+      "iboot" {
+        set command "printf \"\\\\ePASS\\\\e$letterstate\\\\r\" | nc -w 5 \"$host\" 80"
+      }
       "ibootbar" {
         set command "/usr/bin/snmpset -L n -v 1 -c private -M \"+[directories::share]/mibs/\" -m +IBOOTBAR-MIB \"$host\""
         foreach address $addresses {
@@ -229,6 +235,9 @@ namespace eval "power" {
     set inlets  [gethostinlets $host]
 
     switch $type {
+      "iboot" {
+        set command "printf \"\\\\ePASS\\\\eq\\\\r\" | nc -w 5 \"$host\" 80"
+      }
       "ibootbar" {
         set command "/usr/bin/snmpget -L n -v 1 -c public -M \"+[directories::share]/mibs/\" -m +IBOOTBAR-MIB \"$host\""
         for {set i 0} {$i < $outlets} {incr i} {
@@ -262,27 +271,48 @@ namespace eval "power" {
       while {true} {
         set line [coroutine::gets $channel]
         log::debug "$host: line = \"$line\"."
-        if {[chan eof $channel]} {
+        if {[string equal $line ""] && [chan eof $channel]} {
           break
-        } elseif {[scan $line "%*\[^:\]::outletStatus.%d = INTEGER: %\[^(\](%*d)" outlet state] == 2} {
-          if {![string equal $state "on"] && ![string equal $state "off"]} {
-            set state "switching"
-          }
-          set device [string index "abcdefghijklmnop" [expr {$outlet / 8}]]
-          set number [expr {$outlet % 8 + 1}]
-          set address [list $host $device $number]
-          log::debug "outlet = $outlet address = $address state = $state."
-          setoutletstate $address $state
-        } elseif {[scan $line "%*\[^:\]::currentLC%d.0 = INTEGER: %d" inlet current] == 2} {
-          log::debug "inlet = $inlet current = $current."
-          if {[string equal $type "ibootbar"]} {
-            set current [expr {0.1 * $current}]
-          } elseif {[string equal $type "ibootpdu"]} {
-            set current [expr {0.01 * $current}]
-          }
-          set totalcurrent [expr {$totalcurrent + $current}]
         } else {
-          error "unexpected SNMP response: $line"
+          switch $type {
+            "iboot" {
+              if {[string equal $line "ON"]} {
+                set state "on"
+              } elseif {[string equal $line "OFF"]} {
+                set state "off"
+              } elseif {[string equal $line "CYCLE"]} {
+                set state "switching"
+              }
+              set device "a"
+              set number 0
+              set address [list $host $device $number]
+              log::debug "address = $address state = $state."
+              setoutletstate $address $state
+            }
+            "ibootbar" -
+            "ibootpdu" {
+              if {[scan $line "%*\[^:\]::outletStatus.%d = INTEGER: %\[^(\](%*d)" outlet state] == 2} {
+                if {![string equal $state "on"] && ![string equal $state "off"]} {
+                  set state "switching"
+                }
+                set device [string index "abcdefghijklmnop" [expr {$outlet / 8}]]
+                set number [expr {$outlet % 8 + 1}]
+                set address [list $host $device $number]
+                log::debug "outlet = $outlet address = $address state = $state."
+                setoutletstate $address $state
+              } elseif {[scan $line "%*\[^:\]::currentLC%d.0 = INTEGER: %d" inlet current] == 2} {
+                log::debug "inlet = $inlet current = $current."
+                if {[string equal $type "ibootbar"]} {
+                  set current [expr {0.1 * $current}]
+                } elseif {[string equal $type "ibootpdu"]} {
+                  set current [expr {0.01 * $current}]
+                }
+                set totalcurrent [expr {$totalcurrent + $current}]
+              } else {
+                error "unexpected SNMP response: $line"
+              }
+            }
+          }
         }
       }
     } message]} {
