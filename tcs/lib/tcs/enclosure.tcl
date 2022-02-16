@@ -167,7 +167,7 @@ namespace eval "enclosure" {
   proc initialize {} {
     server::checkstatus
     server::checkactivityforinitialize
-    checkformove
+    checkformove "initialize"
     server::newactivitycommand "initializing" "idle" enclosure::initializeactivitycommand
   }
 
@@ -205,7 +205,7 @@ namespace eval "enclosure" {
   proc close {} {
     server::checkstatus
     server::checkactivityformove
-    checkformove
+    checkformove "close"
     server::newactivitycommand "closing" "idle" enclosure::closeactivitycommand
   }
   
