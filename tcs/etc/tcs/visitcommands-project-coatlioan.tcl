@@ -298,7 +298,7 @@ proc coarsefocusvisit {{filter "i"} {exposuretime 5} {readmode "conventionaldefa
 
 ########################################################################
 
-proc focusvisit {{filter "i"} {exposuretime 5} {readmode "conventionaldefault"}} {
+proc focusvisit {{filter "i"} {exposuretime 5} {readmode "fastguidingdefault"}} {
 
   log::summary "focusvisit: starting."
   track
@@ -321,9 +321,43 @@ proc focusvisit {{filter "i"} {exposuretime 5} {readmode "conventionaldefault"}}
 
 ########################################################################
 
-proc focuswitnessvisit {{filter "i"} {exposuretime 5} {readmode "conventionaldefault"}} {
+proc focuswitnessvisit {{filter "i"} {exposuretime 5} {readmode "fastguidingdefault"}} {
 
   gridvisit 1 9 1 $exposuretime $filter true $readmode true
+
+  log::summary "focuswitnessvisit: starting."
+
+  executor::setsecondaryoffset 0
+  executor::track
+
+  executor::setreadmode $readmode
+  executor::setwindow "default"
+  executor::setbinning 1
+
+  executor::waituntiltracking
+  
+  set dithers {
+      0as   0as
+    +30as +30as
+    -30as -30as
+    +30as -30as
+    -30as +30as
+    +30as   0as
+    -30as   0as
+      0as +30as
+      0as -30as
+  }
+
+  executor::movefilterwheel $filter
+
+  foreach {eastoffset northoffset} $dithers {
+    executor::offset $eastoffset $northoffset "default"
+    executor::waituntiltracking
+    executor::expose object $exposuretime
+    executor::focuswitness
+  }
+
+  log::summary "focuswitnessvisit: finished."
 
   return true
 }
@@ -350,7 +384,7 @@ proc initialpointingcorrectionvisit {{filter "i"} {exposuretime 30} {readmode "c
 
 ########################################################################
 
-proc pointingcorrectionvisit {{filter "i"} {exposuretime 15} {readmode "conventionaldefault"}} {
+proc pointingcorrectionvisit {{filter "i"} {exposuretime 15} {readmode "fastguidingdefault"}} {
 
   log::summary "correctpointingvisit: starting."
 
