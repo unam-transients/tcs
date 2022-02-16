@@ -290,9 +290,9 @@ namespace eval "enclosure" {
     }
   }
   
-  proc checkformove {} {
+  proc checkformove {type} {
     checkremote
-    if {![string equal [server::getdata "safetyrailflag"] "ok"]} {
+    if {![string equal $type "open"] && ![string equal [server::getdata "safetyrailflag"] "ok"]} {
       error "the enclosure safety rail is not ok."
     }
     if {![string equal [server::getdata "emergencystopflag"] "ok"]} {
@@ -311,7 +311,7 @@ namespace eval "enclosure" {
   }
   
   proc checkforopen {} {
-    checkformove
+    checkformove "open"
     checkrainsensor
   }
   
