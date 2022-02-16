@@ -109,7 +109,13 @@ then
   rm -f "$logfile"
   exec 3>&1 4>&2 1>"$logfile" 2>&1
   set -x
-  time sextractor \
+  if which source-extractor >/dev/null
+  then
+    SEXTRACTOR=source-extractor
+  else
+    SEXTRACTOR=sextractor
+  fi
+  time $SEXTRACTOR \
     -c "$etcdir"/fitssolvewcs.sex \
     -PARAMETERS_NAME "$etcdir"/fitssolvewcs.param \
     -FILTER_NAME "$etcdir"/fitssolvewcs.conv \
@@ -145,7 +151,7 @@ then
   do
     if test ! -e "$wcsfile"
     then
-      time solve-field --overwrite \
+      time solve-field -2 --overwrite \
         $scaleargs \
         --new-fits none --corr none --match none --rdls none --index-xyls none --solved none \
         --no-plots --no-verify --uniformize 0 --no-remove-lines \
