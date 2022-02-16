@@ -46,6 +46,7 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 10.0.1.8        pc                      coatlioan-pc
 10.0.1.9        control                 coatlioan-control
 10.0.1.10       airport-express         coatlioan-airport-express
+10.0.1.11       ib-detector             coatloan-ib-detector
 10.0.1.15       instrument              coatlioan-instrument C0-host
 10.0.1.16       platform                coatlioan-platform
 10.0.1.20       webcam-a                coatlioan-webcam-a
