@@ -95,6 +95,7 @@ EOF
 00 *  *  *  *  rsync -aH /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw/
 *  *  *  *  *  rsync -aH --delete /usr/local/var/tcs/selector rsync://transients.astrossp.unam.mx/coatli-raw/
 00 00 *  *  *  /usr/local/bin/tcs updatevarlatestlink; rsync -aH /usr/local/etc/tcs/blocks /usr/local/var/tcs/latest/
+00 23 *  *  *  cd /usr/local/var/tcs; exec >blocks.log 2>&1; date -u "+\%F \%T"; sh blocks/fetch.sh; sh blocks/install.sh default; sh blocks/install.sh tomorrow
 EOF
     ;;
   services)
