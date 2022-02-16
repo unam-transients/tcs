@@ -62,8 +62,8 @@ proc alertvisit {{filters "r"} {readmode "fastguidingdefault"}} {
   log::summary [format "alertvisit: alert delay at start of visit is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
   if {$alertdelay < 1800} {
     set binning            1
-    set exposuretime       5
-    set exposuresperdither 10
+    set exposuretime       15
+    set exposuresperdither 4
   } else {
     set binning            1
     set exposuretime       15
@@ -173,7 +173,7 @@ proc alertvisit {{filters "r"} {readmode "fastguidingdefault"}} {
 
 ########################################################################
 
-proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime filters {readmode "fastguidingdefault"} {focuswitness false}} {
+proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretime filters {offsetfastest true} {readmode "fastguidingdefault"} {focuswitness false}} {
 
   log::summary "gridvisit: starting."
 
@@ -233,18 +233,36 @@ proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime filters {
 
   set gridrepeat 0
   while {$gridrepeat < $gridrepeats} {
-    foreach filter $filters {
-      executor::movefilterwheel $filter
+    if {$offsetfastest} {
+      foreach filter $filters {
+        executor::movefilterwheel $filter
+        foreach {eastoffset northoffset} $dithers {
+          executor::offset $eastoffset $northoffset "default"
+          executor::waituntiltracking
+          set exposure 0
+          while {$exposure < $exposurerepeats} {
+            executor::expose object $exposuretime
+            if {$focuswitness} {
+              executor::focuswitness
+            }
+            incr exposure
+          }
+        }
+      }
+    } else {
       foreach {eastoffset northoffset} $dithers {
         executor::offset $eastoffset $northoffset "default"
         executor::waituntiltracking
-        set exposure 0
-        while {$exposure < $exposuresperdither} {
-          executor::expose object $exposuretime
-          if {$focuswitness} {
-            executor::focuswitness
+        foreach filter $filters {
+          executor::movefilterwheel $filter
+          set exposure 0
+          while {$exposure < $exposurerepeats} {
+            executor::expose object $exposuretime
+            if {$focuswitness} {
+              executor::focuswitness
+            }
+            incr exposure
           }
-          incr exposure
         }
       }
     }
@@ -280,7 +298,7 @@ proc coarsefocusvisit {{filter "i"} {exposuretime 5} {readmode "conventionaldefa
 
 ########################################################################
 
-proc focusvisit {{filter "i"} {exposuretime 5} {readmode "fastguidingdefault"}} {
+proc focusvisit {{filter "i"} {exposuretime 5} {readmode "conventionaldefault"}} {
 
   log::summary "focusvisit: starting."
   track
@@ -303,16 +321,16 @@ proc focusvisit {{filter "i"} {exposuretime 5} {readmode "fastguidingdefault"}} 
 
 ########################################################################
 
-proc focuswitnessvisit {{filter "i"} {exposuretime 5} {readmode "fastguidingdefault"}} {
+proc focuswitnessvisit {{filter "i"} {exposuretime 5} {readmode "conventionaldefault"}} {
 
-  gridvisit 1 9 1 $exposuretime $filter $readmode true
+  gridvisit 1 9 1 $exposuretime $filter true $readmode true
 
   return true
 }
 
 ########################################################################
 
-proc initialpointingcorrectionvisit {{filter "i"} {exposuretime 30} {readmode "fastguidingdefault"}} {
+proc initialpointingcorrectionvisit {{filter "i"} {exposuretime 30} {readmode "conventionaldefault"}} {
 
   log::summary "initialpointingcorrectionvisit: starting."
 
@@ -332,7 +350,7 @@ proc initialpointingcorrectionvisit {{filter "i"} {exposuretime 30} {readmode "f
 
 ########################################################################
 
-proc pointingcorrectionvisit {{filter "i"} {exposuretime 15} {readmode "fastguidingdefault"}} {
+proc pointingcorrectionvisit {{filter "i"} {exposuretime 15} {readmode "conventionaldefault"}} {
 
   log::summary "correctpointingvisit: starting."
 
@@ -507,8 +525,12 @@ proc darksvisit {} {
     setwindow "default"
     setbinning $binning
     executor::setvisit [visit::updatevisitidentifier [executor::visit] $visitidentifier]
-    expose dark 60
-    analyze levels
+    set i 0
+    while {$i < 10} {
+      expose dark 15
+      analyze levels
+      incr i
+    }
   }
   log::summary "darksvisit: finished."
   return true
