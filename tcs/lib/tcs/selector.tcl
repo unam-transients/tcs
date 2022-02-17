@@ -42,10 +42,6 @@ namespace eval "selector" {
 
   ######################################################################
 
-  variable offsethours [config::getvalue "selector" "offsethours"]
-
-  ######################################################################
-
   variable mode           "disabled"
   variable filetype       ""
   variable filename       ""
@@ -60,30 +56,15 @@ namespace eval "selector" {
     server::setdata "mode"             $mode
     server::setdata "filetype"         $filetype
     server::setdata "filename"         $filename
-    server::setdata "selectordate"     [selectordate true]
     server::setdata "focustimestamp"   [constraints::focustimestamp]
     server::setdata "timestamp"        [utcclock::combinedformat now]
   }
   
   ######################################################################
 
-  proc selectordate {{extended true}} {
-    variable offsethours
-    set seconds [expr {[utcclock::seconds] + 3600 * $offsethours}]
-    return [utcclock::formatdate $seconds $extended]
-  }
-
-  ######################################################################
-
-  proc getblockfilesdirectory {} {
-    log::info "selector date is [selectordate true]."
-    return [file join [directories::var] [selectordate false] "blocks"]
-  }
-  
   proc getblockfiles {} {
     if {[catch {
-      set blockfilesdirectory [getblockfilesdirectory]
-      set channel [open "|[directories::bin]/tcs getblockfiles \"$blockfilesdirectory\"" "r"]
+      set channel [open "|[directories::bin]/tcs getblockfiles" "r"]
       set blockfiles [read $channel]
       close $channel
       set blockfiles [split [string trimright $blockfiles "\n"] "\n"]

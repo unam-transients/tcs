@@ -25,8 +25,4 @@
 
 ########################################################################
 
-find "$1" -type f | sort
-if test -d "$tcsprefix/var/tcs/blocks"
-then
-  find "$tcsprefix/var/tcs/blocks" -type f | sort
-fi
+find "$tcsprefix/var/tcs/blocks" -type f | sort
