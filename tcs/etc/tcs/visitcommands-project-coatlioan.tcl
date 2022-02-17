@@ -173,7 +173,7 @@ proc alertvisit {{filters "r"} {readmode "fastguidingdefault"}} {
 
 ########################################################################
 
-proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretime filters {offsetfastest true} {readmode "fastguidingdefault"} {focuswitness false}} {
+proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretime filters {offsetfastest true} {readmode "fastguidingdefault"}} {
 
   log::summary "gridvisit: starting."
 
@@ -242,9 +242,6 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretime filters {off
           set exposure 0
           while {$exposure < $exposurerepeats} {
             executor::expose object $exposuretime
-            if {$focuswitness} {
-              executor::focuswitness
-            }
             incr exposure
           }
         }
@@ -258,9 +255,6 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretime filters {off
           set exposure 0
           while {$exposure < $exposurerepeats} {
             executor::expose object $exposuretime
-            if {$focuswitness} {
-              executor::focuswitness
-            }
             incr exposure
           }
         }
