@@ -10,12 +10,15 @@ usageerror () {
 }
 
 error () {
-  echo 1>&2 "$(date -u '+%F %T'): $program: error: $@"
+  log error "$@"
   exit 1
 }
 
 log () {
-  echo 1>&2 "$(date -u '+%F %T'): $program: $@"
+  level=$1
+  shift
+  tcs log "$program" $level "$*"
+  echo 1>&2 "$(date -u '+%F %T'): $program: $level: $*"
 }
 
 optstring=
@@ -50,10 +53,14 @@ else
   usageerror
 fi
 
-log "target date $targetdate."
+log summary "loading blocks."
+
+################################################################################
+
+log info "target date is $targetdate."
 
 targetdayofyear="$(date +%j -d $targetdate | sed 's/^0*//')"
-log "target day of year is $targetdayofyear."
+log info "target day of year is $targetdayofyear."
 
 ################################################################################
 
@@ -66,17 +73,15 @@ sudo mkdir -p "$queuedir"
 
 ################################################################################
 
-log "generating blocks."
+log info "generating blocks."
 
 for script in *.sh
 do
-  log "running $script generate."
+  log info "running $script generate."
   sh $script generate
 done
 
 ################################################################################
-
-log "loading blocks."
 
 expand BLOCKS |
 awk \
@@ -121,25 +126,23 @@ NF == 5 && $4 == "on" {
 sh |
 while read src dst
 do
-  log "loading $dst."
+  log info "loading $dst."
   cp $src $dst
 done
 
-log "finished loading blocks."
-
 ################################################################################
 
-log "cleaning generated blocks."
+log info "cleaning generated blocks."
 
 for script in *.sh
 do
-  log "running $script clean."
+  log info "running $script clean."
   sh $script clean
 done
 
 ################################################################################
 
-log "finished."
+log summary "finished loading blocks."
 
 exit 0
 
