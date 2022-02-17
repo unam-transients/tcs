@@ -173,7 +173,7 @@ proc alertvisit {{filters "r"} {readmode "fastguidingdefault"}} {
 
 ########################################################################
 
-proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretime filters {offsetfastest true} {readmode "fastguidingdefault"}} {
+proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {offsetfastest true} {readmode "fastguidingdefault"}} {
 
   log::summary "gridvisit: starting."
 
@@ -185,6 +185,12 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretime filters {off
   executor::setbinning 1
 
   executor::waituntiltracking
+  
+  if {[llength $exposuretimes] == 1} {
+    set exposuretimes [lrepeat [llength $filters] $exposuretimes]
+  } elseif {[llength $exposuretimes] != [llength $filters]} {
+    error "the exposuretimes and filters arguments have different lengths."
+  }
   
   set dithers [lrange {
           0as   0as
@@ -201,7 +207,7 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretime filters {off
   set gridrepeat 0
   while {$gridrepeat < $gridrepeats} {
     if {$offsetfastest} {
-      foreach filter $filters {
+      foreach filter $filters exposuretime $exposuretimes {
         executor::movefilterwheel $filter
         foreach {eastoffset northoffset} $dithers {
           executor::offset $eastoffset $northoffset "default"
@@ -217,7 +223,7 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretime filters {off
       foreach {eastoffset northoffset} $dithers {
         executor::offset $eastoffset $northoffset "default"
         executor::waituntiltracking
-        foreach filter $filters {
+        foreach filter $filters exposuretime $exposuretimes {
           executor::movefilterwheel $filter
           set exposure 0
           while {$exposure < $exposurerepeats} {
