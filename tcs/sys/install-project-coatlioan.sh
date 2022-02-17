@@ -95,8 +95,8 @@ EOF
 *  *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
 00 *  *  *  *  rsync -aH /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw/
 *  *  *  *  *  rsync -aH --delete /usr/local/var/tcs/selector rsync://transients.astrossp.unam.mx/coatli-raw/
-00 23 *  *  *  exec >/usr/local/var/tcs/latest/log/blocks.log 2>&1; date -u "+\%F \%T"; sh /usr/local/etc/tcs/blocks/fetch.sh
-00 00 *  *  *  exec >/usr/local/var/tcs/latest/log/blocks.log 2>&1; date -u "+\%F \%T"; sh /usr/local/etc/tcs/blocks/install.sh
+00 00 *  *  *  tcs fetchblocks
+01 00 *  *  *  tcs loadblocks
 EOF
     ;;
   services)
@@ -116,6 +116,7 @@ EOF
   esac
 
 ) | sudo crontab
+
 
 ################################################################################
 
