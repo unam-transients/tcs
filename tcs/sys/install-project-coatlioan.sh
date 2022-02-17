@@ -108,6 +108,11 @@ EOF
 */5 *  *  *  *  rsync -aH --remove-source-files --include="*/" --include="*.fits.*" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw/
 EOF
     ;;
+  instrument)
+    cat <<"EOF"
+00  *  *  *  *  find /usr/local/var/tcs/ -name "*.tmp" | xargs rm
+EOF
+    ;;
   esac
 
 ) | sudo crontab
