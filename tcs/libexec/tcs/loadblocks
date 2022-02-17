@@ -1,0 +1,146 @@
+#!/bin/sh
+
+export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
+
+program="tcs $(basename "$0")"
+
+usageerror () {
+  echo 1>&2 "usage: $program [date]"
+  exit 1
+}
+
+error () {
+  echo 1>&2 "$(date -u '+%F %T'): $program: error: $@"
+  exit 1
+}
+
+log () {
+  echo 1>&2 "$(date -u '+%F %T'): $program: $@"
+}
+
+optstring=
+if ! getopt -qQ -- "$optstring" "$@"
+then
+  usageerror
+fi
+eval set -- "$(getopt -q -- "$optstring" "$@")"
+while test "$1" != "--"
+do
+  case "$1" in
+  *)
+    usageerror
+    ;;
+  esac
+done
+shift
+if test $# = 0
+then
+  targetdate=$(date +%Y%m%d)
+elif test $# = 1
+then
+  case $1 in
+  [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])
+    targetdate="$1"
+    ;;
+  *)
+    targetdate=$(date +%Y%m%d -d "$1")
+    ;;
+  esac
+else
+  usageerror
+fi
+
+log "target date $targetdate."
+
+targetdayofyear="$(date +%j -d $targetdate | sed 's/^0*//')"
+log "target day of year is $targetdayofyear."
+
+################################################################################
+
+cd "$tcsprefix"/etc/tcs/blocks
+
+################################################################################
+
+queuedir=/usr/local/var/tcs/blocks
+sudo mkdir -p "$queuedir"
+
+################################################################################
+
+log "generating blocks."
+
+for script in *.sh
+do
+  log "running $script generate."
+  sh $script generate
+done
+
+################################################################################
+
+log "loading blocks."
+
+expand BLOCKS |
+awk \
+ -v queuedir="$queuedir" \
+ -v targetdate="$targetdate" \
+ -v targetdayofyear="$targetdayofyear" \
+'
+/^ *#/ {
+  # Skip comment lines.
+  next;
+}
+/^ *$/ {
+  # Skip empty lines.
+  next;
+}
+NF >= 3 {
+  priority   = $1
+  duplicates = $2
+  blockfile  = $3
+}
+NF == 6 && $4 == "day" {
+  phase = $5
+  period = $6
+  if (phase != targetdayofyear % period)
+    next;
+}
+NF == 5 && $4 == "on" {
+  date = $5
+  if (date != targetdate)
+    next;
+}
+{
+  if (duplicates > 999) {
+    duplicates = 999
+  }
+}
+{
+  for (i = 0; i < duplicates; ++i)
+    printf("for blockfile in %s.json; do echo $blockfile %s-%03d-$blockfile; done\n", blockfile, priority, i)
+}
+' | 
+sh |
+while read src dst
+do
+  log "loading $dst."
+  cp $src $dst
+done
+
+log "finished loading blocks."
+
+################################################################################
+
+log "cleaning generated blocks."
+
+for script in *.sh
+do
+  log "running $script clean."
+  sh $script clean
+done
+
+################################################################################
+
+log "finished."
+
+exit 0
+
+################################################################################
