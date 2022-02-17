@@ -76,7 +76,6 @@
     "servers": []
   },
   "selector": {
-    "offsethours": "0"
   },
   "secondary": {
     "allowedzerror": "0",

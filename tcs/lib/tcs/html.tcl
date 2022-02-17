@@ -1453,7 +1453,6 @@ if {false} {
     putshtml "<table class=\"status\">"
     if {[string equal [client::getstatus "selector"] "ok"]} {
       writehtmlfullrow "Mode"              [client::getdata "selector" "mode"]
-      writehtmlfullrow "Selector date"     [client::getdata "selector" "selectordate"]
       writehtmlfullrow "File type"         [client::getdata "selector" "filetype"]
       writehtmlfullrow "File name"         [client::getdata "selector" "filename"]
       writehtmlfullrow "Focused"           [formattimestamp [client::getdata "selector" "focustimestamp"]]
