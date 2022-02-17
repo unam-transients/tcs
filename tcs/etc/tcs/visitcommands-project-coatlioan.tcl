@@ -186,38 +186,7 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretime filters {off
 
   executor::waituntiltracking
   
-  switch $gridpoints {
-    4 {
-      set dithers {
-        +30as +30as
-        -30as -30as
-        +30as -30as
-        -30as +30as
-      }
-    }
-    5 {
-      set dithers {
-          0as   0as
-        +30as +30as
-        -30as -30as
-        +30as -30as
-        -30as +30as
-      }
-    }
-    8 {
-      set dithers {
-        +30as +30as
-        -30as -30as
-        +30as -30as
-        -30as +30as
-        +30as   0as
-        -30as   0as
-          0as +30as
-          0as -30as
-      }
-    }
-    9 {
-      set dithers {
+  set dithers [lrange {
           0as   0as
         +30as +30as
         -30as -30as
@@ -227,9 +196,7 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretime filters {off
         -30as   0as
           0as +30as
           0as -30as
-      }
-    }
-  }
+      } 0 [expr {$gridpoints * 2 - 1}]]
 
   set gridrepeat 0
   while {$gridrepeat < $gridrepeats} {
@@ -270,7 +237,7 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretime filters {off
 
 ########################################################################
 
-proc coarsefocusvisit {{filter "i"} {exposuretime 5} {readmode "conventionaldefault"}} {
+proc coarsefocusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}} {
 
   log::summary "coarsefocusvisit: starting."
   
@@ -292,7 +259,7 @@ proc coarsefocusvisit {{filter "i"} {exposuretime 5} {readmode "conventionaldefa
 
 ########################################################################
 
-proc focusvisit {{filter "i"} {exposuretime 5} {readmode "fastguidingdefault"}} {
+proc focusvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
 
   log::summary "focusvisit: starting."
   track
@@ -315,9 +282,7 @@ proc focusvisit {{filter "i"} {exposuretime 5} {readmode "fastguidingdefault"}} 
 
 ########################################################################
 
-proc focuswitnessvisit {{filter "i"} {exposuretime 5} {readmode "fastguidingdefault"}} {
-
-  gridvisit 1 9 1 $exposuretime $filter true $readmode true
+proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
 
   log::summary "focuswitnessvisit: starting."
 
@@ -358,7 +323,7 @@ proc focuswitnessvisit {{filter "i"} {exposuretime 5} {readmode "fastguidingdefa
 
 ########################################################################
 
-proc initialpointingcorrectionvisit {{filter "i"} {exposuretime 30} {readmode "conventionaldefault"}} {
+proc initialpointingcorrectionvisit {{exposuretime 30} {filter "i"} {readmode "conventionaldefault"}} {
 
   log::summary "initialpointingcorrectionvisit: starting."
 
@@ -378,7 +343,7 @@ proc initialpointingcorrectionvisit {{filter "i"} {exposuretime 30} {readmode "c
 
 ########################################################################
 
-proc pointingcorrectionvisit {{filter "i"} {exposuretime 15} {readmode "fastguidingdefault"}} {
+proc pointingcorrectionvisit {{exposuretime 15} {filter "i"} {readmode "fastguidingdefault"}} {
 
   log::summary "correctpointingvisit: starting."
 
@@ -398,7 +363,7 @@ proc pointingcorrectionvisit {{filter "i"} {exposuretime 15} {readmode "fastguid
 
 ########################################################################
 
-proc donutvisit {{filter "i"} {exposuretime 5} {offset 400}} {
+proc donutvisit {{exposuretime 5} {filter "i"} {offset 400}} {
 
   log::summary "donutvisit: starting."
   setreadmode "conventionaldefault"
@@ -425,7 +390,7 @@ proc donutvisit {{filter "i"} {exposuretime 5} {offset 400}} {
 
 ########################################################################
 
-proc pointingmapvisit {{filter "i"} {exposuretime 5} {readmode "fastguidingdefault"}} {
+proc pointingmapvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
 
   log::summary "pointingmapvisit: starting."
 
@@ -446,7 +411,7 @@ proc pointingmapvisit {{filter "i"} {exposuretime 5} {readmode "fastguidingdefau
 
 ########################################################################
 
-proc twilightflatsvisit {filter targetngood} {
+proc twilightflatsvisit {targetngood filter} {
 
   log::summary "twilightflatsvisit: starting."
 
