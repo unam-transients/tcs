@@ -1069,6 +1069,23 @@ namespace eval "constraints" {
     if {![checkalertenabled $alert]} {
       return false
     }
+    
+    # All of the time-based constraints apply only to the start of the first
+    # visit.
+
+    if {![checkminfocusdelay $visit $constraints $seconds]} {
+      return false
+    }
+    if {![checkmaxfocusdelay $visit $constraints $seconds]} {
+      return false
+    }
+
+    if {![checkmindate $visit $constraints $seconds]} {
+      return false
+    }
+    if {![checkmindate $visit $constraints $seconds]} {
+      return false
+    }
 
     if {![checkminalertuncertainty $alert $constraints]} {
       return false
@@ -1083,13 +1100,13 @@ namespace eval "constraints" {
       return false
     }
 
-    log::debug [format "checking visits."]
+     log::debug [format "checking visits."]
     if {[llength $visits] == 0} {
       setwhy "no visits."
       return false
     }
 
-    foreach visit $visits {
+     foreach visit $visits {
 
       log::debug [format "checking visit %s." [visit::identifier $visit]]
 
@@ -1121,24 +1138,6 @@ namespace eval "constraints" {
         return false
       }
 
-      if {![checkmindate $visit $constraints $seconds]} {
-        return false
-      }
-      if {![checkmindate $visit $constraints $seconds]} {
-        return false
-      }
-
-      if {![checkminfocusdelay $visit $constraints $seconds]} {
-        return false
-      }
-      if {![checkmaxfocusdelay $visit $constraints $seconds]} {
-        return false
-      }
-
-      if {![checkwithintelescopepointinglimits $visit $constraints $seconds]} {
-        return false
-      }
-    
       if {![checkminha $visit $constraints $seconds]} {
         return false
       }
