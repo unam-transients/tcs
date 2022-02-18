@@ -25,50 +25,48 @@
 
 ########################################################################
 
-export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
+#\
+umask 0; PATH=/usr/local/opt/tcl-tk/bin:$PATH exec tclsh8.6 -encoding "utf-8" "$0" ${1+"$@"}
 
-program="tcs $(basename "$0")"
-
-usageerror () {
-  echo 1>&2 "usage: $program [--] [fitsfile ...]"
-  exit 1
+if {[llength $argv] == 0} {
+  set argv "/dev/stdin"
 }
 
-optstring=""
-if ! getopt -qQ -- "$optstring" "$@"
-then
-  usageerror
-fi
-eval set -- "$(getopt -- "$optstring" "$@")"
-while test "$1" != "--"
-do
-  case "$1" in
-  *)
-    usageerror
-    ;;
-  esac
-done
-shift
-case $# in
-0)
-  set -- "/dev/stdin"
-  ;;
-esac
-
-for file in "$@"
-do
-  case $file in 
-  *.bz2)
-    bunzip2 -c -- "$file"
-    ;;
-  *.gz)
-    gunzip -c -- "$file"
-    ;;
-  *)
-    cat -- "$file"
-    ;;
-  esac |
-  fold -80 2>&- | sed '/^END /q'
-done
+foreach file $argv {
+  if {[catch {
+    switch -glob $file {
+      "*.gz" {
+        set channel [open "|gunzip -c -- \"$file\"" "r"]
+      }
+      "*.bz2" {
+        set channel [open "|bunzip2 -c -- \"$file\"" "r"]
+      }
+      default {
+        set channel [open "$file" "r"]
+      }
+    }
+    chan configure $channel -encoding binary
+  }]} {
+    puts stderr "tcs fitsheader: error: unable to open \"$file\"."
+    exit 1
+  }
+  if {[catch {
+    while {true} {
+      set record [read $channel 80]
+      if {[string length $record] != 80} {
+        error "unexpected EOF"
+      }
+      set record [string trimright $record]
+      if {[string equal $record "END"]} {
+        break
+      }
+      puts $record
+    }  
+  } message]} {
+    puts stderr "tcs fitsheader: error: while reading \"$file\": $message."
+    exit 1
+  }
+  catch {close $channel}
+}
 
 exit 0
