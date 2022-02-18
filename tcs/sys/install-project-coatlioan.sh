@@ -110,7 +110,7 @@ EOF
     ;;
   instrument)
     cat <<"EOF"
-00  *  *  *  *  find /usr/local/var/tcs/ -name "*.tmp" | xargs rm
+00 00  *  *  *  find /usr/local/var/tcs/ -name "*.tmp" | xargs rm
 EOF
     ;;
   esac
