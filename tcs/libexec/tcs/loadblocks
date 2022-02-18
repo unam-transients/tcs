@@ -127,7 +127,7 @@ sh |
 while read src dst
 do
   log info "loading $dst."
-  cp $src $dst
+  cp "$src" "$queuedir"/"$dst"
 done
 
 ################################################################################
