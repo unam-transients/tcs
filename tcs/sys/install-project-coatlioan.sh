@@ -95,8 +95,8 @@ EOF
 *  *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
 00 *  *  *  *  rsync -aH /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw/
 *  *  *  *  *  rsync -aH --delete /usr/local/var/tcs/selector rsync://transients.astrossp.unam.mx/coatli-raw/
-00 00 *  *  *  tcs fetchblocks
-01 00 *  *  *  tcs loadblocks
+00 00 *  *  *  /usr/local/bin/tcs fetchblocks
+01 00 *  *  *  /usr/local/bin/tcs loadblocks
 EOF
     ;;
   services)
