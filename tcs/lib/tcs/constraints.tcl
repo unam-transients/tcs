@@ -1073,6 +1073,27 @@ namespace eval "constraints" {
     # All of the time-based constraints apply only to the start of the first
     # visit.
 
+    if {![checkminalertuncertainty $alert $constraints]} {
+      return false
+    }
+    if {![checkmaxalertuncertainty $alert $constraints]} {
+      return false
+    }
+    if {![checkminalertdelay $alert $constraints]} {
+      return false
+    }
+    if {![checkmaxalertdelay $alert $constraints]} {
+      return false
+    }
+
+    log::debug [format "checking visits."]
+    if {[llength $visits] == 0} {
+      setwhy "no visits."
+      return false
+    }
+    
+    set visit [lindex $visits 0]
+    
     if {![checkminfocusdelay $visit $constraints $seconds]} {
       return false
     }
@@ -1087,26 +1108,7 @@ namespace eval "constraints" {
       return false
     }
 
-    if {![checkminalertuncertainty $alert $constraints]} {
-      return false
-    }
-    if {![checkmaxalertuncertainty $alert $constraints]} {
-      return false
-    }
-    if {![checkminalertdelay $alert $constraints]} {
-      return false
-    }
-    if {![checkmaxalertdelay $alert $constraints]} {
-      return false
-    }
-
-     log::debug [format "checking visits."]
-    if {[llength $visits] == 0} {
-      setwhy "no visits."
-      return false
-    }
-
-     foreach visit $visits {
+    foreach visit $visits {
 
       log::debug [format "checking visit %s." [visit::identifier $visit]]
 
