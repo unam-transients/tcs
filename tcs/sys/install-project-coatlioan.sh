@@ -111,7 +111,7 @@ EOF
     ;;
   instrument)
     cat <<"EOF"
-00 00  *  *  *  /usr/local/bin/tcs request power reboot detector; /usr/local/bin/tcs restartserver C0
+00 00  *  *  *  tcs stopserver C0; tcs request power reboot detector; sleep 20; tcs startserver C0
 00 00  *  *  *  find /usr/local/var/tcs/ -name "*.tmp" | xargs rm
 EOF
     ;;
