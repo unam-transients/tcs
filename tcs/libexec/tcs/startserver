@@ -58,7 +58,7 @@ coatlioan-control)
   allargs="sensors power weather 1 target 1 moon sun 1 secondary enclosure mount 1 telescope instrument 1 executor selector supervisor"
   ;;
 coatlioan-instrument)
-  allargs="5 C0"
+  allargs="C0"
   ;;
 coatlioan-platform)
   allargs="lights heater"
