@@ -33,9 +33,7 @@ host=$(uname -n | sed 's/\..*//')
   sed '/^# Start of tcs epilog./q' /etc/hosts
   cat <<"EOF"
 # Start of tcs epilog.
-10.211.55.3	ubuntu-18		test-ubuntu-18
-10.211.55.8	ubuntu-server-14	test-ubuntu-server-14
-192.168.1.200	minnowboard-14		test-minnowboard-14
+192.168.1.201 test-control control
 EOF
 ) | 
 sudo cp /dev/stdin /etc/hosts.tmp
@@ -59,10 +57,9 @@ sudo mv /etc/hosts.tmp /etc/hosts
 EOF
 
   case $host in
-  test-ubuntu-18)
+  test-control)
     cat <<"EOF"
-*   *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles ubuntu-18
-*   *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles minnowboard-14
+*   *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles control
 *   *  *  *  *  /usr/local/bin/tcs updateweatherfiles-oan
 00  18 *  *  *  /usr/local/bin/tcs updateweatherfiles-oan -a
 *   *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
@@ -100,8 +97,8 @@ EOF
   echo "owserver -c /etc/owfs.conf"
   
   case $host in
-  test-ubuntu-18)
-    echo "tcs instrumentdataserver -f -d rsync://localhost/tcs/ &"
+  test-control)
+    echo "tcs instrumentdataserver -f -d rsync://test-control/tcs/ &"
     ;;
   esac
   
@@ -219,7 +216,7 @@ sudo rm -f /tmp/sudoers-tcs
 (
   echo 'test ALL=(ALL) ALL'
   case $host in
-  test-ubuntu-18)
+  test-control)
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs rebootsoon'
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs restartsoon'
     ;;

@@ -1913,6 +1913,7 @@ if {false} {
       set startmilliseconds [utcclock::milliseconds]
 
       foreach server $servers {
+        log::debug "updating data for $server."
         if {[catch {client::update $server}]} {
           catch {client::update $server}
         }
