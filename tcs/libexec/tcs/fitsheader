@@ -28,6 +28,21 @@
 #\
 umask 0; PATH=/usr/local/opt/tcl-tk/bin:$PATH exec tclsh8.6 -encoding "utf-8" "$0" ${1+"$@"}
 
+package require cmdline
+
+set options {
+}
+set usage {fitsheader [--] [file ...]}
+
+try {
+  array set params [::cmdline::getoptions argv $options $usage]
+} trap {CMDLINE USAGE} {message o} {
+  puts stderr "error: usage: $usage"
+  exit 1
+}
+if {[llength $argv] > 0 && [string equal [lindex $argv 0] "--"]} {
+  set argv [lrange $argv 1 end]
+}
 if {[llength $argv] == 0} {
   set argv "/dev/stdin"
 }
