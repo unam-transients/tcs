@@ -102,14 +102,8 @@ coatlicu-control)
 coatlicu-instrument)
   allargs="C0 1 instrument"
   ;;
-test-ubuntu-18)
+test-control)
   allargs="log 1 html gcntan 1 target 1 moon sun sensors weather C0 1 telescope instrument 1 executor selector supervisor"
-  ;;
-test-ubuntu-server-14)
-  allargs="lights heater"
-  ;;
-test-minnowboard-14)
-  allargs="lights heater"
   ;;
 esac
 

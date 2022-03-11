@@ -63,9 +63,11 @@
   "selector": {},
   "gcntan": {
     "serverpacketport": "5351",
-    "swiftalertprojectidentifier": "1001",
-    "fermialertprojectidentifier": "1002",
-    "lvcalertprojectidentifier"  : "1003"
+    "swiftalertprojectidentifier"   : "1001",
+    "fermialertprojectidentifier"   : "1002",
+    "lvcalertprojectidentifier"     : "1003",
+    "hawcalertprojectidentifier"    : "1004",
+    "icecubealertprojectidentifier" : "1005"
   },
   "swift": {
     "pointingsource": "none"
@@ -91,16 +93,7 @@
     "detectors": [
       "C0"
     ],
-    "idlefilterwheelpositions": [
-      "w"
-    ],
-    "pointingdetectors": [
-      "C0"
-    ],
-    "outletgroups": []
-  },
-  "instrument": {
-    "detectors": [
+    "activedetectors": [
       "C0"
     ],
     "idlefilterwheelpositions": [
@@ -116,9 +109,12 @@
     "detectortype": "dummy",
     "detectoridentifier": "",
     "detectorpixelscale": "0.381as",
-    "detectorinitialreadmode": "",
     "detectorinitialsoftwaregain": 1,
     "detectorinitialbinning": 1,
+    "detectorreadmodes": {
+      "initial": "default",
+      "default": ""
+    },
     "detectorwindows": {
       "initial": "default",
       "default": "4kx4k",
@@ -184,10 +180,8 @@
   },
   "sensors": {
     "lognames": [
-      "host-ubuntu-18-load",
-      "host-ubuntu-18-disk-space-used",
-//      "host-spare-minnowboardturbot0-load",
-//      "host-spare-minnowboardturbot0-disk-space-used",
+      "host-control-load",
+      "host-control-disk-space-used",
       "C0-detector-detector-temperature",
       "C0-detector-cooler-set-temperature",
       "C0-detector-cooler-state",
@@ -195,12 +189,12 @@
       "C0-filter-wheel-position"
     ],
     "sensors": {
-      "host-ubuntu-18-load": {
-        "file": "/usr/local/var/tcs/sensors/ubuntu-18/load",
+      "host-control-load": {
+        "file": "/usr/local/var/tcs/sensors/control/load",
         "keyword": "",
-        "prettyname": "load on host ubuntu-18",
+        "prettyname": "load on host control",
         "subsystem": "tcs",
-        "component": "ubuntu-18",
+        "component": "control",
         "group": "host-load",
         "type": "float",
         "unit": "processes",
@@ -208,23 +202,12 @@
         "identifier": "",
         "firmware": ""
       },
-//       "host-spare-minnowboardturbot0-load": {
-//         "file": "/usr/local/var/tcs/sensors/spare-minnowboardturbot0/load",
-//         "keyword": "",
-//         "prettyname": "load on host spare-minnowboardturbot0",
-//         "group": "host-load",
-//         "type": "float",
-//         "unit": "processes",
-//         "model": "",
-//         "identifier": "",
-//         "firmware": ""
-//       },
-      "host-ubuntu-18-disk-space-used": {
-        "file": "/usr/local/var/tcs/sensors/ubuntu-18/disk-space-used",
+      "host-control-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/control/disk-space-used",
         "keyword": "",
-        "prettyname": "relative disk space used on host ubuntu-18",
+        "prettyname": "relative disk space used on host control",
         "subsystem": "tcs",
-        "component": "ubuntu-18",
+        "component": "control",
         "group": "host-disk-space-used",
         "type": "float",
         "unit": "",
@@ -232,19 +215,6 @@
         "identifier": "",
         "firmware": ""
       },
-//      "host-spare-minnowboardturbot0-disk-space-used": {
-//        "file": "/usr/local/var/tcs/sensors/spare-minnowboardturbot0/disk-space-used",
-//        "keyword": "",
-//        "prettyname": "relative disk space used on host spare-minnowboardturbot0",
-//        "subsystem": "tcs",
-//        "component": "ubuntu-18",
-//        "group": "host-disk-space-used",
-//        "type": "float",
-//        "unit": "",
-//        "model": "",
-//        "identifier": "",
-//        "firmware": ""
-//      },
       "C0-detector-detector-temperature": {
         "file": "/usr/local/var/tcs/sensors/ubuntu-18/C0-detector-detector-temperature",
         "keyword": "",

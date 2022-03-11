@@ -75,6 +75,7 @@ installs	:=			        \
 	fitfocus.tcl	    		\
 	fitsheader.tcl	    		\
 	focuser.tcl			        \
+	focuserddoti.tcl            \
 	focuserfli.tcl		    	\
 	focusernull.tcl		    	\
 	focuseroptec.tcl	    	\

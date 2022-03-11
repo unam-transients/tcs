@@ -39,11 +39,13 @@ UNAME_N=$(shell uname -n)
 
 ifeq ($(UNAME_M),x86_64)
 installs_project_test	    	:=	\
-	detectorfli.so		        	\
+	detectorfli.so		         	\
 	focuserfli.so		        	\
 	filterwheelfli.so
 else
-installs_project_test    	    :=
+installs_project_test	    	:=	\
+	detectordummy.so		      	\
+	filterwheelnull.so
 endif
 
 ifeq ($(UNAME_M),x86_64)
