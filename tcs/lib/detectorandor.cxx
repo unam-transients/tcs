@@ -528,6 +528,7 @@ detectorrawgetreadytoberead(void)
       unsigned int status;
       unsigned short pix[ny * nx];
 
+
       status = GetOldestImage16(pix, nx * ny);
       if (status == DRV_NO_NEW_DATA)
         break;
