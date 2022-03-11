@@ -43,7 +43,7 @@ namespace eval "project" {
       set identifier [format "%04d" $identifier]
       return $identifier
     } else {
-      return ""
+      error "invalid project: missing identifier."
     }
   }
   
