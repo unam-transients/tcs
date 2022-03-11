@@ -520,22 +520,31 @@ detectorrawgetreadytoberead(void)
 
   if (strcmp(amplifier, "EM") == 0) {
   
+    log("detectorrawgetreadytoberead: starting EM loop.");
+
     while (1) {
     
+      log("detectorrawgetreadytoberead: iframe = %lu nframe = %lu.", (unsigned long) iframe, (unsigned long) nframe);
       if (iframe == nframe)
         break;
 
       unsigned int status;
       unsigned short pix[ny * nx];
 
+      log("detectorrawgetreadytoberead: getting oldest image.");
 
       status = GetOldestImage16(pix, nx * ny);
-      if (status == DRV_NO_NEW_DATA)
+      if (status == DRV_NO_NEW_DATA) {
+        log("detectorrawgetreadytoberead: no new data.");
         break;
+      }
     
-      if (status != DRV_SUCCESS)
-        DETECTOR_ERROR(msg("unable to get pixel data (nx is %lu ny is %lu status is %u).", nx, ny, status));
+      if (status != DRV_SUCCESS) {
+        log("detectorrawgetreadytoberead: unable to get pixel data (status is %u).", status);
+        DETECTOR_ERROR(msg("unable to get pixel data (status is %u).", status));
+      }
 
+      log("detectorrawgetreadytoberead: ordering pixels in frame.");
       for (unsigned long iy = 0; iy < ny; ++iy) {
         if (flipped) {
           for (unsigned long ix = 0; ix < nx; ++ix)
@@ -549,10 +558,13 @@ detectorrawgetreadytoberead(void)
       double cubebzero  = 32768;
       double cubebscale = 1;
 
+      log("detectorrawgetreadytoberead: writing cube.");
       for (unsigned long iy = 0; iy < ny; ++iy)
         detectorrawcubepixnext(&frame[iy][0], nx, cubebzero, cubebscale);
 
       if (dosaa) {
+
+        log("detectorrawgetreadytoberead: doing shift-and-add.");
 
         int ixmax, iymax, zmax;
         if (iframe == 0) {
@@ -600,6 +612,8 @@ detectorrawgetreadytoberead(void)
 
       } else {
       
+        log("detectorrawgetreadytoberead: just adding.");
+
         for (unsigned long iy = 0; iy < ny; ++iy) {
           for (unsigned long ix = 0; ix < nx; ++ix) {
             framesum[iy][ix] += frame[iy][ix];
@@ -613,6 +627,8 @@ detectorrawgetreadytoberead(void)
       ++iframe;
       
     }
+
+    log("detectorrawgetreadytoberead: finished EM loop.");
 
     return iframe == nframe;
 
