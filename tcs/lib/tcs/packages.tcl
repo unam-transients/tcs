@@ -116,6 +116,8 @@ package ifneeded fitfocus              0.0 \
   [list source [file join [file dirname [info script]] fitfocus.tcl]]
 package ifneeded fitsheader            0.0 \
   [list source [file join [file dirname [info script]] fitsheader.tcl]]
+package ifneeded focuserddoti          0.0 \
+  [list source [file join [file dirname [info script]] focuserddoti.tcl]]
 package ifneeded focuserfli            0.0 \
   [list source [file join [file dirname [info script]] focuserfli.tcl]]
 package ifneeded focusernull           0.0 \
@@ -172,7 +174,6 @@ package ifneeded mountntm              0.0 \
   [list source [file join [file dirname [info script]] mountntm.tcl]]
 package ifneeded mountopentsi          0.0 \
   [list source [file join [file dirname [info script]] mountopentsi.tcl]]
-
 package ifneeded mountratiroan         0.0 \
   [list source [file join [file dirname [info script]] mountratiroan.tcl]]
 package ifneeded mountserver           0.0 \
