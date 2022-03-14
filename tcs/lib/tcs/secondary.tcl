@@ -178,6 +178,9 @@ namespace eval "secondary" {
   proc normalizez0 {z0} {
     if {[string is integer -strict $z0]} {
       return $z0
+    } elseif {[string equal $z0 "initialz0"]} {
+      variable initialz0
+      return $initialz0
     } elseif {[string equal $z0 "z0"]} {
       return [server::getdata "requestedz0"]
     } else {
