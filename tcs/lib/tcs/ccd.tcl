@@ -1082,7 +1082,7 @@ namespace eval "ccd" {
       $timeoutmilliseconds
     return
   }
-  
+
   proc analyze {type} {
     server::checkstatus
     server::checkactivity "idle"
@@ -1132,7 +1132,7 @@ namespace eval "ccd" {
       set position [server::getdata "requestedfocuserposition"]
     } elseif {
       ![string is integer -strict $position] ||
-      $position < 0 ||
+      $position < [server::getdata "focuserminposition"] ||
       $position > [server::getdata "focusermaxposition"]
     } {
       error "invalid focuser position \"$position\"."
