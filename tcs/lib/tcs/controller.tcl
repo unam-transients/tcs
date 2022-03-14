@@ -83,7 +83,9 @@ namespace eval "controller" {
     chan configure $channel -blocking false
     chan configure $channel -buffering "line"
     chan configure $channel -encoding "ascii"
-    chan configure $channel -translation "binary"
+    # The serial devices connected to the Lantronics serial port server at
+    # COATLI and DDOTI need "auto" input translation.
+    chan configure $channel -translation {"auto" "binary"}
   }
 
   proc closechannel {} {
