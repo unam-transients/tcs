@@ -36,6 +36,7 @@ package provide "mountratiroan" 0.0
 
 config::setdefaultvalue "mount" "controllerhost"          "mount"
 config::setdefaultvalue "mount" "controllerport"          10001
+config::setdefaultvalue "mount" "initialcommand"          ""
 config::setdefaultvalue "mount" "allowedlsterror"         "2s"
 config::setdefaultvalue "mount" "allowedpositionerror"    "4as"
 config::setdefaultvalue "mount" "pointingmodelparameters" [dict create]
@@ -69,6 +70,7 @@ namespace eval "mount" {
 
   variable controllerhost          [config::getvalue "mount" "controllerhost"]
   variable controllerport          [config::getvalue "mount" "controllerport"]
+  variable initialcommand          [config::getvalue "mount" "initialcommand"]
   variable allowedlsterror         [astrometry::parseangle [config::getvalue "mount" "allowedlsterror"]]
   variable allowedpositionerror    [astrometry::parseangle [config::getvalue "mount" "allowedpositionerror"]]
   variable allowedguideoffset      [astrometry::parseangle [config::getvalue "mount" "allowedguideoffset"]] 

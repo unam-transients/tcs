@@ -35,6 +35,7 @@ package provide "mountntm" 0.0
 
 config::setdefaultvalue "mount" "controllerhost"             "mount"
 config::setdefaultvalue "mount" "controllerport"             65432
+config::setdefaultvalue "mount" "initialcommand"             ""
 config::setdefaultvalue "mount" "allowedpositionerror"       "4as"
 config::setdefaultvalue "mount" "pointingmodelparameters0"   [dict create]
 config::setdefaultvalue "mount" "pointingmodelID0"           "0"
@@ -68,6 +69,7 @@ namespace eval "mount" {
 
   variable controllerhost              [config::getvalue "mount" "controllerhost"]
   variable controllerport              [config::getvalue "mount" "controllerport"]
+  variable initialcommand              [config::getvalue "mount" "initialcommand"]
   variable allowedpositionerror        [astrometry::parseangle [config::getvalue "mount" "allowedpositionerror"]]
   variable pointingmodelpolarhole      [astrometry::parsedistance [config::getvalue "mount" "pointingmodelpolarhole"]]
   variable allowedguideoffset          [astrometry::parseoffset [config::getvalue "mount" "allowedguideoffset"]]
