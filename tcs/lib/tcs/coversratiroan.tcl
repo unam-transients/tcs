@@ -156,6 +156,15 @@ namespace eval "covers" {
 
   ######################################################################
 
+  proc start {} {
+    server::setstatus "ok"
+    controller::startcommandloop
+    controller::startstatusloop
+    server::newactivitycommand "starting" "started" covers::startactivitycommand
+  }
+
+  ######################################################################
+
 }
 
 source [file join [directories::prefix] "lib" "tcs" "covers.tcl"]
