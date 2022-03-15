@@ -38,6 +38,7 @@ installs	:=			        \
 	coroutine.tcl			    \
 	covers.tcl			        \
 	coverscoatlioan.tcl		    \
+	coversopentsi.tcl           \
 	coversratiroan.tcl			\
 	coversserver.tcl		    \
 	cryostat.tcl			    \

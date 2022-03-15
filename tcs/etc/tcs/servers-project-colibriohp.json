@@ -84,5 +84,9 @@
   "mount": {
     "host": "control",
     "port": 5016
+  },
+  "covers": {
+    "host": "control",
+    "port": 5017
   }
 }
