@@ -287,7 +287,7 @@ fi
 # wait for any background tasks to finish.
 
 case $host in
-colibriohp-control|colibriohp-data)
+colibriohp-access)
   sudo cp /dev/stdin <<"EOF" /Library/LaunchDaemons/local.localhost.startup.plist
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
