@@ -35,6 +35,7 @@ host=$(uname -n | sed 's/\..*//')
 # Start of tcs epilog.
 
 192.168.100.1     firewall                colibriohp-firewall
+192.168.100.23    mount                   colibriohp-mount
 192.168.100.50    access                  colibriohp-access
 192.168.100.51    pdu1                    colibriohp-pdu1
 192.168.100.52    pdu2                    colibriohp-pdu2
