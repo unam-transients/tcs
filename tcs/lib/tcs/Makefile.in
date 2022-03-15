@@ -128,6 +128,7 @@ installs	:=			        \
 	selector.tcl 		    	\
 	selectorserver.tcl 	    	\
 	secondary.tcl			    \
+	secondaryopentsi.tcl        \
 	secondaryoptec.tcl		    \
 	secondaryratiroan.tcl		\
 	secondaryserver.tcl		    \

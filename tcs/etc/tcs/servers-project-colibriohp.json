@@ -88,5 +88,9 @@
   "covers": {
     "host": "control",
     "port": 5017
+  },
+  "secondary": {
+    "host": "control",
+    "port": 5018
   }
 }

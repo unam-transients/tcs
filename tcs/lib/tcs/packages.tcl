@@ -216,6 +216,8 @@ package ifneeded selector              0.0 \
   [list source [file join [file dirname [info script]] selector.tcl]]
 package ifneeded selectorserver        0.0 \
   [list source [file join [file dirname [info script]] selectorserver.tcl]]
+package ifneeded secondaryopentsi      0.0 \
+  [list source [file join [file dirname [info script]] secondaryopentsi.tcl]]
 package ifneeded secondaryoptec        0.0 \
   [list source [file join [file dirname [info script]] secondaryoptec.tcl]]
 package ifneeded secondaryratiroan     0.0 \
