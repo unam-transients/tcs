@@ -90,9 +90,9 @@
       "detectors"           : [[ "pdu1", "a", "5"]],
       "blue"                : [[ "pdu1", "a", "6"]],
       "sparelinux"          : [[ "pdu1", "a", "7"]],
-      "sparewindows"        : [[ "pdu1", "a", "8"]],
-      "close-electronics"   : [[ "pdu2", "a", "1"]],
-      "blue-service-cabinet": [[ "pdu2", "a", "2"]]
+      "sparewindows"        : [[ "pdu1", "a", "8"]]
+//      "close-electronics"   : [[ "pdu2", "a", "1"]],
+//      "blue-service-cabinet": [[ "pdu2", "a", "2"]]
     }
   },
   "instrument": {
