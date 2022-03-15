@@ -80,5 +80,9 @@
   "power": {
     "host": "control",
     "port": 5015
+  },
+  "mount": {
+    "host": "control",
+    "port": 5016
   }
 }

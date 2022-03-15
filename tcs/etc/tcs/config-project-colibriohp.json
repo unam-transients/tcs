@@ -40,6 +40,7 @@
       "executor",
       "instrument",
       "moon",
+      "mount",
       "plc",
       "power",
       "selector",
@@ -64,6 +65,9 @@
   },
   "safetyswitch": {
     "type": "none"
+  },
+  "mount": {
+    "type": "opentsi"
   },
   "plc": {
     "controllerhost": "192.168.100.28",
