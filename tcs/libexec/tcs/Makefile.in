@@ -25,149 +25,144 @@
 
 include ../../Makefile.prolog
 
-prefix		:=	@prefix@
+prefix      :=  @prefix@
 
 ########################################################################
 
-installbins			:= 		\
-	allskyimageserver 			\
-	checkhalt                               \
-	checkreboot                             \
-	checkrestart                            \
-	cleanfiles 				\
-	domeserver 				\
-	emergencystop 				\
-	executorserver 				\
-	fansserver 				\
-	fetchblocks                 \
-	finderimageserver 			\
-	fitschpix 				\
-	fitsdatawindow                          \
-	fitsfocus				\
-	fitsfwhm 				\
-	fitssoftgain 				\
-	fitssolvewcs 				\
-	fitssplice 				\
-	fitpsf 					\
-	fitsheader 				\
-	fitsheadervalue 			\
-	fitsmean 				\
-	fitswcsvalue 				\
-	getblockfiles				\
-	getcatalogobject 			\
-	gcntanserver 				\
-	guiderserver 				\
-	gpio	 				\
-	haltsoon				\
-	heaterserver 				\
-	htmlserver				\
-	instrumentdataserver			\
-	instrumentimageserver			\
-	instrumentserver			\
-	lightsserver				\
-	loadblocks                  \
-	log \
-	logsensors				\
-	logserver				\
-	lvcskymapfindpeak			\
-	moonserver				\
-	mountserver				\
-	newpgrp					\
-	owsensorsserver				\
-	powerserver 				\
-	rebootsoon                              \
-	request					\
-	restartserver				\
-	restartsoon				\
-	selectorserver				\
-	sendpushover				\
-	sensorsserver				\
-	shuttersserver				\
-	solarsystembodycoordinates		\
-	startserver 				\
-	stopserver 				\
-	supervisorserver 			\
-	sunserver 				\
-	targetserver 				\
-	telescopeserver 			\
-	updatelocalsensorsfiles 		\
-	updateowsensorsfiles 			\
-	updatesensorsfiles 			\
-	updatevarlatestlink 			\
-	wait                        \
-	weatherserver 				\
+installbins         :=            \
+	allskyimageserver             \
+	checkhalt                     \
+	checkreboot                   \
+	checkrestart                  \
+	cleanfiles                    \
+	domeserver                    \
+	emergencystop                 \
+	executorserver                \
+	fansserver                    \
+	fetchblocks                   \
+	finderimageserver             \
+	fitschpix                     \
+	fitsdatawindow                \
+	fitsfocus                     \
+	fitsfwhm                      \
+	fitssoftgain                  \
+	fitssolvewcs                  \
+	fitssplice                    \
+	fitpsf                        \
+	fitsheader                    \
+	fitsheadervalue               \
+	fitsmean                      \
+	fitswcsvalue                  \
+	getblockfiles                 \
+	getcatalogobject              \
+	gcntanserver                  \
+	guiderserver                  \
+	gpio                          \
+	haltsoon                      \
+	heaterserver                  \
+	htmlserver                    \
+	instrumentdataserver          \
+	instrumentimageserver         \
+	instrumentserver              \
+	lightsserver                  \
+	loadblocks                    \
+	log                           \
+	logsensors                    \
+	logserver                     \
+	lvcskymapfindpeak             \
+	moonserver                    \
+	mountserver                   \
+	newpgrp                       \
+	owsensorsserver               \
+	powerserver                   \
+	rebootsoon                    \
+	request                       \
+	restartserver                 \
+	restartsoon                   \
+	selectorserver                \
+	sendpushover                  \
+	sensorsserver                 \
+	shuttersserver                \
+	solarsystembodycoordinates    \
+	startserver                   \
+	stopserver                    \
+	supervisorserver              \
+	sunserver                     \
+	targetserver                  \
+	telescopeserver               \
+	updatelocalsensorsfiles       \
+	updateowsensorsfiles          \
+	updatesensorsfiles            \
+	updatevarlatestlink           \
+	wait                          \
+	weatherserver                 \
 	webcamimageserver
 
-installbins_project_test	:=		\
-	C0server				\
+installbins_project_test :=       \
+	C0server                      \
 	updateweatherfiles-oan
 	
-installbins_project_johnsoncu	:=		\
-	C0server				\
+installbins_project_johnsoncu :=  \
+	C0server                      \
 	updateweatherfiles-oan
 	
-installbins_project_ratiroan	:=		\
-	C0server				\
-	C1server				\
-	C2server				\
-	C3server				\
-	coversserver	    	\
-	cryostatserver  		\
-	finderdataserver                        \
-	h2rgexpose-project-ratiroan		\
-	inclinometersserver	\
-	nefinderserver		\
-	secondaryserver				\
-	sefinderserver		\
+installbins_project_ratiroan :=   \
+	C0server                      \
+	C1server                      \
+	C2server                      \
+	C3server                      \
+	coversserver                  \
+	cryostatserver                \
+	finderdataserver              \
+	h2rgexpose-project-ratiroan   \
+	inclinometersserver           \
+	nefinderserver                \
+	secondaryserver               \
+	sefinderserver                \
 	updateweatherfiles-oan
 
-installbins_project_coatlioan	:=		\
-	C0server				\
-	enclosureserver				\
-	secondaryserver				\
+installbins_project_coatlioan :=  \
+	C0server                      \
+	enclosureserver               \
+	secondaryserver               \
 	updateweatherfiles-oan
 
-installbins_project_ddotioan	:=		\
-	C0server				\
-	C1server				\
-	C2server				\
-	C3server				\
-	C4server				\
-	C5server				\
-	enclosureserver				\
+installbins_project_ddotioan :=   \
+	C0server                      \
+	C1server                      \
+	C2server                      \
+	C3server                      \
+	C4server                      \
+	C5server                      \
+	enclosureserver               \
 	updateweatherfiles-oan
 	
-installbins_project_colibriohp	:=		\
-	C0server				            \
-	plcserver                           \
+installbins_project_colibriohp := \
+    coversserver                  \
+	C0server                      \
+	plcserver                     \
 	updateweatherfiles-dummy
 	
-installbins_project_ddoticu	:=		\
+installbins_project_ddoticu :=    \
 	C0server
 	
-installbins_project_colibricito	:=		\
-	C0server				\
-	enclosureserver				\
-	plcserver-project-colibricito		\
-	updateweatherfiles-satino
-
-installbins_project_coatlicu        :=  \
-	C0server                            \
+installbins_project_coatlicu :=   \
+	C0server                      \
 	updateweatherfiles-dummy
 	
-CLEAN_FILES			:=	*.o newpgrp
+CLEAN_FILES         :=  *.o newpgrp
 
-INSTALL_DIR			:=	$(prefix)/libexec/tcs
+INSTALL_DIR         :=  $(prefix)/libexec/tcs
 
 ########################################################################
 
-CC		:=	@CC@
-CFLAGS		:=	@CFLAGS@ -Wall -fPIC -I$(prefix)/include -I/usr/local/include -I
+CC      :=  @CC@
+CFLAGS      :=  @CFLAGS@ -Wall -fPIC -I$(prefix)/include -I/usr/local/include -I
 
-LDFLAGS		:=	-L$(prefix)/lib -L/usr/local/lib
-LIBS		:=	-lcfitsio -lfftw3 -lm
+LDFLAGS     :=  -L$(prefix)/lib -L/usr/local/lib
+LIBS        :=  -lcfitsio -lfftw3 -lm
 
-newpgrp		:	newpgrp.c
+newpgrp     :   newpgrp.c
 	$(CC) $(CFLAGS) $(LDFLAGS) -o newpgrp newpgrp.c $(LIBS)
 
 fitpsf          :       fitpsf.c

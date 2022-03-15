@@ -528,7 +528,15 @@ namespace eval "html" {
     if {[string equal [client::getstatus "covers"] "ok"]} {
       writehtmlrow "Requested covers" [client::getdata "covers" "requestedcovers"]
       writehtmlrow "Current covers" [client::getdata "covers" "covers"]
-      writehtmlrow "Mode" [client::getdata "covers" "mode"]
+      if {![catch {client::getdata "covers" "port2cover"}]} {
+        writehtmlrow "Current port 2 cover" [client::getdata "covers" "port2cover"]
+      }
+      if {![catch {client::getdata "covers" "port3cover"}]} {
+        writehtmlrow "Current port 3 cover" [client::getdata "covers" "port3cover"]
+      }
+      if {![catch {client::getdata "covers" "mode"}]} {
+        writehtmlrow "Mode" [client::getdata "covers" "mode"]
+      }
       if {![catch {client::getdata "covers" "inputchannels"}]} {
         writehtmlrow "Input channels" [client::getdata "covers" "inputchannels"]
       }

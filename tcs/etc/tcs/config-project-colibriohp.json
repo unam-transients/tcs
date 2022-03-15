@@ -37,10 +37,10 @@
   },
   "html": {
     "servers": [
+      "covers",
       "executor",
       "instrument",
       "moon",
-      "mount",
       "plc",
       "power",
       "selector",
@@ -62,6 +62,9 @@
     "type": "dummy",
     "idleha": "0h",
     "idledelta": "0d"
+  },
+  "covers": {
+    "type": "opentsi"
   },
   "safetyswitch": {
     "type": "none"
