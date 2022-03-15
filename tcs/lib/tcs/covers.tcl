@@ -59,13 +59,4 @@ namespace eval "covers" {
     server::newactivitycommand "closing" "idle" covers::closeactivitycommand
   }
 
-  ######################################################################
-
-  proc start {} {
-    server::setstatus "ok"
-    controller::startcommandloop
-    controller::startstatusloop
-    server::newactivitycommand "starting" "started" covers::startactivitycommand
-  }
-
 }
