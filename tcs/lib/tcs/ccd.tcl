@@ -659,6 +659,10 @@ namespace eval "ccd" {
     }
 
     while {[detector::continueexposure]} {
+      variable pollmilliseconds
+      if {[utcclock::diff now [server::getdata "timestamp"]] * 1000 > $pollmilliseconds} {
+        updatedata
+      }
       coroutine::after 100
     }
 
