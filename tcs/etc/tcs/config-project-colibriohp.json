@@ -43,6 +43,7 @@
       "moon",
       "plc",
       "power",
+      "secondary",
       "selector",
       "sensors",
       "sun",
@@ -68,6 +69,15 @@
   },
   "safetyswitch": {
     "type": "none"
+  },
+  "secondary": {
+    "type": "opentsi",
+    "initialz0": "0",
+    "minz": "0",
+    "maxz": "40",
+    "allowedzerror": "0.05",
+    "zdeadzonewidth": "0.05",
+    "dztweak": "-1"
   },
   "mount": {
     "type": "opentsi"

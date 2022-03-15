@@ -30,7 +30,12 @@ package require "log"
 package require "coroutine"
 package require "server"
 
-config::setdefaultvalue "secondary" "dzfilter" {}
+config::setdefaultvalue "secondary" "dzdzenithdistance" 0
+config::setdefaultvalue "secondary" "dzdha"             0
+config::setdefaultvalue "secondary" "dzddelta"          0
+config::setdefaultvalue "secondary" "dzdT"              0
+config::setdefaultvalue "secondary" "temperaturesensor" ""
+config::setdefaultvalue "secondary" "dzfilter"          {}
 
 namespace eval "secondary" {
 

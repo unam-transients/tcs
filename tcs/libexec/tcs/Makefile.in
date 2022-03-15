@@ -141,6 +141,7 @@ installbins_project_colibriohp := \
     coversserver                  \
 	C0server                      \
 	plcserver                     \
+	secondaryserver               \
 	updateweatherfiles-dummy
 	
 installbins_project_ddoticu :=    \
