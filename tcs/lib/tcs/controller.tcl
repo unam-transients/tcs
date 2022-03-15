@@ -85,7 +85,7 @@ namespace eval "controller" {
     chan configure $channel -encoding "ascii"
     # The serial devices connected to the Lantronics serial port server at
     # COATLI and DDOTI need "auto" input translation.
-    chan configure $channel -translation {"auto" "binary"}
+    #chan configure $channel -translation {"auto" "binary"}
   }
 
   proc closechannel {} {
@@ -162,8 +162,12 @@ namespace eval "controller" {
   }
 
   ######################################################################
+  
+  variable initialcommand
 
-  proc startcommandloop {} {
+  proc startcommandloop {{initialcommandarg ""}} {
+    variable initialcommand
+    set initialcommand $initialcommandarg
     after idle {
       log::debug "controller: starting commmand loop."
       coroutine controller::commandloopcoroutine controller::commandloop
@@ -173,8 +177,11 @@ namespace eval "controller" {
   proc persistentcommandloop {} {
     variable commandqueue
     variable intervalmilliseconds
+    variable initialcommand
     if {[catch {openchannel} message]} {
       log::debug "controller: unable to open channel: $message"
+    } elseif {![string equal $initialcommand ""]} {
+      handlecommand $initialcommand
     }
     while {true} {
       if {[queue::length $commandqueue] != 0} {
@@ -188,6 +195,8 @@ namespace eval "controller" {
           catch {closechannel}
           if {[catch {openchannel} message]} {
             log::debug "controller: unable to open channel: $message"
+          } elseif {![string equal $initialcommand ""]} {
+            handlecommand $initialcommand
           }
         } else {
           if {
@@ -206,34 +215,47 @@ namespace eval "controller" {
   proc ephemeralcommandloop {} {
     variable commandqueue
     variable intervalmilliseconds
+    variable initialcommand
     while {true} {
+      coroutine::after $intervalmilliseconds
       if {[queue::length $commandqueue] != 0} {
         set command [queue::next $commandqueue]
         if {[string equal $command ""]} {
           set commandqueue [queue::pop $commandqueue]
           server::resumeactivitycommand
-        } elseif {[catch {openchannel} message]} {
+          continue
+        }
+        if {[catch {openchannel} message]} {
           log::debug "controller: unable to open channel: $message"
           catch {drainchannel}
           catch {closechannel}
-        } elseif {[catch {handlecommand $command} message]} {
+          continue
+        }
+        if {![string equal $initialcommand ""] && [catch {handlecommand $initialcommand} message]} {
+          log::debug "controller: unable to send initial command: $message"
+          catch {drainchannel}
+          catch {closechannel}
+          continue
+        }
+        if {[catch {handlecommand $command} message]} {
           log::debug "controller: unable to send command: $message"
           catch {drainchannel}
           catch {closechannel}
-        } elseif {[catch {closechannel} message]} {
+          continue
+        } 
+        if {[catch {closechannel} message]} {
           log::debug "controller: unable to close channel: $message"
           catch {drainchannel}
-        } else {
-          if {
-            [queue::length $commandqueue] != 0 &&
-            [string equal $command [queue::next $commandqueue]]
-          } {
-            set commandqueue [queue::pop $commandqueue]
-          }
-          server::resumeactivitycommand
+          continue
         }
+        if {
+          [queue::length $commandqueue] != 0 &&
+          [string equal $command [queue::next $commandqueue]]
+        } {
+          set commandqueue [queue::pop $commandqueue]
+        }
+        server::resumeactivitycommand
       }
-      coroutine::after $intervalmilliseconds
     }
   }
   
