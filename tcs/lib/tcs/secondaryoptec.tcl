@@ -255,6 +255,13 @@ namespace eval "secondary" {
 
   ######################################################################
   
+  proc start {} {
+    server::setactivity "starting"
+    controller::startcommandloop
+    controller::startstatusloop
+    server::newactivitycommand "starting" "started" secondary::startactivitycommand
+  }
+
 }
 
 source [file join [directories::prefix] "lib" "tcs" "secondary.tcl"]
