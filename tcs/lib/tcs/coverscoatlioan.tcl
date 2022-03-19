@@ -207,14 +207,14 @@ namespace eval "covers" {
     log::info [format "finished closing after %.1f seconds." [utcclock::diff $end $start]]
   }
 
-  proc stopactivitycommand {} {
+  proc stopactivitycommand {previousactivity} {
     set start [utcclock::seconds]
     log::info "stopping."
     set activity [server::getdata "activity"]
     if {
-      [string equal $activity "initializing"] || 
-      [string equal $activity "opening"] || 
-      [string equal $activity "closing"]
+      [string equal $previousactivity "initializing"] || 
+      [string equal $previousactivity "opening"] || 
+      [string equal $previousactivity "closing"]
     } {    
       stopcovers
     }
