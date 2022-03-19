@@ -146,7 +146,7 @@ namespace eval "covers" {
     log::info [format "finished closing after %.1f seconds." [utcclock::diff $end $start]]
   }
 
-  proc stopactivitycommand {} {
+  proc stopactivitycommand {previousactivity} {
     set start [utcclock::seconds]
     log::info "stopping"
     server::setdata "requestedcovers" ""
