@@ -38,7 +38,7 @@ namespace eval "covers" {
   proc stop {} {
     server::checkstatus
     server::checkactivityforstop
-    server::newactivitycommand "stopping" [server::getstoppedactivity] covers::stopactivitycommand
+    server::newactivitycommand "stopping" [server::getstoppedactivity] "covers::stopactivitycommand [server::getactivity]"
   }
   
   proc reset {} {
