@@ -37,8 +37,8 @@ namespace eval "client" {
   
   ########################################################################
 
-  variable connectiontimeout 15000
-  variable responsetimeout   15000
+  variable connectiontimeout 30000
+  variable responsetimeout   30000
 
   proc rawrequest {server command} {
     set host [jsonrpc::getserverhost $server]
