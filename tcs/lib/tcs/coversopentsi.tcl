@@ -133,14 +133,6 @@ namespace eval "covers" {
     variable emergencystopcommandidentifier
     variable completedcommandidentifier
 
-    if {$commandidentifier == $emergencystopcommandidentifier} {
-      log::debug "controller response \"$controllerresponse\"."
-      if {[regexp {^[0-9]+ COMMAND COMPLETE} $controllerresponse] == 1} {
-        finishemergencystop
-        return false
-      }
-    }
-
     if {$commandidentifier != $statuscommandidentifier} {
       variable currentcommandidentifier
       variable completedcurrentcommand
