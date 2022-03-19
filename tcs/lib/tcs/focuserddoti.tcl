@@ -27,7 +27,7 @@ package provide "focuserddoti" 0.0
 
 namespace eval "focuser" {
 
-  variable settledelayseconds 1.0
+  variable settledelayseconds 0.5
 
   variable channel
   
@@ -147,8 +147,6 @@ namespace eval "focuser" {
       return "invalid position"
     }
     sendcommand "AB"
-    # This next PO is necessary because of a race condition in the prototype code.
-    sendcommand "PO"
     sendcommand [format "ST %d" $newposition]
     sendcommand "PO"
     log::debug "focuserrawsetposition: done."
@@ -176,8 +174,6 @@ namespace eval "focuser" {
       return "invalid position"
     }
     sendcommand "AB"
-    # This next PO is necessary because of a race condition in the prototype code.
-    sendcommand "PO"
     sendcommand [format "MA %d" $newposition]
     log::debug "focuserrawmove: done."
     return "ok"
