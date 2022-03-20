@@ -31,7 +31,7 @@
   "gcntan"     : { "host" : "services"  , "port" : 5009 },
   "heater"     : { "host" : "platform"  , "port" : 5010 },
   "html"       : { "host" : "services"  , "port" : 5011 },
-  "instrument" : { "host" : "control"   , "port" : 5012 },
+  "instrument" : { "host" : "instrument", "port" : 5012 },
   "lights"     : { "host" : "platform"  , "port" : 5013 },
   "log"        : { "host" : "services"  , "port" : 5014 },
   "moon"       : { "host" : "control"   , "port" : 5015 },

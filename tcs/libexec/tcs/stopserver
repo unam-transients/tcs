@@ -54,10 +54,10 @@ coatlioan-services)
   allargs="gcntan html log"
   ;;
 coatlioan-control)
-  allargs="sensors power supervisor selector executor instrument telescope mount enclosure secondary weather sun moon target"
+  allargs="sensors power supervisor selector executor telescope mount enclosure secondary weather sun moon target"
   ;;
 coatlioan-instrument)
-  allargs="C0"
+  allargs="instrument C0"
   ;;
 coatlioan-platform)
   allargs="heater lights"
@@ -147,5 +147,10 @@ do
   if test ! -z "$pids"
   then
     kill $pids
+  fi
+  pids=$(pgrep -u root -f $fullserver)
+  if test ! -z "$pids"
+  then
+    kill -KILL $pids
   fi
 done
