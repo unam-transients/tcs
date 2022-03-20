@@ -206,7 +206,8 @@
     "pointingdetectors": [
       "C0"
     ],
-    "outletgroups": []
+    "outletgroups": [],
+    "restartdetectorstorecover": "true"
   },
   "fitsheader": {
     "servers": [
@@ -310,6 +311,9 @@
     },
     "filterlist": [
      "g", "r", "i", "z", "470/10", "dark", "640/10", "656/3"
+    ],
+    "startoutletgroups": [
+      "detector"
     ]
   },
   "secondary": {
