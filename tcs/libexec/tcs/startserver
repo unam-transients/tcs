@@ -55,10 +55,10 @@ coatlioan-services)
   allargs="log 1 html gcntan"
   ;;
 coatlioan-control)
-  allargs="sensors power weather 1 target 1 moon sun 1 secondary enclosure mount 1 telescope instrument 1 executor selector supervisor"
+  allargs="sensors power weather 1 target 1 moon sun 1 secondary enclosure mount 1 telescope 1 executor selector supervisor"
   ;;
 coatlioan-instrument)
-  allargs="C0"
+  allargs="C0 1 instrument"
   ;;
 coatlioan-platform)
   allargs="lights heater"
