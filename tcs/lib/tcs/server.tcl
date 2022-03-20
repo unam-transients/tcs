@@ -204,6 +204,8 @@ namespace eval "server" {
 
   ######################################################################
 
+  setdata "timedout" "false"
+
   variable activitystartmilliseconds
   variable activitytimeoutmilliseconds false
 
@@ -215,6 +217,7 @@ namespace eval "server" {
     variable activitytimeoutmilliseconds
     set activitystartmilliseconds [clock milliseconds]
     set activitytimeoutmilliseconds $timeoutmilliseconds
+    setdata "timedout" "false"
   }
 
   proc clearactivitytimeout {} {
@@ -231,6 +234,7 @@ namespace eval "server" {
       if {$activitytimeoutmilliseconds != false && [clock milliseconds] > $activitystartmilliseconds + $activitytimeoutmilliseconds} {
         log::debug [format "activity timeout exceeded after %.0f ms." [expr {[clock milliseconds] - $activitystartmilliseconds}]]
         newactivitycommand [getactivity] [getrequestedactivity] {
+          setdata "timedout" "true"
           error "activity timed out."
         }
       }
