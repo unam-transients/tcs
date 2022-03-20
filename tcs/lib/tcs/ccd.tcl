@@ -46,6 +46,8 @@ namespace eval "ccd" {
   ######################################################################
 
   variable identifier [config::getvalue "ccd" "identifier"]
+  
+  config::setdefaultvalue $identifier "startoutletgroups" ""
 
   variable telescopedescription            [config::getvalue $identifier "telescopedescription"           ]
   variable detectortype                    [config::getvalue $identifier "detectortype"                   ]
@@ -76,6 +78,7 @@ namespace eval "ccd" {
   variable temperaturelimit                [config::getvalue $identifier "temperaturelimit"               ]
   variable temperaturelimitoutletgroup     [config::getvalue $identifier "temperaturelimitoutletgroup"    ]
   variable fitsfwhmargs                    [config::getvalue $identifier "fitsfwhmargs"                   ]
+  variable startoutletgroups               [config::getvalue $identifier "startoutletgroups"              ]
 
   ######################################################################
   
@@ -423,6 +426,17 @@ namespace eval "ccd" {
   proc startactivitycommand {} {
     set start [utcclock::seconds]
     log::info "starting."
+    variable startoutletgroups
+    if {[llength $startoutletgroups] != 0} {
+      foreach outletgroup $startoutletgroups {
+        log::info "rebooting $outletgroup."
+        client::waituntilstarted "power"
+        client::wait "power"
+        client::request "power" "reboot $outletgroup"
+        client::wait "power"
+      }
+    }
+    log::info "starting detector."
     if {[catch {detector::detectorrawstart} message]} {
       error "unable to start detector: $message"
     }
