@@ -29,16 +29,19 @@ package require "server"
 
 package provide "instrument" 0.0
 
+config::setdefaultvalue "instrument" "restartdetectorstorecover" "false"
+
 namespace eval "instrument" {
 
   variable svnid {$Id}
 
   ######################################################################
 
-  variable detectors                [config::getvalue "instrument" "detectors"]
-  variable activedetectors          [config::getvalue "instrument" "activedetectors"]
-  variable pointingdetectors        [config::getvalue "instrument" "pointingdetectors"]
-  variable outletgroups             [config::getvalue "instrument" "outletgroups"]
+  variable detectors                 [config::getvalue "instrument" "detectors"]
+  variable activedetectors           [config::getvalue "instrument" "activedetectors"]
+  variable pointingdetectors         [config::getvalue "instrument" "pointingdetectors"]
+  variable outletgroups              [config::getvalue "instrument" "outletgroups"]
+  variable restartdetectorstorecover [config::getvalue "instrument" "restartdetectorstorecover"]
   
   ######################################################################
   
@@ -149,6 +152,22 @@ namespace eval "instrument" {
     set start [utcclock::seconds]
     log::info "recovering."
     variable activedetectors
+    variable restartdetectorstorecover
+    if {$restartdetectorstorecover} {
+      foreach detector $activedetectors {
+        if {
+          [catch {client::update $detector}] ||
+          [client::getdata $detector "timedout"]
+        } {
+          log::warning "restarting $detector."
+          exec tcs stopserver $detector
+          coroutine::after 1000
+          exec tcs startserver $detector
+          coroutine::after 1000
+          client::waituntilstarted $detector
+        }
+      }
+    }      
     foreach detector $activedetectors {
       client::waituntilstarted $detector
       client::request $detector "reset"
