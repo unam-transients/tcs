@@ -279,6 +279,8 @@ namespace eval "mount" {
     server::setdata "mountalpha"          $mountalpha
     server::setdata "mountdelta"          $mountdelta
 
+    updaterequestedpositiondata false
+
     server::setstatus "ok"
 
     return true
