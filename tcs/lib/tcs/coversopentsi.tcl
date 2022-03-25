@@ -29,7 +29,7 @@ package require "log"
 package require "server"
 
 config::setdefaultvalue "covers" "controllerport" "65432"
-config::setdefaultvalue "covers" "controllerhost" "mount"
+config::setdefaultvalue "covers" "controllerhost" "opentsi"
 
 package provide "coversopentsi" 0.0
 

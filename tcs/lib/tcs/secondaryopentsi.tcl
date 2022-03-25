@@ -29,7 +29,7 @@ package require "log"
 package require "server"
 
 config::setdefaultvalue "secondary" "controllerport" "65432"
-config::setdefaultvalue "secondary" "controllerhost" "mount"
+config::setdefaultvalue "secondary" "controllerhost" "opentsi"
 
 package provide "secondaryopentsi" 0.0
 
@@ -72,7 +72,8 @@ namespace eval "secondary" {
     TELESCOPE.READY_STATE
     POSITION.INSTRUMENTAL.FOCUS.LIMIT_STATE
     POSITION.INSTRUMENTAL.FOCUS.MOTION_STATE
-    POSITION.INSTRUMENTAL.FOCUS.REALPOS
+    POSITION.INSTRUMENTAL.FOCUS.OFFSET
+    POSITION.INSTRUMENTAL.FOCUS.TARGETDISTANCE
   } ";"]\n"
   set controller::timeoutmilliseconds         10000
   set controller::intervalmilliseconds        50
@@ -97,6 +98,7 @@ namespace eval "secondary" {
 
   variable pendingmode
   variable pendingz
+  variable pendingzerror
   variable pendingzlowerlimit
   variable pendingzupperlimit
 
@@ -106,6 +108,7 @@ namespace eval "secondary" {
 
     variable pendingmode
     variable pendingz
+    variable pendingzerror
     variable pendingzlowerlimit
     variable pendingzupperlimit
 
@@ -172,8 +175,12 @@ namespace eval "secondary" {
       }
       return false
     }
-    if {[scan $controllerresponse "%*d DATA INLINE POSITION.INSTRUMENTAL.FOCUS.REALPOS=%f" value] == 1} {
+    if {[scan $controllerresponse "%*d DATA INLINE POSITION.INSTRUMENTAL.FOCUS.OFFSET=%f" value] == 1} {
       set pendingz [format "%.3f" $value]
+      return false
+    }
+    if {[scan $controllerresponse "%*d DATA INLINE POSITION.INSTRUMENTAL.FOCUS.TARGETDISTANCE=%f" value] == 1} {
+      set pendingzerror [format "%+.3f" $value]
       return false
     }
     if {[scan $controllerresponse "%*d DATA INLINE POSITION.INSTRUMENTAL.FOCUS.MOTION_STATE=%d" value] == 1} {
@@ -208,13 +215,16 @@ namespace eval "secondary" {
     
     set mode        $pendingmode
     set z           $pendingz
+    set zerror      $pendingzerror
     set zlowerlimit $pendingzlowerlimit
     set zupperlimit $pendingzupperlimit
+
     set timestamp   [utcclock::combinedformat "now"]
 
     server::setdata "timestamp"   $timestamp
     server::setdata "mode"        $mode
     server::setdata "z"           $z
+    server::setdata "zerror"      $zerror
     server::setdata "zlowerlimit" $zlowerlimit
     server::setdata "zupperlimit" $zupperlimit
 
@@ -238,6 +248,28 @@ namespace eval "secondary" {
   
   ######################################################################
   
+  variable currentcommandidentifier 0
+  variable nextcommandidentifier $firstnormalcommandidentifier
+  variable completedcurrentcommand
+
+  proc sendcommand {command} {
+    variable currentcommandidentifier
+    variable nextcommandidentifier
+    variable completedcurrentcommand
+    variable firstnormalcommandidentifier
+    variable lastnormalcommandidentifier
+    set currentcommandidentifier $nextcommandidentifier
+    if {$nextcommandidentifier == $lastnormalcommandidentifier} {
+      set nextcommandidentifier $firstnormalcommandidentifier
+    } else {
+      set nextcommandidentifier [expr {$nextcommandidentifier + 1}]
+    }
+    log::debug "sending controller command $currentcommandidentifier: \"$command\"."
+    controller::pushcommand "$currentcommandidentifier $command\n"
+  }
+
+  ######################################################################
+
   proc starthardware {} {
     controller::flushcommandqueue
     setmoving
@@ -245,15 +277,13 @@ namespace eval "secondary" {
   }
 
   proc stophardware {} {
-  return
     controller::flushcommandqueue
     setmoving
-    controller::sendcommand "FI0000"
+    controller::sendcommand "SET TELESCOPE.STOP=1"
     waituntilnotmoving
   }
   
   proc movehardwaresimple {requestedz} {
-  return
     controller::flushcommandqueue
     waituntilnotmoving
     variable minz
@@ -265,28 +295,17 @@ namespace eval "secondary" {
       log::warning "moving to maximum position $maxz instead of $requestedz."
       set requestedz $maxz
     }
-    variable dzstep
     set z [server::getdata "z"]
-    while {$z != $requestedz} {
+    if {$z != $requestedz} {
       setmoving
-      set dz [expr {$requestedz - $z}]
-      if {$dz < -$dzstep} {
-        controller::sendcommand [format "FI%04d" $dzstep]
-      } elseif {$dz < 0} {
-        controller::sendcommand [format "FI%04d" [expr {-$dz}]]
-      } elseif {$dz < $dzstep} {
-        controller::sendcommand [format "FO%04d" $dz]
-      } else {
-        controller::sendcommand [format "FO%04d" $dzstep]
-      }
+      controller::sendcommand "SET POINTING.SETUP.FOCUS.POSITION=$z"
+      controller::sendcommand "SET POINTING.TRACK=4"
       coroutine::after 1000
       waituntilnotmoving
-      set z [server::getdata "z"]
     }
   }
 
   proc movehardware {requestedz check} {
-  return
     set z [server::getdata "z"]
     log::info "moving from raw position $z to $requestedz."
     variable zdeadzonewidth
