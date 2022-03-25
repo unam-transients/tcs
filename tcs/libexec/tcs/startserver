@@ -88,7 +88,7 @@ colibriohp-services)
   allargs="log 1 html"
   ;;
 colibriohp-control)
-  allargs="opentsi covers secondary sensors plc power weather 1 target 1 moon sun 1 telescope instrument 1 executor selector"
+  allargs="sensors power weather plc 1 target 1 moon sun 1 opentsi plc 1 covers secondary mount 1 telescope instrument 1 executor selector"
   ;;
 colibriohp-detectors)
   allargs="C0"
