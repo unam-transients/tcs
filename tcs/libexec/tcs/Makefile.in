@@ -140,6 +140,7 @@ installbins_project_ddotioan :=   \
 installbins_project_colibriohp := \
     coversserver                  \
 	C0server                      \
+	opentsiserver                 \
 	plcserver                     \
 	secondaryserver               \
 	updateweatherfiles-dummy

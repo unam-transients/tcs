@@ -689,6 +689,22 @@ namespace eval "html" {
 
   }
 
+  proc writeopentsi {} {
+
+    putshtml "<table class=\"status\">"
+
+    writehtmlstatusblock "opentsi"
+
+    putshtml "</table>"
+
+    putshtml "<table class=\"status\">"
+
+    writehtmlrow "Ready state" [client::getdata "opentsi" "readystate"]
+
+    putshtml "</table>"
+
+  }
+
   proc writeplc {} {
 
     putshtml "<table class=\"status\">"
@@ -1818,6 +1834,7 @@ if {false} {
       guider        {Guider}
       heater        {Heater}
       html          {HTML}
+      opentsi       {OpenTSI}
       power         {Power}
       inclinometers {Inclinometers}
       instrument    {Instrument}

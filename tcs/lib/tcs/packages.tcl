@@ -180,6 +180,10 @@ package ifneeded mountratiroan         0.0 \
   [list source [file join [file dirname [info script]] mountratiroan.tcl]]
 package ifneeded mountserver           0.0 \
   [list source [file join [file dirname [info script]] mountserver.tcl]]
+package ifneeded opentsi               0.0 \
+  [list source [file join [file dirname [info script]] opentsi.tcl]]
+package ifneeded opentsiserver         0.0 \
+  [list source [file join [file dirname [info script]] opentsiserver.tcl]]
 package ifneeded owsensors             0.0 \
   [list source [file join [file dirname [info script]] owsensors.tcl]]
 package ifneeded owsensorsserver       0.0 \
