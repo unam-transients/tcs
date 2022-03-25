@@ -22,204 +22,6 @@
 ////////////////////////////////////////////////////////////////////////
 
 {
-  "site": {
-    "latitude": "+31:02:43.0",
-    "longitude": "-115:28:00",
-    "altitude": "2790.0",
-    "civiltimezone": "America/Tijuana"
-  },
-  "html": {
-    "servers": [
-      "enclosure",
-      "executor",
-      "gcntan",
-      "heater",
-      "instrument",
-      "lights",
-      "moon",
-      "mount",
-      "power",
-      "selector",
-      "secondary",
-      "sensors",
-      "sun",
-      "supervisor",
-      "target",
-      "telescope",
-      "weather"
-    ]
-  },
-  "target": {
-    "maxzenithdistancelimit": "72d",
-    "idleha": "0h",
-    "idledelta": "30d",
-    "pointingapertures": {
-      "default": [
-        "+0.0am",
-        "+0.0am"
-      ],
-      "C0center": [
-        "+0.0am",
-        "+0.0am"
-      ]
-    }
-  },
-  "gcntan": {
-    "serverpacketport": "5349",
-    "swiftalertprojectidentifier"  : "1001",
-    "fermialertprojectidentifier"  : "1002",
-    "lvcalertprojectidentifier"    : "1003",
-    "hawcalertprojectidentifier"   : "1004",
-    "icecubealertprojectidentifier": "1005"
-  },
-  "supervisor": {
-    "withplc": "false",
-    "internalhumiditysensor": "enclosure-humidity",
-    "openoffsetseconds": "0",
-    "opentocooloffsetseconds": "1800"
-  },
-  "selector": {},
-  "executor": {
-    "type": "coatlioan"
-  },
-  "safetyswitch": {
-    "type": "arts"
-  },
-  "telescope": {
-    "type": "coatlioan",
-    "idleha": "0h",
-    "idledelta": "75d",
-    "closeexplicitly": "true",
-    "finders": []
-  },
-  "enclosure": {
-    "type": "arts",
-    "controllerhost": "serial",
-    "controllerport": "10003",
-    "closeexplicitly": "true",
-    "openposition": "180",
-    "opentocoolposition": "60"
-  },
-  "mount": {
-    "type": "ntm",
-    "hapark": "6h",
-    "deltapark": "85d",
-    "haunpark": "12h",
-    "deltaunpark": "150d",
-    "axisdhacorrection": "1.16as",
-    "axisddeltacorrection": "0as",
-    "southdeltalimit": "-90:00:00",
-    "northdeltalimit": "+90:00:00",
-    "easthalimit": "-12:00:00",
-    "westhalimit": "+12:00:00",
-    "zenithdistancelimit": "75d",
-    "meridianhalimit": "+00:30:00",
-    "polardeltalimit": "+65d",
-    "pointingmodelpolarhole": "1d",
-   // Pointing model "20211103"b.
-   "pointingmodelparameters0": {
-      "IH": "-0.005214",
-      "ID": "-0.000634",
-      "CH": "-0.000137",
-      "NP": "+0.002492",
-      "MA": "+0.000094",
-      "ME": "-0.001217",
-      "TF": "-0.000388",
-      "FO": "+0.000193",
-      "DAF": "+0.005512",
-      "HHSH": "+0.000084",
-      "HHCH": "+0.005208",
-      "HHSH2": "-0.000089",
-      "HHCH2": "-0.000056",
-      "HDSD": "-0.000124",
-      "HDCD": "-0.000990",
-      "HDSD2": "+0.000154",
-      "HDCD2": "+0.000307"
-    },
-    "pointingmodelparameters180": {
-      "IH": "-0.004540",
-      "ID": "+0.001463",
-      "CH": "+0.000228",
-      "NP": "+0.001727",
-      "MA": "-0.000013",
-      "ME": "-0.001426",
-      "TF": "-0.000215",
-      "FO": "+0.000203",
-      "DAF": "+0.003018",
-      "HHSH": "+0.000530",
-      "HHCH": "+0.001508",
-      "HHSH2": "-0.000304",
-      "HHCH2": "+0.000038",
-      "HDSD": "-0.000209",
-      "HDCD": "-0.000491",
-      "HDSD2": "+0.000023",
-      "HDCD2": "+0.000129"
-    }
-  },
-  "power": {
-    "hosts": {
-      "ibb-127": {
-        "type": "ibootbar",
-        "outlets": "8",
-        "inlets": "2"
-      },
-      "ibb-220": {
-        "type": "ibootbar",
-        "outlets": "8",
-        "inlets": "1"
-      },
-      "ib-detector": {
-        "type": "iboot",
-        "outlets": 1,
-        "inlets": 1
-      }
-    },
-    "outletgroupaddresses": {
-      "firewall":   [["ibb-127", "a", "5"]],
-      "access":     [["ibb-127", "a", "2"]],
-      "services":   [["ibb-127", "a", "6"]],
-      "control":    [["ibb-127", "a", "7"]],
-      "mount":      [["ibb-127", "a", "4"]],
-      "serial":     [["ibb-127", "a", "8"]],
-      "enclosure":  [["ibb-220", "a", "1"]],
-      "secondary":  [["ibb-220", "a", "2"]],
-      "platform":   [["ibb-127", "a", "1"]],
-      "instrument": [["ibb-127", "a", "3"]],
-      "detector":   [["ib-detector", "a", "0"]]
-    }
-  },
-  "lights": {
-    "type": "gpio",
-    "gpiopath": "/sys/class/gpio/gpio19/value"
-  },
-  "heater": {
-    "type": "gpio",
-    "gpiopath": "/sys/class/gpio/gpio26/value"
-  },
-  "instrument": {
-    "detectors": [
-      "C0"
-    ],
-    "activedetectors": [
-      "C0"
-    ],
-    "pointingdetectors": [
-      "C0"
-    ],
-    "outletgroups": [],
-    "restartdetectorstorecover": "true"
-  },
-  "fitsheader": {
-    "servers": [
-      "target",
-      "moon",
-      "sun",
-      "secondary",
-      "mount",
-      "sensors",
-      "weather"
-    ]
-  },
   "C0": {
     "telescopedescription": "OAN/SPM COATLI 50-cm f/8",
     "detectortype": "andor",
@@ -316,6 +118,169 @@
       "detector"
     ]
   },
+  "enclosure": {
+    "type": "arts",
+    "controllerhost": "serial",
+    "controllerport": "10003",
+    "closeexplicitly": "true",
+    "openposition": "180",
+    "opentocoolposition": "60"
+  },
+  "executor": {
+    "type": "coatlioan"
+  },
+  "fitsheader": {
+    "servers": [
+      "target",
+      "moon",
+      "sun",
+      "secondary",
+      "mount",
+      "sensors",
+      "weather"
+    ]
+  },
+  "gcntan": {
+    "serverpacketport": "5349",
+    "swiftalertprojectidentifier"  : "1001",
+    "fermialertprojectidentifier"  : "1002",
+    "lvcalertprojectidentifier"    : "1003",
+    "hawcalertprojectidentifier"   : "1004",
+    "icecubealertprojectidentifier": "1005"
+  },
+  "heater": {
+    "type": "gpio",
+    "gpiopath": "/sys/class/gpio/gpio26/value"
+  },
+  "html": {
+    "servers": [
+      "enclosure",
+      "executor",
+      "gcntan",
+      "heater",
+      "instrument",
+      "lights",
+      "moon",
+      "mount",
+      "power",
+      "selector",
+      "secondary",
+      "sensors",
+      "sun",
+      "supervisor",
+      "target",
+      "telescope",
+      "weather"
+    ]
+  },
+  "instrument": {
+    "detectors": [
+      "C0"
+    ],
+    "activedetectors": [
+      "C0"
+    ],
+    "pointingdetectors": [
+      "C0"
+    ],
+    "outletgroups": [],
+    "restartdetectorstorecover": "true"
+  },
+  "lights": {
+    "type": "gpio",
+    "gpiopath": "/sys/class/gpio/gpio19/value"
+  },
+  "mount": {
+    "type": "ntm",
+    "hapark": "6h",
+    "deltapark": "85d",
+    "haunpark": "12h",
+    "deltaunpark": "150d",
+    "axisdhacorrection": "1.16as",
+    "axisddeltacorrection": "0as",
+    "southdeltalimit": "-90:00:00",
+    "northdeltalimit": "+90:00:00",
+    "easthalimit": "-12:00:00",
+    "westhalimit": "+12:00:00",
+    "zenithdistancelimit": "75d",
+    "meridianhalimit": "+00:30:00",
+    "polardeltalimit": "+65d",
+    "pointingmodelpolarhole": "1d",
+   // Pointing model "20211103"b.
+   "pointingmodelparameters0": {
+      "IH": "-0.005214",
+      "ID": "-0.000634",
+      "CH": "-0.000137",
+      "NP": "+0.002492",
+      "MA": "+0.000094",
+      "ME": "-0.001217",
+      "TF": "-0.000388",
+      "FO": "+0.000193",
+      "DAF": "+0.005512",
+      "HHSH": "+0.000084",
+      "HHCH": "+0.005208",
+      "HHSH2": "-0.000089",
+      "HHCH2": "-0.000056",
+      "HDSD": "-0.000124",
+      "HDCD": "-0.000990",
+      "HDSD2": "+0.000154",
+      "HDCD2": "+0.000307"
+    },
+    "pointingmodelparameters180": {
+      "IH": "-0.004540",
+      "ID": "+0.001463",
+      "CH": "+0.000228",
+      "NP": "+0.001727",
+      "MA": "-0.000013",
+      "ME": "-0.001426",
+      "TF": "-0.000215",
+      "FO": "+0.000203",
+      "DAF": "+0.003018",
+      "HHSH": "+0.000530",
+      "HHCH": "+0.001508",
+      "HHSH2": "-0.000304",
+      "HHCH2": "+0.000038",
+      "HDSD": "-0.000209",
+      "HDCD": "-0.000491",
+      "HDSD2": "+0.000023",
+      "HDCD2": "+0.000129"
+    }
+  },
+  "power": {
+    "hosts": {
+      "ibb-127": {
+        "type": "ibootbar",
+        "outlets": "8",
+        "inlets": "2"
+      },
+      "ibb-220": {
+        "type": "ibootbar",
+        "outlets": "8",
+        "inlets": "1"
+      },
+      "ib-detector": {
+        "type": "iboot",
+        "outlets": 1,
+        "inlets": 1
+      }
+    },
+    "outletgroupaddresses": {
+      "firewall":   [["ibb-127", "a", "5"]],
+      "access":     [["ibb-127", "a", "2"]],
+      "services":   [["ibb-127", "a", "6"]],
+      "control":    [["ibb-127", "a", "7"]],
+      "mount":      [["ibb-127", "a", "4"]],
+      "serial":     [["ibb-127", "a", "8"]],
+      "enclosure":  [["ibb-220", "a", "1"]],
+      "secondary":  [["ibb-220", "a", "2"]],
+      "platform":   [["ibb-127", "a", "1"]],
+      "instrument": [["ibb-127", "a", "3"]],
+      "detector":   [["ib-detector", "a", "0"]]
+    }
+  },
+  "safetyswitch": {
+    "type": "arts"
+  },
   "secondary": {
     "type": "optec",
     "controllerhost": "serial",
@@ -348,9 +313,7 @@
       "656/3" : "-70"
     }
   },
-  "weather": {
-    "windaveragespeedlimit": "25"
-  },
+  "selector": {},
   "sensors": {
     "lognames": [
       "shed-temperature",
@@ -639,5 +602,42 @@
         "firmware": ""
       }
     }
+  },
+  "site": {
+    "latitude": "+31:02:43.0",
+    "longitude": "-115:28:00",
+    "altitude": "2790.0",
+    "civiltimezone": "America/Tijuana"
+  },
+  "supervisor": {
+    "withplc": "false",
+    "internalhumiditysensor": "enclosure-humidity",
+    "openoffsetseconds": "0",
+    "opentocooloffsetseconds": "1800"
+  },
+  "target": {
+    "maxzenithdistancelimit": "72d",
+    "idleha": "0h",
+    "idledelta": "30d",
+    "pointingapertures": {
+      "default": [
+        "+0.0am",
+        "+0.0am"
+      ],
+      "C0center": [
+        "+0.0am",
+        "+0.0am"
+      ]
+    }
+  },
+  "telescope": {
+    "type": "coatlioan",
+    "idleha": "0h",
+    "idledelta": "75d",
+    "closeexplicitly": "true",
+    "finders": []
+  },
+  "weather": {
+    "windaveragespeedlimit": "25"
   }
 }
