@@ -210,6 +210,9 @@ namespace eval "opentsi" {
   proc startactivitycommand {} {
     set start [utcclock::seconds]
     log::info "starting."
+    while {[string equal [server::getstatus] "starting"]} {
+      coroutine::yield
+    }
     set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
   }
