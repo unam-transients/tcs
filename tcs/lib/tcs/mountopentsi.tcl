@@ -34,7 +34,7 @@ package require "server"
 
 package provide "mountopentsi" 0.0
 
-config::setdefaultvalue "mount" "controllerhost"             "mount"
+config::setdefaultvalue "mount" "controllerhost"             "opentsi"
 config::setdefaultvalue "mount" "controllerport"             65432
 config::setdefaultvalue "mount" "initialcommand"             "AUTH PLAIN \"admin\" \"admin\"\n"
 
