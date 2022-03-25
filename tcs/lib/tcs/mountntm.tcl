@@ -165,8 +165,6 @@ namespace eval "mount" {
   server::setdata "lastcorrectiondalpha"        ""
   server::setdata "lastcorrectionddelta"        ""
 
-  variable fakecontrollererror false
-
   variable hamotionstate    ""
   variable deltamotionstate ""
 
@@ -270,12 +268,6 @@ namespace eval "mount" {
     variable freepoints
 
     variable trackingsettledlimit
-
-    variable fakecontrollererror
-    if {$fakecontrollererror} {
-      set fakecontrollererror false
-      set controllerresponse "FAKE CONTROLLER ERROR"
-    }
 
     set controllerresponse [string trim $controllerresponse]
     set controllerresponse [string trim $controllerresponse "\0"]

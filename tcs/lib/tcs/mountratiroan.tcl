@@ -137,8 +137,6 @@ namespace eval "mount" {
 
   variable settledelayseconds 1
 
-variable fakecontrollererror false
-
   proc isignoredcontrollerresponse {controllerresponse} {
     expr {
       [string equal $controllerresponse ""] ||
@@ -151,12 +149,6 @@ variable fakecontrollererror false
   }
 
   proc updatecontrollerdata {controllerresponse} {
-
-    variable fakecontrollererror    
-    if {$fakecontrollererror} {
-      set fakecontrollererror false
-      set controllerresponse "FAKE CONTROLLER ERROR"
-    }
 
     set controllerresponse [string trim $controllerresponse]
     set controllerresponse [string trim $controllerresponse "\0"]

@@ -115,11 +115,6 @@ namespace eval "mountserver" {
     return
   }
 
-  proc slavefakecontrollererror {} {
-    mount::fakecontrollererror
-    return
-  }
-
   proc configureslave {slave} {
     interp alias $slave initialize          {} mountserver::slaveinitialize
     interp alias $slave open                {} mountserver::slaveopen
@@ -137,7 +132,6 @@ namespace eval "mountserver" {
     interp alias $slave correct             {} mountserver::slavecorrect
     interp alias $slave setMAtozero         {} mountserver::slavesetMAtozero
     interp alias $slave setMEtozero         {} mountserver::slavesetMEtozero
-    interp alias $slave fakecontrollererror {} mountserver::slavefakecontrollererror    
   }
 
   ######################################################################
