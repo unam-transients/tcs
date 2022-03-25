@@ -255,6 +255,7 @@ namespace eval "mount" {
 
     updaterequestedpositiondata
 
+    checklimits
 
     set stoppedtimestamp  [server::getdata "stoppedtimestamp"]
 
@@ -272,7 +273,7 @@ namespace eval "mount" {
       set deltamoving 1
     }
     
-    set requestedactivity [server::getrequestedactivity]
+    set requestedactivity [server::getdata "requestedactivity"]
     if {[string equal $requestedactivity "idle"] && ($hamoving || $deltamoving)} {
       set stoppedtimestamp ""
     } elseif {[string equal $requestedactivity "tracking"] && ($alphamoving || $deltamoving)} {
@@ -381,6 +382,15 @@ namespace eval "mount" {
     if {abs($deltaerror) > $allowedpositionerror} {
       log::warning "mount delta error is [astrometry::radtodms $deltaerror 1 true] $when."
     }
+  }
+
+  ######################################################################
+
+  proc emergencystophardware {} {
+    log::debug "emergencystophardware: sending emergency stop."
+    controller::flushcommandqueue
+    controller::pushcommand "NGUIA\n"
+    log::debug "emergencystophardware: finished sending emergency stop."
   }
 
   ######################################################################

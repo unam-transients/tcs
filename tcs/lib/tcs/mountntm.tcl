@@ -299,7 +299,7 @@ namespace eval "mount" {
     if {$commandidentifier == $emergencystopcommandidentifier} {
       log::debug "controller response \"$controllerresponse\"."
       if {[regexp {^[0-9]+ COMMAND COMPLETE} $controllerresponse] == 1} {
-        finishemergencystop
+        log::error "finished emergency stop."
         return false
       }
     }
@@ -754,24 +754,6 @@ namespace eval "mount" {
       updatetracking $axishatrackingerror $axisdeltatrackingerror $mounteasttrackingerror $mountnorthtrackingerror
     }
 
-    variable emergencystopped
-    if {
-      [string equal $state "operational"] &&
-      !$emergencystopped &&
-      $moving &&
-      ![string equal "starting"     [server::getdata "activity"]] &&
-      ![string equal "started"      [server::getdata "activity"]] &&
-      ![string equal "initializing" [server::getdata "activity"]] &&
-      ![string equal "parking"      [server::getdata "activity"]] &&
-      ![string equal "unparking"    [server::getdata "activity"]] &&
-      ![withinlimits $mountha $mountdelta $mountrotation]
-    } {
-      log::error "mount is moving and not within the limits."
-      log::error "mount position is [astrometry::formatha $mountha] [astrometry::formatdelta $mountdelta]."
-      log::error [format "mount rotation is %.0f°." [astrometry::radtodeg $mountrotation]]
-      startemergencystop
-    }
-
     server::setdata "timestamp"                   $timestamp
     server::setdata "mountha"                     $mountha
     server::setdata "mountalpha"                  $mountalpha
@@ -780,6 +762,8 @@ namespace eval "mount" {
     server::setdata "mountzenithdistance"         $mountzenithdistance
     server::setdata "mountrotation"               $mountrotation
     server::setdata "state"                       $state
+    
+    checklimits
 
     updaterequestedpositiondata false
 
@@ -1002,47 +986,6 @@ namespace eval "mount" {
   
   ######################################################################
 
-  proc withinlimits {mountha mountdelta mountrotation} {
-
-    variable easthalimit
-    variable westhalimit
-    variable meridianhalimit
-    variable polardeltalimit
-    variable southdeltalimit
-    variable northdeltalimit
-    variable zenithdistancelimit
-
-    set mountzenithdistance [astrometry::zenithdistance $mountha $mountdelta]
-    
-    if {$mountha < $easthalimit && $mountdelta < $polardeltalimit} {
-      log::warning "HA exceeds eastern limit."
-      return false
-    } elseif {$mountha > $westhalimit && $mountdelta < $polardeltalimit} {
-      log::warning "HA exceeds western limit."
-      return false
-    } elseif {$mountdelta < $southdeltalimit} {
-      log::warning "δ exceeds southern limit."
-      return false
-    } elseif {$mountdelta > $northdeltalimit} {
-      log::warning "δ exceeds northern limit."
-      return false
-    } elseif {$mountzenithdistance > $zenithdistancelimit} {
-      log::warning "zenith distance exceeds limit."
-      return false
-    } elseif {$mountrotation == 0 && $mountha <= -$meridianhalimit && $mountdelta < $polardeltalimit} {
-      log::warning "HA exceeds eastern meridian limit."
-      return false
-    } elseif {$mountrotation != 0 && $mountha >= +$meridianhalimit && $mountdelta < $polardeltalimit} {
-      log::warning "HA exceeds western meridian limit."
-      return false
-    } else {
-      return true
-    }
-
-  }
-
-  ######################################################################
-
   proc axisha {ha delta mountrotation} {
     if {$mountrotation == 0} {
       return $ha
@@ -1246,30 +1189,6 @@ namespace eval "mount" {
 
   ######################################################################
 
-  variable emergencystopped false
-
-  proc startemergencystop {} {
-    log::error "starting emergency stop."
-    log::warning "stopping the mount."
-    log::debug "emergency stop: sending emergency stop."
-    variable emergencystopcommandidentifier
-    set command "$emergencystopcommandidentifier SET HA.STOP=1;DEC.STOP=1"
-    log::debug "emergency stop: sending command \"$command\"."
-    controller::flushcommandqueue
-    controller::pushcommand "$command\n"
-    log::debug "emergency stop: finished sending emergency stop."
-    server::setdata "mounttracking" false
-    variable emergencystopped
-    set emergencystopped true
-    server::erroractivity
-  }
-
-  proc finishemergencystop {} {
-    log::error "finished emergency stop."
-  }
-
-  ######################################################################
-
   variable currentcommandidentifier 0
   variable nextcommandidentifier $firstnormalcommandidentifier
   variable completedcurrentcommand
@@ -1388,6 +1307,15 @@ namespace eval "mount" {
   }
 
   ######################################################################
+
+  proc emergencystophardware {} {
+    log::debug "emergencystophardware: sending emergency stop."
+    variable emergencystopcommandidentifier
+    set command "$emergencystopcommandidentifier SET HA.STOP=1;DEC.STOP=1"
+    controller::flushcommandqueue
+    controller::pushcommand "$command\n"
+    log::debug "emergencystophardware: finished sending emergency stop."
+  }
 
   proc stophardware {} {
     log::info "stopping the mount."
