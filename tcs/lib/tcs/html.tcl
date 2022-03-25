@@ -834,28 +834,43 @@ if {false} {
         [formatrateifdouble [client::getdata "mount" "requestedmountalpharate"]] \
         "" \
         [formatrateifdouble [client::getdata "mount" "requestedmountdeltarate"]]
+
       writehtmlrow "Current mount rotation" \
         [formatradtodegifdouble "%.0f°"  [client::getdata "mount" "mountrotation"]]
       writehtmlrow "Current mount position (α,HA,δ)" \
         [formatalphaifdouble [client::getdata "mount" "mountalpha"]] \
         [formathaifdouble    [client::getdata "mount" "mountha"]] \
         [formatdeltaifdouble [client::getdata "mount" "mountdelta"]]
-      writehtmlrow "Current mount error (α,HA,δ)" \
-        [formathaifdouble    [client::getdata "mount" "mountalphaerror"]] \
-        [formathaifdouble    [client::getdata "mount" "mounthaerror"]] \
-        [formatdeltaifdouble [client::getdata "mount" "mountdeltaerror"]]
-      writehtmlrow "Mean mount tracking error (α,δ)" \
-        [formatarcsecifdouble "%+.2fas" [client::getdata "mount" "mountmeaneasttrackingerror"]] \
-        "" \
-        [formatarcsecifdouble "%+.2fas" [client::getdata "mount" "mountmeannorthtrackingerror"]]
-      writehtmlrow "RMS mount tracking error (α,δ)" \
-        [formatarcsecifdouble "%.2fas" [client::getdata "mount" "mountrmseasttrackingerror"]] \
-        "" \
-        [formatarcsecifdouble "%.2fas" [client::getdata "mount" "mountrmsnorthtrackingerror"]]
-      writehtmlrow "P-V mount tracking error (α,δ)" \
-        [formatarcsecifdouble "%.2fas" [client::getdata "mount" "mountpveasttrackingerror"]] \
-        "" \
-        [formatarcsecifdouble "%.2fas" [client::getdata "mount" "mountpvnorthtrackingerror"]]
+
+      if {[string equal [client::getdata "mount" "configuration"] "azimuth-zenithdistance"]} {
+
+        writehtmlrow "Current mount position (A,z)" \
+          [formatradtodegifdouble "%.2f°" [client::getdata "mount" "mountazimuth"]] \
+          [formatradtodegifdouble "%.2f°" [client::getdata "mount" "mountzenithdistance"]]
+
+      }
+
+      if {[string equal [client::getdata "mount" "configuration"] "equatorial"]} {
+
+        writehtmlrow "Current mount error (α,HA,δ)" \
+          [formathaifdouble    [client::getdata "mount" "mountalphaerror"]] \
+          [formathaifdouble    [client::getdata "mount" "mounthaerror"]] \
+          [formatdeltaifdouble [client::getdata "mount" "mountdeltaerror"]]
+        writehtmlrow "Mean mount tracking error (α,δ)" \
+          [formatarcsecifdouble "%+.2fas" [client::getdata "mount" "mountmeaneasttrackingerror"]] \
+          "" \
+          [formatarcsecifdouble "%+.2fas" [client::getdata "mount" "mountmeannorthtrackingerror"]]
+        writehtmlrow "RMS mount tracking error (α,δ)" \
+          [formatarcsecifdouble "%.2fas" [client::getdata "mount" "mountrmseasttrackingerror"]] \
+          "" \
+          [formatarcsecifdouble "%.2fas" [client::getdata "mount" "mountrmsnorthtrackingerror"]]
+        writehtmlrow "P-V mount tracking error (α,δ)" \
+          [formatarcsecifdouble "%.2fas" [client::getdata "mount" "mountpveasttrackingerror"]] \
+          "" \
+          [formatarcsecifdouble "%.2fas" [client::getdata "mount" "mountpvnorthtrackingerror"]]
+          
+      }
+
       writehtmltimestampedrow "Last correction" \
         [client::getdata "mount" "lastcorrectiontimestamp"]
       writehtmlrow "Last correction (α,δ)" \
