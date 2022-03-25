@@ -281,6 +281,8 @@ namespace eval "mount" {
 
     updaterequestedpositiondata false
 
+    checklimits
+
     server::setstatus "ok"
 
     return true
@@ -366,6 +368,7 @@ namespace eval "mount" {
   }
 
   proc openactivitycommand {} {
+    updaterequestedpositiondata false
     initializeactivitycommand
   }
 

@@ -216,6 +216,84 @@ namespace eval "mount" {
   
   ######################################################################
 
+  variable emergencystopped false
+
+  proc checklimits {} {
+
+    variable emergencystopped  
+    if {$emergencystopped} {
+      return
+    }
+
+    set requestedactivity [server::getactivity]
+    if {
+      ![string equal $requestedactivity "moving"  ] &&
+      ![string equal $requestedactivity "tracking"]
+    } {
+      return
+    }
+
+    variable easthalimit
+    variable westhalimit
+    variable meridianhalimit
+    variable polardeltalimit
+    variable southdeltalimit
+    variable northdeltalimit
+    variable zenithdistancelimit
+    
+    set mountha       [server::getdata "mountha"]
+    set mountdelta    [server::getdata "mountdelta"]
+    set mountrotation [server::getdata "mountrotation"]
+
+    set mountzenithdistance [astrometry::zenithdistance $mountha $mountdelta]
+    
+    if {$mountha < $easthalimit && $mountdelta < $polardeltalimit} {
+      log::warning "HA exceeds eastern limit."
+      set withinlimits false
+    } elseif {$mountha > $westhalimit && $mountdelta < $polardeltalimit} {
+      log::warning "HA exceeds western limit."
+      set withinlimits false
+    } elseif {$mountdelta < $southdeltalimit} {
+      log::warning "δ exceeds southern limit."
+      set withinlimits false
+    } elseif {$mountdelta > $northdeltalimit} {
+      log::warning "δ exceeds northern limit."
+      set withinlimits false
+    } elseif {$mountzenithdistance > $zenithdistancelimit} {
+      log::warning "zenith distance exceeds limit."
+      set withinlimits false
+    } elseif {$mountrotation == 0 && $mountha <= -$meridianhalimit && $mountdelta < $polardeltalimit} {
+      log::warning "HA exceeds eastern meridian limit."
+      set withinlimits false
+    } elseif {$mountrotation != 0 && $mountha >= +$meridianhalimit && $mountdelta < $polardeltalimit} {
+      log::warning "HA exceeds western meridian limit."
+      set withinlimits false
+    } else {
+      set withinlimits true
+    }
+    
+    if {$withinlimits} {
+      return
+    }
+    
+    log::error "mount is moving and not within the limits."
+    log::error "mount position is [astrometry::formatha $mountha] [astrometry::formatdelta $mountdelta]."
+    log::error [format "mount rotation is %.0f°." [astrometry::radtodeg $mountrotation]]
+
+    log::error "starting emergency stop."
+
+    emergencystophardware
+
+    server::setdata "mounttracking" false
+    set emergencystopped true
+
+    server::erroractivity
+
+  }
+
+  ######################################################################
+
+
   proc initialize {} {
     server::checkstatus
     server::checkactivityforinitialize
