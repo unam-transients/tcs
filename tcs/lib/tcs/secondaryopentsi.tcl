@@ -335,6 +335,9 @@ namespace eval "secondary" {
     log::info "starting."
     setrequestedz0 ""
     setrequestedz
+    while {[string equal [server::getstatus] "starting"]} {
+      coroutine::yield
+    }
     starthardware
     set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]    
