@@ -188,11 +188,6 @@ namespace eval "mount" {
     log::info [format "finished correcting after %.1f seconds." [utcclock::diff now $start]]
     return
   }
-  
-  proc fakecontrollererror {} {
-    variable fakecontrollererror
-    set fakecontrollererror true
-  }
 
   ######################################################################
 
