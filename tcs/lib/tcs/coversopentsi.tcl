@@ -51,9 +51,6 @@ namespace eval "covers" {
   server::setdata "timestamp"        [utcclock::combinedformat now]
   server::setdata "settled"          false
   server::setdata "stoppedtimestamp" [utcclock::combinedformat now]
-  server::setdata "readystate"       ""
-  server::setdata "referencestate"   ""
-  server::setdata "errorstate"       ""
 
   variable settledelayseconds 5
 
@@ -73,7 +70,6 @@ namespace eval "covers" {
   set controller::port                        $controllerport
   set controller::connectiontype              "persistent"
   set controller::statuscommand "$statuscommandidentifier GET [join {
-    TELESCOPE.READY_STATE
     AUXILIARY.COVER.REALPOS
     AUXILIARY.PORT_COVER[2].REALPOS
     AUXILIARY.PORT_COVER[3].REALPOS
@@ -97,14 +93,12 @@ namespace eval "covers" {
     }
   }
 
-  variable readystate
   variable covers
   variable port2cover
   variable port3cover
 
   proc updatecontrollerdata {controllerresponse} {
 
-    variable readystate
     variable covers
     variable port2cover
     variable port3cover
@@ -147,10 +141,6 @@ namespace eval "covers" {
       return false
     }
 
-    if {[scan $controllerresponse "%*d DATA INLINE TELESCOPE.READY_STATE=%f" value] == 1} {
-      set readystate $value
-      return false
-    }
     if {[scan $controllerresponse "%*d DATA INLINE AUXILIARY.COVER.REALPOS=%f" value] == 1} {
       if {$value == 0} {
         set covers "closed"
@@ -194,15 +184,11 @@ namespace eval "covers" {
     set timestamp [utcclock::combinedformat "now"]
 
     set lasttimestamp      [server::getdata "timestamp"]
-    set lastreadystate     [server::getdata "readystate"]
     set lastcovers         [server::getdata "covers"]
     set lastport2cover     [server::getdata "port2cover"]
     set lastport3cover     [server::getdata "port3cover"]
     set stoppedtimestamp   [server::getdata "stoppedtimestamp"]
     
-    if {![string equal $lastreadystate ""] && ![string equal $readystate $lastreadystate]} {
-      log::info "ready state changed from $lastreadystate to $readystate."
-    }
     if {![string equal $lastcovers ""] && ![string equal $covers $lastcovers]} {
       log::info "covers changed from \"$lastcovers\" to \"$covers\"."
     }
@@ -231,7 +217,6 @@ namespace eval "covers" {
     }
     
     server::setdata "timestamp"        $timestamp
-    server::setdata "readystate"       $readystate
     server::setdata "covers"           $covers
     server::setdata "port2cover"       $port2cover
     server::setdata "port3cover"       $port3cover
@@ -267,44 +252,28 @@ namespace eval "covers" {
 
   proc stopcovers {} {
     server::setdata "requestedcovers" ""
-    variable readystate
-    if {$readystate != 1.0} {
-      log::error "unable to stop: telescope ready state is $readystate."
-    } else {
-      log::info "stopping."
-      sendcommand "SET TELESCOPE.STOP=1"
-    }
+    sendcommand "SET TELESCOPE.STOP=1"
   }
   
   proc opencovers {} {
     server::setdata "requestedcovers" "open"
-    variable readystate
-    if {$readystate != 1.0} {
-      log::error "unable to open: telescope ready state is $readystate."
-    } else {
-      sendcommand "SET AUXILIARY.COVER.TARGETPOS=1"
-      sendcommand "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=1"
-      sendcommand "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=1"
-      settle
-      if {![string equal [server::getdata "covers"] "open"]} {
-        error "the covers did not open."
-      }
+    sendcommand "SET AUXILIARY.COVER.TARGETPOS=1"
+    sendcommand "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=1"
+    sendcommand "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=1"
+    settle
+    if {![string equal [server::getdata "covers"] "open"]} {
+      error "the covers did not open."
     }
   }
   
   proc closecovers {} {
     server::setdata "requestedcovers" "closed"
-    variable readystate
-    if {$readystate != 1.0} {
-      log::error "unable to close: telescope ready state is $readystate."
-    } else {
-      sendcommand "SET AUXILIARY.COVER.TARGETPOS=0"
-      sendcommand "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=0"
-      sendcommand "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=0"
-      settle
-      if {![string equal [server::getdata "covers"] "closed"]} {
-        error "the covers did not close."
-      }
+    sendcommand "SET AUXILIARY.COVER.TARGETPOS=0"
+    sendcommand "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=0"
+    sendcommand "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=0"
+    settle
+    if {![string equal [server::getdata "covers"] "closed"]} {
+      error "the covers did not close."
     }
   }
   
@@ -330,15 +299,6 @@ namespace eval "covers" {
   proc initializeactivitycommand {} {
     set start [utcclock::seconds]
     log::info "initializing."
-    variable readystate
-    if {$readystate != 1.0} {
-      log::info "powering up telescope."
-      sendcommand "SET TELESCOPE.POWER=1"
-      log::info "waiting for telescope to power up."
-      while {$readystate != 1.0} {
-        coroutine::yield
-      }
-    }
     log::info "closing."
     closecovers
     set end [utcclock::seconds]
@@ -364,13 +324,7 @@ namespace eval "covers" {
   proc stopactivitycommand {previousactivity} {
     set start [utcclock::seconds]
     log::info "stopping."
-    if {
-      [string equal $previousactivity "initializing"] || 
-      [string equal $previousactivity "opening"] || 
-      [string equal $previousactivity "closing"]
-    } {    
-      stopcovers
-    }
+    stopcovers
     set end [utcclock::seconds]
     log::info [format "finished stopping after %.1f seconds." [utcclock::diff $end $start]]
   }
