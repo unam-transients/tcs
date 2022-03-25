@@ -539,6 +539,7 @@
   },
   "mount": {
     "type": "ntm",
+    "configuration": "equatorial",
     // We part the mount slightly off the meridian to avoid vibrations. We
     // choose 170d rather than -10d so that the mount initializes upwards in
     // delta.

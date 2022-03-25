@@ -344,6 +344,7 @@
   },
   "mount": {
     "type": "ratiroan",
+    "configuration": "equatorial",
     // Relaxed limit for GRB 210407A.
     // "westhalimit": "+05:28:00",
     // C1 pointing model is from 20210409.

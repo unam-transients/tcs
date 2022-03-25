@@ -36,6 +36,9 @@ package provide "mountntm" 0.0
 config::setdefaultvalue "mount" "controllerhost"             "mount"
 config::setdefaultvalue "mount" "controllerport"             65432
 config::setdefaultvalue "mount" "initialcommand"             ""
+
+source [file join [directories::prefix] "lib" "tcs" "mount.tcl"]
+
 config::setdefaultvalue "mount" "allowedpositionerror"       "4as"
 config::setdefaultvalue "mount" "pointingmodelparameters0"   [dict create]
 config::setdefaultvalue "mount" "pointingmodelID0"           "0"
@@ -1968,5 +1971,3 @@ namespace eval "mount" {
   ######################################################################
 
 }
-
-source [file join [directories::prefix] "lib" "tcs" "mount.tcl"]

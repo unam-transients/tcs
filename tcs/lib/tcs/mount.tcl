@@ -23,10 +23,18 @@
 
 ########################################################################
 
+config::setdefaultvalue "mount" "configuration" "equatorial"
+
 namespace eval "mount" {
 
-  variable svnid {$Id}
+  ######################################################################
+
+  variable configuration [config::getvalue "mount" "configuration"]
   
+  ######################################################################
+
+  server::setdata "configuration" $configuration
+
   ######################################################################
 
   proc initialize {} {
