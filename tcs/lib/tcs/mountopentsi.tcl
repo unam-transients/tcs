@@ -38,6 +38,8 @@ config::setdefaultvalue "mount" "controllerhost"             "opentsi"
 config::setdefaultvalue "mount" "controllerport"             65432
 config::setdefaultvalue "mount" "initialcommand"             "AUTH PLAIN \"admin\" \"admin\"\n"
 
+source [file join [directories::prefix] "lib" "tcs" "mount.tcl"]
+
 config::setdefaultvalue "mount" "allowedpositionerror"       "4as"
 config::setdefaultvalue "mount" "pointingmodelparameters0"   [dict create]
 config::setdefaultvalue "mount" "pointingmodelpolarhole"     "0"
@@ -438,5 +440,3 @@ namespace eval "mount" {
   ######################################################################
 
 }
-
-source [file join [directories::prefix] "lib" "tcs" "mount.tcl"]

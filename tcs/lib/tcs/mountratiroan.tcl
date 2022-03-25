@@ -37,6 +37,9 @@ package provide "mountratiroan" 0.0
 config::setdefaultvalue "mount" "controllerhost"          "mount"
 config::setdefaultvalue "mount" "controllerport"          10001
 config::setdefaultvalue "mount" "initialcommand"          ""
+
+source [file join [directories::prefix] "lib" "tcs" "mount.tcl"]
+
 config::setdefaultvalue "mount" "allowedlsterror"         "2s"
 config::setdefaultvalue "mount" "allowedpositionerror"    "4as"
 config::setdefaultvalue "mount" "pointingmodelparameters" [dict create]
@@ -1110,5 +1113,3 @@ namespace eval "mount" {
   ######################################################################
 
 }
-
-source [file join [directories::prefix] "lib" "tcs" "mount.tcl"]
