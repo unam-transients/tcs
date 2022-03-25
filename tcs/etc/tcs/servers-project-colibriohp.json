@@ -92,5 +92,9 @@
   "secondary": {
     "host": "control",
     "port": 5018
+  },
+  "opentsi": {
+    "host": "control",
+    "port": 5019
   }
 }
