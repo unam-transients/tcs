@@ -23,113 +23,10 @@
 
 ////////////////////////////////////////////////////////////////////////
 
-    // The DDRAGO CFW-14-5 filter wheels are:
-    // FW0011318 -- firmware serial number "CFW-14-5"
-    // FW0021318 -- firmware serial number "FW0021318"
-    // FW0031318 -- firmware serial number "FW0031318"
 
 {
-  "site": {
-    "longitude": "+5.712393d",
-    "latitude": "+43.932081d",
-    "altitude": "650.0",
-    "civiltimezone": "Europe/Paris"
-  },
-  "html": {
-    "servers": [
-      "covers",
-      "executor",
-      "instrument",
-      "moon",
-      "mount",
-      "opentsi",
-      "plc",
-      "power",
-      "secondary",
-      "selector",
-      "sensors",
-      "sun",
-      "target",
-      "telescope"
-    ]
-  },
-  "target": {
-    "minzenithdistancelimit": "1d",
-    "maxzenithdistancelimit": "85d",
-    "idleha": "0h",
-    "idledelta": "0d"
-  },
-  "selector": {},
-  "executor": {},
-  "telescope": {
-    "type": "dummy",
-    "idleha": "0h",
-    "idledelta": "0d"
-  },
-  "covers": {
-    "type": "opentsi"
-  },
-  "safetyswitch": {
-    "type": "none"
-  },
-  "secondary": {
-    "type": "opentsi",
-    "initialz0": "0",
-    "minz": "0",
-    "maxz": "40",
-    "allowedzerror": "0.05",
-    "zdeadzonewidth": "0.05",
-    "dztweak": "-1"
-  },
-  "mount": {
-    "type": "opentsi"
-  },
-  "plc": {
-    "controllerhost": "192.168.100.28",
-    "controllerport": "200"
-  },
-  "power": {
-    "hosts": {
-      "pdu1": {
-        "type": "ibootpdu",
-        "outlets": "8",
-        "inlets": "1"
-      },
-      "pdu2": {
-        "type": "ibootpdu",
-        "outlets": "8",
-        "inlets": "1"
-      }
-    },
-    "outletgroupaddresses": {
-      "firewall"            : [[ "pdu1", "a", "1"]],
-      "access"              : [[ "pdu1", "a", "2"]],
-      "services"            : [[ "pdu1", "a", "3"]],
-      "control"             : [[ "pdu1", "a", "4"]],
-      "detectors"           : [[ "pdu1", "a", "5"]],
-      "blue"                : [[ "pdu1", "a", "6"]],
-      "sparelinux"          : [[ "pdu1", "a", "7"]],
-      "sparewindows"        : [[ "pdu1", "a", "8"]]
-//      "close-electronics"   : [[ "pdu2", "a", "1"]],
-//      "blue-service-cabinet": [[ "pdu2", "a", "2"]]
-    }
-  },
-  "instrument": {
-    "activedetectors": [
-    ],
-    "detectors": [
-      "C0"
-    ],
-    "idlefilterwheelpositions": [
-      "g"
-    ],
-    "pointingdetectors": [
-      "C0"
-    ],
-    "outletgroups": []
-  },
   "C0": {
-    "telescopedescription": "COLIBRI/CU laboratory",
+    "telescopedescription": "OHP COLIBRI 1.3-m",
     "detectortype": "si",
     "detectoridentifier": "blue:2055",
     "detectorpixelscale": "0.381as",
@@ -183,13 +80,11 @@
     "coolerclosedsetting": "current",
     "temperaturelimit": 40,
     "temperaturelimitoutletgroup": "blue-service-cabinet",
-//    "filterwheeltype": "null",
-//    "filterwheelidentifier": "null",
-//    "filterwheelinitialposition": 0,
-//    "filterlist": [
-//      "open"
-//    ],
     "filterwheeltype": "fli",
+    // The DDRAGO CFW-14-5 filter wheels are:
+    // FW0011318 -- firmware serial number "CFW-14-5"
+    // FW0021318 -- firmware serial number "FW0021318"
+    // FW0031318 -- firmware serial number "FW0031318"
     "filterwheelidentifier": "CFW-14-5",
     "filterwheelinitialposition": 0,
     "filterlist": [
@@ -215,208 +110,10 @@
       "16": "-A"
     }
   },
-//   "C1": {
-//     "telescopedescription": "COLIBRI/CU laboratory",
-//     "detectortype": "dummy",
-//     "detectoridentifier": "",
-//     "detectorpixelscale": "0.381as",
-//     "detectorinitialreadmode": "",
-//     "detectorinitialsoftwaregain": 1,
-//     "detectorinitialbinning": 1,
-//     "detectorwindows": {
-//       "initial": "default",
-//       "default": "4kx4k",
-//       "center": "1kx1k",
-//       "1kx1k": {
-//         "sx": 0,
-//         "sy": 0,
-//         "nx": 1024,
-//         "ny": 1024
-//       },
-//       "2kx2k": {
-//         "sx": 1024,
-//         "sy": 1024,
-//         "nx": 2048,
-//         "ny": 2048
-//       },
-//       "4kx4k": {
-//         "sx": 1536,
-//         "sy": 1536,
-//         "nx": 4096,
-//         "ny": 4096
-//       }
-//     },
-//     "detectorfullunbinneddatawindow": {
-//       "sx": 0,
-//       "sy": 0,
-//       "nx": 4096,
-//       "ny": 4096
-//     },
-//     "detectorfullunbinnedbiaswindow": {
-//       "sx": 0,
-//       "sy": 0,
-//       "nx": 0,
-//       "ny": 0
-//     },
-//     "cooleropensetting": "off",
-//     "coolerclosedsetting": "off",
-//     "temperaturelimit": 40,
-//     "temperaturelimitoutletgroup": "",
-//     "filterwheeltype": "null",
-//     "filterwheelidentifier": "null",
-//     "filterwheelinitialposition": 0,
-//     "filterlist": [
-//       "w"
-//     ],
-//     "focusertype": "null",
-//     "focuseridentifier": "null",
-//     "focuserinitialposition": 0,
-//     "focuserbacklashoffset": 0,
-//     "focusercorrectionmodel": {},
-//     "pointingmodelparameters": {},
-//     "isstandalone": false,
-//     "fitsfwhmargs": {
-//       "1": "-m",
-//       "2": "-A",
-//       "4": "-A",
-//       "8": "-A",
-//       "16": "-A"
-//     }
-//   },
-//   "C2": {
-//     "telescopedescription": "COLIBRI/CU laboratory",
-//     "detectortype": "fli",
-//     "detectoridentifier": "ML0032515",
-//     "detectorpixelscale": "0.381as",
-//     "detectorinitialreadmode": "",
-//     "detectorinitialsoftwaregain": 1,
-//     "detectorinitialbinning": 1,
-//     "detectorwindows": {
-//       "initial": "default",
-//       "default": "4kx4k",
-//       "center": "1kx1k",
-//       "1kx1k": {
-//         "sx": 0,
-//         "sy": 0,
-//         "nx": 4152,
-//         "ny": 4128
-//       },
-//       "2kx2k": {
-//         "sx": 1061,
-//         "sy": 1047,
-//         "nx": 2048,
-//         "ny": 2048
-//       },
-//       "4kx4k": {
-//         "sx": 1573,
-//         "sy": 1559,
-//         "nx": 1024,
-//         "ny": 1024
-//       }
-//     },
-//     "detectorfullunbinneddatawindow": {
-//       "sx": 37,
-//       "sy": 23,
-//       "nx": 4096,
-//       "ny": 4096
-//     },
-//     "detectorfullunbinnedbiaswindow": {
-//       "sx": 16,
-//       "sy": 23,
-//       "nx": 16,
-//       "ny": 4096
-//     },
-//     "cooleropensetting": "0",
-//     "coolerclosedsetting": "following",
-//     "temperaturelimit": 40,
-//     "filterwheeltype": "null",
-//     "filterwheelidentifier": "null",
-//     "filterwheelinitialposition": 0,
-//     "filterlist": [
-//       "w"
-//     ],
-//     "focusertype": "null",
-//     "focuseridentifier": "null",
-//     "focuserinitialposition": 0,
-//     "focuserbacklashoffset": 0,
-//     "focusercorrectionmodel": {},
-//     "pointingmodelparameters": {},
-//     "isstandalone": false,
-//     "fitsfwhmargs": {
-//       "1": "-m",
-//       "2": "-A",
-//       "4": "-A",
-//       "8": "-A",
-//       "16": "-A"
-//     }
-//   },
-//   "C3": {
-//     "telescopedescription": "COLIBRI/CU laboratory",
-//     "detectortype": "qsi",
-//     "detectoridentifier": "00502146",
-//     "detectorpixelscale": "1.38as",
-//     "detectorinitialreadmode": "",
-//     "detectorinitialsoftwaregain": 4,
-//     "detectorinitialbinning": 1,
-//     "detectorwindows": {
-//       "initial": "default",
-//       "default": "768x512",
-//       "center": "256x256",
-//       "768x512": {
-//         "sx": 0,
-//         "sy": 0,
-//         "nx": 800,
-//         "ny": 512
-//       },
-//       "512x512": {
-//         "sx": 128,
-//         "sy": 0,
-//         "nx": 512,
-//         "ny": 512
-//       },
-//       "256x256": {
-//         "sx": 256,
-//         "sy": 128,
-//         "nx": 256,
-//         "ny": 256
-//       }
-//     },
-//     "detectorfullunbinneddatawindow": {
-//       "sx": 0,
-//       "sy": 0,
-//       "nx": 768,
-//       "ny": 512
-//     },
-//     "detectorfullunbinnedbiaswindow": {
-//       "sx": 784,
-//       "sy": 0,
-//       "nx": 16,
-//       "ny": 512
-//     },
-//     "cooleropensetting": "0",
-//     "coolerclosedsetting": "off",
-//     "temperaturelimit": 40,
-//     "filterwheeltype": "fli",
-//     "filterwheelidentifier": "CFW-14-5",
-//     "filterwheelinitialposition": 0,
-//     "filterlist": [
-//       "w"
-//     ],
-//     "focusertype": "null",
-//     "focuseridentifier": "null",
-//     "focuserinitialposition": 0,
-//     "focuserbacklashoffset": 0,
-//     "focusercorrectionmodel": {},
-//     "pointingmodelparameters": {},
-//     "isstandalone": false,
-//     "fitsfwhmargs": {
-//       "1": "-m",
-//       "2": "-A",
-//       "4": "-A",
-//       "8": "-A",
-//       "16": "-A"
-//     }
-//   },
+  "covers": {
+    "type": "opentsi"
+  },
+  "executor": {},
   "fitsheader": {
     "servers": [
       "target",
@@ -426,9 +123,84 @@
       "weather"
     ]
   },
-  "swift": {
-    "pointingsource": "none"
+  "html": {
+    "servers": [
+      "covers",
+      "executor",
+      "instrument",
+      "moon",
+      "mount",
+      "opentsi",
+      "plc",
+      "power",
+      "secondary",
+      "selector",
+      "sensors",
+      "sun",
+      "target",
+      "telescope"
+    ]
   },
+  "instrument": {
+    "activedetectors": [
+    ],
+    "detectors": [
+      "C0"
+    ],
+    "idlefilterwheelpositions": [
+      "g"
+    ],
+    "pointingdetectors": [
+      "C0"
+    ],
+    "outletgroups": []
+  },
+  "mount": {
+    "type": "opentsi"
+  },
+  "plc": {
+    "controllerhost": "192.168.100.28",
+    "controllerport": "200"
+  },
+  "power": {
+    "hosts": {
+      "pdu1": {
+        "type": "ibootpdu",
+        "outlets": "8",
+        "inlets": "1"
+      },
+      "pdu2": {
+        "type": "ibootpdu",
+        "outlets": "8",
+        "inlets": "1"
+      }
+    },
+    "outletgroupaddresses": {
+      "firewall"            : [[ "pdu1", "a", "1"]],
+      "access"              : [[ "pdu1", "a", "2"]],
+      "services"            : [[ "pdu1", "a", "3"]],
+      "control"             : [[ "pdu1", "a", "4"]],
+      "detectors"           : [[ "pdu1", "a", "5"]],
+      "blue"                : [[ "pdu1", "a", "6"]],
+      "sparelinux"          : [[ "pdu1", "a", "7"]],
+      "sparewindows"        : [[ "pdu1", "a", "8"]]
+      // "close-electronics"   : [[ "pdu2", "a", "1"]],
+      // "blue-service-cabinet": [[ "pdu2", "a", "2"]]
+    }
+  },
+  "safetyswitch": {
+    "type": "none"
+  },
+  "secondary": {
+    "type": "opentsi",
+    "initialz0": "0",
+    "minz": "0",
+    "maxz": "40",
+    "allowedzerror": "0.05",
+    "zdeadzonewidth": "0.05",
+    "dztweak": "-1"
+  },
+  "selector": {},
   "sensors": {
     "lognames": [
       "instrument-external-temperature",
@@ -467,14 +239,14 @@
       "C0-service-cabinet-external-humidity"
     ],
     "sensors": {
-      // rack-internal 			= 26.FAAE1A020000
-      // rack-external 			= 26.659DE1010000
-      // blue-service-cabinet-external 	= 26.FE7D1A020000
-      // blue-service-cabinet-internal 	= 26.F3961A020000
+      // rack-internal                  = 26.FAAE1A020000
+      // rack-external                  = 26.659DE1010000
+      // blue-service-cabinet-external  = 26.FE7D1A020000
+      // blue-service-cabinet-internal  = 26.F3961A020000
       // close-electronics-internal     = 26.E9AE1A020000
-      // instrument-external     	= 7E.983100001000
-      // instrument-internal		= 26.BCB01A020000
-      // instrument-tunnel		= 26.477E1A020000
+      // instrument-external            = 7E.983100001000
+      // instrument-internal            = 26.BCB01A020000
+      // instrument-tunnel              = 26.477E1A020000
       "instrument-external-temperature": {
         "file": "/usr/local/var/tcs/sensors/detectors/ow/7E.983100001000/EDS0068/temperature",
         "keyword": "CE2TM",
@@ -879,5 +651,25 @@
         "firmware": ""
       }
     }
+  },
+  "site": {
+    "longitude": "+5.712393d",
+    "latitude": "+43.932081d",
+    "altitude": "650.0",
+    "civiltimezone": "Europe/Paris"
+  },
+  "swift": {
+    "pointingsource": "none"
+  },
+  "target": {
+    "minzenithdistancelimit": "1d",
+    "maxzenithdistancelimit": "85d",
+    "idleha": "0h",
+    "idledelta": "0d"
+  },
+  "telescope": {
+    "type": "dummy",
+    "idleha": "0h",
+    "idledelta": "0d"
   }
 }
