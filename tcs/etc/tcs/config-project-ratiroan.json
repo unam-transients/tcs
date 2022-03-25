@@ -25,283 +25,6 @@
 
 
 {
-  "site": {
-    "latitude": "+31:02:43.0",
-    "longitude": "-115:28:00",
-    "altitude": "2790.0",
-    "civiltimezone": "America/Tijuana"
-  },
-  "html": {
-    "servers": [
-      "covers",
-      "cryostat",
-      "dome",
-      "executor",
-      "gcntan",
-      "guider",
-      "inclinometers",
-      "instrument",
-      "lights",
-      "moon",
-      "mount",
-      "power",
-      "nefinder",
-      "secondary",
-      "sefinder",
-      "selector",
-      "sensors",
-      "shutters",
-      "sun",
-      "supervisor",
-      "target",
-      "telescope",
-      "weather"
-    ]
-  },
-  "target": {
-    "southdeltalimit": "-33:00:00",
-    "northdeltalimit": "+57:45:00",
-    "easthalimit": "-05:20:20",
-    // Relaxed limit for GRB 210407A.
-    // "westhalimit": "+05:28:00",
-    "westhalimit": "+05:20:20",
-    "maxzenithdistancelimit": "79d",
-    "idleha": "0h",
-    "idledelta": "31d",
-    "pointingapertures": {
-      "default": [
-        "+0.0am",
-        "+0.0am"
-      ],
-      "rcenter": [
-        "+0.0am",
-        "+0.0am"
-      ],
-      "icenter": [
-        "+0.0am",
-        "+0.0am"
-      ],
-      "zcenter": [
-        "+0.0am",
-        "+0.0am"
-      ],
-      "ricenter": [
-        "+0.0am",
-        "+0.0am"
-      ],
-      "riZJcenter": [
-        "-1.4am",
-        "+0.1am"
-      ],
-      "riYHcenter": [
-        "+2.1am",
-        "+0.3am"
-      ],
-      "ZJcenter": [
-        "-2.3am",
-        "+0.7am"
-      ],
-      "YHcenter": [
-        "+3.5am",
-        "+1.0am"
-      ],
-      // Finder pointing apertures should be [ -CH, +ID ]
-      "nefinder": [
-        "-0.003075",
-        "+0.004898"
-      ],
-      "sefinder": [
-        "-0.001569",
-        "-0.007553"
-      ]
-    }
-  },
-  "gcntan": {
-    "serverpacketport": "5328",
-    "swiftalertprojectidentifier": "1000",
-    "fermialertprojectidentifier": "1001",
-    "lvcalertprojectidentifier": "1002",
-    "hawcalertprojectidentifier": "1003",
-    "icecubealertprojectidentifier": "1004"
-  },
-  "supervisor": {
-    "withplc": "false",
-    "internalhumiditysensor": "dome-humidity",
-    "openoffsetseconds": "900",
-    "opentocooloffsetseconds": "1800"
-  },
-  "selector": {},
-  "executor": {
-    "type": "ratiroan"
-  },
-  "safetyswitch": {
-    "type": "none"
-  },
-  "telescope": {
-    "type": "ratiroan",
-    "idleha": "0h",
-    "idledelta": "0d",
-    "closeexplicitly": "true",
-    "finders": [
-      "nefinder", "sefinder"
-    ]
-  },
-  "mount": {
-    "type": "ratiroan",
-    // Relaxed limit for GRB 210407A.
-    // "westhalimit": "+05:28:00",
-    // C1 pointing model is from 20210409.
-    "pointingmodelparameters": {
-      "IH": "-0.003156",
-      "ID": "+0.009765",
-      "CH": "+0.002381",
-      "NP": "-0.000402",
-      "MA": "-0.000365",
-      "ME": "+0.000440",
-      "TF": "-0.001917",
-      "FO": "+0.000000",
-      "DAF": "+0.000000",
-      "HHSH": "-0.000336",
-      "HHCH": "+0.000028",
-      "HHSH2": "+0.000840",
-      "HHCH2": "+0.000037",
-      "HDSD": "-0.003201",
-      "HDCD": "-0.013247",
-      "HDSD2": "+0.003085",
-      "HDCD2": "+0.003118"
-    }
-  },
-  "covers": {
-    "type": "ratiroan"
-  },
-  "lights": {
-    "type": "power",
-    "outletgroup": "dome-lights"
-  },
-  "secondary": {
-    "type": "ratiroan",
-    "initialz0": "6100",
-    "temperaturesensor": "dome-temperature"
-  },
-  "guider": {
-  },
-  "nefinder": {
-    // nefinder->C1 pointing model from 20210409.
-    "pointingmodelparameters": {
-      "ID": "+0.001360",
-      "CH": "+0.005530",
-      "TF": "+0.001127",
-      "PXD": "+0.000012",
-      "PXH": "-0.000307",
-      "PXD2": "+0.000024",
-      "PXDH": "-0.000000",
-      "PXH2": "+0.000207",
-      "PDD": "-0.000605",
-      "PDH": "+0.000053",
-      "PDD2": "+0.000077",
-      "PDDH": "+0.000060",
-      "PDH2": "+0.000231"
-    },
-    "telescopedescription":            "NE C8-A XLT Finder",
-    "detectortype":                    "fli",
-    "detectoridentifier":              "ML0503709",
-    "detectorwidth":                   "0.68d",
-    "detectorinitialreadmode":         "5MHz",
-    "detectorinitialsoftwaregain":     "8",
-    "detectorinitialbinning":          "2",
-    "detectorfullunbinneddatawindow":  { "sx": "46", "sy": "34", "nx": "2184", "ny": "1472" },
-    "detectorfullunbinnedbiaswindow":  { "sx": "12", "sy": "34", "nx":   "34", "ny": "1472" },
-    "coolersettemperature":            "-30",
-    "filterwheeltype":                 "null",
-    "filterwheelidentifier":           "null",
-    "filterwheelinitialposition":      "0",
-    "allowedfilterwheelpositionerror": "0",
-    // Finder focuser values determined 20210405.
-    //"focuserinitialposition": "600",
-    //"focusertype":                     "fli",
-    //"focuseridentifier":               "DF0101910",
-    "focuserinitialposition":          "0",
-    "focusertype":                     "null",
-    "focuseridentifier":               "null",
-    "allowedfocuserpositionerror":     "0",
-    "defaultfocusexposuretime":        "1.0",
-    "defaultfocusrange":               "600",
-    "defaultfocusstep":                "25",
-    "isstandalone":                    "false",
-    "temperaturelimit":                "40",
-    "temperaturelimitoutletgroup":     "nefinder-ccd"
-  },
-  "sefinder": {
-    // sefinder->C1 pointing model from 20210409.
-    "pointingmodelparameters": {
-      "ID": "-0.010418",
-      "CH": "+0.003998",
-      "TF": "+0.000580",
-      "PXD": "+0.000101",
-      "PXH": "-0.000086",
-      "PXD2": "+0.000067",
-      "PXDH": "-0.000028",
-      "PXH2": "+0.000151",
-      "PDD": "-0.000141",
-      "PDH": "+0.000025",
-      "PDD2": "-0.000050",
-      "PDDH": "+0.000007",
-      "PDH2": "+0.000030"
-    },
-    "telescopedescription":            "SE C8-A XLT Finder",
-    "detectortype":                    "fli",
-    "detectoridentifier":              "ML0702510",
-    "detectorwidth":                   "0.68d",
-    "detectorinitialreadmode":         "5MHz",
-    "detectorinitialsoftwaregain":     "8",
-    "detectorinitialbinning":          "2",
-    "detectorfullunbinneddatawindow":  { "sx": "46", "sy": "34", "nx": "2184", "ny": "1472" },
-    "detectorfullunbinnedbiaswindow":  { "sx": "12", "sy": "34", "nx":   "34", "ny": "1472" },
-    "coolersettemperature":            "-30",
-    "filterwheeltype":                 "null",
-    "filterwheelidentifier":           "null",
-    "filterwheelinitialposition":      "0",
-    "allowedfilterwheelpositionerror": "0",
-    // Finder focuser values determined 20210405.
-//    "focuserinitialposition":          "1100",
-//    "focusertype":                     "fli",
-//    "focuseridentifier":               "DF0080209",
-    "focuserinitialposition":          "0",
-    "focusertype":                     "null",
-    "focuseridentifier":               "null",
-    "allowedfocuserpositionerror":     "0",
-    "defaultfocusexposuretime":        "1.0",
-    "defaultfocusrange":               "600",
-    "defaultfocusstep":                "25",
-    "isstandalone":                    "false",
-    "temperaturelimit":                "40",
-    "temperaturelimitoutletgroup":     "sefinder-ccd"
-  },
-  "instrument": {
-    "detectors": [
-      "C0", "C1", "C2", "C3"
-    ],
-    "activedetectors": [
-      "C0", "C1", "C2", "C3"
-    ],
-    "pointingdetectors": [
-      "C1"
-    ],
-    "outletgroups": [
-      "science-ccd-pump"
-    ]
-  },
-  "fitsheader": {
-    "servers": [
-      "target",
-      "moon",
-      "sun",
-      "mount",
-      "secondary",
-      "sensors",
-      "weather"
-    ]
-  },
   "C0": {
     "telescopedescription": "OAN/SPM Harold L. Johnson 1.5-meter",
     "detectortype": "fli",
@@ -547,8 +270,148 @@
       "16": "-A"
     }
   },
-  "weather": {
-    "windaveragespeedlimit": "45"
+  "covers": {
+    "type": "ratiroan"
+  },
+  "executor": {
+    "type": "ratiroan"
+  },
+  "fitsheader": {
+    "servers": [
+      "target",
+      "moon",
+      "sun",
+      "mount",
+      "secondary",
+      "sensors",
+      "weather"
+    ]
+  },
+  "gcntan": {
+    "serverpacketport": "5328",
+    "swiftalertprojectidentifier": "1000",
+    "fermialertprojectidentifier": "1001",
+    "lvcalertprojectidentifier": "1002",
+    "hawcalertprojectidentifier": "1003",
+    "icecubealertprojectidentifier": "1004"
+  },
+  "guider": {
+  },
+  "html": {
+    "servers": [
+      "covers",
+      "cryostat",
+      "dome",
+      "executor",
+      "gcntan",
+      "guider",
+      "inclinometers",
+      "instrument",
+      "lights",
+      "moon",
+      "mount",
+      "power",
+      "nefinder",
+      "secondary",
+      "sefinder",
+      "selector",
+      "sensors",
+      "shutters",
+      "sun",
+      "supervisor",
+      "target",
+      "telescope",
+      "weather"
+    ]
+  },
+  "instrument": {
+    "detectors": [
+      "C0", "C1", "C2", "C3"
+    ],
+    "activedetectors": [
+      "C0", "C1", "C2", "C3"
+    ],
+    "pointingdetectors": [
+      "C1"
+    ],
+    "outletgroups": [
+      "science-ccd-pump"
+    ]
+  },
+  "lights": {
+    "type": "power",
+    "outletgroup": "dome-lights"
+  },
+  "mount": {
+    "type": "ratiroan",
+    // Relaxed limit for GRB 210407A.
+    // "westhalimit": "+05:28:00",
+    // C1 pointing model is from 20210409.
+    "pointingmodelparameters": {
+      "IH": "-0.003156",
+      "ID": "+0.009765",
+      "CH": "+0.002381",
+      "NP": "-0.000402",
+      "MA": "-0.000365",
+      "ME": "+0.000440",
+      "TF": "-0.001917",
+      "FO": "+0.000000",
+      "DAF": "+0.000000",
+      "HHSH": "-0.000336",
+      "HHCH": "+0.000028",
+      "HHSH2": "+0.000840",
+      "HHCH2": "+0.000037",
+      "HDSD": "-0.003201",
+      "HDCD": "-0.013247",
+      "HDSD2": "+0.003085",
+      "HDCD2": "+0.003118"
+    }
+  },
+  "nefinder": {
+    // nefinder->C1 pointing model from 20210409.
+    "pointingmodelparameters": {
+      "ID": "+0.001360",
+      "CH": "+0.005530",
+      "TF": "+0.001127",
+      "PXD": "+0.000012",
+      "PXH": "-0.000307",
+      "PXD2": "+0.000024",
+      "PXDH": "-0.000000",
+      "PXH2": "+0.000207",
+      "PDD": "-0.000605",
+      "PDH": "+0.000053",
+      "PDD2": "+0.000077",
+      "PDDH": "+0.000060",
+      "PDH2": "+0.000231"
+    },
+    "telescopedescription":            "NE C8-A XLT Finder",
+    "detectortype":                    "fli",
+    "detectoridentifier":              "ML0503709",
+    "detectorwidth":                   "0.68d",
+    "detectorinitialreadmode":         "5MHz",
+    "detectorinitialsoftwaregain":     "8",
+    "detectorinitialbinning":          "2",
+    "detectorfullunbinneddatawindow":  { "sx": "46", "sy": "34", "nx": "2184", "ny": "1472" },
+    "detectorfullunbinnedbiaswindow":  { "sx": "12", "sy": "34", "nx":   "34", "ny": "1472" },
+    "coolersettemperature":            "-30",
+    "filterwheeltype":                 "null",
+    "filterwheelidentifier":           "null",
+    "filterwheelinitialposition":      "0",
+    "allowedfilterwheelpositionerror": "0",
+    // Finder focuser values determined 20210405.
+    //"focuserinitialposition": "600",
+    //"focusertype":                     "fli",
+    //"focuseridentifier":               "DF0101910",
+    "focuserinitialposition":          "0",
+    "focusertype":                     "null",
+    "focuseridentifier":               "null",
+    "allowedfocuserpositionerror":     "0",
+    "defaultfocusexposuretime":        "1.0",
+    "defaultfocusrange":               "600",
+    "defaultfocusstep":                "25",
+    "isstandalone":                    "false",
+    "temperaturelimit":                "40",
+    "temperaturelimitoutletgroup":     "nefinder-ccd"
   },
   "power": {
     "hosts": {
@@ -639,6 +502,61 @@
       "ni-controller"         : [["dome-ibb", "a", "7"]]
     }
   },
+  "safetyswitch": {
+    "type": "none"
+  },
+  "secondary": {
+    "type": "ratiroan",
+    "initialz0": "6100",
+    "temperaturesensor": "dome-temperature"
+  },
+  "sefinder": {
+    // sefinder->C1 pointing model from 20210409.
+    "pointingmodelparameters": {
+      "ID": "-0.010418",
+      "CH": "+0.003998",
+      "TF": "+0.000580",
+      "PXD": "+0.000101",
+      "PXH": "-0.000086",
+      "PXD2": "+0.000067",
+      "PXDH": "-0.000028",
+      "PXH2": "+0.000151",
+      "PDD": "-0.000141",
+      "PDH": "+0.000025",
+      "PDD2": "-0.000050",
+      "PDDH": "+0.000007",
+      "PDH2": "+0.000030"
+    },
+    "telescopedescription":            "SE C8-A XLT Finder",
+    "detectortype":                    "fli",
+    "detectoridentifier":              "ML0702510",
+    "detectorwidth":                   "0.68d",
+    "detectorinitialreadmode":         "5MHz",
+    "detectorinitialsoftwaregain":     "8",
+    "detectorinitialbinning":          "2",
+    "detectorfullunbinneddatawindow":  { "sx": "46", "sy": "34", "nx": "2184", "ny": "1472" },
+    "detectorfullunbinnedbiaswindow":  { "sx": "12", "sy": "34", "nx":   "34", "ny": "1472" },
+    "coolersettemperature":            "-30",
+    "filterwheeltype":                 "null",
+    "filterwheelidentifier":           "null",
+    "filterwheelinitialposition":      "0",
+    "allowedfilterwheelpositionerror": "0",
+    // Finder focuser values determined 20210405.
+//    "focuserinitialposition":          "1100",
+//    "focusertype":                     "fli",
+//    "focuseridentifier":               "DF0080209",
+    "focuserinitialposition":          "0",
+    "focusertype":                     "null",
+    "focuseridentifier":               "null",
+    "allowedfocuserpositionerror":     "0",
+    "defaultfocusexposuretime":        "1.0",
+    "defaultfocusrange":               "600",
+    "defaultfocusstep":                "25",
+    "isstandalone":                    "false",
+    "temperaturelimit":                "40",
+    "temperaturelimitoutletgroup":     "sefinder-ccd"
+  },
+  "selector": {},
   "sensors": {
     "lognames": [
       "control-room-temperature",
@@ -1223,101 +1141,87 @@
         "firmware": ""
       }
     }
+  },
+  "site": {
+    "latitude": "+31:02:43.0",
+    "longitude": "-115:28:00",
+    "altitude": "2790.0",
+    "civiltimezone": "America/Tijuana"
+  },
+  "supervisor": {
+    "withplc": "false",
+    "internalhumiditysensor": "dome-humidity",
+    "openoffsetseconds": "900",
+    "opentocooloffsetseconds": "1800"
+  },
+  "target": {
+    "southdeltalimit": "-33:00:00",
+    "northdeltalimit": "+57:45:00",
+    "easthalimit": "-05:20:20",
+    // Relaxed limit for GRB 210407A.
+    // "westhalimit": "+05:28:00",
+    "westhalimit": "+05:20:20",
+    "maxzenithdistancelimit": "79d",
+    "idleha": "0h",
+    "idledelta": "31d",
+    "pointingapertures": {
+      "default": [
+        "+0.0am",
+        "+0.0am"
+      ],
+      "rcenter": [
+        "+0.0am",
+        "+0.0am"
+      ],
+      "icenter": [
+        "+0.0am",
+        "+0.0am"
+      ],
+      "zcenter": [
+        "+0.0am",
+        "+0.0am"
+      ],
+      "ricenter": [
+        "+0.0am",
+        "+0.0am"
+      ],
+      "riZJcenter": [
+        "-1.4am",
+        "+0.1am"
+      ],
+      "riYHcenter": [
+        "+2.1am",
+        "+0.3am"
+      ],
+      "ZJcenter": [
+        "-2.3am",
+        "+0.7am"
+      ],
+      "YHcenter": [
+        "+3.5am",
+        "+1.0am"
+      ],
+      // Finder pointing apertures should be [ -CH, +ID ]
+      "nefinder": [
+        "-0.003075",
+        "+0.004898"
+      ],
+      "sefinder": [
+        "-0.001569",
+        "-0.007553"
+      ]
+    }
+  },
+  "telescope": {
+    "type": "ratiroan",
+    "idleha": "0h",
+    "idledelta": "0d",
+    "closeexplicitly": "true",
+    "finders": [
+      "nefinder", "sefinder"
+    ]
+  },
+  "weather": {
+    "windaveragespeedlimit": "45"
   }
 }
-
-
-// 
-// To be able to observe GRB 130122A.
-// /config::setdefaultvalue targetnorthdeltalimit         "+59:35:00"
-// /config::setdefaultvalue mountnorthdeltalimit          "+59:40:00"
-// 
-// To be able to observer GRB 130419A.
-// /config::setdefaultvalue targeteasthalimit            "-05:25:00"
-// /config::setdefaultvalue targetwesthalimit            "+05:25:00"
-// /config::setdefaultvalue mounteasthalimit             "-05:27:00"
-// /config::setdefaultvalue mountwesthalimit             "+05:27:00"
-// // 
-// 
-// 
-//    "instrumentdetectors": "{ "C0": "C1": "C2": "C3": }",
-//    "instrumentidlefilterwheelpositions": "{ "r":  "":    "":  "":   }",
-//    "instrumentoutletgroups": "{ "science-ccd-pump": }",
-//    "instrumentpointingdetectors": "{ "C1": }",
-// 
-// 
-// 2015-06-03
-// 
-// 
-// Secondary z0 value from 2013-03.
-//    "secondaryinitialz0": "6400",
-// 
-// 
-//    "mounttype": "ratir",
-// 
-// 
-// set nefinderCH [dict get [config::getvalue nefinderpointingmodelparameters] CH]
-// set nefinderID [dict get [config::getvalue nefinderpointingmodelparameters] ID]
-// set sefinderCH [dict get [config::getvalue sefinderpointingmodelparameters] CH]
-// set sefinderID [dict get [config::getvalue sefinderpointingmodelparameters] ID]
-// 
-// Finder offsets should be {-CH +ID}
-//    "pointingapertures": "[dict create \",
-//   "":           {+0.0am +0.0am} \
-//   "default":    {+0.0am +0.0am} \
-//   "rcenter":    {+0.0am +0.0am} \
-//   "icenter":    {+0.0am +0.0am} \
-//   "zcenter":    {+0.0am +0.0am} \
-//   "ricenter":   {+0.0am +0.0am} \
-//   "riZJcenter": {-1.4am +0.1am} \
-//   "riYHcenter": {+2.1am +0.3am} \
-//   "ZJcenter":   {-2.3am +0.7am} \
-//   "YHcenter":   {+3.5am +1.0am} \
-//   "nefinder":   [list [expr {-1 * $nefinderCH}] $nefinderID] \
-//   "sefinder":   [list [expr {-1 * $sefinderCH}] $sefinderID] \
-// ]
-// 
-//    "fitsheaderservers": "{",
-//   moon 
-//   mount 
-//   owsensors 
-//   sun 
-//   target 
-//   weather
-// }
-// 
-//    "ibbhostsdict": "{",
-//   "rack-ibb":  16
-//   "ics-cabinet-ibb":  16
-//   "dome-ibb":         16
-//   "dome-cabinet-ibb": 8
-//   "telescope-ibb":    16
-//   "instrument-ibb":   16
-// }
-// 
-// 
-//    "emergencystopdefaultoutletgroups": "{",
-//   "mount-motors"
-//   "mount"
-//   "dome"
-//   "shutters"
-//   "secondary"
-//   "dome-fans"
-// }
-// 
-//    "sensorsdict": "{",
-// 
-// 
-// }
-// 
-//    "sensorslognames": "{",
-// 
-// 
-// }
-// 
-//    "safetyswitchtype": "none",
-//    "executortype": "ratiroan",
-//    "telescopetype": "ratiroan",
-//    "telescopecloseexplicitly": "true",
-// 
-
