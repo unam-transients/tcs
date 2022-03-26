@@ -842,13 +842,9 @@ if {false} {
         [formathaifdouble    [client::getdata "mount" "mountha"]] \
         [formatdeltaifdouble [client::getdata "mount" "mountdelta"]]
 
-      if {[string equal [client::getdata "mount" "configuration"] "azimuth-zenithdistance"]} {
-
-        writehtmlrow "Current mount position (A,z)" \
+      writehtmlrow "Current mount position (A,z)" \
           [formatradtodegifdouble "%.2f°" [client::getdata "mount" "mountazimuth"]] \
           [formatradtodegifdouble "%.2f°" [client::getdata "mount" "mountzenithdistance"]]
-
-      }
 
       if {[string equal [client::getdata "mount" "configuration"] "equatorial"]} {
 

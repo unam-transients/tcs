@@ -245,7 +245,7 @@ namespace eval "mount" {
     set mountdelta    [server::getdata "mountdelta"]
     set mountrotation [server::getdata "mountrotation"]
 
-    set mountzenithdistance [astrometry::zenithdistance $mountha $mountdelta]
+    set mountzenithdistance [astrometry::equatorialtozenithdistance $mountha $mountdelta]
     
     if {$mountha < $easthalimit && $mountdelta < $polardeltalimit} {
       log::warning "HA exceeds eastern limit."
