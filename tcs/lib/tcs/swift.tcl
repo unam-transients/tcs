@@ -134,7 +134,7 @@ namespace eval "swift" {
       while {$absha < [astrometry::pi]} {
         #log::info [format "getfavoredside: absha = %.1fd" [astrometry::radtodeg $absha]]
         set ha $absha
-        set zenithdistance [astrometry::zenithdistance $ha $delta]
+        set zenithdistance [astrometry::equatorialtozenithdistance $ha $delta]
         set alpha [astrometry::alpha $ha $seconds]
         set distance [astrometry::distance $alpha $delta $swiftobservedalpha $swiftobserveddelta]
         if {$distance < $swiftmaxdistance} {
@@ -151,7 +151,7 @@ namespace eval "swift" {
           }
         }
         set ha [expr {-$absha}]
-        set zenithdistance [astrometry::zenithdistance $ha $delta]
+        set zenithdistance [astrometry::equatorialtozenithdistance $ha $delta]
         set alpha [astrometry::alpha $ha $seconds]
         set distance [astrometry::distance $alpha $delta $swiftobservedalpha $swiftobserveddelta]
         if {$distance < $swiftmaxdistance} {

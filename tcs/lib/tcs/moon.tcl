@@ -49,8 +49,8 @@ namespace eval "moon" {
     set observeddelta [astrometry::moonobserveddelta $seconds]
     set observedha    [astrometry::ha $observedalpha $seconds]
 
-    set observedazimuth        [astrometry::azimuth        $observedha $observeddelta]
-    set observedzenithdistance [astrometry::zenithdistance $observedha $observeddelta]
+    set observedazimuth        [astrometry::equatorialtoazimuth        $observedha $observeddelta]
+    set observedzenithdistance [astrometry::equatorialtozenithdistance $observedha $observeddelta]
     
     set skystate [astrometry::moonskystate $seconds]
     if {![string equal $lastskystate ""]} {

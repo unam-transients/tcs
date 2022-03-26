@@ -503,8 +503,8 @@ namespace eval "mount" {
     set mounttrackingerror  [expr {sqrt(pow($mounteasttrackingerror, 2) + pow($mountnorthtrackingerror, 2))}]
     set mountha             [astrometry::foldradsymmetric $mountha]
     set mountalpha          [astrometry::foldradpositive [expr {[astrometry::last $pendingaxishaseconds] - $mountha}]]
-    set mountazimuth        [astrometry::azimuth $mountha $mountdelta]
-    set mountzenithdistance [astrometry::zenithdistance $mountha $mountdelta]
+    set mountazimuth        [astrometry::equatorialtoazimuth $mountha $mountdelta]
+    set mountzenithdistance [astrometry::equatorialtozenithdistance $mountha $mountdelta]
 
     variable hamotionstate
     set lasthamotionstate $hamotionstate
@@ -1252,12 +1252,12 @@ namespace eval "mount" {
       set mountha                [server::getdata "mountha"]
       set mountdelta             [server::getdata "mountdelta"]
       if {
-        [astrometry::zenithdistance $requestedmountha $requestedmountdelta] > $zenithdistancelimit
+        [astrometry::equatorialtozenithdistance $requestedmountha $requestedmountdelta] > $zenithdistancelimit
       } {
         error "the requested position is below the zenith distance limit."
       } elseif {
-        [astrometry::zenithdistance $mountha $requestedmountdelta] < $zenithdistancelimit &&
-        [astrometry::zenithdistance $requestedmountha $mountdelta] < $zenithdistancelimit
+        [astrometry::equatorialtozenithdistance $mountha $requestedmountdelta] < $zenithdistancelimit &&
+        [astrometry::equatorialtozenithdistance $requestedmountha $mountdelta] < $zenithdistancelimit
       } {
         log::debug "waituntilsafetomovebothaxes: finished."
         return
@@ -1366,11 +1366,11 @@ namespace eval "mount" {
     
     variable zenithdistancelimit
     if {
-      [astrometry::zenithdistance $requestedmountha $requestedmountdelta] > $zenithdistancelimit
+      [astrometry::equatorialtozenithdistance $requestedmountha $requestedmountdelta] > $zenithdistancelimit
     } {
       error "the requested position is below the zenith distance limit."
     } elseif {
-      [astrometry::zenithdistance $mountha $requestedmountdelta] > $zenithdistancelimit
+      [astrometry::equatorialtozenithdistance $mountha $requestedmountdelta] > $zenithdistancelimit
     } {
       log::info "moving first in HA to stay above the zenith distance limit."
       sendcommandandwait \
@@ -1382,7 +1382,7 @@ namespace eval "mount" {
           [format "SET DEC.TARGETPOS=%.5f" [astrometry::radtodeg $requestedaxisdelta]]
       }
     } elseif {
-      [astrometry::zenithdistance $requestedmountha $mountdelta] > $zenithdistancelimit
+      [astrometry::equatorialtozenithdistance $requestedmountha $mountdelta] > $zenithdistancelimit
     } {
       log::info "moving first in δ to stay above the zenith distance limit."
       sendcommandandwait \

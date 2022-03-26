@@ -198,8 +198,8 @@ namespace eval "target" {
 
     }
     
-    set observedazimuth        [astrometry::azimuth $observedha $observeddelta]
-    set observedzenithdistance [astrometry::zenithdistance $observedha $observeddelta]
+    set observedazimuth        [astrometry::equatorialtoazimuth $observedha $observeddelta]
+    set observedzenithdistance [astrometry::equatorialtozenithdistance $observedha $observeddelta]
     set observedairmass        [astrometry::airmass $observedzenithdistance]
 
     set lastwithinlimits [server::getdata "withinlimits"]

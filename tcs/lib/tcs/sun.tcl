@@ -98,8 +98,8 @@ namespace eval "sun" {
     set observeddelta [astrometry::sunobserveddelta $seconds]
     set observedha    [astrometry::ha $observedalpha $seconds]
 
-    set observedazimuth        [astrometry::azimuth        $observedha $observeddelta]
-    set observedzenithdistance [astrometry::zenithdistance $observedha $observeddelta]
+    set observedazimuth        [astrometry::equatorialtoazimuth        $observedha $observeddelta]
+    set observedzenithdistance [astrometry::equatorialtozenithdistance $observedha $observeddelta]
 
     if {[catch {
       client::update "target"

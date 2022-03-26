@@ -154,7 +154,7 @@ namespace eval "constraints" {
       return false
     }
 
-    set zenithdistance [astrometry::zenithdistance $ha $delta]
+    set zenithdistance [astrometry::equatorialtozenithdistance $ha $delta]
     log::debug [format "checking the zenith distance (%.2fd) at $when against the minimum allowed (%.2fd)." \
                  [astrometry::radtodeg $zenithdistance] \
                  [astrometry::radtodeg $minzenithdistancelimit]]
@@ -348,7 +348,7 @@ namespace eval "constraints" {
       set sunalpha [astrometry::sunobservedalpha $seconds]
       set sundelta [astrometry::sunobserveddelta $seconds]
       set sunha    [astrometry::ha $sunalpha $seconds]
-      set sunzenithdistance [astrometry::zenithdistance $sunha $sundelta]
+      set sunzenithdistance [astrometry::equatorialtozenithdistance $sunha $sundelta]
       log::debug [format \
         "checking the zenith distance of the Sun (%.2fd) at $when against the minimum allowed (%.2fd)." \
         [astrometry::radtodeg $sunzenithdistance] \
@@ -387,7 +387,7 @@ namespace eval "constraints" {
       set sunalpha [astrometry::sunobservedalpha $seconds]
       set sundelta [astrometry::sunobserveddelta $seconds]
       set sunha    [astrometry::ha $sunalpha $seconds]
-      set sunzenithdistance [astrometry::zenithdistance $sunha $sundelta]
+      set sunzenithdistance [astrometry::equatorialtozenithdistance $sunha $sundelta]
       log::debug [format \
         "checking the zenith distance of the Sun (%.2fd) at $when against the maximum allowed (%.2f)." \
         [astrometry::radtodeg $sunzenithdistance] \
@@ -653,7 +653,7 @@ namespace eval "constraints" {
       log::debug "no minimum airmass constraint."
     } else { 
       set minairmass [getconstraint $constraints "minairmass"]
-      set observedairmass [astrometry::airmass [astrometry::zenithdistance [visit::observedha $visit $seconds] [visit::observeddelta $visit $seconds]]]
+      set observedairmass [astrometry::airmass [astrometry::equatorialtozenithdistance [visit::observedha $visit $seconds] [visit::observeddelta $visit $seconds]]]
       log::debug [format \
         "checking the airmass of the target (%.3f) at $when against the minimum allowed (%.3f)." \
            $observedairmass $minairmass \
@@ -687,7 +687,7 @@ namespace eval "constraints" {
       log::debug "no maximum airmass constraint."
     } else { 
       set maxairmass [getconstraint $constraints "maxairmass"]
-      set observedairmass [astrometry::airmass [astrometry::zenithdistance [visit::observedha $visit $seconds] [visit::observeddelta $visit $seconds]]]
+      set observedairmass [astrometry::airmass [astrometry::equatorialtozenithdistance [visit::observedha $visit $seconds] [visit::observeddelta $visit $seconds]]]
       log::debug [format \
         "checking the airmass of the target (%.3f) at $when against the maximum allowed (%.3f)." \
           $observedairmass $maxairmass \
@@ -722,7 +722,7 @@ namespace eval "constraints" {
     } else { 
       set minzenithdistance [getconstraint $constraints "minzenithdistance"]
       set minzenithdistance [astrometry::parseangle $minzenithdistance]
-      set observedzenithdistance [astrometry::zenithdistance [visit::observedha $visit $seconds] [visit::observeddelta $visit $seconds]]
+      set observedzenithdistance [astrometry::equatorialtozenithdistance [visit::observedha $visit $seconds] [visit::observeddelta $visit $seconds]]
       log::debug [format \
         "checking the zenith distance of the target (%.2fd) at $when against the minimum allowed (%.2fd)." \
           [astrometry::radtodeg $observedzenithdistance] \
@@ -759,7 +759,7 @@ namespace eval "constraints" {
     } else { 
       set maxzenithdistance [getconstraint $constraints "maxzenithdistance"]
       set maxzenithdistance [astrometry::parseangle $maxzenithdistance]
-      set observedzenithdistance [astrometry::zenithdistance [visit::observedha $visit $seconds] [visit::observeddelta $visit $seconds]]
+      set observedzenithdistance [astrometry::equatorialtozenithdistance [visit::observedha $visit $seconds] [visit::observeddelta $visit $seconds]]
       log::debug [format \
         "checking the zenith distance of the target (%.2fd) at $when against the maximum allowed (%.2fd)." \
           [astrometry::radtodeg $observedzenithdistance] \

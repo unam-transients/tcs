@@ -503,22 +503,26 @@ namespace eval "astrometry" {
   }
   
   ######################################################################
-
-  proc azimuth {ha delta} {
+  
+  proc equatorialtoazimuth {ha delta} {
     set ha    [parseha $ha]
     set delta [parsedelta $delta]
     variable pi
     variable latitude
-    set An [expr {sin($ha)}]
-    set Ad [expr {cos($ha) * sin($latitude) - tan($delta) * cos($latitude)}]
-    foldradpositive [expr {atan2($An,$Ad) - $pi}]
+    set y [expr {cos($delta) * sin($ha)}]
+    set x [expr {sin($latitude) * cos($delta) * cos($ha) - cos($latitude) * sin($delta)}]
+    set azimuth [expr {atan2($y, $x)}]
+    set azimuth [foldradpositive $azimuth]
+    return $azimuth
   }
   
-  proc zenithdistance {ha delta} {
+  proc equatorialtozenithdistance {ha delta} {
     set ha    [parseha $ha]
     set delta [parsedelta $delta]
     variable latitude
-    expr {acos(sin($latitude) * sin($delta) + cos($latitude) * cos($delta) * cos($ha))}
+    set zenithdistance [expr {acos(sin($latitude) * sin($delta) + cos($latitude) * cos($delta) * cos($ha))}]
+    set zenithdistance [foldradpositive $zenithdistance]
+    return $zenithdistance
   }
 
   proc airmass {z} {
@@ -786,8 +790,8 @@ namespace eval "astrometry" {
     set observedalpha [moonobservedalpha $seconds]
     set observeddelta [moonobserveddelta $seconds]
     set observedha    [ha $observedalpha $seconds]
-    set observedzenithdistance [zenithdistance $observedha $observeddelta]
-    set observedaltitude [expr {[astrometry::horizonzenithdistance] - $observedzenithdistance}]
+    set observedzenithdistance [equatorialtozenithdistance $observedha $observeddelta]
+    set observedaltitude [expr {[horizonzenithdistance] - $observedzenithdistance}]
 
     set illuminatedfraction [moonilluminatedfraction $seconds]
     
@@ -825,8 +829,8 @@ namespace eval "astrometry" {
     set observedalpha [sunobservedalpha $seconds]
     set observeddelta [sunobserveddelta $seconds]
     set observedha    [ha $observedalpha $seconds]
-    set observedzenithdistance [zenithdistance $observedha $observeddelta]
-    set observedaltitude [expr {[astrometry::horizonzenithdistance] - $observedzenithdistance}]
+    set observedzenithdistance [equatorialtozenithdistance $observedha $observeddelta]
+    set observedaltitude [expr {[horizonzenithdistance] - $observedzenithdistance}]
 
     variable daylightminaltitude
     variable civiltwilightminaltitude

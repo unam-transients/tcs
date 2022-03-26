@@ -208,8 +208,8 @@ namespace eval "mount" {
     set mountalpha        [server::getdata "pendingmountalpha"]
     set mountdelta        [server::getdata "pendingmountdelta"]
 
-    set mountazimuth        [astrometry::azimuth $mountha $mountdelta]
-    set mountzenithdistance [astrometry::zenithdistance $mountha $mountdelta]
+    set mountazimuth        [astrometry::equatorialtoazimuth $mountha $mountdelta]
+    set mountzenithdistance [astrometry::equatorialtozenithdistance $mountha $mountdelta]
 
     set lastwithinlimits [server::getdata "withinlimits"]
     variable easthalimit
@@ -584,8 +584,8 @@ namespace eval "mount" {
     
     set meaninclinometersha             $meanha
     set meaninclinometersdelta          $meandelta
-    set meaninclinometersazimuth        [astrometry::azimuth        $meanha $meandelta]
-    set meaninclinometerszenithdistance [astrometry::zenithdistance $meanha $meandelta]
+    set meaninclinometersazimuth        [astrometry::equatorialtoazimuth        $meanha $meandelta]
+    set meaninclinometerszenithdistance [astrometry::equatorialtozenithdistance $meanha $meandelta]
 
     set end [utcclock::seconds]
     log::debug [format "getmeaninclinometersposition: finished determining mean position after %.1f seconds." [utcclock::diff $end $start]]

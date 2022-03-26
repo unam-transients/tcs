@@ -101,7 +101,7 @@ namespace eval "inclinometers" {
       } else {
         set delta [expr {$Q+acos(cos($z)/$P)}]
       }
-      set A [astrometry::azimuth $h $delta]
+      set A [astrometry::equatorialtoazimuth $h $delta]
 
       server::setstatus "ok"
       server::setdata "timestamp"      $timestamp

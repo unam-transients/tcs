@@ -91,7 +91,7 @@ puts [astrometry::radtohms [astrometry::sunobservedalpha] 2 false]
 puts [astrometry::radtodms [astrometry::sunobserveddelta] 1 true ]
 
 puts [astrometry::radtodeg [astrometry::latitude]]
-puts [astrometry::radtodeg [astrometry::zenithdistance -00:00:00 30:02:43.0]]
+puts [astrometry::radtodeg [astrometry::equatorialtozenithdistance -00:00:00 30:02:43.0]]
 
 puts [astrometry::radtodeg [astrometry::parallacticangle -00:00:45 30:02:43.0]]
 puts [astrometry::radtodeg [astrometry::parallacticangle +00:00:45 30:02:43.0]]
