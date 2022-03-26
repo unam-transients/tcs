@@ -60,9 +60,9 @@ config::setdefaultvalue "mount" "southdeltalimit"         "-33:15:00"
 config::setdefaultvalue "mount" "zenithdistancelimit"     "79.5d"
 
 config::setdefaultvalue "mount" "hapark"                  "0h"
-config::setdefaultvalue "mount" "deltapark"               $astrometry::latitude
+config::setdefaultvalue "mount" "deltapark"               [astrometry::latitude]
 config::setdefaultvalue "mount" "haunpark"                "0h"
-config::setdefaultvalue "mount" "deltaunpark"             $astrometry::latitude
+config::setdefaultvalue "mount" "deltaunpark"             [astrometry::latitude]
 config::setdefaultvalue "mount" "maxcorrection"           "1d"
 
 namespace eval "mount" {
