@@ -455,6 +455,58 @@ proc snvisit {repeats} {
 
 ########################################################################
 
+proc fabianvisit {} {
+
+  log::summary "fabianvisit: starting."
+  
+  executor::setsecondaryoffset 0
+  executor::setguidingmode "none"
+  executor::setpointingmode "finder"
+
+  executor::track
+
+  executor::setwindow  "default"
+  executor::setbinning 2 2 1 1
+
+  executor::waituntiltracking
+
+  executor::movefilterwheel "r" "none" "none" "none"
+
+  foreach {aperture eastoffset northoffset} {
+    riZJcenter -10as -30as
+    riYHcenter -10as -30as
+    riYHcenter -10as   0as
+    riZJcenter -10as   0as
+    riZJcenter -10as +30as
+    riYHcenter -10as +30as
+    riYHcenter  +0as -15as
+    riZJcenter  +0as -15as
+    riZJcenter  +0as +15as
+    riYHcenter  +0as +15as
+    riYHcenter +10as -30as
+    riZJcenter +10as -30as
+    riZJcenter +10as   0as
+    riYHcenter +10as   0as
+    riYHcenter +10as +30as
+    riZJcenter +10as +30as
+    riYHcenter +10as -15as
+    riZJcenter +10as -15as
+    riZJcenter -10as +15as
+    riYHcenter -10as +15as
+  } {
+    log::info "fabianvisit: dithering $eastoffset E and $northoffset N about aperture $aperture."    
+    executor::offset $eastoffset $northoffset $aperture
+    executor::waituntiltracking
+    executor::expose object 80 80 60 60
+  }
+
+  log::summary "fabianvisit: finished."
+
+  return true
+}
+
+########################################################################
+
 proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime {filters "r"}} {
 
   log::summary "gridvisit: starting."
