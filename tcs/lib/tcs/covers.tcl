@@ -32,31 +32,36 @@ namespace eval "covers" {
   proc initialize {} {
     server::checkstatus
     server::checkactivityforinitialize
-    server::newactivitycommand "initializing" "idle" covers::initializeactivitycommand
+    server::newactivitycommand "initializing" "idle" \
+      covers::initializeactivitycommand
   }
 
   proc stop {} {
     server::checkstatus
     server::checkactivityforstop
-    server::newactivitycommand "stopping" [server::getstoppedactivity] "covers::stopactivitycommand [server::getactivity]"
+    server::newactivitycommand "stopping" [server::getstoppedactivity] \
+      "covers::stopactivitycommand [server::getactivity]"
   }
   
   proc reset {} {
     server::checkstatus
     server::checkactivityforreset
-    server::newactivitycommand "resetting" [server::getstoppedactivity] covers::stopactivitycommand
+    server::newactivitycommand "resetting" [server::getstoppedactivity] \
+      "covers::stopactivitycommand [server::getactivity]"
   }
 
   proc open {} {
     server::checkstatus
     server::checkactivityformove
-    server::newactivitycommand "opening" "idle" covers::openactivitycommand
+    server::newactivitycommand "opening" "idle" \
+      covers::openactivitycommand
   }
 
   proc close {} {
     server::checkstatus
     server::checkactivityformove
-    server::newactivitycommand "closing" "idle" covers::closeactivitycommand
+    server::newactivitycommand "closing" "idle" \
+      covers::closeactivitycommand
   }
 
 }
