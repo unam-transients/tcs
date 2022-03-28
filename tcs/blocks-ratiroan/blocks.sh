@@ -91,23 +91,11 @@ sh pointing-map.sh
   
   singleblock 1000-* b
 
-  singleblock 2005-tapia-0 c
+  singleblock 2006-rosales-0 c0
+  singleblock 2006-rosales-0 c1
+  singleblock 2006-rosales-0 c2
 
-  allblocks 2003-del-burgo              d
-  
   allblocks 2000-gonzalez               e
-
-  singleblock 2001-fox-0 h0
-  singleblock 2001-fox-0 h1
-  singleblock 2001-fox-0 h2
-  
-  singleblock 2001-fox-1 h0
-  singleblock 2001-fox-1 h1
-  singleblock 2001-fox-1 h2
-  
-  singleblock 2002-roman-0 h0
-  singleblock 2002-roman-1 h1
-  singleblock 2002-roman-2 h2
 
   singleblock 2004-garcia-0 i0
 
