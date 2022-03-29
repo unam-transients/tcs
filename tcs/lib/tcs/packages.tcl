@@ -260,6 +260,8 @@ package ifneeded telescopecoatlioan    0.0 \
   [list source [file join [file dirname [info script]] telescopecoatlioan.tcl]]
 package ifneeded telescopecolibricito  0.0 \
   [list source [file join [file dirname [info script]] telescopecolibricito.tcl]]
+package ifneeded telescopecolibriohp   0.0 \
+  [list source [file join [file dirname [info script]] telescopecolibriohp.tcl]]
 package ifneeded telescopeddotioan     0.0 \
   [list source [file join [file dirname [info script]] telescopeddotioan.tcl]]
 package ifneeded telescopedummy        0.0 \
