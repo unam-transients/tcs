@@ -669,7 +669,7 @@
     "idledelta": "0d"
   },
   "telescope": {
-    "type": "dummy",
+    "type": "colibriohp",
     "idleha": "0h",
     "idledelta": "0d"
   }

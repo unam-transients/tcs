@@ -150,6 +150,7 @@ installs	:=			        \
 	telescope.tcl		    	\
 	telescopecoatlioan.tcl		\
 	telescopecolibricito.tcl	\
+	telescopecolibriohp.tcl	    \
 	telescopeddotioan.tcl		\
 	telescopedummy.tcl		    \
 	telescoperatiroan.tcl		\
