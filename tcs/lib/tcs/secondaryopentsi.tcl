@@ -29,7 +29,7 @@ package require "log"
 package require "server"
 
 config::setdefaultvalue "secondary" "controllerport" "65432"
-config::setdefaultvalue "secondary" "controllerhost" "opentsi"
+config::setdefaultvalue "secondary" "controllerhost" "mount"
 
 package provide "secondaryopentsi" 0.0
 
@@ -189,6 +189,7 @@ namespace eval "secondary" {
       } else {
         set moving false
       }
+      log::info "moving is $moving."
     }
     if {[scan $controllerresponse "%*d DATA INLINE POSITION.INSTRUMENTAL.FOCUS.LIMIT_STATE=%d" value] == 1} {
       if {$value & (1 << 0 | 1 << 8)} {
@@ -240,10 +241,12 @@ namespace eval "secondary" {
 
   proc waituntilnotmoving {} {
     variable moving
+    log::info "waiting until not moving."
     while {$moving} {
-      coroutine::yield
+      log::info "moving was $moving"
+      coroutine::after 100
     }
-    log::info "not moving."
+    log::info "finished waiting until not moving."
   }
   
   ######################################################################
@@ -272,8 +275,13 @@ namespace eval "secondary" {
 
   proc starthardware {} {
     controller::flushcommandqueue
-    setmoving
-    waituntilnotmoving
+#    setmoving
+log::info "sending SET POINTING.INSTRUMENTAL.FOCUS.OFFSET=0"
+#    controller::sendcommand "SET POINTING.INSTRUMENTAL.FOCUS.OFFSET=0"
+log::info "sending SET POINTING.SETUP.FOCUS.SYNCMODE=1"
+#    controller::sendcommand "SET POINTING.SETUP.FOCUS.SYNCMODE=1"
+log::info "done"
+#    waituntilnotmoving
   }
 
   proc stophardware {} {
@@ -284,8 +292,9 @@ namespace eval "secondary" {
   }
   
   proc movehardwaresimple {requestedz} {
-    controller::flushcommandqueue
-    waituntilnotmoving
+    log::info "movehardwaresimple: starting."
+#    controller::flushcommandqueue
+#    waituntilnotmoving
     variable minz
     variable maxz
     if {$requestedz < $minz} {
@@ -297,12 +306,15 @@ namespace eval "secondary" {
     }
     set z [server::getdata "z"]
     if {$z != $requestedz} {
+      log::info "movehardwaresimple: sending commands."
       setmoving
+      controller::sendcommand "SET POINTING.SETUP.FOCUS.SYNCMODE=1"
       controller::sendcommand "SET POINTING.SETUP.FOCUS.POSITION=$z"
       controller::sendcommand "SET POINTING.TRACK=4"
       coroutine::after 1000
       waituntilnotmoving
     }
+    log::info "movehardwaresimple: done."
   }
 
   proc movehardware {requestedz check} {
@@ -335,9 +347,6 @@ namespace eval "secondary" {
     log::info "starting."
     setrequestedz0 ""
     setrequestedz
-    while {[string equal [server::getstatus] "starting"]} {
-      coroutine::yield
-    }
     starthardware
     set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]    
