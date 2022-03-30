@@ -146,19 +146,16 @@ EOF
     ;;
   esac
   
-   case $host in
-   colibriohp-detectors)
-     echo "tcs instrumentdataserver -f -d rsync://services/tcs/ &"
-     ;;
-   esac
+  case $host in
+  colibriohp-detectors)
+    echo "tcs instrumentdataserver -f -d rsync://services/tcs/ &"
+    ;;
+  esac
 
   case $host in
   colibriohp-services)
-     echo "tcs instrumentimageserver C0 detectors &"
-#     echo "tcs webcamimageserver a http://ddoti:ddoti@webcam-a/cgi-bin/viewer/video.jpg &"
-#     echo "tcs webcamimageserver b http://ddoti:ddoti@webcam-b/cgi-bin/viewer/video.jpg &"
-#     echo "tcs webcamimageserver c http://ddoti:ddoti@webcam-c/cgi-bin/viewer/video.jpg &"
-#     echo "tcs webcamimageserver -r 1 -c 640x480+480+600 cz http://ddoti:ddoti@webcam-c/cgi-bin/viewer/video.jpg &"
+    echo "tcs instrumentimageserver C0 detectors &"
+    echo "tcs webcamimageserver a https://www.colibri-obs.org/wp-content/uploads/2021/01/cam-colibri1.jpeg &"
     echo "tcs allskyimageserver http://iris.lam.fr/wp-includes/images/ftp_iris/allsky1.jpg &"
     echo "mkdir -p /usr/local/var/tcs/reboot"
     echo "mkdir -p /usr/local/var/tcs/restart"

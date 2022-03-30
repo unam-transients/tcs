@@ -46,6 +46,7 @@ config::setdefaultvalue "mount" "pointingmodelIH0"           "0"
 config::setdefaultvalue "mount" "pointingmodelparameters180" [dict create]
 config::setdefaultvalue "mount" "pointingmodelID180"         "0"
 config::setdefaultvalue "mount" "pointingmodelIH180"         "0"
+config::setdefaultvalue "mount" "pointingmodelpolarhole"     "0"
 config::setdefaultvalue "mount" "allowedguideoffset"         "30as"
 config::setdefaultvalue "mount" "trackingsettledlimit"       "1as"
 config::setdefaultvalue "mount" "axisdhacorrection"          "0"
@@ -91,6 +92,8 @@ namespace eval "mount" {
   variable haunpark                    [astrometry::parseangle [config::getvalue "mount" "haunpark"]]
   variable deltaunpark                 [astrometry::parseangle [config::getvalue "mount" "deltaunpark"]]
   variable maxcorrection               [astrometry::parseangle [config::getvalue "mount" "maxcorrection"]]
+
+  variable usemountcoordinates true
 
   ######################################################################
 
@@ -1034,38 +1037,6 @@ namespace eval "mount" {
       config::setvarvalue "mount" "pointingmodelID180" [pointing::getparameter $pointingmodelparameters180 "ID"]
       config::setvarvalue "mount" "pointingmodelIH180" [pointing::getparameter $pointingmodelparameters180 "IH"]
     }
-  }
-
-  proc mountdha {ha delta rotation} {
-    variable pointingmodelpolarhole 
-    if {0.5 * [astrometry::pi] - abs($delta) <= $pointingmodelpolarhole} {
-      set dha 0
-    } else {
-      set dha [pointing::modeldha [pointingmodelparameters $rotation] $ha $delta]
-    }
-    return $dha
-  }
-
-  proc mountdalpha {alpha delta rotation {seconds "now"}} {
-    variable pointingmodelpolarhole 
-    if {0.5 * [astrometry::pi] - abs($delta) <= $pointingmodelpolarhole} {
-      set dalpha 0
-    } else {
-      set ha [astrometry::ha $alpha $seconds]
-      set dalpha [pointing::modeldalpha  [pointingmodelparameters $rotation] $ha $delta]
-    }
-    return $dalpha
-  }
-
-  proc mountddelta {alpha delta rotation {seconds "now"}} {
-    variable pointingmodelpolarhole 
-    if {0.5 * [astrometry::pi] - abs($delta) <= $pointingmodelpolarhole} {
-      set ddelta 0
-    } else {
-      set ha [astrometry::ha $alpha $seconds]
-      set ddelta [pointing::modelddelta [pointingmodelparameters $rotation] $ha $delta]
-    }
-    return $ddelta
   }
 
   proc updatepointingmodel {dIH dID rotation} {

@@ -816,6 +816,18 @@ if {false} {
     if {[string equal [client::getstatus "mount"] "ok"]} {
       writehtmlrow "LAST" [formatalphaifdouble [astrometry::last [utcclock::scan [client::getdata "mount" "timestamp"]]]]
       writehtmlrow "State" [client::getdata "mount" "state"]
+
+      writehtmlrow "Requested standard position (α,HA,δ)" \
+        [formatalphaifdouble [client::getdata "mount" "requestedstandardalpha"]] \
+        "" \
+        [formatdeltaifdouble [client::getdata "mount" "requestedstandarddelta"]]
+      writehtmlrow "Requested standard rate (α,δ)" \
+        [formatrateifdouble [client::getdata "mount" "requestedstandardalpharate"]] \
+        "" \
+        [formatrateifdouble [client::getdata "mount" "requestedstandarddeltarate"]]
+      writehtmlrow "Requested standard equinox" \
+        [formatifok "%.2f" [client::getdata "mount" "requestedstandardequinox"]]
+
       writehtmlrow "Requested observed position (α,HA,δ)" \
         [formatalphaifdouble [client::getdata "mount" "requestedobservedalpha"]] \
         [formathaifdouble    [client::getdata "mount" "requestedobservedha"]] \
@@ -824,6 +836,10 @@ if {false} {
         [formatrateifdouble [client::getdata "mount" "requestedobservedalpharate"]] \
         "" \
         [formatrateifdouble [client::getdata "mount" "requestedobserveddeltarate"]]
+      writehtmlrow "Requested observed position (A,z)" \
+          [formatradtodegifdouble "%.2f°" [client::getdata "mount" "requestedobservedazimuth"]] \
+          [formatradtodegifdouble "%.2f°" [client::getdata "mount" "requestedobservedzenithdistance"]]
+
       writehtmlrow "Requested mount rotation" \
         [formatradtodegifdouble "%.0f°"  [client::getdata "mount" "requestedmountrotation"]]
       writehtmlrow "Requested mount position (α,HA,δ)" \
