@@ -93,6 +93,8 @@ namespace eval "mount" {
   variable haunpark                    [astrometry::parseangle [config::getvalue "mount" "haunpark"]]
   variable deltaunpark                 [astrometry::parseangle [config::getvalue "mount" "deltaunpark"]]
 
+  variable usemountcoordinates false
+
   ######################################################################
 
   variable pointingmodelparameters0   [config::getvalue "mount" "pointingmodelparameters0"]
@@ -121,8 +123,9 @@ namespace eval "mount" {
   set controller::statuscommand "$statuscommandidentifier GET [join {
     POSITION.HORIZONTAL.AZ
     POSITION.HORIZONTAL.ZD
-    POSITION.EQUATORIAL.RA_J2000
-    POSITION.EQUATORIAL.DEC_J2000
+    POSITION.EQUATORIAL.RA_CURRENT
+    POSITION.EQUATORIAL.DEC_CURRENT
+    POSITION.LOCAL.SIDEREAL_TIME
   } ";"]\n"
   set controller::timeoutmilliseconds         10000
   set controller::intervalmilliseconds        50
@@ -185,6 +188,7 @@ namespace eval "mount" {
   variable pendingmountzenithdistance
   variable pendingmountalpha
   variable pendingmountdelta
+  variable pendingmountst
 
   proc updatecontrollerdata {controllerresponse} {
 
@@ -192,6 +196,7 @@ namespace eval "mount" {
     variable pendingmountzenithdistance
     variable pendingmountalpha
     variable pendingmountdelta
+    variable pendingmountst
 
     set controllerresponse [string trim $controllerresponse]
     set controllerresponse [string trim $controllerresponse "\0"]
@@ -249,12 +254,16 @@ namespace eval "mount" {
       set pendingmountzenithdistance [astrometry::degtorad $value]
       return false
     }
-    if {[scan $controllerresponse "%*d DATA INLINE POSITION.EQUATORIAL.RA_J2000=%f" value] == 1} {
+    if {[scan $controllerresponse "%*d DATA INLINE POSITION.EQUATORIAL.RA_CURRENT=%f" value] == 1} {
       set pendingmountalpha [astrometry::hrtorad $value]
       return false
     }
-    if {[scan $controllerresponse "%*d DATA INLINE POSITION.EQUATORIAL.DEC_J2000=%f" value] == 1} {
+    if {[scan $controllerresponse "%*d DATA INLINE POSITION.EQUATORIAL.DEC_CURRENT=%f" value] == 1} {
       set pendingmountdelta [astrometry::degtorad $value]
+      return false
+    }
+    if {[scan $controllerresponse "%*d DATA INLINE POSITION.LOCAL.SIDEREAL_TIME=%f" value] == 1} {
+      set pendingmountst [astrometry::hrtorad $value]
       return false
     }
     if {[regexp {[0-9]+ DATA INLINE } $controllerresponse] == 1} {
@@ -270,6 +279,9 @@ namespace eval "mount" {
     set mountzenithdistance $pendingmountzenithdistance
     set mountalpha          $pendingmountalpha
     set mountdelta          $pendingmountdelta
+    set mountst             $pendingmountst
+    
+    set mountha [astrometry::foldradsymmetric [expr {$mountalpha - $mountst}]]
 
     set timestamp [utcclock::combinedformat "now"]
 
@@ -277,6 +289,7 @@ namespace eval "mount" {
     server::setdata "mountazimuth"        $mountazimuth
     server::setdata "mountzenithdistance" $mountzenithdistance
     server::setdata "mountalpha"          $mountalpha
+    server::setdata "mountha"             $mountha
     server::setdata "mountdelta"          $mountdelta
 
     updaterequestedpositiondata false
@@ -402,6 +415,12 @@ namespace eval "mount" {
   proc moveactivitycommand {} {
     set start [utcclock::seconds]
     log::info "moving."
+    updaterequestedpositiondata
+    sendcommand [format \
+      "SET OBJECT.HORIZONTAL.AZ=%.6f;OBJECT.HORIZONTAL.ZD=%.6f;POINTING.TRACK=2" \
+      [astrometry::radtodeg [server::getdata "requestedobservedazimuth"]] \
+      [astrometry::radtodeg [server::getdata "requestedobservedzenithdistance"]] \
+    ]      
     set end [utcclock::seconds]
     log::info [format "finished moving after %.1f seconds." [utcclock::diff $end $start]]
   }
@@ -428,6 +447,13 @@ namespace eval "mount" {
     if {$move} {
       log::info "moving to track."
     }
+    updaterequestedpositiondata
+    sendcommand [format \
+      "SET OBJECT.EQUATORIAL.RA=%.6f;OBJECT.EQUATORIAL.DEC=%.6f;OBJECT.EQUATORIAL.EQUINOX=%.6f;POINTING.TRACK=1" \
+      [astrometry::radtohr  [server::getdata "requestedstandardalpha"]] \
+      [astrometry::radtodeg [server::getdata "requestedstandarddelta"]] \
+      [server::getdata "requestedstandardequinox"] \
+    ]      
     log::info [format "started tracking after %.1f seconds." [utcclock::diff now $start]]
     server::setactivity "tracking"
     server::clearactivitytimeout

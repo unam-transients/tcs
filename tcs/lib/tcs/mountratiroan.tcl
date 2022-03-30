@@ -88,6 +88,8 @@ namespace eval "mount" {
   variable deltaunpark             [astrometry::parseangle [config::getvalue "mount" "deltaunpark"]]
   variable maxcorrection           [astrometry::parseangle [config::getvalue "mount" "maxcorrection"]]
 
+  variable usemountcoordinates true
+
   ######################################################################
 
   variable pointingmodelparameters [config::getvalue "mount" "pointingmodelparameters"]
@@ -144,6 +146,7 @@ namespace eval "mount" {
     expr {
       [string equal $controllerresponse ""] ||
       [string equal $controllerresponse "OK"] ||
+      [string equal $controllerresponse "K"] ||
       [string equal $controllerresponse "TEL EN MOVIMIENTO <<PARANDO>>"] ||
       [string equal $controllerresponse "la cuestion es cuadrada"] ||
       [string equal $controllerresponse "a cuestion es cuadrada"] ||
@@ -307,32 +310,6 @@ namespace eval "mount" {
   }
 
   ######################################################################
-
-  proc mountdha {ha delta rotation} {
-    variable pointingmodelparameters
-    return [pointing::modeldha $pointingmodelparameters $ha $delta]
-  }
-
-  proc mountdalpha {alpha delta rotation {seconds "now"}} {
-    set ha [astrometry::ha $alpha $seconds]
-    variable pointingmodelparameters
-    return [pointing::modeldalpha $pointingmodelparameters $ha $delta]
-  }
-
-  proc mountddelta {alpha delta rotation {seconds "now"}} {
-    set ha [astrometry::ha $alpha $seconds]
-    variable pointingmodelparameters
-    return [pointing::modelddelta $pointingmodelparameters $ha $delta]
-  }
-
-  proc updatepointingmodel {dIH dID rotation} {
-    variable pointingmodelparameters
-    set pointingmodelparameters [pointing::updateabsolutemodel $pointingmodelparameters $dIH $dID]
-    config::setvarvalue "mount" "pointingmodelID" [pointing::getparameter $pointingmodelparameters "ID"]
-    config::setvarvalue "mount" "pointingmodelIH" [pointing::getparameter $pointingmodelparameters "IH"]
-  }
-
-  ######################################################################  
   
   proc acceptablehaerror {} {
     variable allowedpositionerror

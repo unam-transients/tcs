@@ -38,6 +38,9 @@ namespace eval "mount" {
   ######################################################################
 
   proc updaterequestedpositiondata {{updaterequestedrotation false}} {
+  
+    variable configuration
+    variable usemountcoordinates
 
     log::debug "updating requested position."
 
@@ -55,10 +58,16 @@ namespace eval "mount" {
     set requestedactivity [server::getrequestedactivity]
     log::debug "continuing to update requested position for activity \"$activity\" and requested activity \"$requestedactivity\"."
 
-    set mountha       [server::getdata "mountha"      ]
-    set mountalpha    [server::getdata "mountalpha"   ]
-    set mountdelta    [server::getdata "mountdelta"   ]
-    set mountrotation [server::getdata "mountrotation"]
+    set requestedmountha                ""
+    set requestedmountalpha             ""
+    set requestedmountdelta             ""
+    set requestedmountharate            ""
+    set requestedmountalpharate         ""
+    set requestedmountdeltarate         ""
+
+    set mounthaerror                    ""
+    set mountalphaerror                 ""
+    set mountdeltaerror                 ""
 
     if {
       [string equal $requestedactivity "tracking"] &&
@@ -68,65 +77,81 @@ namespace eval "mount" {
 
       log::debug "updating requested position in the tracking/ok/tracking branch."
 
-      set requestedtimestamp         [client::getdata "target" "timestamp"]
+      set requestedtimestamp              [client::getdata "target" "timestamp"]
 
-      set requestedobservedha        [client::getdata "target" "observedha"]
-      set requestedobservedalpha     [client::getdata "target" "observedalpha"]
-      set requestedobserveddelta     [client::getdata "target" "observeddelta"]
-      set requestedobservedharate    [client::getdata "target" "observedharate"]
-      set requestedobservedalpharate [client::getdata "target" "observedalpharate"]
-      set requestedobserveddeltarate [client::getdata "target" "observeddeltarate"]
+      set requestedstandardalpha          [client::getdata "target" "standardalpha"]
+      set requestedstandarddelta          [client::getdata "target" "standarddelta"]
+      set requestedstandardalpharate      [client::getdata "target" "standardalpharate"]
+      set requestedstandarddeltarate      [client::getdata "target" "standarddeltarate"]
+      set requestedstandardequinox        [client::getdata "target" "standardequinox"]
+
+      set requestedobservedha             [client::getdata "target" "observedha"]
+      set requestedobservedalpha          [client::getdata "target" "observedalpha"]
+      set requestedobserveddelta          [client::getdata "target" "observeddelta"]
+      set requestedobservedharate         [client::getdata "target" "observedharate"]
+      set requestedobservedalpharate      [client::getdata "target" "observedalpharate"]
+      set requestedobserveddeltarate      [client::getdata "target" "observeddeltarate"]
+      set requestedobservedazimuth        [client::getdata "target" "observedazimuth"]
+      set requestedobservedzenithdistance [client::getdata "target" "observedzenithdistance"]
       
       if {$updaterequestedrotation} {
         set requestedmountrotation [mountrotation $requestedobservedha $requestedobservedalpha]
       } else {
-        set requestedmountrotation $mountrotation
+        set requestedmountrotation [server::getdata "mountrotation"]
       }
 
-      set seconds [utcclock::scan $requestedtimestamp]
-      set dseconds 60
-      set futureseconds [expr {$seconds + $dseconds}]
+      if {$usemountcoordinates} {
+      
+        set seconds [utcclock::scan $requestedtimestamp]
+        set dseconds 60
+        set futureseconds [expr {$seconds + $dseconds}]
 
-      set mountdha    [mountdha    $requestedobservedha    $requestedobserveddelta $requestedmountrotation]
-      set mountdalpha [mountdalpha $requestedobservedalpha $requestedobserveddelta $requestedmountrotation $seconds]
-      set mountddelta [mountddelta $requestedobservedalpha $requestedobserveddelta $requestedmountrotation $seconds]
+        set mountha       [server::getdata "mountha"      ]
+        set mountalpha    [server::getdata "mountalpha"   ]
+        set mountdelta    [server::getdata "mountdelta"   ]
 
-      set requestedmountha    [astrometry::foldradsymmetric [expr {$requestedobservedha + $mountdha}]]
-      set requestedmountalpha [astrometry::foldradpositive [expr {$requestedobservedalpha + $mountdalpha}]]
-      set requestedmountdelta [expr {$requestedobserveddelta + $mountddelta}]
+        set mountdha    [mountdha    $requestedobservedha    $requestedobserveddelta $requestedmountrotation]
+        set mountdalpha [mountdalpha $requestedobservedalpha $requestedobserveddelta $requestedmountrotation $seconds]
+        set mountddelta [mountddelta $requestedobservedalpha $requestedobserveddelta $requestedmountrotation $seconds]
 
-      set futurerequestedmountrotation $requestedmountrotation
-      set futurerequestedobservedha    [astrometry::foldradsymmetric [expr {
-        $requestedobservedha + $dseconds * $requestedobservedharate
-      }]]
-      set futurerequestedobservedalpha [astrometry::foldradpositive [expr {
-        $requestedobservedalpha + $dseconds * $requestedobservedalpharate / cos($requestedobserveddelta)
-      }]]
-      set futurerequestedobserveddelta [expr {
-        $requestedobserveddelta + $dseconds * $requestedobserveddeltarate
-      }]
+        set requestedmountha    [astrometry::foldradsymmetric [expr {$requestedobservedha + $mountdha}]]
+        set requestedmountalpha [astrometry::foldradpositive [expr {$requestedobservedalpha + $mountdalpha}]]
+        set requestedmountdelta [expr {$requestedobserveddelta + $mountddelta}]
 
-      set futuremountdha    [mountdha    $futurerequestedobservedha    $futurerequestedobserveddelta $futurerequestedmountrotation]
-      set futuremountdalpha [mountdalpha $futurerequestedobservedalpha $futurerequestedobserveddelta $futurerequestedmountrotation $futureseconds]
-      set futuremountddelta [mountddelta $futurerequestedobservedalpha $futurerequestedobserveddelta $futurerequestedmountrotation $futureseconds]
+        set futurerequestedmountrotation $requestedmountrotation
+        set futurerequestedobservedha    [astrometry::foldradsymmetric [expr {
+          $requestedobservedha + $dseconds * $requestedobservedharate
+        }]]
+        set futurerequestedobservedalpha [astrometry::foldradpositive [expr {
+          $requestedobservedalpha + $dseconds * $requestedobservedalpharate / cos($requestedobserveddelta)
+        }]]
+        set futurerequestedobserveddelta [expr {
+          $requestedobserveddelta + $dseconds * $requestedobserveddeltarate
+        }]
 
-      set futurerequestedmountha    [astrometry::foldradsymmetric [expr {$futurerequestedobservedha + $futuremountdha}]]
-      set futurerequestedmountalpha [astrometry::foldradpositive [expr {$futurerequestedobservedalpha + $futuremountdalpha}]]
-      set futurerequestedmountdelta [expr {$futurerequestedobserveddelta + $futuremountddelta}]
+        set futuremountdha    [mountdha    $futurerequestedobservedha    $futurerequestedobserveddelta $futurerequestedmountrotation]
+        set futuremountdalpha [mountdalpha $futurerequestedobservedalpha $futurerequestedobserveddelta $futurerequestedmountrotation $futureseconds]
+        set futuremountddelta [mountddelta $futurerequestedobservedalpha $futurerequestedobserveddelta $futurerequestedmountrotation $futureseconds]
 
-      set requestedmountharate      [astrometry::foldradsymmetric [expr {
-        ($futurerequestedmountha - $requestedmountha) / $dseconds
-      }]]
-      set requestedmountalpharate   [astrometry::foldradsymmetric [expr {
-        ($futurerequestedmountalpha - $requestedmountalpha) / $dseconds * cos($requestedobserveddelta)
-      }]]
-      set requestedmountdeltarate   [expr {
-        ($futurerequestedmountdelta - $requestedmountdelta) / $dseconds
-      }]
+        set futurerequestedmountha    [astrometry::foldradsymmetric [expr {$futurerequestedobservedha + $futuremountdha}]]
+        set futurerequestedmountalpha [astrometry::foldradpositive [expr {$futurerequestedobservedalpha + $futuremountdalpha}]]
+        set futurerequestedmountdelta [expr {$futurerequestedobserveddelta + $futuremountddelta}]
 
-      set mounthaerror    ""
-      set mountalphaerror [astrometry::foldradsymmetric [expr {$mountalpha - $requestedmountalpha}]]
-      set mountdeltaerror [expr {$mountdelta - $requestedmountdelta}]
+        set requestedmountharate      [astrometry::foldradsymmetric [expr {
+          ($futurerequestedmountha - $requestedmountha) / $dseconds
+        }]]
+        set requestedmountalpharate   [astrometry::foldradsymmetric [expr {
+          ($futurerequestedmountalpha - $requestedmountalpha) / $dseconds * cos($requestedobserveddelta)
+        }]]
+        set requestedmountdeltarate   [expr {
+          ($futurerequestedmountdelta - $requestedmountdelta) / $dseconds
+        }]
+
+        set mounthaerror    ""
+        set mountalphaerror [astrometry::foldradsymmetric [expr {$mountalpha - $requestedmountalpha}]]
+        set mountdeltaerror [expr {$mountdelta - $requestedmountdelta}]
+        
+      }
 
     } elseif {
       [string equal $requestedactivity "idle"] &&
@@ -134,86 +159,220 @@ namespace eval "mount" {
       [string equal $targetactivity "idle"]
     } {
 
-      log::debug "updating requested position in the idle/ok/idle branch."
+      log::debug "updating requested position in the idle/ok/idle equatorial branch."
 
-      set requestedtimestamp         [client::getdata "target" "timestamp"]
+      set requestedtimestamp              [client::getdata "target" "timestamp"]
 
-      set requestedobservedha        [client::getdata "target" "observedha"]
-      set requestedobservedalpha     [client::getdata "target" "observedalpha"]
-      set requestedobserveddelta     [client::getdata "target" "observeddelta"]
-      set requestedobservedharate    ""
-      set requestedobservedalpharate ""
-      set requestedobserveddeltarate ""
+      set requestedstandardalpha          ""
+      set requestedstandarddelta          ""
+      set requestedstandardalpharate      ""
+      set requestedstandarddeltarate      ""
+      set requestedstandardequinox        ""
+
+      set requestedobservedha             [client::getdata "target" "observedha"]
+      set requestedobservedalpha          [client::getdata "target" "observedalpha"]
+      set requestedobserveddelta          [client::getdata "target" "observeddelta"]
+      set requestedobservedharate         ""
+      set requestedobservedalpharate      ""
+      set requestedobserveddeltarate      ""
+      set requestedobservedazimuth        [client::getdata "target" "observedazimuth"]
+      set requestedobservedzenithdistance [client::getdata "target" "observedzenithdistance"]
 
       if {$updaterequestedrotation} {
         set requestedmountrotation [mountrotation $requestedobservedha $requestedobservedalpha]
       } else {
-        set requestedmountrotation $mountrotation
+        set requestedmountrotation [server::getdata "mountrotation"]
       }
       
-      set mountdha    [mountdha    $requestedobservedha    $requestedobserveddelta $requestedmountrotation]
-      set mountddelta [mountddelta $requestedobservedalpha $requestedobserveddelta $requestedmountrotation]
+      if {$usemountcoordinates} {
+      
+        set mountha       [server::getdata "mountha"      ]
+        set mountalpha    [server::getdata "mountalpha"   ]
+        set mountdelta    [server::getdata "mountdelta"   ]
 
-      set requestedmountha         [astrometry::foldradsymmetric [expr {$requestedobservedha + $mountdha}]]
-      set requestedmountalpha      ""
-      set requestedmountdelta      [expr {$requestedobserveddelta + $mountddelta}]
+        set mountdha    [mountdha    $requestedobservedha    $requestedobserveddelta $requestedmountrotation]
+        set mountddelta [mountddelta $requestedobservedalpha $requestedobserveddelta $requestedmountrotation]
 
-      set requestedmountharate     ""
-      set requestedmountalpharate  ""
-      set requestedmountdeltarate  ""
+        set requestedmountha         [astrometry::foldradsymmetric [expr {$requestedobservedha + $mountdha}]]
+        set requestedmountalpha      ""
+        set requestedmountdelta      [expr {$requestedobserveddelta + $mountddelta}]
 
-      set mounthaerror    [astrometry::foldradsymmetric [expr {$mountha    - $requestedmountha   }]]
-      set mountalphaerror ""
-      set mountdeltaerror [expr {$mountdelta - $requestedmountdelta}]
+        set requestedmountharate     ""
+        set requestedmountalpharate  ""
+        set requestedmountdeltarate  ""
+
+        set mounthaerror    [astrometry::foldradsymmetric [expr {$mountha    - $requestedmountha   }]]
+        set mountalphaerror ""
+        set mountdeltaerror [expr {$mountdelta - $requestedmountdelta}]
+    
+      }
 
     } else {
 
       log::debug "updating requested position in the last branch."
 
-      set requestedtimestamp         ""
+      set requestedtimestamp              ""
 
-      set requestedmountrotation     ""
-      set requestedobservedha        ""
-      set requestedobservedalpha     ""
-      set requestedobserveddelta     ""
-      set requestedobservedharate    ""
-      set requestedobservedalpharate ""
-      set requestedobserveddeltarate ""
+      set requestedstandardalpha          ""
+      set requestedstandarddelta          ""
+      set requestedstandardalpharate      ""
+      set requestedstandarddeltarate      ""
+      set requestedstandardequinox        ""
 
-      set requestedmountha        ""
-      set requestedmountalpha     ""
-      set requestedmountdelta     ""
-      set requestedmountharate    ""
-      set requestedmountalpharate ""
-      set requestedmountdeltarate ""
+      set requestedmountrotation          ""
+      set requestedobservedha             ""
+      set requestedobservedalpha          ""
+      set requestedobserveddelta          ""
+      set requestedobservedharate         ""
+      set requestedobservedalpharate      ""
+      set requestedobserveddeltarate      ""
+      set requestedobservedazimuth        ""
+      set requestedobservedzenithdistance ""
 
-      set mounthaerror    ""
-      set mountalphaerror ""
-      set mountdeltaerror ""
+      set requestedmountha                ""
+      set requestedmountalpha             ""
+      set requestedmountdelta             ""
+      set requestedmountharate            ""
+      set requestedmountalpharate         ""
+      set requestedmountdeltarate         ""
+
+      set mounthaerror                    ""
+      set mountalphaerror                 ""
+      set mountdeltaerror                 ""
 
     }
 
-    server::setdata "requestedtimestamp"         $requestedtimestamp
-    server::setdata "requestedmountrotation"     $requestedmountrotation
-    server::setdata "requestedobservedha"        $requestedobservedha
-    server::setdata "requestedobservedalpha"     $requestedobservedalpha
-    server::setdata "requestedobserveddelta"     $requestedobserveddelta
-    server::setdata "requestedobservedharate"    $requestedobservedharate
-    server::setdata "requestedobservedalpharate" $requestedobservedalpharate
-    server::setdata "requestedobserveddeltarate" $requestedobserveddeltarate
-    server::setdata "requestedmountha"           $requestedmountha
-    server::setdata "requestedmountalpha"        $requestedmountalpha
-    server::setdata "requestedmountdelta"        $requestedmountdelta
-    server::setdata "requestedmountharate"       $requestedmountharate
-    server::setdata "requestedmountalpharate"    $requestedmountalpharate
-    server::setdata "requestedmountdeltarate"    $requestedmountdeltarate
-    server::setdata "mounthaerror"               $mounthaerror
-    server::setdata "mountalphaerror"            $mountalphaerror
-    server::setdata "mountdeltaerror"            $mountdeltaerror
+    server::setdata "requestedtimestamp"              $requestedtimestamp
+    server::setdata "requestedmountrotation"          $requestedmountrotation
+    server::setdata "requestedstandardalpha"          $requestedstandardalpha
+    server::setdata "requestedstandarddelta"          $requestedstandarddelta
+    server::setdata "requestedstandardalpharate"      $requestedstandardalpharate
+    server::setdata "requestedstandarddeltarate"      $requestedstandarddeltarate
+    server::setdata "requestedstandardequinox"        $requestedstandardequinox
+    server::setdata "requestedobservedha"             $requestedobservedha
+    server::setdata "requestedobservedalpha"          $requestedobservedalpha
+    server::setdata "requestedobserveddelta"          $requestedobserveddelta
+    server::setdata "requestedobservedharate"         $requestedobservedharate
+    server::setdata "requestedobservedalpharate"      $requestedobservedalpharate
+    server::setdata "requestedobserveddeltarate"      $requestedobserveddeltarate
+    server::setdata "requestedobservedazimuth"        $requestedobservedazimuth
+    server::setdata "requestedobservedzenithdistance" $requestedobservedzenithdistance
+    server::setdata "requestedmountha"                $requestedmountha
+    server::setdata "requestedmountalpha"             $requestedmountalpha
+    server::setdata "requestedmountdelta"             $requestedmountdelta
+    server::setdata "requestedmountharate"            $requestedmountharate
+    server::setdata "requestedmountalpharate"         $requestedmountalpharate
+    server::setdata "requestedmountdeltarate"         $requestedmountdeltarate
+    server::setdata "mounthaerror"                    $mounthaerror
+    server::setdata "mountalphaerror"                 $mountalphaerror
+    server::setdata "mountdeltaerror"                 $mountdeltaerror
 
     log::debug "finished updating requested position."
   }
   
+  ######################################################################
+
+  proc mountdha {ha delta rotation} {
+    variable pointingmodelpolarhole 
+    if {0.5 * [astrometry::pi] - abs($delta) <= $pointingmodelpolarhole} {
+      set dha 0
+    } else {
+      set dha [pointing::modeldha [pointingmodelparameters $rotation] $ha $delta]
+    }
+    return $dha
+  }
+
+  proc mountdalpha {alpha delta rotation {seconds "now"}} {
+    variable pointingmodelpolarhole 
+    if {0.5 * [astrometry::pi] - abs($delta) <= $pointingmodelpolarhole} {
+      set dalpha 0
+    } else {
+      set ha [astrometry::ha $alpha $seconds]
+      set dalpha [pointing::modeldalpha  [pointingmodelparameters $rotation] $ha $delta]
+    }
+    return $dalpha
+  }
+
+  proc mountdha {ha delta rotation} {
+    variable pointingmodelpolarhole 
+    if {0.5 * [astrometry::pi] - abs($delta) <= $pointingmodelpolarhole} {
+      set dha 0
+    } else {
+      set dha [pointing::modeldha [pointingmodelparameters $rotation] $ha $delta]
+    }
+    return $dha
+  }
+
+  proc mountdalpha {alpha delta rotation {seconds "now"}} {
+    variable pointingmodelpolarhole 
+    if {0.5 * [astrometry::pi] - abs($delta) <= $pointingmodelpolarhole} {
+      set dalpha 0
+    } else {
+      set ha [astrometry::ha $alpha $seconds]
+      set dalpha [pointing::modeldalpha  [pointingmodelparameters $rotation] $ha $delta]
+    }
+    return $dalpha
+  }
+
+  proc mountddelta {alpha delta rotation {seconds "now"}} {
+    variable pointingmodelpolarhole 
+    if {0.5 * [astrometry::pi] - abs($delta) <= $pointingmodelpolarhole} {
+      set ddelta 0
+    } else {
+      set ha [astrometry::ha $alpha $seconds]
+      set ddelta [pointing::modelddelta [pointingmodelparameters $rotation] $ha $delta]
+    }
+    return $ddelta
+  }
+
+  proc pointingmodelparameters {rotation} {
+    variable pointingmodelparameters0
+    variable pointingmodelparameters180
+    if {$rotation == 0} {
+      return $pointingmodelparameters0
+    } else {
+      return $pointingmodelparameters180
+    }
+  }
+
+  proc setpointingmodelparameters {rotation newpointingmodelparameters} {
+    variable pointingmodelparameters0
+    variable pointingmodelparameters180
+    if {$rotation == 0} {
+      set pointingmodelparameters0 $newpointingmodelparameters
+      config::setvarvalue "mount" "pointingmodelID0" [pointing::getparameter $pointingmodelparameters0 "ID"]
+      config::setvarvalue "mount" "pointingmodelIH0" [pointing::getparameter $pointingmodelparameters0 "IH"]
+    } else {
+      set pointingmodelparameters180 $newpointingmodelparameters
+      config::setvarvalue "mount" "pointingmodelID180" [pointing::getparameter $pointingmodelparameters180 "ID"]
+      config::setvarvalue "mount" "pointingmodelIH180" [pointing::getparameter $pointingmodelparameters180 "IH"]
+    }
+  }
+
+  proc updatepointingmodel {dIH dID rotation} {
+    setpointingmodelparameters $rotation [pointing::updateabsolutemodel [pointingmodelparameters $rotation] $dIH $dID]
+  }
+  
+  proc setMAtozero {} {
+    log::info "setting MA to zero in the pointing model parameters."
+    variable pointingmodelparameters0
+    variable pointingmodelparameters180
+    set pointingmodelparameters0   [pointing::setparameter $pointingmodelparameters0   MA 0]
+    set pointingmodelparameters180 [pointing::setparameter $pointingmodelparameters180 MA 0]
+    log::info "the pointing model parameters for mount rotation 0 are: $pointingmodelparameters0:"
+    log::info "the pointing model parameters for mount rotation 180 are: $pointingmodelparameters180:"
+  }
+
+  proc setMEtozero {} {
+    log::info "setting ME to zero in the pointing model parameters."
+    variable pointingmodelparameters0
+    variable pointingmodelparameters180
+    set pointingmodelparameters0   [pointing::setparameter $pointingmodelparameters0   ME 0]
+    set pointingmodelparameters180 [pointing::setparameter $pointingmodelparameters180 ME 0]
+    log::info "the pointing model parameters for mount rotation 0 are: $pointingmodelparameters0:"
+    log::info "the pointing model parameters for mount rotation 180 are: $pointingmodelparameters180:"
+  }
+
   ######################################################################
 
   variable emergencystopped false
