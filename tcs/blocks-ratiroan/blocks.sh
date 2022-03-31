@@ -80,7 +80,7 @@ sh pointing-map.sh
     
     :
      
-    allblocks 0008-pointing-map           w
+    #allblocks 0008-pointing-map           w
 
   fi
 
