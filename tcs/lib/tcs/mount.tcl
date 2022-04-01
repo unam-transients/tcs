@@ -25,11 +25,17 @@
 
 config::setdefaultvalue "mount" "configuration" "equatorial"
 
+config::setdefaultvalue "mount" "settlinglimit"        "1as"
+config::setdefaultvalue "mount" "settlingdelayseconds" "0"
+
 namespace eval "mount" {
 
   ######################################################################
 
   variable configuration [config::getvalue "mount" "configuration"]
+  
+  variable settlinglimit        [astrometry::parseoffset [config::getvalue "mount" "settlinglimit"]]
+  variable settlingdelayseconds [config::getvalue "mount" "settlingdelayseconds"]
   
   ######################################################################
 
@@ -270,6 +276,107 @@ namespace eval "mount" {
     log::debug "finished updating requested position."
   }
   
+  ######################################################################
+  
+  variable tracking          false
+  variable trackingtimestamp ""
+  variable forcenottracking  false
+  variable settlingtimestamp ""
+  variable waittracking
+
+  proc checktracking {maybetracking trackingerror} {
+
+    variable tracking
+    variable forcenottracking
+    variable settlingtimestamp
+    variable settlingdelay
+    variable waittracking
+    
+    variable settlinglimit
+    variable settlingdelayseconds
+    
+    set lasttracking $tracking
+    
+    if {$forcenottracking} {
+
+      log::info "forcing: tracking is false."
+      set tracking false
+      set forcenottracking false
+
+    } elseif {![string equal [server::getrequestedactivity] "tracking"]} {
+
+      log::info "requestedactivity: tracking is false."
+      set tracking false
+
+    } elseif {!$maybetracking} {
+
+      log::info "maybetracking: tracking is false."
+      set tracking false
+      
+    } elseif {$lasttracking} {
+
+      log::info "continuing: tracking is true."
+      set tracking true
+
+    } elseif {$trackingerror > $settlinglimit} {
+
+      log::info "large error: tracking is false."
+      set tracking false
+      
+    } elseif {$settlingdelayseconds == 0} {
+    
+      log::info "no settling delay: tracking is true."
+      set tracking true
+
+    } elseif {[string equal $settlingtimestamp ""]} {
+
+      log::info "starting settling: tracking is false"
+      set settlingtimestamp [utcclock::combinedformat "now"]
+
+    } elseif {[utcclock::diff "now" $settlingtimestamp] < $settlingdelayseconds} {
+
+      log::info "settling: tracking is false."
+      set tracking false
+
+    } else {
+
+      log::info "else: tracking is true."
+      set tracking true
+
+    }
+    
+    if {!$lasttracking && $tracking} {
+      log::info "started tracking."
+      set trackingtimestamp [utcclock::combinedformat]
+    } elseif {$lasttracking && !$tracking} {
+      log::info "stopped tracking."
+      set trackingtimestamp ""
+    }
+
+    set waittracking $tracking
+  }
+
+  proc waituntiltracking {} {
+    log::debug "waituntiltracking: starting."
+    variable waittracking
+    set waittracking false
+    while {!$waittracking} {
+      log::debug "waituntiltracking: yielding."
+      coroutine::yield
+    }
+    log::debug "waituntiltracking: finished."
+  }
+
+  proc waituntilnottracking {} {
+    log::debug "waituntilnottracking: starting."
+    variable tracking
+    while {$tracking} {
+      log::debug "waituntilnottracking: yielding."
+      coroutine::yield
+    }
+    log::debug "waituntilnottracking: finished."
+  }
+
   ######################################################################
 
   proc mountdha {ha delta rotation} {

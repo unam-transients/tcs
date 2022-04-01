@@ -48,7 +48,6 @@ config::setdefaultvalue "mount" "pointingmodelID180"         "0"
 config::setdefaultvalue "mount" "pointingmodelIH180"         "0"
 config::setdefaultvalue "mount" "pointingmodelpolarhole"     "0"
 config::setdefaultvalue "mount" "allowedguideoffset"         "30as"
-config::setdefaultvalue "mount" "trackingsettledlimit"       "1as"
 config::setdefaultvalue "mount" "axisdhacorrection"          "0"
 config::setdefaultvalue "mount" "axisddeltacorrection"       "0"
 config::setdefaultvalue "mount" "easthalimit"                "-12h"
@@ -79,7 +78,6 @@ namespace eval "mount" {
   variable allowedguideoffset          [astrometry::parseoffset [config::getvalue "mount" "allowedguideoffset"]]
   variable axisdhacorrection           [astrometry::parseoffset [config::getvalue "mount" "axisdhacorrection"]]
   variable axisddeltacorrection        [astrometry::parseoffset [config::getvalue "mount" "axisddeltacorrection"]]
-  variable trackingsettledlimit        [astrometry::parseoffset [config::getvalue "mount" "trackingsettledlimit"]]
   variable easthalimit                 [astrometry::parseha    [config::getvalue "mount" "easthalimit"]]
   variable westhalimit                 [astrometry::parseha    [config::getvalue "mount" "westhalimit"]]
   variable meridianhalimit             [astrometry::parseha    [config::getvalue "mount" "meridianhalimit"]]
@@ -150,7 +148,6 @@ namespace eval "mount" {
 
   ######################################################################
 
-  server::setdata "mounttracking"              "unknown"
   server::setdata "mountha"                     ""
   server::setdata "mountalpha"                  ""
   server::setdata "mountdelta"                  ""
@@ -174,26 +171,8 @@ namespace eval "mount" {
   variable hamotionstate    ""
   variable deltamotionstate ""
 
-  variable haaxismoving        true
-  variable deltaaxismoving     true
-  variable haaxistrajectory    false
-  variable deltaaxistrajectory false
-  variable haaxisblocked       false
-  variable deltaaxisblocked    false
-  variable haaxisacquired      false
-  variable deltaaxisacquired   false
-  variable haaxislimited       false
-  variable deltaaxislimited    false
-  variable haaxistracking      false
-  variable deltaaxistracking   false
   variable moving              true
   variable waitmoving          true
-  variable tracking            false
-  variable forcenottracking    true
-  variable waittracking        false
-  variable trackingtimestamp   ""
-  variable settling            false
-  variable settlingtimestamp   ""
   variable cabinetstatuslist   ""
   variable cabinetpowerstate   ""
   variable cabineterrorstate   ""
@@ -214,7 +193,6 @@ namespace eval "mount" {
     }
   }
 
-  variable pendingtracking
   variable pendingaxisha
   variable pendingaxishaseconds
   variable pendingaxisdelta
@@ -231,7 +209,6 @@ namespace eval "mount" {
 
   proc updatecontrollerdata {controllerresponse} {
 
-    variable pendingtracking
     variable pendingaxisha
     variable pendingaxishaseconds
     variable pendingaxisdelta
@@ -246,34 +223,16 @@ namespace eval "mount" {
     variable pendinghafreepoints
     variable pendingdeltafreepoints
 
-    variable haaxismoving
-    variable deltaaxismoving
-    variable haaxistrajectory
-    variable deltaaxistrajectory
-    variable haaxisblocked
-    variable deltaaxisblocked
-    variable haaxisacquired
-    variable deltaaxisacquired
-    variable haaxislimited
-    variable deltaaxislimited
-    variable haaxistracking
-    variable deltaaxistracking
+    variable hamotionstate
+    variable deltamotionstate
     variable moving
     variable waitmoving
-    variable tracking
-    variable forcenottracking
-    variable waittracking
-    variable trackingtimestamp
-    variable settling
-    variable settlingtimestamp
     variable cabinetstatuslist
     variable cabinetpowerstate
     variable cabineterrorstate
     variable cabinetreferenced
     variable state
     variable freepoints
-
-    variable trackingsettledlimit
 
     set controllerresponse [string trim $controllerresponse]
     set controllerresponse [string trim $controllerresponse "\0"]
@@ -523,230 +482,40 @@ namespace eval "mount" {
       log::debug [format "status: the δ motion state changed from %05b to %05b." $lastdeltamotionstate $deltamotionstate]
     }
 
-    set lasthaaxismoving $haaxismoving
-    if {(($hamotionstate >> 0) & 1) == 0} {
-      set haaxismoving false
-    } else {
-      set haaxismoving true
-    }
-    if {$haaxismoving && !$lasthaaxismoving} {
-      log::info "status: started moving in HA."
-    } elseif {!$haaxismoving && $lasthaaxismoving} {
-      log::info "status: stopped moving in HA."
-    }
+    checkmotionstate "HA" $lasthamotionstate    $hamotionstate
+    checkmotionstate "δ"  $lastdeltamotionstate $deltamotionstate
 
-    set lasthaaxistrajectory $haaxistrajectory
-    if {(($hamotionstate >> 1) & 1) == 0} {
-      set haaxistrajectory false
-    } else {
-      set haaxistrajectory true
-    }
-    if {$haaxistrajectory && !$lasthaaxistrajectory} {
-      log::info "status: started running a trajectory in HA."
-    } elseif {!$haaxistrajectory && $lasthaaxistrajectory} {
-      log::info "status: stopped running a trajectory in HA."
-    }
+    set lastmoving   $moving
 
-    set lasthaaxisblocked $haaxisblocked
-    if {(($hamotionstate >> 2) & 1) == 0} {
-      set haaxisblocked false
-    } else {
-      set haaxisblocked true
-    }
-    if {$haaxisblocked && !$lasthaaxisblocked} {
-      log::debug "status: blocked in HA."
-      log::warning "blocked in HA."
-    } elseif {!$haaxisblocked && $lasthaaxisblocked} {
-      log::debug "status: no longer blocked in HA."
-      log::info "no longer blocked in HA."
-    }
-
-    set lasthaaxisacquired $haaxisacquired
-    if {(($hamotionstate >> 3) & 1) == 0} {
-      set haaxisacquired false
-    } else {
-      set haaxisacquired true
-    }
-    if {$haaxisacquired && !$lasthaaxisacquired} {
-      log::info "status: acquired in HA."
-    } elseif {!$haaxisacquired && $lasthaaxisacquired} {
-      log::info "status: no longer acquired in HA."
-    }
-
-    set lasthaaxislimited $haaxislimited
-    if {(($hamotionstate >> 4) & 1) == 0} {
-      set haaxislimited false
-    } else {
-      set haaxislimited true
-    }
-    if {$haaxislimited && !$lasthaaxislimited} {
-      log::debug "status: limited in HA."
-      log::warning "limited in HA."
-    } elseif {!$haaxislimited && $lasthaaxislimited} {
-      log::debug "status: no longer limited in HA."
-      log::info "no longer limited in HA."
-    }
-
-    set lasthaaxistracking $haaxistracking
-    if {$forcenottracking} {
-      set haaxistracking false
-    } elseif {$haaxistrajectory && $haaxisacquired} {
-      set haaxistracking true
-    } elseif {!$haaxistrajectory} {
-      set haaxistracking false
-    }
-    if {$haaxistracking && !$lasthaaxistracking} {
-      log::debug "status: started tracking in HA."
-      log::info [format \
-        "started tracking in HA at %s with error of %+.1fas." \
-        [astrometry::formatha $mountha] \
-        [astrometry::radtoarcsec $mounteasttrackingerror] \
-      ]
-    } elseif {!$haaxistracking && $lasthaaxistracking} {
-      log::debug "status: stopped tracking in HA."
-      log::info "stopped tracking in HA."
-    }
-
-    set lastdeltaaxismoving $deltaaxismoving
-    if {(($deltamotionstate >> 0) & 1) == 0} {
-      set deltaaxismoving false
-    } else {
-      set deltaaxismoving true
-    }
-    if {$deltaaxismoving && !$lastdeltaaxismoving} {
-      log::debug "status: started moving in δ."
-    } elseif {!$deltaaxismoving && $lastdeltaaxismoving} {
-      log::debug "status: stopped moving in δ."
-    }
-
-    set lastdeltaaxistrajectory $deltaaxistrajectory
-    if {(($deltamotionstate >> 1) & 1) == 0} {
-      set deltaaxistrajectory false
-    } else {
-      set deltaaxistrajectory true
-    }
-    if {$deltaaxistrajectory && !$lastdeltaaxistrajectory} {
-      log::debug "status: started running a trajectory in δ."
-    } elseif {!$deltaaxistrajectory && $lastdeltaaxistrajectory} {
-      log::debug "status: stopped running a trajectory in δ."
-    }
-
-    set lastdeltaaxisblocked $deltaaxisblocked
-    if {(($deltamotionstate >> 2) & 1) == 0} {
-      set deltaaxisblocked false
-    } else {
-      set deltaaxisblocked true
-    }
-    if {$deltaaxisblocked && !$lastdeltaaxisblocked} {
-      log::debug "status: blocked in δ."
-      log::warning "blocked in δ."
-    } elseif {!$deltaaxisblocked && $lastdeltaaxisblocked} {
-      log::debug "status: no longer blocked in δ."
-      log::info "no longer blocked in δ."
-    }
-
-    set lastdeltaaxisacquired $deltaaxisacquired
-    if {(($deltamotionstate >> 3) & 1) == 0} {
-      set deltaaxisacquired false
-    } else {
-      set deltaaxisacquired true
-    }
-    if {$deltaaxisacquired && !$lastdeltaaxisacquired} {
-      log::debug "status: acquired in δ."
-    } elseif {!$deltaaxisacquired && $lastdeltaaxisacquired} {
-      log::debug "status: no longer acquired in δ."
-    }
-
-    set lastdeltaaxislimited $deltaaxislimited
-    if {(($deltamotionstate >> 4) & 1) == 0} {
-      set deltaaxislimited false
-    } else {
-      set deltaaxislimited true
-    }
-    if {$deltaaxislimited && !$lastdeltaaxislimited} {
-      log::debug "status: limited in δ."
-      log::warning "limited in δ."
-    } elseif {!$deltaaxislimited && $lastdeltaaxislimited} {
-      log::debug "status: no longer limited in δ."
-      log::info "no longer limited in δ."
-    }
-
-    set lastmoving $moving
-    if {$haaxismoving || $deltaaxismoving} {
+    if {[bit $hamotionstate 0] || [bit $deltamotionstate 0]} {
       set moving true
     } else {
       set moving false
     }
-    if {$moving && !$lastmoving} {
-      log::info "started moving."
-    } elseif {!$moving && $lastmoving} {
-      log::info "stopped moving."
-    }
     set waitmoving $moving
 
-
-    if {[string equal [server::getrequestedactivity] "tracking"] && !$tracking} {
-      log::debug [format \
-        "moving to track: mount tracking error is %+.1fas (%+.1fas east and %+.1fas north)." \
-        [astrometry::radtoarcsec $mounttrackingerror] \
-        [astrometry::radtoarcsec $mounteasttrackingerror] \
-        [astrometry::radtoarcsec $mountnorthtrackingerror] \
-      ]
+    if {!$lastmoving && $moving} {
+      log::info "started moving."
+    } elseif {$lastmoving && !$moving} {
+      log::info "stopped moving."
     }
-
-
-    set lastdeltaaxistracking $deltaaxistracking
-    if {$forcenottracking} {
-      set deltaaxistracking false
-    } elseif {$deltaaxistrajectory && $deltaaxisacquired} {
-      set deltaaxistracking true
-    } elseif {!$deltaaxistrajectory} {
-      set deltaaxistracking false
-    }
-    if {$deltaaxistracking && !$lastdeltaaxistracking} {
-      log::debug "status: started tracking in δ."
-      log::info [format \
-        "started tracking in δ at %s with error of %+.1fas." \
-        [astrometry::formatdelta $mountdelta] \
-        [astrometry::radtoarcsec $mountnorthtrackingerror] \
-      ]
-    } elseif {!$deltaaxistracking && $lastdeltaaxistracking} {
-      log::debug "status: stopped tracking in δ."
-      log::info "stopped tracking in δ."
-    }
-
-    set lasttracking $tracking
-    set lastsettling $settling
-    if {$lasttracking} {
-      if {!$haaxistracking || !$deltaaxistracking} {
-        set tracking false
-        set settling false
-      }
-    } else {
-      if {$haaxistracking && $deltaaxistracking} {
-        set settling true
-      }
-      if {!$lastsettling && $settling} {
-        log::info "settling."
-        set settlingtimestamp [utcclock::combinedformat]
-      }
-      if {$haaxistracking && $deltaaxistracking && $mounttrackingerror <= $trackingsettledlimit} {
-        log::info [format "finished settling after %.1f seconds." [utcclock::diff now $settlingtimestamp]]
-        set tracking true
-      }
-    }
-    set waittracking $tracking
     
-    if {$tracking && !$lasttracking} {
-      log::info "started tracking."
-      set trackingtimestamp [utcclock::combinedformat]
-    } elseif {!$tracking && $lasttracking} {
-      log::info [format "stopped tracking."]
-      set trackingtimestamp ""
+    if {
+      [bit $hamotionstate    1] &&
+      [bit $hamotionstate    3] &&
+      [bit $deltamotionstate 1] &&
+      [bit $deltamotionstate 3]
+    } { 
+      set maybetracking true
+    } else {
+      set maybetracking false
     }
+    checktracking $maybetracking $mounttrackingerror
 
+    variable tracking
+    variable settlinglimit      
     if {$tracking} {
-      if {$mounttrackingerror > $trackingsettledlimit} {
+      if {$mounttrackingerror > $settlinglimit} {
         log::info [format \
           "while tracking: mount tracking error is %+.1fas (%+.1fas east and %+.1fas north)." \
           [astrometry::radtoarcsec $mounttrackingerror] \
@@ -756,7 +525,7 @@ namespace eval "mount" {
       }
       updatetracking $axishatrackingerror $axisdeltatrackingerror $mounteasttrackingerror $mountnorthtrackingerror
     }
-
+    
     server::setdata "timestamp"                   $timestamp
     server::setdata "mountha"                     $mountha
     server::setdata "mountalpha"                  $mountalpha
@@ -775,6 +544,35 @@ namespace eval "mount" {
     return true
   }
 
+  proc checkmotionstate {name lastmotionstate motionstate} {
+    checkmotionstatebit $name $lastmotionstate $motionstate 0 \
+      log::debug "moving"
+    checkmotionstatebit $name $lastmotionstate $motionstate 1 \
+      log::debug "following a trajectory"
+    checkmotionstatebit $name $lastmotionstate $motionstate 2 \
+      log::warning "being blocked"
+    checkmotionstatebit $name $lastmotionstate $motionstate 3 \
+      log::debug "having acquisition"
+    checkmotionstatebit $name $lastmotionstate $motionstate 4 \
+      log::warning "being limited"
+  }
+  
+  proc checkmotionstatebit {name lastmotionstate motionstate bit logproc activity} {
+    if {[bit $lastmotionstate $bit] && ![bit $motionstate $bit]} {
+      $logproc "$name axis stopped $activity."
+    } elseif {![bit $lastmotionstate $bit] && [bit $motionstate $bit]} {
+      $logproc "$name axis started $activity."
+    }
+  }
+  
+  proc bit {value bit} {
+    if {$value & (1 << $bit)} {
+      return true
+    } else {
+      return false
+    }
+  }
+  
   ######################################################################
   
   variable sumaxishatrackingerror       0
@@ -989,6 +787,70 @@ namespace eval "mount" {
   
   ######################################################################
 
+  proc waitwhilemoving {} {
+    log::debug "waitwhilemoving: starting."
+    variable waitmoving
+    set waitmoving true
+    while {$waitmoving} {
+      log::debug "waitwhilemoving: yielding."
+      coroutine::yield
+    }
+    log::debug "waitwhilemoving: finished."
+  }
+
+  proc waitwhilemountrotation {mountrotation} {
+    log::debug "waitwhilemountrotation: starting."
+    while {$mountrotation == [server::getdata "mountrotation"]} {
+      log::debug "waitwhilemountrotation: yielding."
+      coroutine::yield
+    }
+    log::debug "waitwhilemountrotation: finished."
+  }
+  
+  proc waituntilsafetomovebothaxes {} {
+    log::debug "waituntilsafetomovebothaxes: starting."
+    variable zenithdistancelimit
+    while {true} {
+      set requestedmountha       [server::getdata "requestedmountha"]
+      set requestedmountdelta    [server::getdata "requestedmountdelta"]
+      set mountha                [server::getdata "mountha"]
+      set mountdelta             [server::getdata "mountdelta"]
+      if {
+        [astrometry::equatorialtozenithdistance $requestedmountha $requestedmountdelta] > $zenithdistancelimit
+      } {
+        error "the requested position is below the zenith distance limit."
+      } elseif {
+        [astrometry::equatorialtozenithdistance $mountha $requestedmountdelta] < $zenithdistancelimit &&
+        [astrometry::equatorialtozenithdistance $requestedmountha $mountdelta] < $zenithdistancelimit
+      } {
+        log::debug "waituntilsafetomovebothaxes: finished."
+        return
+      }
+      log::debug "waituntilsafetomovebothaxes: yielding."
+      coroutine::yield
+    }
+  }
+
+  proc isoperational {} {
+    variable state
+    if {[string equal $state "operational"]} {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  proc waituntiloperational {} {
+    log::debug "waituntiloperational: starting."
+    while {![isoperational]} {
+      log::debug "waituntiloperational: yielding."
+      coroutine::yield
+    }
+    log::debug "waituntiloperational: finished."
+  }
+
+  ######################################################################
+
   proc axisha {ha delta mountrotation} {
     if {$mountrotation == 0} {
       return $ha
@@ -1192,89 +1054,6 @@ namespace eval "mount" {
     }
     set end [utcclock::seconds]
     log::debug [format "completed controller command $currentcommandidentifier after %.1f seconds." [utcclock::diff $end $start]]
-  }
-
-  proc waitwhilemoving {} {
-    log::debug "waitwhilemoving: starting."
-    variable waitmoving
-    set waitmoving false
-    while {$waitmoving} {
-      log::debug "waitwhilemoving: yielding."
-      coroutine::yield
-    }
-    log::debug "waitwhilemoving: finished."
-  }
-
-  proc waitwhilemountrotation {mountrotation} {
-    log::debug "waitwhilemountrotation: starting."
-    while {$mountrotation == [server::getdata "mountrotation"]} {
-      log::debug "waitwhilemountrotation: yielding."
-      coroutine::yield
-    }
-    log::debug "waitwhilemountrotation: finished."
-  }
-  
-  proc waituntilsafetomovebothaxes {} {
-    log::debug "waituntilsafetomovebothaxes: starting."
-    variable zenithdistancelimit
-    while {true} {
-      set requestedmountha       [server::getdata "requestedmountha"]
-      set requestedmountdelta    [server::getdata "requestedmountdelta"]
-      set mountha                [server::getdata "mountha"]
-      set mountdelta             [server::getdata "mountdelta"]
-      if {
-        [astrometry::equatorialtozenithdistance $requestedmountha $requestedmountdelta] > $zenithdistancelimit
-      } {
-        error "the requested position is below the zenith distance limit."
-      } elseif {
-        [astrometry::equatorialtozenithdistance $mountha $requestedmountdelta] < $zenithdistancelimit &&
-        [astrometry::equatorialtozenithdistance $requestedmountha $mountdelta] < $zenithdistancelimit
-      } {
-        log::debug "waituntilsafetomovebothaxes: finished."
-        return
-      }
-      log::debug "waituntilsafetomovebothaxes: yielding."
-      coroutine::yield
-    }
-  }
-
-  proc waituntiltracking {} {
-    log::debug "waituntiltracking: starting."
-    variable waittracking
-    set waittracking false
-    while {!$waittracking} {
-      log::debug "waituntiltracking: yielding."
-      coroutine::yield
-    }
-    log::debug "waituntiltracking: finished."
-  }
-
-  proc waituntilnottracking {} {
-    log::debug "waituntilnottracking: starting."
-    variable tracking
-    while {$tracking} {
-      log::debug "waituntilnottracking: yielding."
-      coroutine::yield
-    }
-    log::debug "waituntilnottracking: finished."
-  }
-
-  proc isoperational {} {
-    variable state
-    if {[string equal $state "operational"]} {
-      return true
-    } else {
-      return false
-    }
-  }
-
-  proc waituntiloperational {} {
-    log::debug "waituntiloperational: starting."
-    while {![isoperational]} {
-      log::debug "waituntiloperational: yielding."
-      coroutine::yield
-    }
-    log::debug "waituntiloperational: finished."
   }
 
   ######################################################################
