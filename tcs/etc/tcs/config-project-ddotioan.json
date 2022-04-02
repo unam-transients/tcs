@@ -545,8 +545,8 @@
     // delta.
     "hapark": "170d",
     "deltapark": "40d",
-    "haunpark": "180d",
-    "deltaunpark": "150d",
+    "haunpark": "0d",
+    "deltaunpark": "85d",
     "axisdhacorrection": "1.16as",
     "axisddeltacorrection": "0as",
     "southdeltalimit": "-90:00:00",
@@ -1464,7 +1464,7 @@
   "target": {
     "maxzenithdistancelimit": "85d",
     "idleha": "0h",
-    "idledelta": "30d",
+    "idledelta": "85d",
     "pointingapertures": {
       "default": [
         "+0.00d",
