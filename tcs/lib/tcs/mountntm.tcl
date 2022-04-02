@@ -728,57 +728,6 @@ namespace eval "mount" {
 
   ######################################################################
 
-  proc offsetcommand {which alphaoffset deltaoffset} {
-    set mountdelta [server::getdata "mountdelta"]
-    set alphaoffset [expr {$alphaoffset / cos($mountdelta)}]
-    set alphaoffset [astrometry::radtoarcsec $alphaoffset]
-    set deltaoffset [astrometry::radtoarcsec $deltaoffset]
-    while {abs($alphaoffset) > 60 || abs($deltaoffset) > 60} {
-      if {$alphaoffset > 60} {
-        set dalphaoffset +60
-        set alphaoffset [expr {$alphaoffset - 60}]
-      } elseif {$alphaoffset < -60} {
-        set dalphaoffset -60
-        set alphaoffset [expr {$alphaoffset + 60}]
-      } else {
-        set dalphaoffset 0
-      }
-      if {$deltaoffset > 60} {
-        set ddeltaoffset +60
-        set deltaoffset [expr {$deltaoffset - 60}]
-      } elseif {$deltaoffset < -60} {
-        set ddeltaoffset -60
-        set deltaoffset [expr {$deltaoffset + 60}]
-      } else {
-        set ddeltaoffset 0
-      }
-      controller::${which}command [format "OFF %+.2f %+.2f\n" $dalphaoffset $ddeltaoffset]
-    }
-    controller::${which}command [format "OFF %+.2f %+.2f\n" $alphaoffset $deltaoffset]
-  }
-
-  ######################################################################
-
-  variable offsetalphalimit [astrometry::parseangle "30as"]
-  variable offsetdeltalimit [astrometry::parseangle "30as"]
-
-  proc shouldoffsettotrack {} {
-    set mountalphaerror [server::getdata "mountalphaerror"]
-    set mountdeltaerror [server::getdata "mountdeltaerror"]
-    set mountdelta           [server::getdata "mountdelta"]
-    set alphaoffset [expr {$mountalphaerror * cos($mountdelta)}]
-    set deltaoffset $mountdeltaerror
-    variable offsetalphalimit
-    variable offsetdeltalimit
-    return [expr {
-      [server::getdata "mounttracking"] &&
-      abs($alphaoffset) < $offsetalphalimit &&
-      abs($deltaoffset) < $offsetdeltalimit
-    }]
-  }
-
-  ######################################################################
-
   variable currentcommandidentifier 0
   variable nextcommandidentifier $firstnormalcommandidentifier
   variable completedcurrentcommand
