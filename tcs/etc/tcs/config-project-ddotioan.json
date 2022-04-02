@@ -557,8 +557,9 @@
     "meridianhalimit": "+00:30:00",
     "polardeltalimit": "+65d",
     "pointingmodelpolarhole": "1d",
-    "settlingdelayseconds": "2",
-    "settlinglimit": "1as",
+    "movingsettlingdelayseconds": "0",
+    "trackingsettlingdelayseconds": "2",
+    "trackingpositionerrorlimit": "1as",
    // Pointing model from 20210315.
    "pointingmodelparameters0": {
       "IH":      "-0.006080",
