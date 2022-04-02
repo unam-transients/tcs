@@ -981,12 +981,10 @@ namespace eval "mount" {
 #    log::info "stopping."
 #    stophardware
     movehardware false
-    if {![acceptablehaerror] || ![acceptabledeltaerror]} {
-      log::debug [format "mount error %.1fas E and %.1fas N." [astrometry::radtoarcsec [server::getdata "mounthaerror"]] [astrometry::radtoarcsec [server::getdata "mountdeltaerror"]]]
+    if {[checkaftermoving false]} {
       movehardware false
     }
-    checkhaerror    "after moving to fixed"
-    checkdeltaerror "after moving to fixed"
+    checkaftermoving true
     set end [utcclock::seconds]
     log::info [format "finished moving after %.1f seconds." [utcclock::diff $end $start]]
   }
@@ -1007,12 +1005,10 @@ namespace eval "mount" {
 #     stophardware
     unparkhardware
     movehardware false
-    if {![acceptablehaerror] || ![acceptabledeltaerror]} {
-      log::debug [format "mount error %.1fas E and %.1fas N." [astrometry::radtoarcsec [server::getdata "mounthaerror"]] [astrometry::radtoarcsec [server::getdata "mountdeltaerror"]]]
+    if {[checkaftermoving false]} {
       movehardware false
     }
-    checkhaerror    "after moving to fixed"
-    checkdeltaerror "after moving to fixed"
+    checkaftermoving true
     set end [utcclock::seconds]
     log::info [format "finished unparking after %.1f seconds." [utcclock::diff $end $start]]
   }
