@@ -288,7 +288,7 @@ namespace eval "mount" {
 
   variable waittracking
 
-  proc checktracking {mounttracking positionerror} {
+  proc updatetracking {mounttracking axishatrackingerror axisdeltatrackingerror mounteasttrackingerror mountnorthtrackingerror} {
 
     variable tracking
     variable trackingsettlingtimestamp
@@ -297,7 +297,8 @@ namespace eval "mount" {
     variable trackingsettlingdelayseconds
     
     set lasttracking $tracking
-    
+    set mounttrackingerror [expr {sqrt(pow($mounteasttrackingerror, 2) + pow($mountnorthtrackingerror, 2))}]
+
     if {![string equal [server::getrequestedactivity] "tracking"]} {
 
       set tracking false
@@ -312,7 +313,7 @@ namespace eval "mount" {
 
       set tracking true
 
-    } elseif {$trackingpositionerrorlimit != 0 && $positionerror > $trackingpositionerrorlimit} {
+    } elseif {$trackingpositionerrorlimit != 0 && $mounttrackingerror > $trackingpositionerrorlimit} {
 
       set tracking false
       set trackingsettlingtimestamp ""
@@ -339,10 +340,14 @@ namespace eval "mount" {
     
     if {!$lasttracking && $tracking} {
       log::info "started tracking."
-      set trackingtimestamp [utcclock::combinedformat "now"]
+      starttrackingstatistics      
     } elseif {$lasttracking && !$tracking} {
       log::info "stopped tracking."
       set trackingtimestamp ""
+    }
+    
+    if {$tracking} {
+      updatetrackingstatistics $axishatrackingerror $axisdeltatrackingerror $mounteasttrackingerror $mountnorthtrackingerror
     }
 
   }
@@ -368,7 +373,7 @@ namespace eval "mount" {
     log::debug "waituntilnottracking: finished."
   }
   
-  proc checkmoving {mountmoving} {
+  proc updatemoving {mountmoving} {
     
     variable moving
     variable movingsettlingtimestamp
@@ -423,6 +428,246 @@ namespace eval "mount" {
     }
     log::debug "waitwhilemoving: finished."
   }
+
+  ######################################################################
+  
+  variable sumaxishatrackingerror       0
+  variable sumaxisdeltatrackingerror    0
+  variable summounteasttrackingerror    0
+  variable summountnorthtrackingerror   0
+  variable sumsqmounteasttrackingerror  0
+  variable sumsqmountnorthtrackingerror 0
+  variable nmounttrackingerror          0
+
+  variable maxmounteasttrackingerror    ""
+  variable minmounteasttrackingerror    ""
+  variable maxmountnorthtrackingerror   ""
+  variable minmountnorthtrackingerror   ""
+
+  variable axismeanhatrackingerror      ""
+  variable axismeandeltatrackingerror   ""
+  variable mountmeaneasttrackingerror   ""
+  variable mountmeannorthtrackingerror  ""
+  variable mountrmseasttrackingerror    ""
+  variable mountrmsnorthtrackingerror   ""
+  variable maxmounteasttrackingerror    ""
+  variable minmounteasttrackingerror    ""
+  variable maxmountnorthtrackingerror   ""
+  variable minmountnorthtrackingerror   ""
+  variable mountpveasttrackingerror     ""
+  variable mountpvnorthtrackingerror    ""
+  
+  proc starttrackingstatistics {} {
+  
+    variable trackingtimestamp
+
+    variable sumaxishatrackingerror
+    variable sumaxisdeltatrackingerror
+    variable summounteasttrackingerror
+    variable summountnorthtrackingerror
+    variable sumsqmounteasttrackingerror
+    variable sumsqmountnorthtrackingerror
+    variable nmounttrackingerror
+
+    set trackingtimestamp [utcclock::combinedformat "now"]
+
+    set sumaxishatrackingerror       0
+    set sumaxisdeltatrackingerror    0
+    set summounteasttrackingerror    0
+    set summountnorthtrackingerror   0
+    set sumsqmounteasttrackingerror  0
+    set sumsqmountnorthtrackingerror 0
+    set nmounttrackingerror          0
+
+  }
+
+  proc updatetrackingstatistics {axishatrackingerror axisdeltatrackingerror mounteasttrackingerror mountnorthtrackingerror} {
+
+    variable sumaxishatrackingerror
+    variable sumaxisdeltatrackingerror
+    variable summounteasttrackingerror
+    variable summountnorthtrackingerror
+    variable sumsqmounteasttrackingerror
+    variable sumsqmountnorthtrackingerror
+    variable nmounttrackingerror
+
+    variable axismeanhatrackingerror
+    variable axismeandeltatrackingerror
+    variable mountmeaneasttrackingerror
+    variable mountmeannorthtrackingerror
+    variable mountrmseasttrackingerror
+    variable mountrmsnorthtrackingerror
+    variable maxmounteasttrackingerror
+    variable minmounteasttrackingerror
+    variable maxmountnorthtrackingerror
+    variable minmountnorthtrackingerror
+    variable mountpveasttrackingerror
+    variable mountpvnorthtrackingerror
+
+    variable trackingpositionerrorlimit      
+    set mounttrackingerror [expr {sqrt(pow($mounteasttrackingerror, 2) + pow($mountnorthtrackingerror, 2))}]
+    if {$mounttrackingerror > $trackingpositionerrorlimit} {
+      log::info [format \
+        "while tracking: mount tracking error is %+.1fas (%+.1fas east and %+.1fas north)." \
+        [astrometry::radtoarcsec $mounttrackingerror] \
+        [astrometry::radtoarcsec $mounteasttrackingerror] \
+        [astrometry::radtoarcsec $mountnorthtrackingerror] \
+      ]
+    }
+
+    set sumaxishatrackingerror       [expr {$sumaxishatrackingerror       + $axishatrackingerror}]
+    set sumaxisdeltatrackingerror    [expr {$sumaxisdeltatrackingerror    + $axisdeltatrackingerror}]
+    set summounteasttrackingerror    [expr {$summounteasttrackingerror    + $mounteasttrackingerror}]
+    set summountnorthtrackingerror   [expr {$summountnorthtrackingerror   + $mountnorthtrackingerror}]
+    set sumsqmounteasttrackingerror  [expr {$sumsqmounteasttrackingerror  + pow($mounteasttrackingerror , 2)}]
+    set sumsqmountnorthtrackingerror [expr {$sumsqmountnorthtrackingerror + pow($mountnorthtrackingerror, 2)}]
+    set nmounttrackingerror          [expr {$nmounttrackingerror + 1}]
+
+    set axismeanhatrackingerror      [expr {$sumaxishatrackingerror     / $nmounttrackingerror}]
+    set axismeandeltatrackingerror   [expr {$sumaxisdeltatrackingerror  / $nmounttrackingerror}]
+    set mountmeaneasttrackingerror   [expr {$summounteasttrackingerror  / $nmounttrackingerror}]
+    set mountmeannorthtrackingerror  [expr {$summountnorthtrackingerror / $nmounttrackingerror}]
+    set mountrmseasttrackingerror    [expr {sqrt(($sumsqmounteasttrackingerror  - $nmounttrackingerror * pow($mountmeaneasttrackingerror , 2)) / $nmounttrackingerror)}]
+    set mountrmsnorthtrackingerror   [expr {sqrt(($sumsqmountnorthtrackingerror - $nmounttrackingerror * pow($mountmeannorthtrackingerror, 2)) / $nmounttrackingerror)}]
+    if {[string equal $maxmounteasttrackingerror ""]} {
+      set maxmounteasttrackingerror  $mounteasttrackingerror
+    } else {
+      set maxmounteasttrackingerror  [expr {max($maxmounteasttrackingerror,$mounteasttrackingerror)}]
+    }
+    if {[string equal $minmounteasttrackingerror ""]} {
+      set minmounteasttrackingerror  $mounteasttrackingerror
+    } else {
+      set minmounteasttrackingerror  [expr {min($minmounteasttrackingerror,$mounteasttrackingerror)}]
+    }
+    if {[string equal $maxmountnorthtrackingerror ""]} {
+      set maxmountnorthtrackingerror $mountnorthtrackingerror
+    } else {
+      set maxmountnorthtrackingerror [expr {max($maxmountnorthtrackingerror,$mountnorthtrackingerror)}]
+    }
+    if {[string equal $minmountnorthtrackingerror ""]} {
+      set minmountnorthtrackingerror $mountnorthtrackingerror
+    } else {
+      set minmountnorthtrackingerror [expr {min($minmountnorthtrackingerror,$mountnorthtrackingerror)}]
+    }
+    set mountpveasttrackingerror     [expr {$maxmounteasttrackingerror-$minmounteasttrackingerror}]
+    set mountpvnorthtrackingerror    [expr {$maxmountnorthtrackingerror-$minmountnorthtrackingerror}]
+
+    server::setdata "axismeanhatrackingerror"     $axismeanhatrackingerror
+    server::setdata "axismeandeltatrackingerror"  $axismeandeltatrackingerror
+    server::setdata "mountmeaneasttrackingerror"  $mountmeaneasttrackingerror
+    server::setdata "mountmeannorthtrackingerror" $mountmeannorthtrackingerror
+    server::setdata "mountrmseasttrackingerror"   $mountrmseasttrackingerror
+    server::setdata "mountrmsnorthtrackingerror"  $mountrmsnorthtrackingerror
+    server::setdata "mountpveasttrackingerror"    $mountpveasttrackingerror
+    server::setdata "mountpvnorthtrackingerror"   $mountpvnorthtrackingerror
+
+  }
+  
+  proc maybeendtracking {} {
+
+    variable tracking
+    variable trackingtimestamp
+
+    variable sumaxishatrackingerror
+    variable sumaxisdeltatrackingerror
+    variable summounteasttrackingerror
+    variable summountnorthtrackingerror
+    variable sumsqmounteasttrackingerror
+    variable sumsqmountnorthtrackingerror
+    variable nmounttrackingerror
+
+    variable axismeanhatrackingerror
+    variable axismeandeltatrackingerror
+    variable mountmeaneasttrackingerror
+    variable mountmeannorthtrackingerror
+    variable mountrmseasttrackingerror
+    variable mountrmsnorthtrackingerror
+    variable maxmounteasttrackingerror
+    variable minmounteasttrackingerror
+    variable maxmountnorthtrackingerror
+    variable minmountnorthtrackingerror
+    variable mountpveasttrackingerror
+    variable mountpvnorthtrackingerror
+
+    if {$tracking} {
+      log::info [format "stopped tracking after %.1f seconds." [utcclock::diff now $trackingtimestamp]]
+      if {
+        ![string equal $axismeanhatrackingerror ""] &&
+        ![string equal $axismeandeltatrackingerror ""]
+      } {
+        log::info [format \
+          "mean axis tracking errors were %+.2fas in HA and %+.2fas in δ." \
+          [astrometry::radtoarcsec $axismeanhatrackingerror] \
+          [astrometry::radtoarcsec $axismeandeltatrackingerror] \
+        ]
+      }
+      if {
+        ![string equal $mountmeaneasttrackingerror ""] &&
+        ![string equal $mountmeannorthtrackingerror ""]
+      } {
+        log::info [format \
+          "mean tracking errors were %+.2fas east and %+.2fas north." \
+          [astrometry::radtoarcsec $mountmeaneasttrackingerror] \
+          [astrometry::radtoarcsec $mountmeannorthtrackingerror] \
+        ]
+      }
+      if {
+        ![string equal $mountrmseasttrackingerror ""] &&
+        ![string equal $mountrmsnorthtrackingerror ""]
+      } {
+        log::info [format \
+          "RMS tracking errors were %.2fas east and %.2fas north." \
+          [astrometry::radtoarcsec $mountrmseasttrackingerror] \
+          [astrometry::radtoarcsec $mountrmsnorthtrackingerror] \
+        ]
+      }
+      if {
+        ![string equal $mountpveasttrackingerror ""] &&
+        ![string equal $mountpvnorthtrackingerror ""]
+      } {
+        log::info [format \
+          "P-V tracking errors were %.2fas east and %.2fas north." \
+          [astrometry::radtoarcsec $mountpveasttrackingerror] \
+          [astrometry::radtoarcsec $mountpvnorthtrackingerror] \
+        ]
+      }
+    }
+
+    set tracking                     false
+    set trackingtimestamp            ""
+
+    set sumaxishatrackingerror       0
+    set sumaxisdeltatrackingerror    0
+    set summounteasttrackingerror    0
+    set summountnorthtrackingerror   0
+    set sumsqmounteasttrackingerror  0
+    set sumsqmountnorthtrackingerror 0
+    set nmounttrackingerror          0
+
+    set axismeanhatrackingerror      ""
+    set axismeandeltatrackingerror   ""
+    set mountmeaneasttrackingerror   ""
+    set mountmeannorthtrackingerror  ""
+    set mountrmseasttrackingerror    ""
+    set mountrmsnorthtrackingerror   ""
+    set maxmounteasttrackingerror    ""
+    set minmounteasttrackingerror    ""
+    set maxmountnorthtrackingerror   ""
+    set minmountnorthtrackingerror   ""
+    set mountpveasttrackingerror     ""
+    set mountpvnorthtrackingerror    ""
+
+    server::setdata "axismeanhatrackingerror"     $axismeanhatrackingerror
+    server::setdata "axismeandeltatrackingerror"  $axismeandeltatrackingerror
+    server::setdata "mountmeaneasttrackingerror"  $mountmeaneasttrackingerror
+    server::setdata "mountmeannorthtrackingerror" $mountmeannorthtrackingerror
+    server::setdata "mountrmseasttrackingerror"   $mountrmseasttrackingerror
+    server::setdata "mountrmsnorthtrackingerror"  $mountrmsnorthtrackingerror
+    server::setdata "mountpveasttrackingerror"    $mountpveasttrackingerror
+    server::setdata "mountpvnorthtrackingerror"   $mountpvnorthtrackingerror
+
+  }
+  
 
   ######################################################################
 
