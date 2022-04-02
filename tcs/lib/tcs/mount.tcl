@@ -25,8 +25,9 @@
 
 config::setdefaultvalue "mount" "configuration" "equatorial"
 
-config::setdefaultvalue "mount" "settlinglimit"        "1as"
-config::setdefaultvalue "mount" "settlingdelayseconds" "0"
+config::setdefaultvalue "mount" "trackingpositionerrorlimit"   "1as"
+config::setdefaultvalue "mount" "trackingsettlingdelayseconds" "0"
+config::setdefaultvalue "mount" "movingsettlingdelayseconds"   "0"
 
 namespace eval "mount" {
 
@@ -34,8 +35,9 @@ namespace eval "mount" {
 
   variable configuration [config::getvalue "mount" "configuration"]
   
-  variable settlinglimit        [astrometry::parseoffset [config::getvalue "mount" "settlinglimit"]]
-  variable settlingdelayseconds [config::getvalue "mount" "settlingdelayseconds"]
+  variable trackingpositionerrorlimit   [astrometry::parseoffset [config::getvalue "mount" "trackingpositionerrorlimit"]]
+  variable trackingsettlingdelayseconds [config::getvalue "mount" "trackingsettlingdelayseconds"]
+  variable movingsettlingdelayseconds   [config::getvalue "mount" "movingsettlingdelayseconds"]
   
   ######################################################################
 
@@ -278,89 +280,78 @@ namespace eval "mount" {
   
   ######################################################################
   
-  variable tracking          false
-  variable trackingtimestamp ""
-  variable forcenottracking  false
-  variable settlingtimestamp ""
+  variable tracking                  false
+  variable trackingtimestamp         ""
+  variable trackingsettlingtimestamp ""
+  variable moving                    false
+  variable movingsettlingtimestamp   ""
+
   variable waittracking
 
-  proc checktracking {maybetracking trackingerror} {
+  proc checktracking {mounttracking positionerror} {
 
     variable tracking
-    variable forcenottracking
-    variable settlingtimestamp
-    variable settlingdelay
-    variable waittracking
-    
-    variable settlinglimit
-    variable settlingdelayseconds
+    variable trackingsettlingtimestamp
+    variable trackingtimestamp
+    variable trackingpositionerrorlimit
+    variable trackingsettlingdelayseconds
     
     set lasttracking $tracking
     
-    if {$forcenottracking} {
+    if {![string equal [server::getrequestedactivity] "tracking"]} {
 
-      log::info "forcing: tracking is false."
       set tracking false
-      set forcenottracking false
+      set trackingsettlingtimestamp ""
 
-    } elseif {![string equal [server::getrequestedactivity] "tracking"]} {
+    } elseif {!$mounttracking} {
 
-      log::info "requestedactivity: tracking is false."
       set tracking false
-
-    } elseif {!$maybetracking} {
-
-      log::info "maybetracking: tracking is false."
-      set tracking false
+      set trackingsettlingtimestamp ""
       
     } elseif {$lasttracking} {
 
-      log::info "continuing: tracking is true."
       set tracking true
 
-    } elseif {$trackingerror > $settlinglimit} {
+    } elseif {$trackingpositionerrorlimit != 0 && $positionerror > $trackingpositionerrorlimit} {
 
-      log::info "large error: tracking is false."
       set tracking false
+      set trackingsettlingtimestamp ""
       
-    } elseif {$settlingdelayseconds == 0} {
+    } elseif {$trackingsettlingdelayseconds == 0} {
     
-      log::info "no settling delay: tracking is true."
       set tracking true
 
-    } elseif {[string equal $settlingtimestamp ""]} {
+    } elseif {[string equal $trackingsettlingtimestamp ""]} {
 
-      log::info "starting settling: tracking is false"
-      set settlingtimestamp [utcclock::combinedformat "now"]
+      log::info "settling."
+      set trackingsettlingtimestamp [utcclock::combinedformat "now"]
+      set tracking false
 
-    } elseif {[utcclock::diff "now" $settlingtimestamp] < $settlingdelayseconds} {
+    } elseif {[utcclock::diff "now" $trackingsettlingtimestamp] < $trackingsettlingdelayseconds} {
 
-      log::info "settling: tracking is false."
       set tracking false
 
     } else {
 
-      log::info "else: tracking is true."
       set tracking true
 
     }
     
     if {!$lasttracking && $tracking} {
       log::info "started tracking."
-      set trackingtimestamp [utcclock::combinedformat]
+      set trackingtimestamp [utcclock::combinedformat "now"]
     } elseif {$lasttracking && !$tracking} {
       log::info "stopped tracking."
       set trackingtimestamp ""
     }
 
-    set waittracking $tracking
   }
 
   proc waituntiltracking {} {
     log::debug "waituntiltracking: starting."
-    variable waittracking
-    set waittracking false
-    while {!$waittracking} {
+    variable tracking
+    set tracking false
+    while {!$tracking} {
       log::debug "waituntiltracking: yielding."
       coroutine::yield
     }
@@ -375,6 +366,62 @@ namespace eval "mount" {
       coroutine::yield
     }
     log::debug "waituntilnottracking: finished."
+  }
+  
+  proc checkmoving {mountmoving} {
+    
+    variable moving
+    variable movingsettlingtimestamp
+    variable movingsettlingdelayseconds
+    
+    set lastmoving $moving
+    
+    if {$mountmoving} {
+
+      set moving true
+      set movingsettlingtimestamp ""
+      
+    } elseif {!$lastmoving} {
+
+      set moving false
+
+    } elseif {$movingsettlingdelayseconds == 0} {
+    
+      set moving false
+
+    } elseif {[string equal $movingsettlingtimestamp ""]} {
+
+      log::info "settling."
+      set movingsettlingtimestamp [utcclock::combinedformat "now"]
+      set moving true
+
+    } elseif {[utcclock::diff "now" $movingsettlingtimestamp] < $movingsettlingdelayseconds} {
+
+      set moving true
+
+    } else {
+
+      set moving false
+
+    }
+    
+    if {!$lastmoving && $moving} {
+      log::info "started moving."
+    } elseif {$lastmoving && !$moving} {
+      log::info "stopped moving."
+    }
+
+  }
+
+  proc waitwhilemoving {} {
+    log::debug "waitwhilemoving: starting."
+    variable moving
+    set moving true
+    while {$moving} {
+      log::debug "waitwhilemoving: yielding."
+      coroutine::yield
+    }
+    log::debug "waitwhilemoving: finished."
   }
 
   ######################################################################

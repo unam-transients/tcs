@@ -485,20 +485,12 @@ namespace eval "mount" {
     checkmotionstate "HA" $lasthamotionstate    $hamotionstate
     checkmotionstate "δ"  $lastdeltamotionstate $deltamotionstate
 
-    set lastmoving   $moving
-
     if {[bit $hamotionstate 0] || [bit $deltamotionstate 0]} {
-      set moving true
+      set mountmoving true
     } else {
-      set moving false
+      set mountmoving false
     }
-    set waitmoving $moving
-
-    if {!$lastmoving && $moving} {
-      log::info "started moving."
-    } elseif {$lastmoving && !$moving} {
-      log::info "stopped moving."
-    }
+    checkmoving $mountmoving
     
     if {
       [bit $hamotionstate    1] &&
@@ -506,16 +498,16 @@ namespace eval "mount" {
       [bit $deltamotionstate 1] &&
       [bit $deltamotionstate 3]
     } { 
-      set maybetracking true
+      set mounttracking true
     } else {
-      set maybetracking false
+      set mounttracking false
     }
-    checktracking $maybetracking $mounttrackingerror
+    checktracking $mounttracking $mounttrackingerror
 
     variable tracking
-    variable settlinglimit      
+    variable trackingpositionerrorlimit      
     if {$tracking} {
-      if {$mounttrackingerror > $settlinglimit} {
+      if {$mounttrackingerror > $trackingpositionerrorlimit} {
         log::info [format \
           "while tracking: mount tracking error is %+.1fas (%+.1fas east and %+.1fas north)." \
           [astrometry::radtoarcsec $mounttrackingerror] \
@@ -543,6 +535,8 @@ namespace eval "mount" {
 
     return true
   }
+
+  ######################################################################
 
   proc checkmotionstate {name lastmotionstate motionstate} {
     checkmotionstatebit $name $lastmotionstate $motionstate 0 \
@@ -786,17 +780,6 @@ namespace eval "mount" {
   }
   
   ######################################################################
-
-  proc waitwhilemoving {} {
-    log::debug "waitwhilemoving: starting."
-    variable waitmoving
-    set waitmoving true
-    while {$waitmoving} {
-      log::debug "waitwhilemoving: yielding."
-      coroutine::yield
-    }
-    log::debug "waitwhilemoving: finished."
-  }
 
   proc waitwhilemountrotation {mountrotation} {
     log::debug "waitwhilemountrotation: starting."
