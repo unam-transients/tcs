@@ -672,46 +672,24 @@ namespace eval "mount" {
   
 
   ######################################################################
-
-  proc acceptablehaerror {} {
+  
+  proc checkaftermoving {{report true}} {
     variable fixedpositionerrorlimit
     set haerror [server::getdata "mounthaerror"]
-    return [expr {abs($haerror) <= $fixedpositionerrorlimit}]
-  }
-
-  proc acceptablealphaerror {} {
-    variable fixedpositionerrorlimit
-    set alphaerror [server::getdata "mountalphaerror"]
-    return [expr {abs($alphaerror) <= $fixedpositionerrorlimit}]
-  }
-
-  proc acceptabledeltaerror {} {
-    variable fixedpositionerrorlimit
     set deltaerror [server::getdata "mountdeltaerror"]
-    return [expr {abs($deltaerror) <= $fixedpositionerrorlimit}]
-  }
-
-  proc checkhaerror {when} {
-    variable fixedpositionerrorlimit
-    set haerror [server::getdata "mounthaerror"]
-    if {abs($haerror) > $fixedpositionerrorlimit} {
-      log::warning "mount HA error is [astrometry::radtohms $haerror 2 true] $when."
+    if {$report && abs($haerror) > $fixedpositionerrorlimit} {
+      log::warning "mount HA error is [astrometry::radtohms $haerror 2 true] after moving."
     }
-  }
-
-  proc checkalphaerror {when} {
-    variable fixedpositionerrorlimit
-    set alphaerror [server::getdata "mountalphaerror"]
-    if {abs($alphaerror) > $fixedpositionerrorlimit} {
-      log::warning "mount alpha error is [astrometry::radtohms $alphaerror 2 true] $when."
+    if {$report && abs($deltaerror) > $fixedpositionerrorlimit} {
+      log::warning "mount delta error is [astrometry::radtodms $deltaerror 1 true] after moving."
     }
-  }
-
-  proc checkdeltaerror {when} {
-    variable fixedpositionerrorlimit
-    set deltaerror [server::getdata "mountdeltaerror"]
-    if {abs($deltaerror) > $fixedpositionerrorlimit} {
-      log::warning "mount delta error is [astrometry::radtodms $deltaerror 1 true] $when."
+    if {
+      (abs($haerror) > $fixedpositionerrorlimit) ||
+      (abs($deltaerror) > $fixedpositionerrorlimit)
+    } {
+      return true
+    } else {
+      return false
     }
   }
 
