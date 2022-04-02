@@ -39,7 +39,6 @@ config::setdefaultvalue "mount" "initialcommand"             ""
 
 source [file join [directories::prefix] "lib" "tcs" "mount.tcl"]
 
-config::setdefaultvalue "mount" "allowedpositionerror"       "4as"
 config::setdefaultvalue "mount" "pointingmodelparameters0"   [dict create]
 config::setdefaultvalue "mount" "pointingmodelID0"           "0"
 config::setdefaultvalue "mount" "pointingmodelIH0"           "0"
@@ -47,7 +46,6 @@ config::setdefaultvalue "mount" "pointingmodelparameters180" [dict create]
 config::setdefaultvalue "mount" "pointingmodelID180"         "0"
 config::setdefaultvalue "mount" "pointingmodelIH180"         "0"
 config::setdefaultvalue "mount" "pointingmodelpolarhole"     "0"
-config::setdefaultvalue "mount" "allowedguideoffset"         "30as"
 config::setdefaultvalue "mount" "axisdhacorrection"          "0"
 config::setdefaultvalue "mount" "axisddeltacorrection"       "0"
 config::setdefaultvalue "mount" "easthalimit"                "-12h"
@@ -73,9 +71,7 @@ namespace eval "mount" {
   variable controllerhost              [config::getvalue "mount" "controllerhost"]
   variable controllerport              [config::getvalue "mount" "controllerport"]
   variable initialcommand              [config::getvalue "mount" "initialcommand"]
-  variable allowedpositionerror        [astrometry::parseangle [config::getvalue "mount" "allowedpositionerror"]]
   variable pointingmodelpolarhole      [astrometry::parsedistance [config::getvalue "mount" "pointingmodelpolarhole"]]
-  variable allowedguideoffset          [astrometry::parseoffset [config::getvalue "mount" "allowedguideoffset"]]
   variable axisdhacorrection           [astrometry::parseoffset [config::getvalue "mount" "axisdhacorrection"]]
   variable axisddeltacorrection        [astrometry::parseoffset [config::getvalue "mount" "axisddeltacorrection"]]
   variable easthalimit                 [astrometry::parseha    [config::getvalue "mount" "easthalimit"]]
@@ -680,50 +676,6 @@ namespace eval "mount" {
     set pointingmodelparameters180 [pointing::setparameter $pointingmodelparameters180 ME 0]
     log::info "the pointing model parameters for mount rotation 0 are: $pointingmodelparameters0:"
     log::info "the pointing model parameters for mount rotation 180 are: $pointingmodelparameters180:"
-  }
-
-  ######################################################################
-
-  proc acceptablehaerror {} {
-    variable allowedpositionerror
-    set haerror [server::getdata "mounthaerror"]
-    return [expr {abs($haerror) <= $allowedpositionerror}]
-  }
-
-  proc acceptablealphaerror {} {
-    variable allowedpositionerror
-    set alphaerror [server::getdata "mountalphaerror"]
-    return [expr {abs($alphaerror) <= $allowedpositionerror}]
-  }
-
-  proc acceptabledeltaerror {} {
-    variable allowedpositionerror
-    set deltaerror [server::getdata "mountdeltaerror"]
-    return [expr {abs($deltaerror) <= $allowedpositionerror}]
-  }
-
-  proc checkhaerror {when} {
-    variable allowedpositionerror
-    set haerror [server::getdata "mounthaerror"]
-    if {abs($haerror) > $allowedpositionerror} {
-      log::warning "mount HA error is [astrometry::radtohms $haerror 2 true] $when."
-    }
-  }
-
-  proc checkalphaerror {when} {
-    variable allowedpositionerror
-    set alphaerror [server::getdata "mountalphaerror"]
-    if {abs($alphaerror) > $allowedpositionerror} {
-      log::warning "mount alpha error is [astrometry::radtohms $alphaerror 2 true] $when."
-    }
-  }
-
-  proc checkdeltaerror {when} {
-    variable allowedpositionerror
-    set deltaerror [server::getdata "mountdeltaerror"]
-    if {abs($deltaerror) > $allowedpositionerror} {
-      log::warning "mount delta error is [astrometry::radtodms $deltaerror 1 true] $when."
-    }
   }
 
   ######################################################################

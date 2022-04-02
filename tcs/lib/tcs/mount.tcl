@@ -26,6 +26,7 @@
 config::setdefaultvalue "mount" "configuration" "equatorial"
 
 config::setdefaultvalue "mount" "trackingpositionerrorlimit"   "1as"
+config::setdefaultvalue "mount" "fixedpositionerrorlimit"      "1as"
 config::setdefaultvalue "mount" "trackingsettlingdelayseconds" "0"
 config::setdefaultvalue "mount" "movingsettlingdelayseconds"   "0"
 
@@ -36,6 +37,7 @@ namespace eval "mount" {
   variable configuration [config::getvalue "mount" "configuration"]
   
   variable trackingpositionerrorlimit   [astrometry::parseoffset [config::getvalue "mount" "trackingpositionerrorlimit"]]
+  variable fixedpositionerrorlimit      [astrometry::parseoffset [config::getvalue "mount" "fixedpositionerrorlimit"]]
   variable trackingsettlingdelayseconds [config::getvalue "mount" "trackingsettlingdelayseconds"]
   variable movingsettlingdelayseconds   [config::getvalue "mount" "movingsettlingdelayseconds"]
   
@@ -668,6 +670,50 @@ namespace eval "mount" {
 
   }
   
+
+  ######################################################################
+
+  proc acceptablehaerror {} {
+    variable fixedpositionerrorlimit
+    set haerror [server::getdata "mounthaerror"]
+    return [expr {abs($haerror) <= $fixedpositionerrorlimit}]
+  }
+
+  proc acceptablealphaerror {} {
+    variable fixedpositionerrorlimit
+    set alphaerror [server::getdata "mountalphaerror"]
+    return [expr {abs($alphaerror) <= $fixedpositionerrorlimit}]
+  }
+
+  proc acceptabledeltaerror {} {
+    variable fixedpositionerrorlimit
+    set deltaerror [server::getdata "mountdeltaerror"]
+    return [expr {abs($deltaerror) <= $fixedpositionerrorlimit}]
+  }
+
+  proc checkhaerror {when} {
+    variable fixedpositionerrorlimit
+    set haerror [server::getdata "mounthaerror"]
+    if {abs($haerror) > $fixedpositionerrorlimit} {
+      log::warning "mount HA error is [astrometry::radtohms $haerror 2 true] $when."
+    }
+  }
+
+  proc checkalphaerror {when} {
+    variable fixedpositionerrorlimit
+    set alphaerror [server::getdata "mountalphaerror"]
+    if {abs($alphaerror) > $fixedpositionerrorlimit} {
+      log::warning "mount alpha error is [astrometry::radtohms $alphaerror 2 true] $when."
+    }
+  }
+
+  proc checkdeltaerror {when} {
+    variable fixedpositionerrorlimit
+    set deltaerror [server::getdata "mountdeltaerror"]
+    if {abs($deltaerror) > $fixedpositionerrorlimit} {
+      log::warning "mount delta error is [astrometry::radtodms $deltaerror 1 true] $when."
+    }
+  }
 
   ######################################################################
 
