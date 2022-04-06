@@ -143,6 +143,12 @@ then
   else
     coordinateargs="--ra=$alpha --dec=$delta --radius=$radius"
   fi
+  if solve-field --help | grep -q -- --no-fits2fits
+  then
+    extraargs=--no-fits2fits
+  else
+    extraargs=
+  fi
   for runargs in \
     "--backend-config "$etcdir"/fitssolvewcs.cfg-a --depth 1-10 $coordinateargs" \
     "--backend-config "$etcdir"/fitssolvewcs.cfg-b --depth 1-50 $coordinateargs" \
@@ -151,8 +157,8 @@ then
   do
     if test ! -e "$wcsfile"
     then
-      time solve-field -2 --overwrite \
-        $scaleargs \
+      time solve-field --overwrite \
+        $extraargs $scaleargs \
         --new-fits none --corr none --match none --rdls none --index-xyls none --solved none \
         --no-plots --no-verify --uniformize 0 --no-remove-lines \
         $runargs $sextractorargs 2>&1 | 
