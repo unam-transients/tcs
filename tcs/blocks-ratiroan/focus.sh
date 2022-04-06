@@ -24,18 +24,6 @@ do
   "visits": [
     {
       "identifier": "0",
-      "name": "initial coarse focus",
-      "targetcoordinates": {
-        "type"   : "equatorial",
-        "alpha"  : "$ALPHA",
-        "delta"  : "$DELTA",
-        "equinox": "2000"
-      },
-      "command": "initialfocusvisit",
-      "estimatedduration": "10m"
-    },
-    {
-      "identifier": "1",
       "name": "initial pointing correction",
       "targetcoordinates": {
         "type"   : "equatorial",
@@ -47,7 +35,31 @@ do
       "estimatedduration": "5m"
     },
     {
+      "identifier": "1",
+      "name": "initial coarse focus",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$ALPHA",
+        "delta"  : "$DELTA",
+        "equinox": "2000"
+      },
+      "command": "initialfocusvisit",
+      "estimatedduration": "10m"
+    },
+    {
       "identifier": "2",
+      "name": "initial pointing correction",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "$alpha",
+        "delta"  : "$delta",
+        "equinox": "2000"
+      },
+      "command": "initialpointingcorrectionvisit",
+      "estimatedduration": "5m"
+    },
+    {
+      "identifier": "3",
       "name": "initial fine focus",
       "targetcoordinates": {
         "type"   : "equatorial",
