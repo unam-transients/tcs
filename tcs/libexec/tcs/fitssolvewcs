@@ -157,7 +157,7 @@ then
   do
     if test ! -e "$wcsfile"
     then
-      time solve-field --overwrite \
+      time solve-field --overwrite --cpulimit 30 \
         $extraargs $scaleargs \
         --new-fits none --corr none --match none --rdls none --index-xyls none --solved none \
         --no-plots --no-verify --uniformize 0 --no-remove-lines \
