@@ -75,7 +75,7 @@ foreach file $argv {
       if {[string equal $record "END"]} {
         break
       }
-      puts $record
+      catch {puts $record}
     }  
   } message]} {
     puts stderr "tcs fitsheader: error: while reading \"$file\": $message."
