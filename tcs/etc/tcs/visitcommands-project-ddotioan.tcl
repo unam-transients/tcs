@@ -732,7 +732,7 @@ proc twilightflatsvisit {} {
   set ngood 0
   set mingoodlevel $maxlevel
   set maxgoodlevel $minlevel
-  set evening [executor::evening]
+  set evening [executor::isevening]
   while {true} {
     executor::expose flat 0
     executor::analyze levels
@@ -774,7 +774,7 @@ proc twilightflatsvisit {} {
 
 proc domeflatsvisit {} {
   log::summary "domeflatsvisit: starting."
-  if {[executor::unparked]} {
+  if {[executor::isunparked]} {
     executor::move
   }
   executor::setbinning 1
@@ -787,7 +787,7 @@ proc domeflatsvisit {} {
   set ngood 0
   set mingoodlevel $maxlevel
   set maxgoodlevel $minlevel
-  set evening [executor::evening]
+  set evening [executor::isevening]
   while {true} {
     executor::expose flat 5
     executor::analyze levels
@@ -826,7 +826,7 @@ proc domeflatsvisit {} {
 
 proc biasesvisit {} {
   log::summary "biasesvisit: starting."
-  if {[executor::unparked]} {
+  if {[executor::isunparked]} {
     executor::move
   }
   executor::setwindow "default"
@@ -847,7 +847,7 @@ proc biasesvisit {} {
 
 proc darksvisit {} {
   log::summary "darksvisit: starting."
-  if {[executor::unparked]} {
+  if {[executor::isunparked]} {
     executor::move
   }
   executor::setwindow "default"
