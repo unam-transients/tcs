@@ -2,24 +2,8 @@
 
 ################################################################################
 
-case $1 in
-default|[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])
-  date="$1"
-  ;;
-"")
-  date=$(date +%Y%m%d -d tomorrow)
-  ;;
-*)
-  date=$(date +%Y%m%d -d "$1")
-  ;;
-esac
-echo "$date"
-if test "$date" = "default"
-then
-  dir=/usr/local/etc/tcs/blocks
-else
-  dir=/usr/local/var/tcs/$date/blocks
-fi
+dir=/usr/local/var/tcs/blocks
+mkdir -p $dir
 
 ################################################################################
 
@@ -59,26 +43,12 @@ sh roman.sh
 ################################################################################
 
 (
-  if test "$date" = "default"  
-  then
-    echo rm -rf $dir
-  fi
+  #singleblock 2019A-2002-virgo d0
+  #singleblock 2019A-2002-virgo d1
+  #singleblock 2019A-2002-virgo d2
 
-  echo mkdir -p $dir
-
-  if test "$date" != "default"  
-  then
-    
-    :
-  
-    #singleblock 2019A-2002-virgo d0
-    #singleblock 2019A-2002-virgo d1
-    #singleblock 2019A-2002-virgo d2
-
-    #allblocks 0013-focus-tilt o
-    #allblocks 0010-focus-map o
-
-  fi
+  #allblocks 0013-focus-tilt o
+  #allblocks 0010-focus-map o
 
   #allblocks 0014-apertures              e
 
@@ -101,6 +71,8 @@ sh roman.sh
   allblocks 0001-twilight-flats-evening x
   allblocks 0002-biases                 y
   allblocks 0003-dark                   z
+
+  allblocks 0013-signal-chain           z
 
 
 ) | sudo sh
