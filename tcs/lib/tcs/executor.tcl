@@ -624,6 +624,16 @@ namespace eval "executor" {
 
   ######################################################################
 
+  proc isevening {} {
+    client::update "sun"
+    set sunha [client::getdata "sun" "observedha"]    
+    if {$sunha > 0} {
+      return true
+    } else {
+      return false
+    }
+  }
+
   proc isunparked {} {
     client::update "mount"
     set unparked [client::getdata "mount" "unparked"]
