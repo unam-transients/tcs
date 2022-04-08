@@ -163,6 +163,7 @@ namespace eval "mount" {
   server::setdata "lastcorrectiontimestamp"     ""
   server::setdata "lastcorrectiondalpha"        ""
   server::setdata "lastcorrectionddelta"        ""
+  server::setdata "unparked"                    false
 
   variable hamotionstate    ""
   variable deltamotionstate ""
@@ -819,6 +820,7 @@ namespace eval "mount" {
   proc parkhardware {} {
     variable hapark
     variable deltapark
+    server::setdata "unparked" false
     log::info "moving in δ to pole."
     sendcommandandwait "SET DEC.TARGETPOS=90"
     waitwhilemoving
@@ -842,6 +844,7 @@ namespace eval "mount" {
     log::info [format "moving in δ to unpark at %+.1fd." [astrometry::radtodeg $deltaunpark]]
     sendcommandandwait "SET DEC.TARGETPOS=[astrometry::radtodeg $deltaunpark]"
     waitwhilemoving  
+    server::setdata "unparked" true
   }
 
   ######################################################################
@@ -918,7 +921,6 @@ namespace eval "mount" {
       server::setactivity "parking"
       log::info "parking."
       parkhardware
-      server::setactivity "unparking"
       log::info "unparking."
       unparkhardware
       set emergencystopped false
@@ -1004,6 +1006,7 @@ namespace eval "mount" {
     log::info "unparking."
 #     stophardware
     unparkhardware
+    server::setdata "unparked" true
     movehardware false
     if {[checkaftermoving false]} {
       movehardware false

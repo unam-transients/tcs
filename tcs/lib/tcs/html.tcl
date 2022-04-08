@@ -882,6 +882,9 @@ if {false} {
           [formatarcsecifdouble "%.2fas" [client::getdata "mount" "mountpvnorthtrackingerror"]]
           
       }
+      
+      writehtmlrow "Unparked" \
+        [client::getdata "mount" "unparked"]
 
       writehtmltimestampedrow "Last correction" \
         [client::getdata "mount" "lastcorrectiontimestamp"]
