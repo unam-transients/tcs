@@ -511,7 +511,7 @@ namespace eval "astrometry" {
     variable latitude
     set y [expr {cos($delta) * sin($ha)}]
     set x [expr {sin($latitude) * cos($delta) * cos($ha) - cos($latitude) * sin($delta)}]
-    set azimuth [expr {atan2($y, $x)}]
+    set azimuth [expr {atan2($y, $x) + $pi}]
     set azimuth [foldradpositive $azimuth]
     return $azimuth
   }
