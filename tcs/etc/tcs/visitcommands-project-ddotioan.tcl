@@ -727,20 +727,24 @@ proc twilightflatsvisit {} {
   set detectors [client::getdata instrument detectors]
   set leveldetector [lindex $detectors 0]
   set minlevel 1000
-  set maxlevel 4000
+  set maxlevel 3000
   set filter "w"
   set ngood 0
   set mingoodlevel $maxlevel
   set maxgoodlevel $minlevel
+  set evening [executor::evening]
   while {true} {
-    executor::expose flat 5
+    executor::expose flat 0
     executor::analyze levels
     set level [executor::exposureaverage $leveldetector]
     log::info [format "twilightflatsvisit: level is %.1f DN in filter $filter." $level]
-    if {$level > $maxlevel} {
+    if {$level > $maxlevel && $evening} {
       log::info "twilightflatsvisit: waiting (too bright)."
       coroutine::after 60000
-    } elseif {$level > $minlevel} {
+    } elseif {$level < $minlevel && !$evening} {
+      log::info "twilightflatsvisit: waiting (too faint)."
+      coroutine::after 60000
+    } elseif {$minlevel <= $level && $level <= $maxlevel} {
       if {$ngood == 0} {
         log::info "twilightflatsvisit: first good flat with filter $filter."
       }
@@ -749,14 +753,18 @@ proc twilightflatsvisit {} {
       set mingoodlevel [expr {min($level,$mingoodlevel)}]
       set maxgoodlevel [expr {max($level,$maxgoodlevel)}]
     } else {
-      if {$ngood == 0} {
-        log::summary [format "twilightflatsvisit: $ngood good flats with filter $filter."]
-      } else {      
-        log::summary [format "twilightflatsvisit: $ngood good flats (%.0f to %.0f DN) with filter $filter." $mingoodlevel $maxgoodlevel]
-      }
-      log::info "twilightflatsvisit: finished with filter $filter (too faint)."
       break
     }
+  }
+  if {$ngood == 0} {
+    log::summary [format "twilightflatsvisit: $ngood good flats with filter $filter."]
+  } else {      
+    log::summary [format "twilightflatsvisit: $ngood good flats (%.0f to %.0f DN) with filter $filter." $mingoodlevel $maxgoodlevel]
+  }
+  if {$evening} {
+    log::info "twilightflatsvisit: finished with filter $filter (too faint)."
+  } else {
+    log::info "twilightflatsvisit: finished with filter $filter (too bright)."
   }
   log::summary "twilightflatsvisit: finished."
   return true
@@ -764,9 +772,63 @@ proc twilightflatsvisit {} {
 
 ########################################################################
 
+proc domeflatsvisit {} {
+  log::summary "domeflatsvisit: starting."
+  if {[executor::unparked]} {
+    executor::move
+  }
+  executor::setbinning 1
+  executor::setwindow "default"
+  set detectors [client::getdata instrument detectors]
+  set leveldetector [lindex $detectors 0]
+  set minlevel 1000
+  set maxlevel 3000
+  set filter "w"
+  set ngood 0
+  set mingoodlevel $maxlevel
+  set maxgoodlevel $minlevel
+  set evening [executor::evening]
+  while {true} {
+    executor::expose flat 5
+    executor::analyze levels
+    set level [executor::exposureaverage $leveldetector]
+    log::info [format "domeflatsvisit: level is %.1f DN in filter $filter." $level]
+    if {$level > $maxlevel && $evening} {
+      log::info "domeflatsvisit: waiting (too bright)."
+      coroutine::after 60000
+    } elseif {$level < $minlevel && !$evening} {
+      log::info "domeflatsvisit: waiting (too faint)."
+      coroutine::after 60000
+    } elseif {$minlevel <= $level && $level <= $maxlevel} {
+      if {$ngood == 0} {
+        log::info "domeflatsvisit: first good flat with filter $filter."
+      }
+      coroutine::after 10000
+      incr ngood
+      set mingoodlevel [expr {min($level,$mingoodlevel)}]
+      set maxgoodlevel [expr {max($level,$maxgoodlevel)}]
+    }
+    if {$ngood == 10} {
+      break
+    }
+  }
+  if {$ngood == 0} {
+    log::summary [format "domeflatsvisit: $ngood good flats with filter $filter."]
+  } else {      
+    log::summary [format "domeflatsvisit: $ngood good flats (%.0f to %.0f DN) with filter $filter." $mingoodlevel $maxgoodlevel]
+  }
+  log::info "domeflatsvisit: finished with filter $filter."
+  log::summary "domeflatsvisit: finished."
+  return true
+}
+
+########################################################################
+
 proc biasesvisit {} {
   log::summary "biasesvisit: starting."
-  executor::move
+  if {[executor::unparked]} {
+    executor::move
+  }
   executor::setwindow "default"
   executor::setreadmode "16MHz"
   executor::setbinning 1
@@ -785,7 +847,9 @@ proc biasesvisit {} {
 
 proc darksvisit {} {
   log::summary "darksvisit: starting."
-  executor::move
+  if {[executor::unparked]} {
+    executor::move
+  }
   executor::setwindow "default"
   executor::setreadmode "16MHz"
   executor::setbinning 1
@@ -819,3 +883,5 @@ proc aperturesvisit {} {
   log::summary "aperturesvisit: finished."
   return true
 }
+
+########################################################################
