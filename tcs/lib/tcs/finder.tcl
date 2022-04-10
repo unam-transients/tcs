@@ -453,7 +453,7 @@ namespace eval "finder" {
     if {[catch {detector::readexposure} message]} {
       error "while reading exposure: $message"
     }    
-    if {[catch {detector::writeexposure $tmpfilename $finalfilename $latestfilename $currentfilename false} message]} {
+    if {[catch {detector::writeexposure $tmpfilename $finalfilename $latestfilename $currentfilename "" false} message]} {
       error "while writing FITS data: $message"
     }
     if {[string equal $exposuretype "focus"]} {
