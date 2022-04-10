@@ -333,7 +333,7 @@ namespace eval "detector" {
 
   ######################################################################
 
-  proc startexposure {exposuretime shutter fitscubepixfilename} {
+  proc startexposure {exposuretime shutter {fitscubepixfilename ""}} {
     log::debug "starting the exposure."
     checkisopen
     set result [detectorrawexpose $exposuretime $shutter]
