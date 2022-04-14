@@ -57,6 +57,8 @@ namespace eval "focuser" {
     set rawminposition [expr {int(-pow(2, 31))}]
     set rawmaxposition [expr {int(pow(2, 31) - 1)}]
     
+    log::debug "openspecific: sending AB."
+    sendcommand "AB"
     log::debug "openspecific: sending GC."
     sendcommand "GC"
     log::debug "openspecific: sending ID."
