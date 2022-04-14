@@ -79,15 +79,11 @@
     "filterlist": [
       "w"
     ],
-    "focusertype": "optec",
-    "focuseridentifier": "/dev/ttyFTDI-C0",
-    "focuserinitialposition": "32767",
-    "focuserbacklashoffset": "3000",
-    "focusercorrectionmodel": {
-      "C": "-139",
-      "XM": "1808",
-      "XM2": "-436"
-    },
+    "focusertype": "ddoti",
+    "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:5:1.0",
+    "focuserinitialposition": 0,
+    "focuserbacklashoffset": 0,
+    "focusercorrectionmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
@@ -153,15 +149,11 @@
     "filterlist": [
       "w"
     ],
-    "focusertype": "optec",
-    "focuseridentifier": "/dev/ttyFTDI-C1",
-    "focuserinitialposition": "32767",
-    "focuserbacklashoffset": "3000",
-    "focusercorrectionmodel": {
-      "C": "-1",
-      "XM": "2553",
-      "XM2": "-861"
-    },
+    "focusertype": "ddoti",
+    "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:8:1.0",
+    "focuserinitialposition": 0,
+    "focuserbacklashoffset": 0,
+    "focusercorrectionmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
@@ -227,15 +219,11 @@
     "filterlist": [
       "w"
     ],
-    "focusertype": "optec",
-    "focuseridentifier": "/dev/ttyFTDI-C2",
-    "focuserinitialposition": "32767",
-    "focuserbacklashoffset": "3000",
-    "focusercorrectionmodel": {
-      "C": "278",
-      "XM": "1645",
-      "XM2": "-431"
-    },
+    "focusertype": "ddoti",
+    "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:7:1.0",
+    "focuserinitialposition": 0,
+    "focuserbacklashoffset": 0,
+    "focusercorrectionmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
@@ -301,15 +289,11 @@
     "filterlist": [
       "w"
     ],
-    "focusertype": "optec",
-    "focuseridentifier": "/dev/ttyFTDI-C3",
-    "focuserinitialposition": "32767",
-    "focuserbacklashoffset": "3000",
-    "focusercorrectionmodel": {
-      "C": "-269",
-      "XM": "448",
-      "XM2": "-45"
-    },
+    "focusertype": "ddoti",
+    "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:7:1.0",
+    "focuserinitialposition": 0,
+    "focuserbacklashoffset": 0,
+    "focusercorrectionmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
@@ -375,15 +359,11 @@
     "filterlist": [
       "w"
     ],
-    "focusertype": "optec",
-    "focuseridentifier": "/dev/ttyFTDI-C4",
-    "focuserinitialposition": "32767",
-    "focuserbacklashoffset": "3000",
-    "focusercorrectionmodel": {
-      "C": "-242",
-      "XM": "4975",
-      "XM2": "-1290"
-    },
+    "focusertype": "ddoti",
+    "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:8:1.0",
+    "focuserinitialposition": 0,
+    "focuserbacklashoffset": 0,
+    "focusercorrectionmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
@@ -449,15 +429,11 @@
     "filterlist": [
       "w"
     ],
-    "focusertype": "optec",
-    "focuseridentifier": "/dev/ttyFTDI-C5",
-    "focuserinitialposition": "32767",
-    "focuserbacklashoffset": "3000",
-    "focusercorrectionmodel": {
-      "C": "-218",
-      "XM": "2912",
-      "XM2": "-948"
-    },
+    "focusertype": "ddoti",
+    "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:5:1.0",
+    "focuserinitialposition": 0,
+    "focuserbacklashoffset": 0,
+    "focusercorrectionmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {

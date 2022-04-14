@@ -270,17 +270,10 @@ fi
 if test -d /etc/udev/rules.d
 then
   sudo cp /dev/stdin <<"EOF" /etc/udev/rules.d/99-ttyFTDI.rules
-SUBSYSTEMS=="usb", ATTRS{manufacturer}=="Optec, Inc.", ATTRS{product}=="Optec USB/Serial Cable", ATTRS{serial}=="OP3B50N4", SYMLINK+="ttyFTDI-C0"
-SUBSYSTEMS=="usb", ATTRS{manufacturer}=="FTDI", ATTRS{product}=="FT232R USB UART", ATTRS{serial}=="A9030XY9", SYMLINK+="ttyFTDI-C1"
-SUBSYSTEMS=="usb", ATTRS{manufacturer}=="FTDI", ATTRS{product}=="FT232R USB UART", ATTRS{serial}=="A700OTVD", SYMLINK+="ttyFTDI-C2"
-SUBSYSTEMS=="usb", ATTRS{manufacturer}=="Optec, Inc.", ATTRS{product}=="Optec USB/Serial Cable", ATTRS{serial}=="OP2UG7A9", SYMLINK+="ttyFTDI-C3"
-SUBSYSTEMS=="usb", ATTRS{manufacturer}=="Optec, Inc.", ATTRS{product}=="Optec USB/Serial Cable", ATTRS{serial}=="OP2R2SBH", SYMLINK+="ttyFTDI-C4"
-SUBSYSTEMS=="usb", ATTRS{manufacturer}=="Optec, Inc.", ATTRS{product}=="Optec USB/Serial Cable", ATTRS{serial}=="OP2UOY1D", SYMLINK+="ttyFTDI-C5"
 SUBSYSTEMS=="usb", ATTRS{manufacturer}=="FTDI", ATTRS{product}=="FT232R USB UART", ATTRS{serial}=="AJ02WIFQ", SYMLINK+="ttyFTDI-ow"
 SUBSYSTEMS=="usb", ATTRS{manufacturer}=="FTDI", ATTRS{product}=="FT232R USB UART", ATTRS{serial}=="A700L5IY", SYMLINK+="ttyFTDI-ow"
 SUBSYSTEMS=="usb", ATTRS{manufacturer}=="FTDI", ATTRS{product}=="FT232R USB UART", ATTRS{serial}=="AI03X2BM", SYMLINK+="ttyFTDI-ow"
 SUBSYSTEMS=="usb", ATTRS{manufacturer}=="FTDI", ATTRS{product}=="FT232R USB UART", ATTRS{serial}=="AI03X2BD", SYMLINK+="ttyFTDI-ow"
-SUBSYSTEMS=="usb", ATTRS{manufacturer}=="Optec, Inc.", ATTRS{product}=="Optec USB/Serial Cable", SYMLINK+="ttyFTDI"
 EOF
 fi
 
