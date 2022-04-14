@@ -89,15 +89,30 @@ sh pointing-map.sh
   #  singleblock 2019B-1002-0 e$letter
   #done
   
-  singleblock 1000-* b
+  singleblock 2006-rosales-1 c0
+  singleblock 2006-rosales-1 c1
+  singleblock 2006-rosales-1 c2
+  singleblock 2006-rosales-1 c3
 
-  singleblock 2006-rosales-0 c0
-  singleblock 2006-rosales-0 c1
-  singleblock 2006-rosales-0 c2
+  singleblock 2006-rosales-2 e0
+  singleblock 2006-rosales-2 e1
 
-  allblocks 2000-gonzalez               e
+  singleblock 2006-rosales-3 f0
+  singleblock 2006-rosales-3 f1
+  singleblock 2006-rosales-3 f2
+  singleblock 2006-rosales-3 f3
 
-  singleblock 2004-garcia-0 i0
+  singleblock 2006-rosales-4 g0
+  singleblock 2006-rosales-4 g1
+  singleblock 2006-rosales-4 g2
+  singleblock 2006-rosales-4 g3
+
+  singleblock 2006-rosales-5 h0
+  singleblock 2006-rosales-5 h1
+  singleblock 2006-rosales-5 h2
+  singleblock 2006-rosales-5 h3
+
+  singleblock 2007-gonzalez-0 i0
 
   allblocks 0004-initial-focus          m
   allblocks 0004-focus                  n
