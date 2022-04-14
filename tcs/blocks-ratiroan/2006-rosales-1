@@ -3,16 +3,16 @@
    "identifier": "2006",
    "name": "Rosales SN"
  },
- "identifier": "0",
- "name": "2022dvj",
+ "identifier": "1",
+ "name": "2022eaf",
  "visits": [
    {
      "identifier": "1000",
      "name": "pointing correction",
      "targetcoordinates": {
        "type"   : "equatorial",
-       "alpha"  : "05:01:28.27",
-       "delta"  : "+21:39:16.57",
+       "alpha"  : "09:41:21.59",
+       "delta"  : "+28:06:38.20",
        "equinox": "2000"
      },
      "command": "pointingcorrectionvisit",
@@ -23,8 +23,8 @@
      "name": "science",
      "targetcoordinates": {
        "type"   : "equatorial",
-       "alpha"  : "05:01:28.27",
-       "delta"  : "+21:39:16.57",
+       "alpha"  : "09:41:21.59",
+       "delta"  : "+28:06:38.20",
        "equinox": "2000"
      },
      "command": "fabianvisit",
