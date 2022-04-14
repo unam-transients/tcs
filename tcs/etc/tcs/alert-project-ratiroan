@@ -38,7 +38,7 @@
   "maxskybrightness": "nauticaltwilight",
   "minmoondistance": "15d",
   "maxzenithdistance": "72d",
-  "maxfocusdelay": "3600",
+  "maxfocusdelay": "2000",
   "maxalertuncertainty": "5am"
 
 }
