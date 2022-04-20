@@ -109,7 +109,7 @@ NF == 7 && $5 == "day" {
   if (phase != targetdayofyear % period)
     next;
 }
-NF == 6 && $5 == "on" {
+NF == 6 && $5 == "date" {
   date = $6
   if (date != targetdate)
     next;
