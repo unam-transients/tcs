@@ -97,19 +97,20 @@ awk \
   # Skip empty lines.
   next;
 }
-NF >= 3 {
-  priority   = $1
-  duplicates = $2
-  blockfile  = $3
+NF >= 4 {
+  action     = $1 
+  priority   = $2
+  duplicates = $3
+  blockfile  = $4
 }
-NF == 6 && $4 == "day" {
-  phase = $5
-  period = $6
+NF == 7 && $5 == "day" {
+  phase = $6
+  period = $7
   if (phase != targetdayofyear % period)
     next;
 }
-NF == 5 && $4 == "on" {
-  date = $5
+NF == 6 && $5 == "on" {
+  date = $6
   if (date != targetdate)
     next;
 }
@@ -120,14 +121,20 @@ NF == 5 && $4 == "on" {
 }
 {
   for (i = 0; i < duplicates; ++i)
-    printf("for blockfile in %s.json; do echo $blockfile %s-%03d-$blockfile; done\n", blockfile, priority, i)
+    printf("for blockfile in %s.json; do echo %s $blockfile %s-%03d-$blockfile; done\n", blockfile, action, priority, i)
 }
 ' | 
 sh |
-while read src dst
+while read action src dst
 do
-  log info "loading $dst."
-  cp "$src" "$queuedir"/"$dst"
+  if test "$action" = "load"
+  then
+    log info "loading $dst."
+    cp "$src" "$queuedir"/"$dst"
+  else
+    log info "unloading $dst."
+    rm -f "$queuedir"/"$dst"
+  fi
 done
 
 ################################################################################
