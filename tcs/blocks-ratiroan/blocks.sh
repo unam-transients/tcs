@@ -2,24 +2,7 @@
 
 ################################################################################
 
-case $1 in
-default|[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])
-  date="$1"
-  ;;
-"")
-  date=$(date +%Y%m%d -d tomorrow)
-  ;;
-*)
-  date=$(date +%Y%m%d -d "$1")
-  ;;
-esac
-echo "$date"
-if test "$date" = "default"
-then
-  dir=/usr/local/etc/tcs/blocks
-else
-  dir=/usr/local/var/tcs/$date/blocks
-fi
+dir=/usr/local/var/tcs/blocks
 
 ################################################################################
 
@@ -88,29 +71,15 @@ sh pointing-map.sh
   #do 
   #  singleblock 2019B-1002-0 e$letter
   #done
-  
-  singleblock 2006-rosales-1 c0
-  singleblock 2006-rosales-1 c1
-  singleblock 2006-rosales-1 c2
-  singleblock 2006-rosales-1 c3
 
   singleblock 2006-rosales-2 e0
   singleblock 2006-rosales-2 e1
-
-  singleblock 2006-rosales-3 f0
-  singleblock 2006-rosales-3 f1
-  singleblock 2006-rosales-3 f2
-  singleblock 2006-rosales-3 f3
-
-  singleblock 2006-rosales-4 g0
-  singleblock 2006-rosales-4 g1
-  singleblock 2006-rosales-4 g2
-  singleblock 2006-rosales-4 g3
-
-  singleblock 2006-rosales-5 h0
-  singleblock 2006-rosales-5 h1
-  singleblock 2006-rosales-5 h2
-  singleblock 2006-rosales-5 h3
+  
+  singleblock 2006-rosales-5 g0
+  singleblock 2006-rosales-5 g1
+  
+  singleblock 2006-rosales-6 h0
+  singleblock 2006-rosales-6 h1
 
   singleblock 2007-gonzalez-0 i0
 
@@ -121,6 +90,5 @@ sh pointing-map.sh
   allblocks 0001-twilight-flats-faint   x
   allblocks 0002-biases                 y
   allblocks 0003-dark                   z
-
 
 ) | sudo sh
