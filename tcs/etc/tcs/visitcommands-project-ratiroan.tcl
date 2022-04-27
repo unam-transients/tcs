@@ -187,30 +187,34 @@ proc agnvisit {} {
   executor::track
   executor::waituntiltracking
 
-  foreach repeat {0 1} {
+  foreach {aperture eastoffset northoffset filter} {
+    riZJcenter -10as -30as u
+    riYHcenter -10as -30as g
+    riYHcenter -10as   0as r
+    riZJcenter -10as   0as r
+    riZJcenter -10as +30as g
+    riYHcenter -10as +30as u
+    riYHcenter  +0as -15as u
+    riZJcenter  +0as -15as g
+    riZJcenter  +0as +15as r
+    riYHcenter  +0as +15as r
+    riYHcenter +10as -30as g
+    riZJcenter +10as -30as u
+    riZJcenter +10as   0as u
+    riYHcenter +10as   0as g
+    riYHcenter +10as +30as r
+    riZJcenter +10as +30as r
+    riYHcenter +10as -15as g
+    riZJcenter +10as -15as u
+  } {
   
-    foreach {aperture eastoffset northoffset filter} {
-      riZJcenter   0as   0as u
-      riYHcenter   0as   0as g
-      riZJcenter   0as +10as r
-      riYHcenter   0as +10as u
-      riZJcenter   0as -10as g
-      riYHcenter   0as -10as r
-      riZJcenter +10as   0as u
-      riYHcenter +10as   0as g
-      riZJcenter -10as   0as r
-      riYHcenter -10as   0as u
-    } {
-  
-      log::info "agnvisit: dithering $eastoffset E and $northoffset N about aperture $aperture."    
-      executor::offset $eastoffset $northoffset $aperture
-      executor::waituntiltracking
+    log::info "agnvisit: dithering $eastoffset E and $northoffset N about aperture $aperture."    
+    executor::offset $eastoffset $northoffset $aperture
+    executor::waituntiltracking
     
-      executor::movefilterwheel $filter "none" "none" "none"
-      set i 0
-      executor::expose object 80 80 60 60
-
-    }
+    executor::movefilterwheel $filter "none" "none" "none"
+    set i 0
+    executor::expose object 80 80 60 60
 
   }
 
@@ -601,8 +605,8 @@ proc initialfocusvisit {} {
   executor::track
   executor::waituntiltracking
   
-#  log::summary "initialfocusvisit: focusing finders."
-#  executor::focusfinders 1
+  log::summary "initialfocusvisit: focusing finders."
+  executor::focusfinders 1
 
   executor::setpointingmode "finder"
   
