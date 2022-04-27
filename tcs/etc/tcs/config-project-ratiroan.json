@@ -1219,7 +1219,7 @@
     "idledelta": "0d",
     "closeexplicitly": "true",
     "finders": [
-      "nefinder", "sefinder"
+      "sefinder"
     ]
   },
   "weather": {
