@@ -126,6 +126,8 @@ namespace eval "mount" {
     POSITION.EQUATORIAL.RA_CURRENT
     POSITION.EQUATORIAL.DEC_CURRENT
     POSITION.LOCAL.SIDEREAL_TIME
+    POSITION.INSTRUMENTAL.AZ.MOTION_STATE
+    POSITION.INSTRUMENTAL.ZD.MOTION_STATE    
   } ";"]\n"
   set controller::timeoutmilliseconds         10000
   set controller::intervalmilliseconds        50
@@ -157,22 +159,24 @@ namespace eval "mount" {
   server::setdata "lastcorrectiondalpha"        ""
   server::setdata "lastcorrectionddelta"        ""
   
-  server::setdata "requestedobservedalpha"     ""
-  server::setdata "requestedobserveddelta"     ""
-  server::setdata "requestedobservedha"        ""
-  server::setdata "requestedobservedalpharate" ""
-  server::setdata "requestedobserveddeltarate" ""
-  server::setdata "requestedmountrotation"     ""
+  server::setdata "requestedobservedalpha"      ""
+  server::setdata "requestedobserveddelta"      ""
+  server::setdata "requestedobservedha"         ""
+  server::setdata "requestedobservedalpharate"  ""
+  server::setdata "requestedobserveddeltarate"  ""
+  server::setdata "requestedmountrotation"      ""
 
-  server::setdata "requestedmountalpha"        ""
-  server::setdata "requestedmountdelta"        ""
-  server::setdata "requestedmountha"           ""
-  server::setdata "requestedmountalpharate"    ""
-  server::setdata "requestedmountdeltarate"    ""
+  server::setdata "requestedmountalpha"         ""
+  server::setdata "requestedmountdelta"         ""
+  server::setdata "requestedmountha"            ""
+  server::setdata "requestedmountalpharate"     ""
+  server::setdata "requestedmountdeltarate"     ""
 
-  server::setdata "mountalphaerror"            ""
-  server::setdata "mountdeltaerror"            ""
-  server::setdata "mounthaerror"               ""
+  server::setdata "mountalphaerror"             ""
+  server::setdata "mountdeltaerror"             ""
+  server::setdata "mounthaerror"                ""
+
+  server::setdata "unparked"                    false
 
   proc isignoredcontrollerresponse {controllerresponse} {
     expr {
@@ -189,6 +193,11 @@ namespace eval "mount" {
   variable pendingmountalpha
   variable pendingmountdelta
   variable pendingmountst
+  variable pendingazimuthmotionstate
+  variable pendingzenithdistancemotionstate
+  
+  variable azimuthmotionstate        ""
+  variable zenithdistancemotionstate ""
 
   proc updatecontrollerdata {controllerresponse} {
 
@@ -197,6 +206,11 @@ namespace eval "mount" {
     variable pendingmountalpha
     variable pendingmountdelta
     variable pendingmountst
+    variable pendingazimuthmotionstate
+    variable pendingzenithdistancemotionstate
+
+    variable azimuthmotionstate
+    variable zenithdistancemotionstate
 
     set controllerresponse [string trim $controllerresponse]
     set controllerresponse [string trim $controllerresponse "\0"]
@@ -266,6 +280,14 @@ namespace eval "mount" {
       set pendingmountst [astrometry::hrtorad $value]
       return false
     }
+    if {[scan $controllerresponse "%*d DATA INLINE POSITION.INSTRUMENTAL.AZ.MOTION_STATE=%d" value] == 1} {
+      set pendingazimuthmotionstate $value
+      return false
+    }
+    if {[scan $controllerresponse "%*d DATA INLINE POSITION.INSTRUMENTAL.ZD.MOTION_STATE=%d" value] == 1} {
+      set pendingzenithdistancemotionstate $value
+      return false
+    }
     if {[regexp {[0-9]+ DATA INLINE } $controllerresponse] == 1} {
       log::debug "status: ignoring DATA INLINE response."
       return false
@@ -273,6 +295,23 @@ namespace eval "mount" {
     if {[regexp {[0-9]+ COMMAND COMPLETE} $controllerresponse] != 1} {
       log::warning "unexpected controller response \"$controllerresponse\"."
       return true
+    }
+    
+    set lastazimuthmotionstate        $azimuthmotionstate
+    set lastzenithdistancemotionstate $zenithdistancemotionstate
+    set azimuthmotionstate            $pendingazimuthmotionstate
+    set zenithdistancemotionstate     $pendingzenithdistancemotionstate
+    
+    if {
+      ![string equal $lastazimuthmotionstate ""] &&
+      ![string equal $lastzenithdistancemotionstate ""]
+    } {
+      checkmotionstate "azimuth" \
+        $lastazimuthmotionstate \
+        $azimuthmotionstate
+      checkmotionstate "zenith distance" \
+        $lastzenithdistancemotionstate \
+        $zenithdistancemotionstate
     }
     
     set mountazimuth        $pendingmountazimuth
@@ -299,6 +338,35 @@ namespace eval "mount" {
     server::setstatus "ok"
 
     return true
+  }
+  
+  proc checkmotionstate {name lastmotionstate motionstate} {
+    checkmotionstatebit $name $lastmotionstate $motionstate 0 \
+      log::info "moving"
+    checkmotionstatebit $name $lastmotionstate $motionstate 1 \
+      log::info "following a trajectory"
+    checkmotionstatebit $name $lastmotionstate $motionstate 2 \
+      log::warning "being blocked"
+    checkmotionstatebit $name $lastmotionstate $motionstate 3 \
+      log::info "having acquisition"
+    checkmotionstatebit $name $lastmotionstate $motionstate 4 \
+      log::warning "being limited"
+  }
+  
+  proc checkmotionstatebit {name lastmotionstate motionstate bit logproc activity} {
+    if {[bit $lastmotionstate $bit] && ![bit $motionstate $bit]} {
+      $logproc "$name axis stopped $activity."
+    } elseif {![bit $lastmotionstate $bit] && [bit $motionstate $bit]} {
+      $logproc "$name axis started $activity."
+    }
+  }
+  
+  proc bit {value bit} {
+    if {$value & (1 << $bit)} {
+      return true
+    } else {
+      return false
+    }
   }
 
   ######################################################################
@@ -362,6 +430,16 @@ namespace eval "mount" {
   }
 
   ######################################################################
+  
+  proc parkhardware {} {
+    server::setdata "unparked" false
+  }
+  
+  proc unparkhardware {} {
+    server::setdata "unparked" true
+  }
+  
+  ######################################################################
 
   proc startactivitycommand {} {
     set start [utcclock::seconds]
@@ -376,6 +454,7 @@ namespace eval "mount" {
   proc initializeactivitycommand {} {
     set start [utcclock::seconds]
     log::info "initializing."
+    parkhardware
     set end [utcclock::seconds]
     log::info [format "finished initializing after %.1f seconds." [utcclock::diff $end $start]]
   }
@@ -428,6 +507,7 @@ namespace eval "mount" {
   proc parkactivitycommand {} {
     set start [utcclock::seconds]
     log::info "parking."
+    parkhardware
     set end [utcclock::seconds]
     log::info [format "finished parking after %.1f seconds." [utcclock::diff $end $start]]
   }
@@ -435,6 +515,7 @@ namespace eval "mount" {
   proc unparkactivitycommand {} {
     set start [utcclock::seconds]
     log::info "unparking."
+    unparkhardware
     set end [utcclock::seconds]
     log::info [format "finished unparking after %.1f seconds." [utcclock::diff $end $start]]
   }
