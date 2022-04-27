@@ -23,7 +23,7 @@
 
 ########################################################################
 
-proc alertvisit {{filters "r"} {readmode "fastguidingdefault"}} {
+proc alertvisit {{filters "r"} {readmode "conventionaldefault"}} {
 
   log::summary "alertvisit: starting."
   log::summary "alertvisit: filters are $filters."
@@ -173,7 +173,7 @@ proc alertvisit {{filters "r"} {readmode "fastguidingdefault"}} {
 
 ########################################################################
 
-proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {offsetfastest true} {readmode "fastguidingdefault"}} {
+proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {offsetfastest true} {readmode "conventionaldefault"}} {
 
   log::summary "gridvisit: starting."
 
@@ -250,7 +250,7 @@ proc coarsefocusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefa
   setsecondaryoffset 0
 
   track
-  setreadmode "default"
+  setreadmode $readmode
   setwindow "default"
   setbinning 4
   movefilterwheel "$filter"
@@ -334,7 +334,7 @@ proc initialpointingcorrectionvisit {{exposuretime 30} {filter "i"} {readmode "c
   log::summary "initialpointingcorrectionvisit: starting."
 
   tracktopocentric
-  setreadmode "default"
+  setreadmode $readmode
   setwindow "default"
   setbinning 1
   movefilterwheel $filter
@@ -349,12 +349,12 @@ proc initialpointingcorrectionvisit {{exposuretime 30} {filter "i"} {readmode "c
 
 ########################################################################
 
-proc pointingcorrectionvisit {{exposuretime 15} {filter "i"} {readmode "fastguidingdefault"}} {
+proc pointingcorrectionvisit {{exposuretime 15} {filter "i"} {readmode "conventionaldefault"}} {
 
   log::summary "correctpointingvisit: starting."
 
   track
-  setreadmode "default"
+  setreadmode $readmode
   setwindow "default"
   setbinning 1
   movefilterwheel $filter
@@ -396,7 +396,7 @@ proc donutvisit {{exposuretime 5} {filter "i"} {offset 400}} {
 
 ########################################################################
 
-proc pointingmapvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
+proc pointingmapvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}} {
 
   log::summary "pointingmapvisit: starting."
 
@@ -471,6 +471,80 @@ proc twilightflatsvisit {targetngood filter} {
   return true
 }
 
+########################################################################
+
+proc domeflatsvisit {} {
+
+  log::summary "domeflatsvisit: starting."
+
+  executor::setsecondaryoffset 0
+  executor::move
+
+  executor::setreadmode "conventionaldefault"
+  executor::setwindow "default"
+  executor::setbinning 1
+
+  set maxlevel 16000
+  set minlevel 3500
+  
+  set targetngood 10
+  set filter "i"
+  
+  set isevening [executor::isevening]
+  
+  executor::movefilterwheel $filter
+
+  foreach {readmode binning visitidentifier exposuretime} {
+     "1MHz-0"     1 0 10
+     "1MHz-1"     1 1 10
+  } { 
+
+    executor::setvisit [visit::updatevisitidentifier [executor::visit] $visitidentifier]
+
+    set ngood 0
+    set mingoodlevel $maxlevel
+    set maxgoodlevel $minlevel
+
+    executor::setreadmode $readmode
+    executor::setbinning  $binning
+
+    log::info [format "domeflatsvisit: starting flats in readmode $readmode."]
+
+    while {true} {
+      executor::expose flat $exposuretime
+      executor::analyze levels
+      set level [executor::exposureaverage C0]
+      log::info [format "domeflatsvisit: level is %.1f DN in filter $filter in $exposuretime seconds." $level]
+      if {$level > $maxlevel && $isevening} {
+        log::info "domeflatsvisit: waiting (too bright)."
+        coroutine::after 60000
+      } elseif {$level < $minlevel && !$isevening} {
+        log::info "domeflatsvisit: waiting (too faint)."
+        coroutine::after 60000
+      } elseif {$minlevel <= $level && $level <= $minlevel} {
+        log::info "domeflatsvisit: level is good."
+        incr ngood
+        set mingoodlevel [expr {min($level,$mingoodlevel)}]
+        set maxgoodlevel [expr {max($level,$maxgoodlevel)}]
+        if {$ngood == $targetngood} {
+          break
+        }
+      } else {
+        break
+      }
+    }
+    if {$ngood == 0} {
+      log::summary [format "domeflatsvisit: $ngood good flats in readmode $readmode."]
+    } else {
+      log::summary [format "domeflatsvisit: $ngood good flats in readmode $readmode (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
+    }
+
+  }
+
+  log::summary "domeflatsvisit: finished."
+
+  return true
+}
 
 ########################################################################
 
@@ -479,10 +553,9 @@ proc biasesvisit {} {
   setsecondaryoffset 0
   move
   movefilterwheel "dark"
-#     "1MHz-0"  1 0
-#     "1MHz-1"  1 1
   foreach {readmode binning visitidentifier} {
-    "1MHz-0"  1 0
+     "1MHz-0"  1 0
+     "1MHz-1"  1 1
   } { 
     setreadmode $readmode
     setwindow "default"
@@ -506,19 +579,18 @@ proc darksvisit {} {
   setsecondaryoffset 0
   move
   movefilterwheel "dark"
-#     "1MHz-0"         1 0
-#     "1MHz-1"         1 1
-#     "em-10MHz-0"     1 2
-#     "em-10MHz-1"     1 3
-#     "em-20MHz-0"     1 4
-#     "em-20MHz-1"     1 5
-#     "em-30MHz-0"     1 6
-#     "em-30MHz-1"     1 7
-#     "em-10MHz-0-100" 1 8
-#     "em-20MHz-0-100" 1 9
-#     "em-30MHz-0-100" 1 10
   foreach {readmode binning visitidentifier} {
-    "em-30MHz-0"     1 6
+     "1MHz-0"         1 0
+     "1MHz-1"         1 1
+     "em-10MHz-0"     1 2
+     "em-10MHz-1"     1 3
+     "em-20MHz-0"     1 4
+     "em-20MHz-1"     1 5
+     "em-30MHz-0"     1 6
+     "em-30MHz-1"     1 7
+     "em-10MHz-0-100" 1 8
+     "em-20MHz-0-100" 1 9
+     "em-30MHz-0-100" 1 10
   } { 
     setreadmode $readmode
     setwindow "default"
@@ -576,8 +648,6 @@ proc readnoisevisit {} {
   setsecondaryoffset 0
   move
   movefilterwheel "dark"
-#     "1MHz-0"     1 0 0
-#     "1MHz-1"     1 1 0
 #     "em-10MHz-0" 1 2 0
 #     "em-10MHz-1" 1 3 0
 #     "em-20MHz-0" 1 4 0
@@ -585,7 +655,9 @@ proc readnoisevisit {} {
 #     "em-30MHz-0" 1 6 0
 #     "em-30MHz-1" 1 7 0
   foreach {readmode binning visitidentifier exposuretime} {
-    "em-30MHz-0" 1 6 0
+     "1MHz-0"     1 0 0
+     "1MHz-1"     1 1 0
+
   } { 
     setreadmode $readmode
     setwindow "default"
