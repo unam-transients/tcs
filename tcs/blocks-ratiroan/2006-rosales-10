@@ -1,0 +1,40 @@
+{
+ "project": {
+   "identifier": "2006",
+   "name": "Rosales SN"
+ },
+ "identifier": "10",
+ "name": "SN2022hlj",
+ "visits": [
+   {
+     "identifier": "1000",
+     "name": "pointing correction",
+     "targetcoordinates": {
+       "type"   : "equatorial",
+       "alpha"  : "13:32:18.8",
+       "delta"  : "+40:40:24.9",
+       "equinox": "2000"
+     },
+     "command": "pointingcorrectionvisit",
+     "estimatedduration": "2m"
+   },
+   {
+     "identifier": "0",
+     "name": "science",
+     "targetcoordinates": {
+       "type"   : "equatorial",
+       "alpha"  : "13:32:18.8",
+       "delta"  : "+40:40:24.9",
+       "equinox": "2000"
+     },
+     "command": "fabianvisit",
+     "estimatedduration": "25m"
+   }
+ ],
+ "constraints": {
+   "maxskybrightness": "astronomicaltwilight",
+   "maxairmass": "1.5",
+   "maxfocusdelay": "1800"
+ },
+ "persistent": "false"
+}

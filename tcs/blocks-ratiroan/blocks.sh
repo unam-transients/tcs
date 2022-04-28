@@ -72,10 +72,24 @@ sh pointing-map.sh
   #  singleblock 2019B-1002-0 e$letter
   #done
 
-  singleblock 2006-rosales-7 e0
-  singleblock 2006-rosales-7 e1
-  singleblock 2006-rosales-7 e2
-  singleblock 2006-rosales-7 e3
+  singleblock 2006-rosales-6 e0
+  singleblock 2006-rosales-6 e1
+  singleblock 2006-rosales-6 e2
+
+  singleblock 2006-rosales-8 f0
+  singleblock 2006-rosales-8 f1
+  singleblock 2006-rosales-8 f2
+  singleblock 2006-rosales-8 f3
+
+  singleblock 2006-rosales-10 g0
+  singleblock 2006-rosales-10 g1
+  singleblock 2006-rosales-10 g2
+  singleblock 2006-rosales-10 g3
+
+  singleblock 2006-rosales-9 h0
+  singleblock 2006-rosales-9 h1
+  singleblock 2006-rosales-9 h2
+  singleblock 2006-rosales-9 h3
 
   singleblock 2007-gonzalez-0 i0
 
