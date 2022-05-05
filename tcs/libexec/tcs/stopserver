@@ -75,10 +75,10 @@ ddotioan-platform)
   allargs="heater lights"
   ;;
 ddotioan-instrument0)
-  allargs="C0 C2 C4"
+  allargs="C2 C4"
   ;;
 ddotioan-instrument1)
-  allargs="C1 C3 C5"
+  allargs="C1 C3"
   ;;
 colibricito)
   allargs="selector mount weather sun moon target html log"

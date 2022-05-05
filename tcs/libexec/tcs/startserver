@@ -76,10 +76,10 @@ ddotioan-platform)
   allargs="lights heater"
   ;;
 ddotioan-instrument0)
-  allargs="C0 C2 C4"
+  allargs="C2 C4"
   ;;
 ddotioan-instrument1)
-  allargs="C1 C3 C5"
+  allargs="C1 C3"
   ;;
 colibricito)
   allargs="log 2 html 1 target 1 moon sun weather 1 mount 1 selector"
