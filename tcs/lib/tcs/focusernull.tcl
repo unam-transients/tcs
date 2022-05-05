@@ -30,9 +30,6 @@ namespace eval "focuser" {
   variable settledelayseconds 0
 
   proc openspecific {identifier} {
-    if {![string equal $identifier "null"]} {
-      error "invalid focuser identifier: \"$identifier\"."
-    }
     return "ok"
   }
   
