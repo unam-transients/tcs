@@ -37,13 +37,13 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 # Start of tcs epilog.
 
 10.0.1.1        firewall                coatlioan-firewall
-10.0.1.2        access                  coatlioan-access
+10.0.1.2        console                 coatlioan-console
 10.0.1.3        services                coatlioan-services
 10.0.1.4        ibb-220                 coatlioan-ibb-220
 10.0.1.5        ibb-127                 coatlioan-ibb-127
 10.0.1.6        mount                   coatlioan-mount
 10.0.1.7        serial                  coatlioan-serial
-10.0.1.8        pc                      coatlioan-pc
+10.0.1.8        access                  coatlioan-access
 10.0.1.9        control                 coatlioan-control
 10.0.1.10       airport-express         coatlioan-airport-express
 10.0.1.11       ib-detector             coatloan-ib-detector
@@ -77,7 +77,7 @@ sudo mv /etc/hosts.tmp /etc/hosts
 EOF
 
   case $host in
-  access)
+  console)
     # Do not run checkhalt on the Macs; they do not automatically start again after a halt if we cycle the power.
     ;;  
   *)
@@ -130,8 +130,8 @@ EOF
   echo "PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
   case $host in
-  access)
-    echo "hostname coatlioan-access"
+  console)
+    echo "hostname coatlioan-console"
     ;;
   esac
 
@@ -313,42 +313,6 @@ server 2.ubnt.pool.ntp.org
 server 3.ubnt.pool.ntp.org
 EOF
 fi
-
-################################################################################
-
-# Run /etc/rc.local at startup.
-
-# This is a bit more involved than just running /bin/sh /etc/rc.local.
-# First, we need to wait to the host name to be correctly set, as
-# commands run from /etc/rc.local may depend on this. Second, we need to
-# wait for any background tasks to finish.
-
-case $host in
-access)
-  sudo cp /dev/stdin <<"EOF" /Library/LaunchDaemons/local.localhost.startup.plist
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>Label</key>             <string>local.localhost.rc.local</string>
-  <key>Disabled</key>          <false/>
-  <key>RunAtLoad</key>         <true/>
-  <key>KeepAlive</key>         <false/>
-  <key>LaunchOnlyOnce</key>    <true/>
-  <key>StandardOutPath</key>   <string>/var/log/rc.local.log</string>
-  <key>StandardErrorPath</key> <string>/var/log/rc.local.log</string>
-  <key>ProgramArguments</key>
-    <array>
-      <string>/bin/sh</string>
-      <string>-xc</string>
-      <string>while test $(uname -n) = localhost; do sleep 1; done; . /etc/rc.local; wait</string>
-  </array>
-</dict>
-</plist>
-EOF
-  sudo chmod u=rw,go=r /Library/LaunchDaemons/local.localhost.startup.plist
-  ;;
-esac
 
 ################################################################################
 
