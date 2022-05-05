@@ -495,8 +495,8 @@ proc domeflatsvisit {} {
   executor::movefilterwheel $filter
 
   foreach {readmode binning visitidentifier exposuretime} {
-     "1MHz-0"     1 0 10
-     "1MHz-1"     1 1 10
+     "1MHz-low"  1 0 10
+     "1MHz-high" 1 1 10
   } { 
 
     executor::setvisit [visit::updatevisitidentifier [executor::visit] $visitidentifier]
@@ -554,8 +554,8 @@ proc biasesvisit {} {
   move
   movefilterwheel "dark"
   foreach {readmode binning visitidentifier} {
-     "1MHz-0"  1 0
-     "1MHz-1"  1 1
+     "1MHz-low"  1 0
+     "1MHz-high" 1 1
   } { 
     setreadmode $readmode
     setwindow "default"
@@ -580,17 +580,17 @@ proc darksvisit {} {
   move
   movefilterwheel "dark"
   foreach {readmode binning visitidentifier} {
-     "1MHz-0"         1 0
-     "1MHz-1"         1 1
-     "em-10MHz-0"     1 2
-     "em-10MHz-1"     1 3
-     "em-20MHz-0"     1 4
-     "em-20MHz-1"     1 5
-     "em-30MHz-0"     1 6
-     "em-30MHz-1"     1 7
-     "em-10MHz-0-100" 1 8
-     "em-20MHz-0-100" 1 9
-     "em-30MHz-0-100" 1 10
+     "1MHz-low"         1 0
+     "1MHz-high"        1 1
+     "em-10MHz-low"     1 2
+     "em-10MHz-high"    1 3
+     "em-20MHz-low"     1 4
+     "em-20MHz-high"    1 5
+     "em-30MHz-low"     1 6
+     "em-30MHz-high"    1 7
+     "em-10MHz-low-100" 1 8
+     "em-20MHz-low-100" 1 9
+     "em-30MHz-low-100" 1 10
   } { 
     setreadmode $readmode
     setwindow "default"
