@@ -523,7 +523,7 @@
       "C1", "C2", "C3"
     ],
     "pointingdetectors": [
-      "C2"
+      "C2", "C3"
     ],
     "outletgroups": []
   },
