@@ -86,7 +86,7 @@ proc alertvisit {{filter "w"}} {
     }
     # W selects C2/C3
     # NW selects C1/C4
-    set aperture "NW"
+    set aperture "W"
   } elseif {$uncertainty <= [astrometry::parsedistance "3.3d"]} {
     log::summary "alertvisit: grid is 1 × 1 fields."
     set visits {
