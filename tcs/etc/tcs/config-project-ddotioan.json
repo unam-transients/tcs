@@ -164,8 +164,9 @@
     "filterlist": [
       "w"
     ],
-    "focusertype": "null",
-    "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:8:1.0",
+    // Controller A (red)
+    "focusertype": "ddoti",
+    "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:5:1.0",
     "focuserinitialposition": 0,
     "focuserbacklashoffset": 0,
     "focusercorrectionmodel": {},
@@ -234,7 +235,8 @@
     "filterlist": [
       "w"
     ],
-    "focusertype": "null",
+    // Controller E (yellow)
+    "focusertype": "ddoti",
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:7:1.0",
     "focuserinitialposition": 0,
     "focuserbacklashoffset": 0,
@@ -304,8 +306,9 @@
     "filterlist": [
       "w"
     ],
-    "focusertype": "null",
-    "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:7:1.0",
+    // Controller B (yellow)
+    "focusertype": "ddoti",
+    "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:8:1.0",
     "focuserinitialposition": 0,
     "focuserbacklashoffset": 0,
     "focusercorrectionmodel": {},
@@ -445,7 +448,7 @@
       "w"
     ],
     "focusertype": "null",
-    "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:5:1.0",
+    "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:7:1.0",
     "focuserinitialposition": 0,
     "focuserbacklashoffset": 0,
     "focusercorrectionmodel": {},
@@ -514,13 +517,13 @@
   },
   "instrument": {
     "detectors": [
-      "C1", "C2", "C3", "C4"
+      "C1", "C2", "C3"
     ],
     "activedetectors": [
-      "C1", "C2", "C3", "C4"
+      "C1", "C2", "C3"
     ],
     "pointingdetectors": [
-      "C1", "C4"
+      "C2"
     ],
     "outletgroups": []
   },
