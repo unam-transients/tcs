@@ -54,8 +54,8 @@ namespace eval "focuser" {
       error "unable to configure $identifier."
     }
     
-    set rawminposition [expr {int(-pow(2, 31))}]
-    set rawmaxposition [expr {int(pow(2, 31) - 1)}]
+    set rawminposition 0
+    set rawmaxposition 80000
     
     log::debug "openspecific: sending AB."
     sendcommand "AB"
