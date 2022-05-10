@@ -225,11 +225,20 @@ proc alertprologvisit {} {
   # First refocus.
 
   executor::track
+  executor::setwindow "2kx2k"
+  executor::setbinning 4
+  log::summary "alertprologvisit: focusing with binning 4."
+  executor::waituntiltracking
+  executor::focus 4000 400 false 1
+  executor::setwindow "2kx2k"
+  executor::setbinning 2
+  log::summary "alertprologvisit: focusing with binning 2."
+  executor::focus 1000 100 false 2
   executor::setwindow "1kx1k"
   executor::setbinning 1
-  executor::waituntiltracking
   log::summary "alertprologvisit: focusing with binning 1."
-  executor::focus 4000 400 true 4
+  executor::waituntiltracking
+  executor::focus 1000 100 true 4
   executor::setfocused
 
   # Then correct pointing
@@ -560,15 +569,19 @@ proc initialfocusvisit {} {
   executor::setbinning 4
   log::summary "initialfocusvisit: focusing with binning 4."
   executor::waituntiltracking
-  executor::focus 12000 1200 false 1
+  executor::focus 4000 400 false 1
+  executor::setwindow "2kx2k"
+  executor::setbinning 2
+  log::summary "initialfocusvisit: focusing with binning 2."
+  executor::focus 1000 100 false 2
   executor::setwindow "1kx1k"
   executor::setbinning 1
   log::summary "initialfocusvisit: focusing with binning 1."
-  executor::focus 4000 400 true 4
+  executor::focus 1000 100 true 4
   executor::setfocused
 
-  log::summary "initialfocusvisit: setting focusers to 32767"
-  executor::setfocuser 32767
+  log::summary "initialfocusvisit: setting focusers to 0"
+  executor::setfocuser 40000
 
   log::summary "initialfocusvisit: taking tilt witness."
   executor::setwindow "default"
@@ -605,11 +618,15 @@ proc focusvisit {} {
   executor::setbinning 4
   executor::waituntiltracking
   log::summary "focusvisit: focusing with binning 4."
-  executor::focus 12000 1200 false 1
+  executor::focus 4000 400 false 1
+  executor::setwindow "2kx2k"
+  executor::setbinning 2
+  log::summary "focusvisit: focusing with binning 2."
+  executor::focus 1000 100 false 2
   executor::setwindow "1kx1k"
   executor::setbinning 1
   log::summary "focusvisit: focusing with binning 1."
-  executor::focus 4000 400 true 4
+  executor::focus 1000 100 true 4
 
   executor::setfocused
 
@@ -734,7 +751,7 @@ proc twilightflatsvisit {} {
   set maxgoodlevel $minlevel
   set evening [executor::isevening]
   while {true} {
-    executor::expose flat 0
+    executor::expose flat 5
     executor::analyze levels
     set level [executor::exposureaverage $leveldetector]
     log::info [format "twilightflatsvisit: level is %.1f DN in filter $filter." $level]
