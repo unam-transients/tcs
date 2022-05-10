@@ -42,6 +42,9 @@ then
   coatlioan-*)
     url="https://github.com/alanwatsonforster/coatlioan-blocks.git"
     ;;
+  ddotioan-*)
+    url="https://github.com/alanwatsonforster/ddotioan-blocks.git"
+    ;;
   *)
     error "unable to determing URL."
     ;;

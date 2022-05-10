@@ -89,7 +89,6 @@ EOF
   case $host in
   control)
     cat <<"EOF"
-00 00 *  *  *  tcs updatevarlatestlink
 *  *  *  *  *  sleep 10; tcs updatesensorsfiles services control platform instrument
 *  *  *  *  *  tcs updateweatherfiles-oan
 00 18 *  *  *  tcs updateweatherfiles-oan -a
@@ -103,7 +102,7 @@ EOF
   services)
     cat <<"EOF"
 */5 *  *  *  *  sh /usr/local/var/www/tcs/plots.sh
-*/5 *  *  *  * tcs logsensors
+*/5 *  *  *  *  tcs logsensors
 *   *  *  *  *  rsync -aH --include="error.txt" --include="warning.txt" --include="summary.txt" --include="info.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw/
 00  *  *  *  *  rsync -aH /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw/
 */5 *  *  *  *  rsync -aH --remove-source-files --include="*/" --include="*.fits.*" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw/
