@@ -236,7 +236,7 @@ namespace eval "constraints" {
   proc checkmindate {visit constraints seconds} {
     # Only check the mindate at the start.
     set start [getstart $visit $seconds]
-    return [checkminsunhaat $visit $constraints $start "start"]
+    return [checkmindateat $visit $constraints $start "start"]
   }
   
   proc checkmaxdateat {visit constraints seconds when} {
@@ -264,7 +264,7 @@ namespace eval "constraints" {
   proc checkmaxdate {visit constraints seconds} {
     # Only check the maxdate at the start.
     set start [getstart $visit $seconds]
-    return [checkmaxsunhaat $visit $constraints $start "start"]
+    return [checkmaxdateat $visit $constraints $start "start"]
   }
   
   proc checkminsunhaat {visit constraints seconds when} {
@@ -304,7 +304,7 @@ namespace eval "constraints" {
   }
   
   proc checkmaxsunhaat {visit constraints seconds when} {
-    if {![hasconstraint $constraints "minsunha"]} {
+    if {![hasconstraint $constraints "maxsunha"]} {
       log::debug "no minimum Sun HA constraint."
     } else {
       set maxha [getconstraint $constraints "maxsunha"]
