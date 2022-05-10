@@ -75,8 +75,8 @@ sh pointing-map.sh
   singleblock 2006-rosales-11 d0
   singleblock 2006-rosales-11 d1
 
-  singleblock 2006-rosales-12 e0
-  singleblock 2006-rosales-12 e1
+  singleblock 2006-rosales-13 e0
+  singleblock 2006-rosales-13 e1
 
   singleblock 2007-gonzalez-0 i0
 
