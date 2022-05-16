@@ -53,8 +53,6 @@ filterwheelrawopen(char *identifier)
 {
   if (filterwheelrawgetisopen())
     FILTERWHEEL_ERROR("a filter wheel is currently opened.");
-  if (strcmp(identifier, "null") != 0)
-    FILTERWHEEL_ERROR("invalid filter wheel identifier.");
   snprintf(description, sizeof(description), "%s", "null");    
   filterwheelrawsetisopen(true);
   maxposition = 0;
