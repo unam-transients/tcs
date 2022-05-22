@@ -98,7 +98,11 @@ namespace eval "visit" {
             set alpha   [astrometry::alpha [dict get $visit "targetcoordinates" "ha"] $seconds]
           }
           set delta     [dict get $visit "targetcoordinates" "delta"]
-          set equinox   [dict get $visit "targetcoordinates" "equinox"]
+          if {[dict exists $visit "targetcoordinates" "equinox"]} {
+            set equinox [dict get $visit "targetcoordinates" "equinox"]
+          } else {
+            set equinox "now"
+          }
           set epoch     "now"
           set alpharate 0
           set deltarate 0
