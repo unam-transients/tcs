@@ -110,7 +110,9 @@
     "detectortype": "dummy",
     "detectoridentifier": "",
     "detectorpixelscale": "0.381as",
-    "detectorinitialreadmode": "",
+    "detectorreadmodes": {
+      "initial": ""
+    },
     "detectorinitialsoftwaregain": 1,
     "detectorinitialbinning": 1,
     "detectorwindows": {
