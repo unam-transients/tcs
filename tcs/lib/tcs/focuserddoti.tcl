@@ -65,6 +65,8 @@ namespace eval "focuser" {
     sendcommand "ID"
     log::debug "openspecific: sending PO."
     sendcommand "PO"
+    log::debug "openspecific: sending DI."
+    sendcommand "DI"
     
     log::debug "openspecific: done."
     return "ok"
@@ -178,6 +180,18 @@ namespace eval "focuser" {
     sendcommand "AB"
     sendcommand [format "MA %d" $newposition]
     log::debug "focuserrawmove: done."
+    return "ok"
+  }
+  
+  proc focuserrawenable {} {
+    log::debug "enabling."
+    sendcommand "EN"
+    return "ok"
+  }
+  
+  proc focuserrawdisable {} {
+    log::debug "disabling."
+    sendcommand "DI"
     return "ok"
   }
   
