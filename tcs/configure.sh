@@ -37,8 +37,8 @@ case $host in
 ratiroan-*)
   ./configure --enable-project=ratiroan
   ;;
-johnsoncu-*)
-  ./configure --enable-project=johnsoncu
+transientscu-*)
+  ./configure --enable-project=transientscu
   ;;
 coatlioan-*)
   ./configure --enable-project=coatlioan

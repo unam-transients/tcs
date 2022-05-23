@@ -34,7 +34,7 @@ host=$(uname -n | sed 's/\..*//')
   cat <<"EOF"
 # Start of tcs epilog.
 
-192.168.100.6 johnsoncu-control control
+192.168.100.6 transientscu-control control
 EOF
 ) | 
 sudo cp /dev/stdin /etc/hosts.tmp
@@ -58,7 +58,7 @@ sudo mv /etc/hosts.tmp /etc/hosts
 EOF
 
   case $host in
-  johnsoncu-control)
+  transientscu-control)
     cat <<"EOF"
 *   *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles control
 *   *  *  *  *  /usr/local/bin/tcs updateweatherfiles-oan
@@ -219,7 +219,7 @@ sudo rm -f /tmp/sudoers-tcs
 (
   echo 'test ALL=(ALL) ALL'
   case $host in
-  johnsoncu-control)
+  transientscu-control)
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs rebootsoon'
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs restartsoon'
     ;;

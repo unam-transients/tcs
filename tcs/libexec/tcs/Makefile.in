@@ -102,7 +102,7 @@ installbins_project_test :=       \
 	C0server                      \
 	updateweatherfiles-oan
 	
-installbins_project_johnsoncu :=  \
+installbins_project_transientscu :=  \
 	C0server                      \
 	updateweatherfiles-oan
 	

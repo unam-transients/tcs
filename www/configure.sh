@@ -48,8 +48,8 @@ tcs-a)
 tcs-b)
   ./configure SITE=ratir-tcs
   ;;
-johnsoncu-control)
-  ./configure SITE=johnsoncu-control
+transientscu-control)
+  ./configure SITE=transientscu-control
   ;;
 coatlicu-control)
   ./configure SITE=coatlicu-control

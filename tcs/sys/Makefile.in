@@ -42,8 +42,8 @@ install-project-colibricu	:
 install-project-colibriohp	:
 	sh install-project-colibriohp.sh
 	
-install-project-johnsoncu	:
-	sh install-project-johnsoncu.sh
+install-project-transientscu	:
+	sh install-project-transientscu.sh
 
 install-project-coatlicu	:
 	sh install-project-coatlicu.sh

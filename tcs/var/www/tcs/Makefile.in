@@ -114,11 +114,11 @@ installs_project_colibricito	:=		\
 	webcam-b-project-colibricito.html	\
 	webcam-c-project-colibricito.html	\
 
-installs_project_johnsoncu		:=		\
-	interface-project-johnsoncu.html	\
-	alerts-project-johnsoncu.html	    \
-	C0-project-johnsoncu.html  	        \
-	config-project-johnsoncu.js		    \
+installs_project_transientscu		:=		\
+	interface-project-transientscu.html	\
+	alerts-project-transientscu.html	    \
+	C0-project-transientscu.html  	        \
+	config-project-transientscu.js		    \
 
 installs_project_coatlicu		:=		\
 	interface-project-coatlicu.html	\
