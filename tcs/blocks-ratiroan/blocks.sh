@@ -78,6 +78,21 @@ sh pointing-map.sh
   singleblock 2006-rosales-11 d0
   singleblock 2006-rosales-11 d1
 
+  singleblock 2006-rosales-9 e0
+  singleblock 2006-rosales-9 e1
+  singleblock 2006-rosales-9 e2
+  singleblock 2006-rosales-9 e3
+  singleblock 2006-rosales-9 e4
+
+  singleblock 2006-rosales-14 f0
+  singleblock 2006-rosales-14 f1
+
+  singleblock 2006-rosales-15 g0
+  singleblock 2006-rosales-15 g1
+
+  singleblock 2006-rosales-16 h0
+  singleblock 2006-rosales-16 h1
+
   singleblock 2007-gonzalez-0 i0
 
   allblocks 0004-initial-focus          m
