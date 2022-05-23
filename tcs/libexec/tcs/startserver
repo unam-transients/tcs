@@ -93,7 +93,7 @@ colibriohp-control)
 colibriohp-detectors)
   allargs="C0"
   ;;
-johnsoncu-control)
+transientscu-control)
   allargs="log 1 html gcntan 1 target 1 moon sun sensors weather C0 1 telescope instrument 1 executor selector supervisor"
   ;;
 coatlicu-control)

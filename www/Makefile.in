@@ -131,13 +131,13 @@ clean-test				:
 	
 ########################################################################
 
-all-johnsoncu-control					:	docs-johnsoncu-control/index.html
-docs-johnsoncu-control/index.html				:	docs-johnsoncu-control/index.md
+all-transientscu-control					:	docs-transientscu-control/index.html
+docs-transientscu-control/index.html				:	docs-transientscu-control/index.md
 
-install-johnsoncu-control					:	install-linux
+install-transientscu-control					:	install-linux
 
-clean-johnsoncu-control				:
-	-rm -f docs-johnsoncu-control/*.html
+clean-transientscu-control				:
+	-rm -f docs-transientscu-control/*.html
 	
 ########################################################################
 

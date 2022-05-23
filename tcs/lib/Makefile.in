@@ -102,11 +102,11 @@ installs_project_colibriohp	    :=
 endif
 	
 ifeq ($(UNAME_M),x86_64)
-installs_project_johnsoncu	    :=	\
+installs_project_transientscu	    :=	\
 	detectordummy.so		        \
 	filterwheelnull.so
 else
-installs_project_johnsoncu	    :=
+installs_project_transientscu	    :=
 endif
 
 ifeq ($(UNAME_M),x86_64)

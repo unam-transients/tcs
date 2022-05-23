@@ -44,14 +44,14 @@ installs_project_test		:=		        \
 installbins_project_test	:=		        \
 	alertscript-project-test
 
-installs_project_johnsoncu		:=		    \
-	alert-project-johnsoncu			        \
-	config-project-johnsoncu.json		    \
-	servers-project-johnsoncu.json		    \
-	visitcommands-project-johnsoncu.tcl
+installs_project_transientscu		:=		    \
+	alert-project-transientscu			        \
+	config-project-transientscu.json		    \
+	servers-project-transientscu.json		    \
+	visitcommands-project-transientscu.tcl
 	
-installbins_project_johnsoncu	:=		    \
-	alertscript-project-johnsoncu
+installbins_project_transientscu	:=		    \
+	alertscript-project-transientscu
 
 installs_project_ratiroan	:=		        \
 	alert-project-ratiroan		            \
