@@ -160,9 +160,9 @@
     "filterlist": [
       "w"
     ],
-    "focusertype": "null",
-    "focuseridentifier": "null",
-    "focuserinitialposition": 0,
+    "focusertype": "ddoti",
+    "focuseridentifier": "/dev/ttyACM0",
+    "focuserinitialposition": 40000,
     "focuserbacklashoffset": 0,
     "focusercorrectionmodel": {},
     "pointingmodelparameters": {},
