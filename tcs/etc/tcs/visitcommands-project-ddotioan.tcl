@@ -580,9 +580,6 @@ proc initialfocusvisit {} {
   executor::focus 1000 100 true 4
   executor::setfocused
 
-  log::summary "initialfocusvisit: setting focusers to 0"
-  executor::setfocuser 40000
-
   log::summary "initialfocusvisit: taking tilt witness."
   executor::setwindow "default"
   executor::setbinning 1
@@ -809,7 +806,7 @@ proc domeflatsvisit {} {
     executor::expose flat 5
     executor::analyze levels
     set level [executor::exposureaverage $leveldetector]
-    log::info [format "domeflatsvisit: level is %.1f DN in filter $filter." $level]
+    log::info [format "domeflatsvisit: level is %.1f DN." $level]
     if {$level > $maxlevel && $evening} {
       log::info "domeflatsvisit: waiting (too bright)."
       coroutine::after 60000
@@ -818,23 +815,24 @@ proc domeflatsvisit {} {
       coroutine::after 60000
     } elseif {$minlevel <= $level && $level <= $maxlevel} {
       if {$ngood == 0} {
-        log::info "domeflatsvisit: first good flat with filter $filter."
+        log::info "domeflatsvisit: first good flat."
       }
       coroutine::after 10000
       incr ngood
       set mingoodlevel [expr {min($level,$mingoodlevel)}]
       set maxgoodlevel [expr {max($level,$maxgoodlevel)}]
+    } else {
+      break
     }
     if {$ngood == 10} {
       break
     }
   }
   if {$ngood == 0} {
-    log::summary [format "domeflatsvisit: $ngood good flats with filter $filter."]
+    log::summary [format "domeflatsvisit: $ngood good flats."]
   } else {      
-    log::summary [format "domeflatsvisit: $ngood good flats (%.0f to %.0f DN) with filter $filter." $mingoodlevel $maxgoodlevel]
+    log::summary [format "domeflatsvisit: $ngood good flats (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
   }
-  log::info "domeflatsvisit: finished with filter $filter."
   log::summary "domeflatsvisit: finished."
   return true
 }
@@ -850,7 +848,7 @@ proc biasesvisit {} {
   executor::setreadmode "16MHz"
   executor::setbinning 1
   set i 0
-  while {$i < 20} {
+  while {$i < 10} {
     executor::expose bias 0
     executor::analyze levels
     incr i
@@ -871,7 +869,7 @@ proc darksvisit {} {
   executor::setreadmode "16MHz"
   executor::setbinning 1
   set i 0
-  while {$i < 20} {
+  while {$i < 10} {
     executor::expose dark 60
     executor::analyze levels
     incr i
