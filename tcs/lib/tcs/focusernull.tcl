@@ -71,6 +71,14 @@ namespace eval "focuser" {
     return 0
   }
   
+  proc focuserrawenable {} {
+    return "ok"
+  }
+  
+  proc focuserrawdisable {} {
+    return "ok"
+  }
+  
 }
 
 source [file join [directories::prefix] "lib" "tcs" "focuser.tcl"]

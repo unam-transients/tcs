@@ -99,6 +99,10 @@ namespace eval "focuser" {
     if {$position < $minposition || $position > $maxposition} {
       error "requested position \"$position\" is out of range."
     }
+    set result [focuserrawenable]
+    if {![string equal $result ok]} {
+      error $result
+    }
     set result [focuserrawmove $position]
     if {![string equal $result ok]} {
       error $result
@@ -119,6 +123,10 @@ namespace eval "focuser" {
       } {
         coroutine::after 100
       }
+    }
+    set result [focuserrawdisable]
+    if {![string equal $result ok]} {
+      error $result
     }
     log::debug "focuser: finished waiting while moving."
   }
