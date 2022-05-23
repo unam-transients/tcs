@@ -476,60 +476,59 @@ proc twilightflatsvisit {targetngood filter} {
 proc domeflatsvisit {} {
 
   log::summary "domeflatsvisit: starting."
-
   executor::setsecondaryoffset 0
-  executor::move
-
+  if {[executor::isunparked]} {
+    executor::move
+  }
   executor::setreadmode "conventionaldefault"
   executor::setwindow "default"
   executor::setbinning 1
-
   set maxlevel 16000
   set minlevel 3500
-  
-  set targetngood 10
+  set exposuretime 10
   set filter "i"
-  
-  set isevening [executor::isevening]
-  
   executor::movefilterwheel $filter
-
-  foreach {readmode binning visitidentifier exposuretime} {
-     "1MHz-low"  1 0 10
-     "1MHz-high" 1 1 10
-  } { 
-
+  set isevening [executor::isevening]  
+  if {$isevening} {
+    set visits {
+     "1MHz-low"  0
+     "1MHz-high" 1
+    }
+  } else { 
+    set visits {
+     "1MHz-high" 1
+     "1MHz-low"  0
+    }
+  }
+  foreach {readmode visitidentifier} $visits { 
     executor::setvisit [visit::updatevisitidentifier [executor::visit] $visitidentifier]
-
     set ngood 0
     set mingoodlevel $maxlevel
     set maxgoodlevel $minlevel
-
     executor::setreadmode $readmode
-    executor::setbinning  $binning
-
     log::info [format "domeflatsvisit: starting flats in readmode $readmode."]
-
     while {true} {
       executor::expose flat $exposuretime
       executor::analyze levels
       set level [executor::exposureaverage C0]
-      log::info [format "domeflatsvisit: level is %.1f DN in filter $filter in $exposuretime seconds." $level]
+      log::info [format "domeflatsvisit: level is %.1f DN." $level]
       if {$level > $maxlevel && $isevening} {
         log::info "domeflatsvisit: waiting (too bright)."
         coroutine::after 60000
       } elseif {$level < $minlevel && !$isevening} {
         log::info "domeflatsvisit: waiting (too faint)."
         coroutine::after 60000
-      } elseif {$minlevel <= $level && $level <= $minlevel} {
-        log::info "domeflatsvisit: level is good."
+      } elseif {$minlevel <= $level && $level <= $maxlevel} {
+        if {$ngood == 0} {
+          log::info "domeflatsvisit: first good flat in readmode $readmode."
+        }
         incr ngood
         set mingoodlevel [expr {min($level,$mingoodlevel)}]
         set maxgoodlevel [expr {max($level,$maxgoodlevel)}]
-        if {$ngood == $targetngood} {
-          break
-        }
       } else {
+        break
+      }
+      if {$ngood == 10} {
         break
       }
     }
@@ -538,11 +537,8 @@ proc domeflatsvisit {} {
     } else {
       log::summary [format "domeflatsvisit: $ngood good flats in readmode $readmode (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
     }
-
   }
-
   log::summary "domeflatsvisit: finished."
-
   return true
 }
 
@@ -551,7 +547,9 @@ proc domeflatsvisit {} {
 proc biasesvisit {} {
   log::summary "biasesvisit: starting."
   setsecondaryoffset 0
-  move
+  if {[executor::isunparked]} {
+    executor::move
+  }
   movefilterwheel "dark"
   foreach {readmode binning visitidentifier} {
      "1MHz-low"  1 0
@@ -562,7 +560,7 @@ proc biasesvisit {} {
     setbinning $binning
     executor::setvisit [visit::updatevisitidentifier [executor::visit] $visitidentifier]
     set i 0
-    while {$i < 20} {
+    while {$i < 10} {
       expose bias 0
       analyze levels
       incr i
