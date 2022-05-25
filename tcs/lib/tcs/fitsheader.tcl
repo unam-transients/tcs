@@ -293,18 +293,6 @@ namespace eval "fitsheader" {
       focuserminposition             FCMN  integer
       focusermaxposition             FCMX  integer
       focuserpositionerror           FCE   integer
-      solvedalpha                    SLRA  angle
-      solveddelta                    SLDE  angle
-      solvedequinox                  SLEQ  double
-      solvedobservedalpha            OBRA  angle
-      solvedobserveddelta            OBDE  angle
-      mountobservedalpha             MTRA  angle
-      mountobserveddelta             MTDE  angle
-      lastcorrectiontimestamp        LCT   date
-      lastcorrectioneastoffset       LCEO  angle
-      lastcorrectionnorthoffset      LCNO  angle
-      average                        AV    double
-      standarddeviation              SD    double
     }
   }
   
