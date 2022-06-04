@@ -159,7 +159,11 @@ namespace eval "html" {
   }
 
   proc formatoffsetifdouble {offset} {
-    return [formatarcsecifdouble "%+.1fas" $offset]
+    if {[string is double -strict $offset]} {
+      return [astrometry::formatoffset $offset]
+    } else {
+      return $offset
+    }
   }
 
   proc formatguidererrorifdouble {error} {
