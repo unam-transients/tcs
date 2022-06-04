@@ -381,7 +381,7 @@ namespace eval "instrument" {
     log::info [format "finished analyzing after %.1f seconds." [utcclock::diff now $start]]
   }
   
-  proc focusactivitycommand {fitsfileprefix range step witness args} {
+  proc focusactivitycommand {fitsfiledir range step witness args} {
     set start [utcclock::seconds]
     log::info "focusing."
     set exposuretimes $args
@@ -393,11 +393,47 @@ namespace eval "instrument" {
     foreach detector $detectors exposuretime $exposuretimes {
       if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
         log::info "focusing $detector."
-        client::request $detector "focus $exposuretime $fitsfileprefix $range $step $witness"
+        client::request $detector "focus $exposuretime $fitsfiledir $range $step false"
       }
     }
     foreach detector $activedetectors {
       client::wait $detector
+    }
+    if {$witness} {
+      set dateandtime [utcclock::combinedformat now 0 false]
+      set fitsfileprefix "$fitsfiledir/$dateandtime"
+      foreach detector $detectors exposuretime $exposuretimes {
+        if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
+          client::request $detector "expose $exposuretime object $fitsfileprefix"
+        }
+      }
+      foreach detector $activedetectors {
+        client::wait $detector
+      }
+      foreach detector $detectors exposuretime $exposuretimes {
+        if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
+          client::request $detector "analyze fwhm"
+        }
+      }
+      foreach detector $activedetectors {
+        client::wait $detector
+      }
+      foreach detector $detectors exposuretime $exposuretimes {
+        if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
+          client::update $detector
+          set fitsfilename [file tail [client::getdata $detector "fitsfilename"]]
+          set fwhm         [client::getdata $detector "fwhm"]
+          set binning      [client::getdata $detector "detectorbinning"]
+          set filter       [client::getdata $detector "filter"]
+          set exposuretime [client::getdata $detector "exposuretime"]
+          set position     [client::getdata $detector "focuserposition"]
+          if {[string equal "$fwhm" ""]} {
+            log::summary [format "$fitsfilename: witness FWHM is unknown with binning $binning in filter $filter at position $position in %.0f seconds." $exposuretime]
+          } else {
+            log::summary [format "$fitsfilename: witness FWHM is %.2f pixels with binning $binning in filter $filter at position $position in %.0f seconds." $fwhm $exposuretime]
+          }
+        }
+      }
     }
     log::info [format "finished focusing after %.1f seconds." [utcclock::diff now $start]]
   }
@@ -649,7 +685,7 @@ namespace eval "instrument" {
       "instrument::analyzeactivitycommand $types" \
   }
   
-  proc focus {fitsfileprefix range step witness args} {
+  proc focus {fitsfiledir range step witness args} {
     server::checkstatus
     server::checkactivity "idle"
     safetyswitch::checksafetyswitch
@@ -662,7 +698,7 @@ namespace eval "instrument" {
       error "incorrect number of exposure times."
     }
     server::newactivitycommand "focusing" "idle" \
-      "instrument::focusactivitycommand $fitsfileprefix $range $step $witness $exposuretimes" false
+      "instrument::focusactivitycommand $fitsfiledir $range $step $witness $exposuretimes" false
   }
   
   proc mapfocus {fitsfileprefix range step args} {
