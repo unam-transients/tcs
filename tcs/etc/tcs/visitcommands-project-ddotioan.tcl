@@ -84,40 +84,34 @@ proc alertvisit {{filter "w"}} {
     set visits {
       0 0.0d 0.0d
     }
-    # W selects C2/C3
-    # NW selects C1/C4
-    set aperture "W"
+    set aperture "NW"
   } elseif {$uncertainty <= [astrometry::parsedistance "3.3d"]} {
     log::summary "alertvisit: grid is 1 × 1 fields."
     set visits {
       0 0.0d 0.0d
     }
     set aperture "default"
-  } elseif {$uncertainty <= [astrometry::parsedistance "4.9d"]} {
-    log::summary "alertvisit: grid is 2 × 1 fields."
-    set visits {
-      0 -3.3d 0.0d
-      1 +3.3d 0.0d
-    }
-    set aperture "default"
   } elseif {$uncertainty <= [astrometry::parsedistance "6.6d"]} {
     log::summary "alertvisit: grid is 2 × 2 fields."
     set visits {
-      0 -3.3d -4.9d
-      1 +3.3d -4.9d
-      2 -3.3d +4.9d
-      3 +3.3d +4.9d
+      0 -3.3d -3.3d
+      1 +3.3d -3.3d
+      2 -3.3d +3.3d
+      3 +3.3d +3.3d
     }
     set aperture "default"
   } else {
-    log::summary "alertvisit: grid is 3 × 2 fields."
+    log::summary "alertvisit: grid is 3 × 3 fields."
     set visits {
-      0 -6.6d -4.9d
-      1  0.0d -4.9d
-      2 +6.6d -4.9d
-      3 -6.6d +4.9d
-      4  0.0d +4.9d
-      5 +6.6d +4.9d
+      0 -6.6d -6.6d
+      1  0.0d -6.6d
+      2 +6.6d -6.6d
+      3 -6.6d +0.0d
+      4  0.0d +0.0d
+      5 +6.6d +0.0d
+      3 -6.6d +6.6d
+      4  0.0d +6.6d
+      5 +6.6d +6.6d
     }
     set aperture "default"
   }
@@ -229,11 +223,11 @@ proc alertprologvisit {} {
   executor::setbinning 4
   log::summary "alertprologvisit: focusing with binning 4."
   executor::waituntiltracking
-  executor::focus 4000 400 false 1
+  executor::focus 4000 400 true 1
   executor::setwindow "2kx2k"
   executor::setbinning 2
   log::summary "alertprologvisit: focusing with binning 2."
-  executor::focus 1000 100 false 2
+  executor::focus 1000 100 true 2
   executor::setwindow "1kx1k"
   executor::setbinning 1
   log::summary "alertprologvisit: focusing with binning 1."
