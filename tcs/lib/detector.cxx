@@ -68,6 +68,8 @@ detectorrawgetdatavalue(const char *name)
   static char value[DETECTOR_STR_BUFFER_SIZE];
   if (strcmp(name, "softwaregain") == 0)
     snprintf(value, sizeof(value), "%u", (unsigned int) softwaregain);
+  else if (strcmp(name, "amplifier") == 0)
+    snprintf(value, sizeof(value), "%s", "conventional");
   else if (strcmp(name, "average") == 0)
     snprintf(value, sizeof(value), "%.2f", average);
   else if (strcmp(name, "standarddeviation") == 0)
