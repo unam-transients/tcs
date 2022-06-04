@@ -377,7 +377,7 @@
     "filterlist": [
       "w"
     ],
-    "focusertype": "null",
+    "focusertype": "ddoti",
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:8:1.0",
     "focuserinitialposition": 40000,
     "focuserbacklashoffset": 0,
@@ -517,10 +517,10 @@
   },
   "instrument": {
     "detectors": [
-      "C1", "C2", "C3"
+      "C1", "C2", "C3", "C4"
     ],
     "activedetectors": [
-      "C1", "C2", "C3"
+      "C1", "C2", "C3", "C4"
     ],
     "pointingdetectors": [
       "C2", "C3"
