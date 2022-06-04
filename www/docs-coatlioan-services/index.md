@@ -31,7 +31,3 @@ This is the mountain-top web site for the COATLI project at the
 * [Interface](/tcs/interface.html)
 * [Documentation](documentation.html)
 * [Analysis](http://transients.astrossp.unam.mx/coatli/)
-
-<hr/>
-
-$Id: index.md 3016 2017-12-07 05:25:27Z alan $
