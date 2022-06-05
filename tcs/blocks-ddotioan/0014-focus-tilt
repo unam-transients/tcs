@@ -1,0 +1,30 @@
+{
+  "project": {
+    "identifier": "0014",
+    "name": "focus tilt"
+  },
+  "identifier": "0",
+  "name": "focusing",
+  "visits": [
+    {
+      "identifier": "0",
+      "name": "focusing near +1h +45d",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "ha"     : "+1h",
+        "delta"  : "+45d",
+        "equinox": "2000"
+      },
+      "command": "fullfocusvisit",
+      "estimatedduration": "10m"
+    }
+  ],
+  "constraints": {
+    "maxskybrightness": "nauticaltwilight",
+    "minha": "-2h",
+    "maxha": "+2h",
+    "minmoondistance": "30d",
+    "minfocusdelay": "3600"
+  },
+  "persistent": "true"
+}
