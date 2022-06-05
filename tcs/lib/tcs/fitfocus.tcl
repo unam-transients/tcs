@@ -86,7 +86,7 @@ namespace eval "fitfocus" {
   variable maxabschi 2.0
   variable maxfwhm 15.0
   
-  proc fit2 {xlist ylist chilist} {
+  proc fit2 {xlist ylist chilist detector} {
     variable maxabschi
     variable maxfwhm
     set S00 0.0
@@ -98,7 +98,7 @@ namespace eval "fitfocus" {
     set S11 0.0
     set S21 0.0
     foreach x $xlist y $ylist chi $chilist {
-      log::debug "fitfocus: x = $x y = $y chi = $chi."
+      log::debug "fitfocus $detector: x = $x y = $y chi = $chi."
       if {$y <= $maxfwhm && abs($chi) <= $maxabschi} {
         set S00 [expr {$S00 + 1}]
         set S10 [expr {$S10 + $x}]
@@ -122,7 +122,7 @@ namespace eval "fitfocus" {
     return [list $a $b $c]
   }
   
-  proc fit1 {xlist ylist chilist} {
+  proc fit1 {xlist ylist chilist detector} {
     variable maxabschi
     variable maxfwhm
     set S00 0.0
@@ -134,7 +134,7 @@ namespace eval "fitfocus" {
     set S11 0.0
     set S21 0.0
     foreach x $xlist y $ylist chi $chilist {
-      log::debug "fitfocus: x = $x y = $y chi = $chi."
+      log::debug "fitfocus $detector: x = $x y = $y chi = $chi."
       if {$y <= $maxfwhm && abs($chi) <= $maxabschi} {
         set S00 [expr {$S00 + 1}]
         set S10 [expr {$S10 + $x}]
@@ -148,32 +148,32 @@ namespace eval "fitfocus" {
     return [list $a $b]
   }
   
-  proc findmin {xlist ylist} {
+  proc findmin {xlist ylist {detector ""}} {
     # For brevity, we use x for z0 and y for FWHM.
     variable maxabschi
     variable maxfwhm
-    log::debug "fitfocus: maxabschi = $maxabschi."
-    log::debug "fitfocus: maxfwhm = $maxfwhm."
+    log::debug "fitfocus $detector: maxabschi = $maxabschi."
+    log::debug "fitfocus $detector: maxfwhm = $maxfwhm."
     if {[llength $xlist] != [llength $ylist]} {
       error "xlist and ylist do not have the same length."
     }
     set n [llength $xlist]
-    log::debug "fitfocus: n = $n."
-    log::info "fitfocus: performing quadratic fit."
+    log::debug "fitfocus $detector: n = $n."
+    log::info "fitfocus $detector: performing quadratic fit."
     set chilist [lrepeat $n 0.0]
     foreach iteration {0 1 2} {
-      set coeffientslist [fit2 $xlist $ylist $chilist]
+      set coeffientslist [fit2 $xlist $ylist $chilist $detector]
       set a [lindex $coeffientslist 0]
       set b [lindex $coeffientslist 1]
       set c [lindex $coeffientslist 2]
-      log::debug "fitfocus: iteration $iteration: a = $a b = $b c = $c."
+      log::debug "fitfocus $detector: iteration $iteration: a = $a b = $b c = $c."
       set sdyy 0.0
       foreach x $xlist y $ylist {
         set dy [expr {$y - ($a + $b * $x + $c * $x * $x)}]
         set sdyy [expr {$sdyy + $dy * $dy}]
       }
       set sigma [expr {sqrt($sdyy / ($n - 1))}]
-      log::debug "fitfocus: iteration $iteration: sigma = $sigma."
+      log::debug "fitfocus $detector: iteration $iteration: sigma = $sigma."
       set chilist {}
       foreach x $xlist y $ylist {
         set dy [expr {$y - ($a + $b * $x + $c * $x * $x)}]
@@ -185,34 +185,34 @@ namespace eval "fitfocus" {
       }
     }
     if {$c < 0} {
-      log::info "fitfocus: quadratic fit has maximum."
+      log::info "fitfocus $detector: quadratic fit has maximum."
       set dolinearfit true
     } else {
       set minx [expr {int(-$b / (2 * $c))}]
       set miny [expr {$a + $b * $minx + $c * $minx * $minx}]
       if {$miny < 0} {
-        log::info "fitfocus: quadratic fit has negative minimum."
+        log::info "fitfocus $detector: quadratic fit has negative minimum."
         set dolinearfit true
       } else {
-        log::info "fitfocus: quadratic fit has positive minimum."
+        log::info "fitfocus $detector: quadratic fit has positive minimum."
         set dolinearfit false
       }
     }
     if {$dolinearfit} {
-      log::info "fitfocus: performing linear fit."
+      log::info "fitfocus $detector: performing linear fit."
       set chilist [lrepeat $n 0.0]
       foreach iteration {0 1 2} {
-        set coeffientslist [fit1 $xlist $ylist $chilist]
+        set coeffientslist [fit1 $xlist $ylist $chilist $detector]
         set a [lindex $coeffientslist 0]
         set b [lindex $coeffientslist 1]
-        log::debug "fitfocus: iteration $iteration: a = $a b = $b."
+        log::debug "fitfocus $detector: iteration $iteration: a = $a b = $b."
         set sdyy 0.0
         foreach x $xlist y $ylist {
           set dy [expr {$y - ($a + $b * $x)}]
           set sdyy [expr {$sdyy + $dy * $dy}]
         }
         set sigma [expr {sqrt($sdyy / ($n - 1))}]
-        log::debug "fitfocus: iteration $iteration: sigma = $sigma."
+        log::debug "fitfocus $detector: iteration $iteration: sigma = $sigma."
         set chilist {}
         foreach x $xlist y $ylist {
           set dy [expr {$y - ($a + $b * $x)}]
@@ -223,18 +223,18 @@ namespace eval "fitfocus" {
           }
         }
       }
-      log::info "fitfocus: linear fit found intercept."
+      log::info "fitfocus $detector: linear fit found intercept."
       set minx [expr {int(-$a / $b)}]
       set miny 0
     }
     foreach x $xlist y $ylist chi $chilist {
       if {$y <= $maxfwhm && abs($chi) <= $maxabschi} {
-        log::info [format "fitfocus: FWHM = %4.1f pixels at %d (chi = %+6.2f)" $y $x $chi]
+        log::info [format "fitfocus $detector: FWHM = %4.1f pixels at %d (chi = %+6.2f)" $y $x $chi]
       } else {
-        log::info [format "fitfocus: FWHM = %4.1f pixels at %d (chi = %+6.2f rejected)" $y $x $chi]
+        log::info [format "fitfocus $detector: FWHM = %4.1f pixels at %d (chi = %+6.2f rejected)" $y $x $chi]
       }
     }
-    log::info [format "fitfocus: model minimum: FWHM = %.1f pixels at %d." $miny $minx]
+    log::info [format "fitfocus $detector: model minimum: FWHM = %.1f pixels at %d." $miny $minx]
     return $minx
   }
   

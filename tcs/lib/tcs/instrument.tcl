@@ -24,6 +24,7 @@
 ########################################################################
 
 package require "client"
+package require "fitfocus"
 package require "safetyswitch"
 package require "server"
 
@@ -390,16 +391,33 @@ namespace eval "instrument" {
       client::resetifnecessary $detector
     }
     variable detectors
-    foreach detector $detectors exposuretime $exposuretimes {
-      if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
-        log::info "focusing $detector."
-        client::request $detector "focus $exposuretime $fitsfiledir $range $step"
+    set zminlist {}
+    foreach detector $detectors {
+      client::update $detector
+      set z [client::getdata $detector "focuserposition"]
+      set zmin [expr {$z - $range / 2}]
+      lappend zminlist $zmin
+    }
+    set filenamelist {}
+    file mkdir [file join [directories::var] "instrument"]
+    foreach detector $detectors {
+        set filename [file join [directories::var] "instrument" "focus-$detector"]
+        file delete -force $filename
+        lappend filenamelist $filename
+    }
+    set dz 0
+    while {$dz <= $range} {
+      foreach detector $detectors exposuretime $exposuretimes zmin $zminlist {
+        if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
+          set z [expr {$zmin + $dz}]
+          client::request $detector "movefocuser $z"
+        }
       }
-    }
-    foreach detector $activedetectors {
-      client::wait $detector
-    }
-    if {$witness} {
+      foreach detector $detectors exposuretime $exposuretimes {
+        if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
+          client::wait $detector
+        }
+      }
       set dateandtime [utcclock::combinedformat now 0 false]
       set fitsfileprefix "$fitsfiledir/$dateandtime"
       foreach detector $detectors exposuretime $exposuretimes {
@@ -407,31 +425,105 @@ namespace eval "instrument" {
           client::request $detector "expose $exposuretime object $fitsfileprefix"
         }
       }
-      foreach detector $activedetectors {
-        client::wait $detector
+      foreach detector $detectors exposuretime $exposuretimes {
+        if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
+          client::wait $detector
+        }
       }
       foreach detector $detectors exposuretime $exposuretimes {
         if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
           client::request $detector "analyze fwhm"
         }
       }
-      foreach detector $activedetectors {
+      foreach detector $detectors exposuretime $exposuretimes {
+        if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
+          client::wait $detector
+        }
+      }
+      foreach detector $detectors exposuretime $exposuretimes filename $filenamelist {
+        if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
+          set w [client::getdata $detector "fwhm"]
+          set z [client::getdata $detector "focuserposition"]
+          if {![string equal $w ""]} {
+            set channel [::open $filename "a"]
+            puts $channel [format "%.0f %.2f" $z $w]
+            ::close $channel
+          }
+        }
+      }
+      set dz [expr {$dz + $step}]
+    }
+    foreach detector $detectors filename $filenamelist zmin $zminlist {
+      if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
+        set channel [::open $filename "r"]
+        set zlist {}
+        set wlist {}
+        while {[gets $channel line] > 0} {
+          scan $line "%d %f" z w
+          lappend zlist $z
+          lappend wlist $w
+        }
+        ::close $channel
+        set zmax [expr {$zmin + $range}]
+        if {[catch {
+          set z [fitfocus::findmin $zlist $wlist $detector]
+        } message]} {
+          log::warning "fitting failed: $message"
+          set z [expr {$zmin + $range / 2}]
+        } elseif {$z < $zmin} {
+          set z $zmin
+        } elseif {$z > $zmax} {
+          set z $zmax
+        }
+        client::request $detector "movefocuser $z"
+      }
+    }
+    foreach detector $detectors exposuretime $exposuretimes {
+      if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
         client::wait $detector
+      }
+    }
+    if {$witness} {
+      set dateandtime [utcclock::combinedformat now 0 false]
+      set fitsfileprefix "$fitsfiledir/$dateandtime"
+      foreach detector $detectors exposuretime $exposuretimes {
+        if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
+          client::wait $detector
+        }
+      }
+      set dateandtime [utcclock::combinedformat now 0 false]
+      set fitsfileprefix "$fitsfiledir/$dateandtime"
+      foreach detector $detectors exposuretime $exposuretimes {
+        if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
+          client::request $detector "expose $exposuretime object $fitsfileprefix"
+        }
       }
       foreach detector $detectors exposuretime $exposuretimes {
         if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
-          client::update $detector
-          set fitsfilename [file tail [client::getdata $detector "fitsfilename"]]
-          set fwhm         [client::getdata $detector "fwhm"]
-          set binning      [client::getdata $detector "detectorbinning"]
-          set filter       [client::getdata $detector "filter"]
-          set exposuretime [client::getdata $detector "exposuretime"]
-          set position     [client::getdata $detector "focuserposition"]
-          if {[string equal "$fwhm" ""]} {
-            log::summary [format "$fitsfilename: witness FWHM is unknown with binning $binning in filter $filter at position $position in %.0f seconds." $exposuretime]
-          } else {
-            log::summary [format "$fitsfilename: witness FWHM is %.2f pixels with binning $binning in filter $filter at position $position in %.0f seconds." $fwhm $exposuretime]
-          }
+          client::wait $detector
+        }
+      }
+      foreach detector $detectors exposuretime $exposuretimes {
+        if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
+          client::request $detector "analyze fwhm"
+        }
+      }
+      foreach detector $detectors exposuretime $exposuretimes {
+        if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
+          client::wait $detector
+        }
+      }
+      foreach detector $detectors exposuretime $exposuretimes {
+        set fitsfilename [file tail [client::getdata $detector "fitsfilename"]]
+        set w            [client::getdata $detector "fwhm"]
+        set binning      [client::getdata $detector "detectorbinning"]
+        set filter       [client::getdata $detector "filter"]
+        set exposuretime [client::getdata $detector "exposuretime"]
+        set z            [client::getdata $detector "focuserposition"]
+        if {[string equal "$w" ""]} {
+          log::summary [format "witness $detector: $fitsfilename: FWHM is unknown with binning $binning in filter $filter at position $z in %.0f seconds." $exposuretime]
+        } else {
+          log::summary [format "witness $detector: $fitsfilename: FWHM is %.2f pixels with binning $binning in filter $filter at position $z in %.0f seconds." $w $exposuretime]
         }
       }
     }

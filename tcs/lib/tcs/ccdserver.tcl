@@ -113,7 +113,6 @@ namespace eval "ccdserver" {
     interp alias $slave setwindow       {} ccdserver::slavesetwindow
     interp alias $slave setbinning      {} ccdserver::slavesetbinning
     interp alias $slave setreadmode     {} ccdserver::slavesetreadmode
-    interp alias $slave focus           {} ccdserver::slavefocus
     interp alias $slave mapfocus        {} ccdserver::slavemapfocus
     interp alias $slave correct         {} ccdserver::slavecorrect
   }
