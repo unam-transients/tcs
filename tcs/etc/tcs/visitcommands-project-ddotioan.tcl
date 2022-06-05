@@ -228,11 +228,10 @@ proc alertprologvisit {} {
   executor::setbinning 2
   log::summary "alertprologvisit: focusing with binning 2."
   executor::focus 4000 400 true 2
-  executor::setwindow "1kx1k"
-  executor::setbinning 1
-  log::summary "alertprologvisit: focusing with binning 1."
-  executor::waituntiltracking
-  executor::focus 4000 400 true 4
+#  executor::setwindow "1kx1k"
+#  executor::setbinning 1
+#  log::summary "alertprologvisit: focusing with binning 1."
+#  executor::focus 4000 400 true 4
   executor::setfocused
 
   # Then correct pointing
@@ -502,17 +501,17 @@ proc allskyprologvisit {} {
   
   client::update "target"
   set zenithdistance [client::getdata "target" "observedzenithdistance"]
-  if {$zenithdistance > [astrometry::parsedistance "45d"]} {
+#  if {$zenithdistance > [astrometry::parsedistance "45d"]} {
     log::summary "allskyprologvisit: focusing with binning 4."
     executor::setwindow "2kx2k"
     executor::setbinning 4
     executor::focus 12000 1200 false 1
-  }
+#  }
 
-  log::summary "allskyprologvisit: focusing with binning 1."
-  executor::setwindow "1kx1k"
-  executor::setbinning 1
-  executor::focus 4000 400 true 4
+  log::summary "allskyprologvisit: focusing with binning 2."
+  executor::setwindow "2kx2k"
+  executor::setbinning 2
+  executor::focus 4000 400 true 2
   executor::setfocused
 
   # Then correct pointing
@@ -568,10 +567,10 @@ proc initialfocusvisit {} {
   executor::setbinning 2
   log::summary "initialfocusvisit: focusing with binning 2."
   executor::focus 4000 400 true 2
-  executor::setwindow "1kx1k"
-  executor::setbinning 1
-  log::summary "initialfocusvisit: focusing with binning 1."
-  executor::focus 4000 400 true 4
+#  executor::setwindow "1kx1k"
+#  executor::setbinning 1
+#  log::summary "initialfocusvisit: focusing with binning 1."
+#  executor::focus 4000 400 true 4
   executor::setfocused
 
   log::summary "initialfocusvisit: taking tilt witness."
@@ -614,10 +613,10 @@ proc focusvisit {} {
   executor::setbinning 2
   log::summary "focusvisit: focusing with binning 2."
   executor::focus 4000 400 true 2
-  executor::setwindow "1kx1k"
-  executor::setbinning 1
-  log::summary "focusvisit: focusing with binning 1."
-  executor::focus 4000 400 true 4
+#  executor::setwindow "1kx1k"
+#  executor::setbinning 1
+#  log::summary "focusvisit: focusing with binning 1."
+#  executor::focus 4000 400 true 4
   executor::setfocused
 
   log::summary "focusvisit: finished."
@@ -630,23 +629,17 @@ proc fullfocusvisit {} {
 
   log::summary "fullfocusvisit: starting."
 
-  set exposuretime 5
-
   executor::track
-  executor::setwindow "default"
+  executor::setreadmode 16MHz
+  executor::setwindow "2kx2k"
   executor::setbinning 4
   executor::waituntiltracking
-
   log::summary "fullfocusvisit: focusing with binning 4."
-  executor::focus 20000 1200 false $exposuretime
-
-  log::summary "fullfocusvisit: focusing with binning 2."
+  executor::focus 8000 800 true 1
+  executor::setwindow "default"
   executor::setbinning 2
-  executor::focus 10000 600 false $exposuretime
-
-  log::summary "fullfocusvisit: focusing with binning 1."
-  executor::setbinning 1
-  executor::focus 5000 300 false $exposuretime "-S 2048"
+  log::summary "focusvisit: focusing with binning 2."
+  executor::focus 4000 400 true 2
   
   log::summary "fullfocusvisit: finished."
 
