@@ -87,8 +87,8 @@ namespace eval "ccdserver" {
     ccd::setreadmode $readmode
   }
 
-  proc slavefocus {exposuretime {fitsfileprefix ""} {range 400} {step 50} {witness true}} {
-    ccd::focus $exposuretime $fitsfileprefix $range $step $witness
+  proc slavefocus {exposuretime {fitsfileprefix ""} {range 400} {step 50}} {
+    ccd::focus $exposuretime $fitsfileprefix $range $step
   }
 
   proc slavemapfocus {exposuretime {fitsfileprefix ""} {range 400} {step 50}} {
