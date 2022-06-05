@@ -1020,7 +1020,7 @@ namespace eval "mount" {
     log::info [format "correction is %s E and %s N." [astrometry::formatoffset $alphaoffset] [astrometry::formatoffset $deltaoffset]]
     variable maxcorrection
     if {$d >= $maxcorrection} {
-      log::warning [format "ignoring corrction: the correction distance of %s is larger than the maximum allowed of %s." [astrometry::formatdistance $d] [astrometry::formatdistance $maxcorrection]]
+      log::warning [format "ignoring correction: the correction distance of %s is larger than the maximum allowed of %s." [astrometry::formatdistance $d] [astrometry::formatdistance $maxcorrection]]
     } else {
       server::setdata "lastcorrectiontimestamp" [utcclock::format]
       server::setdata "lastcorrectiondalpha"    $dalpha
