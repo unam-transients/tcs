@@ -393,7 +393,7 @@ namespace eval "instrument" {
     foreach detector $detectors exposuretime $exposuretimes {
       if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
         log::info "focusing $detector."
-        client::request $detector "focus $exposuretime $fitsfiledir $range $step false"
+        client::request $detector "focus $exposuretime $fitsfiledir $range $step"
       }
     }
     foreach detector $activedetectors {

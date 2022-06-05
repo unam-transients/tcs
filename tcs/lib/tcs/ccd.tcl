@@ -942,7 +942,7 @@ namespace eval "ccd" {
     exposeactivitycommand $exposuretime "focus" $fitsfileprefix/[utcclock::combinedformat now 0 false]
   }
   
-  proc focusactivitycommand {exposuretime fitsfileprefix range step witness} {
+  proc focusactivitycommand {exposuretime fitsfileprefix range step} {
 
     set start [utcclock::seconds]
     log::info "focusing."
@@ -1006,24 +1006,6 @@ namespace eval "ccd" {
 
     movefocuseractivitycommand $position
 
-    if {$witness} {
-      exposeforfocus $exposuretime $fitsfileprefix
-      analyzeactivitycommand "fwhm"
-      set fwhm         [server::getdata "fwhm"]
-      set fitsfilename [file tail [server::getdata "fitsfilename"]]
-      set filter       [server::getdata "filter"]
-      set binning      [server::getdata "detectorbinning"]
-      set rawposition  [server::getdata "focuserrawposition"]
-      if {![string equal $fwhm ""]} {
-        log::summary "$fitsfilename: witness FWHM is $fwhm pixels with binning $binning in filter $filter at position $position (raw position $rawposition) in ${exposuretime} seconds."
-        variable identifier
-        config::setvarvalue $identifier "focuserinitialposition" $position
-        config::setvarvalue $identifier "lastfocustimestamp"     [utcclock::format now]
-      } else {
-        log::summary "$fitsfilename: witness FWHM is unknown with binning $binning in filter $filter at position $position (raw position $rawposition) in ${exposuretime} seconds."
-      }
-    }
-    
     log::info [format "finished focusing after %.1f seconds." [utcclock::diff now $start]]
     
   }
@@ -1338,7 +1320,7 @@ namespace eval "ccd" {
     return
   }
   
-  proc focus {exposuretime fitsfileprefix range step witness} {
+  proc focus {exposuretime fitsfileprefix range step} {
     server::checkstatus
     server::checkactivity "idle"
     if {
@@ -1354,7 +1336,7 @@ namespace eval "ccd" {
       error "invalid step."
     }
     server::newactivitycommand "focusing" "idle" \
-      "ccd::focusactivitycommand $exposuretime $fitsfileprefix $range $step $witness" false
+      "ccd::focusactivitycommand $exposuretime $fitsfileprefix $range $step" false
   }
   
   proc mapfocus {exposuretime fitsfileprefix range step} {
