@@ -223,16 +223,16 @@ proc alertprologvisit {} {
   executor::setbinning 4
   log::summary "alertprologvisit: focusing with binning 4."
   executor::waituntiltracking
-  executor::focus 4000 400 true 1
+  executor::focus 8000 800 true 1
   executor::setwindow "2kx2k"
   executor::setbinning 2
   log::summary "alertprologvisit: focusing with binning 2."
-  executor::focus 1000 100 true 2
+  executor::focus 4000 400 true 2
   executor::setwindow "1kx1k"
   executor::setbinning 1
   log::summary "alertprologvisit: focusing with binning 1."
   executor::waituntiltracking
-  executor::focus 1000 100 true 4
+  executor::focus 4000 400 true 4
   executor::setfocused
 
   # Then correct pointing
@@ -563,15 +563,15 @@ proc initialfocusvisit {} {
   executor::setbinning 4
   log::summary "initialfocusvisit: focusing with binning 4."
   executor::waituntiltracking
-  executor::focus 4000 500 true 1
+  executor::focus 8000 800 true 1
   executor::setwindow "2kx2k"
   executor::setbinning 2
   log::summary "initialfocusvisit: focusing with binning 2."
-  executor::focus 2000 250 true 2
+  executor::focus 4000 400 true 2
   executor::setwindow "1kx1k"
   executor::setbinning 1
   log::summary "initialfocusvisit: focusing with binning 1."
-  executor::focus 2000 250 true 4
+  executor::focus 4000 400 true 4
   executor::setfocused
 
   log::summary "initialfocusvisit: taking tilt witness."
@@ -609,15 +609,15 @@ proc focusvisit {} {
   executor::setbinning 4
   executor::waituntiltracking
   log::summary "focusvisit: focusing with binning 4."
-  executor::focus 4000 500 true 1
+  executor::focus 8000 800 true 1
   executor::setwindow "2kx2k"
   executor::setbinning 2
   log::summary "focusvisit: focusing with binning 2."
-  executor::focus 2000 250 true 2
+  executor::focus 4000 400 true 2
   executor::setwindow "1kx1k"
   executor::setbinning 1
   log::summary "focusvisit: focusing with binning 1."
-  executor::focus 2000 250 true 4
+  executor::focus 4000 400 true 4
   executor::setfocused
 
   log::summary "focusvisit: finished."
