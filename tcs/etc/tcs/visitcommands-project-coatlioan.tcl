@@ -256,7 +256,7 @@ proc coarsefocusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefa
   movefilterwheel "$filter"
   waituntiltracking
   log::summary "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning 4."
-  focussecondary C0 $exposuretime 500 50 false
+  focussecondary C0 $exposuretime 500 50 false true
   
   log::summary "coarsefocusvisit: finished."
 
@@ -277,7 +277,7 @@ proc focusvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} 
 
   log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
   log::summary "focusvisit: readmode is $readmode."
-  focussecondary C0 $exposuretime 100 10 false
+  focussecondary C0 $exposuretime 100 10 true false
   
   setfocused
 
