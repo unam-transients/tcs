@@ -942,74 +942,6 @@ namespace eval "ccd" {
     exposeactivitycommand $exposuretime "focus" $fitsfileprefix/[utcclock::combinedformat now 0 false]
   }
   
-  proc focusactivitycommand {exposuretime fitsfileprefix range step} {
-
-    set start [utcclock::seconds]
-    log::info "focusing."
-
-    set originalposition [server::getdata "focuserposition"]
-    set midposition $originalposition
-    set focuserminposition [server::getdata "focuserminposition"]
-    set focusermaxposition [server::getdata "focusermaxposition"]
-    while {true} {
-      set minposition [expr {max($midposition - int($range / 2), $focuserminposition)}]
-      set maxposition [expr {min($midposition + int($range / 2), $focusermaxposition)}]
-      set positionlist {}
-      set fwhmlist     {}
-      variable focuserbacklashoffset
-      if {$focuserbacklashoffset <= 0} {
-        for {set position $minposition} {$position <= $maxposition} {incr position $step} {
-          movefocuseractivitycommand $position
-          exposeforfocus $exposuretime $fitsfileprefix
-          analyzeactivitycommand "fwhm"
-          set fwhm [server::getdata "fwhm"]
-          if {![string equal $fwhm ""]} {
-            lappend positionlist $position
-            lappend fwhmlist     $fwhm
-          }
-        }
-      } else {
-        for {set position $maxposition} {$position >= $minposition} {incr position [expr {-($step)}]} {
-          movefocuseractivitycommand $position
-          exposeforfocus $exposuretime $fitsfileprefix
-          analyzeactivitycommand "fwhm"
-          set fwhm [server::getdata "fwhm"]
-          if {![string equal $fwhm ""]} {
-            lappend positionlist $position
-            lappend fwhmlist     $fwhm
-          }
-        }
-      }
-      if {[catch {
-        set position [fitfocus::findmin $positionlist $fwhmlist]
-      } message]} {
-        log::warning "fitting failed: $message"
-        set position $originalposition
-        break
-      } elseif {$minposition == $focuserminposition && $position <= $focuserminposition} {
-        log::warning "the best focuser position is at or below minimum focuser position."
-        set position $focuserminposition
-        break
-      } elseif {$maxposition == $focuserminposition && $position >= [server::getdata "focusermaxposition"]} {
-        log::warning "the best focuser position is at or above the maximum focuser position."
-        set position $focusermaxposition
-        break
-      } elseif {$position < $minposition} {
-        set midposition $minposition
-      } elseif {$position > $maxposition} {
-        set midposition $maxposition
-      } else {
-        break
-      }
-      log::info "continuing focusing around $midposition."
-    }
-
-    movefocuseractivitycommand $position
-
-    log::info [format "finished focusing after %.1f seconds." [utcclock::diff now $start]]
-    
-  }
-
   proc mapfocusactivitycommand {exposuretime fitsfileprefix range step} {
     set start [utcclock::seconds]
     log::info "mapping focus."
@@ -1318,25 +1250,6 @@ namespace eval "ccd" {
     updatedata
     log::info [format "finished setting read mode after %.1f seconds." [utcclock::diff now $start]]
     return
-  }
-  
-  proc focus {exposuretime fitsfileprefix range step} {
-    server::checkstatus
-    server::checkactivity "idle"
-    if {
-      ![string is double -strict $exposuretime] ||
-      $exposuretime < 0
-    } {
-      error "invalid exposure time."
-    }
-    if {![string is integer -strict $range]} {
-      error "invalid range."
-    }
-    if {![string is integer -strict $step]} {
-      error "invalid step."
-    }
-    server::newactivitycommand "focusing" "idle" \
-      "ccd::focusactivitycommand $exposuretime $fitsfileprefix $range $step" false
   }
   
   proc mapfocus {exposuretime fitsfileprefix range step} {
