@@ -63,33 +63,24 @@ sudo mv /etc/hosts.tmp /etc/hosts
 # crontab
 
 (
+  echo 'PATH=/usr/local/bin:/usr/bin:/bin'
   echo 'MAILTO=""'
 
   cat <<"EOF"
-00 21 *  *  *  /usr/local/bin/tcs cleanfiles
-*  *  *  *  *  /usr/local/bin/tcs updatevarlatestlink
-*  *  *  *  *  /usr/local/bin/tcs updatelocalsensorsfiles
-*  *  *  *  *  /usr/local/bin/tcs checkreboot
-*  *  *  *  *  /usr/local/bin/tcs checkrestart
+00 21 *  *  *  tcs cleanfiles
+*  *  *  *  *  tcs updatevarlatestlink
+*  *  *  *  *  tcs updatelocalsensorsfiles
+*  *  *  *  *  tcs checkreboot
+*  *  *  *  *  tcs checkrestart
+*  *  *  *  *  tcs checkhalt
 EOF
-
-  case $host in
-  access)
-    # Do not run checkhalt on the Macs; they do not automatically start again after a halt if we cycle the power.
-    ;;  
-  *)
-    cat <<"EOF"
-*  *  *  *  *  /usr/local/bin/tcs checkhalt
-EOF
-    ;;
-  esac
   
   case $host in
   control)
     cat <<"EOF"
-*  *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles services control platform instrument0 instrument1
-*  *  *  *  *  /usr/local/bin/tcs updateweatherfiles-oan
-00 18 *  *  *  /usr/local/bin/tcs updateweatherfiles-oan -a
+*  *  *  *  *  sleep 10; tcs updatesensorsfiles services control platform instrument0 instrument1
+*  *  *  *  *  tcs updateweatherfiles-oan
+00 18 *  *  *  tcs updateweatherfiles-oan -a
 *  *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
 *  *  *  *  *  rsync -aH --delete /usr/local/var/tcs/selector rsync://transients.astrossp.unam.mx/ddoti-raw/
 00 *  *  *  *  rsync -aH /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/ddoti-raw/ 
@@ -99,16 +90,11 @@ EOF
     ;;
   services)
     cat <<"EOF"
-*/5 *  *  *  * /usr/local/bin/tcs logsensors
 */5 *  *  *  *  sh /usr/local/var/www/tcs/plots.sh
+*/5 *  *  *  *  tcs logsensors
 *   *  *  *  *  rsync -aH --include="error.txt" --include="warning.txt" --include="summary.txt" --include="info.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/ddoti-raw/
 00  *  *  *  *  rsync -aH /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/ddoti-raw/
 */5 *  *  *  *  rsync -aH --remove-source-files --include="*/" --include="*.fits.*" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/ddoti-raw/
-EOF
-    ;;
-  instrument*)
-    cat <<"EOF"
-00 00  *  *  *  find /usr/local/var/tcs/ -name "*.tmp" | xargs rm
 EOF
     ;;
   esac

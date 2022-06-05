@@ -74,17 +74,8 @@ sudo mv /etc/hosts.tmp /etc/hosts
 *  *  *  *  *  tcs updatelocalsensorsfiles
 *  *  *  *  *  tcs checkreboot
 *  *  *  *  *  tcs checkrestart
-EOF
-
-  case $host in
-  console)
-    # Do not run checkhalt on the Macs; they do not automatically start again after a halt if we cycle the power.
-    ;;  
-  *)
-    cat <<"EOF"
 *  *  *  *  *  tcs checkhalt
 EOF
-  esac
 
   case $host in
   control)
@@ -93,8 +84,8 @@ EOF
 *  *  *  *  *  tcs updateweatherfiles-oan
 00 18 *  *  *  tcs updateweatherfiles-oan -a
 *  *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
-00 *  *  *  *  rsync -aH /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw/
 *  *  *  *  *  rsync -aH --delete /usr/local/var/tcs/selector rsync://transients.astrossp.unam.mx/coatli-raw/
+00 *  *  *  *  rsync -aH /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw/
 00 00 *  *  *  tcs fetchblocks
 01 00 *  *  *  tcs loadblocks
 EOF
@@ -111,7 +102,6 @@ EOF
   instrument)
     cat <<"EOF"
 00 00  *  *  *  tcs stopserver C0; tcs request power reboot detector; sleep 20; tcs startserver C0
-00 00  *  *  *  find /usr/local/var/tcs/ -name "*.tmp" | xargs rm
 EOF
     ;;
   esac
