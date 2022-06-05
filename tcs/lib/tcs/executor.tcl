@@ -196,9 +196,13 @@ namespace eval "executor" {
   
   ######################################################################
 
-  proc focussecondary {detector exposuretime {z0range 300} {z0step 20} {witness true}} {
+  proc focussecondary {detector exposuretime {z0range 300} {z0step 20} {witness true} {initial false}} {
     set start [utcclock::seconds]
     log::info "focusing secondary on $detector with range $z0range and step $z0step."
+    if {$initial} {
+      client::request "telescope" "movesecondary initialz0"
+      client::wait "telescope"
+    }
     client::update "secondary"
     set z0 [client::getdata "secondary" "requestedz0"]
     set originalz0 $z0
@@ -248,7 +252,7 @@ namespace eval "executor" {
       }
       log::info "focusing secondary again around $z0."
     }
-    client::request "telescope" "movesecondary $z0 true"
+    client::request "telescope" "movesecondary $z0"
     client::wait "telescope"
     if {$witness} {
       set i 0
