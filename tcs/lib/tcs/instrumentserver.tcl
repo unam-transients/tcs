@@ -113,8 +113,8 @@ namespace eval "instrumentserver" {
     return
   }
   
-  proc slavefocus {fitsfileprefix range step witness args} {
-    eval instrument::focus $fitsfileprefix $range $step $witness $args
+  proc slavefocus {fitsfileprefix range step witness initial args} {
+    eval instrument::focus $fitsfileprefix $range $step $witness $initial $args
     return
   }
   
