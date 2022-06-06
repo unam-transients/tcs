@@ -382,15 +382,27 @@ namespace eval "instrument" {
     log::info [format "finished analyzing after %.1f seconds." [utcclock::diff now $start]]
   }
   
-  proc focusactivitycommand {fitsfiledir range step witness args} {
+  proc focusactivitycommand {fitsfiledir range step witness initial args} {
     set start [utcclock::seconds]
     log::info "focusing."
     set exposuretimes $args
+    variable detectors
     variable activedetectors
     foreach detector $activedetectors {
       client::resetifnecessary $detector
     }
-    variable detectors
+    if {$initial} {
+      foreach detector $detectors exposuretime $exposuretimes {
+        if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
+          client::request $detector "movefocuser initial"
+        }
+      }
+      foreach detector $detectors exposuretime $exposuretimes {
+        if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
+          client::wait $detector
+        }
+      }
+    }
     set zminlist {}
     foreach detector $detectors {
       client::update $detector
@@ -484,8 +496,7 @@ namespace eval "instrument" {
       }
     }
     if {$witness} {
-      set dateandtime [utcclock::combinedformat now 0 false]
-      set fitsfileprefix "$fitsfiledir/$dateandtime"
+      log::info "taking witness images."
       foreach detector $detectors exposuretime $exposuretimes {
         if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
           client::wait $detector
@@ -514,16 +525,18 @@ namespace eval "instrument" {
         }
       }
       foreach detector $detectors exposuretime $exposuretimes {
-        set fitsfilename [file tail [client::getdata $detector "fitsfilename"]]
-        set w            [client::getdata $detector "fwhm"]
-        set binning      [client::getdata $detector "detectorbinning"]
-        set filter       [client::getdata $detector "filter"]
-        set exposuretime [client::getdata $detector "exposuretime"]
-        set z            [client::getdata $detector "focuserposition"]
-        if {[string equal "$w" ""]} {
-          log::summary [format "witness $detector: $fitsfilename: FWHM is unknown with binning $binning in filter $filter at position $z in %.0f seconds." $exposuretime]
-        } else {
-          log::summary [format "witness $detector: $fitsfilename: FWHM is %.2f pixels with binning $binning in filter $filter at position $z in %.0f seconds." $w $exposuretime]
+        if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
+          set fitsfilename [file tail [client::getdata $detector "fitsfilename"]]
+          set w            [client::getdata $detector "fwhm"]
+          set binning      [client::getdata $detector "detectorbinning"]
+          set filter       [client::getdata $detector "filter"]
+          set exposuretime [client::getdata $detector "exposuretime"]
+          set z            [client::getdata $detector "focuserposition"]
+          if {[string equal "$w" ""]} {
+            log::summary [format "witness $detector: $fitsfilename: FWHM is unknown with binning $binning in filter $filter at position $z in %.0f seconds." $exposuretime]
+          } else {
+            log::summary [format "witness $detector: $fitsfilename: FWHM is %.2f pixels with binning $binning in filter $filter at position $z in %.0f seconds." $w $exposuretime]
+          }
         }
       }
     }
@@ -777,7 +790,7 @@ namespace eval "instrument" {
       "instrument::analyzeactivitycommand $types" \
   }
   
-  proc focus {fitsfiledir range step witness args} {
+  proc focus {fitsfiledir range step witness initial args} {
     server::checkstatus
     server::checkactivity "idle"
     safetyswitch::checksafetyswitch
@@ -790,7 +803,7 @@ namespace eval "instrument" {
       error "incorrect number of exposure times."
     }
     server::newactivitycommand "focusing" "idle" \
-      "instrument::focusactivitycommand $fitsfiledir $range $step $witness $exposuretimes" false
+      "instrument::focusactivitycommand $fitsfiledir $range $step $witness $initial $exposuretimes" false
   }
   
   proc mapfocus {fitsfileprefix range step args} {

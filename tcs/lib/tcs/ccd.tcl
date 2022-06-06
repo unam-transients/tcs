@@ -1058,10 +1058,13 @@ namespace eval "ccd" {
   }
   
   proc movefocuser {position setasinitial} {
+    variable focuserinitialposition
     server::checkstatus
     server::checkactivity "idle"
     if {[string equal $position "current"]} {
       set position [server::getdata "requestedfocuserposition"]
+    } elseif {[string equal $position "initial"]} {
+      set position $focuserinitialposition
     } elseif {
       ![string is integer -strict $position] ||
       $position < [server::getdata "focuserminposition"] ||
@@ -1071,6 +1074,7 @@ namespace eval "ccd" {
     }
     variable identifier
     if {$setasinitial} {
+      set focuserinitialposition $position
       config::setvarvalue $identifier "focuserinitialposition" $position
     }
     server::newactivitycommand "moving" "idle" "ccd::movefocuseractivitycommand $position"
@@ -1078,6 +1082,7 @@ namespace eval "ccd" {
   }
 
   proc setfocuser {position setasinitial} {
+    variable focuserinitialposition
     server::checkstatus
     server::checkactivity "idle"
     if {
@@ -1089,6 +1094,7 @@ namespace eval "ccd" {
     }
     variable identifier
     if {$setasinitial} {
+      set focuserinitialposition $position
       config::setvarvalue $identifier "focuserinitialposition" $position
     }
     server::newactivitycommand "setting" "idle" "ccd::setfocuseractivitycommand $position"
