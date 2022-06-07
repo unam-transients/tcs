@@ -224,10 +224,10 @@ proc alertprologvisit {} {
   log::summary "alertprologvisit: focusing with binning 4."
   executor::waituntiltracking
   executor::focus 8000 800 true 1
-  executor::setwindow "2kx2k"
-  executor::setbinning 2
-  log::summary "alertprologvisit: focusing with binning 2."
-  executor::focus 4000 400 true 2
+#  executor::setwindow "2kx2k"
+#  executor::setbinning 2
+#  log::summary "alertprologvisit: focusing with binning 2."
+#  executor::focus 4000 400 true 2
 #  executor::setwindow "1kx1k"
 #  executor::setbinning 1
 #  log::summary "alertprologvisit: focusing with binning 1."
@@ -562,21 +562,21 @@ proc initialfocusvisit {} {
   executor::setbinning 4
   log::summary "initialfocusvisit: focusing with binning 4."
   executor::waituntiltracking
-  executor::focus 8000 800 true 1
-  executor::setwindow "2kx2k"
-  executor::setbinning 2
-  log::summary "initialfocusvisit: focusing with binning 2."
-  executor::focus 4000 400 true 2
+  executor::focus 8000 800 true true 1
+#  executor::setwindow "2kx2k"
+#  executor::setbinning 2
+#  log::summary "initialfocusvisit: focusing with binning 2."
+#  executor::focus 4000 400 true 2
 #  executor::setwindow "1kx1k"
 #  executor::setbinning 1
 #  log::summary "initialfocusvisit: focusing with binning 1."
 #  executor::focus 4000 400 true 4
   executor::setfocused
 
-  log::summary "initialfocusvisit: taking tilt witness."
-  executor::setwindow "default"
-  executor::setbinning 1
-  executor::expose object 4
+#  log::summary "initialfocusvisit: taking tilt witness."
+#  executor::setwindow "default"
+#  executor::setbinning 1
+#  executor::expose object 4
 
   log::summary "initialfocusvisit: finished."
 
@@ -608,11 +608,11 @@ proc focusvisit {} {
   executor::setbinning 4
   executor::waituntiltracking
   log::summary "focusvisit: focusing with binning 4."
-  executor::focus 8000 800 true 1
-  executor::setwindow "2kx2k"
-  executor::setbinning 2
-  log::summary "focusvisit: focusing with binning 2."
-  executor::focus 4000 400 true 2
+  executor::focus 8000 800 true false 1
+#  executor::setwindow "2kx2k"
+#  executor::setbinning 2
+#  log::summary "focusvisit: focusing with binning 2."
+#  executor::focus 4000 400 true 2
 #  executor::setwindow "1kx1k"
 #  executor::setbinning 1
 #  log::summary "focusvisit: focusing with binning 1."
@@ -625,21 +625,18 @@ proc focusvisit {} {
 
 ########################################################################
 
-proc fullfocusvisit {} {
+proc fullfocusvisit {range binning exposuretime} {
 
   log::summary "fullfocusvisit: starting."
 
   executor::track
   executor::setreadmode 16MHz
-  executor::setwindow "2kx2k"
-  executor::setbinning 4
-  executor::waituntiltracking
-  log::summary "fullfocusvisit: focusing with binning 4."
-  executor::focus 8000 800 true 1
   executor::setwindow "default"
-  executor::setbinning 2
-  log::summary "focusvisit: focusing with binning 2."
-  executor::focus 4000 400 true 2
+  executor::setbinning $binning
+  executor::waituntiltracking
+  
+  log::summary "fullfocusvisit: focusing with binning $binning."
+  executor::focus $range [expr {$range / 10}] false true $exposuretime
   
   log::summary "fullfocusvisit: finished."
 
@@ -724,7 +721,7 @@ proc twilightflatsvisit {} {
   executor::move
   executor::setbinning 1
   executor::setwindow "default"
-  set detectors [client::getdata instrument detectors]
+  set detectors [client::getdata instrument activedetectors]
   set leveldetector [lindex $detectors 0]
   set minlevel 1000
   set maxlevel 3000
