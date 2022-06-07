@@ -520,10 +520,10 @@
       "C1", "C2", "C3", "C4"
     ],
     "activedetectors": [
-      "C2", "C3", "C4"
+      "C1", "C2", "C3", "C4"
     ],
     "pointingdetectors": [
-      "C3", "C4"
+      "C1", "C2, ""C3", "C4"
     ],
     "outletgroups": []
   },
