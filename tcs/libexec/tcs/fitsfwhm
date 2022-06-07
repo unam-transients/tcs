@@ -121,47 +121,40 @@ else
     -PARAMETERS_NAME "$etcdir"/fitsfwhm.param \
     $saturationlevelflags \
     -CATALOG_NAME STDOUT 2>&- |
-  sort -k 4n |
   awk -v xmin=$xmin -v xmax=$xmax -v ymin=$ymin -v ymax=$ymax '
   {
     x = $1;
     y = $2;
-    if (xmin <= x && x <= xmax && ymin <= y && y <= ymax) {
+    flags = $5;
+    if (flags <= 1 && xmin <= x && x <= xmax && ymin <= y && y <= ymax) {
       print $0;
     }
   }
   ' |
+  sort -k 4n |
   awk -v median=$median '
   BEGIN {
-    ibrightest = "";
     i = 0;
   }
   {
-    flags = $5;
-    if (flags < 2) {
-      x[i]    = $1;
-      y[i]    = $2;
-      fwhm[i] = $3;
-      mag[i]  = $4;
-      if (ibrightest == "" || mag[i] <= mag[ibrightest]) {
-        ibrightest = i;
-      }
-      ++i;
-    }
+    x[i]    = $1;
+    y[i]    = $2;
+    fwhm[i] = $3;
+    mag[i]  = $4;
+    ++i;
   }
   END {
-    if (!median) {
-      iselected = ibrightest
-    } else if (i > 0) {
-      iselected = int(i / 2);
+    if (NR == 0) {
+      print "fitsfwhm: no sources";
+      exit(1);
+    }
+    if (median) {
+      iselected = int(NR / 2);
     } else {
-      iselected = "";
+      iselected = 0
     }
-    if (iselected != "") {
-      printf "%6.2f %6.2f %6.2f\n", fwhm[iselected], x[iselected], y[iselected];
-    }
+    printf "%6.2f %6.2f %6.2f\n", fwhm[iselected], x[iselected], y[iselected];
+    exit(0);
   }
   '
 fi
-
-exit 0
