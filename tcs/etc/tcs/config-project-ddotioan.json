@@ -97,7 +97,7 @@
     "focusertype": "null",
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:5:1.0",
     "focuserinitialposition": 40000,
-    "focuserbacklashoffset": 0,
+    "focuserbacklashoffset": -2000,
     "focusercorrectionmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": "false",
@@ -168,7 +168,7 @@
     "focusertype": "ddoti",
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:5:1.0",
     "focuserinitialposition": 40000,
-    "focuserbacklashoffset": 0,
+    "focuserbacklashoffset": -2000,
     "focusercorrectionmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": "false",
@@ -239,7 +239,7 @@
     "focusertype": "ddoti",
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:7:1.0",
     "focuserinitialposition": 40000,
-    "focuserbacklashoffset": 0,
+    "focuserbacklashoffset": -2000,
     "focusercorrectionmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": "false",
@@ -310,7 +310,7 @@
     "focusertype": "ddoti",
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:8:1.0",
     "focuserinitialposition": 40000,
-    "focuserbacklashoffset": 0,
+    "focuserbacklashoffset": -2000,
     "focusercorrectionmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": "false",
@@ -380,7 +380,7 @@
     "focusertype": "ddoti",
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:8:1.0",
     "focuserinitialposition": 40000,
-    "focuserbacklashoffset": 0,
+    "focuserbacklashoffset": -2000,
     "focusercorrectionmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": "false",
@@ -450,7 +450,7 @@
     "focusertype": "null",
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:7:1.0",
     "focuserinitialposition": 40000,
-    "focuserbacklashoffset": 0,
+    "focuserbacklashoffset": -2000,
     "focusercorrectionmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": "false",
@@ -520,10 +520,10 @@
       "C1", "C2", "C3", "C4"
     ],
     "activedetectors": [
-      "C1", "C2", "C3", "C4"
+      "C2", "C3", "C4"
     ],
     "pointingdetectors": [
-      "C1", "C2", "C3", "C4"
+      "C3", "C4"
     ],
     "outletgroups": []
   },
