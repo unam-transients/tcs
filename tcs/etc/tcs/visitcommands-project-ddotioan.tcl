@@ -223,7 +223,7 @@ proc alertprologvisit {} {
   executor::setbinning 4
   log::summary "alertprologvisit: focusing with binning 4."
   executor::waituntiltracking
-  executor::focus 8000 800 true 1
+  executor::focus 8000 800 true true 1
 #  executor::setwindow "2kx2k"
 #  executor::setbinning 2
 #  log::summary "alertprologvisit: focusing with binning 2."
@@ -505,13 +505,13 @@ proc allskyprologvisit {} {
     log::summary "allskyprologvisit: focusing with binning 4."
     executor::setwindow "2kx2k"
     executor::setbinning 4
-    executor::focus 12000 1200 false 1
+    executor::focus 12000 1200 true true 1
 #  }
 
   log::summary "allskyprologvisit: focusing with binning 2."
   executor::setwindow "2kx2k"
   executor::setbinning 2
-  executor::focus 4000 400 true 2
+  executor::focus 4000 400 true true 2
   executor::setfocused
 
   # Then correct pointing
