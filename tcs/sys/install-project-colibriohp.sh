@@ -92,6 +92,12 @@ EOF
     ;;
   colibriohp-services)
     cat <<"EOF"
+*   *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles services detectors
+*   *  *  *  *  /usr/local/bin/tcs updateweatherfiles-oan
+00  18 *  *  *  /usr/local/bin/tcs updateweatherfiles-oan -a
+*   *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
+00  00 *  *  *  /usr/local/bin/tcs updatevarlatestlink; rsync -aH /usr/local/etc/tcs/blocks /usr/local/var/tcs/latest/
+
 */5 *  *  *  * /usr/local/bin/tcs logsensors
 *   *  *  *  * cd /usr/local/var/www/tcs/; sh plots.sh >plots.txt 2>&1
 #*   *  *  *  *  rsync -aH --include="error.txt" --include="warning.txt" --include="summary.txt" --include="info.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/ddoti-raw/
@@ -154,6 +160,7 @@ EOF
 
   case $host in
   colibriohp-services)
+    echo "owserver -c /etc/owfs.conf"
     echo "tcs instrumentimageserver C0 detectors &"
     echo "tcs webcamimageserver a https://www.colibri-obs.org/wp-content/uploads/2021/01/cam-colibri1.jpeg &"
     echo "tcs allskyimageserver http://iris.lam.fr/wp-includes/images/ftp_iris/allsky1.jpg &"

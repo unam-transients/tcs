@@ -125,24 +125,19 @@
   },
   "html": {
     "servers": [
-      "covers",
       "executor",
       "instrument",
       "moon",
-      "mount",
-      "opentsi",
-      "plc",
       "power",
-      "secondary",
       "selector",
       "sensors",
       "sun",
-      "target",
-      "telescope"
+      "target"
     ]
   },
   "instrument": {
     "activedetectors": [
+      "C0"
     ],
     "detectors": [
       "C0"
@@ -297,7 +292,7 @@
         "firmware": ""
       },
       "rack-internal-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.FAAE1A020000/temperature",
+        "file": "/usr/local/var/tcs/sensors/services/ow/26.FAAE1A020000/temperature",
         "keyword": "CR1TM",
         "prettyname": "rack internal temperature",
         "group": "environmental-sensors",
@@ -309,7 +304,7 @@
         "firmware": ""
       },
       "rack-external-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.659DE1010000/temperature",
+        "file": "/usr/local/var/tcs/sensors/services/ow/26.659DE1010000/temperature",
         "keyword": "CR2TM",
         "prettyname": "rack external temperature",
         "group": "environmental-sensors",
@@ -369,7 +364,7 @@
         "firmware": ""
       },
       "rack-internal-humidity": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.FAAE1A020000/HIH4000/humidity",
+        "file": "/usr/local/var/tcs/sensors/services/ow/26.FAAE1A020000/HIH4000/humidity",
         "keyword": "CR1HM",
         "prettyname": "rack internal humidity",
         "group": "environmental-sensors",
@@ -381,7 +376,7 @@
         "firmware": ""
       },
       "rack-external-humidity": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.659DE1010000/HIH4000/humidity",
+        "file": "/usr/local/var/tcs/sensors/services/ow/26.659DE1010000/HIH4000/humidity",
         "keyword": "CR2HM",
         "prettyname": "rack external humidity",
         "group": "environmental-sensors",
@@ -428,7 +423,7 @@
         "firmware": ""
       },
       "host-control-load": {
-        "file": "/usr/local/var/tcs/sensors/control/load",
+        "file": "/usr/local/var/tcs/sensors/services/load",
         "keyword": "",
         "prettyname": "load on host control",
         "group": "host-control",
@@ -461,7 +456,7 @@
         "firmware": ""
       },
       "host-control-disk-space-used": {
-        "file": "/usr/local/var/tcs/sensors/control/disk-space-used",
+        "file": "/usr/local/var/tcs/sensors/services/disk-space-used",
         "keyword": "",
         "prettyname": "relative disk space used on host control",
         "group": "host-control",
@@ -483,7 +478,7 @@
         "firmware": ""
       },
       "pdu1-current": {
-        "file": "/usr/local/var/tcs/sensors/control/pdu1-current",
+        "file": "/usr/local/var/tcs/sensors/services/pdu1-current",
         "keyword": "",
         "prettyname": "inlet current for PDU1",
         "group": "power",
@@ -494,7 +489,7 @@
         "firmware": "1.03.12212017"
       },      
       "pdu2-current": {
-        "file": "/usr/local/var/tcs/sensors/control/pdu2-current",
+        "file": "/usr/local/var/tcs/sensors/services/pdu2-current",
         "keyword": "",
         "prettyname": "inlet current for PDU2",
         "group": "power",
@@ -604,7 +599,7 @@
         "firmware": ""
       },
       "C0-service-cabinet-external-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.FE7D1A020000/temperature",
+        "file": "/usr/local/var/tcs/sensors/services/ow/26.FE7D1A020000/temperature",
         "keyword": "CR3TM",
         "prettyname": "blue service cabinet external temperature",
         "group": "environmental-sensors",
@@ -616,7 +611,7 @@
         "firmware": ""
       },
       "C0-service-cabinet-internal-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.F3961A020000/temperature",
+        "file": "/usr/local/var/tcs/sensors/services/ow/26.F3961A020000/temperature",
         "keyword": "CR4TM",
         "prettyname": "blue service cabinet internal temperature",
         "group": "environmental-sensors",
@@ -628,7 +623,7 @@
         "firmware": ""
       },
       "C0-service-cabinet-external-humidity": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.FE7D1A020000/HIH4000/humidity",
+        "file": "/usr/local/var/tcs/sensors/services/ow/26.FE7D1A020000/HIH4000/humidity",
         "keyword": "CR3HM",
         "prettyname": "blue service cabinet external humidity",
         "group": "environmental-sensors",
@@ -640,7 +635,7 @@
         "firmware": ""
       },
       "C0-service-cabinet-internal-humidity": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.F3961A020000/HIH4000/humidity",
+        "file": "/usr/local/var/tcs/sensors/services/ow/26.F3961A020000/HIH4000/humidity",
         "keyword": "CR4HM",
         "prettyname": "blue service cabinet internal humidity",
         "group": "environmental-sensors",

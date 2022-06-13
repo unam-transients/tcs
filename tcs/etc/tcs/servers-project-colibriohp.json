@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 
-// This file is part of the UNAM telescope control system.
+// This file is part of the UNAM telescope services system.
 
 // $Id: servers-project-colibriohp.json 3613 2020-06-20 20:21:43Z Alan $
 
@@ -30,23 +30,23 @@
     "port": 5000
   },
   "target": {
-    "host": "control",
+    "host": "services",
     "port": 5001
   },
   "moon": {
-    "host": "control",
+    "host": "services",
     "port": 5002
   },
   "sun": {
-    "host": "control",
+    "host": "services",
     "port": 5003
   },
   "weather": {
-    "host": "control",
+    "host": "services",
     "port": 5004
   },
   "sensors": {
-    "host": "control",
+    "host": "services",
     "port": 5005
   },
   "html": {
@@ -58,43 +58,43 @@
     "port": 5007
   },
   "plc": {
-    "host": "control",
+    "host": "services",
     "port": 5008
   },
   "selector": {
-    "host": "control",
+    "host": "services",
     "port": 5011
   },
   "executor": {
-    "host": "control",
+    "host": "services",
     "port": 5012
   },
   "telescope": {
-    "host": "control",
+    "host": "services",
     "port": 5013
   },
   "instrument": {
-    "host": "control",
+    "host": "services",
     "port": 5014
   },
   "power": {
-    "host": "control",
+    "host": "services",
     "port": 5015
   },
   "mount": {
-    "host": "control",
+    "host": "services",
     "port": 5016
   },
   "covers": {
-    "host": "control",
+    "host": "services",
     "port": 5017
   },
   "secondary": {
-    "host": "control",
+    "host": "services",
     "port": 5018
   },
   "opentsi": {
-    "host": "control",
+    "host": "services",
     "port": 5019
   }
 }
