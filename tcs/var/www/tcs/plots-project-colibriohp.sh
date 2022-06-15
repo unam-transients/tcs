@@ -233,8 +233,8 @@ EOF
     plot \
       "sensors.dat" using 22:23 title "Rack Internal"               with points linestyle 1, \
       "sensors.dat" using 26:27 title "Rack External"               with points linestyle 2, \
-      "sensors.dat" using 68:69 title "C0 Service Cabinet Internal" with points linestyle 3, \
-      "sensors.dat" using 72:73 title "C0 Service Cabinet External" with points linestyle 4, \
+      "sensors.dat" using 62:63 title "C0 Service Cabinet Internal" with points linestyle 3, \
+      "sensors.dat" using 66:67 title "C0 Service Cabinet External" with points linestyle 4, \
       "C0.dat"      using 1:11  title "C0 Power Supply"             with points linestyle 5
       
    set format x "%Y%m%dT%H"
@@ -249,8 +249,8 @@ EOF
     plot \
       "sensors.dat" using 24:(\$25*100) title "Rack Internal"               with points linestyle 1, \
       "sensors.dat" using 28:(\$29*100) title "Rack External"               with points linestyle 2, \
-      "sensors.dat" using 70:(\$71*100) title "C0 Service Cabinet Internal" with points linestyle 3, \
-      "sensors.dat" using 74:(\$75*100) title "C0 Service Cabinet External" with points linestyle 4, \
+      "sensors.dat" using 64:(\$65*100) title "C0 Service Cabinet Internal" with points linestyle 3, \
+      "sensors.dat" using 68:(\$69*100) title "C0 Service Cabinet External" with points linestyle 4, \
 
     unset multiplot
 
