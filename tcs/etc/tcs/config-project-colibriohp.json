@@ -235,14 +235,14 @@
       "C0-service-cabinet-external-humidity"
     ],
     "sensors": {
-      // rack-internal                  = 26.FAAE1A020000
-      // rack-external                  = 26.659DE1010000
-      // blue-service-cabinet-external  = 26.FE7D1A020000
-      // blue-service-cabinet-internal  = 26.F3961A020000
-      // close-electronics-internal     = 26.E9AE1A020000
       // instrument-external            = 7E.983100001000
       // instrument-internal            = 26.BCB01A020000
       // instrument-tunnel              = 26.477E1A020000
+      // close-electronics-internal     = 26.E9AE1A020000
+      // blue-service-cabinet-external  = 26.FE7D1A020000
+      // blue-service-cabinet-internal  = 26.F3961A020000
+      // rack-external                  = 26.659DE1010000
+      // rack-internal                  = 26.FAAE1A020000
       "instrument-external-temperature": {
         "file": "/usr/local/var/tcs/sensors/detectors/ow/7E.983100001000/EDS0068/temperature",
         "keyword": "CE2TM",
@@ -250,7 +250,7 @@
         "group": "environmental-sensors",
         "type": "float",
         "unit": "C",
-        "correctionmodel": "ENV-T:1.0:+0.478",
+        "correctionmodel": "ENV-T:1.0:+0.48",
         "model": "EDS OW-ENV-THPL",
         "identifier": "7E.983100001000",
         "firmware": ""
@@ -262,7 +262,7 @@
         "group": "environmental-sensors",
         "type": "float",
         "unit": "C",
-        "correctionmodel": "MS-T:1.0:-0.582",
+        "correctionmodel": "MS-T:1.0:-0.58",
         "model": "iButtonLink MS-TH",
         "identifier": "26.BCB01A020000",
         "firmware": ""
@@ -274,7 +274,7 @@
         "group": "environmental-sensors",
         "type": "float",
         "unit": "C",
-        "correctionmodel": "MS-T:1.0:-0.204",
+        "correctionmodel": "MS-T:1.0:-0.20",
         "model": "iButtonLink MS-TH",
         "identifier": "26.477E1A020000",
         "firmware": ""
@@ -286,21 +286,33 @@
         "group": "environmental-sensors",
         "type": "float",
         "unit": "C",
-        "correctionmodel": "MS-T:1.0:-0.259",
+        "correctionmodel": "MS-T:1.0:-0.26",
         "model": "iButtonLink MS-TH",
         "identifier": "26.E9AE1A020000",
         "firmware": ""
       },
-      "rack-internal-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/ow/26.FAAE1A020000/temperature",
-        "keyword": "CR1TM",
-        "prettyname": "rack internal temperature",
+      "blue-service-cabinet-external-temperature": {
+        "file": "/usr/local/var/tcs/sensors/services/ow/26.FE7D1A020000/temperature",
+        "keyword": "CR3TM",
+        "prettyname": "blue service cabinet external temperature",
         "group": "environmental-sensors",
         "type": "float",
         "unit": "C",
-        "correctionmodel": "MS-T:1.0:+0.024",
+        "correctionmodel": "MS-T:1.0:-1.02",
         "model": "iButtonLink MS-TH",
-        "identifier": "26.FAAE1A020000",
+        "identifier": "26.FE7D1A020000",
+        "firmware": ""
+      },
+      "blue-service-cabinet-internal-temperature": {
+        "file": "/usr/local/var/tcs/sensors/services/ow/26.F3961A020000/temperature",
+        "keyword": "CR4TM",
+        "prettyname": "blue service cabinet internal temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "MS-T:1.0:-0.51",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.F3961A020000",
         "firmware": ""
       },
       "rack-external-temperature": {
@@ -310,9 +322,21 @@
         "group": "environmental-sensors",
         "type": "float",
         "unit": "C",
-        "correctionmodel": "MS-T:1.0:+0.128",
+        "correctionmodel": "MS-T:1.0:+0.13",
         "model": "iButtonLink MS-TH",
         "identifier": "26.659DE1010000",
+        "firmware": ""
+      },
+      "rack-internal-temperature": {
+        "file": "/usr/local/var/tcs/sensors/services/ow/26.FAAE1A020000/temperature",
+        "keyword": "CR1TM",
+        "prettyname": "rack internal temperature",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "MS-T:1.0:+0.22",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.FAAE1A020000",
         "firmware": ""
       },
       "instrument-external-humidity": {
@@ -363,16 +387,28 @@
         "identifier": "26.E9AE1A020000",
         "firmware": ""
       },
-      "rack-internal-humidity": {
-        "file": "/usr/local/var/tcs/sensors/services/ow/26.FAAE1A020000/HIH4000/humidity",
-        "keyword": "CR1HM",
-        "prettyname": "rack internal humidity",
+      "blue-service-cabinet-external-humidity": {
+        "file": "/usr/local/var/tcs/sensors/services/ow/26.FE7D1A020000/HIH4000/humidity",
+        "keyword": "CR3HM",
+        "prettyname": "blue service cabinet external humidity",
         "group": "environmental-sensors",
         "type": "float",
-        "correctionmodel": "MS-H:1.0:+0.071:-0.191:-0.040:+0.111",
+        "correctionmodel": "MS-H:1.0:+0.068:-0.089:-0.021:+0.112",
         "unit": "",
         "model": "iButtonLink MS-TH",
-        "identifier": "26.FAAE1A020000",
+        "identifier": "26.FE7D1A020000",
+        "firmware": ""
+      },
+      "blue-service-cabinet-internal-humidity": {
+        "file": "/usr/local/var/tcs/sensors/services/ow/26.F3961A020000/HIH4000/humidity",
+        "keyword": "CR4HM",
+        "prettyname": "blue service cabinet internal humidity",
+        "group": "environmental-sensors",
+        "type": "float",
+        "correctionmodel": "MS-H:1.0:+0.077:-0.147:-0.042:+0.145",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.F3961A020000",
         "firmware": ""
       },
       "rack-external-humidity": {
@@ -385,6 +421,18 @@
         "unit": "",
         "model": "iButtonLink MS-TH",
         "identifier": "26.659DE1010000",
+        "firmware": ""
+      },
+      "rack-internal-humidity": {
+        "file": "/usr/local/var/tcs/sensors/services/ow/26.FAAE1A020000/HIH4000/humidity",
+        "keyword": "CR1HM",
+        "prettyname": "rack internal humidity",
+        "group": "environmental-sensors",
+        "type": "float",
+        "correctionmodel": "MS-H:1.0:+0.071:-0.191:-0.040:+0.111",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.FAAE1A020000",
         "firmware": ""
       },
       "instrument-external-light-level": {
