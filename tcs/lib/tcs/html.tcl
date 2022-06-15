@@ -702,8 +702,19 @@ namespace eval "html" {
     putshtml "</table>"
 
     putshtml "<table class=\"status\">"
+    
+    set readystate [client::getdata "opentsi" "readystate"]
+    switch -glob "$readystate" {
+    "-3.0"  { set readystatetext "local"          }
+    "-2.0"  { set readystatetext "emergency stop" }
+    "-1.0"  { set readystatetext "error"          }
+    "0.0"   { set readystatetext "shut down"      }
+    "0.*"   { set readystettext  "switching"      }
+    "1.0"   { set readystatetext "operational"    }
+    default { set readystatetext "unknown"        }
+    }
 
-    writehtmlrow "Ready state" [client::getdata "opentsi" "readystate"]
+    writehtmlrow "Ready state" "$readystate ($readystatetext)"
 
     putshtml "</table>"
 
