@@ -72,6 +72,21 @@ namespace eval "opentsi" {
     TELESCOPE.READY_STATE
     TELESCOPE.ENVIRONMENT.TEMPERATURE
     TELESCOPE.ENVIRONMENT.PRESSURE
+    AUXILIARY.SENSOR[0].VALUE
+    AUXILIARY.SENSOR[1].VALUE
+    AUXILIARY.SENSOR[2].VALUE
+    AUXILIARY.SENSOR[3].VALUE
+    AUXILIARY.SENSOR[4].VALUE
+    AUXILIARY.SENSOR[5].VALUE
+    AUXILIARY.SENSOR[6].VALUE
+    AUXILIARY.SENSOR[7].VALUE
+    AUXILIARY.SENSOR[8].VALUE
+    AUXILIARY.SENSOR[9].VALUE
+    AUXILIARY.SENSOR[10].VALUE
+    AUXILIARY.SENSOR[11].VALUE
+    AUXILIARY.SENSOR[12].VALUE
+    AUXILIARY.SENSOR[13].VALUE
+    AUXILIARY.SENSOR[14].VALUE
   } ";"]\n"
   set controller::timeoutmilliseconds         10000
   set controller::intervalmilliseconds        50
@@ -95,12 +110,42 @@ namespace eval "opentsi" {
   variable readystate         ""
   variable ambienttemperature ""
   variable ambientpressure    ""
+  variable sensor0            ""
+  variable sensor1            ""
+  variable sensor2            ""
+  variable sensor3            ""
+  variable sensor4            ""
+  variable sensor5            ""
+  variable sensor6            ""
+  variable sensor7            ""
+  variable sensor8            ""
+  variable sensor9            ""
+  variable sensor10           ""
+  variable sensor11           ""
+  variable sensor12           ""
+  variable sensor13           ""
+  variable sensor14           ""
 
   proc updatecontrollerdata {controllerresponse} {
 
     variable readystate
     variable ambienttemperature
     variable ambientpressure
+    variable sensor0
+    variable sensor1
+    variable sensor2
+    variable sensor3
+    variable sensor4
+    variable sensor5
+    variable sensor6
+    variable sensor7
+    variable sensor8
+    variable sensor9
+    variable sensor10
+    variable sensor11
+    variable sensor12
+    variable sensor13
+    variable sensor14
 
     set controllerresponse [string trim $controllerresponse]
     set controllerresponse [string trim $controllerresponse "\0"]
@@ -155,6 +200,11 @@ namespace eval "opentsi" {
       return false
     }
 
+    if {[scan $controllerresponse "%*d DATA INLINE AUXILIARY.SENSOR\[%d\].VALUE=%s" i value] == 2} {
+      set sensor$i $value
+      return false
+    }
+
     if {[regexp {[0-9]+ DATA INLINE } $controllerresponse] == 1} {
       log::debug "status: ignoring DATA INLINE response."
       return false
@@ -177,6 +227,25 @@ namespace eval "opentsi" {
     server::setdata "readystate"         $readystate
     server::setdata "ambienttemperature" $ambienttemperature
     server::setdata "ambientpressure"    $ambientpressure
+    server::setdata "sensor0"            $sensor0
+    server::setdata "sensor1"            $sensor1
+    server::setdata "sensor2"            $sensor2
+    server::setdata "sensor3"            $sensor3
+    server::setdata "sensor4"            $sensor4
+    server::setdata "sensor5"            $sensor5
+    server::setdata "sensor6"            $sensor6
+    server::setdata "sensor7"            $sensor7
+    server::setdata "sensor8"            $sensor8
+    server::setdata "sensor9"            $sensor9
+    server::setdata "sensor10"           $sensor10
+    server::setdata "sensor10"           $sensor11
+    server::setdata "sensor12"           $sensor12
+    server::setdata "sensor13"           $sensor13
+    server::setdata "sensor14"           $sensor14
+
+    foreach i {0 1 2 3 4 5 6 7 8 9 10 11 12 13 14} {
+      log::writesensorsfile "opentsi-$i" [set sensor$i] $timestamp
+    }
 
     server::setstatus "ok"
 
