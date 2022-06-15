@@ -125,6 +125,7 @@
   },
   "html": {
     "servers": [
+      "covers",
       "executor",
       "instrument",
       "moon",
