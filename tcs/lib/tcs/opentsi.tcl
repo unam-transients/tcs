@@ -44,10 +44,12 @@ namespace eval "opentsi" {
 
   ######################################################################
 
-  server::setdata "timestamp"        [utcclock::combinedformat now]
-  server::setdata "readystate"       ""
-  server::setdata "referencestate"   ""
-  server::setdata "errorstate"       ""
+  server::setdata "timestamp"          [utcclock::combinedformat now]
+  server::setdata "readystate"         ""
+  server::setdata "referencestate"     ""
+  server::setdata "errorstate"         ""
+  server::setdata "ambienttemperature" ""
+  server::setdata "ambientpressure"    ""
 
   variable settledelayseconds 5
 
@@ -68,6 +70,8 @@ namespace eval "opentsi" {
   set controller::connectiontype              "persistent"
   set controller::statuscommand "$statuscommandidentifier GET [join {
     TELESCOPE.READY_STATE
+    TELESCOPE.ENVIRONMENT.TEMPERATURE
+    TELESCOPE.ENVIRONMENT.PRESSURE
   } ";"]\n"
   set controller::timeoutmilliseconds         10000
   set controller::intervalmilliseconds        50
@@ -88,11 +92,15 @@ namespace eval "opentsi" {
     }
   }
 
-  variable readystate
+  variable readystate         ""
+  variable ambienttemperature ""
+  variable ambientpressure    ""
 
   proc updatecontrollerdata {controllerresponse} {
 
     variable readystate
+    variable ambienttemperature
+    variable ambientpressure
 
     set controllerresponse [string trim $controllerresponse]
     set controllerresponse [string trim $controllerresponse "\0"]
@@ -137,6 +145,16 @@ namespace eval "opentsi" {
       return false
     }
 
+    if {[scan $controllerresponse "%*d DATA INLINE TELESCOPE.ENVIRONMENT.TEMPERATURE=%f" value] == 1} {
+      set ambienttemperature $value
+      return false
+    }
+
+    if {[scan $controllerresponse "%*d DATA INLINE TELESCOPE.ENVIRONMENT.PRESSURE=%f" value] == 1} {
+      set ambientpressure $value
+      return false
+    }
+
     if {[regexp {[0-9]+ DATA INLINE } $controllerresponse] == 1} {
       log::debug "status: ignoring DATA INLINE response."
       return false
@@ -155,8 +173,10 @@ namespace eval "opentsi" {
       log::info "ready state changed from $lastreadystate to $readystate."
     }
 
-    server::setdata "timestamp"        $timestamp
-    server::setdata "readystate"       $readystate
+    server::setdata "timestamp"          $timestamp
+    server::setdata "readystate"         $readystate
+    server::setdata "ambienttemperature" $ambienttemperature
+    server::setdata "ambientpressure"    $ambientpressure
 
     server::setstatus "ok"
 

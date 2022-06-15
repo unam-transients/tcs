@@ -719,6 +719,8 @@ namespace eval "html" {
     }
 
     writehtmlrow "Ready state" "$readystate ($readystatetext)"
+    writehtmlrow "Ambient temperature" [formatifok "%.1f C"    [client::getdata "opentsi" "ambienttemperature"]]
+    writehtmlrow "Ambient pressure"    [formatifok "%.1f mbar" [client::getdata "opentsi" "ambientpressure"   ]]
 
     putshtml "</table>"
 
