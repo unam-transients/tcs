@@ -239,7 +239,22 @@
       "C0-service-cabinet-internal-temperature",
       "C0-service-cabinet-internal-humidity",
       "C0-service-cabinet-external-temperature",
-      "C0-service-cabinet-external-humidity"
+      "C0-service-cabinet-external-humidity",
+      "telescope-cabinet-temperature",
+      "telescope-manual-control-speed",
+      "telescope-pneumatics-pressure",
+      "telescope-M1-temperature",
+      "telescope-M1-cell-temperature",
+      "telescope-M2-temperature",
+      "telescope-M3-temperature",
+      "telescope-spider-1-temperature",
+      "telescope-spider-2-temperature",
+      "telescope-pivot-box-1-temperature",
+      "telescope-pivot-box-2-temperature",
+      "telescope-front-ring-1-temperature",
+      "telescope-front-ring-2-temperature",
+      "telescope-fork-arm-1-temperature",
+      "telescope-fork-arm-2-temperature"
     ],
     "sensors": {
       // instrument-external            = 7E.983100001000

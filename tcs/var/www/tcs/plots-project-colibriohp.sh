@@ -77,6 +77,11 @@ EOF
     cat $(ls [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/log/sensors-data.txt | sed -n "1,/$whendate/p" | tail -$(expr $days + 1)) | awk "NR % $lines == 0 { print; }"
   ) >sensors.dat
 
+  (
+    cd /usr/local/var/tcs
+    cat $(ls [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/log/weather-data.txt | sed -n "1,/$whendate/p" | tail -$(expr $days + 1)) | awk "NR % $lines == 0 { print; }"
+  ) >weather.dat
+
   gnuplot <<EOF
 
     set rmargin 40
@@ -96,12 +101,12 @@ EOF
     set style line  3 linewidth 1 linecolor  3 pointtype 7 pointsize 0.5
     set style line  4 linewidth 1 linecolor  4 pointtype 7 pointsize 0.5
     set style line  5 linewidth 1 linecolor  5 pointtype 7 pointsize 0.5
-    set style line  6 linewidth 1 linecolor  6 pointtype 7 pointsize 0.5
-    set style line  7 linewidth 1 linecolor  7 pointtype 7 pointsize 0.5
-    set style line  8 linewidth 1 linecolor  8 pointtype 7 pointsize 0.5
-    set style line  9 linewidth 1 linecolor  9 pointtype 7 pointsize 0.5
-    set style line 10 linewidth 1 linecolor 10 pointtype 7 pointsize 0.5
-    set style line 11 linewidth 1 linecolor 11 pointtype 7 pointsize 0.5
+    set style line  6 linewidth 1 linecolor  7 pointtype 7 pointsize 0.5
+    set style line  7 linewidth 1 linecolor  8 pointtype 7 pointsize 0.5
+    set style line  8 linewidth 1 linecolor  9 pointtype 7 pointsize 0.5
+    set style line  9 linewidth 1 linecolor 10 pointtype 7 pointsize 0.5
+    set style line 10 linewidth 1 linecolor 11 pointtype 7 pointsize 0.5
+    set style line 11 linewidth 1 linecolor 12 pointtype 7 pointsize 0.5
 
     set key outside
     
@@ -235,13 +240,14 @@ EOF
       "sensors.dat" using 26:27 title "Rack External"               with points linestyle 2, \
       "sensors.dat" using 62:63 title "C0 Service Cabinet Internal" with points linestyle 3, \
       "sensors.dat" using 66:67 title "C0 Service Cabinet External" with points linestyle 4, \
-      "C0.dat"      using 1:11  title "C0 Power Supply"             with points linestyle 5
+      "C0.dat"      using 1:11  title "C0 Power Supply"             with points linestyle 5, \
+      "sensors.dat" using 70:71 title "Telescope Cabinet"           with points linestyle 6
       
-   set format x "%Y%m%dT%H"
-   set xtics rotate by 90 right
-   set xlabel "UTC"
+    set format x "%Y%m%dT%H"
+    set xtics rotate by 90 right
+    set xlabel "UTC"
 
-   set yrange [0:100]
+    set yrange [0:100]
     set ytics 0,10,100
     set format y "%g"
     set ylabel "RH (%)"
@@ -254,9 +260,61 @@ EOF
 
     unset multiplot
 
+    set terminal pngcairo enhanced size 1200,1800
+    set output "telescope.png.new"
+
+    set multiplot layout 7,1
+
+    set format x ""
+    set xlabel ""
+
+    set yrange [0:+50]
+    set ytics 0,10,50
+    set format y "%+.0f"
+    set ylabel "Temperature (C)"
+    set key on
+    plot \
+      "sensors.dat" using 76:77 title "M1"                  with points linestyle 1, \
+      "sensors.dat" using 80:81 title "M2"                  with points linestyle 2, \
+      "sensors.dat" using 82:83 title "M3"                  with points linestyle 3, \
+      "sensors.dat" using 2:3   title "Instrument external" with points linestyle 4, \
+      "weather.dat" using 1:2   title "External"            with points linestyle 5
+
+    set yrange [-10:+20]
+    set ytics -10,5,20
+    set format y "%+.0f"
+    set ylabel "Temperature (C)"
+    set key on
+    plot \
+      "sensors.dat" using 76:(\$77-\$3) title "M1 - Instrument external" with points linestyle 1, \
+      "sensors.dat" using 76:(\$81-\$3) title "M2 - Instrument external" with points linestyle 2, \
+      "sensors.dat" using 76:(\$83-\$3) title "M3 - Instrument external" with points linestyle 3
+      
+    set format x "%Y%m%dT%H"
+    set xtics rotate by 90 right
+    set xlabel "UTC"
+
+    set yrange [0:+50]
+    set ytics 0,10,50
+    set format y "%+.0f"
+    set ylabel "Temperature (C)"
+    set key on
+    plot \
+      "sensors.dat" using 78:79 title "M1 Cell"      with points linestyle 1, \
+      "sensors.dat" using 84:85 title "Spider 1"     with points linestyle 2, \
+      "sensors.dat" using 86:87 title "Spider 2"     with points linestyle 3, \
+      "sensors.dat" using 88:89 title "Pivot Box 1"  with points linestyle 4, \
+      "sensors.dat" using 90:91 title "Pivot Box 2"  with points linestyle 5, \
+      "sensors.dat" using 92:93 title "Front Ring 1" with points linestyle 6, \
+      "sensors.dat" using 94:95 title "Front Ring 2" with points linestyle 7, \
+      "sensors.dat" using 96:97 title "Fork Arm 1"   with points linestyle 8, \
+      "sensors.dat" using 98:99 title "Form Arm 2"   with points linestyle 9
+
+    unset multiplot
+
 EOF
 
-  for component in ccds instrument control-room
+  for component in ccds instrument control-room telescope
   do
     mv $component.png.new $component-$days.png
   done
