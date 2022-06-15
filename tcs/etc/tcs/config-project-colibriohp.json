@@ -722,5 +722,8 @@
     "type": "colibriohp",
     "idleha": "0h",
     "idledelta": "0d"
+  },
+  "weather": {
+    "windaveragespeedlimit": "30"
   }
 }

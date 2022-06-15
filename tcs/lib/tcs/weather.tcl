@@ -48,10 +48,10 @@ namespace eval "weather" {
   server::setdata "windaveragespeedlimit" $windaveragespeedlimit
   server::setdata "humidityalarm" "unknown"
   server::setdata "windalarm"     "unknown"
-  server::setdata "rainalarm"      "unknown"
-  server::setdata "lightlevel"   "unknown"
-  server::setdata "cloudiness"   "unknown"
-  server::setdata "mustbeclosed" "unknown"
+  server::setdata "rainalarm"     "unknown"
+  server::setdata "lightlevel"    "unknown"
+  server::setdata "cloudiness"    "unknown"
+  server::setdata "mustbeclosed"  "unknown"
 
   proc parsedata {datalines} {
 
@@ -72,12 +72,12 @@ namespace eval "weather" {
       } {
       
         # This is the SATINO AAG station. It doesn't have an anemometer.
-
-        set windaveragespeed   "unknown"
-        set windgustspeed      "unknown"
-        set windaverageazimuth "unknown"
-        set rainrate           "unknown"
-        set pressure           "unknown"
+        
+        set windaveragespeed    "unknown"
+        set windgustspeed       "unknown"
+        set windaverageazimuth  "unknown"
+        set rainrate            "unknown"
+        set pressure            "unknown"
         
         switch $cloudindex {
           1 {
@@ -134,7 +134,49 @@ namespace eval "weather" {
           }
         }
         
-        if {$rainindex > 1} {
+        if {$rainindex == 0} {
+          set rainalarm false
+        } else {
+          set rainalarm true
+        }
+        
+        if {$lightindex == 0} {
+          set lightlevel "unknown"
+        } else {$lightindex == 1} {
+          set lightlevel "dark"
+        } else {
+          set lightlevel "bright"
+        }
+        
+        # The wind speed is sometimes close to zero but negative.
+        if {$windaveragespeed < 0} {
+          set windaveragespeed 0.0
+        }
+
+      } elseif {
+        [scan $dataline \
+          "b.0 %s %s %*s %*f %f %*f %*f %f %f %f %f %f %*f %*f %f %*f %*f %*f %*f %*f %*f %*f %*f %*f %f %*d %d %d %*d %*d %*d %d"\
+          date time windaverageazimuth windaveragespeed windgustspeed temperature humidity pressure rainrate dewpoint rainindex cloudindex lightindex] == 13
+      } {
+      
+        # This is the COLIBRÍ PLC
+        
+        switch $cloudindex {
+          1 {
+            set cloudiness "clear"
+          }
+          2 {
+            set cloudiness "light"
+          }
+          3 {
+            set cloudiness "heavy"
+          }
+          default {
+            set cloudiness "unknown"
+          }
+        }
+        
+        if {$rainindex > 1 || $rainrate > 0} {
           set rainalarm true
         } else {
           set rainalarm false
@@ -145,11 +187,10 @@ namespace eval "weather" {
         } else {
           set lightlevel "dark"
         }
-        
-        # The wind speed is sometimes close to zero but negative.
-        if {$windaveragespeed < 0} {
-          set windaveragespeed 0.0
-        }
+
+        # Convert from m/s to km/h        
+        set windaveragespeed [expr {$windaveragespeed * 3.6}]
+        set windgustspeed    [expr {$windgustspeed * 3.6}]
 
       } elseif {
         [scan $dataline "%s %s %f %*f %*f %f %f %f %f %f %f %f" \
