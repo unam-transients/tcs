@@ -312,9 +312,49 @@ EOF
 
     unset multiplot
 
+    set terminal pngcairo enhanced size 1200,1800
+    set output "weather.png.new"
+
+    set multiplot layout 7,1
+
+    set format x ""
+    set xlabel ""
+
+    set yrange [-20:30]
+    set ytics -20,5,30
+    set format y "%+g"
+    set ylabel "Temperature (C)"
+    set key on
+    plot \
+      "weather.dat" using 1:2 title "Temperature" with lines linestyle 1, \
+      ""            using 1:6 title "Dewpoint"    with lines linestyle 2
+
+    set yrange [0:100]
+    set ytics 0,10,100
+    set format y "%g"
+    set ylabel "RH (%)"
+    set key on
+    plot \
+      "weather.dat" using 1:(\$4*100) title "Humidity" with lines linestyle 1
+
+    set format x "%Y%m%dT%H"
+    set xtics rotate by 90 right
+    set xlabel "UTC"
+
+    set yrange [0:100]
+    set ytics 0,10,100
+    set format y "%g"
+    set ylabel "Wind Speed (km/h)"
+    set key on
+    plot \
+      "weather.dat" using 1:10 title "Wind Average Speed"  with lines linestyle 1, \
+      ""            using 1:11 title "Wind Gust Speed" with lines linestyle 2
+
+    unset multiplot
+
 EOF
 
-  for component in ccds instrument control-room telescope
+  for component in ccds instrument control-room telescope weather
   do
     mv $component.png.new $component-$days.png
   done
