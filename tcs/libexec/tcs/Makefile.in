@@ -143,6 +143,7 @@ installbins_project_colibriohp := \
 	opentsiserver                 \
 	plcserver                     \
 	secondaryserver               \
+	updateweatherfiles-colibri    \
 	updateweatherfiles-satino
 	
 installbins_project_ddoticu :=    \
