@@ -84,7 +84,7 @@ colibricito)
   allargs="selector mount weather sun moon target html log"
   ;;
 colibriohp-services)
-  allargs="selector executor instrument telescope opentsi sun moon target weather power sensors html log"
+  allargs="selector executor instrument telescope covers opentsi sun moon target weather power sensors html log"
   ;;
 colibriohp-control)
   allargs="selector executor instrument telescope mount seconday covers plc opentsi sun moon target weather power sensors"
