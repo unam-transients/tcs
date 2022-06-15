@@ -82,8 +82,7 @@ EOF
   colibriohp-control)
     cat <<"EOF"
 *   *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles services control detectors
-*   *  *  *  *  /usr/local/bin/tcs updateweatherfiles-oan
-00  18 *  *  *  /usr/local/bin/tcs updateweatherfiles-oan -a
+*   *  *  *  *  /usr/local/bin/tcs updateweatherfiles-satino
 *   *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
 #*   *  *  *  *  rsync -aH --delete /usr/local/var/tcs/selector rsync://transients.astrossp.unam.mx/ddoti-raw/
 #00  *  *  *  *  rsync -aH /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/ddoti-raw/ 
@@ -93,8 +92,7 @@ EOF
   colibriohp-services)
     cat <<"EOF"
 *   *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles services detectors
-*   *  *  *  *  /usr/local/bin/tcs updateweatherfiles-oan
-00  18 *  *  *  /usr/local/bin/tcs updateweatherfiles-oan -a
+*   *  *  *  *  /usr/local/bin/tcs updateweatherfiles-satino
 *   *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
 00  00 *  *  *  /usr/local/bin/tcs updatevarlatestlink; rsync -aH /usr/local/etc/tcs/blocks /usr/local/var/tcs/latest/
 

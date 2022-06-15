@@ -69,7 +69,7 @@ plc=$(
     echo "AK1@"
     sleep 1
   done |
-  nc -w 1 plc 5001 | 
+  nc -w 1 192.168.128.60 5001 | 
   tr -d '\r' |
   sed -n 's/,$//;s/,/ /gp' |
   awk '
