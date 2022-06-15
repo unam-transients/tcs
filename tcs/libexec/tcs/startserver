@@ -85,7 +85,7 @@ colibricito)
   allargs="log 2 html 1 target 1 moon sun weather 1 mount 1 selector"
   ;;
 colibriohp-services)
-  allargs="log 1 html 1 sensors power weather plc 1 target 1 moon sun 1 opentsi 1 covers 1 telescope instrument 1 executor selector"
+  allargs="log 1 html 1 sensors power weather plc 1 target 1 moon sun 1 opentsi 1 covers secondary 1 telescope instrument 1 executor selector"
   ;;
 colibriohp-control)
   allargs="sensors power weather plc 1 target 1 moon sun 1 opentsi plc 1 covers secondary mount 1 telescope instrument 1 executor selector"

@@ -29,7 +29,7 @@ package require "log"
 package require "server"
 
 config::setdefaultvalue "secondary" "controllerport" "65432"
-config::setdefaultvalue "secondary" "controllerhost" "mount"
+config::setdefaultvalue "secondary" "controllerhost" "opentsi"
 
 package provide "secondaryopentsi" 0.0
 
@@ -189,7 +189,7 @@ namespace eval "secondary" {
       } else {
         set moving false
       }
-      log::info "moving is $moving."
+      log::debug "moving is $moving."
     }
     if {[scan $controllerresponse "%*d DATA INLINE POSITION.INSTRUMENTAL.FOCUS.LIMIT_STATE=%d" value] == 1} {
       if {$value & (1 << 0 | 1 << 8)} {
