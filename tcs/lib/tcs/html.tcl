@@ -533,10 +533,14 @@ namespace eval "html" {
       writehtmlrow "Requested covers" [client::getdata "covers" "requestedcovers"]
       writehtmlrow "Current covers" [client::getdata "covers" "covers"]
       if {![catch {client::getdata "covers" "port2cover"}]} {
-        writehtmlrow "Current port 2 cover" [client::getdata "covers" "port2cover"]
+        set name [client::getdata "covers" "port2name"]
+        set cover [client::getdata "covers" "port2cover"]
+        writehtmlrow "Current port 2 cover ($name)" $cover
       }
       if {![catch {client::getdata "covers" "port3cover"}]} {
-        writehtmlrow "Current port 3 cover" [client::getdata "covers" "port3cover"]
+        set name [client::getdata "covers" "port3name"]
+        set cover [client::getdata "covers" "port3cover"]
+        writehtmlrow "Current port 3 cover ($name)" $cover
       }
       if {![catch {client::getdata "covers" "mode"}]} {
         writehtmlrow "Mode" [client::getdata "covers" "mode"]

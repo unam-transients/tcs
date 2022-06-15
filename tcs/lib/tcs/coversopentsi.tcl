@@ -30,6 +30,8 @@ package require "server"
 
 config::setdefaultvalue "covers" "controllerport" "65432"
 config::setdefaultvalue "covers" "controllerhost" "opentsi"
+config::setdefaultvalue "covers" "port2name"      "port2"
+config::setdefaultvalue "covers" "port3name"      "port3"
 
 package provide "coversopentsi" 0.0
 
@@ -48,6 +50,8 @@ namespace eval "covers" {
   server::setdata "covers"           ""
   server::setdata "port2cover"       ""
   server::setdata "port3cover"       ""
+  server::setdata "port2name"        [config::getvalue "covers" "port2name"]
+  server::setdata "port3name"        [config::getvalue "covers" "port3name"]
   server::setdata "timestamp"        [utcclock::combinedformat now]
   server::setdata "settled"          false
   server::setdata "stoppedtimestamp" [utcclock::combinedformat now]

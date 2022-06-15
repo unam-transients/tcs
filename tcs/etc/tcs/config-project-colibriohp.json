@@ -111,7 +111,9 @@
     }
   },
   "covers": {
-    "type": "opentsi"
+    "type": "opentsi",
+    "port2name": "right",
+    "port3name": "left"
   },
   "executor": {},
   "fitsheader": {
