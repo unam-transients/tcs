@@ -137,7 +137,7 @@ namespace eval "sensors" {
               set rawvalue $filevalue
             }
           }
-        }         
+        }
         default {
           set rawvalue $filevalue
         }
@@ -197,21 +197,24 @@ namespace eval "sensors" {
   proc formatsensorvalue {name value} {
     if {[string is double -strict $value]} {
       switch -glob $name {
-        *-temperature {
+        "*-temperature" {
           set value [format "%+.1f" $value]
         }
-        *-humidity {
+        "*-humidity" {
           set value [format "%.2f" $value]
         }
-        *-chamber-pressure {
+        "*-chamber-pressure" {
           set value [format "%.2e" $value]
         }
-        *-pressure {
+        "*-pressure" {
           set value [format "%.1f" $value]
         }
-        *-current {
+        "*-current" {
           set value [format "%.1f" $value]
         }
+        "*-control-speed" {
+          set value [format "%.1f" $value]
+        }         
       }
     }
     return $value
