@@ -207,8 +207,8 @@ EOF
     set xtics rotate by 90 right
     set xlabel "UTC"
 
-    set yrange [750:800]
-    set ytics 750,10,800
+    set yrange [900:1000]
+    set ytics 900,10,1000
     set format y "%.0f"
     set ylabel "Pressure (mbar)"
     set key on
