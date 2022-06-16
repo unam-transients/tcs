@@ -53,6 +53,13 @@ namespace eval "telescope" {
 
   ######################################################################
   
+  variable withtelescopecontroller
+  if {[lsearch $mechanisms "telescopecontroller"] == -1} {
+    set withtelescopecontroller false
+  } else {
+    set withtelescopecontroller true
+  }
+
   variable withmount
   if {[lsearch $mechanisms "mount"] == -1} {
     set withmount false
@@ -656,6 +663,7 @@ namespace eval "telescope" {
   proc parkactivitycommand {} {
     set start [utcclock::seconds]
     log::info "parking."
+    variable withtelescopecontroller
     variable withmount
     variable withdome
     variable withguider
@@ -687,12 +695,18 @@ namespace eval "telescope" {
     if {$withmount} {
       client::wait "mount"
     }
+    if {$withtelescopecontroller} {
+      log::info "switching off telescope controller."
+      client::request "telescopecontroller" "switchoff"
+      client::wait "telescopecontroller"
+    }
     log::info [format "finished parking after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc unparkactivitycommand {} {
     set start [utcclock::seconds]
     log::info "unparking."
+    variable withtelescopecontroller
     variable withmount
     variable withdome
     variable withguider
@@ -705,6 +719,11 @@ namespace eval "telescope" {
     if {$withdome} {
       client::request "dome" "stop"
       client::wait "dome"  
+    }
+    if {$withtelescopecontroller} {
+      log::info "switching on telescope controller."
+      client::request "telescopecontroller" "switchon"
+      client::wait "telescopecontroller"
     }
     if {$withmount} {
       client::request "mount" "preparetomove"

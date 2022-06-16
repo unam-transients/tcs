@@ -41,25 +41,19 @@ namespace eval "telescope" {
   
   variable validpointingmodes { none }
   variable validguidingmodes  { none }
-  variable mechanisms { covers secondary mount }
+  variable mechanisms { telescopecontroller covers secondary mount }
   variable withlights false
   variable withheater false
 
   ######################################################################
 
   proc initializeprolog {} {
-    log::info "initializing telescope controller."
-    client::request "telescopecontroller" "initialize"
-    client::wait "telescopecontroller" 
   }
 
   proc initializeepilog {} {
   }
 
   proc openprolog {} {
-    log::info "opening telescope controller."
-    client::request "telescopecontroller" "open"
-    client::wait "telescopecontroller" 
   }
 
   proc openepilog {} {
@@ -69,9 +63,6 @@ namespace eval "telescope" {
   }
 
   proc closeepilog {} {
-    log::info "closing telescope controller."
-    client::request "telescopecontroller" "close"
-    client::wait "telescopecontroller" 
   }
 
   ######################################################################

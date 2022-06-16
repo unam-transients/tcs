@@ -274,7 +274,7 @@ namespace eval "telescopecontroller" {
     controller::pushcommand "$currentcommandidentifier $command\n"
   }
 
-  proc switchon {} {
+  proc switchonhardware {} {
     variable readystate
     sendcommand "SET TELESCOPE.POWER=1"
     while {$readystate != 1.0} {
@@ -282,7 +282,7 @@ namespace eval "telescopecontroller" {
     }
   }
   
-  proc switchoff {} {
+  proc switchoffhardware {} {
     variable readystate
     sendcommand "SET TELESCOPE.POWER=0"
     while {$readystate != 0.0} {
@@ -290,7 +290,7 @@ namespace eval "telescopecontroller" {
     }
   }
   
-  proc stop {} {
+  proc stophardware {} {
     sendcommand "SET TELESCOPE.STOP=1"
   }
   
@@ -309,31 +309,31 @@ namespace eval "telescopecontroller" {
   proc initializeactivitycommand {} {
     set start [utcclock::seconds]
     log::info "initializing."
-    switchon
+    switchonhardware
     set end [utcclock::seconds]
     log::info [format "finished initializing after %.1f seconds." [utcclock::diff $end $start]]
   }
 
-  proc openactivitycommand {} {
+  proc switchonactivitycommand {} {
     set start [utcclock::seconds]
-    log::info "opening."
-    switchon
+    log::info "switching on."
+    switchonhardware
     set end [utcclock::seconds]
-    log::info [format "finished opening after %.1f seconds." [utcclock::diff $end $start]]
+    log::info [format "finished switching on after %.1f seconds." [utcclock::diff $end $start]]
   }
 
-  proc closeactivitycommand {} {
+  proc switchoffactivitycommand {} {
     set start [utcclock::seconds]
-    log::info "closing."
-    switchoff
+    log::info "switching off."
+    switchoffhardware
     set end [utcclock::seconds]
-    log::info [format "finished closing after %.1f seconds." [utcclock::diff $end $start]]
+    log::info [format "finished switching off after %.1f seconds." [utcclock::diff $end $start]]
   }
 
   proc stopactivitycommand {previousactivity} {
     set start [utcclock::seconds]
     log::info "stopping."
-    stop
+    stophardware
     set end [utcclock::seconds]
     log::info [format "finished stopping after %.1f seconds." [utcclock::diff $end $start]]
   }
@@ -358,16 +358,16 @@ namespace eval "telescopecontroller" {
     server::newactivitycommand "resetting" [server::getstoppedactivity] telescopecontroller::stopactivitycommand
   }
 
-  proc open {} {
+  proc switchon {} {
     server::checkstatus
     server::checkactivityformove
-    server::newactivitycommand "opening" "idle" telescopecontroller::openactivitycommand
+    server::newactivitycommand "switchingon" "idle" telescopecontroller::switchonactivitycommand
   }
 
-  proc close {} {
+  proc switchoff {} {
     server::checkstatus
     server::checkactivityformove
-    server::newactivitycommand "closing" "idle" telescopecontroller::closeactivitycommand
+    server::newactivitycommand "switchingoff" "idle" telescopecontroller::switchoffactivitycommand
   }
 
   ######################################################################
