@@ -708,17 +708,17 @@ namespace eval "html" {
     putshtml "<table class=\"status\">"
     
     set readystate [client::getdata "opentsi" "readystate"]
-    switch -glob "$readystate" {
-    "-3.0"  { set readystatetext "local"          }
-    "-2.0"  { set readystatetext "emergency stop" }
-    "-1.0"  { set readystatetext "error"          }
-    "0.0"   { set readystatetext "shut down"      }
-    "0.*"   { set readystettext  "switching"      }
-    "1.0"   { set readystatetext "operational"    }
-    default { set readystatetext "unknown"        }
+    switch -glob $readystate {
+      "-3.0"  { set readystatetext "local"          }
+      "-2.0"  { set readystatetext "emergency stop" }
+      "-1.0"  { set readystatetext "error"          }
+      "0.0"   { set readystatetext "shut down"      }
+      "0.*"   { set readystatetext "switching"      }
+      "1.0"   { set readystatetext "operational"    }
+      default { set readystatetext "unknown"        }
     }
 
-    writehtmlrow "Ready state" "$readystate ($readystatetext)"
+    writehtmlfullrow "Ready state" "$readystate ($readystatetext)"
     writehtmlrow "Ambient temperature" [formatifok "%.1f C"    [client::getdata "opentsi" "ambienttemperature"]]
     writehtmlrow "Ambient pressure"    [formatifok "%.1f mbar" [client::getdata "opentsi" "ambientpressure"   ]]
 
