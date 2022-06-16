@@ -320,7 +320,7 @@ namespace eval "mount" {
     set mountdelta          $pendingmountdelta
     set mountst             $pendingmountst
     
-    set mountha [astrometry::foldradsymmetric [expr {$mountalpha - $mountst}]]
+    set mountha [astrometry::foldradsymmetric [expr {$mountst - $mountalpha}]]
 
     set timestamp [utcclock::combinedformat "now"]
 
