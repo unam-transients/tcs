@@ -697,17 +697,17 @@ namespace eval "html" {
 
   }
 
-  proc writeopentsi {} {
+  proc writetelescopecontroller {} {
 
     putshtml "<table class=\"status\">"
 
-    writehtmlstatusblock "opentsi"
+    writehtmlstatusblock "telescopecontroller"
 
     putshtml "</table>"
 
     putshtml "<table class=\"status\">"
     
-    set readystate [client::getdata "opentsi" "readystate"]
+    set readystate [client::getdata "telescopecontroller" "readystate"]
     switch -glob $readystate {
       "-3.0"  { set readystatetext "local"          }
       "-2.0"  { set readystatetext "emergency stop" }
@@ -719,8 +719,8 @@ namespace eval "html" {
     }
 
     writehtmlfullrow "Ready state" "$readystate ($readystatetext)"
-    writehtmlrow "Ambient temperature" [formatifok "%.1f C"    [client::getdata "opentsi" "ambienttemperature"]]
-    writehtmlrow "Ambient pressure"    [formatifok "%.1f mbar" [client::getdata "opentsi" "ambientpressure"   ]]
+    writehtmlrow "Ambient temperature" [formatifok "%.1f C"    [client::getdata "telescopecontroller" "ambienttemperature"]]
+    writehtmlrow "Ambient pressure"    [formatifok "%.1f mbar" [client::getdata "telescopecontroller" "ambientpressure"   ]]
 
     putshtml "</table>"
 
@@ -1869,42 +1869,42 @@ if {false} {
     putshtml "<table class=\"status\">"
     
     set serverprettynamedict {
-      C0            {C0}
-      C1            {C1}
-      C2            {C2}
-      C3            {C3}
-      C4            {C4}
-      C5            {C5}
-      covers        {Covers}
-      cryostat      {Cryostat}
-      dome          {Dome}
-      enclosure     {Enclosure}
-      executor      {Executor}
-      fans          {Fans}
-      gcntan        {GCN/TAN}
-      guider        {Guider}
-      heater        {Heater}
-      html          {HTML}
-      opentsi       {OpenTSI}
-      power         {Power}
-      inclinometers {Inclinometers}
-      instrument    {Instrument}
-      lights        {Lights}
-      moon          {Moon}
-      mount         {Mount}
-      nefinder      {NE Finder}
-      nwfinder      {NW Finder}
-      plc           {PLC}
-      secondary     {Secondary}
-      sefinder      {SE Finder}
-      selector      {Selector}
-      sensors       {Sensors}
-      shutters      {Shutters}
-      sun           {Sun}
-      supervisor    {Supervisor}
-      target        {Target}
-      telescope     {Telescope}
-      weather       {Weather}
+      C0                  {C0}
+      C1                  {C1}
+      C2                  {C2}
+      C3                  {C3}
+      C4                  {C4}
+      C5                  {C5}
+      covers              {Covers}
+      cryostat            {Cryostat}
+      dome                {Dome}
+      enclosure           {Enclosure}
+      executor            {Executor}
+      fans                {Fans}
+      gcntan              {GCN/TAN}
+      guider              {Guider}
+      heater              {Heater}
+      html                {HTML}
+      telescopecontroller {Telescope Controller}
+      power               {Power}
+      inclinometers       {Inclinometers}
+      instrument          {Instrument}
+      lights              {Lights}
+      moon                {Moon}
+      mount               {Mount}
+      nefinder            {NE Finder}
+      nwfinder            {NW Finder}
+      plc                 {PLC}
+      secondary           {Secondary}
+      sefinder            {SE Finder}
+      selector            {Selector}
+      sensors             {Sensors}
+      shutters            {Shutters}
+      sun                 {Sun}
+      supervisor          {Supervisor}
+      target              {Target}
+      telescope           {Telescope}
+      weather             {Weather}
     }
     variable servers
     foreach server $servers {

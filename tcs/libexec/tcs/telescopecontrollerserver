@@ -4,7 +4,7 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: opentsiserver-project-ratir 3575 2020-05-23 19:47:32Z Alan $
+# $Id: telescopecontrollerserver-project-ratir 3575 2020-05-23 19:47:32Z Alan $
 
 ########################################################################
 
@@ -32,7 +32,7 @@ source [file join $::env(tcsprefix) "lib" "tcs" "packages.tcl"]
 
 package require "server"
 server::start {
-  package require opentsiserver
-  opentsiserver::start
+  package require telescopecontrollerserver
+  telescopecontrollerserver::start
 }
 

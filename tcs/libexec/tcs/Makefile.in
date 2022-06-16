@@ -140,7 +140,7 @@ installbins_project_ddotioan :=   \
 installbins_project_colibriohp := \
     coversserver                  \
 	C0server                      \
-	opentsiserver                 \
+	telescopecontrollerserver     \
 	plcserver                     \
 	secondaryserver               \
 	updateweatherfiles-colibri    \
