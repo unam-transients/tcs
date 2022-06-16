@@ -132,19 +132,20 @@
       "instrument",
       "moon",
       "mount",
-      "opentsi",
       "power",
       "secondary",
       "selector",
       "sensors",
       "sun",
       "target",
+      "telescope",
+      "telescopecontroller",
       "weather"
     ]
   },
   "instrument": {
     "activedetectors": [
-      "C0"
+//      "C0"
     ],
     "detectors": [
       "C0"
@@ -198,10 +199,10 @@
     "type": "opentsi",
     "initialz0": "0",
     "minz": "0",
-    "maxz": "40",
-    "allowedzerror": "0.05",
-    "zdeadzonewidth": "0.05",
-    "dztweak": "-1"
+    "maxz": "40000",
+    "allowedzerror": "5",
+    "zdeadzonewidth": "5",
+    "dztweak": "-1000"
   },
   "selector": {},
   "sensors": {
@@ -887,6 +888,9 @@
     "type": "colibriohp",
     "idleha": "0h",
     "idledelta": "0d"
+  },
+  "telescopecontroller": {
+    "type": "opentsi"
   },
   "weather": {
     "windaveragespeedlimit": "30"

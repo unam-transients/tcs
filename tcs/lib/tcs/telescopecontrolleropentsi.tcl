@@ -2,7 +2,7 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: opentsicoatlioan.tcl 3601 2020-06-11 03:20:53Z Alan $
+# $Id: telescopecontrollercoatlioan.tcl 3601 2020-06-11 03:20:53Z Alan $
 
 ########################################################################
 
@@ -28,19 +28,19 @@ package require "controller"
 package require "log"
 package require "server"
 
-config::setdefaultvalue "opentsi" "controllerport" "65432"
-config::setdefaultvalue "opentsi" "controllerhost" "opentsi"
+config::setdefaultvalue "telescopecontroller" "controllerport" "65432"
+config::setdefaultvalue "telescopecontroller" "controllerhost" "opentsi"
 
-package provide "opentsi" 0.0
+package provide "telescopecontrolleropentsi" 0.0
 
-namespace eval "opentsi" {
+namespace eval "telescopecontroller" {
 
   variable svnid {$Id}
 
   ######################################################################
 
-  variable controllerhost [config::getvalue "opentsi" "controllerhost"]
-  variable controllerport [config::getvalue "opentsi" "controllerport"]
+  variable controllerhost [config::getvalue "telescopecontroller" "controllerhost"]
+  variable controllerport [config::getvalue "telescopecontroller" "controllerport"]
 
   ######################################################################
 
@@ -90,7 +90,7 @@ namespace eval "opentsi" {
   } ";"]\n"
   set controller::timeoutmilliseconds         10000
   set controller::intervalmilliseconds        50
-  set controller::updatedata                  opentsi::updatecontrollerdata
+  set controller::updatedata                  telescopecontroller::updatecontrollerdata
   set controller::statusintervalmilliseconds  1000
 
   set server::datalifeseconds                 30
@@ -244,7 +244,7 @@ namespace eval "opentsi" {
     server::setdata "sensor14"           $sensor14
 
     foreach i {0 1 2 3 4 5 6 7 8 9 10 11 12 13 14} {
-      log::writesensorsfile "opentsi-$i" [set sensor$i] $timestamp
+      log::writesensorsfile "telescopecontroller-$i" [set sensor$i] $timestamp
     }
 
     server::setstatus "ok"
@@ -343,31 +343,31 @@ namespace eval "opentsi" {
   proc initialize {} {
     server::checkstatus
     server::checkactivityforinitialize
-    server::newactivitycommand "initializing" "idle" opentsi::initializeactivitycommand
+    server::newactivitycommand "initializing" "idle" telescopecontroller::initializeactivitycommand
   }
 
   proc stop {} {
     server::checkstatus
     server::checkactivityforstop
-    server::newactivitycommand "stopping" [server::getstoppedactivity] "opentsi::stopactivitycommand [server::getactivity]"
+    server::newactivitycommand "stopping" [server::getstoppedactivity] "telescopecontroller::stopactivitycommand [server::getactivity]"
   }
   
   proc reset {} {
     server::checkstatus
     server::checkactivityforreset
-    server::newactivitycommand "resetting" [server::getstoppedactivity] opentsi::stopactivitycommand
+    server::newactivitycommand "resetting" [server::getstoppedactivity] telescopecontroller::stopactivitycommand
   }
 
   proc open {} {
     server::checkstatus
     server::checkactivityformove
-    server::newactivitycommand "opening" "idle" opentsi::openactivitycommand
+    server::newactivitycommand "opening" "idle" telescopecontroller::openactivitycommand
   }
 
   proc close {} {
     server::checkstatus
     server::checkactivityformove
-    server::newactivitycommand "closing" "idle" opentsi::closeactivitycommand
+    server::newactivitycommand "closing" "idle" telescopecontroller::closeactivitycommand
   }
 
   ######################################################################
@@ -376,7 +376,7 @@ namespace eval "opentsi" {
     server::setstatus "ok"
     controller::startcommandloop "AUTH PLAIN \"admin\" \"admin\"\n"
     controller::startstatusloop
-    server::newactivitycommand "starting" "started" opentsi::startactivitycommand
+    server::newactivitycommand "starting" "started" telescopecontroller::startactivitycommand
   }
 
   ######################################################################

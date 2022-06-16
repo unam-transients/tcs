@@ -93,7 +93,7 @@
     "host": "services",
     "port": 5018
   },
-  "opentsi": {
+  "telescopecontroller": {
     "host": "services",
     "port": 5019
   }
