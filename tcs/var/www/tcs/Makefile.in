@@ -103,6 +103,7 @@ installs_project_colibriohp	:=		    \
 	C0-project-colibriohp.html  	   	\
 	config-project-colibriohp.js	    \
 	interface-project-colibriohp.html   \
+	webcam-a-project-colibriohp.html	\
 	plots-project-colibriohp.sh
 
 installs_project_colibricito	:=		\
