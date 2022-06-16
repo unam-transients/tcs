@@ -244,7 +244,7 @@ namespace eval "telescopecontroller" {
     server::setdata "sensor14"           $sensor14
 
     foreach i {0 1 2 3 4 5 6 7 8 9 10 11 12 13 14} {
-      log::writesensorsfile "telescopecontroller-$i" [set sensor$i] $timestamp
+      log::writesensorsfile "opentsi-$i" [set sensor$i] $timestamp
     }
 
     server::setstatus "ok"
