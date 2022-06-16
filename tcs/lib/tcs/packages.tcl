@@ -270,8 +270,8 @@ package ifneeded telescopeserver       0.0 \
   [list source [file join [file dirname [info script]] telescopeserver.tcl]]
 package ifneeded telescopecontrolleropentsi  0.0 \
   [list source [file join [file dirname [info script]] telescopecontrolleropentsi.tcl]]
-package ifneeded telescopecontrolleropentsiserver         0.0 \
-  [list source [file join [file dirname [info script]] telescopecontrolleropentsiserver.tcl]]
+package ifneeded telescopecontrollerserver   0.0 \
+  [list source [file join [file dirname [info script]] telescopecontrollerserver.tcl]]
 package ifneeded temperatures          0.0 \
   [list source [file join [file dirname [info script]] temperatures.tcl]]
 package ifneeded temperaturesserver    0.0 \

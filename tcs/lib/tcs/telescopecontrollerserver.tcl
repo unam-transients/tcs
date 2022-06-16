@@ -48,20 +48,20 @@ namespace eval "telescopecontrollerserver" {
     telescopecontroller::reset
   }
 
-  proc slaveopen {} {
-    telescopecontroller::open
+  proc slaveswitchon {} {
+    telescopecontroller::switchon
   }
 
-  proc slaveclose {} {
-    telescopecontroller::close
+  proc slaveswitchoff {} {
+    telescopecontroller::switchoff
   }
 
   proc configureslave {slave} {
     interp alias $slave initialize {} telescopecontrollerserver::slaveinitialize
     interp alias $slave stop       {} telescopecontrollerserver::slavestop
     interp alias $slave reset      {} telescopecontrollerserver::slavereset
-    interp alias $slave open       {} telescopecontrollerserver::slaveopen
-    interp alias $slave close      {} telescopecontrollerserver::slaveclose
+    interp alias $slave switchon   {} telescopecontrollerserver::slaveswitchon
+    interp alias $slave switchoff  {} telescopecontrollerserver::slaveswitchoff
   }
 
   ######################################################################
