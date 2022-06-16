@@ -161,7 +161,7 @@ EOF
     echo "owserver -c /etc/owfs.conf"
     echo "tcs instrumentimageserver C0 detectors &"
     echo "tcs webcamimageserver a https://www.colibri-obs.org/wp-content/uploads/2021/01/cam-colibri1.jpeg &"
-    echo "tcs allskyimageserver http://iris.lam.fr/wp-includes/images/ftp_iris/allsky1.jpg &"
+    echo "tcs allskyimageserver http://iris.lam.fr/wp-includes/images/ftp_iris/allsky01.jpg &"
     echo "mkdir -p /usr/local/var/tcs/reboot"
     echo "mkdir -p /usr/local/var/tcs/restart"
     echo "mkdir -p /usr/local/var/tcs/halt"
