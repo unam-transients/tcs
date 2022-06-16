@@ -2,7 +2,7 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: coverscoatlioan.tcl 3601 2020-06-11 03:20:53Z Alan $
+# $Id: opentsicoatlioan.tcl 3601 2020-06-11 03:20:53Z Alan $
 
 ########################################################################
 
@@ -343,31 +343,31 @@ namespace eval "opentsi" {
   proc initialize {} {
     server::checkstatus
     server::checkactivityforinitialize
-    server::newactivitycommand "initializing" "idle" covers::initializeactivitycommand
+    server::newactivitycommand "initializing" "idle" opentsi::initializeactivitycommand
   }
 
   proc stop {} {
     server::checkstatus
     server::checkactivityforstop
-    server::newactivitycommand "stopping" [server::getstoppedactivity] "covers::stopactivitycommand [server::getactivity]"
+    server::newactivitycommand "stopping" [server::getstoppedactivity] "opentsi::stopactivitycommand [server::getactivity]"
   }
   
   proc reset {} {
     server::checkstatus
     server::checkactivityforreset
-    server::newactivitycommand "resetting" [server::getstoppedactivity] covers::stopactivitycommand
+    server::newactivitycommand "resetting" [server::getstoppedactivity] opentsi::stopactivitycommand
   }
 
   proc open {} {
     server::checkstatus
     server::checkactivityformove
-    server::newactivitycommand "opening" "idle" covers::openactivitycommand
+    server::newactivitycommand "opening" "idle" opentsi::openactivitycommand
   }
 
   proc close {} {
     server::checkstatus
     server::checkactivityformove
-    server::newactivitycommand "closing" "idle" covers::closeactivitycommand
+    server::newactivitycommand "closing" "idle" opentsi::closeactivitycommand
   }
 
   ######################################################################
