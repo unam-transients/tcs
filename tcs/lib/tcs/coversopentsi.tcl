@@ -200,7 +200,7 @@ namespace eval "covers" {
       log::info "port 2 cover changed from \"$lastport2cover\" to \"$port2cover\"."
     }
     if {![string equal $lastport3cover ""] && ![string equal $port3cover $lastport3cover]} {
-      log::info "port 3 covers changed from \"$lastport3cover\" to \"$port3cover\"."
+      log::info "port 3 cover changed from \"$lastport3cover\" to \"$port3cover\"."
     }
 
     if {
