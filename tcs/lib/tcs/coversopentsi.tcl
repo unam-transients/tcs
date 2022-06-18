@@ -53,10 +53,6 @@ namespace eval "covers" {
   server::setdata "port2name"        [config::getvalue "covers" "port2name"]
   server::setdata "port3name"        [config::getvalue "covers" "port3name"]
   server::setdata "timestamp"        [utcclock::combinedformat now]
-  server::setdata "settled"          false
-  server::setdata "stoppedtimestamp" [utcclock::combinedformat now]
-
-  variable settledelayseconds 5
 
   ######################################################################
 
@@ -77,6 +73,9 @@ namespace eval "covers" {
     AUXILIARY.COVER.REALPOS
     AUXILIARY.PORT_COVER[2].REALPOS
     AUXILIARY.PORT_COVER[3].REALPOS
+    AUXILIARY.COVER.TARGETPOS
+    AUXILIARY.PORT_COVER[2].TARGETPOS
+    AUXILIARY.PORT_COVER[3].TARGETPOS
   } ";"]\n"
   set controller::timeoutmilliseconds         10000
   set controller::intervalmilliseconds        50
@@ -100,12 +99,20 @@ namespace eval "covers" {
   variable covers
   variable port2cover
   variable port3cover
+  variable coverstarget
+  variable port2covertarget
+  variable port3covertarget
+  variable moving
 
   proc updatecontrollerdata {controllerresponse} {
 
     variable covers
     variable port2cover
     variable port3cover
+    variable coverstarget
+    variable port2covertarget
+    variable port3covertarget
+    variable moving
 
     set controllerresponse [string trim $controllerresponse]
     set controllerresponse [string trim $controllerresponse "\0"]
@@ -175,6 +182,30 @@ namespace eval "covers" {
       }
       return false
     }
+    if {[scan $controllerresponse "%*d DATA INLINE AUXILIARY.COVER.TARGETPOS=%f" value] == 1} {
+      if {$value == 0} {
+        set coverstarget "closed"
+      } else {
+        set coverstarget "open"
+      }
+      return false
+    }
+    if {[scan $controllerresponse "%*d DATA INLINE AUXILIARY.PORT_COVER\[2\].TARGETPOS=%f" value] == 1} {
+      if {$value == 0} {
+        set port2covertarget "closed"
+      } else {
+        set port2covertarget "open"
+      }
+      return false
+    }
+    if {[scan $controllerresponse "%*d DATA INLINE AUXILIARY.PORT_COVER\[3\].TARGETPOS=%f" value] == 1} {
+      if {$value == 0} {
+        set port3covertarget "closed"
+      } elseif {$value == 1.0} {
+        set port3covertarget "open"
+      }
+      return false
+    }
 
     if {[regexp {[0-9]+ DATA INLINE } $controllerresponse] == 1} {
       log::debug "status: ignoring DATA INLINE response."
@@ -191,7 +222,6 @@ namespace eval "covers" {
     set lastcovers         [server::getdata "covers"]
     set lastport2cover     [server::getdata "port2cover"]
     set lastport3cover     [server::getdata "port3cover"]
-    set stoppedtimestamp   [server::getdata "stoppedtimestamp"]
     
     if {![string equal $lastcovers ""] && ![string equal $covers $lastcovers]} {
       log::info "covers changed from \"$lastcovers\" to \"$covers\"."
@@ -204,32 +234,42 @@ namespace eval "covers" {
     }
 
     if {
-      ![string equal $covers     $lastcovers    ] || [string equal $covers     "intermediate"] ||
-      ![string equal $port2cover $lastport2cover] || [string equal $port2cover "intermediate"] ||
-      ![string equal $port3cover $lastport3cover] || [string equal $port3cover "intermediate"]
+      ![string equal $covers     $coverstarget    ] ||
+      ![string equal $port2cover $port2covertarget] ||
+      ![string equal $port3cover $port3covertarget]
     } {
-      set stoppedtimestamp ""
-    } elseif {[string equal $stoppedtimestamp ""]} {
-      set stoppedtimestamp $lasttimestamp
-    }
-    variable settledelayseconds
-    if {![string equal $stoppedtimestamp ""] &&
-        [utcclock::diff $timestamp $stoppedtimestamp] >= $settledelayseconds} {
-      set settled true
+      set moving true
     } else {
-      set settled false
+      set moving false
     }
     
     server::setdata "timestamp"        $timestamp
     server::setdata "covers"           $covers
     server::setdata "port2cover"       $port2cover
     server::setdata "port3cover"       $port3cover
-    server::setdata "stoppedtimestamp" $stoppedtimestamp
-    server::setdata "settled"          $settled
 
     server::setstatus "ok"
 
     return true
+  }
+
+  proc waitwhilemoving {} {
+    log::info "waiting while moving."
+    variable moving
+    set startingdelay 1
+    set settlingdelay 1
+    set start [utcclock::seconds]
+    while {[utcclock::diff now $start] < $startingdelay} {
+      coroutine::yield
+    }
+    while {$moving} {
+      coroutine::yield
+    }
+    set settle [utcclock::seconds]
+    while {[utcclock::diff now $settle] < $settlingdelay} {
+      coroutine::yield
+    }
+    log::info "finished waiting while moving."
   }
 
   ######################################################################
@@ -264,7 +304,7 @@ namespace eval "covers" {
     sendcommand "SET AUXILIARY.COVER.TARGETPOS=1"
     sendcommand "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=1"
     sendcommand "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=1"
-    settle
+    waitwhilemoving
     if {![string equal [server::getdata "covers"] "open"]} {
       error "the covers did not open."
     }
@@ -275,7 +315,7 @@ namespace eval "covers" {
     sendcommand "SET AUXILIARY.COVER.TARGETPOS=0"
     sendcommand "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=0"
     sendcommand "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=0"
-    settle
+    waitwhilemoving
     if {![string equal [server::getdata "covers"] "closed"]} {
       error "the covers did not close."
     }
@@ -283,16 +323,6 @@ namespace eval "covers" {
   
   ######################################################################
   
-  proc settle {} {
-    log::debug "settling."
-    server::setdata "stoppedtimestamp" ""
-    server::setdata "settled"          false
-    while {![server::getdata "settled"]} {
-      coroutine::yield
-    }
-    log::debug "settled."
-  }
-
   proc startactivitycommand {} {
     set start [utcclock::seconds]
     log::info "starting."
