@@ -320,8 +320,8 @@ EOF
     set format x ""
     set xlabel ""
 
-    set yrange [-20:30]
-    set ytics -20,5,30
+    set yrange [-10:40]
+    set ytics -10,5,40
     set format y "%+g"
     set ylabel "Temperature (C)"
     set key on
