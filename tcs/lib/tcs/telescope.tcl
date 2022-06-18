@@ -329,7 +329,7 @@ namespace eval "telescope" {
       log::info [format "finished initializing after %.1f seconds." [utcclock::diff now $start]]
     } message]} {
       log::error "unable to initialize: $message"
-      emergencyclose
+#      emergencyclose
       error "unable to initialize."
     }
   }
@@ -339,6 +339,7 @@ namespace eval "telescope" {
     log::info "opening."
     variable withlights
     variable withheater
+    variable withtelescopecontroller
     variable withmount
     variable withdome
     variable withenclosure
@@ -362,6 +363,11 @@ namespace eval "telescope" {
       foreach finder $finders {
         log::info "cooling $finder."
         client::request $finder "setcooler open"
+      }
+      if {$withtelescopecontroller} {
+        log::info "switching on telescope controller."
+        client::request "telescopecontroller" "switchon"
+        client::wait "telescopecontroller"
       }
       if {$withmount} {
         log::info "parking mount."
@@ -423,6 +429,7 @@ namespace eval "telescope" {
     log::info "opening to cool."
     variable withlights
     variable withheater
+    variable withtelescopecontroller
     variable withmount
     variable withdome
     variable withenclosure
@@ -446,6 +453,11 @@ namespace eval "telescope" {
       foreach finder $finders {
         log::info "cooling $finder."
         client::request $finder "setcooler open"
+      }
+      if {$withtelescopecontroller} {
+        log::info "switching on telescope controller."
+        client::request "telescopecontroller" "switchon"
+        client::wait "telescopecontroller"
       }
       if {$withmount} {
         log::info "parking mount."
@@ -500,6 +512,7 @@ namespace eval "telescope" {
     log::info "closing."
     variable withlights
     variable withheater
+    variable withtelescopecontroller
     variable withmount
     variable withdome
     variable withenclosure
@@ -555,6 +568,11 @@ namespace eval "telescope" {
           client::wait "enclosure"
         }
       }
+      if {$withtelescopecontroller} {
+        log::info "switching off telescope controller."
+        client::request "telescopecontroller" "switchoff"
+        client::wait "telescopecontroller"
+      }
       closeepilog
       if {$withheater} {
         switchheater "automatically"
@@ -594,8 +612,8 @@ namespace eval "telescope" {
           client::wait "enclosure"
         }
       }
+      closeactivitycommand
     }
-    closeactivitycommand
     server::setdata "timestamp" [utcclock::combinedformat now]
     log::info [format "finished emergency closing after %.1f seconds." [utcclock::diff now $start]]
   }
