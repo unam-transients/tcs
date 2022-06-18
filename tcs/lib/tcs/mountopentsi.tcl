@@ -55,13 +55,13 @@ config::setdefaultvalue "mount" "axisddeltacorrection"       "0"
 config::setdefaultvalue "mount" "easthalimit"                "-12h"
 config::setdefaultvalue "mount" "westhalimit"                "+12h"
 config::setdefaultvalue "mount" "westhalimit"                "+12h"
-config::setdefaultvalue "mount" "meridianhalimit"            "0"
+config::setdefaultvalue "mount" "meridianhalimit"            "12h"
 config::setdefaultvalue "mount" "northdeltalimit"            "+90d"
 config::setdefaultvalue "mount" "southdeltalimit"            "-90d"
 config::setdefaultvalue "mount" "polardeltalimit"            "0"
 config::setdefaultvalue "mount" "zenithdistancelimit"        "90d"
 config::setdefaultvalue "mount" "hapark"                     "0h"
-config::setdefaultvalue "mount" "deltapark"                  "90h"
+config::setdefaultvalue "mount" "deltapark"                  "80d"
 config::setdefaultvalue "mount" "haunpark"                   "0h"
 config::setdefaultvalue "mount" "deltaunpark"                "0d"
 
@@ -128,6 +128,11 @@ namespace eval "mount" {
     POSITION.LOCAL.SIDEREAL_TIME
     POSITION.INSTRUMENTAL.AZ.MOTION_STATE
     POSITION.INSTRUMENTAL.ZD.MOTION_STATE    
+    POSITION.INSTRUMENTAL.DEROTATOR[3].MOTION_STATE    
+    POSITION.INSTRUMENTAL.AZ.TARGETDISTANCE
+    POSITION.INSTRUMENTAL.ZD.TARGETDISTANCE
+    TELESCOPE.MOTION_STATE    
+    POINTING.TARGETDISTANCE
   } ";"]\n"
   set controller::timeoutmilliseconds         10000
   set controller::intervalmilliseconds        50
@@ -193,11 +198,15 @@ namespace eval "mount" {
   variable pendingmountalpha
   variable pendingmountdelta
   variable pendingmountst
-  variable pendingazimuthmotionstate
-  variable pendingzenithdistancemotionstate
+  variable pendingtelescopemotionstate
+  variable pendingazimuthtargetdistance
+  variable pendingzenithdistancetargetdistance
+  variable pendingtargetdistance
   
-  variable azimuthmotionstate        ""
-  variable zenithdistancemotionstate ""
+  variable telescopemotionstate         ""
+  variable azimuthtargetdistance        ""
+  variable zenithdistancetargetdistance ""
+  variable targetdistance               ""
 
   proc updatecontrollerdata {controllerresponse} {
 
@@ -206,11 +215,15 @@ namespace eval "mount" {
     variable pendingmountalpha
     variable pendingmountdelta
     variable pendingmountst
-    variable pendingazimuthmotionstate
-    variable pendingzenithdistancemotionstate
+    variable pendingtelescopemotionstate
+    variable pendingazimuthtargetdistance
+    variable pendingzenithdistancetargetdistance
+    variable pendingtargetdistance
 
-    variable azimuthmotionstate
-    variable zenithdistancemotionstate
+    variable telescopemotionstate
+    variable azimuthtargetdistance
+    variable zenithdistancetargetdistance
+    variable targetdistance
 
     set controllerresponse [string trim $controllerresponse]
     set controllerresponse [string trim $controllerresponse "\0"]
@@ -280,12 +293,20 @@ namespace eval "mount" {
       set pendingmountst [astrometry::hrtorad $value]
       return false
     }
-    if {[scan $controllerresponse "%*d DATA INLINE POSITION.INSTRUMENTAL.AZ.MOTION_STATE=%d" value] == 1} {
-      set pendingazimuthmotionstate $value
+    if {[scan $controllerresponse "%*d DATA INLINE TELESCOPE.MOTION_STATE=%d" value] == 1} {
+      set pendingtelescopemotionstate $value
       return false
     }
-    if {[scan $controllerresponse "%*d DATA INLINE POSITION.INSTRUMENTAL.ZD.MOTION_STATE=%d" value] == 1} {
-      set pendingzenithdistancemotionstate $value
+    if {[scan $controllerresponse "%*d DATA INLINE POSITION.INSTRUMENTAL.AZ.TARGETDISTANCE=%f" value] == 1} {
+      set pendingazimuthtargetdistance [astrometry::hrtorad $value]
+      return false
+    }
+    if {[scan $controllerresponse "%*d DATA INLINE POSITION.INSTRUMENTAL.ZD.TARGETDISTANCE=%f" value] == 1} {
+      set pendingzenithdistancetargetdistance [astrometry::degtorad $value]
+      return false
+    }
+    if {[scan $controllerresponse "%*d DATA INLINE POINTING.TARGETDISTANCE=%f" value] == 1} {
+      set pendingtargetdistance [astrometry::degtorad $value]
       return false
     }
     if {[regexp {[0-9]+ DATA INLINE } $controllerresponse] == 1} {
@@ -297,31 +318,18 @@ namespace eval "mount" {
       return true
     }
     
-    set lastazimuthmotionstate        $azimuthmotionstate
-    set lastzenithdistancemotionstate $zenithdistancemotionstate
-    set azimuthmotionstate            $pendingazimuthmotionstate
-    set zenithdistancemotionstate     $pendingzenithdistancemotionstate
-    
-    if {
-      ![string equal $lastazimuthmotionstate ""] &&
-      ![string equal $lastzenithdistancemotionstate ""]
-    } {
-      checkmotionstate "azimuth" \
-        $lastazimuthmotionstate \
-        $azimuthmotionstate
-      checkmotionstate "zenith distance" \
-        $lastzenithdistancemotionstate \
-        $zenithdistancemotionstate
-    }
-    
-    set mountazimuth        $pendingmountazimuth
-    set mountzenithdistance $pendingmountzenithdistance
-    set mountalpha          $pendingmountalpha
-    set mountdelta          $pendingmountdelta
-    set mountst             $pendingmountst
-    
-    set mountha [astrometry::foldradsymmetric [expr {$mountst - $mountalpha}]]
+    set mountazimuth                 $pendingmountazimuth
+    set mountzenithdistance          $pendingmountzenithdistance
+    set mountalpha                   $pendingmountalpha
+    set mountdelta                   $pendingmountdelta
+    set mountst                      $pendingmountst
+    set mountha                      [astrometry::foldradsymmetric [expr {$mountst - $mountalpha}]]
 
+    set telescopemotionstate         $pendingtelescopemotionstate
+    set azimuthtargetdistance        $pendingazimuthtargetdistance
+    set zenithdistancetargetdistance $pendingzenithdistancetargetdistance
+    set targetdistance               $pendingtargetdistance
+ 
     set timestamp [utcclock::combinedformat "now"]
 
     server::setdata "timestamp"           $timestamp
@@ -340,33 +348,27 @@ namespace eval "mount" {
     return true
   }
   
-  proc checkmotionstate {name lastmotionstate motionstate} {
-    checkmotionstatebit $name $lastmotionstate $motionstate 0 \
-      log::info "moving"
-    checkmotionstatebit $name $lastmotionstate $motionstate 1 \
-      log::info "following a trajectory"
-    checkmotionstatebit $name $lastmotionstate $motionstate 2 \
-      log::warning "being blocked"
-    checkmotionstatebit $name $lastmotionstate $motionstate 3 \
-      log::info "having acquisition"
-    checkmotionstatebit $name $lastmotionstate $motionstate 4 \
-      log::warning "being limited"
-  }
-  
-  proc checkmotionstatebit {name lastmotionstate motionstate bit logproc activity} {
-    if {[bit $lastmotionstate $bit] && ![bit $motionstate $bit]} {
-      $logproc "$name axis stopped $activity."
-    } elseif {![bit $lastmotionstate $bit] && [bit $motionstate $bit]} {
-      $logproc "$name axis started $activity."
+  ######################################################################
+
+  proc waitwhilemoving {} {
+    log::info "waiting while moving."
+    variable telescopemotionstate
+    variable targetdistance
+    set startingdelay 1
+    set settlingdelay 1
+    set start [utcclock::seconds]
+    while {[utcclock::diff now $start] < $startingdelay} {
+      coroutine::yield
     }
-  }
-  
-  proc bit {value bit} {
-    if {$value & (1 << $bit)} {
-      return true
-    } else {
-      return false
+    while {(($telescopemotionstate >> 3) & 1) == 0} {
+      coroutine::yield
     }
+    set settle [utcclock::seconds]
+    while {[utcclock::diff now $settle] < $settlingdelay} {
+      coroutine::yield
+    }
+    log::info [format "finished with targetdistance = %.1fas." [astrometry::radtoarcsec $targetdistance]]
+    log::info "finished waiting while moving."
   }
 
   ######################################################################
@@ -378,7 +380,7 @@ namespace eval "mount" {
     log::warning "stopping the mount."
     log::debug "emergency stop: sending emergency stop."
     variable emergencystopcommandidentifier
-    set command "$emergencystopcommandidentifier SET HA.STOP=1;DEC.STOP=1"
+    set command "$emergencystopcommandidentifier SET TELESCOPE.STOP=1"
     log::debug "emergency stop: sending command \"$command\"."
     controller::flushcommandqueue
     controller::pushcommand "$command\n"
@@ -432,10 +434,32 @@ namespace eval "mount" {
   ######################################################################
   
   proc parkhardware {} {
+    variable hapark
+    variable deltapark
+    log::info "moving to park."
+    set azimuth        [astrometry::equatorialtoazimuth        $hapark $deltapark]
+    set zenithdistance [astrometry::equatorialtozenithdistance $hapark $deltapark]
+    sendcommand [format \
+      "SET OBJECT.HORIZONTAL.AZ=%.6f;OBJECT.HORIZONTAL.ZD=%.6f;POINTING.TRACK=2" \
+      [astrometry::radtodeg $azimuth        ] \
+      [astrometry::radtodeg $zenithdistance ] \
+    ]
+    waitwhilemoving
     server::setdata "unparked" false
   }
   
   proc unparkhardware {} {
+    variable haunpark
+    variable deltaunpark
+    log::info "moving to unpark."
+    set azimuth        [astrometry::equatorialtoazimuth        $haunpark $deltaunpark]
+    set zenithdistance [astrometry::equatorialtozenithdistance $haunpark $deltaunpark]
+    sendcommand [format \
+      "SET OBJECT.HORIZONTAL.AZ=%.6f;OBJECT.HORIZONTAL.ZD=%.6f;POINTING.TRACK=2" \
+      [astrometry::radtodeg $azimuth        ] \
+      [astrometry::radtodeg $zenithdistance ] \
+    ]      
+    waitwhilemoving
     server::setdata "unparked" true
   }
   
@@ -454,6 +478,8 @@ namespace eval "mount" {
   proc initializeactivitycommand {} {
     set start [utcclock::seconds]
     log::info "initializing."
+    sendcommand "SET POINTING.SETUP.DEROTATOR.SYNCMODE=0"
+    sendcommand "SET POINTING.SETUP.USE_PORT=3"
     parkhardware
     set end [utcclock::seconds]
     log::info [format "finished initializing after %.1f seconds." [utcclock::diff $end $start]]
@@ -500,6 +526,7 @@ namespace eval "mount" {
       [astrometry::radtodeg [server::getdata "requestedobservedazimuth"]] \
       [astrometry::radtodeg [server::getdata "requestedobservedzenithdistance"]] \
     ]      
+    waitwhilemoving
     set end [utcclock::seconds]
     log::info [format "finished moving after %.1f seconds." [utcclock::diff $end $start]]
   }
@@ -535,6 +562,7 @@ namespace eval "mount" {
       [astrometry::radtodeg [server::getdata "requestedstandarddelta"]] \
       [server::getdata "requestedstandardequinox"] \
     ]      
+    waitwhilemoving
     log::info [format "started tracking after %.1f seconds." [utcclock::diff now $start]]
     server::setactivity "tracking"
     server::clearactivitytimeout
