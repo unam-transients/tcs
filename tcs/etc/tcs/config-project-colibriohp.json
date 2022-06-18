@@ -160,7 +160,11 @@
   },
   "mount": {
     "type": "opentsi",
-    "configuration": "azimuth-zenithdistance"
+    "configuration": "azimuth-zenithdistance",
+    "parkha": "0h",
+    "parkdelta": "80d",
+    "unparkha": "0h",
+    "unparkha": "0d"
   },
   "plc": {
     "controllerhost": "192.168.100.28",
