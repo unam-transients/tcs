@@ -299,6 +299,7 @@ namespace eval "telescopecontroller" {
   proc startactivitycommand {} {
     set start [utcclock::seconds]
     log::info "starting."
+    stophardware
     while {[string equal [server::getstatus] "starting"]} {
       coroutine::yield
     }
@@ -355,7 +356,7 @@ namespace eval "telescopecontroller" {
   proc reset {} {
     server::checkstatus
     server::checkactivityforreset
-    server::newactivitycommand "resetting" [server::getstoppedactivity] telescopecontroller::stopactivitycommand
+    server::newactivitycommand "resetting" [server::getstoppedactivity] "telescopecontroller::stopactivitycommand [server::getactivity]"
   }
 
   proc switchon {} {
