@@ -98,6 +98,20 @@ namespace eval "opentsi" {
     controller::pushcommand "$currentcommandidentifier $command\n"
   }
 
+  proc sendcommandandwait {command} {
+    variable currentcommandidentifier
+    variable completedcurrentcommand
+    set start [utcclock::seconds]
+    set completedcurrentcommand false
+    sendcommand $command    
+    coroutine::yield
+    while {!$completedcurrentcommand} {
+      coroutine::yield
+    }
+    set end [utcclock::seconds]
+    log::debug [format "completed controller command $currentcommandidentifier after %.1f seconds." [utcclock::diff $end $start]]
+  }
+
   ######################################################################
 
   proc updatedata {response} {

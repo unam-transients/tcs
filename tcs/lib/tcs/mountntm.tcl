@@ -35,7 +35,6 @@ package provide "mountntm" 0.0
 
 config::setdefaultvalue "mount" "controllerhost"             "mount"
 config::setdefaultvalue "mount" "controllerport"             65432
-config::setdefaultvalue "mount" "initialcommand"             ""
 
 source [file join [directories::prefix] "lib" "tcs" "mount.tcl"]
 
@@ -70,7 +69,6 @@ namespace eval "mount" {
 
   variable controllerhost              [config::getvalue "mount" "controllerhost"]
   variable controllerport              [config::getvalue "mount" "controllerport"]
-  variable initialcommand              [config::getvalue "mount" "initialcommand"]
   variable pointingmodelpolarhole      [astrometry::parsedistance [config::getvalue "mount" "pointingmodelpolarhole"]]
   variable axisdhacorrection           [astrometry::parseoffset [config::getvalue "mount" "axisdhacorrection"]]
   variable axisddeltacorrection        [astrometry::parseoffset [config::getvalue "mount" "axisddeltacorrection"]]
@@ -1130,6 +1128,14 @@ namespace eval "mount" {
       set move true
     }
     trackoroffsetactivitycommand $move
+  }
+
+  ######################################################################
+
+  proc start {} {
+    controller::startcommandloop
+    controller::startstatusloop
+    server::newactivitycommand "starting" "started" mount::startactivitycommand
   }
 
   ######################################################################
