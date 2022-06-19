@@ -225,6 +225,7 @@ namespace eval "telescopecontroller" {
 
     server::setdata "timestamp"          $timestamp
     server::setdata "readystate"         $readystate
+    server::setdata "mode"               [mode]
     server::setdata "ambienttemperature" $ambienttemperature
     server::setdata "ambientpressure"    $ambientpressure
     server::setdata "sensor0"            $sensor0
@@ -253,6 +254,22 @@ namespace eval "telescopecontroller" {
   }
 
   ######################################################################
+
+  proc mode {} {
+    variable readystate
+    switch -glob $readystate {
+      "-3.0"  { return "local"         }
+      "-2.0"  { return "emergencystop" }
+      "-1.0"  { return "error"         }
+      "0.0"   { return "off"           }
+      "0.*"   { return "switching"     }
+      "1.0"   { return "on"            }
+      default { return "unknown"       }
+    }
+    
+  }
+
+  ######################################################################
   
   variable currentcommandidentifier 0
   variable nextcommandidentifier $firstnormalcommandidentifier
@@ -276,6 +293,9 @@ namespace eval "telescopecontroller" {
 
   proc switchonhardware {} {
     variable readystate
+    if {$readystate < 0.0} {
+      error "unable to switch on the hardware: mode is [mode]."
+    }
     sendcommand "SET TELESCOPE.POWER=1"
     while {$readystate != 1.0} {
       coroutine::yield
@@ -284,6 +304,9 @@ namespace eval "telescopecontroller" {
   
   proc switchoffhardware {} {
     variable readystate
+    if {$readystate < 0.0} {
+      error "unable to switch on the hardware: mode is [mode]."
+    }
     sendcommand "SET TELESCOPE.POWER=0"
     while {$readystate != 0.0} {
       coroutine::yield
