@@ -707,18 +707,9 @@ namespace eval "html" {
 
     putshtml "<table class=\"status\">"
     
+    set mode       [client::getdata "telescopecontroller" "mode"]
     set readystate [client::getdata "telescopecontroller" "readystate"]
-    switch -glob $readystate {
-      "-3.0"  { set readystatetext "local"          }
-      "-2.0"  { set readystatetext "emergency stop" }
-      "-1.0"  { set readystatetext "error"          }
-      "0.0"   { set readystatetext "shut down"      }
-      "0.*"   { set readystatetext "switching"      }
-      "1.0"   { set readystatetext "operational"    }
-      default { set readystatetext "unknown"        }
-    }
-
-    writehtmlfullrow "Ready state" "$readystate ($readystatetext)"
+    writehtmlfullrow "Mode" "$mode ($readystate)"
     writehtmlrow "Ambient temperature" [formatifok "%.1f C"    [client::getdata "telescopecontroller" "ambienttemperature"]]
     writehtmlrow "Ambient pressure"    [formatifok "%.1f mbar" [client::getdata "telescopecontroller" "ambientpressure"   ]]
 
