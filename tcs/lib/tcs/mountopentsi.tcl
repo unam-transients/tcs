@@ -58,6 +58,7 @@ config::setdefaultvalue "mount" "polardeltalimit"            "0"
 config::setdefaultvalue "mount" "zenithdistancelimit"        "90d"
 config::setdefaultvalue "mount" "hapark"                     "0h"
 config::setdefaultvalue "mount" "deltapark"                  "80d"
+config::setdefaultvalue "mount" "derotatorpark"              "0d"
 config::setdefaultvalue "mount" "haunpark"                   "0h"
 config::setdefaultvalue "mount" "deltaunpark"                "0d"
 
@@ -78,10 +79,11 @@ namespace eval "mount" {
   variable southdeltalimit             [astrometry::parsedelta [config::getvalue "mount" "southdeltalimit"]]
   variable polardeltalimit             [astrometry::parsedelta [config::getvalue "mount" "polardeltalimit"]]
   variable zenithdistancelimit         [astrometry::parseangle [config::getvalue "mount" "zenithdistancelimit"]]
-  variable hapark                      [astrometry::parseangle [config::getvalue "mount" "hapark"]]
-  variable deltapark                   [astrometry::parseangle [config::getvalue "mount" "deltapark"]]
-  variable haunpark                    [astrometry::parseangle [config::getvalue "mount" "haunpark"]]
-  variable deltaunpark                 [astrometry::parseangle [config::getvalue "mount" "deltaunpark"]]
+  variable hapark                      [astrometry::parseha    [config::getvalue "mount" "hapark"]]
+  variable deltapark                   [astrometry::parsedelta [config::getvalue "mount" "deltapark"]]
+  variable derotatorpark               [astrometry::parseangle [config::getvalue "mount" "derotatorpark"]]
+  variable haunpark                    [astrometry::parseha    [config::getvalue "mount" "haunpark"]]
+  variable deltaunpark                 [astrometry::parsedelta [config::getvalue "mount" "deltaunpark"]]
 
   variable usemountcoordinates false
 
@@ -321,13 +323,20 @@ namespace eval "mount" {
   proc parkhardware {} {
     variable hapark
     variable deltapark
+    variable derotatorpark
     log::info "moving to park."
     set azimuth        [astrometry::equatorialtoazimuth        $hapark $deltapark]
     set zenithdistance [astrometry::equatorialtozenithdistance $hapark $deltapark]
-    opentsi::sendcommand [format \
-      "SET OBJECT.HORIZONTAL.AZ=%.6f;OBJECT.HORIZONTAL.ZD=%.6f;POINTING.TRACK=2" \
+    opentsi::sendcommand [format "SET [join {
+        "OBJECT.HORIZONTAL.AZ=%.6f"
+        "OBJECT.HORIZONTAL.ZD=%.6f"
+        "POINTING.SETUP.DEROTATOR.SYNCMODE=1"
+        "POINTING.TRACK=2"
+        "POSITION.INSTRUMENTAL.DEROTATOR[3].TARGETPOS=%.6f"
+      } ";"]" \
       [astrometry::radtodeg $azimuth        ] \
       [astrometry::radtodeg $zenithdistance ] \
+      [astrometry::radtodeg $derotatorpark  ] \
     ]
     waitwhilemoving
     server::setdata "unparked" false
@@ -339,8 +348,12 @@ namespace eval "mount" {
     log::info "moving to unpark."
     set azimuth        [astrometry::equatorialtoazimuth        $haunpark $deltaunpark]
     set zenithdistance [astrometry::equatorialtozenithdistance $haunpark $deltaunpark]
-    opentsi::sendcommand [format \
-      "SET OBJECT.HORIZONTAL.AZ=%.6f;OBJECT.HORIZONTAL.ZD=%.6f;POINTING.TRACK=2" \
+    opentsi::sendcommand [format "SET [join {
+        "OBJECT.HORIZONTAL.AZ=%.6f"
+        "OBJECT.HORIZONTAL.ZD=%.6f"
+        "POINTING.SETUP.DEROTATOR.SYNCMODE=4"
+        "POINTING.TRACK=2"
+      } ";"]" \
       [astrometry::radtodeg $azimuth        ] \
       [astrometry::radtodeg $zenithdistance ] \
     ]      
@@ -371,6 +384,9 @@ namespace eval "mount" {
     log::info "initializing."
     opentsi::sendcommand "SET POINTING.SETUP.DEROTATOR.SYNCMODE=0"
     opentsi::sendcommand "SET POINTING.SETUP.USE_PORT=3"
+    # Hack because the instrument is installed at an angle.
+    opentsi::sendcommand "SET POSITION.SETUP.DEROTATOR\[3\].OFFSET=0"
+    opentsi::sendcommand "SET POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=-20"
     parkhardware
     set end [utcclock::seconds]
     log::info [format "finished initializing after %.1f seconds." [utcclock::diff $end $start]]
