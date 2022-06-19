@@ -50,13 +50,12 @@ namespace eval "secondary" {
     POSITION.INSTRUMENTAL.FOCUS.LIMIT_STATE
     POSITION.INSTRUMENTAL.FOCUS.MOTION_STATE
     POSITION.INSTRUMENTAL.FOCUS.CURRPOS
-  } ";"]\n"
+  } ";"]"
 
   ######################################################################
 
   variable moving
 
-  variable pendingmode
   variable pendingz
   variable pendingzlowerlimit
   variable pendingzupperlimit
@@ -65,27 +64,10 @@ namespace eval "secondary" {
   
     variable moving
 
-    variable pendingmode
     variable pendingz
     variable pendingzlowerlimit
     variable pendingzupperlimit
 
-    if {[scan $response "%*d DATA INLINE TELESCOPE.READY_STATE=%f" value] == 1} {
-      if {$value == -3.0} {
-        set pendingmode "local"
-      } elseif {$value == -2.0} {
-        set pendingmode "emergencystop"
-      } elseif {$value == -1.0} {
-        set pendingmode "blocked"
-      } elseif {$value == 0.0} {
-        set pendingmode "off"
-      } elseif {$value == 1.0} {
-        set pendingmode "on"
-      } else {
-        set pendingmode "intermediate"
-      }
-      return false
-    }
     if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.FOCUS.CURRPOS=%f" value] == 1} {
       variable minz
       variable maxz
@@ -125,7 +107,7 @@ namespace eval "secondary" {
       return true
     }
     
-    set mode        $pendingmode
+    set state       $opentsi::readystatetext
     set z           $pendingz
     set zlowerlimit $pendingzlowerlimit
     set zupperlimit $pendingzupperlimit
@@ -139,7 +121,7 @@ namespace eval "secondary" {
     set timestamp   [utcclock::combinedformat "now"]
 
     server::setdata "timestamp"   $timestamp
-    server::setdata "mode"        $mode
+    server::setdata "state"       $state
     server::setdata "z"           $z
     server::setdata "zerror"      $zerror
     server::setdata "zlowerlimit" $zlowerlimit
@@ -235,9 +217,8 @@ namespace eval "secondary" {
   }
   
   proc checkhardware {} {
-    set mode [server::getdata "mode"]
-    if {![string equal $mode "on"]} {
-      error "mode is \"$mode\"."
+    if {$opentsi::readystate != 1.0} {
+      error "state is \"$opentsi::readystatetext\"."
     }
   }
   

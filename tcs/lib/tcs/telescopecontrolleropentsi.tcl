@@ -35,18 +35,14 @@ namespace eval "telescopecontroller" {
   ######################################################################
 
   server::setdata "timestamp"          [utcclock::combinedformat now]
-  server::setdata "readystate"         ""
-  server::setdata "referencestate"     ""
-  server::setdata "errorstate"         ""
   server::setdata "ambienttemperature" ""
   server::setdata "ambientpressure"    ""
 
-  set server::datalifeseconds                 30
+  set server::datalifeseconds          30
 
   ######################################################################
 
   set statuscommand "GET [join {
-    TELESCOPE.READY_STATE
     TELESCOPE.ENVIRONMENT.TEMPERATURE
     TELESCOPE.ENVIRONMENT.PRESSURE
     AUXILIARY.SENSOR[0].VALUE
@@ -64,11 +60,10 @@ namespace eval "telescopecontroller" {
     AUXILIARY.SENSOR[12].VALUE
     AUXILIARY.SENSOR[13].VALUE
     AUXILIARY.SENSOR[14].VALUE
-  } ";"]\n"
+  } ";"]"
 
   ######################################################################
 
-  variable readystate         ""
   variable ambienttemperature ""
   variable ambientpressure    ""
   variable sensor0            ""
@@ -86,10 +81,11 @@ namespace eval "telescopecontroller" {
   variable sensor12           ""
   variable sensor13           ""
   variable sensor14           ""
+  
+  variable laststate          ""
 
   proc updatedata {response} {
 
-    variable readystate
     variable ambienttemperature
     variable ambientpressure
     variable sensor0
@@ -107,11 +103,8 @@ namespace eval "telescopecontroller" {
     variable sensor12
     variable sensor13
     variable sensor14
-
-    if {[scan $response "%*d DATA INLINE TELESCOPE.READY_STATE=%f" value] == 1} {
-      set readystate $value
-      return false
-    }
+    
+    variable laststate
 
     if {[scan $response "%*d DATA INLINE TELESCOPE.ENVIRONMENT.TEMPERATURE=%f" value] == 1} {
       set ambienttemperature $value
@@ -139,16 +132,14 @@ namespace eval "telescopecontroller" {
 
     set timestamp [utcclock::combinedformat "now"]
 
-    set lasttimestamp      [server::getdata "timestamp"]
-    set lastreadystate     [server::getdata "readystate"]
-    
-    if {![string equal $lastreadystate ""] && ![string equal $readystate $lastreadystate]} {
-      log::info "ready state changed from $lastreadystate to $readystate."
+    set state $opentsi::readystatetext
+    if {![string equal $laststate ""] && ![string equal $laststate $state]} {
+      log::info "state changed from $laststate to $state."
     }
+    set laststate $state
 
     server::setdata "timestamp"          $timestamp
-    server::setdata "readystate"         $readystate
-    server::setdata "mode"               [mode]
+    server::setdata "state"              $state
     server::setdata "ambienttemperature" $ambienttemperature
     server::setdata "ambientpressure"    $ambientpressure
     server::setdata "sensor0"            $sensor0
@@ -177,47 +168,29 @@ namespace eval "telescopecontroller" {
   }
 
   ######################################################################
-
-  proc mode {} {
-    variable readystate
-    switch -glob $readystate {
-      "-3.0"  { return "local"         }
-      "-2.0"  { return "emergencystop" }
-      "-1.0"  { return "error"         }
-      "0.0"   { return "off"           }
-      "0.*"   { return "switching"     }
-      "1.0"   { return "on"            }
-      default { return "unknown"       }
-    }
-    
-  }
-
-  ######################################################################
   
   proc switchonhardware {} {
-    variable readystate
-    if {$readystate < 0.0} {
-      error "unable to switch on the hardware: mode is [mode]."
-    }
     opentsi::sendcommand "SET TELESCOPE.POWER=1"
-    while {$readystate != 1.0} {
+    while {$opentsi::readystate != 1.0} {
       coroutine::yield
     }
   }
   
   proc switchoffhardware {} {
-    variable readystate
-    if {$readystate < 0.0} {
-      error "unable to switch on the hardware: mode is [mode]."
-    }
     opentsi::sendcommand "SET TELESCOPE.POWER=0"
-    while {$readystate != 0.0} {
+    while {$opentsi::readystate != 0.0} {
       coroutine::yield
     }
   }
   
   proc stophardware {} {
     opentsi::sendcommand "SET TELESCOPE.STOP=1"
+  }
+  
+  proc checkhardware {} {
+    if {$opentsi::readystate < 0.0} {
+      error "state is \"$opentsi::readystatetext\"."
+    }
   }
   
   ######################################################################
@@ -270,30 +243,35 @@ namespace eval "telescopecontroller" {
   proc initialize {} {
     server::checkstatus
     server::checkactivityforinitialize
+    checkhardware
     server::newactivitycommand "initializing" "idle" telescopecontroller::initializeactivitycommand
   }
 
   proc stop {} {
     server::checkstatus
     server::checkactivityforstop
+    checkhardware
     server::newactivitycommand "stopping" [server::getstoppedactivity] "telescopecontroller::stopactivitycommand [server::getactivity]"
   }
   
   proc reset {} {
     server::checkstatus
     server::checkactivityforreset
+    checkhardware
     server::newactivitycommand "resetting" [server::getstoppedactivity] "telescopecontroller::stopactivitycommand [server::getactivity]"
   }
 
   proc switchon {} {
     server::checkstatus
     server::checkactivityformove
+    checkhardware
     server::newactivitycommand "switchingon" "idle" telescopecontroller::switchonactivitycommand
   }
 
   proc switchoff {} {
     server::checkstatus
     server::checkactivityformove
+    checkhardware
     server::newactivitycommand "switchingoff" "idle" telescopecontroller::switchoffactivitycommand
   }
 

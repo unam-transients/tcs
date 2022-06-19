@@ -844,6 +844,13 @@ namespace eval "mount" {
     waitwhilemoving  
     server::setdata "unparked" true
   }
+  
+  proc checkhardware {} {
+    variable state
+    if {![string equal $state "operational"]} {
+      error "state is \"$state\"."
+    }
+  }
 
   ######################################################################
 
