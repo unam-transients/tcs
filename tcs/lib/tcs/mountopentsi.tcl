@@ -26,17 +26,13 @@
 
 package require "astrometry"
 package require "config"
-package require "controller"
+package require "opentsi"
 package require "client"
 package require "log"
 package require "pointing"
 package require "server"
 
 package provide "mountopentsi" 0.0
-
-config::setdefaultvalue "mount" "controllerhost"             "opentsi"
-config::setdefaultvalue "mount" "controllerport"             65432
-config::setdefaultvalue "mount" "initialcommand"             "AUTH PLAIN \"admin\" \"admin\"\n"
 
 source [file join [directories::prefix] "lib" "tcs" "mount.tcl"]
 
@@ -67,14 +63,8 @@ config::setdefaultvalue "mount" "deltaunpark"                "0d"
 
 namespace eval "mount" {
 
-  variable svnid {$Id}
-
   ######################################################################
 
-  variable controllerhost              [config::getvalue "mount" "controllerhost"]
-  variable controllerport              [config::getvalue "mount" "controllerport"]
-  variable initialcommand              [config::getvalue "mount" "initialcommand"] 
-  
   variable allowedpositionerror        [astrometry::parseangle [config::getvalue "mount" "allowedpositionerror"]]
   variable pointingmodelpolarhole      [astrometry::parsedistance [config::getvalue "mount" "pointingmodelpolarhole"]]
   variable allowedguideoffset          [astrometry::parseoffset [config::getvalue "mount" "allowedguideoffset"]]
@@ -107,20 +97,9 @@ namespace eval "mount" {
 
   ######################################################################
 
-  # We use command identifiers 1 for status command, 2 for emergency
-  # stop, and 3-99 for normal commands,
-
-  variable statuscommandidentifier        1
-  variable emergencystopcommandidentifier 2
-  variable firstnormalcommandidentifier   3
-  variable lastnormalcommandidentifier    99
-
-  ######################################################################
-
-  set controller::host                        $controllerhost
-  set controller::port                        $controllerport
-  set controller::connectiontype              "persistent"
-  set controller::statuscommand "$statuscommandidentifier GET [join {
+  set statuscommand "GET [join {
+    TELESCOPE.READY_STATE
+    TELESCOPE.MOTION_STATE    
     POSITION.HORIZONTAL.AZ
     POSITION.HORIZONTAL.ZD
     POSITION.EQUATORIAL.RA_CURRENT
@@ -131,17 +110,12 @@ namespace eval "mount" {
     POSITION.INSTRUMENTAL.DEROTATOR[3].MOTION_STATE    
     POSITION.INSTRUMENTAL.AZ.TARGETDISTANCE
     POSITION.INSTRUMENTAL.ZD.TARGETDISTANCE
-    TELESCOPE.MOTION_STATE    
     POINTING.TARGETDISTANCE
   } ";"]\n"
-  set controller::timeoutmilliseconds         10000
-  set controller::intervalmilliseconds        50
-  set controller::updatedata                  mount::updatecontrollerdata
-  set controller::statusintervalmilliseconds  200
-
-  set server::datalifeseconds                 30
 
   ######################################################################
+
+  set server::datalifeseconds                   30
 
   server::setdata "mounttracking"              "unknown"
   server::setdata "mountha"                     ""
@@ -183,16 +157,6 @@ namespace eval "mount" {
 
   server::setdata "unparked"                    false
 
-  proc isignoredcontrollerresponse {controllerresponse} {
-    expr {
-      [regexp {TPL2 .*} $controllerresponse] == 1 ||
-      [regexp {AUTH OK .*} $controllerresponse] == 1 ||
-      [regexp {^[0-9]+ COMMAND OK}  $controllerresponse] == 1 ||
-      [regexp {^[0-9]+ DATA OK}     $controllerresponse] == 1 ||
-      [regexp {^[0-9]+ EVENT INFO } $controllerresponse] == 1
-    }
-  }
-
   variable pendingmountazimuth
   variable pendingmountzenithdistance
   variable pendingmountalpha
@@ -208,7 +172,7 @@ namespace eval "mount" {
   variable zenithdistancetargetdistance ""
   variable targetdistance               ""
 
-  proc updatecontrollerdata {controllerresponse} {
+  proc updatedata {response} {
 
     variable pendingmountazimuth
     variable pendingmountzenithdistance
@@ -225,96 +189,53 @@ namespace eval "mount" {
     variable zenithdistancetargetdistance
     variable targetdistance
 
-    set controllerresponse [string trim $controllerresponse]
-    set controllerresponse [string trim $controllerresponse "\0"]
+    set response [string trim $response]
+    set response [string trim $response "\0"]
     
-    log::debug "controller response: \"$controllerresponse\"."
+    log::debug "controller response: \"$response\"."
 
-    if {[isignoredcontrollerresponse $controllerresponse]} {
-      return false
-    }
-
-    if {
-      [regexp {^[0-9]+ EVENT ERROR } $controllerresponse] == 1 ||
-      [regexp {^[0-9]+ DATA ERROR } $controllerresponse] == 1
-    } {
-      log::warning "controller error: \"$controllerresponse\"."
-      return false
-    }
-
-    if {![scan $controllerresponse "%d " commandidentifier] == 1} {
-      log::warning "unexpected controller response \"$controllerresponse\"."
-      return true
-    }
-
-    variable statuscommandidentifier
-    variable emergencystopcommandidentifier
-    variable completedcommandidentifier
-
-    if {$commandidentifier == $emergencystopcommandidentifier} {
-      log::debug "controller response \"$controllerresponse\"."
-      if {[regexp {^[0-9]+ COMMAND COMPLETE} $controllerresponse] == 1} {
-        finishemergencystop
-        return false
-      }
-    }
-
-    if {$commandidentifier != $statuscommandidentifier} {
-      variable currentcommandidentifier
-      variable completedcurrentcommand
-      log::debug "controller response \"$controllerresponse\"."
-      if {[regexp {^[0-9]+ COMMAND COMPLETE} $controllerresponse] == 1} {
-        log::debug [format "controller command %d completed." $commandidentifier]
-        if {$commandidentifier == $currentcommandidentifier} {
-          log::debug "current controller command completed."
-          set completedcurrentcommand true
-        }
-      }
-      return false
-    }
-
-    if {[scan $controllerresponse "%*d DATA INLINE POSITION.HORIZONTAL.AZ=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE POSITION.HORIZONTAL.AZ=%f" value] == 1} {
       set pendingmountazimuth [astrometry::degtorad $value]
       return false
     }
-    if {[scan $controllerresponse "%*d DATA INLINE POSITION.HORIZONTAL.ZD=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE POSITION.HORIZONTAL.ZD=%f" value] == 1} {
       set pendingmountzenithdistance [astrometry::degtorad $value]
       return false
     }
-    if {[scan $controllerresponse "%*d DATA INLINE POSITION.EQUATORIAL.RA_CURRENT=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE POSITION.EQUATORIAL.RA_CURRENT=%f" value] == 1} {
       set pendingmountalpha [astrometry::hrtorad $value]
       return false
     }
-    if {[scan $controllerresponse "%*d DATA INLINE POSITION.EQUATORIAL.DEC_CURRENT=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE POSITION.EQUATORIAL.DEC_CURRENT=%f" value] == 1} {
       set pendingmountdelta [astrometry::degtorad $value]
       return false
     }
-    if {[scan $controllerresponse "%*d DATA INLINE POSITION.LOCAL.SIDEREAL_TIME=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE POSITION.LOCAL.SIDEREAL_TIME=%f" value] == 1} {
       set pendingmountst [astrometry::hrtorad $value]
       return false
     }
-    if {[scan $controllerresponse "%*d DATA INLINE TELESCOPE.MOTION_STATE=%d" value] == 1} {
+    if {[scan $response "%*d DATA INLINE TELESCOPE.MOTION_STATE=%d" value] == 1} {
       set pendingtelescopemotionstate $value
       return false
     }
-    if {[scan $controllerresponse "%*d DATA INLINE POSITION.INSTRUMENTAL.AZ.TARGETDISTANCE=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.AZ.TARGETDISTANCE=%f" value] == 1} {
       set pendingazimuthtargetdistance [astrometry::hrtorad $value]
       return false
     }
-    if {[scan $controllerresponse "%*d DATA INLINE POSITION.INSTRUMENTAL.ZD.TARGETDISTANCE=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.ZD.TARGETDISTANCE=%f" value] == 1} {
       set pendingzenithdistancetargetdistance [astrometry::degtorad $value]
       return false
     }
-    if {[scan $controllerresponse "%*d DATA INLINE POINTING.TARGETDISTANCE=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE POINTING.TARGETDISTANCE=%f" value] == 1} {
       set pendingtargetdistance [astrometry::degtorad $value]
       return false
     }
-    if {[regexp {[0-9]+ DATA INLINE } $controllerresponse] == 1} {
+    if {[regexp {[0-9]+ DATA INLINE } $response] == 1} {
       log::debug "status: ignoring DATA INLINE response."
       return false
     }
-    if {[regexp {[0-9]+ COMMAND COMPLETE} $controllerresponse] != 1} {
-      log::warning "unexpected controller response \"$controllerresponse\"."
+    if {[regexp {[0-9]+ COMMAND COMPLETE} $response] != 1} {
+      log::warning "unexpected controller response \"$response\"."
       return true
     }
     
@@ -397,49 +318,13 @@ namespace eval "mount" {
 
   ######################################################################
 
-  variable currentcommandidentifier 0
-  variable nextcommandidentifier $firstnormalcommandidentifier
-  variable completedcurrentcommand
-
-  proc sendcommand {command} {
-    variable currentcommandidentifier
-    variable nextcommandidentifier
-    variable completedcurrentcommand
-    variable firstnormalcommandidentifier
-    variable lastnormalcommandidentifier
-    set currentcommandidentifier $nextcommandidentifier
-    if {$nextcommandidentifier == $lastnormalcommandidentifier} {
-      set nextcommandidentifier $firstnormalcommandidentifier
-    } else {
-      set nextcommandidentifier [expr {$nextcommandidentifier + 1}]
-    }
-    log::debug "sending controller command $currentcommandidentifier: \"$command\"."
-    controller::pushcommand "$currentcommandidentifier $command\n"
-  }
-
-  proc sendcommandandwait {command} {
-    variable currentcommandidentifier
-    variable completedcurrentcommand
-    set start [utcclock::seconds]
-    set completedcurrentcommand false
-    sendcommand $command    
-    coroutine::yield
-    while {!$completedcurrentcommand} {
-      coroutine::yield
-    }
-    set end [utcclock::seconds]
-    log::debug [format "completed controller command $currentcommandidentifier after %.1f seconds." [utcclock::diff $end $start]]
-  }
-
-  ######################################################################
-  
   proc parkhardware {} {
     variable hapark
     variable deltapark
     log::info "moving to park."
     set azimuth        [astrometry::equatorialtoazimuth        $hapark $deltapark]
     set zenithdistance [astrometry::equatorialtozenithdistance $hapark $deltapark]
-    sendcommand [format \
+    opentsi::sendcommand [format \
       "SET OBJECT.HORIZONTAL.AZ=%.6f;OBJECT.HORIZONTAL.ZD=%.6f;POINTING.TRACK=2" \
       [astrometry::radtodeg $azimuth        ] \
       [astrometry::radtodeg $zenithdistance ] \
@@ -454,7 +339,7 @@ namespace eval "mount" {
     log::info "moving to unpark."
     set azimuth        [astrometry::equatorialtoazimuth        $haunpark $deltaunpark]
     set zenithdistance [astrometry::equatorialtozenithdistance $haunpark $deltaunpark]
-    sendcommand [format \
+    opentsi::sendcommand [format \
       "SET OBJECT.HORIZONTAL.AZ=%.6f;OBJECT.HORIZONTAL.ZD=%.6f;POINTING.TRACK=2" \
       [astrometry::radtodeg $azimuth        ] \
       [astrometry::radtodeg $zenithdistance ] \
@@ -478,8 +363,8 @@ namespace eval "mount" {
   proc initializeactivitycommand {} {
     set start [utcclock::seconds]
     log::info "initializing."
-    sendcommand "SET POINTING.SETUP.DEROTATOR.SYNCMODE=0"
-    sendcommand "SET POINTING.SETUP.USE_PORT=3"
+    opentsi::sendcommand "SET POINTING.SETUP.DEROTATOR.SYNCMODE=0"
+    opentsi::sendcommand "SET POINTING.SETUP.USE_PORT=3"
     parkhardware
     set end [utcclock::seconds]
     log::info [format "finished initializing after %.1f seconds." [utcclock::diff $end $start]]
@@ -521,7 +406,7 @@ namespace eval "mount" {
     set start [utcclock::seconds]
     log::info "moving."
     updaterequestedpositiondata
-    sendcommand [format \
+    opentsi::sendcommand [format \
       "SET OBJECT.HORIZONTAL.AZ=%.6f;OBJECT.HORIZONTAL.ZD=%.6f;POINTING.TRACK=2" \
       [astrometry::radtodeg [server::getdata "requestedobservedazimuth"]] \
       [astrometry::radtodeg [server::getdata "requestedobservedzenithdistance"]] \
@@ -556,7 +441,7 @@ namespace eval "mount" {
       log::info "moving to track."
     }
     updaterequestedpositiondata
-    sendcommand [format \
+    opentsi::sendcommand [format \
       "SET OBJECT.EQUATORIAL.RA=%.6f;OBJECT.EQUATORIAL.DEC=%.6f;OBJECT.EQUATORIAL.EQUINOX=%.6f;POINTING.TRACK=1" \
       [astrometry::radtohr  [server::getdata "requestedstandardalpha"]] \
       [astrometry::radtodeg [server::getdata "requestedstandarddelta"]] \
@@ -575,6 +460,14 @@ namespace eval "mount" {
   proc offsetactivitycommand {} {
     updaterequestedpositiondata true
     trackoroffsetactivitycommand false
+  }
+
+  ######################################################################
+
+  proc start {} {
+    server::setstatus "starting"
+    opentsi::start $mount::statuscommand mount::updatedata
+    server::newactivitycommand "starting" "started" mount::startactivitycommand
   }
 
   ######################################################################
