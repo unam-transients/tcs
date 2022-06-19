@@ -24,23 +24,13 @@
 ########################################################################
 
 package require "config"
-package require "controller"
 package require "log"
+package require "opentsi"
 package require "server"
-
-config::setdefaultvalue "secondary" "controllerport" "65432"
-config::setdefaultvalue "secondary" "controllerhost" "opentsi"
 
 package provide "secondaryopentsi" 0.0
 
 namespace eval "secondary" {
-
-  variable svnid {$Id}
-
-  ######################################################################
-
-  variable controllerhost [config::getvalue "secondary" "controllerhost"]
-  variable controllerport [config::getvalue "secondary" "controllerport"]
 
   ######################################################################
 
@@ -51,48 +41,19 @@ namespace eval "secondary" {
   server::setdata "zerror"           ""
   server::setdata "timestamp"        [utcclock::combinedformat now]
 
-  variable settledelayseconds 1
+  set server::datalifeseconds        30
 
   ######################################################################
 
-  # We use command identifiers 1 for status command, 2 for emergency
-  # stop, and 3-99 for normal commands,
-
-  variable statuscommandidentifier        1
-  variable emergencystopcommandidentifier 2
-  variable firstnormalcommandidentifier   3
-  variable lastnormalcommandidentifier    99
-
-  ######################################################################
-
-  set controller::host                        $controllerhost
-  set controller::port                        $controllerport
-  set controller::connectiontype              "persistent"
-  set controller::statuscommand "$statuscommandidentifier GET [join {
+  set statuscommand "GET [join {
     TELESCOPE.READY_STATE
     POSITION.INSTRUMENTAL.FOCUS.LIMIT_STATE
     POSITION.INSTRUMENTAL.FOCUS.MOTION_STATE
     POSITION.INSTRUMENTAL.FOCUS.CURRPOS
     POSITION.INSTRUMENTAL.FOCUS.TARGETDISTANCE
   } ";"]\n"
-  set controller::timeoutmilliseconds         10000
-  set controller::intervalmilliseconds        50
-  set controller::updatedata                  secondary::updatecontrollerdata
-  set controller::statusintervalmilliseconds  1000
-
-  set server::datalifeseconds                 30
 
   ######################################################################
-
-  proc isignoredcontrollerresponse {controllerresponse} {
-    expr {
-      [regexp {TPL2 .*} $controllerresponse] == 1 ||
-      [regexp {AUTH OK .*} $controllerresponse] == 1 ||
-      [regexp {^[0-9]+ COMMAND OK}  $controllerresponse] == 1 ||
-      [regexp {^[0-9]+ DATA OK}     $controllerresponse] == 1 ||
-      [regexp {^[0-9]+ EVENT INFO } $controllerresponse] == 1
-    }
-  }
 
   variable moving
   variable zerror
@@ -103,7 +64,7 @@ namespace eval "secondary" {
   variable pendingzlowerlimit
   variable pendingzupperlimit
 
-  proc updatecontrollerdata {controllerresponse} {
+  proc updatedata {response} {
   
     variable moving
     variable zerror
@@ -114,53 +75,7 @@ namespace eval "secondary" {
     variable pendingzlowerlimit
     variable pendingzupperlimit
 
-    set controllerresponse [string trim $controllerresponse]
-    set controllerresponse [string trim $controllerresponse "\0"]
-    
-    if {[isignoredcontrollerresponse $controllerresponse]} {
-      return false
-    }
-
-    if {
-      [regexp {^[0-9]+ EVENT ERROR } $controllerresponse] == 1 ||
-      [regexp {^[0-9]+ DATA ERROR } $controllerresponse] == 1
-    } {
-      log::warning "controller error: \"$controllerresponse\"."
-      return false
-    }
-
-    if {![scan $controllerresponse "%d " commandidentifier] == 1} {
-      log::warning "unexpected controller response \"$controllerresponse\"."
-      return true
-    }
-
-    variable statuscommandidentifier
-    variable emergencystopcommandidentifier
-    variable completedcommandidentifier
-
-    if {$commandidentifier == $emergencystopcommandidentifier} {
-      log::debug "controller response \"$controllerresponse\"."
-      if {[regexp {^[0-9]+ COMMAND COMPLETE} $controllerresponse] == 1} {
-        finishemergencystop
-        return false
-      }
-    }
-
-    if {$commandidentifier != $statuscommandidentifier} {
-      variable currentcommandidentifier
-      variable completedcurrentcommand
-      log::debug "controller response \"$controllerresponse\"."
-      if {[regexp {^[0-9]+ COMMAND COMPLETE} $controllerresponse] == 1} {
-        log::debug [format "controller command %d completed." $commandidentifier]
-        if {$commandidentifier == $currentcommandidentifier} {
-          log::debug "current controller command completed."
-          set completedcurrentcommand true
-        }
-      }
-      return false
-    }
-
-    if {[scan $controllerresponse "%*d DATA INLINE TELESCOPE.READY_STATE=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE TELESCOPE.READY_STATE=%f" value] == 1} {
       if {$value == -3.0} {
         set pendingmode "local"
       } elseif {$value == -2.0} {
@@ -176,15 +91,18 @@ namespace eval "secondary" {
       }
       return false
     }
-    if {[scan $controllerresponse "%*d DATA INLINE POSITION.INSTRUMENTAL.FOCUS.CURRPOS=%f" value] == 1} {
-      set pendingz [expr {max(0,round($value * 1000))}]
+    if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.FOCUS.CURRPOS=%f" value] == 1} {
+      variable minz
+      variable maxz
+      set pendingz [expr {round($value * 1000)}]
+      set pendingz [expr {max($minz,min($maxz,$pendingz))}]
       return false
     }
-    if {[scan $controllerresponse "%*d DATA INLINE POSITION.INSTRUMENTAL.FOCUS.TARGETDISTANCE=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.FOCUS.TARGETDISTANCE=%f" value] == 1} {
       set pendingzerror [expr {round($value * 1000)}]
       return false
     }
-    if {[scan $controllerresponse "%*d DATA INLINE POSITION.INSTRUMENTAL.FOCUS.MOTION_STATE=%d" value] == 1} {
+    if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.FOCUS.MOTION_STATE=%d" value] == 1} {
       if {$value & (1 << 0)} {
         set moving true
       } else {
@@ -193,7 +111,7 @@ namespace eval "secondary" {
       log::debug "moving is $moving."
       return false
     }
-    if {[scan $controllerresponse "%*d DATA INLINE POSITION.INSTRUMENTAL.FOCUS.LIMIT_STATE=%d" value] == 1} {
+    if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.FOCUS.LIMIT_STATE=%d" value] == 1} {
       if {$value & (1 << 0 | 1 << 8)} {
         set pendingzlowerlimit true
       } else {
@@ -207,12 +125,12 @@ namespace eval "secondary" {
       return false
     }
 
-    if {[regexp {[0-9]+ DATA INLINE } $controllerresponse] == 1} {
-      log::debug "status: ignoring DATA INLINE response: $controllerresponse"
+    if {[regexp {[0-9]+ DATA INLINE } $response] == 1} {
+      log::debug "status: ignoring DATA INLINE response: $response"
       return false
     }
-    if {[regexp {[0-9]+ COMMAND COMPLETE} $controllerresponse] != 1} {
-      log::warning "unexpected controller response \"$controllerresponse\"."
+    if {[regexp {[0-9]+ COMMAND COMPLETE} $response] != 1} {
+      log::warning "unexpected controller response \"$response\"."
       return true
     }
     
@@ -241,7 +159,7 @@ namespace eval "secondary" {
     variable moving
     variable zerror
     set startingdelay 1
-    set settlingdelay 1
+    set settlingdelay 0
     set start [utcclock::seconds]
     while {[utcclock::diff now $start] < $startingdelay} {
       coroutine::yield
@@ -253,44 +171,21 @@ namespace eval "secondary" {
     while {[utcclock::diff now $settle] < $settlingdelay} {
       coroutine::yield
     }
-    log::info "finished waiting while moving with zerror = $zerror."
     log::info "finished waiting while moving."
   }
   
   ######################################################################
   
-  variable currentcommandidentifier 0
-  variable nextcommandidentifier $firstnormalcommandidentifier
-  variable completedcurrentcommand
-
-  proc sendcommand {command} {
-    variable currentcommandidentifier
-    variable nextcommandidentifier
-    variable completedcurrentcommand
-    variable firstnormalcommandidentifier
-    variable lastnormalcommandidentifier
-    set currentcommandidentifier $nextcommandidentifier
-    if {$nextcommandidentifier == $lastnormalcommandidentifier} {
-      set nextcommandidentifier $firstnormalcommandidentifier
-    } else {
-      set nextcommandidentifier [expr {$nextcommandidentifier + 1}]
-    }
-    log::debug "sending controller command: \"$currentcommandidentifier $command\"."
-    controller::pushcommand "$currentcommandidentifier $command\n"
-  }
-
-  ######################################################################
-
   proc starthardware {} {
     controller::flushcommandqueue
-    sendcommand "SET POSITION.INSTRUMENTAL.FOCUS.OFFSET=0"
-    sendcommand "SET POINTING.SETUP.FOCUS.SYNCMODE=0"
+    opentsi::sendcommand "SET POSITION.INSTRUMENTAL.FOCUS.OFFSET=0"
+    opentsi::sendcommand "SET POINTING.SETUP.FOCUS.SYNCMODE=0"
     waitwhilemoving
   }
 
   proc stophardware {} {
     controller::flushcommandqueue
-    sendcommand "SET TELESCOPE.STOP=1"
+    opentsi::sendcommand "SET TELESCOPE.STOP=1"
     waitwhilemoving
   }
   
@@ -309,7 +204,7 @@ namespace eval "secondary" {
     set z [server::getdata "z"]
     if {$z != $requestedz} {
       log::debug "movehardwaresimple: sending commands."
-      sendcommand "SET POSITION.INSTRUMENTAL.FOCUS.TARGETPOS=[expr {$requestedz / 1000.0}]"
+      opentsi::sendcommand "SET POSITION.INSTRUMENTAL.FOCUS.TARGETPOS=[expr {$requestedz / 1000.0}]"
       coroutine::after 1000
       waitwhilemoving
     }
@@ -399,8 +294,7 @@ namespace eval "secondary" {
 
   proc start {} {
     server::setstatus "starting"
-    controller::startcommandloop "AUTH PLAIN \"admin\" \"admin\"\n"
-    controller::startstatusloop
+    opentsi::start $secondary::statuscommand secondary::updatedata
     server::newactivitycommand "starting" "started" secondary::startactivitycommand
   }
 
