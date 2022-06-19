@@ -174,6 +174,11 @@ namespace eval "telescopecontroller" {
     while {$opentsi::readystate != 1.0} {
       coroutine::yield
     }
+    set settlingdelay 5
+    set settle [utcclock::seconds]
+    while {[utcclock::diff now $settle] < $settlingdelay} {
+      coroutine::yield
+    }
   }
   
   proc switchoffhardware {} {
@@ -257,8 +262,7 @@ namespace eval "telescopecontroller" {
   proc reset {} {
     server::checkstatus
     server::checkactivityforreset
-    checkhardware
-    server::newactivitycommand "resetting" [server::getstoppedactivity] "telescopecontroller::stopactivitycommand [server::getactivity]"
+    server::newactivitycommand "resetting" [server::getstoppedactivity] server::resetactivitycommand
   }
 
   proc switchon {} {
