@@ -72,7 +72,7 @@ namespace eval "secondary" {
     TELESCOPE.READY_STATE
     POSITION.INSTRUMENTAL.FOCUS.LIMIT_STATE
     POSITION.INSTRUMENTAL.FOCUS.MOTION_STATE
-    POSITION.INSTRUMENTAL.FOCUS.OFFSET
+    POSITION.INSTRUMENTAL.FOCUS.CURRPOS
     POSITION.INSTRUMENTAL.FOCUS.TARGETDISTANCE
   } ";"]\n"
   set controller::timeoutmilliseconds         10000
@@ -95,6 +95,7 @@ namespace eval "secondary" {
   }
 
   variable moving
+  variable zerror
 
   variable pendingmode
   variable pendingz
@@ -105,6 +106,7 @@ namespace eval "secondary" {
   proc updatecontrollerdata {controllerresponse} {
   
     variable moving
+    variable zerror
 
     variable pendingmode
     variable pendingz
@@ -158,7 +160,6 @@ namespace eval "secondary" {
       return false
     }
 
-    #log::debug "status: controller response \"$controllerresponse\"."
     if {[scan $controllerresponse "%*d DATA INLINE TELESCOPE.READY_STATE=%f" value] == 1} {
       if {$value == -3.0} {
         set pendingmode "local"
@@ -175,12 +176,12 @@ namespace eval "secondary" {
       }
       return false
     }
-    if {[scan $controllerresponse "%*d DATA INLINE POSITION.INSTRUMENTAL.FOCUS.OFFSET=%f" value] == 1} {
-      set pendingz [format "%.3f" $value]
+    if {[scan $controllerresponse "%*d DATA INLINE POSITION.INSTRUMENTAL.FOCUS.CURRPOS=%f" value] == 1} {
+      set pendingz [expr {max(0,round($value * 1000))}]
       return false
     }
     if {[scan $controllerresponse "%*d DATA INLINE POSITION.INSTRUMENTAL.FOCUS.TARGETDISTANCE=%f" value] == 1} {
-      set pendingzerror [format "%+.3f" $value]
+      set pendingzerror [expr {round($value * 1000)}]
       return false
     }
     if {[scan $controllerresponse "%*d DATA INLINE POSITION.INSTRUMENTAL.FOCUS.MOTION_STATE=%d" value] == 1} {
@@ -190,6 +191,7 @@ namespace eval "secondary" {
         set moving false
       }
       log::debug "moving is $moving."
+      return false
     }
     if {[scan $controllerresponse "%*d DATA INLINE POSITION.INSTRUMENTAL.FOCUS.LIMIT_STATE=%d" value] == 1} {
       if {$value & (1 << 0 | 1 << 8)} {
@@ -206,7 +208,7 @@ namespace eval "secondary" {
     }
 
     if {[regexp {[0-9]+ DATA INLINE } $controllerresponse] == 1} {
-      log::debug "status: ignoring DATA INLINE response."
+      log::debug "status: ignoring DATA INLINE response: $controllerresponse"
       return false
     }
     if {[regexp {[0-9]+ COMMAND COMPLETE} $controllerresponse] != 1} {
@@ -234,19 +236,25 @@ namespace eval "secondary" {
     return true
   }
 
-  proc setmoving {} {
+  proc waitwhilemoving {} {
+    log::info "waiting while moving."
     variable moving
-    set moving true
-  }
-
-  proc waituntilnotmoving {} {
-    variable moving
-    log::info "waiting until not moving."
-    while {$moving} {
-      log::info "moving was $moving"
-      coroutine::after 100
+    variable zerror
+    set startingdelay 1
+    set settlingdelay 1
+    set start [utcclock::seconds]
+    while {[utcclock::diff now $start] < $startingdelay} {
+      coroutine::yield
     }
-    log::info "finished waiting until not moving."
+    while {$moving} {
+      coroutine::yield
+    }
+    set settle [utcclock::seconds]
+    while {[utcclock::diff now $settle] < $settlingdelay} {
+      coroutine::yield
+    }
+    log::info "finished waiting while moving with zerror = $zerror."
+    log::info "finished waiting while moving."
   }
   
   ######################################################################
@@ -267,7 +275,7 @@ namespace eval "secondary" {
     } else {
       set nextcommandidentifier [expr {$nextcommandidentifier + 1}]
     }
-    log::debug "sending controller command $currentcommandidentifier: \"$command\"."
+    log::debug "sending controller command: \"$currentcommandidentifier $command\"."
     controller::pushcommand "$currentcommandidentifier $command\n"
   }
 
@@ -275,26 +283,20 @@ namespace eval "secondary" {
 
   proc starthardware {} {
     controller::flushcommandqueue
-#    setmoving
-log::info "sending SET POINTING.INSTRUMENTAL.FOCUS.OFFSET=0"
-#    controller::sendcommand "SET POINTING.INSTRUMENTAL.FOCUS.OFFSET=0"
-log::info "sending SET POINTING.SETUP.FOCUS.SYNCMODE=1"
-#    controller::sendcommand "SET POINTING.SETUP.FOCUS.SYNCMODE=1"
-log::info "done"
-#    waituntilnotmoving
+    sendcommand "SET POSITION.INSTRUMENTAL.FOCUS.OFFSET=0"
+    sendcommand "SET POINTING.SETUP.FOCUS.SYNCMODE=0"
+    waitwhilemoving
   }
 
   proc stophardware {} {
     controller::flushcommandqueue
-    setmoving
-    controller::sendcommand "SET TELESCOPE.STOP=1"
-    waituntilnotmoving
+    sendcommand "SET TELESCOPE.STOP=1"
+    waitwhilemoving
   }
   
   proc movehardwaresimple {requestedz} {
-    log::info "movehardwaresimple: starting."
-#    controller::flushcommandqueue
-#    waituntilnotmoving
+    log::debug "movehardwaresimple: starting."
+    controller::flushcommandqueue
     variable minz
     variable maxz
     if {$requestedz < $minz} {
@@ -306,15 +308,12 @@ log::info "done"
     }
     set z [server::getdata "z"]
     if {$z != $requestedz} {
-      log::info "movehardwaresimple: sending commands."
-      setmoving
-      controller::sendcommand "SET POINTING.SETUP.FOCUS.SYNCMODE=1"
-      controller::sendcommand "SET POINTING.SETUP.FOCUS.POSITION=$z"
-      controller::sendcommand "SET POINTING.TRACK=4"
+      log::debug "movehardwaresimple: sending commands."
+      sendcommand "SET POSITION.INSTRUMENTAL.FOCUS.TARGETPOS=[expr {$requestedz / 1000.0}]"
       coroutine::after 1000
-      waituntilnotmoving
+      waitwhilemoving
     }
-    log::info "movehardwaresimple: done."
+    log::debug "movehardwaresimple: done."
   }
 
   proc movehardware {requestedz check} {

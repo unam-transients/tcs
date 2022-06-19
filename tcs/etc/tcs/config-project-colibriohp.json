@@ -204,8 +204,8 @@
     "initialz0": "0",
     "minz": "0",
     "maxz": "40000",
-    "allowedzerror": "5",
-    "zdeadzonewidth": "5",
+    "allowedzerror": "2",
+    "zdeadzonewidth": "2",
     "dztweak": "-1000"
   },
   "selector": {},
