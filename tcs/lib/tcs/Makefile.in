@@ -109,6 +109,7 @@ installs	:=			           \
 	mountopentsi.tcl		       \
 	mountratiroan.tcl			   \
 	mountserver.tcl		    	   \
+	opentsi.tcl                    \
 	owsensors.tcl		    	   \
 	owsensorsserver.tcl	    	   \
 	packages.tcl		    	   \
