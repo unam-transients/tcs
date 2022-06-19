@@ -707,9 +707,7 @@ namespace eval "html" {
 
     putshtml "<table class=\"status\">"
     
-    set mode       [client::getdata "telescopecontroller" "mode"]
-    set readystate [client::getdata "telescopecontroller" "readystate"]
-    writehtmlfullrow "Mode" "$mode ($readystate)"
+    writehtmlfullrow "State" [client::getdata "telescopecontroller" "state"]
     writehtmlrow "Ambient temperature" [formatifok "%.1f C"    [client::getdata "telescopecontroller" "ambienttemperature"]]
     writehtmlrow "Ambient pressure"    [formatifok "%.1f mbar" [client::getdata "telescopecontroller" "ambientpressure"   ]]
 
@@ -1077,6 +1075,7 @@ if {false} {
     putshtml "<table class=\"status\">"
 
     if {[string equal [client::getstatus "secondary"] "ok"]} {
+      writehtmlrow "State" [client::getdata "secondary" "state"]
       writehtmlrow "Requested position (z0)" [formatifok "%d" [client::getdata "secondary" "requestedz0"]]
       writehtmlrow "Temperature correction (dzT)" [formatifok "%+d" [client::getdata "secondary" "dzT"]]
       writehtmlrow "Position correction (dzP)" [formatifok "%+d" [client::getdata "secondary" "dzP"]]

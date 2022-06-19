@@ -98,7 +98,6 @@ namespace eval "mount" {
   ######################################################################
 
   set statuscommand "GET [join {
-    TELESCOPE.READY_STATE
     TELESCOPE.MOTION_STATE    
     POSITION.HORIZONTAL.AZ
     POSITION.HORIZONTAL.ZD
@@ -111,7 +110,7 @@ namespace eval "mount" {
     POSITION.INSTRUMENTAL.AZ.TARGETDISTANCE
     POSITION.INSTRUMENTAL.ZD.TARGETDISTANCE
     POINTING.TARGETDISTANCE
-  } ";"]\n"
+  } ";"]"
 
   ######################################################################
 
@@ -254,6 +253,7 @@ namespace eval "mount" {
     set timestamp [utcclock::combinedformat "now"]
 
     server::setdata "timestamp"           $timestamp
+    server::setdata "state"               $opentsi::readystatetext
     server::setdata "mountazimuth"        $mountazimuth
     server::setdata "mountzenithdistance" $mountzenithdistance
     server::setdata "mountalpha"          $mountalpha
@@ -346,6 +346,12 @@ namespace eval "mount" {
     ]      
     waitwhilemoving
     server::setdata "unparked" true
+  }
+  
+  proc checkhardware {} {
+    if {$opentsi::readystate != 1.0} {
+      error "state is \"$opentsi::readystatetext\"."
+    }
   }
   
   ######################################################################

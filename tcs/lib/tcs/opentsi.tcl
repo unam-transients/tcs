@@ -113,9 +113,15 @@ namespace eval "opentsi" {
   }
 
   ######################################################################
+  
+  variable readystate     ""
+  variable readystatetext ""
 
   proc updatedata {response} {
   
+    variable readystate
+    variable readystatetext
+
     set response [string trim $response]
     set response [string trim $response "\0"]
     
@@ -160,6 +166,24 @@ namespace eval "opentsi" {
       return false
     }
     
+    if {[scan $response "%*d DATA INLINE TELESCOPE.READY_STATE=%f" value] == 1} {
+      set readystate $value
+      if {$value == -3.0} {
+        set readystatetext "local"
+      } elseif {$value == -2.0} {
+        set readystatetext "emergencystop"
+      } elseif {$value == -1.0} {
+        set readystatetext "blocked"
+      } elseif {$value == 0.0} {
+        set readystatetext "off"
+      } elseif {$value == 1.0} {
+        set readystatetext "operational"
+      } else {
+        set readystatetext "intermediate"
+      }
+      return false
+    }
+
     variable higherupdatedata
     return [$higherupdatedata $response]
 
@@ -169,7 +193,7 @@ namespace eval "opentsi" {
 
   proc start {statuscommand updatedata} {
     variable statuscommandidentifier
-    set controller::statuscommand "$statuscommandidentifier $statuscommand"
+    set controller::statuscommand "$statuscommandidentifier $statuscommand;TELESCOPE.READY_STATE\n"
     set controller::updatedata    "opentsi::updatedata"
     variable higherupdatedata
     set higherupdatedata "$updatedata"
