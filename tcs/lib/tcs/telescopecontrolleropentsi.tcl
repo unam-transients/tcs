@@ -24,23 +24,13 @@
 ########################################################################
 
 package require "config"
-package require "controller"
+package require "opentsi"
 package require "log"
 package require "server"
-
-config::setdefaultvalue "telescopecontroller" "controllerport" "65432"
-config::setdefaultvalue "telescopecontroller" "controllerhost" "opentsi"
 
 package provide "telescopecontrolleropentsi" 0.0
 
 namespace eval "telescopecontroller" {
-
-  variable svnid {$Id}
-
-  ######################################################################
-
-  variable controllerhost [config::getvalue "telescopecontroller" "controllerhost"]
-  variable controllerport [config::getvalue "telescopecontroller" "controllerport"]
 
   ######################################################################
 
@@ -51,24 +41,11 @@ namespace eval "telescopecontroller" {
   server::setdata "ambienttemperature" ""
   server::setdata "ambientpressure"    ""
 
-  variable settledelayseconds 5
+  set server::datalifeseconds                 30
 
   ######################################################################
 
-  # We use command identifiers 1 for status command, 2 for emergency
-  # stop, and 3-99 for normal commands,
-
-  variable statuscommandidentifier        1
-  variable emergencystopcommandidentifier 2
-  variable firstnormalcommandidentifier   3
-  variable lastnormalcommandidentifier    99
-
-  ######################################################################
-
-  set controller::host                        $controllerhost
-  set controller::port                        $controllerport
-  set controller::connectiontype              "persistent"
-  set controller::statuscommand "$statuscommandidentifier GET [join {
+  set statuscommand "GET [join {
     TELESCOPE.READY_STATE
     TELESCOPE.ENVIRONMENT.TEMPERATURE
     TELESCOPE.ENVIRONMENT.PRESSURE
@@ -88,24 +65,8 @@ namespace eval "telescopecontroller" {
     AUXILIARY.SENSOR[13].VALUE
     AUXILIARY.SENSOR[14].VALUE
   } ";"]\n"
-  set controller::timeoutmilliseconds         10000
-  set controller::intervalmilliseconds        50
-  set controller::updatedata                  telescopecontroller::updatecontrollerdata
-  set controller::statusintervalmilliseconds  1000
-
-  set server::datalifeseconds                 30
 
   ######################################################################
-
-  proc isignoredcontrollerresponse {controllerresponse} {
-    expr {
-      [regexp {TPL2 .*} $controllerresponse] == 1 ||
-      [regexp {AUTH OK .*} $controllerresponse] == 1 ||
-      [regexp {^[0-9]+ COMMAND OK}  $controllerresponse] == 1 ||
-      [regexp {^[0-9]+ DATA OK}     $controllerresponse] == 1 ||
-      [regexp {^[0-9]+ EVENT INFO } $controllerresponse] == 1
-    }
-  }
 
   variable readystate         ""
   variable ambienttemperature ""
@@ -126,7 +87,7 @@ namespace eval "telescopecontroller" {
   variable sensor13           ""
   variable sensor14           ""
 
-  proc updatecontrollerdata {controllerresponse} {
+  proc updatedata {response} {
 
     variable readystate
     variable ambienttemperature
@@ -147,70 +108,32 @@ namespace eval "telescopecontroller" {
     variable sensor13
     variable sensor14
 
-    set controllerresponse [string trim $controllerresponse]
-    set controllerresponse [string trim $controllerresponse "\0"]
-    
-    if {[isignoredcontrollerresponse $controllerresponse]} {
-      return false
-    }
-
-    if {
-      [regexp {^[0-9]+ EVENT ERROR } $controllerresponse] == 1 ||
-      [regexp {^[0-9]+ DATA ERROR } $controllerresponse] == 1
-    } {
-      log::warning "controller error: \"$controllerresponse\"."
-      return false
-    }
-
-    if {![scan $controllerresponse "%d " commandidentifier] == 1} {
-      log::warning "unexpected controller response \"$controllerresponse\"."
-      return true
-    }
-
-    variable statuscommandidentifier
-    variable emergencystopcommandidentifier
-    variable completedcommandidentifier
-
-    if {$commandidentifier != $statuscommandidentifier} {
-      variable currentcommandidentifier
-      variable completedcurrentcommand
-      log::debug "controller response \"$controllerresponse\"."
-      if {[regexp {^[0-9]+ COMMAND COMPLETE} $controllerresponse] == 1} {
-        log::debug [format "controller command %d completed." $commandidentifier]
-        if {$commandidentifier == $currentcommandidentifier} {
-          log::debug "current controller command completed."
-          set completedcurrentcommand true
-        }
-      }
-      return false
-    }
-
-    if {[scan $controllerresponse "%*d DATA INLINE TELESCOPE.READY_STATE=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE TELESCOPE.READY_STATE=%f" value] == 1} {
       set readystate $value
       return false
     }
 
-    if {[scan $controllerresponse "%*d DATA INLINE TELESCOPE.ENVIRONMENT.TEMPERATURE=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE TELESCOPE.ENVIRONMENT.TEMPERATURE=%f" value] == 1} {
       set ambienttemperature $value
       return false
     }
 
-    if {[scan $controllerresponse "%*d DATA INLINE TELESCOPE.ENVIRONMENT.PRESSURE=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE TELESCOPE.ENVIRONMENT.PRESSURE=%f" value] == 1} {
       set ambientpressure $value
       return false
     }
 
-    if {[scan $controllerresponse "%*d DATA INLINE AUXILIARY.SENSOR\[%d\].VALUE=%s" i value] == 2} {
+    if {[scan $response "%*d DATA INLINE AUXILIARY.SENSOR\[%d\].VALUE=%s" i value] == 2} {
       set sensor$i $value
       return false
     }
 
-    if {[regexp {[0-9]+ DATA INLINE } $controllerresponse] == 1} {
+    if {[regexp {[0-9]+ DATA INLINE } $response] == 1} {
       log::debug "status: ignoring DATA INLINE response."
       return false
     }
-    if {[regexp {[0-9]+ COMMAND COMPLETE} $controllerresponse] != 1} {
-      log::warning "unexpected controller response \"$controllerresponse\"."
+    if {[regexp {[0-9]+ COMMAND COMPLETE} $response] != 1} {
+      log::warning "unexpected controller response \"$response\"."
       return true
     }
 
@@ -271,32 +194,12 @@ namespace eval "telescopecontroller" {
 
   ######################################################################
   
-  variable currentcommandidentifier 0
-  variable nextcommandidentifier $firstnormalcommandidentifier
-  variable completedcurrentcommand
-
-  proc sendcommand {command} {
-    variable currentcommandidentifier
-    variable nextcommandidentifier
-    variable completedcurrentcommand
-    variable firstnormalcommandidentifier
-    variable lastnormalcommandidentifier
-    set currentcommandidentifier $nextcommandidentifier
-    if {$nextcommandidentifier == $lastnormalcommandidentifier} {
-      set nextcommandidentifier $firstnormalcommandidentifier
-    } else {
-      set nextcommandidentifier [expr {$nextcommandidentifier + 1}]
-    }
-    log::debug "sending controller command $currentcommandidentifier: \"$command\"."
-    controller::pushcommand "$currentcommandidentifier $command\n"
-  }
-
   proc switchonhardware {} {
     variable readystate
     if {$readystate < 0.0} {
       error "unable to switch on the hardware: mode is [mode]."
     }
-    sendcommand "SET TELESCOPE.POWER=1"
+    opentsi::sendcommand "SET TELESCOPE.POWER=1"
     while {$readystate != 1.0} {
       coroutine::yield
     }
@@ -307,14 +210,14 @@ namespace eval "telescopecontroller" {
     if {$readystate < 0.0} {
       error "unable to switch on the hardware: mode is [mode]."
     }
-    sendcommand "SET TELESCOPE.POWER=0"
+    opentsi::sendcommand "SET TELESCOPE.POWER=0"
     while {$readystate != 0.0} {
       coroutine::yield
     }
   }
   
   proc stophardware {} {
-    sendcommand "SET TELESCOPE.STOP=1"
+    opentsi::sendcommand "SET TELESCOPE.STOP=1"
   }
   
   ######################################################################
@@ -398,8 +301,7 @@ namespace eval "telescopecontroller" {
 
   proc start {} {
     server::setstatus "ok"
-    controller::startcommandloop "AUTH PLAIN \"admin\" \"admin\"\n"
-    controller::startstatusloop
+    opentsi::start $telescopecontroller::statuscommand telescopecontroller::updatedata
     server::newactivitycommand "starting" "started" telescopecontroller::startactivitycommand
   }
 
