@@ -204,7 +204,8 @@ namespace eval "secondary" {
     server::checkstatus
     server::checkactivityforstop
     checkhardware
-    server::newactivitycommand "stopping" [server::getstoppedactivity] secondary::stopactivitycommand
+    set previousactivity [server::getdata "activity"]
+    server::newactivitycommand "stopping" [server::getstoppedactivity] "secondary::stopactivitycommand $previousactivity"
   }
 
   proc reset {} {

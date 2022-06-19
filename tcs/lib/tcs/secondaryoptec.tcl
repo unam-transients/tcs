@@ -226,13 +226,12 @@ namespace eval "secondary" {
     log::info [format "finished initializing after %.1f seconds." [utcclock::diff $end $start]]    
   }
 
-  proc stopactivitycommand {} {
+  proc stopactivitycommand {previousactivity} {
     set start [utcclock::seconds]
     log::info "stopping."
-    set activity [server::getdata "activity"]
     if {
-      [string equal $activity "initializing"] ||
-      [string equal $activity "moving"]
+      [string equal $previousactivity "initializing"] ||
+      [string equal $previousactivity "moving"]
     } {
       stophardware
     }
