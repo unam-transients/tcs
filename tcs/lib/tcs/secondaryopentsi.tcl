@@ -50,28 +50,23 @@ namespace eval "secondary" {
     POSITION.INSTRUMENTAL.FOCUS.LIMIT_STATE
     POSITION.INSTRUMENTAL.FOCUS.MOTION_STATE
     POSITION.INSTRUMENTAL.FOCUS.CURRPOS
-    POSITION.INSTRUMENTAL.FOCUS.TARGETDISTANCE
   } ";"]\n"
 
   ######################################################################
 
   variable moving
-  variable zerror
 
   variable pendingmode
   variable pendingz
-  variable pendingzerror
   variable pendingzlowerlimit
   variable pendingzupperlimit
 
   proc updatedata {response} {
   
     variable moving
-    variable zerror
 
     variable pendingmode
     variable pendingz
-    variable pendingzerror
     variable pendingzlowerlimit
     variable pendingzupperlimit
 
@@ -96,10 +91,6 @@ namespace eval "secondary" {
       variable maxz
       set pendingz [expr {round($value * 1000)}]
       set pendingz [expr {max($minz,min($maxz,$pendingz))}]
-      return false
-    }
-    if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.FOCUS.TARGETDISTANCE=%f" value] == 1} {
-      set pendingzerror [expr {round($value * 1000)}]
       return false
     }
     if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.FOCUS.MOTION_STATE=%d" value] == 1} {
@@ -136,9 +127,14 @@ namespace eval "secondary" {
     
     set mode        $pendingmode
     set z           $pendingz
-    set zerror      $pendingzerror
     set zlowerlimit $pendingzlowerlimit
     set zupperlimit $pendingzupperlimit
+
+    if {[catch {
+      expr {$z - [server::getdata "requestedz"]}
+    } zerror]} {
+      set zerror ""
+    }
 
     set timestamp   [utcclock::combinedformat "now"]
 
@@ -160,6 +156,7 @@ namespace eval "secondary" {
     variable zerror
     set startingdelay 1
     set settlingdelay 0
+    set moving true
     set start [utcclock::seconds]
     while {[utcclock::diff now $start] < $startingdelay} {
       coroutine::yield
