@@ -197,6 +197,11 @@ namespace eval "secondary" {
     }
   }
   
+  proc checkhardware {} {
+    # Always available.
+    return
+  }
+  
   ######################################################################
   
   proc startactivitycommand {} {

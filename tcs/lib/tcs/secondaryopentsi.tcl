@@ -185,7 +185,10 @@ namespace eval "secondary" {
 
   proc stophardware {} {
     controller::flushcommandqueue
-    opentsi::sendcommand "SET TELESCOPE.STOP=1"
+    # OpenTSI has a global stop, but no means to stop individual axes. This is
+    # about the best we can do.
+    set z [server::getdata "z"]
+    opentsi::sendcommand "SET POSITION.INSTRUMENTAL.FOCUS.TARGETPOS=[expr {$z / 1000.0}]"
     waitwhilemoving
   }
   
@@ -231,6 +234,13 @@ namespace eval "secondary" {
     movehardwaresimple $requestedz
     if {$check} {
       checkzerror "after moving"
+    }
+  }
+  
+  proc checkhardware {} {
+    set mode [server::getdata "mode"]
+    if {![string equal $mode "on"]} {
+      error "mode is \"$mode\"."
     }
   }
   
