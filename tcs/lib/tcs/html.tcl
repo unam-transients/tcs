@@ -851,7 +851,7 @@ if {false} {
           [formatradtodegifdouble "%.2f°" [client::getdata "mount" "requestedobservedzenithdistance"]]
 
       writehtmlrow "Requested mount rotation" \
-        [formatradtodegifdouble "%.0f°"  [client::getdata "mount" "requestedmountrotation"]]
+        [formatradtodegifdouble "%.4f°"  [client::getdata "mount" "requestedmountrotation"]]
       writehtmlrow "Requested mount position (α,HA,δ)" \
         [formatalphaifdouble [client::getdata "mount" "requestedmountalpha"]] \
         [formathaifdouble    [client::getdata "mount" "requestedmountha"]] \
@@ -862,7 +862,7 @@ if {false} {
         [formatrateifdouble [client::getdata "mount" "requestedmountdeltarate"]]
 
       writehtmlrow "Current mount rotation" \
-        [formatradtodegifdouble "%.0f°"  [client::getdata "mount" "mountrotation"]]
+        [formatradtodegifdouble "%.4f°"  [client::getdata "mount" "mountrotation"]]
       writehtmlrow "Current mount position (α,HA,δ)" \
         [formatalphaifdouble [client::getdata "mount" "mountalpha"]] \
         [formathaifdouble    [client::getdata "mount" "mountha"]] \

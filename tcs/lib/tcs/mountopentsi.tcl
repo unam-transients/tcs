@@ -106,9 +106,7 @@ namespace eval "mount" {
     POSITION.EQUATORIAL.RA_CURRENT
     POSITION.EQUATORIAL.DEC_CURRENT
     POSITION.LOCAL.SIDEREAL_TIME
-    POSITION.INSTRUMENTAL.AZ.MOTION_STATE
-    POSITION.INSTRUMENTAL.ZD.MOTION_STATE    
-    POSITION.INSTRUMENTAL.DEROTATOR[3].MOTION_STATE    
+    POSITION.INSTRUMENTAL.DEROTATOR[3].CURRPOS
     POSITION.INSTRUMENTAL.AZ.TARGETDISTANCE
     POSITION.INSTRUMENTAL.ZD.TARGETDISTANCE
     POINTING.TARGETDISTANCE
@@ -160,6 +158,7 @@ namespace eval "mount" {
 
   variable pendingmountazimuth
   variable pendingmountzenithdistance
+  variable pendingmountrotation
   variable pendingmountalpha
   variable pendingmountdelta
   variable pendingmountst
@@ -177,6 +176,7 @@ namespace eval "mount" {
 
     variable pendingmountazimuth
     variable pendingmountzenithdistance
+    variable pendingmountrotation
     variable pendingmountalpha
     variable pendingmountdelta
     variable pendingmountst
@@ -201,6 +201,10 @@ namespace eval "mount" {
     }
     if {[scan $response "%*d DATA INLINE POSITION.HORIZONTAL.ZD=%f" value] == 1} {
       set pendingmountzenithdistance [astrometry::degtorad $value]
+      return false
+    }
+    if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.DEROTATOR\[3\].CURRPOS=%f" value] == 1} {
+      set pendingmountrotation [astrometry::degtorad $value]
       return false
     }
     if {[scan $response "%*d DATA INLINE POSITION.EQUATORIAL.RA_CURRENT=%f" value] == 1} {
@@ -242,6 +246,7 @@ namespace eval "mount" {
     
     set mountazimuth                 $pendingmountazimuth
     set mountzenithdistance          $pendingmountzenithdistance
+    set mountrotation                $pendingmountrotation
     set mountalpha                   $pendingmountalpha
     set mountdelta                   $pendingmountdelta
     set mountst                      $pendingmountst
@@ -258,6 +263,7 @@ namespace eval "mount" {
     server::setdata "state"               $opentsi::readystatetext
     server::setdata "mountazimuth"        $mountazimuth
     server::setdata "mountzenithdistance" $mountzenithdistance
+    server::setdata "mountrotation"       $mountrotation
     server::setdata "mountalpha"          $mountalpha
     server::setdata "mountha"             $mountha
     server::setdata "mountdelta"          $mountdelta
