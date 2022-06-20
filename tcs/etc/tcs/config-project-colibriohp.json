@@ -27,6 +27,61 @@
 {
   "C0": {
     "telescopedescription": "OHP COLIBRI 1.3-m",
+    "detectortype": "fli",
+    "detectoridentifier": "PL1344016",
+    "detectorpixelscale": "0.381as",
+    "detectorreadmodes": {
+      "initial"   : "default",
+      "default"   : "8MHz"
+    },
+    "detectorinitialsoftwaregain": 1,
+    "detectorinitialbinning": 1,
+    "detectorwindows": {
+      "initial": "full"
+    },
+    "detectorfullunbinneddatawindow": {
+     "sx": 36,
+      "sy": 22,
+      "nx": 4096,
+      "ny": 4096
+    },
+    "detectorfullunbinnedbiaswindow": {
+      "sx": 0,
+      "sy": 22,
+      "nx": 4096,
+      "ny": 11      
+    },
+    "cooleropensetting": "0",
+    "coolerclosedsetting": "following",
+    "temperaturelimit": 50,
+    "temperaturelimitoutletgroup": "",
+    "filterwheeltype": "null",
+    // The DDRAGO CFW-14-5 filter wheels are:
+    // FW0011318 -- firmware serial number "CFW-14-5"
+    // FW0021318 -- firmware serial number "FW0021318"
+    // FW0031318 -- firmware serial number "FW0031318"
+    "filterwheelidentifier": "null",
+    "filterwheelinitialposition": 0,
+    "filterlist": [
+      "w"
+    ],
+    "focusertype": "null",
+    "focuseridentifier": "null",
+    "focuserinitialposition": 0,
+    "focuserbacklashoffset": 0,
+    "focusercorrectionmodel": {},
+    "pointingmodelparameters": {},
+    "isstandalone": false,
+    "fitsfwhmargs": {
+      "1": "-m",
+      "2": "-A",
+      "4": "-A",
+      "8": "-A",
+      "16": "-A"
+    }
+  },
+  "C0-si": {
+    "telescopedescription": "OHP COLIBRI 1.3-m",
     "detectortype": "si",
     "detectoridentifier": "blue:2055",
     "detectorpixelscale": "0.381as",
@@ -146,7 +201,7 @@
   },
   "instrument": {
     "activedetectors": [
-//      "C0"
+      "C0"
     ],
     "detectors": [
       "C0"

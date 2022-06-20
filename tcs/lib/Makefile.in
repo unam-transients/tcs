@@ -96,6 +96,7 @@ endif
 ifeq ($(UNAME_M),x86_64)
 installs_project_colibriohp	    :=	\
 	detectorsi.so			        \
+	detectorfli.so                  \
 	filterwheelfli.so
 else
 installs_project_colibriohp	    :=
