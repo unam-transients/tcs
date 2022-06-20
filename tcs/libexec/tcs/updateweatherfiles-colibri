@@ -79,4 +79,7 @@ do
   )
 done
 
+timestamp=$(date -u --date=@$seconds "+%F %T")
+date=$(date -u --date=@$seconds "+%F")
+
 echo "$version $timestamp $weatherstatus $generalstatus" >>$date.txt
