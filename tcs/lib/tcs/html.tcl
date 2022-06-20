@@ -725,9 +725,38 @@ namespace eval "html" {
 
     putshtml "<table class=\"status\">"
 
-if {false} {
+    set type [config::getvalue "plc" "type"]
+
     if {[string equal [client::getstatus "plc"] "ok"]} {
       writehtmlrow "Mode"        [client::getdata "plc" "mode"]
+      switch $type {
+        "colibri" {
+          writehtmlrow "PLC cabinet temperature"  [format "%.1f C" [client::getdata "plc" "plccabinettemperature"]]
+          writehtmlrow "RIO cabinet temperature"  [format "%.1f C" [client::getdata "plc" "riocabinettemperature"]]
+          writehtmlrow "Comet 1 temperature"      [format "%.1f C" [client::getdata "plc" "comet1temperature"    ]]
+          writehtmlrow "Comet 2 temperature"      [format "%.1f C" [client::getdata "plc" "comet2temperature"    ]]
+          writehtmlrow "Comet 1 humidity"         [format "%.0f%%" [expr {[client::getdata "plc" "comet1humidity"] * 100.0}]]
+          writehtmlrow "Comet 2 humidity"         [format "%.0f%%" [expr {[client::getdata "plc" "comet2humidity"] * 100.0}]]
+        }
+        "satino" {
+          if {[client::getdata "plc" "mustbeclosed"]} {
+            writehtmlrowwithemph "Must be closed" "warning" "true"
+          } else {
+            writehtmlrowwithemph "Must be closed" "" "false"
+          }
+          writehtmlrow "Roof"           [client::getdata "plc" "roof"]
+          writehtmlrow "Door"           [client::getdata "plc" "door"]
+          writehtmlrow "Lights"         [client::getdata "plc" "lights"]
+          writehtmlrowwithemph "Alarm"          [alarmemph [client::getdata "plc" "alarm"]]         [client::getdata "plc" "alarm"]
+          writehtmlrowwithemph "AAG alarm"      [alarmemph [client::getdata "plc" "aagalarm"]]      [client::getdata "plc" "aagalarm"]
+          writehtmlrowwithemph "Rain alarm"     [alarmemph [client::getdata "plc" "rainalarm"]]     [client::getdata "plc" "rainalarm"]
+          writehtmlrowwithemph "Wind alarm"     [alarmemph [client::getdata "plc" "windalarm"]]     [client::getdata "plc" "windalarm"]
+          writehtmlrowwithemph "UPS alarm"      [alarmemph [client::getdata "plc" "upsalarm"]]      [client::getdata "plc" "upsalarm"]
+          writehtmlrowwithemph "Humidity alarm" [alarmemph [client::getdata "plc" "humidityalarm"]] [client::getdata "plc" "humidityalarm"]
+          writehtmlrowwithemph "Watchdog alarm" [alarmemph [client::getdata "plc" "watchdogalarm"]] [client::getdata "plc" "watchdogalarm"]
+        }
+      }
+if {false} {
       if {[client::getdata "plc" "mustbeclosed"]} {
         writehtmlrowwithemph "Must be closed" "warning" "true"
       } else {
@@ -743,8 +772,8 @@ if {false} {
       writehtmlrowwithemph "UPS alarm"      [alarmemph [client::getdata "plc" "upsalarm"]]      [client::getdata "plc" "upsalarm"]
       writehtmlrowwithemph "Humidity alarm" [alarmemph [client::getdata "plc" "humidityalarm"]] [client::getdata "plc" "humidityalarm"]
       writehtmlrowwithemph "Watchdog alarm" [alarmemph [client::getdata "plc" "watchdogalarm"]] [client::getdata "plc" "watchdogalarm"]
-    }
 }
+    }
 
     putshtml "</table>"
 

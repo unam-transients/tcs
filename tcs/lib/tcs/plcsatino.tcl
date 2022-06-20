@@ -28,7 +28,7 @@ package require "controller"
 package require "log"
 package require "server"
 
-package provide "plc" 0.0
+package provide "plcsatino" 0.0
 
 namespace eval "plc" {
 

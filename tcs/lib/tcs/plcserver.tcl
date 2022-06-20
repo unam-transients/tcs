@@ -24,7 +24,7 @@
 ########################################################################
 
 package require "config"
-package require "plc"
+package require "plc[config::getvalue "plc" "type"]"
 package require "log"
 package require "server"
 
