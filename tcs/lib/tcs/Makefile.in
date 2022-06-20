@@ -115,7 +115,8 @@ installs	:=			           \
 	packages.tcl		    	   \
 	pirani.tcl	        		   \
 	piraniserver.tcl	       	   \
-	plc.tcl 		        	   \
+	plccolibri.tcl           	   \
+	plcsatino.tcl                  \
 	plcserver.tcl 	    		   \
 	pointing.tcl	        	   \
 	power.tcl                 	   \

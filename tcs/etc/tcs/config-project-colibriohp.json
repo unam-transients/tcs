@@ -127,25 +127,26 @@
   },
   "html": {
     "servers": [
-      "covers",
+//      "covers",
       "executor",
       "instrument",
       "moon",
-      "mount",
+//      "mount",
+      "plc",
       "power",
-      "secondary",
+//      "secondary",
       "selector",
       "sensors",
       "sun",
       "target",
       "telescope",
-      "telescopecontroller",
+//      "telescopecontroller",
       "weather"
     ]
   },
   "instrument": {
     "activedetectors": [
-      "C0"
+//      "C0"
     ],
     "detectors": [
       "C0"
@@ -167,6 +168,7 @@
     "unparkha": "0d"
   },
   "plc": {
+    "type": "colibri",
     "controllerhost": "192.168.100.28",
     "controllerport": "200"
   },
@@ -977,6 +979,78 @@
         "unit": "C",
         "model": "",
         "identifier": "opentsi-sensor-14",
+        "firmware": ""
+      },
+      "plc-plc-cabinet-temperature": {
+        "file": "/usr/local/var/tcs/sensors/services/plc-plc-cabinet-temperature",
+        "prettyname": "PLC cabinet temperature",
+        "group": "environmental-sensors",
+        "subsystem": "plc",
+        "component": "plc-cabinet",
+        "type": "float",
+        "unit": "C",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "plc-rio-cabinet-temperature": {
+        "file": "/usr/local/var/tcs/sensors/services/plc-rio-cabinet-temperature",
+        "prettyname": "RIO cabinet temperature",
+        "group": "environmental-sensors",
+        "subsystem": "plc",
+        "component": "rio-cabinet",
+        "type": "float",
+        "unit": "C",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "plc-comet1-temperature": {
+        "file": "/usr/local/var/tcs/sensors/services/plc-comet1-temperature",
+        "prettyname": "Comet 1 temperature",
+        "group": "environmental-sensors",
+        "subsystem": "plc",
+        "component": "Comet 1",
+        "type": "float",
+        "unit": "C",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "plc-comet2-temperature": {
+        "file": "/usr/local/var/tcs/sensors/services/plc-comet2-temperature",
+        "prettyname": "Comet 2 temperature",
+        "group": "environmental-sensors",
+        "subsystem": "plc",
+        "component": "Comet 2",
+        "type": "float",
+        "unit": "C",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "plc-comet1-humidity": {
+        "file": "/usr/local/var/tcs/sensors/services/plc-comet1-humidity",
+        "prettyname": "Comet 1 humidity",
+        "group": "environmental-sensors",
+        "subsystem": "plc",
+        "component": "Comet 1",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "plc-comet2-humidity": {
+        "file": "/usr/local/var/tcs/sensors/services/plc-comet2-humidity",
+        "prettyname": "Comet 2 humidity",
+        "group": "environmental-sensors",
+        "subsystem": "plc",
+        "component": "Comet 2",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
         "firmware": ""
       }
     }

@@ -190,8 +190,10 @@ package ifneeded pirani                0.0 \
   [list source [file join [file dirname [info script]] pirani.tcl]]
 package ifneeded piraniserver          0.0 \
   [list source [file join [file dirname [info script]] piraniserver.tcl]]
-package ifneeded plc                   0.0 \
-  [list source [file join [file dirname [info script]] plc.tcl]]
+package ifneeded plcsatino             0.0 \
+  [list source [file join [file dirname [info script]] plcsatino.tcl]]
+package ifneeded plccolibri            0.0 \
+  [list source [file join [file dirname [info script]] plccolibri.tcl]]
 package ifneeded plcserver             0.0 \
   [list source [file join [file dirname [info script]] plcserver.tcl]]
 package ifneeded pointing              0.0 \

@@ -86,6 +86,8 @@ namespace eval "controller" {
     # The serial devices connected to the Lantronics serial port server at
     # COATLI and DDOTI need "auto" input translation.
     #chan configure $channel -translation {"auto" "binary"}
+    # The COLIBRI PLC needs "auto" input translation.
+    chan configure $channel -translation {"auto" "binary"}
   }
 
   proc closechannel {} {
