@@ -216,6 +216,12 @@ namespace eval "sensors" {
         "*-control-speed" {
           set value [format "%.1f" $value]
         }         
+        "*-wind-*-speed" {
+          set value [format "%.1f" $value]
+        }         
+        "*-azimuth" {
+          set value [format "%.0f" $value]
+        }         
       }
     }
     return $value

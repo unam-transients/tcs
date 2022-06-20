@@ -402,6 +402,22 @@ namespace eval "weather" {
       humidityalarm windalarm rainalarm mustbeclosed
     }
     log::debug "finished writing weather data log."
+    
+    foreach {sensorname dataname} {
+      temperature          temperature
+      humidity             humidity
+      dewpoint             dewpoint
+      dewpoint-depression  dewpointdepression
+      wind-average-speed   windaveragespeed
+      wind-gust-speed      windgustspeed
+      rain-rate            rainrate
+      pressure             pressure
+    } {
+      log::writesensorsfile "weather-$sensorname" [server::getdata $dataname] [server::getdata "timestamp"]
+    }
+    log::writesensorsfile "weather-wind-average-azimuth" \
+      [astrometry::radtodeg [server::getdata "windaverageazimuth"]] \
+      [server::getdata "timestamp"]
 
   }
 
