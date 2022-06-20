@@ -61,14 +61,14 @@ version="b.0"
 
 weatherstatus=$(
   echo "WeatherStatus" |
-  nc -w 1 192.168.100.28 200 | 
+  nc -w 5 192.168.100.28 200 | 
   tr -d '\r' |
   sed 's/;$//;s/;/ /g'
 )
 
 generalstatus=$(
   echo "GeneralStatus" |
-  nc -w 1 192.168.100.28 200 | 
+  nc -w 5 192.168.100.28 200 | 
   tr -d '\r' |
   sed 'h;s/[^;]*;//;s/./& /g;x;s/;.*/ /;G' |
   tr -d '\n'
@@ -77,5 +77,14 @@ generalstatus=$(
 seconds=$(date -u "+%s")
 timestamp=$(date -u --date=@$seconds "+%F %T")
 date=$(date -u --date=@$seconds "+%F")
+
+if test -z "$weatherstatus" || test -z "$generalstatus"
+then
+  echo "$version $timestamp" >>$date.txt
+  exit 1
+else
+  echo "$version $timestamp $weatherstatus $generalstatus" >>$date.txt
+  exit 0
+fi
 
 echo "$version $timestamp $weatherstatus $generalstatus" >>$date.txt
