@@ -34,7 +34,6 @@ namespace eval "secondary" {
 
   ######################################################################
 
-  server::setstatus "ok"
   server::setdata "z"                ""
   server::setdata "zlowerlimit"      ""
   server::setdata "zupperlimit"      ""
