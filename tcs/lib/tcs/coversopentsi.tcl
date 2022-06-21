@@ -24,12 +24,10 @@
 ########################################################################
 
 package require "config"
-package require "controller"
+package require "opentsi"
 package require "log"
 package require "server"
 
-config::setdefaultvalue "covers" "controllerport" "65432"
-config::setdefaultvalue "covers" "controllerhost" "opentsi"
 config::setdefaultvalue "covers" "port2name"      "port2"
 config::setdefaultvalue "covers" "port3name"      "port3"
 
@@ -37,15 +35,11 @@ package provide "coversopentsi" 0.0
 
 namespace eval "covers" {
 
-  variable svnid {$Id}
-
   ######################################################################
 
-  variable controllerhost [config::getvalue "covers" "controllerhost"]
-  variable controllerport [config::getvalue "covers" "controllerport"]
+  set server::datalifeseconds        30
 
-  ######################################################################
-
+  server::setdata "state"            ""
   server::setdata "requestedcovers"  ""
   server::setdata "covers"           ""
   server::setdata "port2cover"       ""
@@ -56,45 +50,17 @@ namespace eval "covers" {
 
   ######################################################################
 
-  # We use command identifiers 1 for status command, 2 for emergency
-  # stop, and 3-99 for normal commands,
-
-  variable statuscommandidentifier        1
-  variable emergencystopcommandidentifier 2
-  variable firstnormalcommandidentifier   3
-  variable lastnormalcommandidentifier    99
-
-  ######################################################################
-
-  set controller::host                        $controllerhost
-  set controller::port                        $controllerport
-  set controller::connectiontype              "persistent"
-  set controller::statuscommand "$statuscommandidentifier GET [join {
+  set statuscommand "GET [join {
     AUXILIARY.COVER.REALPOS
     AUXILIARY.PORT_COVER[2].REALPOS
     AUXILIARY.PORT_COVER[3].REALPOS
     AUXILIARY.COVER.TARGETPOS
     AUXILIARY.PORT_COVER[2].TARGETPOS
     AUXILIARY.PORT_COVER[3].TARGETPOS
-  } ";"]\n"
-  set controller::timeoutmilliseconds         10000
-  set controller::intervalmilliseconds        50
-  set controller::updatedata                  covers::updatecontrollerdata
-  set controller::statusintervalmilliseconds  1000
+  } ";"]"
 
-  set server::datalifeseconds                 30
 
   ######################################################################
-
-  proc isignoredcontrollerresponse {controllerresponse} {
-    expr {
-      [regexp {TPL2 .*} $controllerresponse] == 1 ||
-      [regexp {AUTH OK .*} $controllerresponse] == 1 ||
-      [regexp {^[0-9]+ COMMAND OK}  $controllerresponse] == 1 ||
-      [regexp {^[0-9]+ DATA OK}     $controllerresponse] == 1 ||
-      [regexp {^[0-9]+ EVENT INFO } $controllerresponse] == 1
-    }
-  }
 
   variable covers
   variable port2cover
@@ -104,7 +70,7 @@ namespace eval "covers" {
   variable port3covertarget
   variable moving
 
-  proc updatecontrollerdata {controllerresponse} {
+  proc updatedata {response} {
 
     variable covers
     variable port2cover
@@ -114,45 +80,7 @@ namespace eval "covers" {
     variable port3covertarget
     variable moving
 
-    set controllerresponse [string trim $controllerresponse]
-    set controllerresponse [string trim $controllerresponse "\0"]
-    
-    if {[isignoredcontrollerresponse $controllerresponse]} {
-      return false
-    }
-
-    if {
-      [regexp {^[0-9]+ EVENT ERROR } $controllerresponse] == 1 ||
-      [regexp {^[0-9]+ DATA ERROR } $controllerresponse] == 1
-    } {
-      log::warning "controller error: \"$controllerresponse\"."
-      return false
-    }
-
-    if {![scan $controllerresponse "%d " commandidentifier] == 1} {
-      log::warning "unexpected controller response \"$controllerresponse\"."
-      return true
-    }
-
-    variable statuscommandidentifier
-    variable emergencystopcommandidentifier
-    variable completedcommandidentifier
-
-    if {$commandidentifier != $statuscommandidentifier} {
-      variable currentcommandidentifier
-      variable completedcurrentcommand
-      log::debug "controller response \"$controllerresponse\"."
-      if {[regexp {^[0-9]+ COMMAND COMPLETE} $controllerresponse] == 1} {
-        log::debug [format "controller command %d completed." $commandidentifier]
-        if {$commandidentifier == $currentcommandidentifier} {
-          log::debug "current controller command completed."
-          set completedcurrentcommand true
-        }
-      }
-      return false
-    }
-
-    if {[scan $controllerresponse "%*d DATA INLINE AUXILIARY.COVER.REALPOS=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE AUXILIARY.COVER.REALPOS=%f" value] == 1} {
       if {$value == 0} {
         set covers "closed"
       } elseif {$value == 1.0} {
@@ -162,7 +90,7 @@ namespace eval "covers" {
       }
       return false
     }
-    if {[scan $controllerresponse "%*d DATA INLINE AUXILIARY.PORT_COVER\[2\].REALPOS=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE AUXILIARY.PORT_COVER\[2\].REALPOS=%f" value] == 1} {
       if {$value == 0} {
         set port2cover "closed"
       } elseif {$value == 1.0} {
@@ -172,7 +100,7 @@ namespace eval "covers" {
       }
       return false
     }
-    if {[scan $controllerresponse "%*d DATA INLINE AUXILIARY.PORT_COVER\[3\].REALPOS=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE AUXILIARY.PORT_COVER\[3\].REALPOS=%f" value] == 1} {
       if {$value == 0} {
         set port3cover "closed"
       } elseif {$value == 1.0} {
@@ -182,7 +110,7 @@ namespace eval "covers" {
       }
       return false
     }
-    if {[scan $controllerresponse "%*d DATA INLINE AUXILIARY.COVER.TARGETPOS=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE AUXILIARY.COVER.TARGETPOS=%f" value] == 1} {
       if {$value == 0} {
         set coverstarget "closed"
       } else {
@@ -190,7 +118,7 @@ namespace eval "covers" {
       }
       return false
     }
-    if {[scan $controllerresponse "%*d DATA INLINE AUXILIARY.PORT_COVER\[2\].TARGETPOS=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE AUXILIARY.PORT_COVER\[2\].TARGETPOS=%f" value] == 1} {
       if {$value == 0} {
         set port2covertarget "closed"
       } else {
@@ -198,7 +126,7 @@ namespace eval "covers" {
       }
       return false
     }
-    if {[scan $controllerresponse "%*d DATA INLINE AUXILIARY.PORT_COVER\[3\].TARGETPOS=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE AUXILIARY.PORT_COVER\[3\].TARGETPOS=%f" value] == 1} {
       if {$value == 0} {
         set port3covertarget "closed"
       } elseif {$value == 1.0} {
@@ -207,16 +135,22 @@ namespace eval "covers" {
       return false
     }
 
-    if {[regexp {[0-9]+ DATA INLINE } $controllerresponse] == 1} {
+    if {[regexp {[0-9]+ DATA INLINE } $response] == 1} {
       log::debug "status: ignoring DATA INLINE response."
       return false
     }
-    if {[regexp {[0-9]+ COMMAND COMPLETE} $controllerresponse] != 1} {
-      log::warning "unexpected controller response \"$controllerresponse\"."
+    if {[regexp {[0-9]+ COMMAND COMPLETE} $response] != 1} {
+      log::warning "unexpected controller response \"$response\"."
       return true
     }
 
     set timestamp [utcclock::combinedformat "now"]
+
+    set state $opentsi::readystatetext
+    if {![string equal $laststate ""] && ![string equal $laststate $state]} {
+      log::info "state changed from $laststate to $state."
+    }
+    set laststate $state
 
     set lasttimestamp      [server::getdata "timestamp"]
     set lastcovers         [server::getdata "covers"]
@@ -274,36 +208,16 @@ namespace eval "covers" {
 
   ######################################################################
   
-  variable currentcommandidentifier 0
-  variable nextcommandidentifier $firstnormalcommandidentifier
-  variable completedcurrentcommand
-
-  proc sendcommand {command} {
-    variable currentcommandidentifier
-    variable nextcommandidentifier
-    variable completedcurrentcommand
-    variable firstnormalcommandidentifier
-    variable lastnormalcommandidentifier
-    set currentcommandidentifier $nextcommandidentifier
-    if {$nextcommandidentifier == $lastnormalcommandidentifier} {
-      set nextcommandidentifier $firstnormalcommandidentifier
-    } else {
-      set nextcommandidentifier [expr {$nextcommandidentifier + 1}]
-    }
-    log::debug "sending controller command $currentcommandidentifier: \"$command\"."
-    controller::pushcommand "$currentcommandidentifier $command\n"
-  }
-
   proc stopcovers {} {
     server::setdata "requestedcovers" ""
-    sendcommand "SET TELESCOPE.STOP=1"
+    opentsi::sendcommand "SET TELESCOPE.STOP=1"
   }
   
   proc opencovers {} {
     server::setdata "requestedcovers" "open"
-    sendcommand "SET AUXILIARY.COVER.TARGETPOS=1"
-    sendcommand "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=1"
-    sendcommand "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=1"
+    opentsi::sendcommand "SET AUXILIARY.COVER.TARGETPOS=1"
+    opentsi::sendcommand "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=1"
+    opentsi::sendcommand "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=1"
     waitwhilemoving
     if {![string equal [server::getdata "covers"] "open"]} {
       error "the covers did not open."
@@ -312,9 +226,9 @@ namespace eval "covers" {
   
   proc closecovers {} {
     server::setdata "requestedcovers" "closed"
-    sendcommand "SET AUXILIARY.COVER.TARGETPOS=0"
-    sendcommand "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=0"
-    sendcommand "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=0"
+    opentsi::sendcommand "SET AUXILIARY.COVER.TARGETPOS=0"
+    opentsi::sendcommand "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=0"
+    opentsi::sendcommand "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=0"
     waitwhilemoving
     if {![string equal [server::getdata "covers"] "closed"]} {
       error "the covers did not close."
@@ -370,8 +284,7 @@ namespace eval "covers" {
 
   proc start {} {
     server::setstatus "ok"
-    controller::startcommandloop "AUTH PLAIN \"admin\" \"admin\"\n"
-    controller::startstatusloop
+    opentsi::start $covers::statuscommand covers::updatedata
     server::newactivitycommand "starting" "started" covers::startactivitycommand
   }
 
