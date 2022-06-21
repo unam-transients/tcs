@@ -116,14 +116,54 @@ namespace eval "opentsi" {
   
   variable readystate     ""
   variable readystatetext ""
+  
+  variable communicationfailure false
 
   proc updatedata {response} {
   
     variable readystate
     variable readystatetext
 
+    variable communicationfailure
+
     set response [string trim $response]
     set response [string trim $response "\0"]
+    
+    if {[scan $response "%*d DATA INLINE TELESCOPE.READY_STATE=%f" value] == 1} {
+      set readystate $value
+      if {$value == -3.0} {
+        set readystatetext "local"
+      } elseif {$value == -2.0} {
+        set readystatetext "emergencystop"
+      } elseif {$value == -1.0} {
+        set readystatetext "blocked"
+      } elseif {$value == 0.0} {
+        set readystatetext "off"
+      } elseif {$value == 1.0} {
+        set readystatetext "operational"
+      } else {
+        set readystatetext "intermediate"
+      }
+      if {[string equal [server::getstatus] "error"]} {
+        server::setstatus "starting"
+      }
+      set communicationfailure false
+      return false
+    }
+
+    if {$communicationfailure} {
+      return true
+    }
+
+    if {
+      [regexp {^[0-9]+ EVENT ERROR .* Data from telescope is not valid\.} $response] == 1 ||
+      [regexp {^[0-9]+ EVENT ERROR .* does not exist\.} $response] == 1
+    } {
+      log::error "unable to communicate with the opentsi controller."
+      server::setstatus "error"
+      set communicationfailure true
+      return true
+    }
     
     if {[opentsi::isignoredresponse $response]} {
       return false
@@ -165,6 +205,8 @@ namespace eval "opentsi" {
       }
       return false
     }
+    
+
     
     if {[scan $response "%*d DATA INLINE TELESCOPE.READY_STATE=%f" value] == 1} {
       set readystate $value
