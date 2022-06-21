@@ -117,6 +117,9 @@ namespace eval "telescopecontroller" {
     }
 
     if {[scan $response "%*d DATA INLINE AUXILIARY.SENSOR\[%d\].VALUE=%s" i value] == 2} {
+      if {[string equal $value "FAILED"]} {
+        set value ""
+      }
       set sensor$i $value
       return false
     }
