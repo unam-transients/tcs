@@ -48,14 +48,6 @@ config::setdefaultvalue "mount" "allowedguideoffset"         "30as"
 config::setdefaultvalue "mount" "trackingsettledlimit"       "1as"
 config::setdefaultvalue "mount" "axisdhacorrection"          "0"
 config::setdefaultvalue "mount" "axisddeltacorrection"       "0"
-config::setdefaultvalue "mount" "easthalimit"                "-12h"
-config::setdefaultvalue "mount" "westhalimit"                "+12h"
-config::setdefaultvalue "mount" "westhalimit"                "+12h"
-config::setdefaultvalue "mount" "meridianhalimit"            "12h"
-config::setdefaultvalue "mount" "northdeltalimit"            "+90d"
-config::setdefaultvalue "mount" "southdeltalimit"            "-90d"
-config::setdefaultvalue "mount" "polardeltalimit"            "0"
-config::setdefaultvalue "mount" "zenithdistancelimit"        "90d"
 config::setdefaultvalue "mount" "hapark"                     "0h"
 config::setdefaultvalue "mount" "deltapark"                  "80d"
 config::setdefaultvalue "mount" "derotatorpark"              "0d"
@@ -72,19 +64,12 @@ namespace eval "mount" {
   variable axisdhacorrection           [astrometry::parseoffset [config::getvalue "mount" "axisdhacorrection"]]
   variable axisddeltacorrection        [astrometry::parseoffset [config::getvalue "mount" "axisddeltacorrection"]]
   variable trackingsettledlimit        [astrometry::parseoffset [config::getvalue "mount" "trackingsettledlimit"]]
-  variable easthalimit                 [astrometry::parseha    [config::getvalue "mount" "easthalimit"]]
-  variable westhalimit                 [astrometry::parseha    [config::getvalue "mount" "westhalimit"]]
-  variable meridianhalimit             [astrometry::parseha    [config::getvalue "mount" "meridianhalimit"]]
-  variable northdeltalimit             [astrometry::parsedelta [config::getvalue "mount" "northdeltalimit"]]
-  variable southdeltalimit             [astrometry::parsedelta [config::getvalue "mount" "southdeltalimit"]]
-  variable polardeltalimit             [astrometry::parsedelta [config::getvalue "mount" "polardeltalimit"]]
-  variable zenithdistancelimit         [astrometry::parseangle [config::getvalue "mount" "zenithdistancelimit"]]
   variable hapark                      [astrometry::parseha    [config::getvalue "mount" "hapark"]]
   variable deltapark                   [astrometry::parsedelta [config::getvalue "mount" "deltapark"]]
   variable derotatorpark               [astrometry::parseangle [config::getvalue "mount" "derotatorpark"]]
   variable haunpark                    [astrometry::parseha    [config::getvalue "mount" "haunpark"]]
   variable deltaunpark                 [astrometry::parsedelta [config::getvalue "mount" "deltaunpark"]]
-
+  
   variable usemountcoordinates false
 
   ######################################################################

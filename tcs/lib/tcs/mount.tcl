@@ -30,6 +30,15 @@ config::setdefaultvalue "mount" "fixedpositionerrorlimit"      "1as"
 config::setdefaultvalue "mount" "trackingsettlingdelayseconds" "0"
 config::setdefaultvalue "mount" "movingsettlingdelayseconds"   "0"
 
+config::setdefaultvalue "mount" "easthalimit"                ""
+config::setdefaultvalue "mount" "westhalimit"                ""
+config::setdefaultvalue "mount" "westhalimit"                ""
+config::setdefaultvalue "mount" "meridianhalimit"            ""
+config::setdefaultvalue "mount" "northdeltalimit"            ""
+config::setdefaultvalue "mount" "southdeltalimit"            ""
+config::setdefaultvalue "mount" "polardeltalimit"            ""
+config::setdefaultvalue "mount" "zenithdistancelimit"        ""
+
 namespace eval "mount" {
 
   ######################################################################
@@ -41,6 +50,58 @@ namespace eval "mount" {
   variable trackingsettlingdelayseconds [config::getvalue "mount" "trackingsettlingdelayseconds"]
   variable movingsettlingdelayseconds   [config::getvalue "mount" "movingsettlingdelayseconds"]
   
+  ######################################################################
+
+  variable easthalimit
+  variable westhalimit
+  variable meridianhalimit
+  variable northdeltalimit
+  variable southdeltalimit
+  variable polardeltalimit
+  variable zenithdistancelimit
+  
+  if {[string equal "" [config::getvalue "mount" "easthalimit"]]} {
+    set easthalimit ""
+  } else {
+    set easthalimit [astrometry::parseha [config::getvalue "mount" "easthalimit"]]
+  }
+
+  if {[string equal "" [config::getvalue "mount" "westhalimit"]]} {
+    set westhalimit ""
+  } else {
+    set westhalimit [astrometry::parseha [config::getvalue "mount" "westhalimit"]]
+  }
+
+  if {[string equal "" [config::getvalue "mount" "meridianhalimit"]]} {
+    set meridianhalimit ""
+  } else {
+    set meridianhalimit [astrometry::parseha [config::getvalue "mount" "meridianhalimit"]]
+  }
+
+  if {[string equal "" [config::getvalue "mount" "northdeltalimit"]]} {
+    set northdeltalimit ""
+  } else {
+    set northdeltalimit [astrometry::parsedelta [config::getvalue "mount" "northdeltalimit"]]
+  }
+
+  if {[string equal "" [config::getvalue "mount" "southdeltalimit"]]} {
+    set southdeltalimit ""
+  } else {
+    set southdeltalimit [astrometry::parsedelta [config::getvalue "mount" "southdeltalimit"]]
+  }
+
+  if {[string equal "" [config::getvalue "mount" "polardeltalimit"]]} {
+    set polardeltalimit ""
+  } else {
+    set polardeltalimit [astrometry::parsedelta [config::getvalue "mount" "polardeltalimit"]]
+  }
+
+  if {[string equal "" [config::getvalue "mount" "zenithdistancelimit"]]} {
+    set zenithdistancelimit ""
+  } else {
+    set zenithdistancelimit [astrometry::parseangle [config::getvalue "mount" "zenithdistancelimit"]]
+  }
+
   ######################################################################
 
   server::setdata "configuration" $configuration
@@ -829,25 +890,25 @@ namespace eval "mount" {
 
     set mountzenithdistance [astrometry::equatorialtozenithdistance $mountha $mountdelta]
     
-    if {$mountha < $easthalimit && $mountdelta < $polardeltalimit} {
+    if {![string equal $easthalimit ""] && $mountha < $easthalimit && $mountdelta < $polardeltalimit} {
       log::warning "HA exceeds eastern limit."
       set withinlimits false
-    } elseif {$mountha > $westhalimit && $mountdelta < $polardeltalimit} {
+    } elseif {![string equal $westhalimit ""] && $mountha > $westhalimit && $mountdelta < $polardeltalimit} {
       log::warning "HA exceeds western limit."
       set withinlimits false
-    } elseif {$mountdelta < $southdeltalimit} {
+    } elseif {![string equal $southdeltalimit ""] && $mountdelta < $southdeltalimit} {
       log::warning "δ exceeds southern limit."
       set withinlimits false
-    } elseif {$mountdelta > $northdeltalimit} {
+    } elseif {![string equal $northdeltalimit ""] && $mountdelta > $northdeltalimit} {
       log::warning "δ exceeds northern limit."
       set withinlimits false
-    } elseif {$mountzenithdistance > $zenithdistancelimit} {
+    } elseif {![string equal $zenithdistancelimit ""] && $mountzenithdistance > $zenithdistancelimit} {
       log::warning "zenith distance exceeds limit."
       set withinlimits false
-    } elseif {$mountrotation == 0 && $mountha <= -$meridianhalimit && $mountdelta < $polardeltalimit} {
+    } elseif {![string equal $meridianhalimit ""] && $mountrotation == 0 && $mountha <= -$meridianhalimit && $mountdelta < $polardeltalimit} {
       log::warning "HA exceeds eastern meridian limit."
       set withinlimits false
-    } elseif {$mountrotation != 0 && $mountha >= +$meridianhalimit && $mountdelta < $polardeltalimit} {
+    } elseif {![string equal $meridianhalimit ""] && $mountrotation != 0 && $mountha >= +$meridianhalimit && $mountdelta < $polardeltalimit} {
       log::warning "HA exceeds western meridian limit."
       set withinlimits false
     } else {
@@ -879,24 +940,28 @@ namespace eval "mount" {
   proc initialize {} {
     server::checkstatus
     server::checkactivityforinitialize
+    checkhardware
     server::newactivitycommand "initializing" "idle" mount::initializeactivitycommand 1200000
   }
 
   proc open {} {
     server::checkstatus
     server::checkactivityformove
+    checkhardware
     server::newactivitycommand "opening" "idle" mount::openactivitycommand 1200000
   }
 
   proc stop {} {
     server::checkstatus
     server::checkactivityforstop
+    checkhardware
     server::newactivitycommand "stopping" [server::getstoppedactivity] mount::stopactivitycommand
   }
 
   proc reset {} {
     server::checkstatus
     server::checkactivityforreset
+    checkhardware
     server::newactivitycommand "resetting" [server::getstoppedactivity] mount::resetactivitycommand
   }
 
@@ -909,12 +974,14 @@ namespace eval "mount" {
   proc preparetomove {} {
     server::checkstatus
     server::checkactivityformove
+    checkhardware
     server::newactivitycommand "preparingtomove" "preparedtomove" mount::preparetomoveactivitycommand
   }
 
   proc move {} {
     server::checkstatus
     server::checkactivity "preparedtomove"
+    checkhardware
     if {[catch {client::checkactivity "target" "idle"} message]} {
       stop
       error "move cancelled because $message"
@@ -925,6 +992,7 @@ namespace eval "mount" {
   proc park {} {
     server::checkstatus
     server::checkactivity "preparedtomove"
+    checkhardware
     if {[catch {client::checkactivity "target" "idle"} message]} {
       stop
       error "parking cancelled because $message"
@@ -935,6 +1003,7 @@ namespace eval "mount" {
   proc unpark {} {
     server::checkstatus
     server::checkactivity "preparedtomove"
+    checkhardware
     if {[catch {client::checkactivity "target" "idle"} message]} {
       stop
       error "unparking cancelled because $message"
@@ -945,12 +1014,14 @@ namespace eval "mount" {
   proc preparetotrack {} {
     server::checkstatus
     server::checkactivityformove
+    checkhardware
     server::newactivitycommand "preparingtotrack" "preparedtotrack" mount::preparetotrackactivitycommand
   }
 
   proc track {} {
     server::checkstatus
     server::checkactivity "preparedtotrack"
+    checkhardware
     if {[catch {client::checkactivity "target" "tracking"} message]} {
       stop
       error "move cancelled because $message"
@@ -961,6 +1032,7 @@ namespace eval "mount" {
   proc offset {} {
     server::checkstatus
     server::checkactivity "preparedtotrack"
+    checkhardware
     if {[catch {client::checkactivity "target" "tracking"} message]} {
       stop
       error "move cancelled because $message"
@@ -971,6 +1043,7 @@ namespace eval "mount" {
   proc guide {alphaoffset deltaoffset} {
     server::checkstatus
     server::checkactivity "tracking"
+    checkhardware
     set alphaoffset [astrometry::parseangle $alphaoffset dms]
     set deltaoffset [astrometry::parseangle $deltaoffset dms]
     log::debug [format "offsetting %s E and %s N to correct guiding." [astrometry::formatoffset $alphaoffset] [astrometry::formatoffset $deltaoffset]]
@@ -991,6 +1064,7 @@ namespace eval "mount" {
   proc correct {solvedmountalpha solvedmountdelta equinox} {
     server::checkstatus
     server::checkactivity "tracking"
+    checkhardware
     set solvedmountalpha [astrometry::parsealpha $solvedmountalpha]
     set solvedmountdelta [astrometry::parsedelta $solvedmountdelta]
     set start [utcclock::seconds]
@@ -1037,12 +1111,5 @@ namespace eval "mount" {
   }
 
   ######################################################################
-
-  proc start {} {
-    variable initialcommand
-    controller::startcommandloop $initialcommand
-    controller::startstatusloop
-    server::newactivitycommand "starting" "started" mount::startactivitycommand
-  }
 
 }
