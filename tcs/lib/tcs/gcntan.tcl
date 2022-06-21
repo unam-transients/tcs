@@ -1502,9 +1502,7 @@ namespace eval "gcntan" {
     variable packetport
     log::info "waiting for connection."
     socket -server gcntan::accept $packetport
-    server::setrequestedactivity "idle"
-    server::setstatus "starting"
-    
+    server::setrequestedactivity "idle"  
   }
 
   ######################################################################
