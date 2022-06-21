@@ -146,13 +146,6 @@ namespace eval "covers" {
 
     set timestamp [utcclock::combinedformat "now"]
 
-    set state $opentsi::readystatetext
-    if {![string equal $laststate ""] && ![string equal $laststate $state]} {
-      log::info "state changed from $laststate to $state."
-    }
-    set laststate $state
-
-    set lasttimestamp      [server::getdata "timestamp"]
     set lastcovers         [server::getdata "covers"]
     set lastport2cover     [server::getdata "port2cover"]
     set lastport3cover     [server::getdata "port3cover"]
