@@ -206,7 +206,9 @@ namespace eval "telescopecontroller" {
   proc startactivitycommand {} {
     set start [utcclock::seconds]
     log::info "starting."
-    stophardware
+    if {$opentsi::readystate == 1.0} {
+      stophardware
+    }
     while {[string equal [server::getstatus] "starting"]} {
       coroutine::yield
     }
