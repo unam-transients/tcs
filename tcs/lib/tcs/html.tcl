@@ -707,9 +707,11 @@ namespace eval "html" {
 
     putshtml "<table class=\"status\">"
     
-    writehtmlfullrow "State" [client::getdata "telescopecontroller" "state"]
-    writehtmlrow "Ambient temperature" [formatifok "%.1f C"    [client::getdata "telescopecontroller" "ambienttemperature"]]
-    writehtmlrow "Ambient pressure"    [formatifok "%.1f mbar" [client::getdata "telescopecontroller" "ambientpressure"   ]]
+    if {[string equal [client::getstatus "plc"] "telescopecontroller"]} {
+      writehtmlfullrow "State" [client::getdata "telescopecontroller" "state"]
+      writehtmlrow "Ambient temperature" [formatifok "%.1f C"    [client::getdata "telescopecontroller" "ambienttemperature"]]
+      writehtmlrow "Ambient pressure"    [formatifok "%.1f mbar" [client::getdata "telescopecontroller" "ambientpressure"   ]]
+    }
 
     putshtml "</table>"
 
