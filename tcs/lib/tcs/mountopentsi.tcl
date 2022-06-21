@@ -493,7 +493,6 @@ namespace eval "mount" {
   ######################################################################
 
   proc start {} {
-    server::setstatus "starting"
     opentsi::start $mount::statuscommand mount::updatedata
     server::newactivitycommand "starting" "started" mount::startactivitycommand
   }

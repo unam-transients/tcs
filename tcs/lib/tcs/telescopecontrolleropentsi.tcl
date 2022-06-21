@@ -285,7 +285,6 @@ namespace eval "telescopecontroller" {
   ######################################################################
 
   proc start {} {
-    server::setstatus "ok"
     opentsi::start $telescopecontroller::statuscommand telescopecontroller::updatedata
     server::newactivitycommand "starting" "started" telescopecontroller::startactivitycommand
   }

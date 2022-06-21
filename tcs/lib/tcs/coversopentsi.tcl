@@ -283,7 +283,6 @@ namespace eval "covers" {
   ######################################################################
 
   proc start {} {
-    server::setstatus "ok"
     opentsi::start $covers::statuscommand covers::updatedata
     server::newactivitycommand "starting" "started" covers::startactivitycommand
   }

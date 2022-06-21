@@ -280,7 +280,6 @@ namespace eval "secondary" {
   ######################################################################
 
   proc start {} {
-    server::setstatus "starting"
     opentsi::start $secondary::statuscommand secondary::updatedata
     server::newactivitycommand "starting" "started" secondary::startactivitycommand
   }

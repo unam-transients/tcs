@@ -533,7 +533,6 @@ namespace eval "supervisor" {
   set server::datalifeseconds 0
 
   proc start {} {
-    server::setstatus "starting"
     server::setactivity "starting"
     server::setrequestedactivity "idle"
     updatedata
