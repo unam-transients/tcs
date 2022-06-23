@@ -48,8 +48,8 @@ config::setdefaultvalue "mount" "allowedguideoffset"         "30as"
 config::setdefaultvalue "mount" "trackingsettledlimit"       "1as"
 config::setdefaultvalue "mount" "axisdhacorrection"          "0"
 config::setdefaultvalue "mount" "axisddeltacorrection"       "0"
-config::setdefaultvalue "mount" "hapark"                     "0h"
-config::setdefaultvalue "mount" "deltapark"                  "80d"
+config::setdefaultvalue "mount" "azimuthpark"                "0h"
+config::setdefaultvalue "mount" "zenithdistancepark"         "80d"
 config::setdefaultvalue "mount" "derotatorpark"              "0d"
 config::setdefaultvalue "mount" "haunpark"                   "0h"
 config::setdefaultvalue "mount" "deltaunpark"                "0d"
@@ -64,8 +64,8 @@ namespace eval "mount" {
   variable axisdhacorrection           [astrometry::parseoffset [config::getvalue "mount" "axisdhacorrection"]]
   variable axisddeltacorrection        [astrometry::parseoffset [config::getvalue "mount" "axisddeltacorrection"]]
   variable trackingsettledlimit        [astrometry::parseoffset [config::getvalue "mount" "trackingsettledlimit"]]
-  variable hapark                      [astrometry::parseha    [config::getvalue "mount" "hapark"]]
-  variable deltapark                   [astrometry::parsedelta [config::getvalue "mount" "deltapark"]]
+  variable azimuthpark                 [astrometry::parseangle [config::getvalue "mount" "azimuthpark"]]
+  variable zenithdistancepark          [astrometry::parseangle [config::getvalue "mount" "zenithdistancepark"]]
   variable derotatorpark               [astrometry::parseangle [config::getvalue "mount" "derotatorpark"]]
   variable haunpark                    [astrometry::parseha    [config::getvalue "mount" "haunpark"]]
   variable deltaunpark                 [astrometry::parsedelta [config::getvalue "mount" "deltaunpark"]]
@@ -269,7 +269,7 @@ namespace eval "mount" {
     variable telescopemotionstate
     variable targetdistance
     set startingdelay 1
-    set settlingdelay 1
+    set settlingdelay 0
     set start [utcclock::seconds]
     while {[utcclock::diff now $start] < $startingdelay} {
       coroutine::yield
@@ -312,22 +312,24 @@ namespace eval "mount" {
   ######################################################################
 
   proc parkhardware {} {
-    variable hapark
-    variable deltapark
+    variable azimuthpark
+    variable zenithdistancepark
     variable derotatorpark
     log::info "moving to park."
-    set azimuth        [astrometry::equatorialtoazimuth        $hapark $deltapark]
-    set zenithdistance [astrometry::equatorialtozenithdistance $hapark $deltapark]
     opentsi::sendcommand [format "SET [join {
         "OBJECT.HORIZONTAL.AZ=%.6f"
         "OBJECT.HORIZONTAL.ZD=%.6f"
-        "POINTING.SETUP.DEROTATOR.SYNCMODE=1"
+        "POINTING.SETUP.DEROTATOR.SYNCMODE=0"
         "POINTING.TRACK=2"
+      } ";"]" \
+      [astrometry::radtodeg $azimuthpark        ] \
+      [astrometry::radtodeg $zenithdistancepark ] \
+    ]
+    waitwhilemoving
+    opentsi::sendcommand [format "SET [join {
         "POSITION.INSTRUMENTAL.DEROTATOR[3].TARGETPOS=%.6f"
       } ";"]" \
-      [astrometry::radtodeg $azimuth        ] \
-      [astrometry::radtodeg $zenithdistance ] \
-      [astrometry::radtodeg $derotatorpark  ] \
+      [astrometry::radtodeg $derotatorpark      ] \
     ]
     waitwhilemoving
     server::setdata "unparked" false
@@ -376,7 +378,6 @@ namespace eval "mount" {
     opentsi::sendcommand "SET POINTING.SETUP.DEROTATOR.SYNCMODE=0"
     opentsi::sendcommand "SET POINTING.SETUP.USE_PORT=3"
     # Hack because the instrument is installed at an angle.
-    opentsi::sendcommand "SET POSITION.SETUP.DEROTATOR\[3\].OFFSET=0"
     opentsi::sendcommand "SET POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=-20"
     parkhardware
     set end [utcclock::seconds]
