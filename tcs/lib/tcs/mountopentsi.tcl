@@ -94,6 +94,7 @@ namespace eval "mount" {
     POSITION.INSTRUMENTAL.DEROTATOR[3].CURRPOS
     POSITION.INSTRUMENTAL.AZ.TARGETDISTANCE
     POSITION.INSTRUMENTAL.ZD.TARGETDISTANCE
+    POSITION.INSTRUMENTAL.DEROTATOR[3].TARGETDISTANCE
     POINTING.TARGETDISTANCE
   } ";"]"
 
@@ -150,11 +151,13 @@ namespace eval "mount" {
   variable pendingtelescopemotionstate
   variable pendingazimuthtargetdistance
   variable pendingzenithdistancetargetdistance
+  variable pendingderotatortargetdistance
   variable pendingtargetdistance
   
   variable telescopemotionstate         ""
   variable azimuthtargetdistance        ""
   variable zenithdistancetargetdistance ""
+  variable derotatortargetdistance      ""
   variable targetdistance               ""
 
   proc updatedata {response} {
@@ -168,6 +171,7 @@ namespace eval "mount" {
     variable pendingtelescopemotionstate
     variable pendingazimuthtargetdistance
     variable pendingzenithdistancetargetdistance
+    variable pendingderotatortargetdistance
     variable pendingtargetdistance
 
     variable telescopemotionstate
@@ -209,11 +213,15 @@ namespace eval "mount" {
       return false
     }
     if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.AZ.TARGETDISTANCE=%f" value] == 1} {
-      set pendingazimuthtargetdistance [astrometry::hrtorad $value]
+      set pendingazimuthtargetdistance [astrometry::degtorad $value]
       return false
     }
     if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.ZD.TARGETDISTANCE=%f" value] == 1} {
       set pendingzenithdistancetargetdistance [astrometry::degtorad $value]
+      return false
+    }
+    if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.DEROTATOR\[3\].TARGETDISTANCE=%f" value] == 1} {
+      set pendingderotatortargetdistance [astrometry::degtorad $value]
       return false
     }
     if {[scan $response "%*d DATA INLINE POINTING.TARGETDISTANCE=%f" value] == 1} {
@@ -240,7 +248,22 @@ namespace eval "mount" {
     set telescopemotionstate         $pendingtelescopemotionstate
     set azimuthtargetdistance        $pendingazimuthtargetdistance
     set zenithdistancetargetdistance $pendingzenithdistancetargetdistance
+    set derotatortargetdistance      $pendingderotatortargetdistance
     set targetdistance               $pendingtargetdistance
+    
+    if {false} {
+
+      # The axis target distances always seem to be close to zero when the
+      # telescope motion state indicates that the telescope has arrived. However,
+      # the global target distance seems to also include a multipled of 90 degrees.
+    
+      log::info [format "target distances are: %+.2fd %+.2fd %+.2fd %.2fd." \
+        [astrometry::radtodeg $azimuthtargetdistance] \
+        [astrometry::radtodeg $zenithdistancetargetdistance] \
+        [astrometry::radtodeg $derotatortargetdistance] \
+        [astrometry::radtodeg $targetdistance] \
+      ]
+    }
  
     set timestamp [utcclock::combinedformat "now"]
 
