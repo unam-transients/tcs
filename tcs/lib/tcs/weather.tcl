@@ -216,11 +216,11 @@ namespace eval "weather" {
       
       }
 
-      # The time in the OAN data files can be 24:00, which is rejected by clock scan.
+      # The time in the OAN data files can be 24:00.
       if {[string equal $time "24:00"]} {
-        set timestampseconds [expr {[clock scan "$date 23:59 UTC"] + 60}]
+        set timestampseconds [expr {[utcclock::scan "$date 23:59"] + 60}]
       } else {
-        set timestampseconds [clock scan "$date $time UTC"]
+        set timestampseconds [utcclock::scan "$date $time"]
       }
         
       set humidity           [expr {$humidity / 100.0}]
@@ -295,6 +295,8 @@ namespace eval "weather" {
 
     }
 
+log::debug "a"
+
     if {[string equal $previoustemperature "unknown"]} {
       error "no valid data."
     }
@@ -305,6 +307,8 @@ namespace eval "weather" {
       set lowwindspeedseconds [expr {$timestampseconds - $lastwindalarmseconds}]
     }
     
+log::debug "b"
+
     server::setdata "timestamp"               [utcclock::combinedformat $timestampseconds]
     server::setdata "temperature"             $temperature
     server::setdata "temperaturetrend"        $temperaturetrend

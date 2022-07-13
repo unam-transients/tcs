@@ -66,13 +66,20 @@ namespace eval "directories" {
     variable sharedirectory
     return $sharedirectory
   }
+  
+  proc varfordate {{seconds now}} {
+    variable vardirectory
+    set directory [file join $vardirectory [utcclock::formatdate $seconds false]]
+    catch {file mkdir $directory}
+    return $directory    
+  }
 
   proc vartoday {{seconds now}} {
     variable vardirectory
-    set today [file join $vardirectory [utcclock::formatdate $seconds false]]
-    catch {file mkdir $today}
-    linklatest $today
-    return $today    
+    set directory [file join $vardirectory [utcclock::formatdate $seconds false]]
+    catch {file mkdir $directory}
+    linklatest $directory
+    return $directory    
   }
   
   proc linklatest {filename} {
