@@ -299,6 +299,7 @@ namespace eval "telescope" {
     log::info "initializing."
     variable withlights
     variable withheater
+    variable withtelescopecontroller
     if {[catch {
       server::setdata "timestamp" [utcclock::combinedformat now]
       if {$withlights} {
@@ -320,6 +321,11 @@ namespace eval "telescope" {
         client::request $server "initialize"
         client::wait $server
         initializemechanismepilog $server
+      }
+      if {$withtelescopecontroller} {
+        log::info "switching off telescope controller."
+        client::request "telescopecontroller" "switchoff"
+        client::wait "telescopecontroller"
       }
       initializeepilog
       if {$withlights} {
@@ -534,6 +540,11 @@ namespace eval "telescope" {
         log::info "stopping cooling $finder."
         client::request $finder "setcooler closed"
       }
+      if {$withtelescopecontroller} {
+        log::info "switching on telescope controller."
+        client::request "telescopecontroller" "switchon"
+        client::wait "telescopecontroller"
+      }
       if {$withmount} {
         log::info "parking mount."
         client::request "mount" "preparetomove"
@@ -690,6 +701,11 @@ namespace eval "telescope" {
     if {$withguider} {
       log::info "stopping guider."
       client::request "guider" "stop"
+    }
+    if {$withtelescopecontroller} {
+      log::info "switching on telescope controller."
+      client::request "telescopecontroller" "switchon"
+      client::wait "telescopecontroller"
     }
     if {$withmount} {
       client::request "mount" "preparetomove"
@@ -1121,7 +1137,6 @@ set mode "none"
     server::checkstatus
     server::checkactivity "moving" "tracking" "idle"
     safetyswitch::checksafetyswitch
-    log::info "parking"
     server::newactivitycommand "parking" "idle" \
       "telescope::parkactivitycommand"
   }
@@ -1130,7 +1145,6 @@ set mode "none"
     server::checkstatus
     server::checkactivity "moving" "tracking" "idle"
     safetyswitch::checksafetyswitch
-    log::info "unparking"
     server::newactivitycommand "unparking" "idle" \
       "telescope::unparkactivitycommand"
   }
