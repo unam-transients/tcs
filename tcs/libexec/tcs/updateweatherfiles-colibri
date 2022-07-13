@@ -54,6 +54,10 @@ then
   usageerror
 fi
 
+tcs request plc updateweather
+
+exit
+
 mkdir -p "$tcsprefix"/var/tcs/weather
 cd "$tcsprefix"/var/tcs/weather
 

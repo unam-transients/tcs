@@ -73,11 +73,15 @@ namespace eval "plc" {
   
   variable weatherresponse ""
   variable generalresponse ""
+  variable lastweatherresponse ""
+  variable lastgeneralresponse ""
   
   proc updatedata {response} {
 
     variable weatherresponse
     variable generalresponce
+    variable lastweatherresponse
+    variable lastgeneralresponse
 
     set timestamp [utcclock::combinedformat now]
 
@@ -140,6 +144,8 @@ namespace eval "plc" {
       log::writesensorsfile "plc-$sensorname" [server::getdata $dataname] [server::getdata "timestamp"]
     }
 
+    set lastweatherresponse $weatherresponse
+    set lastgeneralresponse $generalresponse
     set weatherresponse ""
     set generalresponse ""
     
@@ -242,6 +248,39 @@ namespace eval "plc" {
     checkremote
     checkformove
     server::newactivitycommand "closing" "idle" plc::closeactivitycommand
+  }
+  
+  proc updateweather {} {
+    server::checkstatus
+    variable lastweatherresponse
+    variable lastgeneralresponse
+    if {
+      [string equal "" $lastweatherresponse] ||
+      [string equal "" $lastgeneralresponse]
+    } {
+      log::warning "unable to update weather: no data."
+      return
+    }
+    set timestamp  [server::getdata "timestamp"]
+    set date        [utcclock::formatdate $timestamp]
+    set time        [utcclock::formattime $timestamp]
+    set compactdate [utcclock::formatdate $timestamp false]
+    set weather [join [split $lastweatherresponse ";"] " "]
+    set generaldate [lindex [split $lastgeneralresponse ";"] 0]
+    set generaldata [join [split [lindex [split $lastgeneralresponse ";"] 1] ""] " "]
+    set line "b.0 $date $time $weather $generaldate $generaldata"
+    set line [string map {";" " "} $line]
+    set directorypath [file join [directories::var] "weather"]
+    if {[catch {
+      file mkdir $directorypath
+      set filepath [file join $directorypath "$date.txt"]
+      set channel [::open $filepath "a"]
+      puts $channel $line
+      ::close $channel      
+    }]} {
+      log::warning "unable to update weather: cannot write to file."
+    }
+    return
   }
   
   ######################################################################
