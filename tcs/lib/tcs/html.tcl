@@ -1106,7 +1106,9 @@ if {false} {
     putshtml "<table class=\"status\">"
 
     if {[string equal [client::getstatus "secondary"] "ok"]} {
-      writehtmlrow "State" [client::getdata "secondary" "state"]
+      if {![catch {client::getdata "secondary" "state"}]} {
+        writehtmlrow "State" [client::getdata "secondary" "state"]
+      }
       writehtmlrow "Requested position (z0)" [formatifok "%d" [client::getdata "secondary" "requestedz0"]]
       writehtmlrow "Temperature correction (dzT)" [formatifok "%+d" [client::getdata "secondary" "dzT"]]
       writehtmlrow "Position correction (dzP)" [formatifok "%+d" [client::getdata "secondary" "dzP"]]
