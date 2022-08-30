@@ -124,7 +124,7 @@ EOF
   esac
 
   case $host in
-  platform|[cde][0123])
+  platform)
     echo "tcs gpio -i"
     ;;
   esac
@@ -178,7 +178,7 @@ EOF
     echo "# This sleep gives the services host time to reboot and start the log server."
     echo "sleep 60"
     ;;
-  instrument)
+  instrument0|instrument1)
     echo "# This sleep gives the services host time to reboot and start the log server."
     echo "sleep 90"
     ;;
