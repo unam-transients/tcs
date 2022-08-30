@@ -142,7 +142,7 @@ namespace eval "weather" {
         
         if {$lightindex == 0} {
           set lightlevel "unknown"
-        } else {$lightindex == 1} {
+        } elseif {$lightindex == 1} {
           set lightlevel "dark"
         } else {
           set lightlevel "bright"
@@ -216,9 +216,31 @@ namespace eval "weather" {
       
       }
 
+      # Fix the format of the date.
+      if {[scan $date "%4d-%2d-%2d" years months days] == 3} {
+        set date [format "%04d-%02d-%02d" $years $months $days]
+      } elseif {[scan $date "%4d%2d%2d" years months days] == 3} {
+        set date [format "%04d-%02d-%02d" $years $months $days]
+      } else  {
+        error "invalid date \"$date\"."
+      }
+
+      # Fix the format of the time.
+      if {[scan $time "%2d:%2d:%2d" hours minutes seconds] == 3} {
+        set time [format "%02d:%02d:%02d" $hours $minutes $seconds]
+      } elseif {[scan $time "%2d:%2d" hours minutes] == 2} {
+        set time [format "%02d:%02d:00" $hours $minutes]
+      } elseif {[scan $time "%2d%2d%2d" hours minutes seconds] == 3} {
+        set time [format "%02d:%02d:%02d" $hours $minutes $seconds]
+      } elseif {[scan $time "%2d%2d" hours minutes] == 2} {
+        set time [format "%02d:%02d:00" $hours $minutes]
+      } else {
+        error "invalid time \"$time\"."
+      }
+
       # The time in the OAN data files can be 24:00.
       if {[string equal $time "24:00"]} {
-        set timestampseconds [expr {[utcclock::scan "$date 23:59"] + 60}]
+        set timestampseconds [expr {[utcclock::scan "$date 23:59:00"] + 60}]
       } else {
         set timestampseconds [utcclock::scan "$date $time"]
       }
@@ -295,7 +317,6 @@ namespace eval "weather" {
 
     }
 
-log::debug "a"
 
     if {[string equal $previoustemperature "unknown"]} {
       error "no valid data."
@@ -306,8 +327,6 @@ log::debug "a"
     } else {
       set lowwindspeedseconds [expr {$timestampseconds - $lastwindalarmseconds}]
     }
-    
-log::debug "b"
 
     server::setdata "timestamp"               [utcclock::combinedformat $timestampseconds]
     server::setdata "temperature"             $temperature
