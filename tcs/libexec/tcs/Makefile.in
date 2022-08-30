@@ -75,6 +75,8 @@ installbins         :=            \
 	newpgrp                       \
 	owsensorsserver               \
 	powerserver                   \
+	rebootinstrument              \
+	rebootplatform                \
 	rebootsoon                    \
 	request                       \
 	restartserver                 \
