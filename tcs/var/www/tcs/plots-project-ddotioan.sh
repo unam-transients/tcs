@@ -105,16 +105,16 @@ EOF
     set key on
 
     plot \
-      "weather.dat"  using 1:2   title "External"    with lines linestyle 1, \
-      "sensors.dat"  using 2:3   title "Shed"        with lines linestyle 2, \
-      "sensors.dat"  using 4:5   title "Rack"        with lines linestyle 3
+      "weather.dat"  using 1:2   title "External"        with lines linestyle 1, \
+      "sensors.dat"  using 2:3   title "Shed"            with lines linestyle 2, \
+      "sensors.dat"  using 4:5   title "Rack"            with lines linestyle 3
     
     plot \
-      "weather.dat"  using 1:2   title "External"    with lines linestyle 1, \
-      "sensors.dat"  using 6:7   title "Enclosure"   with lines linestyle 2, \
-      "sensors.dat"  using 8:9   title "Box C"       with lines linestyle 3, \
-      "sensors.dat"  using 10:11 title "Box D"       with lines linestyle 4, \
-      "sensors.dat"  using 12:13 title "Box E"       with lines linestyle 5
+      "weather.dat"  using 1:2   title "External"        with lines linestyle 1, \
+      "sensors.dat"  using 6:7   title "Enclosure"       with lines linestyle 2, \
+      "sensors.dat"  using 8:9   title "Platform Box"    with lines linestyle 3, \
+      "sensors.dat"  using 10:11 title "Instrument0 Box" with lines linestyle 4, \
+      "sensors.dat"  using 12:13 title "Instrument1 Box" with lines linestyle 5
 
     set yrange [0:100]
     set ytics 0,10,100
@@ -123,15 +123,15 @@ EOF
     set key on
 
     plot \
-      "weather.dat"  using 1:(\$4*100)   title "External"    with lines linestyle 1, \
-      "sensors.dat"  using 14:(\$15*100) title "Shed"        with lines linestyle 2
+      "weather.dat"  using 1:(\$4*100)   title "External"        with lines linestyle 1, \
+      "sensors.dat"  using 14:(\$15*100) title "Shed"            with lines linestyle 2
     
     plot \
-      "weather.dat"  using 1:(\$4*100)   title "External"    with lines linestyle 1, \
-      "sensors.dat"  using 16:(\$17*100) title "Enclosure"   with lines linestyle 2, \
-      "sensors.dat"  using 18:(\$19*100) title "Box C"       with lines linestyle 3, \
-      "sensors.dat"  using 20:(\$21*100) title "Box D"       with lines linestyle 4, \
-      "sensors.dat"  using 22:(\$23*100) title "Box E"       with lines linestyle 5
+      "weather.dat"  using 1:(\$4*100)   title "External"        with lines linestyle 1, \
+      "sensors.dat"  using 16:(\$17*100) title "Enclosure"       with lines linestyle 2, \
+      "sensors.dat"  using 18:(\$19*100) title "Platform Box"    with lines linestyle 3, \
+      "sensors.dat"  using 20:(\$21*100) title "Instrument0 Box" with lines linestyle 4, \
+      "sensors.dat"  using 22:(\$23*100) title "Instrument1 Box" with lines linestyle 5
 
     set yrange [0:100]
     set ytics 0,10,100

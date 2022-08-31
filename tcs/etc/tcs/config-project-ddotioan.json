@@ -630,14 +630,14 @@
       "shed-temperature",
       "rack-temperature",
       "enclosure-temperature",
-      "box-c-temperature",
-      "box-d-temperature",
-      "box-e-temperature",
+      "platform-box-temperature",
+      "instrument0-box-temperature",
+      "instrument1-box-temperature",
       "shed-humidity",
       "enclosure-humidity",
-      "box-c-humidity",
-      "box-d-humidity",
-      "box-e-humidity",
+      "platform-box-humidity",
+      "instrument0-box-humidity",
+      "instrument1-box-humidity",
       "shed-light-level",
       "enclosure-light-level"
     ],
@@ -679,12 +679,12 @@
         "identifier": "7E.2C3900001000",
         "firmware": ""
       },
-      "box-c-temperature": {
+      "platform-box-temperature": {
         "file": "/usr/local/var/tcs/sensors/platform/ow/26.3E9840010000/temperature",
         "keyword": "BCTM",
-        "prettyname": "box C temperature",
+        "prettyname": "platform box temperature",
         "subsystem": "enclosure",
-        "component": "box-c",
+        "component": "platform-box",
         "group": "environmental-sensors",
         "type": "float",
         "unit": "C",
@@ -692,12 +692,12 @@
         "identifier": "26.3E9840010000",
         "firmware": ""
       },
-      "box-d-temperature": {
+      "instrument0-box-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument0/ow/26.2495E1010000/temperature",
         "keyword": "BDTM",
-        "prettyname": "box D temperature",
+        "prettyname": "instrument0 box temperature",
         "subsystem": "instrument",
-        "component": "box-d",
+        "component": "instrument0-box",
         "group": "environmental-sensors",
         "type": "float",
         "unit": "C",
@@ -705,12 +705,12 @@
         "identifier": "26.2495E1010000",
         "firmware": ""
       },
-      "box-e-temperature": {
+      "instrument1-box-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument1/ow/26.3469E1010000/temperature",
         "keyword": "BETM",
-        "prettyname": "box E temperature",
+        "prettyname": "instrument1 box temperature",
         "subsystem": "instrument",
-        "component": "box-e",
+        "component": "instrument1-box",
         "group": "environmental-sensors",
         "type": "float",
         "unit": "C",
@@ -745,12 +745,12 @@
         "identifier": "7E.2C3900001000",
         "firmware": ""
       },
-      "box-c-humidity": {
+      "platform-box-humidity": {
         "file": "/usr/local/var/tcs/sensors/platform/ow/26.3E9840010000/HIH4000/humidity",
         "keyword": "BCHM",
-        "prettyname": "box C relative humidity",
+        "prettyname": "platform box relative humidity",
         "subsystem": "enclosure",
-        "component": "box-c",
+        "component": "platform-box",
         "group": "environmental-sensors",
         "type": "float",
         "correctionmodel": "MS-H:1.0:0:0:0:0",
@@ -759,12 +759,12 @@
         "identifier": "26.3E9840010000",
         "firmware": ""
       },
-      "box-d-humidity": {
+      "instrument0-box-humidity": {
         "file": "/usr/local/var/tcs/sensors/instrument0/ow/26.2495E1010000/HIH4000/humidity",
         "keyword": "BDHM",
-        "prettyname": "box D relative humidity",
+        "prettyname": "instrument0 box relative humidity",
         "subsystem": "instrument",
-        "component": "box-d",
+        "component": "instrument0-box",
         "group": "environmental-sensors",
         "type": "float",
         "correctionmodel": "MS-H:1.0:0:0:0:0",
@@ -773,12 +773,12 @@
         "identifier": "26.2495E1010000",
         "firmware": ""
       },
-      "box-e-humidity": {
+      "instrument1-box-humidity": {
         "file": "/usr/local/var/tcs/sensors/instrument1/ow/26.3469E1010000/HIH4000/humidity",
         "keyword": "BEHM",
-        "prettyname": "box E relative humidity",
+        "prettyname": "instrument1 box relative humidity",
         "subsystem": "instrument",
-        "component": "box-e",
+        "component": "instrument1-box",
         "group": "environmental-sensors",
         "type": "float",
         "correctionmodel": "MS-H:1.0:0:0:0:0",
