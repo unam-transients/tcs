@@ -27,6 +27,8 @@
 
 export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
 
+sudo -v
+
 libexecdir="$tcsprefix/libexec/tcs"
 program="tcs $(basename "$0")"
 
@@ -173,9 +175,9 @@ do
       then
         if $foreground
         then
-          TCSLOGDEBUG=$debug TCSLOGTOSTDERR=true $fullserver
+          sudo TCSLOGDEBUG=$debug TCSLOGTOSTDERR=true $fullserver
         else
-          TCSLOGDEBUG=$debug nohup $fullserver >/dev/null 2>&1 &
+          sudo TCSLOGDEBUG=$debug nohup $fullserver >/dev/null 2>&1 &
           printf '%5d   %s\n' $! $arg
         fi
       else

@@ -30,6 +30,8 @@ export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bi
 libexecdir="$tcsprefix/libexec/tcs"
 program="tcs $(basename "$0")"
 
+sudo -v
+
 usageerror () {
   echo 1>&2 "usage: $program [--] servername [...]"
   echo 1>&2 "usage: $program [-a] [--]"
@@ -146,11 +148,11 @@ do
   pids=$(pgrep -u root -f $fullserver)
   if test ! -z "$pids"
   then
-    kill $pids
+    sudo kill $pids
   fi
   pids=$(pgrep -u root -f $fullserver)
   if test ! -z "$pids"
   then
-    kill -KILL $pids
+    sudo kill -KILL $pids
   fi
 done
