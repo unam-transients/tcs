@@ -362,7 +362,7 @@
       "platform-box-temperature": {
         "file": "/usr/local/var/tcs/sensors/platform/ow/26.DFB040010000/temperature",
         "keyword": "BCTM",
-        "prettyname": "box C temperature",
+        "prettyname": "platform box temperature",
         "group": "environmental-sensors",
         "type": "float",
         "unit": "C",
@@ -373,7 +373,7 @@
       "instrument-box-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.44A040010000/temperature",
         "keyword": "BETM",
-        "prettyname": "box E temperature",
+        "prettyname": "instrument box temperature",
         "group": "environmental-sensors",
         "type": "float",
         "unit": "C",
@@ -409,7 +409,7 @@
       "platform-box-humidity": {
         "file": "/usr/local/var/tcs/sensors/platform/ow/26.DFB040010000/HIH4000/humidity",
         "keyword": "BCHM",
-        "prettyname": "box C relative humidity",
+        "prettyname": "platform box relative humidity",
         "group": "environmental-sensors",
         "type": "float",
         "correctionmodel": "MS-H:1.0:0:0:0:0",
@@ -421,7 +421,7 @@
       "instrument-box-humidity": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.44A040010000/HIH4000/humidity",
         "keyword": "BEHM",
-        "prettyname": "box E relative humidity",
+        "prettyname": "instrument box relative humidity",
         "group": "environmental-sensors",
         "correctionmodel": "MS-H:1.0:0:0:0:0",
         "type": "float",
