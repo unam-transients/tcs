@@ -108,7 +108,7 @@
       "16": "-A"
     },
     "filterlist": [
-     "g", "r", "i", "z", "470/10", "dark", "640/10", "656/3"
+      "g", "r", "i", "z", "470/10", "dark", "640/10", "656/3"
     ],
     "startoutletgroups": [
       "detector"
@@ -203,7 +203,7 @@
     "polardeltalimit": "+65d",
     "pointingmodelpolarhole": "1d",
    // Pointing model "20211103"b.
-   "pointingmodelparameters0": {
+    "pointingmodelparameters0": {
       "IH": "-0.005214",
       "ID": "-0.000634",
       "CH": "-0.000137",
@@ -387,6 +387,7 @@
         "prettyname": "shed relative humidity",
         "group": "environmental-sensors",
         "type": "float",
+        "correctionmodel": "MS-H:1.0:0:0:0:0",
         "unit": "",
         "model": "iButtonLink MS-TH",
         "identifier": "26.0FC8CF000000",
@@ -399,6 +400,7 @@
         "relative": "humidity",
         "group": "environmental-sensors",
         "type": "float",
+        "correctionmodel": "ENV-H:1.0:0:0:0:0",
         "unit": "",
         "model": "EDS OW-ENV-THPL",
         "identifier": "7E.3E3900001000",
@@ -410,6 +412,7 @@
         "prettyname": "box C relative humidity",
         "group": "environmental-sensors",
         "type": "float",
+        "correctionmodel": "MS-H:1.0:0:0:0:0",
         "unit": "",
         "model": "iButtonLink MS-TH",
         "identifier": "26.DFB040010000",
@@ -420,6 +423,7 @@
         "keyword": "BEHM",
         "prettyname": "box E relative humidity",
         "group": "environmental-sensors",
+        "correctionmodel": "MS-H:1.0:0:0:0:0",
         "type": "float",
         "unit": "",
         "model": "iButtonLink MS-TH",
