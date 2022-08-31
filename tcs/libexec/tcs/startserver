@@ -175,9 +175,9 @@ do
       then
         if $foreground
         then
-          sudo TCSLOGDEBUG=$debug TCSLOGTOSTDERR=true $fullserver
+          sudo tcsprefix="$tcsprefix" TCSLOGDEBUG=$debug TCSLOGTOSTDERR=true $fullserver
         else
-          sudo TCSLOGDEBUG=$debug nohup $fullserver >/dev/null 2>&1 &
+          sudo tcsprefix="$tcsprefix" TCSLOGDEBUG=$debug nohup $fullserver >/dev/null 2>&1 &
           printf '%5d   %s\n' $! $arg
         fi
       else
