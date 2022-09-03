@@ -24,7 +24,7 @@
 
 ########################################################################
 
-export PATH=/usr/bin:/bin:/usr/sbin:/sbin
+export PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin
 
 sudo -v
 
@@ -45,7 +45,6 @@ cd "$tcsprefix"/var/tcs/reboot
 
 if test $# = 0
 then
-  host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
   case "$host" in
   coatlicu-*)
     set control instrument
@@ -71,6 +70,7 @@ fi
 
 for host in "$@"
 do
+  tcs log "tcs rebootsoon" summary "requesting reboot of $host."
   sudo touch "$host"
 done
 

@@ -34,19 +34,25 @@ host="$(uname -n | sed 's/\..*//;s/[^-]*-//')"
 
 if test -f "$host"
 then
+  tcs log "tcs checkrestart" summary "restarting tcs on $host."
   rm -f "$host"
   sleep 10
   tcs stopserver -a
   tcs startserver -a
+  sleep 1
+  tcs log "tcs checkrestart" summary "finished restarting tcs on $host."
 else
   # We are not on the main host.
   rsync -a --timeout=10 --include="$host" --exclude="*" --remove-source-files rsync://services/tcs/restart/. .
   if test -f "$host"
   then
+    tcs log "tcs checkrestart" summary "restarting tcs on $host."
     rm -f "$host"
     tcs stopserver -a
     sleep 30
     tcs startserver -a
+    sleep 1
+    tcs log "tcs checkrestart" summary "finished restarting tcs on $host."
   fi
 fi
 

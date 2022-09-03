@@ -42,7 +42,7 @@ usageerror () {
 host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
 case "$host" in
 ratiroan-services)
-  allargs="log 1 html gcntan"
+  allargs="html gcntan"
   ;;
 ratiroan-control)
   allargs="cryostat sensors power weather 1 target 1 moon sun 1 covers dome inclinometers lights secondary shutters 1 mount 1 nefinder sefinder 1 guider 1 telescope instrument 1 executor selector supervisor"
@@ -54,7 +54,7 @@ ratiroan-tcs-a)
   allargs="C2 C3"
   ;;
 coatlioan-services)
-  allargs="log 1 html gcntan"
+  allargs="html gcntan"
   ;;
 coatlioan-control)
   allargs="sensors power weather 1 target 1 moon sun 1 secondary enclosure mount 1 telescope 1 executor selector supervisor"
@@ -69,7 +69,7 @@ ddotioan-control)
   allargs="sensors power weather 1 target 1 moon sun 1 enclosure mount 1 telescope instrument 1 executor selector supervisor"
   ;;
 ddotioan-services)
-  allargs="log 1 html gcntan"
+  allargs="html gcntan"
   ;;
 ddotioan-a0)
   allargs=""
@@ -84,10 +84,10 @@ ddotioan-instrument1)
   allargs="C1 C3"
   ;;
 colibricito)
-  allargs="log 2 html 1 target 1 moon sun weather 1 mount 1 selector"
+  allargs="html 1 target 1 moon sun weather 1 mount 1 selector"
   ;;
 colibriohp-services)
-  allargs="log 1 html 1 sensors power weather plc 1 target 1 moon sun 1 telescopecontroller 1 covers secondary mount 1 telescope instrument 1 executor selector"
+  allargs="html 1 sensors power weather plc 1 target 1 moon sun 1 telescopecontroller 1 covers secondary mount 1 telescope instrument 1 executor selector"
   ;;
 colibriohp-control)
   allargs="sensors power weather plc 1 target 1 moon sun 1 telescopecontroller plc 1 covers secondary mount 1 telescope instrument 1 executor selector"
@@ -96,16 +96,16 @@ colibriohp-detectors)
   allargs="C0"
   ;;
 transientscu-control)
-  allargs="log 1 html gcntan 1 target 1 moon sun sensors weather C0 1 telescope instrument 1 executor selector supervisor"
+  allargs="html gcntan 1 target 1 moon sun sensors weather C0 1 telescope instrument 1 executor selector supervisor"
   ;;
 coatlicu-control)
-  allargs="log 1 html 1 target 1 moon sun sensors weather 1 telescope 1 executor selector supervisor"
+  allargs="html 1 target 1 moon sun sensors weather 1 telescope 1 executor selector supervisor"
   ;;
 coatlicu-instrument)
   allargs="C0 1 instrument"
   ;;
 test-control)
-  allargs="log 1 html gcntan 1 target 1 moon sun sensors weather C0 1 telescope instrument 1 executor selector supervisor"
+  allargs="html gcntan 1 target 1 moon sun sensors weather C0 1 telescope instrument 1 executor selector supervisor"
   ;;
 esac
 
