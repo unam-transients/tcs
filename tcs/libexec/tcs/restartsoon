@@ -24,7 +24,7 @@
 
 ########################################################################
 
-export PATH=/usr/bin:/bin:/usr/sbin:/sbin
+export PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin
 
 sudo -v
 
@@ -45,7 +45,6 @@ cd "$tcsprefix"/var/tcs/restart
 
 if test $# = 0
 then
-  host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
   case "$host" in
   coatlicu-*)
     set control instrument
@@ -65,11 +64,13 @@ then
   *)
     echo 2>&1 "$program: error: unknown host."
     exit 1
+    ;;
   esac
 fi
 
 for host in "$@"
 do
+  tcs log "tcs restartsoon" summary "requesting restart of tcs on $host."
   sudo touch "$host"
 done
 

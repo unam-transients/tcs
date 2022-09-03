@@ -45,6 +45,7 @@ if test -f "$host"
 then
   # We are on the main host, which runs the log server.
   sleep 10
+  tcs log "tcs checkhalt" summary "halting $host."
   rm -f "$host"
   shutdown -H now
 else
@@ -52,6 +53,7 @@ else
   rsync -a --timeout=10 --include="$host" --exclude="*" --remove-source-files rsync://services/tcs/halt/. .
   if test -f "$host"
   then
+    tcs log "tcs checkhalt" summary "halting $host."
     rm -f "$host"
     shutdown -H now
   fi

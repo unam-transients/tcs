@@ -107,6 +107,7 @@ sed '
   s/server: summary: /server: /
   s/client: summary: /client: /
   s/\(tcs [^:][^:]*\): summary: /\1: /
+  s/\([^ :]*\): summary: /\1: /
   s/\([^ ]*\)server: /\1: /
   s/\([^ ]*\)client: /\1: /
   s/: info: /: /

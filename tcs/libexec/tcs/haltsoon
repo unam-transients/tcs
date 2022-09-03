@@ -24,7 +24,7 @@
 
 ########################################################################
 
-export PATH=/usr/bin:/bin:/usr/sbin:/sbin
+export PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin
 
 sudo -v
 
@@ -70,6 +70,7 @@ fi
 
 for host in "$@"
 do
+  tcs log "tcs haltsoon" summary "requesting halt of $host."
   sudo touch "$host"
 done
 

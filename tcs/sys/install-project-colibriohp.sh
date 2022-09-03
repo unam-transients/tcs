@@ -68,7 +68,7 @@ sudo mv /etc/hosts.tmp /etc/hosts
 EOF
 
   case $host in
-  colibriohp-access)
+  access)
     # Do not run checkhalt on the Macs; they do not automatically start again after a halt if we cycle the power.
     ;;  
   *)
@@ -79,7 +79,7 @@ EOF
   esac
   
   case $host in
-  colibriohp-control)
+  control)
     cat <<"EOF"
 *   *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles services control detectors
 *   *  *  *  *  /usr/local/bin/tcs updateweatherfiles-colibri
@@ -89,7 +89,7 @@ EOF
 00  00 *  *  *  /usr/local/bin/tcs updatevarlatestlink; rsync -aH /usr/local/etc/tcs/blocks /usr/local/var/tcs/latest/
 EOF
     ;;
-  colibriohp-services)
+  services)
     cat <<"EOF"
 *   *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles services detectors
 *   *  *  *  *  /usr/local/bin/tcs updateweatherfiles-colibri
@@ -115,49 +115,34 @@ EOF
   echo "#!/bin/sh"
   echo "PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
-  # The Minnowboard Turbos come up with / read-only after power cycling.
-  # Don't know why, but it causes all sorts of problems.
-#   case $host in
-#   colibriohp-[acde][0123])
-#     echo "test -w /etc || mount -o remount,rw /"
-#     ;;
-#   esac
+  case $host in
+  services)
+    echo "# Start the log server as soon as possible."
+    echo "tcs startserver log &"
+    echo "sleep 5"
+    ;;
+  *)
+    echo "# This sleep gives the services host time to reboot and start the log server."
+    echo "sleep 30"
+    ;;
+  esac
 
-#   case $host in
-#   colibriohp-access)
-#     echo "hostname colibriohp-access"
-#     ;;
-#   esac
-
-#   case $host in
-#   colibriohp-[cde][0123])
-#     echo "gpio -i"
-#     ;;
-#   esac
-#   case $host in
-#   colibriohp-c0)
-#     echo "gpio enclosure-lights off"
-#     echo "gpio enclosure-heater off"
-#     ;;
-#   colibriohp-[de]0)
-#     echo "gpio telescope-fans off"
-#     ;;
-#   esac
+  echo "tcs log boot summary \"booting tcs on $host.\""
 
   case $host in
-  colibriohp-control|colibriohp-detectors)
+  control|detectors)
     echo "owserver -c /etc/owfs.conf"
     ;;
   esac
   
   case $host in
-  colibriohp-detectors)
+  detectors)
     echo "tcs instrumentdataserver -f -d rsync://services/tcs/ &"
     ;;
   esac
 
   case $host in
-  colibriohp-services)
+  services)
     echo "owserver -c /etc/owfs.conf"
     echo "tcs instrumentimageserver C0 detectors &"
     echo "tcs webcamimageserver a https://www.colibri-obs.org/wp-content/uploads/2021/01/cam-colibri1.jpeg &"
@@ -168,16 +153,13 @@ EOF
     ;;
   esac
 
-  case $host in
-  colibriohp-services)
-    ;;
-  *)
-    echo "# This sleep gives the services host time to reboot and start the log server."
-    echo "sleep 30"
-    ;;
-  esac
+  echo "service rsync start"
+
   echo "tcs startserver -a &"
   
+  echo "sleep 10"
+  echo "tcs log boot summary \"finished booting tcs on $host.\""
+
   echo "exit 0"
 
 ) |
@@ -290,7 +272,7 @@ fi
 # wait for any background tasks to finish.
 
 case $host in
-colibriohp-access)
+access)
   sudo cp /dev/stdin <<"EOF" /Library/LaunchDaemons/local.localhost.startup.plist
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -324,7 +306,7 @@ sudo rm -f /tmp/sudoers-tcs
 (
   echo 'ddoti ALL=(ALL) ALL'
   case $host in
-  colibriohp-services)
+  services)
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs rebootsoon'
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs restartsoon'
     ;;

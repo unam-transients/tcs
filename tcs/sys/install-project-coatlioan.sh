@@ -119,18 +119,30 @@ EOF
   echo "PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
   case $host in
-  console)
-    echo "hostname coatlioan-console"
+  services)
+    echo "# Start the log server as soon as possible."
+    echo "tcs startserver log &"
+    echo "sleep 5"
+    ;;
+  control)
+    echo "# This sleep gives the services host time to reboot and start the log server."
+    echo "sleep 30"
+    ;;
+  platform)
+    echo "# This sleep gives the services host time to reboot and start the log server."
+    echo "sleep 60"
+    ;;
+  instrument)
+    echo "# This sleep gives the services host time to reboot and start the log server."
+    echo "sleep 100"
     ;;
   esac
+
+  echo "tcs log boot summary \"booting tcs on $host.\""
 
   case $host in
   platform)
     echo "tcs gpio -i"
-    ;;
-  esac
-  case $host in
-  platform)
     echo "tcs gpio enclosure-lights off"
     echo "tcs gpio enclosure-heater off"
     ;;
@@ -167,22 +179,11 @@ EOF
   
   echo "service rsync start"
 
-  case $host in
-  control)
-    echo "# This sleep gives the services host time to reboot and start the log server."
-    echo "sleep 30"
-    ;;
-  platform)
-    echo "# This sleep gives the services host time to reboot and start the log server."
-    echo "sleep 60"
-    ;;
-  instrument)
-    echo "# This sleep gives the services host time to reboot and start the log server."
-    echo "sleep 90"
-    ;;
-  esac
   echo "tcs startserver -a &"
   
+  echo "sleep 10"
+  echo "tcs log boot summary \"finished booting tcs on $host.\""
+
   echo "exit 0"
 
 ) |

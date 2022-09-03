@@ -45,14 +45,18 @@ if test -f "$host"
 then
   # We are on the main host, which runs the log server.
   sleep 10
+  tcs log "tcs checkreboot" summary "rebooting $host."
   rm -f "$host"
+  sleep 1
   shutdown -r now
 else
   # We are not on the main host.
   rsync -a --timeout=10 --include="$host" --exclude="*" --remove-source-files rsync://services/tcs/reboot/. .
   if test -f "$host"
   then
+    tcs log "tcs checkreboot" summary "rebooting $host."
     rm -f "$host"
+    sleep 1
     shutdown -r now
   fi
 fi
