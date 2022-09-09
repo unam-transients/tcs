@@ -111,25 +111,25 @@ EOF
 
   case $host in
   services)
-    echo "# Start the log server as soon as possible."
+    # Start the log server as soon as possible.
     echo "tcs startserver log &"
-    echo "sleep 5"
-    ;;
-  control)
-    echo "# This sleep gives the services host time to reboot and start the log server."
-    echo "sleep 30"
-    ;;
-  platform)
-    echo "# This sleep gives the services host time to reboot and start the log server."
-    echo "sleep 60"
-    ;;
-  instrument0|instrument1)
-    echo "# This sleep gives the services host time to reboot and start the log server."
-    echo "sleep 100"
-    ;;
   esac
 
-  echo "tcs log boot summary \"booting tcs on $host.\""
+  # Wait up to 200 seconds for the log server to start.
+  echo "for i in 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19"
+  echo "do"
+  echo "  if tcs log boot summary \"booting tcs on $host.\""
+  echo "  then"
+  echo "    if test \$i = 0"
+  echo "    then"
+  echo "      tcs log boot info \"waited 0 seconds to start booting tcs on $host.\""
+  echo "    else"
+  echo "      tcs log boot info \"waited \${i}0 seconds to start booting tcs on $host.\""
+  echo "    fi"
+  echo "    break"
+  echo "  fi"
+  echo "  sleep 10"
+  echo "done"  
 
   case $host in
   platform)
