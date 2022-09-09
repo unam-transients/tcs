@@ -30,6 +30,8 @@ sudo -v
 
 program="tcs $(basename "$0")"
 
+export TCSLOGTOSTDERR=true
+
 host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
 case $host in
 *-services|colibricito-control)
