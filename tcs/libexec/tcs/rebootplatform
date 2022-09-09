@@ -23,6 +23,12 @@
 
 ########################################################################
 
+export PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin
+
+sudo -v
+
+program="tcs $(basename "$0")"
+
 export TCSLOGTOSTDERR=true
 
 host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
@@ -50,8 +56,6 @@ then
     ;;
   esac
 fi
-
-sudo -v
 
 tcs log "tcs rebootplatform" summary "rebooting platform."
 
@@ -90,10 +94,11 @@ do
   done
 done
 
-tcs log "tcs rebootplatform" summary "finished rebooting platform."
 for host in "$@"
 do
   tcs log "tcs rebootplatform" summary "tcs will now boot on $host."
 done
+
+tcs log "tcs rebootplatform" summary "finished rebooting platform."
 
 exit 0
