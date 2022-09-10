@@ -23,7 +23,7 @@ PERFORMANCE OF THIS SOFTWARE.
 
 ----------------------------------------------------------------------->
 
-# DDOTI/OAN: Documentation
+# DDOTI: Documentation
 
 ## Technical Manual
 

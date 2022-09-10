@@ -23,14 +23,15 @@ PERFORMANCE OF THIS SOFTWARE.
 
 ----------------------------------------------------------------------->
 
-# DDOTI/OAN
+# DDOTI
 
 This is the mountain-top web site for the DDOTI project at the
 [OAN/SPM](http://www.astrossp.unam.mx).
 
-* [Interface](/tcs/interface.html)
+* [Operations Interface](/tcs/operations.html)
 * [Documentation](documentation.html)
 * [Analysis](http://transients.astrossp.unam.mx/ddoti/)
+* [Engineering Interface](/tcs/engineering.html)
 * Power
   * <a href="/proxy/ibb-127/" target="_newtab">ibb-127</a>
   * <a href="/proxy/ibb-220/" target="_newtab">ibb-220</a>

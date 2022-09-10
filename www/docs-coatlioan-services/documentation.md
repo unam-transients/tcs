@@ -23,7 +23,7 @@ PERFORMANCE OF THIS SOFTWARE.
 
 ----------------------------------------------------------------------->
 
-# COATLI/OAN: Documentation
+# COATLI: Documentation
 
 ## Technical Manual
 

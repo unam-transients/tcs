@@ -26,8 +26,8 @@
 
 function newcomponent(subset, title)
 {
-  $("title").text(projectname + ": " + title);
-  $("h1").text(projectname + ": " + title);
+  $("title").text(projectname + " " + interfacetype + ": " + title);
+  $("h1").text(projectname + " " + interfacetype + ": " + title);
   $("div#status").html("");
   $("div#log").html("");
   refreshstatus(subset);
@@ -185,8 +185,14 @@ $(function () {
   $("form#system-restart").submit(function () {
     return submitrequest("restart");
   });
-  $("form#system-reboot").submit(function () {
-    return submitrequest("reboot");
+  $("form#system-rebootcomputers").submit(function () {
+    return submitrequest("rebootcomputers");
+  });
+  $("form#system-rebootinstrument").submit(function () {
+    return submitrequest("rebootinstrument");
+  });
+  $("form#system-rebootplatform").submit(function () {
+    return submitrequest("rebootplatform");
   });
   $("form#emergencystop").submit(function () {
     return submitrequest("emergencystop");
@@ -196,6 +202,9 @@ $(function () {
   });
   $("form#executor-initialize").submit(function () {
     return submitrequest("executor initialize");
+  });
+  $("form#executor-recover").submit(function () {
+    return submitrequest("executor recover");
   });
   $("form#executor-reset").submit(function () {
     return submitrequest("executor reset");

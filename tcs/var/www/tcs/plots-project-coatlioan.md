@@ -23,7 +23,7 @@ PERFORMANCE OF THIS SOFTWARE.
 
 ----------------------------------------------------------------------->
 
-# COATLI/OAN Plots
+# COATLI Plots
 
 * CCDs: 
   + [1 day](plots/ccds-1.png) 
