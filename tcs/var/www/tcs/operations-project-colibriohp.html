@@ -37,6 +37,7 @@ PERFORMANCE OF THIS SOFTWARE.
 <script type="text/javascript" src="tcs.js"></script>
 <script language="javascript">
 $(function () {
+  interfacetype = "Operations";
   confirmrequest = true;
   refreshimage({
     "allsky-small"   : "webcam/allsky/latest-small.jpg",
@@ -145,6 +146,17 @@ $(function () {
 <td class="control">
 <form id="lights-switchoff">
 <input type="submit" value="Switch Off"/>
+</form>
+</td>
+</tr>
+</table>
+
+<table class="control">
+<tr><th class="control full" align="center">Software</th></tr>
+<tr>
+<td class="control">
+<form id="system-restart">
+<input type="submit" value="Restart"/>
 </form>
 </td>
 </tr>
