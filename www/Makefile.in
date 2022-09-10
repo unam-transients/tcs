@@ -40,39 +40,6 @@ install						:	all install-$(SITE)
 	
 ########################################################################
 
-all-ratir-main					:	docs-ratir-main/index.html	\
-							docs-ratir-main/engineering.html
-docs-ratir-main/index.html			:	docs-ratir-main/index.md
-docs-ratir-main/engineering.html		:	docs-ratir-main/engineering.md
-
-install-ratir-main				:	install-linux
-
-clean-ratir-main				:
-	-rm -f docs-ratir-main/*.html
-
-########################################################################
-
-all-ratir-tcs					:
-
-install-ratir-tcs				:	install-linux
-
-clean-ratir-tcs					:
-	-rm -f docs-ratir-tcs/*.html
-
-########################################################################
-
-all-ratiroan-services				:	docs-ratiroan-services/index.html		\
-							docs-ratiroan-services/documentation.html
-docs-ratiroan-services/index.html		:	docs-ratiroan-services/index.md
-docs-ratiroan-services/documentation.html	:	docs-ratiroan-services/documentation.md
-
-install-ratiroan-services			:	install-linux
-
-clean-ratiroan-services				:
-	-rm -f docs-ratiroan-services/*.html
-	
-########################################################################
-
 all-coatlioan-services				:	docs-coatlioan-services/index.html		\
 							docs-coatlioan-services/documentation.html
 docs-coatlioan-services/index.html		:	docs-coatlioan-services/index.md
@@ -175,5 +142,4 @@ clean						:	clean-@SITE@
 
 distclean					:
 	-rm -rf configure autom4te.cache config.log config.status
-	-rf -rf site-ratir-main site-ratir-tcs
 	-rm -rf Makefile

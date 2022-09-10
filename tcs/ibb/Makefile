@@ -21,9 +21,6 @@
 
 ########################################################################
 	
-all-ratir		:
-	PROJECT="ratir" make all
-
 all-coatlioan		:
 	PROJECT="coatlioan" make all
 

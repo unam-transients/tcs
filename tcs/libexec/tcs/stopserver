@@ -40,18 +40,6 @@ usageerror () {
 
 host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
 case "$host" in
-ratiroan-services)
-  allargs="gcntan html"
-  ;;
-ratiroan-control)
-  allargs="supervisor selector executor instrument telescope guider sefinder nefinder mount shutters secondary lights inclinometers dome covers weather moon sun target power sensors cryostat"
-  ;;
-ratiroan-detectors)
-  allargs="C1 C0"
-  ;;
-ratiroan-tcs-a)
-  allargs="C2 C3"
-  ;;
 coatlioan-services)
   allargs="gcntan html"
   ;;
@@ -81,9 +69,6 @@ ddotioan-instrument0)
   ;;
 ddotioan-instrument1)
   allargs="C1 C3"
-  ;;
-colibricito)
-  allargs="selector mount weather sun moon target html"
   ;;
 colibriohp-services)
   allargs="selector executor instrument telescope mount secondary covers telescopecontroller sun moon target weather plc power sensors html"

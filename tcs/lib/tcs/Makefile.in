@@ -39,7 +39,6 @@ installs	:=			           \
 	covers.tcl			           \
 	coverscoatlioan.tcl		       \
 	coversopentsi.tcl              \
-	coversratiroan.tcl			   \
 	coversserver.tcl		       \
 	cryostat.tcl			       \
 	cryostatserver.tcl		       \
@@ -62,7 +61,6 @@ installs	:=			           \
 	executorcoatlioan.tcl 		   \
 	executorcolibricito.tcl 	   \
 	executorddotioan.tcl 		   \
-	executorratiroan.tcl 		   \
 	executorserver.tcl 		       \
 	fans.tcl		        	   \
 	fansserver.tcl	    		   \
@@ -107,7 +105,6 @@ installs	:=			           \
 	mount.tcl			           \
 	mountntm.tcl		    	   \
 	mountopentsi.tcl		       \
-	mountratiroan.tcl			   \
 	mountserver.tcl		    	   \
 	opentsi.tcl                    \
 	owsensors.tcl		    	   \
@@ -132,7 +129,6 @@ installs	:=			           \
 	secondary.tcl			       \
 	secondaryopentsi.tcl           \
 	secondaryoptec.tcl		       \
-	secondaryratiroan.tcl		   \
 	secondaryserver.tcl		       \
 	sensors.tcl			           \
 	sensorsserver.tcl	    	   \
@@ -153,7 +149,6 @@ installs	:=			           \
 	telescopecolibriohp.tcl	       \
 	telescopeddotioan.tcl		   \
 	telescopedummy.tcl		       \
-	telescoperatiroan.tcl		   \
 	telescopeserver.tcl		       \
 	telescopecontrolleropentsi.tcl \
 	telescopecontrollerserver.tcl  \

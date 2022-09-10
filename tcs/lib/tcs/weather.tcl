@@ -23,10 +23,6 @@
 
 ########################################################################
 
-# For the opening and closing rules, see:
-#
-# http://ratir.astroscu.unam.mx/tcs/wiki/Rules%20for%20Opening%20and%20Closing.
-
 package require "astrometry"
 package require "log"
 package require "utcclock"
