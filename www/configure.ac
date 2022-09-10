@@ -33,9 +33,6 @@ AC_SUBST(SITE)
 
 AC_CONFIG_FILES(
   Makefile
-  httpd.conf-ratir-main
-  httpd.conf-ratir-tcs
-  httpd.conf-ratiroan-services
   httpd.conf-coatlioan-services
   httpd.conf-ddotioan-services
   httpd.conf-colibricu-services

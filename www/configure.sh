@@ -27,9 +27,6 @@ autoconf
 
 host=$(uname -n | sed 's/\..*//')
 case $host in
-ratiroan-services)
-  ./configure SITE=ratiroan-services
-  ;;
 coatlioan-services)
   ./configure SITE=coatlioan-services
   ;;
@@ -41,12 +38,6 @@ colibricu-services)
   ;;
 colibriohp-services)
   ./configure SITE=colibriohp-services
-  ;;
-tcs-a)
-  ./configure SITE=ratir-main
-  ;;
-tcs-b)
-  ./configure SITE=ratir-tcs
   ;;
 transientscu-control)
   ./configure SITE=transientscu-control

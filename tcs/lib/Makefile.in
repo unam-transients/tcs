@@ -48,27 +48,6 @@ installs_project_test	    	:=	\
 	filterwheelnull.so
 endif
 
-ifeq ($(UNAME_M),x86_64)
-installs_project_ratir	    	:=	\
-	detectorfli.so		    	    \
-	focuserfli.so		    	    \
-	filterwheelfli.so	    	    \
-	detectorh2rg.so
-else
-installs_project_ratir   	    :=
-endif
-
-ifeq ($(UNAME_M),x86_64)
-installs_project_ratiroan   	:=	\
-	detectorfli.so		        	\
-	detectorh2rg.so                 \
-	focuserfli.so		        	\
-	filterwheelfli.so	           	\
-	filterwheelnull.so
-else
-installs_project_ratiroan	    :=
-endif
-
 ifeq ($(UNAME_N),coatlioan-instrument)
 installs_project_coatlioan	    :=	\
 	detectorandor.so		    	\
@@ -177,15 +156,6 @@ detectorfli.so			:	detectorwrap.o              \
 	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o detectorfli.so     \
 	  detectorwrap.o detector.o detectorfli.o           \
 	  $(LIBS) $(SWIGLIBS)
-
-detectorh2rg.o			:	detectorh2rg.cxx            \
-		        			detector.h
-detectorh2rg.so			:	detectorwrap.o              \
-				        	detector.o                  \
-        					detectorh2rg.o
-	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o detectorh2rg.so    \
-	  detectorwrap.o detector.o detectorh2rg.o          \
-	  -lcfitsio $(LIBS) $(SWIGLIBS)
 
 detectorqsi.o			:	detectorqsi.cxx             \
 		        			detector.h

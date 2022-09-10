@@ -108,21 +108,6 @@ installbins_project_transientscu :=  \
 	C0server                      \
 	updateweatherfiles-oan
 	
-installbins_project_ratiroan :=   \
-	C0server                      \
-	C1server                      \
-	C2server                      \
-	C3server                      \
-	coversserver                  \
-	cryostatserver                \
-	finderdataserver              \
-	h2rgexpose-project-ratiroan   \
-	inclinometersserver           \
-	nefinderserver                \
-	secondaryserver               \
-	sefinderserver                \
-	updateweatherfiles-oan
-
 installbins_project_coatlioan :=  \
 	C0server                      \
 	enclosureserver               \

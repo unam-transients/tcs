@@ -54,22 +54,14 @@ package ifneeded coverscoatlioan       0.0 \
   [list source [file join [file dirname [info script]] coverscoatlioan.tcl]]
 package ifneeded coversopentsi         0.0 \
   [list source [file join [file dirname [info script]] coversopentsi.tcl]]
-package ifneeded coversratiroan        0.0 \
-  [list source [file join [file dirname [info script]] coversratiroan.tcl]]
 package ifneeded coversserver          0.0 \
   [list source [file join [file dirname [info script]] coversserver.tcl]]
-package ifneeded cryostat              0.0 \
-  [list source [file join [file dirname [info script]] cryostat.tcl]]
-package ifneeded cryostatserver        0.0 \
-  [list source [file join [file dirname [info script]] cryostatserver.tcl]]
 package ifneeded detectorandor         0.0 \
   [list source [file join [file dirname [info script]] detectorandor.tcl]]
 package ifneeded detectordummy         0.0 \
   [list source [file join [file dirname [info script]] detectordummy.tcl]]
 package ifneeded detectorfli           0.0 \
   [list source [file join [file dirname [info script]] detectorfli.tcl]]
-package ifneeded detectorh2rg          0.0 \
-  [list source [file join [file dirname [info script]] detectorh2rg.tcl]]
 package ifneeded detectorqsi           0.0 \
   [list source [file join [file dirname [info script]] detectorqsi.tcl]]
 package ifneeded detectorsi            0.0 \
@@ -96,8 +88,6 @@ package ifneeded executorcolibricito   0.0 \
   [list source [file join [file dirname [info script]] executorcolibricito.tcl]]
 package ifneeded executorddotioan      0.0 \
   [list source [file join [file dirname [info script]] executorddotioan.tcl]]
-package ifneeded executorratiroan      0.0 \
-  [list source [file join [file dirname [info script]] executorratiroan.tcl]]
 package ifneeded executorserver        0.0 \
   [list source [file join [file dirname [info script]] executorserver.tcl]]
 package ifneeded fans                  0.0 \
@@ -110,10 +100,6 @@ package ifneeded filterwheelnull       0.0 \
   [list source [file join [file dirname [info script]] filterwheelnull.tcl]]
 package ifneeded filterwheelqsi        0.0 \
   [list source [file join [file dirname [info script]] filterwheelqsi.tcl]]
-package ifneeded finder                0.0 \
-  [list source [file join [file dirname [info script]] finder.tcl]]
-package ifneeded finders               0.0 \
-  [list source [file join [file dirname [info script]] finders.tcl]]
 package ifneeded fitfocus              0.0 \
   [list source [file join [file dirname [info script]] fitfocus.tcl]]
 package ifneeded fitsheader            0.0 \
@@ -126,8 +112,6 @@ package ifneeded focusernull           0.0 \
   [list source [file join [file dirname [info script]] focusernull.tcl]]
 package ifneeded focuseroptec          0.0 \
   [list source [file join [file dirname [info script]] focuseroptec.tcl]]
-package ifneeded finderserver          0.0 \
-  [list source [file join [file dirname [info script]] finderserver.tcl]]
 package ifneeded fromjson              0.0 \
   [list source [file join [file dirname [info script]] fromjson.tcl]]
 package ifneeded gcntan                0.0 \
@@ -136,10 +120,6 @@ package ifneeded gcntanserver          0.0 \
   [list source [file join [file dirname [info script]] gcntanserver.tcl]]
 package ifneeded gpio                  0.0 \
   [list source [file join [file dirname [info script]] gpio.tcl]]  
-package ifneeded guider                0.0 \
-  [list source [file join [file dirname [info script]] guider.tcl]]
-package ifneeded guiderserver          0.0 \
-  [list source [file join [file dirname [info script]] guiderserver.tcl]]
 package ifneeded heater                0.0 \
   [list source [file join [file dirname [info script]] heater.tcl]]
 package ifneeded heaterserver          0.0 \
@@ -148,10 +128,6 @@ package ifneeded html                  0.0 \
   [list source [file join [file dirname [info script]] html.tcl]]
 package ifneeded htmlserver            0.0 \
   [list source [file join [file dirname [info script]] htmlserver.tcl]]
-package ifneeded inclinometers         0.0 \
-  [list source [file join [file dirname [info script]] inclinometers.tcl]]
-package ifneeded inclinometersserver   0.0 \
-  [list source [file join [file dirname [info script]] inclinometersserver.tcl]]
 package ifneeded instrument            0.0 \
   [list source [file join [file dirname [info script]] instrument.tcl]]
 package ifneeded instrumentserver      0.0 \
@@ -176,8 +152,6 @@ package ifneeded mountntm              0.0 \
   [list source [file join [file dirname [info script]] mountntm.tcl]]
 package ifneeded mountopentsi          0.0 \
   [list source [file join [file dirname [info script]] mountopentsi.tcl]]
-package ifneeded mountratiroan         0.0 \
-  [list source [file join [file dirname [info script]] mountratiroan.tcl]]
 package ifneeded mountserver           0.0 \
   [list source [file join [file dirname [info script]] mountserver.tcl]]
 package ifneeded opentsi               0.0 \
@@ -186,10 +160,6 @@ package ifneeded owsensors             0.0 \
   [list source [file join [file dirname [info script]] owsensors.tcl]]
 package ifneeded owsensorsserver       0.0 \
   [list source [file join [file dirname [info script]] owsensorsserver.tcl]]
-package ifneeded pirani                0.0 \
-  [list source [file join [file dirname [info script]] pirani.tcl]]
-package ifneeded piraniserver          0.0 \
-  [list source [file join [file dirname [info script]] piraniserver.tcl]]
 package ifneeded plcsatino             0.0 \
   [list source [file join [file dirname [info script]] plcsatino.tcl]]
 package ifneeded plccolibri            0.0 \
@@ -224,8 +194,6 @@ package ifneeded secondaryopentsi      0.0 \
   [list source [file join [file dirname [info script]] secondaryopentsi.tcl]]
 package ifneeded secondaryoptec        0.0 \
   [list source [file join [file dirname [info script]] secondaryoptec.tcl]]
-package ifneeded secondaryratiroan     0.0 \
-  [list source [file join [file dirname [info script]] secondaryratiroan.tcl]]
 package ifneeded secondaryserver       0.0 \
   [list source [file join [file dirname [info script]] secondaryserver.tcl]]
 package ifneeded sensors               0.0 \
@@ -266,10 +234,6 @@ package ifneeded telescopeddotioan     0.0 \
   [list source [file join [file dirname [info script]] telescopeddotioan.tcl]]
 package ifneeded telescopedummy        0.0 \
   [list source [file join [file dirname [info script]] telescopedummy.tcl]]
-package ifneeded telescoperatir        0.0 \
-  [list source [file join [file dirname [info script]] telescoperatir.tcl]]
-package ifneeded telescoperatiroan     0.0 \
-  [list source [file join [file dirname [info script]] telescoperatiroan.tcl]]
 package ifneeded telescopeserver       0.0 \
   [list source [file join [file dirname [info script]] telescopeserver.tcl]]
 package ifneeded telescopecontrolleropentsi  0.0 \

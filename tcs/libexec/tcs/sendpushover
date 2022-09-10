@@ -78,9 +78,6 @@ ddotioan-*)
 coatlioan-*)
   from=a211448fi9nio3gpj731v2red8o4nc
   ;;
-ratiroan-*)
-  from=aJf8MbVrwupkvUeFNQimP45WtLz7oh
-  ;;
 esac
 
 case $to in

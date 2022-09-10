@@ -53,15 +53,6 @@ installs_project_transientscu		:=		    \
 installbins_project_transientscu	:=		    \
 	alertscript-project-transientscu
 
-installs_project_ratiroan	:=		        \
-	alert-project-ratiroan		            \
-	config-project-ratiroan.json		    \
-	servers-project-ratiroan.json   	    \
-	visitcommands-project-ratiroan.tcl
-
-installbins_project_ratiroan	:=		    \
-	alertscript-project-ratiroan	
-
 installs_project_coatlioan	:=		        \
 	alert-project-coatlioan		            \
 	config-project-coatlioan.json		    \

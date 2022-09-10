@@ -44,24 +44,6 @@ installs			:=	\
 installbins			:=	\
 	request.cgi			\
 
-installs_project_ratiroan	:=		    \
-	allsky-project-ratiroan.html      	\
-	C0-project-ratiroan.html       		\
-	C1-project-ratiroan.html       		\
-	C2-project-ratiroan.html       		\
-	C3-project-ratiroan.html       		\
-	config-project-ratiroan.js		    \
-	interface-project-ratiroan.html		\
-	alerts-project-ratiroan.html	    \
-	nefinder-project-ratiroan.html		\
-	sefinder-project-ratiroan.html		\
-	webcam-a-project-ratiroan.html		\
-	webcam-b-project-ratiroan.html		\
-	webcam-c-project-ratiroan.html		\
-	webcam-d-project-ratiroan.html		\
-	webcam-e-project-ratiroan.html		\
-	plots-project-ratiroan.sh
-
 installs_project_coatlioan	:=		    \
 	allsky-project-coatlioan.html		\
 	C0-project-coatlioan.html       	\

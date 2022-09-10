@@ -34,9 +34,6 @@ done
 
 host=$(uname -n | sed 's/\..*//')
 case $host in
-ratiroan-*)
-  ./configure --enable-project=ratiroan
-  ;;
 transientscu-*)
   ./configure --enable-project=transientscu
   ;;

@@ -1,9 +1,4 @@
 case $(uname -n) in
-transientsoan-ratir)
-  DIR=/usr/local/var/ratir/
-  sudo mkdir -p $DIR
-  sudo cp direct-ratir.sh $DIR/direct.sh
-  ;;
 transientsoan-coatli)
   DIR=/usr/local/var/coatli/
   sudo mkdir -p $DIR
