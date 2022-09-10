@@ -96,16 +96,6 @@ clean-test				:
 	
 ########################################################################
 
-all-transientscu-control					:	docs-transientscu-control/index.html
-docs-transientscu-control/index.html				:	docs-transientscu-control/index.md
-
-install-transientscu-control					:	install-linux
-
-clean-transientscu-control				:
-	-rm -f docs-transientscu-control/*.html
-	
-########################################################################
-
 all-coatlicu-control				    	:	docs-coatlicu-control/index.html
 docs-coatlicu-control/index.html			:	docs-coatlicu-control/index.md
 

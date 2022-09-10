@@ -94,12 +94,6 @@ installs_project_colibriohp	:=		     \
 	webcam-a-project-colibriohp.html	 \
 	plots-project-colibriohp.sh
 
-installs_project_transientscu		:=	 \
-	operations-project-transientscu.html \
-	alerts-project-transientscu.html	 \
-	C0-project-transientscu.html  	     \
-	config-project-transientscu.js		 \
-
 installs_project_coatlicu		:=		 \
 	operations-project-coatlicu.html	 \
 	engineering-project-coatlicu.html    \

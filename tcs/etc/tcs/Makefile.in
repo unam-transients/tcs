@@ -42,15 +42,6 @@ installs_project_test		:=		        \
 installbins_project_test	:=		        \
 	alertscript-project-test
 
-installs_project_transientscu		:=		    \
-	alert-project-transientscu			        \
-	config-project-transientscu.json		    \
-	servers-project-transientscu.json		    \
-	visitcommands-project-transientscu.tcl
-	
-installbins_project_transientscu	:=		    \
-	alertscript-project-transientscu
-
 installs_project_coatlioan	:=		        \
 	alert-project-coatlioan		            \
 	config-project-coatlioan.json		    \
