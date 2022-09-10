@@ -217,8 +217,8 @@ sudo rm -f /tmp/sudoers-tcs
   echo 'test ALL=(ALL) ALL'
   case $host in
   test-control)
-    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs rebootsoon'
-    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs restartsoon'
+    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs reboot'
+    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs restart'
     ;;
   esac
 ) >/tmp/sudoers-tcs

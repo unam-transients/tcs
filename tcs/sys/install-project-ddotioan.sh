@@ -308,8 +308,8 @@ sudo rm -f /tmp/sudoers-tcs
   echo 'ddoti ALL=(ALL) ALL'
   case $host in
   services)
-    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs rebootsoon'
-    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs restartsoon'
+    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs reboot'
+    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs restart'
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs rebootinstrument'
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs rebootplatform'
     ;;

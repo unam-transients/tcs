@@ -3,7 +3,7 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: restartsoon 3515 2020-03-11 23:09:12Z Alan $
+# $Id: reboot 3515 2020-03-11 23:09:12Z Alan $
 
 ########################################################################
 
@@ -42,8 +42,8 @@ case $host in
   ;;
 esac
 
-sudo mkdir -p "$tcsprefix"/var/tcs/restart
-cd "$tcsprefix"/var/tcs/restart
+sudo mkdir -p "$tcsprefix"/var/tcs/reboot
+cd "$tcsprefix"/var/tcs/reboot
 
 if test $# = 0
 then
@@ -74,10 +74,10 @@ for host in "$@"
 do
   if ping -c 1 -W 1 $host >/dev/null 2>&1
   then
-    tcs log "tcs restartsoon" summary "requesting restart of tcs on $host."
+    tcs log "tcs reboot" summary "requesting reboot of $host."
     sudo touch "$host"
   else
-    tcs log "tcs restartsoon" warning "not requesting restart of tcs of $host as it appears to be down."
+    tcs log "tcs halt" warning "not requesting reboot of $host as it appears to be down."
   fi
 done
 

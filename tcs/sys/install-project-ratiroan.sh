@@ -351,8 +351,8 @@ sudo rm -f /tmp/sudoers-tcs
   echo 'ratir ALL=(ALL) ALL'
   case $host in
   ratiroan-services)
-    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs rebootsoon'
-    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs restartsoon'
+    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs reboot'
+    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs restart'
     ;;
   esac
 ) >/tmp/sudoers-tcs
