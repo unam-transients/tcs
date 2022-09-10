@@ -60,9 +60,6 @@ installs_project_coatlioan	:=		        \
 installbins_project_coatlioan	:=		    \
 	alertscript-project-coatlioan	
 
-installs_project_ddoticu	:=		        \
-	config-project-ddoticu.json
-
 installs_project_ddotioan	:=		        \
 	alert-project-ddotioan		            \
 	config-project-ddotioan.json		    \
