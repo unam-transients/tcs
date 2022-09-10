@@ -57,7 +57,6 @@ installs	:=			           \
 	environment.tcl		    	   \
 	executor.tcl 		    	   \
 	executorcoatlioan.tcl 		   \
-	executorcolibricito.tcl 	   \
 	executorddotioan.tcl 		   \
 	executorserver.tcl 		       \
 	fans.tcl		        	   \
@@ -143,7 +142,6 @@ installs	:=			           \
 	targetserver.tcl    		   \
 	telescope.tcl		    	   \
 	telescopecoatlioan.tcl		   \
-	telescopecolibricito.tcl	   \
 	telescopecolibriohp.tcl	       \
 	telescopeddotioan.tcl		   \
 	telescopedummy.tcl		       \

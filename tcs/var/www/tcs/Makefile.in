@@ -94,15 +94,6 @@ installs_project_colibriohp	:=		    \
 	webcam-a-project-colibriohp.html	\
 	plots-project-colibriohp.sh
 
-installs_project_colibricito	:=		\
-	allsky-project-colibricito.html		\
-	C0-project-colibricito.html  	   	\
-	config-project-colibricito.js		\
-	interface-project-colibricito.html	\
-	webcam-a-project-colibricito.html	\
-	webcam-b-project-colibricito.html	\
-	webcam-c-project-colibricito.html	\
-
 installs_project_transientscu		:=		\
 	interface-project-transientscu.html	\
 	alerts-project-transientscu.html	    \
