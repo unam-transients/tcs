@@ -42,76 +42,76 @@ installs			:=	\
 installbins			:=	\
 	request.cgi			\
 
-installs_project_coatlioan	:=		    \
-	allsky-project-coatlioan.html		\
-	C0-project-coatlioan.html       	\
-	config-project-coatlioan.js		    \
-	operations-project-coatlioan.html	\
-	engineering-project-coatlioan.html  \
-	interface.html                      \
-	webcam-a-project-coatlioan.html		\
-	webcam-b-project-coatlioan.html		\
-	webcam-c-project-coatlioan.html		\
-	webcam-cz-project-coatlioan.html    \
-	plots-project-coatlioan.html        \
+installs_project_coatlioan	:=		     \
+	allsky-project-coatlioan.html		 \
+	C0-project-coatlioan.html       	 \
+	config-project-coatlioan.js		     \
+	operations-project-coatlioan.html	 \
+	engineering-project-coatlioan.html   \
+	interface.html                       \
+	webcam-a-project-coatlioan.html		 \
+	webcam-b-project-coatlioan.html		 \
+	webcam-c-project-coatlioan.html		 \
+	webcam-cz-project-coatlioan.html     \
+	plots-project-coatlioan.html         \
 	plots-project-coatlioan.sh
 
-installs_project_ddotioan	:=		    \
-	allsky-project-ddotioan.html		\
-	C0-project-ddotioan.html  	     	\
-	C1-project-ddotioan.html  	     	\
-	C2-project-ddotioan.html  	     	\
-	C3-project-ddotioan.html  	     	\
-	C4-project-ddotioan.html  	     	\
-	C5-project-ddotioan.html  	     	\
-	config-project-ddotioan.js		    \
-	operations-project-ddotioan.html  	\
-	interface.html                      \
-	engineering-project-ddotioan.html   \
-	alerts-project-ddotioan.html	    \
-	webcam-a-project-ddotioan.html		\
-	webcam-b-project-ddotioan.html		\
-	webcam-c-project-ddotioan.html		\
-	webcam-cz-project-ddotioan.html     \
+installs_project_ddotioan	:=		     \
+	allsky-project-ddotioan.html		 \
+	C0-project-ddotioan.html  	     	 \
+	C1-project-ddotioan.html  	     	 \
+	C2-project-ddotioan.html  	     	 \
+	C3-project-ddotioan.html  	     	 \
+	C4-project-ddotioan.html  	     	 \
+	C5-project-ddotioan.html  	     	 \
+	config-project-ddotioan.js		     \
+	operations-project-ddotioan.html  	 \
+	interface.html                       \
+	engineering-project-ddotioan.html    \
+	alerts-project-ddotioan.html	     \
+	webcam-a-project-ddotioan.html		 \
+	webcam-b-project-ddotioan.html		 \
+	webcam-c-project-ddotioan.html		 \
+	webcam-cz-project-ddotioan.html      \
 	plots-project-ddotioan.sh
 
-installs_project_colibricu	:=		    \
-	allsky-project-colibricu.html      	\
-	C0-project-colibricu.html  	     	\
-	config-project-colibricu.js		    \
-	operations-project-colibricu.html	\
-	engineering-project-colibricu.html  \
-	interface.html                      \
+installs_project_colibricu	:=		     \
+	allsky-project-colibricu.html      	 \
+	C0-project-colibricu.html  	     	 \
+	config-project-colibricu.js		     \
+	operations-project-colibricu.html	 \
+	engineering-project-colibricu.html   \
+	interface.html                       \
 	plots-project-colibricu.sh
 
-installs_project_colibriohp	:=		    \
-	allsky-project-colibriohp.html     	\
-	C0-project-colibriohp.html  	   	\
-	config-project-colibriohp.js	    \
-	operations-project-colibriohp.html  \
-	engineering-project-colibriohp.html \
-	interface.html                      \
-	webcam-a-project-colibriohp.html	\
+installs_project_colibriohp	:=		     \
+	allsky-project-colibriohp.html     	 \
+	C0-project-colibriohp.html  	   	 \
+	config-project-colibriohp.js	     \
+	operations-project-colibriohp.html   \
+	engineering-project-colibriohp.html  \
+	interface.html                       \
+	webcam-a-project-colibriohp.html	 \
 	plots-project-colibriohp.sh
 
-installs_project_transientscu		:=		\
-	interface-project-transientscu.html	\
-	alerts-project-transientscu.html	    \
-	C0-project-transientscu.html  	        \
-	config-project-transientscu.js		    \
+installs_project_transientscu		:=	 \
+	operations-project-transientscu.html \
+	alerts-project-transientscu.html	 \
+	C0-project-transientscu.html  	     \
+	config-project-transientscu.js		 \
 
-installs_project_coatlicu		:=		\
-	operations-project-coatlicu.html	\
-	engineering-project-coatlicu.html   \
-	interface.html                      \
-	alerts-project-coatlicu.html	    \
-	C0-project-coatlicu.html  	        \
-	config-project-coatlicu.js		    \
+installs_project_coatlicu		:=		 \
+	operations-project-coatlicu.html	 \
+	engineering-project-coatlicu.html    \
+	interface.html                       \
+	alerts-project-coatlicu.html	     \
+	C0-project-coatlicu.html  	         \
+	config-project-coatlicu.js		     \
 
-installs_project_test		:=		    \
-	interface-project-test.html		    \
-	C0-project-test.html  	     		\
-	config-project-test.js			    \
+installs_project_test		:=		     \
+	operations-project-test.html		 \
+	C0-project-test.html  	     		 \
+	config-project-test.js			     \
 
 EXTRA_INSTALLS			:=	\
 	install-webcam-link
