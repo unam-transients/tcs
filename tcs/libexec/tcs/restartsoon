@@ -72,8 +72,13 @@ fi
 
 for host in "$@"
 do
-  tcs log "tcs restartsoon" summary "requesting restart of tcs on $host."
-  sudo touch "$host"
+  if ping -c 1 -W 1 $host >/dev/null 2>&1
+  then
+    tcs log "tcs restartsoon" summary "requesting restart of tcs on $host."
+    sudo touch "$host"
+  else
+    tcs log "tcs restartsoon" warning "not requesting restart of tcs of $host as it appears to be down."
+  fi
 done
 
 exit 0
