@@ -32,7 +32,7 @@ export TCSLOGTOSTDERR=true
 
 host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
 case $host in
-*-services|colibricito-control)
+*-services)
   ;;
 *)
   echo 1>&2 "$program: error: must run on the services host." 
