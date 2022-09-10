@@ -2,8 +2,6 @@
 
 This file is part of the UNAM telescope control system.
 
-$Id: documentation.md 3443 2020-02-23 05:11:26Z Alan $
-
 ------------------------------------------------------------------------
 
 Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -24,5 +22,3 @@ PERFORMANCE OF THIS SOFTWARE.
 ----------------------------------------------------------------------->
 
 # COLIBRÍ/OHP: Documentation
-
-$Id: documentation.md 3443 2020-02-23 05:11:26Z Alan $

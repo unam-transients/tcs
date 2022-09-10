@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: server.tcl 3594 2020-06-10 14:55:51Z Alan $
-
 ########################################################################
 
 # Copyright © 2009, 2010, 2011, 2012, 2014, 2015, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -39,8 +37,6 @@ if {[catch {info coroutine}]} {
 }
 
 namespace eval "server" {
-
-  variable svnid {$Id}
 
   ######################################################################
 

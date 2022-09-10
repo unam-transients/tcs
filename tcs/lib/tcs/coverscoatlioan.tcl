@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: coverscoatlioan.tcl 3601 2020-06-11 03:20:53Z Alan $
-
 ########################################################################
 
 # Copyright © 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -34,8 +32,6 @@ config::setdefaultvalue "covers" "controllerhost" "10001"
 package provide "coverscoatlioan" 0.0
 
 namespace eval "covers" {
-
-  variable svnid {$Id}
 
   ######################################################################
 

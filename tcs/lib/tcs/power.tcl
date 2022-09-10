@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: power.tcl 3615 2020-06-22 19:37:40Z Alan $
-
 ########################################################################
 
 # Copyright © 2011, 2012, 2013, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -31,8 +29,6 @@ package provide "power" 0.0
   
 namespace eval "power" {
 
-  variable svnid {$Id}
-  
   ######################################################################
 
   variable hosts                [config::getvalue "power" "hosts"]

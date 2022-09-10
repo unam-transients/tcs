@@ -2,8 +2,6 @@
 
 // This file is part of the UNAM telescope control system.
 
-// $Id: tcs.js 2563 2017-02-14 17:15:19Z alan $
-
 ////////////////////////////////////////////////////////////////////////
 
 // Copyright © 2017, 2019 Alan M. Watson <alan@astro.unam.mx>

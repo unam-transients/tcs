@@ -2,8 +2,6 @@
 
 // This file is part of the UNAM telescope control system.
 
-// $Id: config-project-coatlioan.js 3024 2018-01-31 04:29:25Z Alan $
-
 ////////////////////////////////////////////////////////////////////////
 
 // Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>

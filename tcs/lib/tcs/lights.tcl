@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: lights.tcl 3594 2020-06-10 14:55:51Z Alan $
-
 ########################################################################
 
 # Copyright © 2010, 2011, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -31,8 +29,6 @@ package provide "lights" 0.0
 
 namespace eval "lights" {
 
-  variable svnid {$Id}
-  
   ######################################################################
 
   set server::datalifeseconds 30

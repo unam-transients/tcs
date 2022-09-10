@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: focuser.tcl 3588 2020-05-26 23:41:05Z Alan $
-
 ########################################################################
 
 # Copyright © 2011, 2016, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -31,8 +29,6 @@ if {[catch {info coroutine}]} {
 }
 
 namespace eval "focuser" {
-
-  variable svnid {$Id}
 
   ######################################################################
 

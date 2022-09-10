@@ -1,10 +1,6 @@
-# $Id: install-packages-ubuntu14.sh 3373 2019-10-30 15:09:02Z Alan $
-
 ########################################################################
 
 # This file is part of the UNAM telescope control system.
-
-# $Id: install-packages-ubuntu14.sh 3373 2019-10-30 15:09:02Z Alan $
 
 ########################################################################
 

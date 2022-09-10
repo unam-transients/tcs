@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: executorddotioan.tcl 3373 2019-10-30 15:09:02Z Alan $
-
 ########################################################################
 
 # Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -26,7 +24,5 @@
 package provide "executorratiroan" 0.0
 
 namespace eval "executor" {
-
-  variable svnid {$Id}
 
 }

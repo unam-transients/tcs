@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: ccd.tcl 3611 2020-06-11 21:19:38Z Alan $
-
 ########################################################################
 
 # Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -40,8 +38,6 @@ package require "filterwheel[config::getvalue [config::getvalue "ccd" "identifie
 package provide "ccd" 0.0
 
 namespace eval "ccd" {
-
-  variable svnid {$Id}
 
   ######################################################################
 

@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: utcclock.tcl 3595 2020-06-10 16:38:40Z Alan $
-
 ########################################################################
 
 # Copyright © 2009, 2010, 2011, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -26,8 +24,6 @@
 package provide "utcclock" 0.0
 
 namespace eval "utcclock" {
-
-  variable svnid {$Id: utcclock.tcl 3595 2020-06-10 16:38:40Z Alan $}
 
   ######################################################################
 

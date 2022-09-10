@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: pointing.tcl 3601 2020-06-11 03:20:53Z Alan $
-
 ########################################################################
 
 # Copyright © 2010, 2011, 2013, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -29,8 +27,6 @@ package require "config"
 package provide "pointing" 0.0
 
 namespace eval "pointing" {
-
-  variable svnid {$Id}
 
   ######################################################################
   

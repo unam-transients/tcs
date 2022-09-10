@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: telescopeddotioan.tcl 3579 2020-05-23 21:52:55Z Alan $
-
 ########################################################################
 
 # Copyright © 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>

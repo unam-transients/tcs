@@ -1,6 +1,4 @@
 /*
- * $Id: jquery.js 908 2010-11-20 19:49:29Z alan $
- *
  * jQuery JavaScript Library v1.4.4
  * http://jquery.com/
  *

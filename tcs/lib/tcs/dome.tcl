@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: dome.tcl 3601 2020-06-11 03:20:53Z Alan $
-
 ########################################################################
 
 # Copyright © 2009, 2010, 2011, 2012, 2013, 2014, 2017, 2019, 2021 Alan M. Watson <alan@astro.unam.mx>
@@ -43,8 +41,6 @@ config::setdefaultvalue "dome" "allowedazimutherror"  "3d"
 config::setdefaultvalue "dome" "trackinganticipation" "1d"
 
 namespace eval "dome" {
-
-  variable svnid {$Id}
 
   variable pi [expr {4.0 * atan(1.0)}]
 

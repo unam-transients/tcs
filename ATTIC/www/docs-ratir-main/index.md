@@ -2,8 +2,6 @@
 
 This file is part of the UNAM telescope control system.
 
-$Id: index.md 3373 2019-10-30 15:09:02Z Alan $
-
 ------------------------------------------------------------------------
 
 Copyright © 2011, 2012, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -35,5 +33,3 @@ RATIR is a multi-channel imager for the [OAN/SPM](http://www.astrossp.unam.mx/in
 * Information on [Operations](http://ratir.astroscu.unam.mx/public/wiki/Operations)
 
 <hr/>
-
-$Id: index.md 3373 2019-10-30 15:09:02Z Alan $

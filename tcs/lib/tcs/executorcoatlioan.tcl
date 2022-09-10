@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: executorcoatlioan.tcl 3594 2020-06-10 14:55:51Z Alan $
-
 ########################################################################
 
 # Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -28,7 +26,5 @@ package require "directories"
 package provide "executorcoatlioan" 0.0
 
 namespace eval "executor" {
-
-  variable svnid {$Id}
 
 }

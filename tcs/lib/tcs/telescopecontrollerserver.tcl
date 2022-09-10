@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: telescopecontrollerserver.tcl 3557 2020-05-22 18:23:30Z Alan $
-
 ########################################################################
 
 # Copyright © 2009, 2010, 2011, 2013, 2014, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -31,8 +29,6 @@ package require "server"
 package provide "telescopecontrollerserver" 0.0
 
 namespace eval "telescopecontrollerserver" {
-
-  variable svnid {$Id}
 
   ######################################################################
 

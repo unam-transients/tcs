@@ -4,8 +4,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: request.cgi 3579 2020-05-23 21:52:55Z Alan $
-
 ########################################################################
 
 # Copyright © 2010, 2011, 2013, 2014, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>

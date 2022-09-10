@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: selectorserver.tcl 3590 2020-05-27 00:18:20Z Alan $
-
 ########################################################################
 
 # Copyright © 2012, 2013, 2014, 2015, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -30,8 +28,6 @@ package require "server"
 package provide "selectorserver" 0.0
 
 namespace eval "selectorserver" {
-
-  variable svnid {$Id}
 
   ######################################################################
 

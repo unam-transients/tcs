@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: environment.tcl 3557 2020-05-22 18:23:30Z Alan $
-
 ########################################################################
 
 # Copyright © 2020 Alan M. Watson <alan@astro.unam.mx>
@@ -26,8 +24,6 @@
 package provide "environment" 0.0
 
 namespace eval "environment" {
-
-  variable svnid {$Id}
 
   ######################################################################
 

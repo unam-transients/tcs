@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: client.tcl 3609 2020-06-11 19:59:28Z Alan $
-
 ########################################################################
 
 # Copyright © 2014, 2015, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -33,8 +31,6 @@ package provide "client" 0.0
 
 namespace eval "client" {
 
-  variable svnid {$Id}
-  
   ########################################################################
 
   variable connectiontimeout 30000

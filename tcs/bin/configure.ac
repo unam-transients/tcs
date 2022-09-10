@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: configure.ac 7 2009-06-25 14:34:38Z alan $
-
 ########################################################################
 
 # Copyright © 2009, 2010, 2011, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>

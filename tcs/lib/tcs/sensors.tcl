@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: sensors.tcl 3601 2020-06-11 03:20:53Z Alan $
-
 ########################################################################
 
 # Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -29,8 +27,6 @@ package require "utcclock"
 package provide "sensors" 0.0
 
 namespace eval "sensors" {
-
-  variable svnid {$Id}
 
   ######################################################################
 

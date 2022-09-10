@@ -4,8 +4,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: plots.sh 3524 2020-03-18 21:32:13Z Alan $
-
 ########################################################################
 
 # Copyright © 2012, 2013, 2016, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>

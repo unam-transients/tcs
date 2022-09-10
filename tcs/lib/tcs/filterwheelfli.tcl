@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: filterwheelfli.tcl 3588 2020-05-26 23:41:05Z Alan $
-
 ########################################################################
 
 # Copyright © 2013, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>

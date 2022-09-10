@@ -2,8 +2,6 @@
 
 # This file is part of the RATTEL executor control system.
 
-# $Id: executorserver.tcl 3592 2020-06-10 14:32:51Z Alan $
-
 ########################################################################
 
 # Copyright © 2012, 2013, 2014, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -30,8 +28,6 @@ package require "server"
 package provide "executorserver" 0.0
 
 namespace eval "executorserver" {
-
-  variable svnid {$Id}
 
   ######################################################################
 

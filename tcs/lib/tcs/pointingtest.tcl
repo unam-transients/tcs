@@ -4,8 +4,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: executorserver 2585 2017-02-15 22:21:23Z alan $
-
 ########################################################################
 
 # Copyright © 2009 Alan M. Watson <alan@astro.unam.mx>

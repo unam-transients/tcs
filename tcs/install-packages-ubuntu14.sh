@@ -4,8 +4,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: install-packages-ubuntu14.sh 3463 2020-03-08 15:56:11Z Alan $
-
 ########################################################################
 
 # Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>

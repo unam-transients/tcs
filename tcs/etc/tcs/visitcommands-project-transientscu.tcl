@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Idvisit: alertvisit-project-ddotioan 3388 2019-11-01 19:50:09Z Alan $
-
 ########################################################################
 
 # Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>

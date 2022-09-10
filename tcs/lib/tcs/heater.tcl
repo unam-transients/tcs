@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: heater.tcl 3601 2020-06-11 03:20:53Z Alan $
-
 ########################################################################
 
 # Copyright © 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -32,8 +30,6 @@ package require "client"
 package provide "heater" 0.0
 
 namespace eval "heater" {
-
-  variable svnid {$Id}
 
   ######################################################################
 

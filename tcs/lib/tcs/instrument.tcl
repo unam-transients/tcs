@@ -2,8 +2,6 @@
 
 # This file is part of the RATTEL instrument control system.
 
-# $Id: instrument.tcl 3613 2020-06-20 20:21:43Z Alan $
-
 ########################################################################
 
 # Copyright © 2014, 2015, 2016, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -33,8 +31,6 @@ package provide "instrument" 0.0
 config::setdefaultvalue "instrument" "restartdetectorstorecover" "false"
 
 namespace eval "instrument" {
-
-  variable svnid {$Id}
 
   ######################################################################
 

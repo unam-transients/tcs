@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: secondaryoptec.tcl 3601 2020-06-11 03:20:53Z Alan $
-
 ########################################################################
 
 # Copyright © 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -37,8 +35,6 @@ package require "server"
 package provide "secondaryoptec" 0.0
 
 namespace eval "secondary" {
-
-  variable svnid {$Id}
 
   ######################################################################
 

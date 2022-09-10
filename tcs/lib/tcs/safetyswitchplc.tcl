@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: safetyswitchplc.tcl 3594 2020-06-10 14:55:51Z Alan $
-
 ########################################################################
 
 # Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -32,8 +30,6 @@ package require "utcclock"
 package provide "safetyswitchplc" 0.0
 
 namespace eval "safetyswitch" {
-
-  variable svnid {$Id}
 
   ######################################################################
 

@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: powerserver.tcl 3613 2020-06-20 20:21:43Z Alan $
-
 ########################################################################
 
 # Copyright © 2011, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -29,8 +27,6 @@ package require "power"
 package provide "powerserver" 0.0
 
 namespace eval "powerserver" {
-
-  variable svnid {$Id}
 
   ######################################################################
 

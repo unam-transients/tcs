@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: telescopedummy.tcl 3583 2020-05-24 19:20:24Z Alan $
-
 ########################################################################
 
 # Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>

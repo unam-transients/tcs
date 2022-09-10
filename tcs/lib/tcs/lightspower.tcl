@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: lightsgpio.tcl 3601 2020-06-11 03:20:53Z Alan $
-
 ########################################################################
 
 # Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -34,8 +32,6 @@ config::setdefaultvalue "lights" "outletgroup" "lights"
 
 namespace eval "lights" {
 
-  variable svnid {$Id}
-  
   ######################################################################
   
   variable outletgroup [config::getvalue "lights" "outletgroup"]

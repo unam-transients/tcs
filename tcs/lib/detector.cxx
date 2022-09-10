@@ -2,8 +2,6 @@
 
 // This file is part of the UNAM telescope control system.
 
-// $Id: detector.cxx 3542 2020-05-16 00:42:23Z Alan $
-
 ////////////////////////////////////////////////////////////////////////
 
 // Copyright © 2010, 2011, 2012, 2014, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>

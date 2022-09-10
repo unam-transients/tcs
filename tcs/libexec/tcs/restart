@@ -3,8 +3,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: restart 3515 2020-03-11 23:09:12Z Alan $
-
 ########################################################################
 
 # Copyright © 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>

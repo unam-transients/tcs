@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: log.tcl 3588 2020-05-26 23:41:05Z Alan $
-
 ########################################################################
 
 # Copyright © 2009, 2010, 2011, 2012, 2013, 2014, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -32,8 +30,6 @@ package require "coroutine"
 package provide "log" 0.0
 
 namespace  eval log {
-
-  variable svnid {$Id: log.tcl 3588 2020-05-26 23:41:05Z Alan $}
 
   variable logserverhost [jsonrpc::getserverhost "log"]
   variable logserverport [jsonrpc::getserverport "log"]

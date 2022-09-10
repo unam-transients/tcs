@@ -2,8 +2,6 @@
 
 # This file is part of the RATTEL supervisor control system.
 
-# $Id: supervisor.tcl 3601 2020-06-11 03:20:53Z Alan $
-
 ########################################################################
 
 # Copyright © 2014, 2015, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -34,8 +32,6 @@ config::setdefaultvalue "supervisor" "opentocooloffsetseconds" 1800
 config::setdefaultvalue "supervisor" "openoffsetseconds"       0
 
 namespace eval "supervisor" {
-
-  variable svnid {$Id}
 
   ######################################################################
 
