@@ -55,7 +55,6 @@ div#title {
 }
 
 div#webcam,
-div#finder,
 div#instrument,
 div#allsky {
   float:              left;
@@ -76,12 +75,12 @@ div#log {
   padding:            0.5em;
 }
 
-img.webcam-small, img.allsky-small, img.finder-small, img.instrument-small {
+img.webcam-small, img.allsky-small, img.instrument-small {
   height:             90px;
   margin:             1px;
 }
 
-img.webcam, img.allsky, img.finder, img.instrument {
+img.webcam, img.allsky, img.instrument {
   height:             384px;
   margin:             1px;
 }

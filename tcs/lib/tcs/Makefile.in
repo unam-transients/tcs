@@ -38,8 +38,6 @@ installs	:=			           \
 	coverscoatlioan.tcl		       \
 	coversopentsi.tcl              \
 	coversserver.tcl		       \
-	cryostat.tcl			       \
-	cryostatserver.tcl		       \
 	detector.tcl			       \
 	detectorandor.tcl		       \
 	detectordummy.tcl		       \
@@ -65,9 +63,6 @@ installs	:=			           \
 	filterwheelfli.tcl	    	   \
 	filterwheelnull.tcl	       	   \
 	filterwheelqsi.tcl		       \
-	finder.tcl		        	   \
-	finders.tcl		        	   \
-	finderserver.tcl	    	   \
 	fitfocus.tcl	    		   \
 	fitsheader.tcl	    		   \
 	focuser.tcl			           \
@@ -86,8 +81,6 @@ installs	:=			           \
 	html-log.sh		        	   \
 	html.tcl		        	   \
 	htmlserver.tcl		    	   \
-	inclinometers.tcl	    	   \
-	inclinometersserver.tcl		   \
 	instrument.tcl	    		   \
 	instrumentserver.tcl		   \
 	jsonrpc.tcl		        	   \
@@ -107,8 +100,6 @@ installs	:=			           \
 	owsensors.tcl		    	   \
 	owsensorsserver.tcl	    	   \
 	packages.tcl		    	   \
-	pirani.tcl	        		   \
-	piraniserver.tcl	       	   \
 	plccolibri.tcl           	   \
 	plcsatino.tcl                  \
 	plcserver.tcl 	    		   \

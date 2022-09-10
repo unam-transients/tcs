@@ -183,15 +183,6 @@ namespace eval "executor" {
   
   ######################################################################
 
-  proc focusfinders {exposuretime} {
-    log::summary "focusing finders."
-    client::request "telescope" "focusfinders $exposuretime"
-    client::wait "telescope"     
-    log::summary "finished focusing finders."
-  }
-  
-  ######################################################################
-
   proc focussecondary {detector exposuretime {z0range 300} {z0step 20} {witness true} {initial false}} {
     set start [utcclock::seconds]
     log::info "focusing secondary on $detector with range $z0range and step $z0step."
