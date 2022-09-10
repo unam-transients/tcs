@@ -58,7 +58,7 @@ installbins         :=            \
 	gcntanserver                  \
 	guiderserver                  \
 	gpio                          \
-	haltsoon                      \
+	halt                      \
 	heaterserver                  \
 	htmlserver                    \
 	instrumentdataserver          \
@@ -77,10 +77,10 @@ installbins         :=            \
 	powerserver                   \
 	rebootinstrument              \
 	rebootplatform                \
-	rebootsoon                    \
+	reboot                    \
 	request                       \
 	restartserver                 \
-	restartsoon                   \
+	restart                   \
 	selectorserver                \
 	sendpushover                  \
 	sensorsserver                 \

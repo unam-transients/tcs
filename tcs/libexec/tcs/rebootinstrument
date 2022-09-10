@@ -62,7 +62,7 @@ tcs log "tcs rebootinstrument" summary "rebooting instrument."
 for host in "$@"
 do
   tcs log "tcs rebootinstrument" summary "requesting $host to halt."
-  sudo tcs haltsoon $host
+  sudo tcs halt $host
 done
 
 for host in "$@"

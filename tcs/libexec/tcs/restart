@@ -3,7 +3,7 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: haltsoon 3515 2020-03-11 23:09:12Z Alan $
+# $Id: restart 3515 2020-03-11 23:09:12Z Alan $
 
 ########################################################################
 
@@ -42,8 +42,8 @@ case $host in
   ;;
 esac
 
-sudo mkdir -p "$tcsprefix"/var/tcs/halt
-cd "$tcsprefix"/var/tcs/halt
+sudo mkdir -p "$tcsprefix"/var/tcs/restart
+cd "$tcsprefix"/var/tcs/restart
 
 if test $# = 0
 then
@@ -51,13 +51,13 @@ then
   coatlicu-*)
     set control instrument
     ;;
-  coatlioan-services)
+  coatlioan-*)
     set services control platform instrument
     ;;
-  ddotioan-services)
+  ddotioan-*)
     set services control platform instrument0 instrument1
     ;;
-  ratiroan-services)
+  ratiroan-*)
     set services control detectors tcs-a
     ;;
   colibricito-*)
@@ -74,10 +74,10 @@ for host in "$@"
 do
   if ping -c 1 -W 1 $host >/dev/null 2>&1
   then
-    tcs log "tcs haltsoon" summary "requesting halt of $host."
+    tcs log "tcs restart" summary "requesting restart of tcs on $host."
     sudo touch "$host"
   else
-    tcs log "tcs haltsoon" warning "not requesting halt of $host as it appears to be down."
+    tcs log "tcs restart" warning "not requesting restart of tcs of $host as it appears to be down."
   fi
 done
 
