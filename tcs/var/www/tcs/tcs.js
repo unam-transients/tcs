@@ -279,9 +279,6 @@ $(function () {
   $("form#telescope-movesecondary").submit(function () {
     return submitrequest("telescope movesecondary " + $("input#movesecondary-args").val());
   });
-  $("form#telescope-focusfinders").submit(function () {
-    return submitrequest("telescope focusfinders " + $("input#focusfinders-args").val());
-  });
   $("form#telescope-other").submit(function () {
     return submitrequest("telescope " + $("input#other-request").val());
   });

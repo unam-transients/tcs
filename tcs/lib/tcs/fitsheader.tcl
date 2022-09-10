@@ -217,49 +217,6 @@ namespace eval "fitsheader" {
   }
 
 
-  proc writekeysandvaluesforfinder {channel finder prefix componentprefix} {
-    writekeysandvaluesforcomponent $channel $finder $prefix $componentprefix {
-      identifier                    ID    string
-      telescopedescription          TLDS  string
-      detectordescription           DTDS  string
-      detectorwidth                 DTWD  angle
-      detectorreadmode              DTRM  string
-      detectorsoftwaregain          DTSG  double
-      detectorwindow                DTWN  string
-      detectorbinning               DTBN  integer
-      detectordetectortemperature   DTTM  double
-      detectorhousingtemperature    HSTM  double
-      detectorcoolerstate           CLST  string
-      detectorcoolersettemperature  CLTM  double
-      detectorcoolerpower           CLPW  double
-      filterwheeldescription        FWDS  string
-      filterwheelposition           FWPS  integer
-      filterwheelmaxposition        FWMX  integer
-      filterwheelpositionerror      FWE   integer
-      focuserdescription            FCDS  string
-      focuserposition               FCPS  integer
-      focuserminposition            FCMN  integer
-      focusermaxposition            FCMX  integer
-      focuserpositionerror          FCE   integer
-      solvedalpha                   SLRA  angle
-      solveddelta                   SLDE  angle
-      solvedequinox                 SLEQ  double
-      solvedobservedalpha           OBRA  angle
-      solvedobserveddelta           OBDE  angle
-      mountobservedalpha            MTRA  angle
-      mountobserveddelta            MTDE  angle
-      lastcorrectiontimestamp       LCT   date
-      lastcorrectioneastoffset      LCEO  angle
-      lastcorrectionnorthoffset     LCNO  angle
-    }
-  }
-  
-  proc writefinderfitsheader {channel finder prefix} {
-    writecomment $channel "Start of finder section \"$prefix\"."
-    writekeysandvaluesforfinder $channel $finder $prefix ""
-    writecomment $channel "End of finder section \"$prefix\"."
-  }
-
   proc writekeysandvaluesforccd {channel ccd prefix componentprefix} {
     writekeysandvaluesforcomponent $channel $ccd $prefix $componentprefix {
       identifier                     ID    string
@@ -356,111 +313,6 @@ namespace eval "fitsheader" {
     }
   }
   
-  proc writekeysandvaluesfornefinder {channel prefix} {
-    writekeysandvaluesforfinder $channel nefinder $prefix "NE"
-  }
-  
-  proc writekeysandvaluesforsefinder {channel prefix} {
-    writekeysandvaluesforfinder $channel sefinder $prefix "SE"
-  }
-  
-  proc writekeysandvaluesforguider {channel prefix} {
-    writekeysandvaluesforcomponent $channel guider $prefix "GD" {
-      guidingtime         GT    double
-      finder              FN    string
-      exposuretime        ET    double
-      meancadence         MNCD  double
-      eastgain            EG    double
-      northgain           NG    double
-      deadzonewidth       DZWD  angle
-      deadzonefraction    DZFR  double
-      initialalpha        INRA  angle
-      initialdelta        INDE  angle
-      alpha               RA    angle
-      delta               DE    angle
-      easterror           EE    angle
-      northerror          NE    angle
-      totalerror          TE    angle
-      meaneasterror       MNEE  angle
-      meannortherror      MNNE  angle
-      meantotalerror      MNTE  angle
-      rmseasterror        RMEE  angle
-      rmsnortherror       RMNE  angle
-      rmstotalerror       RMTE  angle
-      totaleastoffset     TEO   angle
-      totalnorthoffset    TNO   angle
-      totaltotaloffset    TTO   angle
-      meaneastoffsetrate  MNEOR angle
-      meannorthoffsetrate MNNOR angle
-      meantotaloffsetrate MNTOR angle
-    }
-  }
-  
-  proc writekeysandvaluesforpower {channel prefix} {
-    writekeysandvaluesforcomponent $channel power $prefix "PW" {
-      mount                 MT   string
-      mount-motors          MTMT string
-      mount-adapter         MTAD string
-      inclinometers/covers  IN   string
-      dome                  DM   string
-      shutters              SH   string
-      secondary             SC   string
-      nefinder-ccd          NEDT string
-      nefinder-focuser      NEFC string
-      sefinder-ccd          SEDT string
-      sefinder-focuser      SEFC string
-      finder-ccd-pump       FDPM string
-      science-ccd-pump      SCPM string
-      C0-ccd                RRDT string
-      C1-ccd                RIDT string
-      dome-fans             DMFN string
-      machine-room-fan      MNFN string
-    }
-  }
-  
-  proc writekeysandvaluesforinclinometers {channel prefix} {
-    writekeysandvaluesforcomponent $channel inclinometers $prefix "IN" {
-      X              RWX  angle
-      Y              RWY  angle
-      x              X    angle
-      y              Y    angle
-      ha             HA   angle
-      delta          DE   angle
-      azimuth        AZ   angle
-      zenithdistance ZD   angle
-      haswitch       HASW string
-      deltaswitch    DESW string
-    }
-  }
-  
-  proc writekeysandvaluesforcryostat {channel prefix} {
-    writekeysandvaluesforcomponent $channel cryostat $prefix "CR" {
-      alarm   AL   string
-      A       A    double
-      Atrend  ATR  string
-      B       B    double
-      Btrend  BTR  string
-      C1      C1   double
-      C1trend C1TR string
-      C2      C2   double
-      C2trend C2TR string
-      C3      C3   double
-      C3trend C3TR string
-      C4      C4   double
-      C4trend C4TR string
-      D1      D1   double
-      D1trend D1TR string
-      D2      D2   double
-      D2trend D2TR string
-      D3      D3   double
-      D3trend D3TR string
-      D4      D4   double
-      D4trend D4TR string
-      P       P    double
-      Ptrend  PTR  string
-    }
-  }
-  
   proc writekeysandvaluesformoon {channel prefix} {
     writekeysandvaluesforcomponent $channel moon $prefix "MN" {
       observedalpha          RA angle
@@ -528,14 +380,6 @@ namespace eval "fitsheader" {
   }
 
 
-  proc writekeysandvaluesforpirani {channel prefix} {
-    writekeysandvaluesforcomponent $channel pirani $prefix "PR" {
-      alarm         AL   string
-      pressure      PR   double
-      pressuretrend PRTR string
-    }
-  }
-  
   proc writekeysandvaluesforsecondary {channel prefix} {
     writekeysandvaluesforcomponent $channel secondary $prefix "SC" {
       requestedz0       RQZ0  double

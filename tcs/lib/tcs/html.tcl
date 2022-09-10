@@ -935,38 +935,6 @@ if {false} {
 
   }
 
-  proc writeinclinometers {} {
-
-    putshtml "<table class=\"status\">"
-
-    writehtmlstatusblock "inclinometers"
-
-    putshtml "</table>"
-
-    putshtml "<table class=\"status\">"
-
-    if {[string equal [client::getstatus "inclinometers"] "ok"]} {
-      writehtmlrow "Current position (X,Y)" \
-        [format "%+.2f°" [astrometry::radtodeg [client::getdata "inclinometers" "X"]]] \
-        [format "%+.2f°" [astrometry::radtodeg [client::getdata "inclinometers" "Y"]]]
-      writehtmlrow "Current position (x,y)" \
-        [format "%+.2f°" [astrometry::radtodeg [client::getdata "inclinometers" "x"]]] \
-        [format "%+.2f°" [astrometry::radtodeg [client::getdata "inclinometers" "y"]]]
-      writehtmlrow "Current position (HA,δ)" \
-        [formathaifdouble [client::getdata "inclinometers" "ha"]] \
-        [formatdeltaifdouble [client::getdata "inclinometers" "delta"]]
-      writehtmlrow "Current position (A,z)" \
-        [formatradtodegifdouble "%.2f°" [client::getdata "inclinometers" "azimuth"]] \
-        [format "%.2f°" [astrometry::radtodeg [client::getdata "inclinometers" "zenithdistance"]]]
-      writehtmlrow "Proximity switches (HA,δ)" \
-        [client::getdata "inclinometers" "haswitch"] \
-        [client::getdata "inclinometers" "deltaswitch"]
-    }
-
-    putshtml "</table>"
-
-  }
-
   proc writeinstrument {} {
 
     putshtml "<table class=\"status\">"
@@ -1004,59 +972,6 @@ if {false} {
       writehtmlrow "Maximum absolute azimuth error" [formatradtodegifdouble "%+.1f°" [client::getdata "dome" "maxabsazimutherror"]]
     }
   
-    putshtml "</table>"
-
-  }
-
-  proc writeguider {} {
-
-    putshtml "<table class=\"status\">"
-
-    writehtmlstatusblock "guider"
-
-    putshtml "</table>"
-
-    putshtml "<table class=\"status\">"
-
-    if {[string equal [client::getstatus "guider"] "ok"]} {
-      writehtmlrow "Guiding" \
-        [formatifok "%.0f s" [client::getdata "guider" "guidingtime"]]
-      writehtmlrow "Finder" \
-        [client::getdata "guider" "finder"]
-      writehtmlrow "Exposure time" \
-        [formatifok "%.2f s" [client::getdata "guider" "exposuretime"]]
-      writehtmlrow "Mean cadence" \
-        [formatifok "%.2f s" [client::getdata "guider" "meancadence"]]
-      writehtmlrow "East Gain" \
-        [formatifok "%+.2f" [client::getdata "guider" "eastgain"]]
-      writehtmlrow "North Gain" \
-        [formatifok "%+.2f" [client::getdata "guider" "northgain"]]
-      writehtmlrow "Dead-zone width" \
-        [formatguidererrorifdouble [client::getdata "guider" "deadzonewidth"]]
-      writehtmlrow "Dead-zone fraction" \
-        [formatifok "%.2f" [client::getdata "guider" "deadzonefraction"]]
-      writehtmlrow "Current error (E, N, total)" \
-        [formatguidererrorifdouble [client::getdata "guider" "easterror"]] \
-        [formatguidererrorifdouble [client::getdata "guider" "northerror"]] \
-        [formatguidererrorifdouble [client::getdata "guider" "totalerror"]]
-      writehtmlrow "Mean error (E, N, total)" \
-        [formatguidererrorifdouble [client::getdata "guider" "meaneasterror"]] \
-        [formatguidererrorifdouble [client::getdata "guider" "meannortherror"]] \
-        [formatguidererrorifdouble [client::getdata "guider" "meantotalerror"]]
-      writehtmlrow "RMS error about mean (E, N, total)" \
-        [formatguidererrorifdouble [client::getdata "guider" "rmseasterror"]] \
-        [formatguidererrorifdouble [client::getdata "guider" "rmsnortherror"]] \
-        [formatguidererrorifdouble [client::getdata "guider" "rmstotalerror"]]
-      writehtmlrow "Total offset (E, N, total)" \
-        [formatguidererrorifdouble [client::getdata "guider" "totaleastoffset"]] \
-        [formatguidererrorifdouble [client::getdata "guider" "totalnorthoffset"]] \
-        [formatguidererrorifdouble [client::getdata "guider" "totaltotaloffset"]]
-      writehtmlrow "Mean offset rate (E, N, total)" \
-        [formatrateifdouble [client::getdata "guider" "meaneastoffsetrate"]] \
-        [formatrateifdouble [client::getdata "guider" "meannorthoffsetrate"]] \
-        [formatrateifdouble [client::getdata "guider" "meantotaloffsetrate"]]
-    }
-
     putshtml "</table>"
 
   }
@@ -1369,171 +1284,6 @@ if {false} {
 
     putshtml "</table>"
 
-  }
-
-  proc writefinder {server} {
-  
-    putshtml "<table class=\"status\">"
-
-    writehtmlstatusblock $server
-
-    putshtml "</table>"
-
-    putshtml "<table class=\"status\">"
-
-    if {[string equal [client::getstatus $server] "ok"]} {
-      writehtmlfullrow "Telescope"                 [client::getdata $server "telescopedescription"]
-      writehtmlfullrow "Detector"                  [client::getdata $server "detectordescription"]
-      writehtmlrow "Exposure time"                 [formatifok "%.3f s" [client::getdata $server "exposuretime"]]
-      writehtmlfullrow "FITS file"                 [file tail [client::getdata $server "fitsfilename"]]
-      writehtmlrow "Detector read mode"            [client::getdata $server "detectorreadmode"]
-      writehtmlrow "Detector software gain"        [formatifok "%d" [client::getdata $server "detectorsoftwaregain"]]
-      writehtmlrow "Detector binning"              [formatifok "%d" [client::getdata $server "detectorbinning"]]
-      writehtmlrow "Detector temperature"          [formatifok "%+.1f C" [client::getdata $server "detectordetectortemperature"]]
-      writehtmlrow "Housing temperature"           [formatifok "%+.1f C" [client::getdata $server "detectorhousingtemperature"]]
-      writehtmlrow "Cooler state"                  [format "%s" [client::getdata $server "detectorcoolerstate"]]
-      writehtmlrow "Cooler set temperature"        [formatifok "%+.1f C" [client::getdata $server "detectorcoolersettemperature"]]
-      writehtmlrow "Cooler power"                  [formatpercentifok "%.0f%%" [client::getdata $server "detectorcoolerpower"]]
-      writehtmlfullrow "Filter wheel"              [client::getdata $server "filterwheeldescription"]
-      writehtmlrow "Filter wheel position"         [formatifok "%d" [client::getdata $server "filterwheelposition"]]
-      writehtmlrow "Filter wheel maximum position" [formatifok "%d" [client::getdata $server "filterwheelmaxposition"]]
-      writehtmlfullrow "Focuser"                   [client::getdata $server "focuserdescription"]
-      writehtmlrow "Focuser position"              [formatifok "%d" [client::getdata $server "focuserposition"]]
-      writehtmlrow "Focuser minimum position"      [formatifok "%d" [client::getdata $server "focuserminposition"]]
-      writehtmlrow "Focuser maximum position"      [formatifok "%d" [client::getdata $server "focusermaxposition"]]
-      writehtmlrow "Solved position (α,δ)" \
-        [formatalphaifdouble [client::getdata $server "solvedalpha"]] \
-        [formatdeltaifdouble [client::getdata $server "solveddelta"] 1] \
-        [formatifok "%.2f" [client::getdata $server "solvedequinox"]]
-      writehtmlrow "Solved observed position (α,δ)" \
-        [formatalphaifdouble [client::getdata $server "solvedobservedalpha"]] \
-        [formatdeltaifdouble [client::getdata $server "solvedobserveddelta"] 1]
-      writehtmlrow "Mount observed position (α,δ)" \
-        [formatalphaifdouble [client::getdata $server "mountobservedalpha"]] \
-        [formatdeltaifdouble [client::getdata $server "mountobserveddelta"] 1]
-      writehtmltimestampedrow "Last correction" \
-        [client::getdata $server "lastcorrectiontimestamp"]
-      writehtmlrow "Last correction (E,N)" \
-        [formatoffsetifdouble [client::getdata $server "lastcorrectioneastoffset"]] \
-        [formatoffsetifdouble [client::getdata $server "lastcorrectionnorthoffset"]]
-      writehtmlrow "FWHM" \
-        [formatifok "%.2f pixels" [client::getdata $server "fwhm"]]
-    }
-
-    putshtml "</table>"
-
-  }
-
-  proc writenefinder {} {
-    writefinder nefinder
-  }
-
-  proc writesefinder {} {
-    writefinder sefinder
-  }
-
-  proc writenwfinder {} {
-    writefinder nwfinder
-  }
-
-  proc writecryostattemperature {label emphasis temperature trend} {
-    if {[string is double -strict $temperature]} {
-      set K [format "%.3f K" $temperature]
-      set C [format "%+.3f C" [expr {$temperature - 273.15}]]
-    } else {
-      set K $temperature
-      set C $temperature
-    }
-    if {[string equal $trend "unknown"]} {
-      set trend ""
-    }
-    writehtmlrowwithemph $label $emphasis $K "" $C "" $trend    
-  }
-  
-  proc writecryostat {} {
-
-    putshtml "<table class=\"status\">"
-
-    writehtmlstatusblock "cryostat"
-
-    putshtml "</table>"
-
-    putshtml "<table class=\"status\">"
-
-    if {[string equal [client::getstatus "cryostat"] "ok"]} {
-      set alarm [client::getdata "cryostat" "alarm"]
-      switch $alarm {
-        "critical" {
-          set emphasis "error"
-        }
-        "warning" {
-          set emphasis "warning"
-        }
-        default {
-          set emphasis ""
-        }
-      }
-      writecryostattemperature "Cold Finger (A)"  $emphasis [client::getdata "cryostat" "A" ] [client::getdata "cryostat" "Atrend" ]
-      writecryostattemperature "Cold Plate (B)"   ""        [client::getdata "cryostat" "B" ] [client::getdata "cryostat" "Btrend" ]
-      writecryostattemperature "JADE 1 (C1)"      ""        [client::getdata "cryostat" "C1"] [client::getdata "cryostat" "C1trend"]
-      writecryostattemperature "JADE 2 (C2)"      ""        [client::getdata "cryostat" "C2"] [client::getdata "cryostat" "C2trend"]
-      writecryostattemperature "ASIC 1 (C3)"      ""        [client::getdata "cryostat" "C3"] [client::getdata "cryostat" "C3trend"]
-      writecryostattemperature "ASIC 2 (C4)"      ""        [client::getdata "cryostat" "C4"] [client::getdata "cryostat" "C4trend"]
-      writecryostattemperature "Detector 1 (D1)"  ""        [client::getdata "cryostat" "D1"] [client::getdata "cryostat" "D1trend"]
-      writecryostattemperature "Detector 2 (D2)"  ""        [client::getdata "cryostat" "D2"] [client::getdata "cryostat" "D2trend"]
-      writecryostattemperature "Cold Shield (D3)" ""        [client::getdata "cryostat" "D3"] [client::getdata "cryostat" "D3trend"]
-      writecryostattemperature "Cold Shield (D4)" ""        [client::getdata "cryostat" "D4"] [client::getdata "cryostat" "D4trend"]
-
-      set P      [client::getdata "cryostat" "P"     ]
-      set Ptrend [client::getdata "cryostat" "Ptrend"]
-      if {[string is double -strict $P]} {
-        set P [format "%.2e mbar" $P]
-      }
-      if {[string equal $Ptrend "unknown"]} {
-        set Ptrend ""
-      }
-      writehtmlrowwithemph "Pressure" "" $P "" "" "" $Ptrend
-    }
-    
-    putshtml "</table>"
-  }
-
-  proc writepirani {} {
-
-    putshtml "<table class=\"status\">"
-
-    writehtmlstatusblock "pirani"
-
-    putshtml "</table>"
-
-    putshtml "<table class=\"status\">"
-
-    if {[string equal [client::getstatus "pirani"] "ok"]} {
-      set pressure      [client::getdata "pirani" "pressure"     ]
-      set pressuretrend [client::getdata "pirani" "pressuretrend"]
-      set alarm         [client::getdata "pirani" "alarm"]
-      if {[string is double -strict $pressure]} {
-        set pressure [format "%.1e Torr" $pressure]
-      }
-      if {[string equal $pressuretrend "unknown"]} {
-        set pressuretrend ""
-      }
-      switch $alarm {
-        "critical" {
-          set emphasis "error"
-        }
-        "warning" {
-          set emphasis "warning"
-        }
-        default {
-          set emphasis ""
-        }
-      }
-      writehtmlrowwithemph Pressure $emphasis $pressure "" "" "" $pressuretrend
-    }
-
-    putshtml "</table>"
-    
   }
 
   proc writeselector {} {
@@ -1895,27 +1645,21 @@ if {false} {
       C4                  {C4}
       C5                  {C5}
       covers              {Covers}
-      cryostat            {Cryostat}
       dome                {Dome}
       enclosure           {Enclosure}
       executor            {Executor}
       fans                {Fans}
       gcntan              {GCN/TAN}
-      guider              {Guider}
       heater              {Heater}
       html                {HTML}
       telescopecontroller {Telescope Controller}
       power               {Power}
-      inclinometers       {Inclinometers}
       instrument          {Instrument}
       lights              {Lights}
       moon                {Moon}
       mount               {Mount}
-      nefinder            {NE Finder}
-      nwfinder            {NW Finder}
       plc                 {PLC}
       secondary           {Secondary}
-      sefinder            {SE Finder}
       selector            {Selector}
       sensors             {Sensors}
       shutters            {Shutters}
