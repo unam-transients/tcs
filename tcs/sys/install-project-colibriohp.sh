@@ -21,7 +21,7 @@
 
 ########################################################################
 
-host=$(uname -n | sed 's/\..*//')
+host=$(uname -n | sed 's/\..*//;s/.*-//')
 
 ################################################################################
 
@@ -310,7 +310,7 @@ esac
 
 sudo rm -f /tmp/sudoers-tcs
 (
-  echo 'ddoti ALL=(ALL) ALL'
+  echo 'colibri ALL=(ALL) ALL'
   case $host in
   services)
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs reboot'

@@ -55,6 +55,9 @@ then
   ddotioan-*)
     set services control platform instrument0 instrument1
     ;;
+  colibriohp-*)
+    set services detectors
+    ;;
   *)
     echo 2>&1 "$program: error: unknown host."
     exit 1
