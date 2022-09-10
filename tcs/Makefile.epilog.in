@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: Makefile.epilog.in 3536 2020-04-03 19:19:10Z Alan $
-
 ########################################################################
 
 # Copyright © 2009, 2011, 2016, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>

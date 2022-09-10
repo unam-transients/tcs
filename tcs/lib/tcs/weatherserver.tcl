@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: weatherserver.tcl 3557 2020-05-22 18:23:30Z Alan $
-
 ########################################################################
 
 # Copyright © 2009, 2010, 2011, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -29,8 +27,6 @@ package require "weather"
 package provide "weatherserver" 0.0
 
 namespace eval "weatherserver" {
-
-  variable svnid {$Id}
 
   proc configureslave {slave} {
   }

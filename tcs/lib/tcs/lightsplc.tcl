@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: lightsplc.tcl 3579 2020-05-23 21:52:55Z Alan $
-
 ########################################################################
 
 # Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -31,8 +29,6 @@ package provide "lightsplc" 0.0
 
 namespace eval "lights" {
 
-  variable svnid {$Id}
-  
   ######################################################################
 
   proc updatedata {} {

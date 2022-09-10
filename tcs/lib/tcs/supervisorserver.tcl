@@ -2,8 +2,6 @@
 
 # This file is part of the RATTEL supervisor control system.
 
-# $Id: supervisorserver.tcl 3557 2020-05-22 18:23:30Z Alan $
-
 ########################################################################
 
 # Copyright © 2014, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -30,8 +28,6 @@ package require "server"
 package provide "supervisorserver" 0.0
 
 namespace eval "supervisorserver" {
-
-  variable svnid {$Id}
 
   ######################################################################
 

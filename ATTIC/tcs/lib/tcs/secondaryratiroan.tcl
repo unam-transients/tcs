@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: secondaryratir.tcl 3601 2020-06-11 03:20:53Z Alan $
-
 ########################################################################
 
 # Copyright © 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -50,8 +48,6 @@ config::setdefaultvalue "secondary" "allowedzerror"     "1"
 config::setdefaultvalue "secondary" "zdeadzonewidth"    "5"
 
 namespace eval "secondary" {
-
-  variable svnid {$Id}
 
   ######################################################################
 

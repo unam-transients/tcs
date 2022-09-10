@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: block.tcl 3592 2020-06-10 14:32:51Z Alan $
-
 ########################################################################
 
 # Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -28,8 +26,6 @@ package require "fromjson"
 package provide "block" 0.0
 
 namespace eval "block" {
-
-  variable svnid {$Id}
 
   ######################################################################
   

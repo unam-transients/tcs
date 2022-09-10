@@ -2,8 +2,6 @@
 
 This file is part of the UNAM telescope control system.
 
-$Id: BOILERPLATE 3370 2019-10-30 02:46:01Z Alan $
-
 ------------------------------------------------------------------------
 
 Copyright © 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -31,5 +29,3 @@ PERFORMANCE OF THIS SOFTWARE.
   * [ASTELCO Manual](documentation/enclosure/manual.pdf)
 
 <hr/>
-
-$Id: documentation.md 2712 2017-03-08 16:13:49Z alan $

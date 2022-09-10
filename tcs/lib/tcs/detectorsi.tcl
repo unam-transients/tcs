@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: detectorsi.tcl 3594 2020-06-10 14:55:51Z Alan $
-
 ########################################################################
 
 # Copyright © 2010, 2011, 2014, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>

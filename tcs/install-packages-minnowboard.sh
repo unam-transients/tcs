@@ -4,8 +4,6 @@
 
 # This file is part of the RATTEL telescope control system.
 
-# $Id: install-packages-minnowboard.sh 3373 2019-10-30 15:09:02Z Alan $
-
 ########################################################################
 
 # Copyright © 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>

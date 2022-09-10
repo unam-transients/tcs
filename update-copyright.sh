@@ -4,8 +4,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: update-copyright.sh 3392 2019-11-13 20:56:40Z Alan $
-
 ########################################################################
 
 # Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>

@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: gpio.tcl 3557 2020-05-22 18:23:30Z Alan $
-
 ########################################################################
 
 # Copyright © 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -26,8 +24,6 @@
 package provide "gpio" 0.0
 
 namespace eval "gpio" {
-
-  variable svnid {$Id}
 
   proc get {path} {
     if {[catch {::set channel [::open $path "r"]} why]} {

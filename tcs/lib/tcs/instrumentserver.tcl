@@ -2,8 +2,6 @@
 
 # This file is part of the RATTEL instrument control system.
 
-# $Id: instrumentserver.tcl 3592 2020-06-10 14:32:51Z Alan $
-
 ########################################################################
 
 # Copyright © 2014, 2016, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -30,8 +28,6 @@ package require "server"
 package provide "instrumentserver" 0.0
 
 namespace eval "instrumentserver" {
-
-  variable svnid {$Id}
 
   ######################################################################
 

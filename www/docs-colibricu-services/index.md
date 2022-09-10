@@ -2,8 +2,6 @@
 
 This file is part of the UNAM telescope control system.
 
-$Id: index.md 3616 2020-06-22 20:03:44Z Alan $
-
 ------------------------------------------------------------------------
 
 Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -40,5 +38,3 @@ This is the web site for the COLIBRÍ project in the [Instituto de Astronomía](
   * <a href="/proxy/pdu3/" target="_newtab">pdu3</a>
 
 <hr/>
-
-$Id: index.md 3616 2020-06-22 20:03:44Z Alan $

@@ -2,8 +2,6 @@
 
 This file is part of the UNAM telescope control system.
 
-$Id: BOILERPLATE 3370 2019-10-30 02:46:01Z Alan $
-
 ------------------------------------------------------------------------
 
 Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -26,5 +24,3 @@ PERFORMANCE OF THIS SOFTWARE.
 # RATIR/OAN: Documentation
 
 <hr/>
-
-$Id: documentation.md 2993 2017-09-20 17:07:03Z alan $

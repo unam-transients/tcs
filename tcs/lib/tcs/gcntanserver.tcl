@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: gcntanserver.tcl 3590 2020-05-27 00:18:20Z Alan $
-
 ########################################################################
 
 # Copyright © 2012, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -30,8 +28,6 @@ package require "server"
 package provide "gcntanserver" 0.0
 
 namespace eval "gcntanserver" {
-
-  variable svnid {$Id}
 
   ######################################################################
 

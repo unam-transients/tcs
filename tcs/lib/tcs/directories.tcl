@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: directories.tcl 3576 2020-05-23 20:24:48Z Alan $
-
 ########################################################################
 
 # Copyright © 2010, 2011, 2012, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -29,8 +27,6 @@ package require "utcclock"
 package provide "directories" 0.0
 
 namespace eval "directories" {
-
-  variable svnid {$Id}
 
   ######################################################################
   

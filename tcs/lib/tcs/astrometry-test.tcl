@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: astrometry-test.tcl 3591 2020-06-09 22:33:22Z Alan $
-
 ########################################################################
 
 # Copyright © 2009, 2010, 2011, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>

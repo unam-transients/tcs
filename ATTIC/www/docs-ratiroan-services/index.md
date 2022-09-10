@@ -2,8 +2,6 @@
 
 This file is part of the UNAM telescope control system.
 
-$Id: BOILERPLATE 3370 2019-10-30 02:46:01Z Alan $
-
 ------------------------------------------------------------------------
 
 Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -45,5 +43,3 @@ This is the mountain-top web site for the RATIR project at the
         * Weather: [1 day](tcs/plots/weather-1.png) [4 days](tcs/plots/weather-4.png) [30 days](tcs/plots/weather-30.png) [120 days](tcs/plots/weather-120.png) [360 days](tcs/plots/weather-360.png)
 
 <hr/>
-
-$Id: index.md 2950 2017-08-25 14:27:19Z alan $

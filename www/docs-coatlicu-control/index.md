@@ -2,8 +2,6 @@
 
 This file is part of the UNAM telescope control system.
 
-$Id: index.md 3616 2020-06-22 20:03:44Z Alan $
-
 ------------------------------------------------------------------------
 
 Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -35,5 +33,3 @@ This is the web site for the COATLI/CU telescope.
   * Control Room: [1 day](tcs/plots/control-room-1.png) [4 days](tcs/plots/control-room-4.png) [30 days](tcs/plots/control-room-30.png) [120 days](tcs/plots/control-room-120.png) [360 days](tcs/plots/control-room-360.png) [1600 days](tcs/plots/control-room-1600.png)
 
 <hr/>
-
-$Id: index.md 3616 2020-06-22 20:03:44Z Alan $

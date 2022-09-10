@@ -4,8 +4,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: check_openmanage.sh 3373 2019-10-30 15:09:02Z Alan $
-
 ########################################################################
 
 # Copyright © 2011, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>

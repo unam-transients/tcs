@@ -1,5 +1,3 @@
-* $Id: slalib.f 963 2011-01-17 05:51:27Z alan $
-
 * START OF: addet.f
 
       SUBROUTINE sla_ADDET (RM, DM, EQ, RC, DC)

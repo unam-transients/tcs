@@ -2,8 +2,6 @@
 
 ########################################################################
 
-# $Id: phase2 3557 2020-05-22 18:23:30Z Alan $
-
 ########################################################################
 
 # Copyright © 2011-2012 Alan M. Watson <alan@astro.unam.mx>
@@ -973,7 +971,6 @@ proc emitvisitdescription {visitdescription} {
   message "writing \"$filename\"."
   set channel [open $filename "w"]
 
-  puts $channel {# Visit file produced by: $Id: phase2 3557 2020-05-22 18:23:30Z Alan $}
   puts $channel ""
 
   puts $channel "proposal::setidentifier \"[dict get $visitdescription proposalidentifier]\""
@@ -1094,7 +1091,7 @@ foreach arg $argv {
     }
     "-V" - 
     "--version" {
-      puts stderr {$Id: phase2 3557 2020-05-22 18:23:30Z Alan $}
+      puts stderr {unknown version}
       exit 0
     }
     "-v" -
@@ -1113,10 +1110,6 @@ foreach arg $argv {
       exit 1
     }
   }
-}
-
-if {$verbose} {
-  message {$Id: phase2 3557 2020-05-22 18:23:30Z Alan $}
 }
 
 if {[catch {

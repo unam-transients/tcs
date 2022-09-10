@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: queue.tcl 3557 2020-05-22 18:23:30Z Alan $
-
 ########################################################################
 
 # Copyright © 2010, 2011, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -26,8 +24,6 @@
 package provide "queue" 0.0
 
 namespace eval "queue" {
-
-  variable svnid {$Id}
 
   proc create {} {
     return {}

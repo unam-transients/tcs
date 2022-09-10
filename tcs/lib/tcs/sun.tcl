@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: sun.tcl 3588 2020-05-26 23:41:05Z Alan $
-
 ########################################################################
 
 # Copyright © 2011, 2013, 2014, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -33,8 +31,6 @@ package provide "sun" 0.0
 
 namespace eval "sun" {
   
-  variable svnid {$Id}
-
   ######################################################################
 
   variable startofday

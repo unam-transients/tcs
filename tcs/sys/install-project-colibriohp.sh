@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: install-project-colibriohp.sh 3614 2020-06-22 19:37:17Z Alan $
-
 ########################################################################
 
 # Copyright © 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>

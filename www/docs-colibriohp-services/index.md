@@ -2,8 +2,6 @@
 
 This file is part of the UNAM telescope control system.
 
-$Id: index.md 3616 2020-06-22 20:03:44Z Alan $
-
 ------------------------------------------------------------------------
 
 Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -41,5 +39,3 @@ This is the TCS web site for the COLIBRÍ telescope at OHP.
   * <a href="/proxy/pdu2/" target="_newtab">pdu2</a>
 
 <hr/>
-
-$Id: index.md 3616 2020-06-22 20:03:44Z Alan $

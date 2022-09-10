@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: client.tcl 3335 2019-07-01 18:45:22Z Alan $
-
 ########################################################################
 
 # Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -35,8 +33,6 @@ package provide "fromjson" 0.0
 
 namespace eval "fromjson" {
 
-  variable svnid {$Id}
-  
   # Parse JSON.
   # 
   # JSON is defined at http://www.json.org.

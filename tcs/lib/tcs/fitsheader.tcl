@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: fitsheader.tcl 3613 2020-06-20 20:21:43Z Alan $
-
 ########################################################################
 
 # Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -31,8 +29,6 @@ package provide "fitsheader" 0.0
 
 namespace eval "fitsheader" {
 
-  variable svnid {$Id}
-  
   ######################################################################
 
   variable servers [config::getvalue "fitsheader" "servers"]   

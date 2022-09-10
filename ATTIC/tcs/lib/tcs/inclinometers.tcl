@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: inclinometers.tcl 3601 2020-06-11 03:20:53Z Alan $
-
 ########################################################################
 
 # Copyright © 2009, 2010, 2011, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -36,8 +34,6 @@ config::setdefaultvalue "inclinometers" "controllerhost" "inclinometers"
 config::setdefaultvalue "inclinometers" "controllerport" "4545"
 
 namespace eval "inclinometers" {
-
-  variable svnid {$Id}
 
   ######################################################################
 

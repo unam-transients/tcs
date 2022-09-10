@@ -2,8 +2,6 @@
 
 // This file is part of the UNAM telescope control system.
 
-// $Id: filterwheel.h 3540 2020-05-11 18:06:24Z Alan $
-
 ////////////////////////////////////////////////////////////////////////
 
 // Copyright © 2011, 2013, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>

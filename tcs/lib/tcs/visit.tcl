@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: visit.tcl 3600 2020-06-11 00:18:39Z Alan $
-
 ########################################################################
 
 # Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -30,8 +28,6 @@ package require "log"
 package provide "visit" 0.0
 
 namespace eval "visit" {
-
-  variable svnid {$Id}
 
   ######################################################################
 

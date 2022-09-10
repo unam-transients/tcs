@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: constraints.tcl 3600 2020-06-11 00:18:39Z Alan $
-
 ########################################################################
 
 # Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -31,8 +29,6 @@ package require "target"
 package provide "constraints" 0.0
 
 namespace eval "constraints" {
-
-  variable svnid {$Id}
 
   ######################################################################
 

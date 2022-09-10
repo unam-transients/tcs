@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: astrometry.tcl 3601 2020-06-11 03:20:53Z Alan $
-
 ########################################################################
 
 # Copyright © 2009, 2010, 2011, 2013, 2014, 2015, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -33,8 +31,6 @@ package provide "astrometry" 0.0
 load [file join [directories::prefix] "lib" "astrometry.so"]
 
 namespace eval "astrometry" {
-
-  variable svnid {$Id}
 
   ######################################################################
 

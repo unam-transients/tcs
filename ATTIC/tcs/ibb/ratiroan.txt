@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: ratiroan.txt 3531 2020-03-30 21:59:18Z Alan $
-
 ########################################################################
 
 # Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>

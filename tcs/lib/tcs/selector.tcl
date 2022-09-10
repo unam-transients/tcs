@@ -2,8 +2,6 @@
 
 # This file is part of the RATTEL telescope control system.
 
-# $Id: selector.tcl 3601 2020-06-11 03:20:53Z Alan $
-
 ########################################################################
 
 # Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -37,8 +35,6 @@ package require "visit"
 package provide "selector" 0.0
 
 namespace eval "selector" {
-
-  variable svnid {$Id}
 
   ######################################################################
 

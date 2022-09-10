@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: finders.tcl 3601 2020-06-11 03:20:53Z Alan $
-
 ########################################################################
 
 # Copyright © 2011, 2012, 2014, 2015, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -31,8 +29,6 @@ config::setdefaultvalue "finders" "minexposuretime" 0.5
 config::setdefaultvalue "finders" "maxexposuretime" 10.0
 
 namespace eval "finders" {
-
-  variable svnid {$Id}
 
   ######################################################################
 
