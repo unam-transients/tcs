@@ -43,8 +43,6 @@ namespace eval "telescope" {
 
   variable catalogdirectory [file join [directories::share] "catalogs"]
   
-  variable finders [config::getvalue "telescope" "finders"]
-  
   variable mechanisms
 
   ######################################################################
@@ -167,65 +165,6 @@ namespace eval "telescope" {
   
   ######################################################################
 
-  proc maybecorrectpointing {} {
-    variable finders
-    set pointingmode [server::getdata "pointingmode"]
-    if {[string equal $pointingmode "finder"]} {
-      set servers [concat guider $finders]
-      foreach server $servers {
-        client::request $server "stop"
-      }
-      foreach server $servers {
-        client::wait $server
-      }
-      log::info "attemping to correct the pointing model."
-      finders::getfinderastrometry
-      set finder $finders::solvedfinder
-      if {[string equal $finder ""]} {
-        log::warning "unable to correct pointing."
-      } else {
-        log::info "correcting pointing with $finder."
-        set solvedmountobservedalpha [client::getdata $finder "mountobservedalpha"]
-        set solvedmountobserveddelta [client::getdata $finder "mountobserveddelta"]
-        log::info "solved $finder mount observed position is [astrometry::formatalpha $solvedmountobservedalpha] [astrometry::formatdelta $solvedmountobserveddelta]."
-        client::request "mount" "correct $solvedmountobservedalpha $solvedmountobserveddelta observed"
-        client::update "mount"
-        set alphaoffset [expr {[client::getdata "mount" "lastcorrectiondalpha"] * cos($solvedmountobserveddelta)}]
-        set deltaoffset [client::getdata "mount" "lastcorrectionddelta"]
-        log::info [format "pointing error was %+.1fas E and %+.1fas N." [astrometry::radtoarcsec $alphaoffset] [astrometry::radtoarcsec $deltaoffset]]
-        set totaloffset [expr {sqrt($alphaoffset * $alphaoffset + $deltaoffset * $deltaoffset)}]
-        if {$totaloffset > [server::getdata "pointingtolerance"]} {
-          client::request "mount" "preparetotrack"
-          client::wait "mount"
-          client::request "mount" "track"
-          client::wait "mount"
-        }
-      }  
-      foreach server [concat guider $finders] {
-        client::request $server "stop"
-      }
-    }
-  }
-  
-  proc maybeguide {} {
-    set guidingmode [server::getdata "guidingmode"]
-    variable finders
-    if {![string equal $guidingmode "none"]} {
-      set servers [concat guider $finders]
-      foreach server $servers {
-        client::request $server "stop"
-      }
-      foreach server $servers {
-        client::wait $server
-      }
-      log::info "starting guiding."
-      client::request "guider" "guide $guidingmode"
-    }
-  }
-
-  ######################################################################
-
-
   proc startactivitycommand {} {
     set start [utcclock::seconds]
     log::info "starting."
@@ -237,8 +176,7 @@ namespace eval "telescope" {
     set start [utcclock::seconds]
     log::info "stopping."
     variable mechanisms
-    variable finders
-    set servers [concat $mechanisms $finders "target"]
+    set servers [concat $mechanisms "target"]
     foreach server $servers {
       client::request $server "stop"
     }
@@ -252,8 +190,7 @@ namespace eval "telescope" {
     set start [utcclock::seconds]
     log::info "resetting."
     variable mechanisms
-    variable finders
-    set servers [concat $mechanisms $finders "target"]
+    set servers [concat $mechanisms "target"]
     foreach server $servers {
       client::waituntilstarted $server
       client::request $server "reset"
@@ -269,8 +206,7 @@ namespace eval "telescope" {
     set start [utcclock::seconds]
     log::info "recovering."
     variable mechanisms
-    variable finders
-    set servers [concat $mechanisms $finders "target"]
+    set servers [concat $mechanisms "target"]
     foreach server $servers {
       client::waituntilstarted $server
       client::request $server "reset"
@@ -306,8 +242,7 @@ namespace eval "telescope" {
       }
       initializeprolog
       variable mechanisms
-      variable finders
-      set servers [concat $mechanisms $finders "target"]
+      set servers [concat $mechanisms "target"]
       foreach server $servers {
         client::waituntilstarted $server
         client::resetifnecessary $server
@@ -347,7 +282,6 @@ namespace eval "telescope" {
     variable withenclosure
     variable withcovers
     variable withguider
-    variable finders
     variable idleha
     variable idledelta
     if {[catch {
@@ -361,10 +295,6 @@ namespace eval "telescope" {
       if {$withguider} {
         log::info "stopping guider."
         client::request "guider" "stop"
-      }
-      foreach finder $finders {
-        log::info "cooling $finder."
-        client::request $finder "setcooler open"
       }
       if {$withtelescopecontroller} {
         log::info "switching on telescope controller."
@@ -381,10 +311,6 @@ namespace eval "telescope" {
       if {$withmount} {
         client::request "mount" "park"
         client::wait "mount"
-      }
-      foreach finder $finders {
-        log::info "cooling $finder."
-        client::request $finder "setcooler open"
       }
       if {$withdome} {
         movedomeforshutter
@@ -437,7 +363,6 @@ namespace eval "telescope" {
     variable withenclosure
     variable withcovers
     variable withguider
-    variable finders
     variable idleha
     variable idledelta
     if {[catch {
@@ -451,10 +376,6 @@ namespace eval "telescope" {
       if {$withguider} {
         log::info "stopping guider."
         client::request "guider" "stop"
-      }
-      foreach finder $finders {
-        log::info "cooling $finder."
-        client::request $finder "setcooler open"
       }
       if {$withtelescopecontroller} {
         log::info "switching on telescope controller."
@@ -471,10 +392,6 @@ namespace eval "telescope" {
       if {$withmount} {
         client::request "mount" "park"
         client::wait "mount"
-      }
-      foreach finder $finders {
-        log::info "cooling $finder."
-        client::request $finder "setcooler open"
       }
       if {$withdome} {
         movedomeforshutter
@@ -520,7 +437,6 @@ namespace eval "telescope" {
     variable withenclosure
     variable withcovers
     variable withguider
-    variable finders
     variable idleha
     variable idledelta
     if {[catch {
@@ -531,10 +447,6 @@ namespace eval "telescope" {
       if {$withguider} {
         log::info "stopping guider."
         client::request "guider" "stop"
-      }
-      foreach finder $finders {
-        log::info "stopping cooling $finder."
-        client::request $finder "setcooler closed"
       }
       if {$withtelescopecontroller} {
         log::info "switching on telescope controller."
@@ -839,10 +751,6 @@ namespace eval "telescope" {
     if {$withdome} {
         client::wait "dome"
     }
-    if {$withmount} {
-      maybecorrectpointing
-      maybeguide
-    }
     variable lastalphaoffset
     variable lastdeltaoffset
     variable lastaperture
@@ -896,9 +804,6 @@ namespace eval "telescope" {
     if {$withsecondary} {
       client::wait "secondary"
     }
-    if {$withmount} {
-      maybeguide
-    }
     variable lastalphaoffset
     variable lastdeltaoffset
     variable lastaperture
@@ -913,39 +818,6 @@ namespace eval "telescope" {
   
   ######################################################################
 
-  proc focusfindersactivitycommand {exposuretime range step} {
-    set start [utcclock::seconds]
-    log::info "focusing finders."
-    variable finders
-    client::request "guider" "stop"
-    foreach finder $finders {
-      client::request $finder "stop"
-    }
-    foreach finder $finders {
-      client::wait $finder
-    }
-    foreach finder $finders {
-      client::request $finder "focus $exposuretime $range $step"
-    }
-    foreach finder $finders {
-      client::wait $finder
-    }
-    set guidingmode [server::getdata "guidingmode"]
-    if {![string equal $guidingmode "none"]} {
-      client::request "guider" "guide $guidingmode"
-    }
-    log::info [format "finished focusing finders after %.1f seconds." [utcclock::diff now $start]]
-  }
-  
-  ######################################################################
-
-  proc focusfinders {exposuretime range step} {
-    server::checkstatus
-    server::checkactivity "tracking"
-    server::newactivitycommand "focusing" "tracking" \
-      "telescope::focusfindersactivitycommand $exposuretime $range $step" false
-  }
-  
   proc setpointingmode {mode} {
 set mode "none"
     server::checkstatus

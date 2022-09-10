@@ -113,10 +113,6 @@ namespace eval "telescopeserver" {
     telescope::guide $alphaoffset $deltaoffset
   }
 
-  proc slavefocusfinders {{exposuretime 0.0} {range 0} {step 0}} {
-    telescope::focusfinders $exposuretime $range $step
-  }
-  
   proc slavesetpointingmode {mode} {
     telescope::setpointingmode $mode
   }
@@ -169,7 +165,6 @@ namespace eval "telescopeserver" {
     interp alias $slave tracktopocentric            {} telescopeserver::slavetracktopocentric
     interp alias $slave offset                      {} telescopeserver::slaveoffset
     interp alias $slave guide                       {} telescopeserver::slaveguide
-    interp alias $slave focusfinders                {} telescopeserver::slavefocusfinders
     interp alias $slave setpointingmode             {} telescopeserver::slavesetpointingmode
     interp alias $slave setpointingtolerance        {} telescopeserver::slavesetpointingtolerance
     interp alias $slave setpointingaperture         {} telescopeserver::slavesetpointingaperture

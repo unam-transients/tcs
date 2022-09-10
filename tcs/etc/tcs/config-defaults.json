@@ -66,10 +66,6 @@
   "executor": {
     "type": ""
   },
-  "finder": {
-    "allowedfilterwheelpositionerror": "0",
-    "allowedfocuserpositionerror": "0"
-  },
   "html": {
     "servers": []
   },
@@ -110,8 +106,7 @@
     }
   },
   "telescope": {
-    "closeexplicitly": true,
-    "finders": ""
+    "closeexplicitly": true
   },
   "weather": {
     "windaveragespeedlimit": ""

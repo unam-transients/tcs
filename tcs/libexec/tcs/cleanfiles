@@ -36,6 +36,5 @@ cd "$tcsprefix"/var/tcs
 find . -type f -mtime +4 -name "*.tmp" | xargs rm
 find . -type f -mtime +4 -regex './[^/]*/log/debug.*\.txt' -delete
 find . -type f -mtime +4 -regex './[^/]*/webcam/.*' -delete
-find . -type f -mtime +4 -regex './[^/]*/.*finder/.*' -delete
 find . -type l -mtime +4 -delete
 find . -type d -empty -delete
