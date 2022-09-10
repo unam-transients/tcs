@@ -162,10 +162,6 @@ namespace eval "html" {
     }
   }
 
-  proc formatguidererrorifdouble {error} {
-    return [formatarcsecifdouble  "%+.2fas" $error]
-  }
-
   proc formatradtodegifdouble {formatstring rad} {
     if {[catch {
       format $formatstring [astrometry::radtodeg $rad]
@@ -1100,12 +1096,6 @@ if {false} {
     putshtml "<table class=\"status\">"
 
     if {[string equal [client::getstatus "telescope"] "ok"]} {
-      writehtmlrow "Pointing mode" \
-        [client::getdata "telescope" "pointingmode"]
-      writehtmlrow "Pointing tolerance" \
-        [format "%.1fas" [astrometry::radtoarcsec [client::getdata "telescope" "pointingtolerance"]]]
-      writehtmlrow "Guiding mode" \
-        [client::getdata "telescope" "guidingmode"]
     }
 
     putshtml "</table>"

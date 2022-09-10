@@ -33,12 +33,6 @@ namespace eval "telescope" {
 
   ######################################################################
 
-  server::setdata "pointingtolerance" [astrometry::parseangle "5as"]
-  server::setdata "pointingmode"      "none"
-  server::setdata "guidingmode"       "none"
-  
-  variable validpointingmodes { none }
-  variable validguidingmodes  { none }
   variable mechanisms { mount enclosure }
   variable withlights true
   variable withheater true

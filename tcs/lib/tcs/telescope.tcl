@@ -89,13 +89,6 @@ namespace eval "telescope" {
     set withenclosure true
   }
 
-  variable withguider
-  if {[lsearch $mechanisms "guider"] == -1} {
-    set withguider false
-  } else {
-    set withguider true
-  }
-  
   ######################################################################
 
   proc switchlights {state} {
@@ -281,7 +274,6 @@ namespace eval "telescope" {
     variable withdome
     variable withenclosure
     variable withcovers
-    variable withguider
     variable idleha
     variable idledelta
     if {[catch {
@@ -292,10 +284,6 @@ namespace eval "telescope" {
         switchheater "off"
       }
       openprolog
-      if {$withguider} {
-        log::info "stopping guider."
-        client::request "guider" "stop"
-      }
       if {$withtelescopecontroller} {
         log::info "switching on telescope controller."
         client::request "telescopecontroller" "switchon"
@@ -362,7 +350,6 @@ namespace eval "telescope" {
     variable withdome
     variable withenclosure
     variable withcovers
-    variable withguider
     variable idleha
     variable idledelta
     if {[catch {
@@ -373,10 +360,6 @@ namespace eval "telescope" {
         switchheater "off"
       }
       openprolog
-      if {$withguider} {
-        log::info "stopping guider."
-        client::request "guider" "stop"
-      }
       if {$withtelescopecontroller} {
         log::info "switching on telescope controller."
         client::request "telescopecontroller" "switchon"
@@ -436,7 +419,6 @@ namespace eval "telescope" {
     variable withdome
     variable withenclosure
     variable withcovers
-    variable withguider
     variable idleha
     variable idledelta
     if {[catch {
@@ -444,10 +426,6 @@ namespace eval "telescope" {
         switchlights "on"
       }
       closeprolog
-      if {$withguider} {
-        log::info "stopping guider."
-        client::request "guider" "stop"
-      }
       if {$withtelescopecontroller} {
         log::info "switching on telescope controller."
         client::request "telescopecontroller" "switchon"
@@ -546,11 +524,6 @@ namespace eval "telescope" {
     ]
     variable withmount
     variable withdome
-    variable withguider
-    if {$withguider} {
-      log::info "stopping guider."
-      client::request "guider" "stop"
-    }
     if {$withmount} {
       client::request "mount" "preparetomove"
       client::wait "mount"
@@ -603,13 +576,8 @@ namespace eval "telescope" {
     variable withtelescopecontroller
     variable withmount
     variable withdome
-    variable withguider
     variable idleha
     variable idledelta
-    if {$withguider} {
-      log::info "stopping guider."
-      client::request "guider" "stop"
-    }
     if {$withtelescopecontroller} {
       log::info "switching on telescope controller."
       client::request "telescopecontroller" "switchon"
@@ -651,13 +619,8 @@ namespace eval "telescope" {
     variable withtelescopecontroller
     variable withmount
     variable withdome
-    variable withguider
     variable idleha
     variable idledelta
-    if {$withguider} {
-      log::info "stopping guider."
-      client::request "guider" "stop"
-    }
     if {$withdome} {
       client::request "dome" "stop"
       client::wait "dome"  
@@ -683,7 +646,6 @@ namespace eval "telescope" {
   variable lastalphaoffset
   variable lastdeltaoffset
   variable lastaperture
-  variable lastguidingmode  
   
   proc trackactivitycommand {alpha delta equinox alphaoffset deltaoffset epoch alpharate deltarate aperture} {
     set start [utcclock::seconds]
@@ -701,13 +663,6 @@ namespace eval "telescope" {
     ]
     variable withmount
     variable withdome
-    variable withguider
-    set pointingmode [server::getdata "pointingmode"]
-    set guidingmode  [server::getdata "guidingmode"]
-    if {$withguider} {
-      log::info "stopping guider."
-      client::request "guider" "stop"
-    }
     if {$withmount} {
       client::request "mount" "preparetotrack"
       client::wait "mount"
@@ -754,11 +709,9 @@ namespace eval "telescope" {
     variable lastalphaoffset
     variable lastdeltaoffset
     variable lastaperture
-    variable lastguidingmode
     set lastalphaoffset $alphaoffset
     set lastdeltaoffset $deltaoffset
     set lastaperture    $aperture
-    set lastguidingmode $guidingmode
     log::info [format "finished moving and started tracking after %.1f seconds." [utcclock::diff now $start]]
     log::info "tracking."
   }
@@ -772,14 +725,7 @@ namespace eval "telescope" {
       $aperture \
     ]
     variable withmount
-    variable withguider
     variable withsecondary
-    set pointingmode [server::getdata "pointingmode"]
-    set guidingmode  [server::getdata "guidingmode"]
-    if {$withguider} {
-      log::info "stopping guider."
-      client::request "guider" "stop"
-    }
     if {$withmount} {
       client::request "mount" "preparetotrack"
       client::wait "mount"
@@ -807,56 +753,15 @@ namespace eval "telescope" {
     variable lastalphaoffset
     variable lastdeltaoffset
     variable lastaperture
-    variable lastguidingmode
     set lastalphaoffset $alphaoffset
     set lastdeltaoffset $deltaoffset
     set lastaperture    $aperture
-    set lastguidingmode $guidingmode
     log::info [format "finished offsetting and started tracking after %.1f seconds." [utcclock::diff now $start]]
     log::info "tracking."
   }
   
   ######################################################################
 
-  proc setpointingmode {mode} {
-set mode "none"
-    server::checkstatus
-    variable validpointingmodes
-    if {[lsearch $validpointingmodes $mode] == -1} {
-      error "invalid pointing mode \"$mode\"."
-    }
-    set start [utcclock::seconds]
-    log::info "setting pointing mode to \"$mode\"."
-    server::setdata "pointingmode" $mode
-    server::setdata "timestamp" [utcclock::combinedformat now]
-    log::info [format "finished setting pointing aperture after %.1f seconds." [utcclock::diff now $start]]
-    return
-  }
-  
-  proc setpointingtolerance {tolerance} {
-    server::checkstatus
-    set start [utcclock::seconds]
-    log::info "setting pointing tolerance to $tolerance."
-    server::setdata "pointingtolerance" [astrometry::parseangle $tolerance dms]
-    server::setdata "timestamp" [utcclock::combinedformat now]
-    log::info [format "finished setting pointing tolerance after %.1f seconds." [utcclock::diff now $start]]
-    return
-  }
-  
-  proc setguidingmode {mode} {
-    server::checkstatus
-    variable validguidingmodes
-    if {[lsearch $validguidingmodes $mode] == -1} {
-      error "invalid guiding mode $mode."
-    }
-    set start [utcclock::seconds]
-    log::info "setting guiding mode to \"$mode\"."
-    server::setdata "guidingmode" $mode
-    server::setdata "timestamp" [utcclock::combinedformat now]
-    log::info [format "finished setting guiding mode after %.1f seconds." [utcclock::diff now $start]]
-    return
-  }
-  
   proc track {alpha delta equinox alphaoffset deltaoffset {epoch "now"} {alpharate 0} {deltarate 0} {aperture "default"}} {
     server::checkstatus
     server::checkactivity "moving" "idle" "tracking"

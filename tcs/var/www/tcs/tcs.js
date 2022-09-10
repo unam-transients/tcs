@@ -270,12 +270,6 @@ $(function () {
   $("form#telescope-setpointingaperture").submit(function () {
     return submitrequest("telescope setpointingaperture " + $("input#setpointingaperture-args").val());
   });
-  $("form#telescope-setpointingmode").submit(function () {
-    return submitrequest("telescope setpointingmode " + $("input#setpointingmode-args").val());
-  });
-  $("form#telescope-setguidingmode").submit(function () {
-    return submitrequest("telescope setguidingmode " + $("input#setguidingmode-args").val());
-  });
   $("form#telescope-movesecondary").submit(function () {
     return submitrequest("telescope movesecondary " + $("input#movesecondary-args").val());
   });

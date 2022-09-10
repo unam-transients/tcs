@@ -75,8 +75,6 @@ proc alertvisit {{filters "r"} {readmode "conventionaldefault"}} {
   log::summary [format "alertvisit: taking %d exposures per filter per dither." $exposuresperfilterperdither]
   
   executor::setsecondaryoffset 0
-  executor::setguidingmode "none"
-  executor::setpointingmode "none"
 
   executor::track
 

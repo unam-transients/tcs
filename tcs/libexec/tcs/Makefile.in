@@ -52,8 +52,6 @@ installbins         :=            \
 	fitswcsvalue                  \
 	getblockfiles                 \
 	getcatalogobject              \
-	gcntanserver                  \
-	guiderserver                  \
 	gpio                          \
 	halt                      \
 	heaterserver                  \
