@@ -91,11 +91,6 @@ namespace eval "mountserver" {
     return
   }
 
-  proc slaveguide {dalpha ddelta} {
-    mount::guide $dalpha $ddelta
-    return
-  }
-
   proc slavecorrect {truemountalpha truemountdelta equinox} {
     mount::correct $truemountalpha $truemountdelta $equinox
     return
@@ -124,7 +119,6 @@ namespace eval "mountserver" {
     interp alias $slave preparetotrack      {} mountserver::slavepreparetotrack
     interp alias $slave track               {} mountserver::slavetrack
     interp alias $slave offset              {} mountserver::slaveoffset
-    interp alias $slave guide               {} mountserver::slaveguide
     interp alias $slave correct             {} mountserver::slavecorrect
     interp alias $slave setMAtozero         {} mountserver::slavesetMAtozero
     interp alias $slave setMEtozero         {} mountserver::slavesetMEtozero
