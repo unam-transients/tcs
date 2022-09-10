@@ -551,21 +551,6 @@ namespace eval "executor" {
     client::wait "telescope" 
   }
   
-  proc setpointingmode {pointingmode} {
-    client::request "telescope" "setpointingmode $pointingmode"
-    client::wait "telescope" 
-  }
-  
-  proc setguidingmode {guidingmode} {
-    client::request "telescope" "setguidingmode $guidingmode"
-    client::wait "telescope" 
-  }
-  
-  proc getguidingmode {} {
-    client::update "telescope"
-    client::getdata "telescope" "guidingmode"
-  }
-  
   proc move {} {
     set start [utcclock::seconds]
     set ha    [visit::observedha [visit]]

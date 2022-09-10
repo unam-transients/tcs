@@ -74,8 +74,6 @@ installs	:=			           \
 	gcntan.tcl			           \
 	gcntanserver.tcl	    	   \
 	gpio.tcl		        	   \
-	guider.tcl		        	   \
-	guiderserver.tcl	    	   \
 	heater.tcl		        	   \
 	heaterserver.tcl    		   \
 	html-log.sh		        	   \

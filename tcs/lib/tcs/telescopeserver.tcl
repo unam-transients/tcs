@@ -113,22 +113,10 @@ namespace eval "telescopeserver" {
     telescope::guide $alphaoffset $deltaoffset
   }
 
-  proc slavesetpointingmode {mode} {
-    telescope::setpointingmode $mode
-  }
-
-  proc slavesetpointingtolerance {tolerance} {
-    telescope::setpointingtolerance $tolerance
-  }
-
   proc slavesetpointingaperture {aperture} {
     telescope::setpointingaperture $aperture
   }
 
-  proc slavesetguidingmode {mode} {
-    telescope::setguidingmode $mode
-  }
-  
   proc slavecorrect {truemountalpha truemountdelta equinox} {
     telescope::correct $truemountalpha $truemountdelta $equinox
   }
@@ -165,10 +153,7 @@ namespace eval "telescopeserver" {
     interp alias $slave tracktopocentric            {} telescopeserver::slavetracktopocentric
     interp alias $slave offset                      {} telescopeserver::slaveoffset
     interp alias $slave guide                       {} telescopeserver::slaveguide
-    interp alias $slave setpointingmode             {} telescopeserver::slavesetpointingmode
-    interp alias $slave setpointingtolerance        {} telescopeserver::slavesetpointingtolerance
     interp alias $slave setpointingaperture         {} telescopeserver::slavesetpointingaperture
-    interp alias $slave setguidingmode              {} telescopeserver::slavesetguidingmode
     interp alias $slave correct                     {} telescopeserver::slavecorrect
     interp alias $slave movesecondary               {} telescopeserver::slavemovesecondary
     interp alias $slave setsecondaryoffset          {} telescopeserver::slavesetsecondaryoffset

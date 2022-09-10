@@ -492,9 +492,6 @@ namespace eval "fitsheader" {
   
   proc writekeysandvaluesfortelescope {channel prefix} {
     writekeysandvaluesforcomponent $channel telescope $prefix "TL" {
-      pointingmode          PTMD  string
-      pointingtolerance     PTTL  angle
-      guidingmode           GDMD  string
       operationmode         OPMD  string
     }
   }

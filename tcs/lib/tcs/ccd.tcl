@@ -359,10 +359,6 @@ namespace eval "ccd" {
       "flat" {
         set suffix "f"
       }
-      "guidestart" -
-      "guidenext" {
-        set suffix "g"
-      }
       default {
         set suffix "x"
       }
@@ -386,10 +382,6 @@ namespace eval "ccd" {
       }
       "flat" {
         set suffix "fc"
-      }
-      "guidestart" -
-      "guidenext" {
-        set suffix "gc"
       }
       default {
         set suffix "xc"
@@ -634,9 +626,7 @@ namespace eval "ccd" {
     if {[string equal $exposuretype "object"          ] || 
         [string equal $exposuretype "flat"            ] || 
         [string equal $exposuretype "astrometry"      ] ||
-        [string equal $exposuretype "focus"           ] ||
-        [string equal $exposuretype "guidestart"      ] ||
-        [string equal $exposuretype "guidenext"       ]
+        [string equal $exposuretype "focus"           ]
     } {
       set shutter open
     } elseif {[string equal $exposuretype "bias"] ||
@@ -808,37 +798,6 @@ namespace eval "ccd" {
         server::setdata "mountobservedalpha"  $solvedmountobservedalpha
         server::setdata "mountobserveddelta"  $solvedmountobserveddelta
       }
-    } elseif {
-      [string equal $type "guidestart"] ||
-      [string equal $type "guidenext" ]
-    } {
-      variable fitsfwhmchannel
-      set fitsfwhmchannel [open "|[directories::bin]/tcs newpgrp [directories::bin]/tcs fitsfwhm -- \"$currentfilename\"" "r"]
-      chan configure $fitsfwhmchannel -buffering "line"
-      chan configure $fitsfwhmchannel -encoding "ascii"
-      set line [coroutine::gets $fitsfwhmchannel 0 100]
-      catch {close $fitsfwhmchannel}
-      set fitsfwhmchannel {}
-      if {
-        [string equal $line ""] ||
-        [scan $line "%f %f %f" fwhm x y] != 3
-      } {
-        log::debug "fitsfwhm failed: \"$line\"."
-      } elseif {[string equal $type "guidestart"]} {
-        log::info [format "guide star initial position is (%.1f,%.1f) pixels." $x $y]
-        server::setdata "guidereferenceimage" $fitsfilename
-        server::setdata "guidestarinitialx" $x
-        server::setdata "guidestarinitialy" $y
-      } elseif {[string equal $type "guidenext"]} {
-        log::info [format "guide star current position is (%.1f,%.1f) pixels." $x $y]
-        set dx [expr {$x - [server::getdata "guidestarinitialx"]}]
-        set dy [expr {$y - [server::getdata "guidestarinitialy"]}]
-        set easterror  [expr {$dx * [astrometry::arcsectorad +0.15] * [server::getdata "detectorbinning"]}]
-        set northerror [expr {$dy * [astrometry::arcsectorad -0.15] * [server::getdata "detectorbinning"]}]
-        server::setdata "guidestareasterror"  $easterror
-        server::setdata "guidestarnortherror" $northerror
-        log::info [format "guide error is %+.2f E and %+.2f N arcsec." [astrometry::radtoarcsec $easterror]  [astrometry::radtoarcsec $northerror]]
-      }
     }
   }
   
@@ -989,9 +948,7 @@ namespace eval "ccd" {
       ![string equal $exposuretype "dark"            ] &&
       ![string equal $exposuretype "flat"            ] &&
       ![string equal $exposuretype "astrometry"      ] &&
-      ![string equal $exposuretype "focus"           ] &&
-      ![string equal $exposuretype "guidestart"      ] &&
-      ![string equal $exposuretype "guidenext"       ]
+      ![string equal $exposuretype "focus"           ]
     } {
       error "invalid exposure type \"$exposuretype\"."
     }
@@ -1017,9 +974,7 @@ namespace eval "ccd" {
     if {
       ![string equal $type "levels"         ] &&
       ![string equal $type "fwhm"           ] &&
-      ![string equal $type "astrometry"     ] &&
-      ![string equal $type "guidestart"     ] &&
-      ![string equal $type "guidenext"      ]
+      ![string equal $type "astrometry"     ]
     } {
       error "invalid analysis type \"$type\"."
     }
