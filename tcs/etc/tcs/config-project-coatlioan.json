@@ -634,8 +634,7 @@
     "type": "coatlioan",
     "idleha": "0h",
     "idledelta": "75d",
-    "closeexplicitly": "true",
-    "finders": []
+    "closeexplicitly": "true"
   },
   "weather": {
     "windaveragespeedlimit": "25"

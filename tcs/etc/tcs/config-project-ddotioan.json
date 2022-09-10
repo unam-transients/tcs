@@ -1497,8 +1497,7 @@
     "type": "ddotioan",
     "idleha": "0h",
     "idledelta": "30d",
-    "closeexplicitly": "true",
-    "finders": []
+    "closeexplicitly": "true"
   },
   "weather": {
     "windaveragespeedlimit": "30"
