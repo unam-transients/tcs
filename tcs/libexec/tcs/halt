@@ -81,4 +81,6 @@ do
   fi
 done
 
+tcs log "tcs restart" summary "halts will occur shortly."
+
 exit 0
