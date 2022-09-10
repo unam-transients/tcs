@@ -886,11 +886,6 @@ namespace eval "detector" {
     return $rawdetectortemperature
   }
 
-  proc detectorrawgetcoldfindertemperature {} {
-    variable rawcoldfindertemperature
-    return $rawcoldfindertemperature
-  }
-
   proc detectorrawgetchamberpressure {} {
     variable chamberpressure
     return $chamberpressure
