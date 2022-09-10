@@ -35,7 +35,6 @@ AC_CONFIG_FILES(
   httpd.conf-ddotioan-services
   httpd.conf-colibricu-services
   httpd.conf-colibriohp-services
-  httpd.conf-transientscu-control
   httpd.conf-coatlicu-control
   httpd.conf-test
 )

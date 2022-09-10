@@ -77,9 +77,6 @@ colibriohp-control)
 colibriohp-detectors)
   allargs="C0"
   ;;
-transientscu-control)
-  allargs="supervisor selector executor instrument telescope C0 weather sensors sun moon target gcntan html"
-  ;;
 coatlicu-control)
   allargs="supervisor selector executor telescope weather sensors sun moon target html"
   ;;

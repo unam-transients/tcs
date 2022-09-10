@@ -37,9 +37,6 @@ colibricu-services)
 colibriohp-services)
   ./configure SITE=colibriohp-services
   ;;
-transientscu-control)
-  ./configure SITE=transientscu-control
-  ;;
 coatlicu-control)
   ./configure SITE=coatlicu-control
   ;;

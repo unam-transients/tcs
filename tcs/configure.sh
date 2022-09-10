@@ -32,9 +32,6 @@ done
 
 host=$(uname -n | sed 's/\..*//')
 case $host in
-transientscu-*)
-  ./configure --enable-project=transientscu
-  ;;
 coatlioan-*)
   ./configure --enable-project=coatlioan
   ;;
