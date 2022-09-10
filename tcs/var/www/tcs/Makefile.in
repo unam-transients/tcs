@@ -66,7 +66,9 @@ installs_project_coatlioan	:=		    \
 	allsky-project-coatlioan.html		\
 	C0-project-coatlioan.html       	\
 	config-project-coatlioan.js		    \
-	interface-project-coatlioan.html	\
+	operations-project-coatlioan.html	\
+	engineering-project-coatlioan.html  \
+	interface.html                      \
 	webcam-a-project-coatlioan.html		\
 	webcam-b-project-coatlioan.html		\
 	webcam-c-project-coatlioan.html		\
@@ -83,7 +85,9 @@ installs_project_ddotioan	:=		    \
 	C4-project-ddotioan.html  	     	\
 	C5-project-ddotioan.html  	     	\
 	config-project-ddotioan.js		    \
-	interface-project-ddotioan.html		\
+	operations-project-ddotioan.html  	\
+	interface.html                      \
+	engineering-project-ddotioan.html   \
 	alerts-project-ddotioan.html	    \
 	webcam-a-project-ddotioan.html		\
 	webcam-b-project-ddotioan.html		\
@@ -95,14 +99,18 @@ installs_project_colibricu	:=		    \
 	allsky-project-colibricu.html      	\
 	C0-project-colibricu.html  	     	\
 	config-project-colibricu.js		    \
-	interface-project-colibricu.html	\
+	operations-project-colibricu.html	\
+	engineering-project-colibricu.html  \
+	interface.html                      \
 	plots-project-colibricu.sh
 
 installs_project_colibriohp	:=		    \
 	allsky-project-colibriohp.html     	\
 	C0-project-colibriohp.html  	   	\
 	config-project-colibriohp.js	    \
-	interface-project-colibriohp.html   \
+	operations-project-colibriohp.html  \
+	engineering-project-colibriohp.html \
+	interface.html                      \
 	webcam-a-project-colibriohp.html	\
 	plots-project-colibriohp.sh
 
@@ -122,7 +130,9 @@ installs_project_transientscu		:=		\
 	config-project-transientscu.js		    \
 
 installs_project_coatlicu		:=		\
-	interface-project-coatlicu.html	\
+	operations-project-coatlicu.html	\
+	engineering-project-coatlicu.html   \
+	interface.html                      \
 	alerts-project-coatlicu.html	    \
 	C0-project-coatlicu.html  	        \
 	config-project-coatlicu.js		    \

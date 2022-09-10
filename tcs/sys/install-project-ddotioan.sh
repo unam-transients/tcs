@@ -310,6 +310,8 @@ sudo rm -f /tmp/sudoers-tcs
   services)
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs rebootsoon'
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs restartsoon'
+    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs rebootinstrument'
+    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs rebootplatform'
     ;;
   esac
 ) >/tmp/sudoers-tcs

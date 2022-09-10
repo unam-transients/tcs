@@ -69,11 +69,11 @@ esac
 
 if test "$priority" != ""
 then
-  echo "$timestamp: DDOTI/OAN has received a GCN Notice for $name ($origin/$type/$identifier)." |
+  echo "$timestamp: DDOTI has received a GCN Notice for $name ($origin/$type/$identifier)." |
   $tcsprefix/bin/tcs sendpushover \
     -P "$priority" \
     -U "$url" \
-    -s "DDOTI/OAN $name" \
+    -s "DDOTI $name" \
     "$group"
 fi
 

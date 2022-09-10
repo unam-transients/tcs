@@ -27,17 +27,17 @@ PERFORMANCE OF THIS SOFTWARE.
 
 This is the web site for the COLIBRÍ project in the [Instituto de Astronomía](http://www.astroscu.unam.mx) in Mexico City.
 
-* [Interface](/tcs/interface.html)
+* [Operations Interface](/tcs/operations.html)
 * [Documentation](documentation.html)
-* Engineering Interfaces
-    * Plots
-        * CCDs: [1 day](tcs/plots/ccds-1.png) [4 days](tcs/plots/ccds-4.png) [30 days](tcs/plots/ccds-30.png) [120 days](tcs/plots/ccds-120.png) [360 days](tcs/plots/ccds-360.png) [1600 days](tcs/plots/ccds-1600.png)
-        * Instrument: [1 day](tcs/plots/instrument-1.png) [4 days](tcs/plots/instrument-4.png) [30 days](tcs/plots/instrument-30.png) [120 days](tcs/plots/instrument-120.png) [360 days](tcs/plots/instrument-360.png) [1600 days](tcs/plots/instrument-1600.png)
-        * Control Room: [1 day](tcs/plots/control-room-1.png) [4 days](tcs/plots/control-room-4.png) [30 days](tcs/plots/control-room-30.png) [120 days](tcs/plots/control-room-120.png) [360 days](tcs/plots/control-room-360.png) [1600 days](tcs/plots/control-room-1600.png)
-    - Power
-        * <a href="/proxy/pdu1/" target="_newtab">pdu1</a>
-        * <a href="/proxy/pdu2/" target="_newtab">pdu2</a>
-        * <a href="/proxy/pdu3/" target="_newtab">pdu3</a>
+* [Engineering Interface](/tcs/engineering.html)
+* Plots
+  * CCDs: [1 day](tcs/plots/ccds-1.png) [4 days](tcs/plots/ccds-4.png) [30 days](tcs/plots/ccds-30.png) [120 days](tcs/plots/ccds-120.png) [360 days](tcs/plots/ccds-360.png) [1600 days](tcs/plots/ccds-1600.png)
+  * Instrument: [1 day](tcs/plots/instrument-1.png) [4 days](tcs/plots/instrument-4.png) [30 days](tcs/plots/instrument-30.png) [120 days](tcs/plots/instrument-120.png) [360 days](tcs/plots/instrument-360.png) [1600 days](tcs/plots/instrument-1600.png)
+  * Control Room: [1 day](tcs/plots/control-room-1.png) [4 days](tcs/plots/control-room-4.png) [30 days](tcs/plots/control-room-30.png) [120 days](tcs/plots/control-room-120.png) [360 days](tcs/plots/control-room-360.png) [1600 days](tcs/plots/control-room-1600.png)
+* Power
+  * <a href="/proxy/pdu1/" target="_newtab">pdu1</a>
+  * <a href="/proxy/pdu2/" target="_newtab">pdu2</a>
+  * <a href="/proxy/pdu3/" target="_newtab">pdu3</a>
 
 <hr/>
 

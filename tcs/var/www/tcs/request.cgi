@@ -31,13 +31,19 @@ umask 0; PATH=/usr/local/opt/tcl-tk/bin:$PATH exec tclsh8.6 -encoding "utf-8" "$
 proc request {request} {
   global prefix
   if {[string equal $request "restart"]} {
-    exec "sudo" "-n" "$prefix/bin/tcs" "restartsoon"
+    exec -ignorestderr "sudo" "-n" "$prefix/bin/tcs" "restartsoon"
     return ""
-  } elseif {[string equal $request "reboot"]} {
-    exec "sudo" "-n" "$prefix/bin/tcs" "rebootsoon"
+  } elseif {[string equal $request "rebootcomputers"]} {
+    exec -ignorestderr "sudo" "-n" "$prefix/bin/tcs" "rebootsoon"
+    return ""
+  } elseif {[string equal $request "rebootinstrument"]} {
+    exec -ignorestderr "sudo" "-n" "$prefix/bin/tcs" "rebootinstrument"
+    return ""
+  } elseif {[string equal $request "rebootplatform"]} {
+    exec -ignorestderr "sudo" "-n" "$prefix/bin/tcs" "rebootplatform"
     return ""
   } elseif {[string equal $request "emergencystop"]} {
-    exec "sudo" "-n" "$prefix/bin/tcs" "emergencystop"
+    exec -ignorestderr "sudo" "-n" "$prefix/bin/tcs" "emergencystop"
     set server supervisor
     set request "disable"
   } else {
