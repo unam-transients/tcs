@@ -109,10 +109,6 @@ namespace eval "telescopeserver" {
     telescope::offset $alphaoffset $deltaoffset $aperture
   }
   
-  proc slaveguide {alphaoffset deltaoffset} {
-    telescope::guide $alphaoffset $deltaoffset
-  }
-
   proc slavesetpointingaperture {aperture} {
     telescope::setpointingaperture $aperture
   }
@@ -152,7 +148,6 @@ namespace eval "telescopeserver" {
     interp alias $slave trackcatalogobject          {} telescopeserver::slavetrackcatalogobject
     interp alias $slave tracktopocentric            {} telescopeserver::slavetracktopocentric
     interp alias $slave offset                      {} telescopeserver::slaveoffset
-    interp alias $slave guide                       {} telescopeserver::slaveguide
     interp alias $slave setpointingaperture         {} telescopeserver::slavesetpointingaperture
     interp alias $slave correct                     {} telescopeserver::slavecorrect
     interp alias $slave movesecondary               {} telescopeserver::slavemovesecondary

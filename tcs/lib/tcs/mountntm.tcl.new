@@ -44,7 +44,6 @@ config::setdefaultvalue "mount" "pointingmodelIH0"           "0"
 config::setdefaultvalue "mount" "pointingmodelparameters180" [dict create]
 config::setdefaultvalue "mount" "pointingmodelID180"         "0"
 config::setdefaultvalue "mount" "pointingmodelIH180"         "0"
-config::setdefaultvalue "mount" "allowedguideoffset"         "30as"
 config::setdefaultvalue "mount" "trackingsettledlimit"       "1as"
 config::setdefaultvalue "mount" "axisdhacorrection"          "0"
 config::setdefaultvalue "mount" "axisddeltacorrection"       "0"
@@ -71,7 +70,6 @@ namespace eval "mount" {
   variable initialcommand              [config::getvalue "mount" "initialcommand"]
   variable allowedpositionerror        [astrometry::parseangle [config::getvalue "mount" "allowedpositionerror"]]
   variable pointingmodelpolarhole      [astrometry::parsedistance [config::getvalue "mount" "pointingmodelpolarhole"]]
-  variable allowedguideoffset          [astrometry::parseoffset [config::getvalue "mount" "allowedguideoffset"]]
   variable axisdhacorrection           [astrometry::parseoffset [config::getvalue "mount" "axisdhacorrection"]]
   variable axisddeltacorrection        [astrometry::parseoffset [config::getvalue "mount" "axisddeltacorrection"]]
   variable trackingsettledlimit        [astrometry::parseoffset [config::getvalue "mount" "trackingsettledlimit"]]
