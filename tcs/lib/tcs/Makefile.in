@@ -42,7 +42,6 @@ installs	:=			           \
 	detectorandor.tcl		       \
 	detectordummy.tcl		       \
 	detectorfli.tcl			       \
-	detectorh2rg.tcl		       \
 	detectorqsi.tcl			       \
 	detectorsi.tcl			       \
 	directories.tcl			       \
