@@ -21,4 +21,4 @@ PERFORMANCE OF THIS SOFTWARE.
 
 ----------------------------------------------------------------------->
 
-# COLIBRÍ/OHP: Documentation
+# COLIBRI: Documentation
