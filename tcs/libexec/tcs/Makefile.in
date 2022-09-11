@@ -33,7 +33,6 @@ installbins         :=            \
 	checkreboot                   \
 	checkrestart                  \
 	cleanfiles                    \
-	domeserver                    \
 	emergencystop                 \
 	executorserver                \
 	fansserver                    \
