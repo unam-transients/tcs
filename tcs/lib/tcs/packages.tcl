@@ -192,10 +192,6 @@ package ifneeded sensorsserver         0.0 \
   [list source [file join [file dirname [info script]] sensorsserver.tcl]]
 package ifneeded server                0.0 \
   [list source [file join [file dirname [info script]] server.tcl]]
-package ifneeded shutters              0.0 \
-  [list source [file join [file dirname [info script]] shutters.tcl]]
-package ifneeded shuttersserver        0.0 \
-  [list source [file join [file dirname [info script]] shuttersserver.tcl]]
 package ifneeded supervisor            0.0 \
   [list source [file join [file dirname [info script]] supervisor.tcl]]
 package ifneeded supervisorserver      0.0 \

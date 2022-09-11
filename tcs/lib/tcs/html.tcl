@@ -549,27 +549,6 @@ namespace eval "html" {
 
   }
 
-  proc writeshutters {} {
-
-    putshtml "<table class=\"status\">"
-
-    writehtmlstatusblock "shutters"
-  
-    putshtml "</table>"
-
-    putshtml "<table class=\"status\">"
-
-    if {[string equal [client::getstatus "shutters"] "ok"]} {
-      writehtmlrow "Requested shutters"     [client::getdata "shutters" "requestedshutters"]    
-      writehtmlrow "Current upper shutter"  [client::getdata "shutters" "uppershutter"]
-      writehtmlrow "Current lower shutter"  [client::getdata "shutters" "lowershutter"]
-      writehtmlrow "Current power contacts" [client::getdata "shutters" "powercontacts"]
-    }
-  
-    putshtml "</table>"
-
-  }
-
   proc writetarget {} {
 
     putshtml "<table class=\"status\">"
