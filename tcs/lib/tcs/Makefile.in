@@ -99,7 +99,6 @@ installs	:=			           \
 	owsensorsserver.tcl	    	   \
 	packages.tcl		    	   \
 	plccolibri.tcl           	   \
-	plcsatino.tcl                  \
 	plcserver.tcl 	    		   \
 	pointing.tcl	        	   \
 	power.tcl                 	   \

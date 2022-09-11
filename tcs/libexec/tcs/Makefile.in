@@ -121,8 +121,7 @@ installbins_project_colibriohp := \
 	telescopecontrollerserver     \
 	plcserver                     \
 	secondaryserver               \
-	updateweatherfiles-colibri    \
-	updateweatherfiles-satino
+	updateweatherfiles-colibri
 	
 installbins_project_ddoticu :=    \
 	C0server
