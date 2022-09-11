@@ -153,9 +153,9 @@
       "enclosure",
       "executor",
       "gcntan",
-      "heater",
-      "instrument",
-      "lights",
+//      "heater",
+//      "instrument",
+//      "lights",
       "moon",
       "mount",
       "power",
@@ -171,10 +171,10 @@
   },
   "instrument": {
     "detectors": [
-      "C0"
+//      "C0"
     ],
     "activedetectors": [
-      "C0"
+//      "C0"
     ],
     "pointingdetectors": [
       "C0"
@@ -253,12 +253,13 @@
         "type": "ibootbar",
         "outlets": "8",
         "inlets": "1"
-      },
-      "ib-detector": {
-        "type": "iboot",
-        "outlets": 1,
-        "inlets": 1
       }
+//      ,
+//      "ib-detector": {
+//        "type": "iboot",
+//        "outlets": 1,
+//        "inlets": 1
+//      }
     },
     "outletgroupaddresses": {
       "firewall":   [["ibb-127", "a", "5"]],
@@ -270,8 +271,9 @@
       "enclosure":  [["ibb-220", "a", "1"]],
       "secondary":  [["ibb-220", "a", "2"]],
       "platform":   [["ibb-127", "a", "1"]],
-      "instrument": [["ibb-127", "a", "3"]],
-      "detector":   [["ib-detector", "a", "0"]]
+      "instrument": [["ibb-127", "a", "3"]]
+//      ,
+//      "detector":   [["ib-detector", "a", "0"]]
     }
   },
   "safetyswitch": {
