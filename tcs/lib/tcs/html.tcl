@@ -732,6 +732,7 @@ namespace eval "html" {
           writehtmlrow "Comet 1 humidity"         [format "%.0f%%" [expr {[client::getdata "plc" "comet1humidity"] * 100.0}]]
           writehtmlrow "Comet 2 humidity"         [format "%.0f%%" [expr {[client::getdata "plc" "comet2humidity"] * 100.0}]]
         }
+      }
     }
 
     putshtml "</table>"
