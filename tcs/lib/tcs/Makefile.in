@@ -136,8 +136,6 @@ installs	:=			           \
 	telescopeserver.tcl		       \
 	telescopecontrolleropentsi.tcl \
 	telescopecontrollerserver.tcl  \
-	temperatures.tcl		       \
-	temperaturesserver.tcl		   \
 	tojson.tcl			           \
 	utcclock.tcl		    	   \
 	visit.tcl 		        	   \
