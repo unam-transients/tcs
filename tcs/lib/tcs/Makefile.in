@@ -68,7 +68,6 @@ installs	:=			           \
 	focuserddoti.tcl               \
 	focuserfli.tcl		    	   \
 	focusernull.tcl		    	   \
-	focuseroptec.tcl	    	   \
 	fromjson.tcl		    	   \
 	gcntan.tcl			           \
 	gcntanserver.tcl	    	   \

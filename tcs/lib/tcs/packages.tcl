@@ -106,8 +106,6 @@ package ifneeded focuserfli            0.0 \
   [list source [file join [file dirname [info script]] focuserfli.tcl]]
 package ifneeded focusernull           0.0 \
   [list source [file join [file dirname [info script]] focusernull.tcl]]
-package ifneeded focuseroptec          0.0 \
-  [list source [file join [file dirname [info script]] focuseroptec.tcl]]
 package ifneeded fromjson              0.0 \
   [list source [file join [file dirname [info script]] fromjson.tcl]]
 package ifneeded gcntan                0.0 \
