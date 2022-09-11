@@ -59,6 +59,94 @@ namespace eval "weather" {
     
       if {
         [scan $dataline \
+          "a.0 %s %s %*s %*s C K %*f %f %*f %*f %f %f %*f %*d %*d %*d %*f %d %d %*d %d %*d %*d" \
+          date time temperature humidity dewpoint cloudindex rainindex lightindex] == 8
+      } {
+      
+        # This is the SATINO AAG station. It doesn't have an anemometer.
+        
+        set windaveragespeed    "unknown"
+        set windgustspeed       "unknown"
+        set windaverageazimuth  "unknown"
+        set rainrate            "unknown"
+        set pressure            "unknown"
+        
+        switch $cloudindex {
+          1 {
+            set cloudiness "clear"
+          }
+          2 {
+            set cloudiness "light"
+          }
+          3 {
+            set cloudiness "heavy"
+          }
+          default {
+            set cloudiness "unknown"
+          }
+        }
+        
+        if {$rainindex > 1} {
+          set rainalarm true
+        } else {
+          set rainalarm false
+        }
+        
+        if {$lightindex > 1} {
+          set lightlevel "bright"
+        } else {
+          set lightlevel "dark"
+        }
+
+      } elseif {
+        [scan $dataline \
+          "a.1 %s %s %*s %*s C K %*f %f %*f %*f %f %f %*f %*d %*d %*d %*f %d %*d %d %d %*d %*d %f" \
+          date time temperature humidity dewpoint cloudindex rainindex lightindex windaveragespeed] == 9
+      } {
+      
+        # This is the combination of the SATINO AAG station and PLC.
+
+        set windgustspeed      "unknown"
+        set windaverageazimuth "unknown"
+        set rainrate           "unknown"
+        set pressure           "unknown"
+        
+        switch $cloudindex {
+          1 {
+            set cloudiness "clear"
+          }
+          2 {
+            set cloudiness "light"
+          }
+          3 {
+            set cloudiness "heavy"
+          }
+          default {
+            set cloudiness "unknown"
+          }
+        }
+        
+        if {$rainindex == 0} {
+          set rainalarm false
+        } else {
+          set rainalarm true
+        }
+        
+        if {$lightindex == 0} {
+          set lightlevel "unknown"
+        } elseif {$lightindex == 1} {
+          set lightlevel "dark"
+        } else {
+          set lightlevel "bright"
+        }
+        
+        # The wind speed is sometimes close to zero but negative.
+        if {$windaveragespeed < 0} {
+          set windaveragespeed 0.0
+        }
+
+      } elseif {
+        [scan $dataline \
           "b.0 %s %s %*s %*f %f %*f %*f %f %f %f %f %f %*f %*f %f %*f %*f %*f %*f %*f %*f %*f %*f %*f %f %*d %d %d %*d %*d %*d %d"\
           date time windaverageazimuth windaveragespeed windgustspeed temperature humidity pressure rainrate dewpoint rainindex cloudindex lightindex] == 13
       } {

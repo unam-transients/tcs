@@ -156,8 +156,6 @@ package ifneeded owsensors             0.0 \
   [list source [file join [file dirname [info script]] owsensors.tcl]]
 package ifneeded owsensorsserver       0.0 \
   [list source [file join [file dirname [info script]] owsensorsserver.tcl]]
-package ifneeded plcsatino             0.0 \
-  [list source [file join [file dirname [info script]] plcsatino.tcl]]
 package ifneeded plccolibri            0.0 \
   [list source [file join [file dirname [info script]] plccolibri.tcl]]
 package ifneeded plcserver             0.0 \
