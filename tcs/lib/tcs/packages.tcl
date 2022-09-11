@@ -48,8 +48,6 @@ package ifneeded constraints           0.0 \
   [list source [file join [file dirname [info script]] constraints.tcl]]
 package ifneeded controller            0.0 \
   [list source [file join [file dirname [info script]] controller.tcl]]
-package ifneeded coverscoatlioan       0.0 \
-  [list source [file join [file dirname [info script]] coverscoatlioan.tcl]]
 package ifneeded coversopentsi         0.0 \
   [list source [file join [file dirname [info script]] coversopentsi.tcl]]
 package ifneeded coversserver          0.0 \
