@@ -115,8 +115,6 @@ installs	:=			           \
 	sensors.tcl			           \
 	sensorsserver.tcl	    	   \
 	server.tcl			           \
-	shutters.tcl		    	   \
-	shuttersserver.tcl		       \
 	stack.tcl		        	   \
 	sun.tcl			        	   \
 	sunserver.tcl	    		   \

@@ -428,16 +428,6 @@ namespace eval "fitsheader" {
     writekeysandvaluesforcomponent $channel sensors $prefix "SE" $args
   }
 
-
-  proc writekeysandvaluesforshutters {channel prefix} {
-    writekeysandvaluesforcomponent $channel shutters $prefix "SH" {
-      requestedshutters RQSH string
-      uppershutter      UPSH string
-      lowershutter      LWSH string
-      powercontacts     PWCN string
-    }
-  }
-  
   proc writekeysandvaluesforsun {channel prefix} {
     writekeysandvaluesforcomponent $channel sun $prefix "SN" {
       observedalpha           RA   angle

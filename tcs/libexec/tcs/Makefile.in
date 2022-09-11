@@ -79,7 +79,6 @@ installbins         :=            \
 	selectorserver                \
 	sendpushover                  \
 	sensorsserver                 \
-	shuttersserver                \
 	solarsystembodycoordinates    \
 	startserver                   \
 	stopserver                    \

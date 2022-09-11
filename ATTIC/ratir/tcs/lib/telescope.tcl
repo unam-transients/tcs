@@ -109,6 +109,37 @@ namespace eval "telescope" {
   
   ######################################################################
 
+  proc getpowercontacts {} {
+    client::update "shutters"
+    if {[string equal "error" [client::getdata "shutters" "activity"]]} {
+      error "shutters activity is \"error\"."
+    }
+    return [client::getdata "shutters" "powercontacts"]
+  }
+  
+  proc movedomeforshutter {} {
+    set i 0
+    while {true} {
+      log::info "moving dome for shutter."
+      client::request "dome" "preparetomove"
+      client::wait "dome"
+      client::request "dome" "move contacts"
+      client::wait "dome"
+      if {[string equal [getpowercontacts] "closed"]} {
+        return
+      }
+      if {$i == 3} {
+        error "unable to close the shutters power contacts."
+      }
+      incr i
+      log::warning "reinitializing the dome as the shutters power contacts did not close."
+      client::request "dome" "initialize"
+      client::wait "dome"
+    }
+  }
+
+  ######################################################################
+
   proc movesecondaryactivitycommand {z0 setasinitial} {
     set start [utcclock::seconds]  
     log::info "moving the secondary to $z0."
@@ -270,6 +301,7 @@ namespace eval "telescope" {
         client::wait "mount"
       }
       if {$withdome} {
+        movedomeforshutter
         log::info "opening shutters."
         client::request "shutters" "open"
         client::wait "shutters"  
@@ -345,6 +377,7 @@ namespace eval "telescope" {
         client::wait "mount"
       }
       if {$withdome} {
+        movedomeforshutter
         log::info "opening shutters."
         client::request "shutters" "open"
         client::wait "shutters"
@@ -417,6 +450,7 @@ namespace eval "telescope" {
       variable closeexplicitly
       if {$closeexplicitly} {
         if {$withdome} {
+          movedomeforshutter
           log::info "closing shutters."
           client::request "shutters" "close"
           client::wait "shutters"
@@ -462,6 +496,7 @@ namespace eval "telescope" {
       if {$closeexplicitly} {
         if {$withdome} {
           catch {client::request "dome" "reset"}
+          movedomeforshutter
           log::info "closing shutters."
           catch {client::request "shutters" "reset"}
           client::request "shutters" "emergencyclose"
