@@ -35,7 +35,6 @@ installs	:=			           \
 	controller.tcl			       \
 	coroutine.tcl			       \
 	covers.tcl			           \
-	coverscoatlioan.tcl		       \
 	coversopentsi.tcl              \
 	coversserver.tcl		       \
 	detector.tcl			       \
