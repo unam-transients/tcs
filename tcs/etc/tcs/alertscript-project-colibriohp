@@ -37,11 +37,11 @@ esac
 
 if test "$priority" != ""
 then
-  echo "$timestamp: COLIBRÍ/OHP has received a GCN Notice for $name ($origin/$type/$identifier)." |
+  echo "$timestamp: COLIBRI has received a GCN Notice for $name ($origin/$type/$identifier)." |
   $tcsprefix/bin/tcs sendpushover \
     -P "$priority" \
     -U "$url" \
-    -s "COLIBRÍ/OHP $name" \
+    -s "COLIBRI $name" \
     "$group"
 fi
 

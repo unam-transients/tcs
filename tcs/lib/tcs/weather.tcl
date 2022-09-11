@@ -151,7 +151,7 @@ namespace eval "weather" {
           date time windaverageazimuth windaveragespeed windgustspeed temperature humidity pressure rainrate dewpoint rainindex cloudindex lightindex] == 13
       } {
       
-        # This is the COLIBRÍ PLC
+        # This is the COLIBRI PLC
         
         switch $cloudindex {
           1 {

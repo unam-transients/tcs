@@ -57,7 +57,7 @@ ServerName colibriohp-services
 
   <LocationMatch ^/(tcs|proxy)/>
     AuthType Basic
-    AuthName "COLIBRI/OHP Web Site"
+    AuthName "COLIBRI Web Site"
     AuthUserFile @prefix@/etc/htpasswd/colibriohp
     Require valid-user
     Deny from All

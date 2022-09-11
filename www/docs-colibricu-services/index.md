@@ -21,9 +21,9 @@ PERFORMANCE OF THIS SOFTWARE.
 
 ----------------------------------------------------------------------->
 
-# COLIBRÍ/CU
+# COLIBRI/CU
 
-This is the web site for the COLIBRÍ project in the [Instituto de Astronomía](http://www.astroscu.unam.mx) in Mexico City.
+This is the web site for the COLIBRI project in the [Instituto de Astronomía](http://www.astroscu.unam.mx) in Mexico City.
 
 * [Operations Interface](/tcs/operations.html)
 * [Documentation](documentation.html)

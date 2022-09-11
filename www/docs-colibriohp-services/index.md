@@ -21,9 +21,9 @@ PERFORMANCE OF THIS SOFTWARE.
 
 ----------------------------------------------------------------------->
 
-# COLIBRÍ/OHP
+# COLIBRI
 
-This is the TCS web site for the COLIBRÍ telescope at OHP.
+This is the TCS web site for the COLIBRI telescope at OHP.
 
 * [Operations Interface](/tcs/operations.html)
 * [Documentation](documentation.html)
