@@ -276,22 +276,6 @@ namespace eval "fitsheader" {
     }
   }
   
-  proc writekeysandvaluesfordome {channel prefix} {
-    writekeysandvaluesforcomponent $channel dome $prefix "DM" {
-      controllerinitialized CNIN  boolean
-      encoderazimuth        ENAZ  double
-      flags                 FG    string      
-      requestedazimuth      RQAZ  angle
-      azimuth               AZ    angle
-      azimutherror          AZE   angle
-      maxabsazimutherror    MXAZE angle
-      stoppedtimestamp      SPT   date
-      settled               SE    boolean
-      settledtimestamp      SET   date
-      allowedtomove         AL    boolean
-    }
-  }
-  
   proc writekeysandvaluesforexecutor {channel prefix} {
     writekeysandvaluesforcomponent $channel executor $prefix "EX" {
       filetype               FLTP  string
