@@ -373,7 +373,7 @@ namespace eval "mount" {
     server::setdata "unparked" true
   }
   
-  proc checkhardware {} {
+  proc checkhardware {what} {
     if {$opentsi::readystate != 1.0} {
       error "state is \"$opentsi::readystatetext\"."
     }

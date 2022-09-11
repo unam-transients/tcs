@@ -826,10 +826,18 @@ namespace eval "mount" {
     server::setdata "unparked" true
   }
   
-  proc checkhardware {} {
+  proc checkhardware {what} {
     variable state
-    if {![string equal $state "operational"]} {
-      error "state is \"$state\"."
+    switch $what {
+      "initialize" -
+      "reset" -
+      "reboot" {
+      }
+      default {
+        if {![string equal $state "operational"]} {
+          error "state is \"$state\"."
+        }
+      }
     }
   }
 

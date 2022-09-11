@@ -2,8 +2,6 @@
 
 # This file is part of the UNAM telescope control system.
 
-# $Id: mount.tcl 3594 2020-06-10 14:55:51Z Alan $
-
 ########################################################################
 
 # Copyright © 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
@@ -940,48 +938,49 @@ namespace eval "mount" {
   proc initialize {} {
     server::checkstatus
     server::checkactivityforinitialize
-    checkhardware
+    checkhardware "initialize"
     server::newactivitycommand "initializing" "idle" mount::initializeactivitycommand 1200000
   }
 
   proc open {} {
     server::checkstatus
     server::checkactivityformove
-    checkhardware
+    checkhardware "open"
     server::newactivitycommand "opening" "idle" mount::openactivitycommand 1200000
   }
 
   proc stop {} {
     server::checkstatus
     server::checkactivityforstop
-    checkhardware
+    checkhardware "stop"
     server::newactivitycommand "stopping" [server::getstoppedactivity] mount::stopactivitycommand
   }
 
   proc reset {} {
     server::checkstatus
     server::checkactivityforreset
-    checkhardware
+    checkhardware "reset"
     server::newactivitycommand "resetting" [server::getstoppedactivity] mount::resetactivitycommand
   }
 
   proc reboot {} {
     server::checkstatus
     server::checkactivityforreset
+    checkhardware "reboot"
     server::newactivitycommand "rebooting" [server::getstoppedactivity] mount::rebootactivitycommand
   }
 
   proc preparetomove {} {
     server::checkstatus
     server::checkactivityformove
-    checkhardware
+    checkhardware "preparetomove"
     server::newactivitycommand "preparingtomove" "preparedtomove" mount::preparetomoveactivitycommand
   }
 
   proc move {} {
     server::checkstatus
     server::checkactivity "preparedtomove"
-    checkhardware
+    checkhardware "move"
     if {[catch {client::checkactivity "target" "idle"} message]} {
       stop
       error "move cancelled because $message"
@@ -992,7 +991,7 @@ namespace eval "mount" {
   proc park {} {
     server::checkstatus
     server::checkactivity "preparedtomove"
-    checkhardware
+    checkhardware "park"
     if {[catch {client::checkactivity "target" "idle"} message]} {
       stop
       error "parking cancelled because $message"
@@ -1003,7 +1002,7 @@ namespace eval "mount" {
   proc unpark {} {
     server::checkstatus
     server::checkactivity "preparedtomove"
-    checkhardware
+    checkhardware "unpark"
     if {[catch {client::checkactivity "target" "idle"} message]} {
       stop
       error "unparking cancelled because $message"
@@ -1014,14 +1013,14 @@ namespace eval "mount" {
   proc preparetotrack {} {
     server::checkstatus
     server::checkactivityformove
-    checkhardware
+    checkhardware "preparetotrack"
     server::newactivitycommand "preparingtotrack" "preparedtotrack" mount::preparetotrackactivitycommand
   }
 
   proc track {} {
     server::checkstatus
     server::checkactivity "preparedtotrack"
-    checkhardware
+    checkhardware "track"
     if {[catch {client::checkactivity "target" "tracking"} message]} {
       stop
       error "move cancelled because $message"
@@ -1032,7 +1031,7 @@ namespace eval "mount" {
   proc offset {} {
     server::checkstatus
     server::checkactivity "preparedtotrack"
-    checkhardware
+    checkhardware "offset"
     if {[catch {client::checkactivity "target" "tracking"} message]} {
       stop
       error "move cancelled because $message"
@@ -1040,31 +1039,10 @@ namespace eval "mount" {
     server::newactivitycommand "offsetting" "tracking" mount::offsetactivitycommand
   }
 
-  proc guide {alphaoffset deltaoffset} {
-    server::checkstatus
-    server::checkactivity "tracking"
-    checkhardware
-    set alphaoffset [astrometry::parseangle $alphaoffset dms]
-    set deltaoffset [astrometry::parseangle $deltaoffset dms]
-    log::debug [format "offsetting %s E and %s N to correct guiding." [astrometry::formatoffset $alphaoffset] [astrometry::formatoffset $deltaoffset]]
-    offsetcommand push $alphaoffset $deltaoffset
-    return
-    
-    set totaloffset [expr {sqrt($alphaoffset * $alphaoffset + $deltaoffset * $deltaoffset)}]
-    variable allowedguideoffset
-    if {$totaloffset > $allowedguideoffset} {
-      log::warning "requested guide offset is too large."
-      return
-    } else {
-      offsetcommand push $alphaoffset $deltaoffset
-    }
-    return
-  }
-  
   proc correct {solvedmountalpha solvedmountdelta equinox} {
     server::checkstatus
     server::checkactivity "tracking"
-    checkhardware
+    checkhardware "correct"
     set solvedmountalpha [astrometry::parsealpha $solvedmountalpha]
     set solvedmountdelta [astrometry::parsedelta $solvedmountdelta]
     set start [utcclock::seconds]
