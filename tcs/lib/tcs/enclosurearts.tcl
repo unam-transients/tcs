@@ -216,14 +216,14 @@ namespace eval "enclosure" {
   ######################################################################
   
   proc dostart {} {
-    controller::sendcommand "#010000\n"
+    controller::sendcommand "#010000\r"
   }
   
   proc doinitialize {} {
-    controller::sendcommand "#010004\n"
-    controller::sendcommand "#010002\n"
+    controller::sendcommand "#010004\r"
+    controller::sendcommand "#010002\r"
     settle
-    controller::sendcommand "#010000\n"
+    controller::sendcommand "#010000\r"
   }
   
   proc doopen {position} {
@@ -231,7 +231,7 @@ namespace eval "enclosure" {
       # We can't move directly from a larger to a smaller position. So, we
       # close first. Strictly speaking, this is not necessary if we move
       # from 60 to 120, but it doesn't seem worthwhile to optimize this case.
-      controller::sendcommand "#010002\n"
+      controller::sendcommand "#010002\r"
       settle
     }
     if {$position == 60} {
@@ -241,26 +241,26 @@ namespace eval "enclosure" {
     } else {
       set selector [expr 0x00]
     }
-    controller::sendcommand [format "#0100%02X\n" [expr {$selector | 1}]]
+    controller::sendcommand [format "#0100%02X\r" [expr {$selector | 1}]]
     settle
-    controller::sendcommand [format "#0100%02X\n" [expr {$selector | 0}]]
+    controller::sendcommand [format "#0100%02X\r" [expr {$selector | 0}]]
   }
   
   proc doclose {} {
-    controller::sendcommand "#010002\n"
+    controller::sendcommand "#010002\r"
     settle
-    controller::sendcommand "#010000\n"
+    controller::sendcommand "#010000\r"
   }
   
   proc doreset {} {
     controller::flushcommandqueue
-    controller::sendcommand "#010004\n"
-    controller::sendcommand "#010000\n"
+    controller::sendcommand "#010004\r"
+    controller::sendcommand "#010000\r"
   }
   
   proc dostop {} {
     controller::flushcommandqueue
-    controller::sendcommand "#010000\n"
+    controller::sendcommand "#010000\r"
   }
   
   ######################################################################
