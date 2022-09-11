@@ -36,6 +36,7 @@ namespace eval "controller" {
 
   variable host
   variable port
+  variable translation { "auto" "binary" }
   variable connectiontype "ephemeral"
   variable statuscommand
   variable timeoutmilliseconds
@@ -73,16 +74,16 @@ namespace eval "controller" {
   proc openchannel {} {
     variable host
     variable port
+    variable translation
     variable channel
     log::debug "controller: opening channel $host:$port."
     set channel [socket -async $host $port]
     chan configure $channel -blocking false
     chan configure $channel -buffering "line"
     chan configure $channel -encoding "ascii"
-    # The serial devices connected to the Lantronics serial port server at
-    # COATLI and DDOTI need "auto" input translation.
-    # The COLIBRI PLC needs "auto" input translation.
-    chan configure $channel -translation {"auto" "binary"}
+    if {![string equal "" $translation]} {
+      chan configure $channel -translation $translation
+    }
   }
 
   proc closechannel {} {
