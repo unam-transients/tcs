@@ -80,7 +80,6 @@ dst="$1"
 cd "$tcsprefix"/var/tcs
 while true
 do
-  ls -l latest/C0
   find . -name "*C[0-9]?c.fits.hdr" |
   while read hdr
   do
