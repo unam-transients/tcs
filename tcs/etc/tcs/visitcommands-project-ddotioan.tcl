@@ -222,14 +222,14 @@ proc alertprologvisit {} {
   log::summary "alertprologvisit: focusing with binning 4."
   executor::waituntiltracking
   executor::focus 8000 800 true true 1
-#  executor::setwindow "2kx2k"
-#  executor::setbinning 2
-#  log::summary "alertprologvisit: focusing with binning 2."
-#  executor::focus 4000 400 true 2
-#  executor::setwindow "1kx1k"
-#  executor::setbinning 1
-#  log::summary "alertprologvisit: focusing with binning 1."
-#  executor::focus 4000 400 true 4
+  executor::setwindow "2kx2k"
+  executor::setbinning 2
+  log::summary "alertprologvisit: focusing with binning 2."
+  executor::focus 4000 400 true 2
+  executor::setwindow "1kx1k"
+  log::summary "alertprologvisit: focusing with binning 1."
+  executor::setbinning 1
+  executor::focus 4000 400 true 4
   executor::setfocused
 
   # Then correct pointing
@@ -499,12 +499,12 @@ proc allskyprologvisit {} {
   
   client::update "target"
   set zenithdistance [client::getdata "target" "observedzenithdistance"]
-#  if {$zenithdistance > [astrometry::parsedistance "45d"]} {
+  if {$zenithdistance > [astrometry::parsedistance "45d"]} {
     log::summary "allskyprologvisit: focusing with binning 4."
     executor::setwindow "2kx2k"
     executor::setbinning 4
     executor::focus 12000 1200 true true 1
-#  }
+  }
 
   log::summary "allskyprologvisit: focusing with binning 2."
   executor::setwindow "2kx2k"
@@ -561,20 +561,20 @@ proc initialfocusvisit {} {
   log::summary "initialfocusvisit: focusing with binning 4."
   executor::waituntiltracking
   executor::focus 8000 800 true true 1
-#  executor::setwindow "2kx2k"
-#  executor::setbinning 2
-#  log::summary "initialfocusvisit: focusing with binning 2."
-#  executor::focus 4000 400 true 2
-#  executor::setwindow "1kx1k"
-#  executor::setbinning 1
-#  log::summary "initialfocusvisit: focusing with binning 1."
-#  executor::focus 4000 400 true 4
+  executor::setwindow "2kx2k"
+  executor::setbinning 2
+  log::summary "initialfocusvisit: focusing with binning 2."
+  executor::focus 4000 400 true 2
+  executor::setwindow "1kx1k"
+  executor::setbinning 1
+  log::summary "initialfocusvisit: focusing with binning 1."
+  executor::focus 4000 400 true 4
   executor::setfocused
 
-#  log::summary "initialfocusvisit: taking tilt witness."
-#  executor::setwindow "default"
-#  executor::setbinning 1
-#  executor::expose object 4
+  log::summary "initialfocusvisit: taking tilt witness."
+  executor::setwindow "default"
+  executor::expose object 4
+  executor::setbinning 1
 
   log::summary "initialfocusvisit: finished."
 
@@ -607,14 +607,14 @@ proc focusvisit {} {
   executor::waituntiltracking
   log::summary "focusvisit: focusing with binning 4."
   executor::focus 8000 800 true false 1
-#  executor::setwindow "2kx2k"
-#  executor::setbinning 2
-#  log::summary "focusvisit: focusing with binning 2."
-#  executor::focus 4000 400 true 2
-#  executor::setwindow "1kx1k"
-#  executor::setbinning 1
-#  log::summary "focusvisit: focusing with binning 1."
-#  executor::focus 4000 400 true 4
+  executor::setwindow "2kx2k"
+  executor::setbinning 2
+  log::summary "focusvisit: focusing with binning 2."
+  executor::focus 4000 400 true 2
+  executor::setwindow "1kx1k"
+  executor::setbinning 1
+  log::summary "focusvisit: focusing with binning 1."
+  executor::focus 4000 400 true 4
   executor::setfocused
 
   log::summary "focusvisit: finished."
@@ -645,49 +645,49 @@ proc fullfocusvisit {range binning exposuretime} {
 
 proc focusmapvisit {args} {
 
-#   log::summary "focusmapvisit: starting."
-#   
-#   set ha    [visit::observedha]
-#   set delta [visit::observeddelta]
-# 
-#   log::summary "focusmapvisit: focusing first at +1h +30d."
-#   visit::settargetcoordinates fixed +1h +30d now
-#   executor::tracktopocentric
-#   executor::waituntiltracking
-#   
-#   set detectors [client::getdata instrument detectors]
-#   
-#   foreach detector $detectors {
-#     client::request $detector "movefocuser 32767"
-#   } 
-#   foreach detector $detectors {
-#     client::wait $detector
-#   }
-#   
-#   executor::setwindow "2kx2k"
-#   executor::setreadmode 16MHz
-#   executor::setbinning 4
-#   executor::focus 12000 1200 false 5
-#   executor::setwindow "1kx1k"
-#   executor::setreadmode 16MHz
-#   executor::setbinning 2
-#   executor::focus 8000 800 true 5
-#   executor::setfocused
-# 
-#   log::summary "focusmapvisit: setting focusers to 32767"
-#   executor::setfocuser 32767
-# 
-#   log::summary "focusmapvisit: focusing at $ha $delta."
-#   visit::settargetcoordinates fixed $ha $delta now
-#   executor::tracktopocentric  
-#   executor::waituntiltracking
-#   executor::setwindow "2kx2k"
-#   executor::setreadmode 16MHz
-#   executor::setbinning 4
-#   executor::focus 12000 1200 false 5
-#   executor::setwindow "1kx1k"
-#   executor::setbinning 2
-#   executor::focus 8000 800 true 5
+   log::summary "focusmapvisit: starting."
+   
+   set ha    [visit::observedha]
+   set delta [visit::observeddelta]
+ 
+   log::summary "focusmapvisit: focusing first at +1h +30d."
+   visit::settargetcoordinates fixed +1h +30d now
+   executor::tracktopocentric
+   executor::waituntiltracking
+   
+   set detectors [client::getdata instrument detectors]
+   
+   foreach detector $detectors {
+     client::request $detector "movefocuser 32767"
+   } 
+   foreach detector $detectors {
+     client::wait $detector
+   }
+   
+   executor::setwindow "2kx2k"
+   executor::setreadmode 16MHz
+   executor::setbinning 4
+   executor::focus 12000 1200 false 5
+   executor::setwindow "1kx1k"
+   executor::setreadmode 16MHz
+   executor::setbinning 2
+   executor::focus 8000 800 true 5
+   executor::setfocused
+ 
+   log::summary "focusmapvisit: setting focusers to 32767"
+   executor::setfocuser 32767
+ 
+   log::summary "focusmapvisit: focusing at $ha $delta."
+   visit::settargetcoordinates fixed $ha $delta now
+   executor::tracktopocentric  
+   executor::waituntiltracking
+   executor::setwindow "2kx2k"
+   executor::setreadmode 16MHz
+   executor::setbinning 4
+   executor::focus 12000 1200 false 5
+   executor::setwindow "1kx1k"
+   executor::setbinning 2
+   executor::focus 8000 800 true 5
 
   return true
 }
