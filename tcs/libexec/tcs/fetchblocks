@@ -67,9 +67,9 @@ cd "$etcdir"
 ################################################################################
 
 log info "cloning from $url to blocks.new/."
-rm -rf blocks.new
-mkdir blocks.new
-if ! git clone -q $url blocks.new/
+sudo rm -rf blocks.new
+sudo mkdir blocks.new
+if ! sudo git clone -q $url blocks.new/
 then
   error "clone failed."
 fi
@@ -77,13 +77,13 @@ fi
 ################################################################################
 
 log info "moving blocks/ to blocks.old/."
-rm -rf blocks.old
-mv blocks blocks.old
+sudo rm -rf blocks.old
+sudo mv blocks blocks.old
 
 ################################################################################
 
 log info "moving blocks.new/ to blocks/."
-mv blocks.new blocks
+sudo mv blocks.new blocks
 
 ################################################################################
 

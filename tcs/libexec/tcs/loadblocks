@@ -78,7 +78,7 @@ log info "generating blocks."
 for script in *.sh
 do
   log info "running $script generate."
-  sh $script generate
+  sudo sh $script generate
 done
 
 ################################################################################
@@ -130,10 +130,10 @@ do
   if test "$action" = "load"
   then
     log info "loading $dst."
-    cp "$src" "$queuedir"/"$dst"
+    sudo cp "$src" "$queuedir"/"$dst"
   else
     log info "unloading $dst."
-    rm -f "$queuedir"/"$dst"
+    sudo rm -f "$queuedir"/"$dst"
   fi
 done
 
@@ -144,7 +144,7 @@ log info "cleaning generated blocks."
 for script in *.sh
 do
   log info "running $script clean."
-  sh $script clean
+  sudo sh $script clean
 done
 
 ################################################################################
