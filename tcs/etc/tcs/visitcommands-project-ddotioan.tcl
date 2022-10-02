@@ -221,15 +221,15 @@ proc alertprologvisit {} {
   executor::setbinning 4
   log::summary "alertprologvisit: focusing with binning 4."
   executor::waituntiltracking
-  executor::focus 8000 800 true true 1
+  executor::focus 1 8000 800 false true
   executor::setwindow "2kx2k"
   executor::setbinning 2
   log::summary "alertprologvisit: focusing with binning 2."
-  executor::focus 4000 400 true 2
+  executor::focus 2 4000 400 false false
   executor::setwindow "1kx1k"
   log::summary "alertprologvisit: focusing with binning 1."
   executor::setbinning 1
-  executor::focus 4000 400 true 4
+  executor::focus 4 4000 400 false true
   executor::setfocused
 
   # Then correct pointing
@@ -503,13 +503,19 @@ proc allskyprologvisit {} {
     log::summary "allskyprologvisit: focusing with binning 4."
     executor::setwindow "2kx2k"
     executor::setbinning 4
-    executor::focus 12000 1200 true true 1
+    executor::focus 1 12000 1200 false true
   }
 
   log::summary "allskyprologvisit: focusing with binning 2."
   executor::setwindow "2kx2k"
   executor::setbinning 2
-  executor::focus 4000 400 true true 2
+  executor::focus 2 4000 400 false false
+  executor::setfocused
+
+  log::summary "allskyprologvisit: focusing with binning 1."
+  executor::setwindow "1kx1k"
+  executor::setbinning 1
+  executor::focus 4 4000 400 true false
   executor::setfocused
 
   # Then correct pointing
@@ -560,15 +566,15 @@ proc initialfocusvisit {} {
   executor::setbinning 4
   log::summary "initialfocusvisit: focusing with binning 4."
   executor::waituntiltracking
-  executor::focus 8000 800 true true 1
+  executor::focus 1 8000 800 false true
   executor::setwindow "2kx2k"
   executor::setbinning 2
   log::summary "initialfocusvisit: focusing with binning 2."
-  executor::focus 4000 400 true 2
+  executor::focus 2 4000 400 false false
   executor::setwindow "1kx1k"
   executor::setbinning 1
   log::summary "initialfocusvisit: focusing with binning 1."
-  executor::focus 4000 400 true 4
+  executor::focus 4 4000 400 true false
   executor::setfocused
 
   log::summary "initialfocusvisit: taking tilt witness."
@@ -606,15 +612,15 @@ proc focusvisit {} {
   executor::setbinning 4
   executor::waituntiltracking
   log::summary "focusvisit: focusing with binning 4."
-  executor::focus 8000 800 true false 1
+  executor::focus 1 8000 800 false true
   executor::setwindow "2kx2k"
   executor::setbinning 2
   log::summary "focusvisit: focusing with binning 2."
-  executor::focus 4000 400 true 2
+  executor::focus 2 4000 400 false false
   executor::setwindow "1kx1k"
   executor::setbinning 1
   log::summary "focusvisit: focusing with binning 1."
-  executor::focus 4000 400 true 4
+  executor::focus 4 4000 400 true false
   executor::setfocused
 
   log::summary "focusvisit: finished."
@@ -634,7 +640,7 @@ proc fullfocusvisit {range binning exposuretime} {
   executor::waituntiltracking
   
   log::summary "fullfocusvisit: focusing with binning $binning."
-  executor::focus $range [expr {$range / 10}] false true $exposuretime
+  executor::focus $exposuretime $range [expr {$range / 10}] false true
   
   log::summary "fullfocusvisit: finished."
 
@@ -667,15 +673,15 @@ proc focusmapvisit {args} {
    executor::setwindow "2kx2k"
    executor::setreadmode 16MHz
    executor::setbinning 4
-   executor::focus 12000 1200 false 5
+   executor::focus 1 12000 1200 false true
    executor::setwindow "1kx1k"
    executor::setreadmode 16MHz
    executor::setbinning 2
-   executor::focus 8000 800 true 5
+   executor::focus 2 8000 800 true
    executor::setfocused
  
-   log::summary "focusmapvisit: setting focusers to 32767"
-   executor::setfocuser 32767
+#   log::summary "focusmapvisit: setting focusers to 32767"
+#   executor::setfocuser 32767
  
    log::summary "focusmapvisit: focusing at $ha $delta."
    visit::settargetcoordinates fixed $ha $delta now
@@ -684,10 +690,10 @@ proc focusmapvisit {args} {
    executor::setwindow "2kx2k"
    executor::setreadmode 16MHz
    executor::setbinning 4
-   executor::focus 12000 1200 false 5
+   executor::focus 1 12000 1200 false false
    executor::setwindow "1kx1k"
    executor::setbinning 2
-   executor::focus 8000 800 true 5
+   executor::focus 2 8000 800 true false
 
   return true
 }

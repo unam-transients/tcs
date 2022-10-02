@@ -384,14 +384,14 @@ namespace eval "executor" {
     log::info [format "finished setting focuser after %.1f seconds." [utcclock::diff now $start]]
   }
   
-  proc focus {range step witness args} {
+  proc focus {exposuretime range step {witness false} {initial false}} {
     set start [utcclock::seconds]
     log::info "focusing with range $range and step $step."
     set projectfullidentifier [server::getdata "projectfullidentifier"]
     set fitsfileprefix "[directories::vartoday]/executor/images/[project::fullidentifier [project]]/[block::identifier [block]]/[visit::identifier [visit]]/"
     log::info "FITS file prefix is $fitsfileprefix."
     file mkdir [file dirname $fitsfileprefix]
-    client::request "instrument" "focus $fitsfileprefix $range $step $witness $args"
+    client::request "instrument" "focus $fitsfileprefix $range $step $witness $initial $exposuretime"
     client::wait "instrument"
     log::info [format "finished focusing after %.1f seconds." [utcclock::diff now $start]]
   }
