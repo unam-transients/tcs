@@ -649,26 +649,16 @@ proc fullfocusvisit {range binning exposuretime} {
 
 ########################################################################
 
-proc focusmapvisit {args} {
+proc focusmapvisit {} {
 
    log::summary "focusmapvisit: starting."
    
-   set ha    [visit::observedha]
-   set delta [visit::observeddelta]
- 
-   log::summary "focusmapvisit: focusing first at +1h +30d."
-   visit::settargetcoordinates fixed +1h +30d now
+   set ha    [visit::observedha    [executor::visit]]
+   set delta [visit::observeddelta [executor::visit]]
+   log::summary "focusmapvisit: focusing at $ha $delta."
+
    executor::tracktopocentric
    executor::waituntiltracking
-   
-   set detectors [client::getdata instrument detectors]
-   
-   foreach detector $detectors {
-     client::request $detector "movefocuser 32767"
-   } 
-   foreach detector $detectors {
-     client::wait $detector
-   }
    
    executor::setwindow "2kx2k"
    executor::setreadmode 16MHz
@@ -677,23 +667,9 @@ proc focusmapvisit {args} {
    executor::setwindow "1kx1k"
    executor::setreadmode 16MHz
    executor::setbinning 2
-   executor::focus 2 8000 800 true
-   executor::setfocused
- 
-#   log::summary "focusmapvisit: setting focusers to 32767"
-#   executor::setfocuser 32767
- 
-   log::summary "focusmapvisit: focusing at $ha $delta."
-   visit::settargetcoordinates fixed $ha $delta now
-   executor::tracktopocentric  
-   executor::waituntiltracking
-   executor::setwindow "2kx2k"
-   executor::setreadmode 16MHz
-   executor::setbinning 4
-   executor::focus 1 12000 1200 false false
-   executor::setwindow "1kx1k"
-   executor::setbinning 2
    executor::focus 2 8000 800 true false
+ 
+   log::summary "focusmapvisit: finished."
 
   return true
 }
