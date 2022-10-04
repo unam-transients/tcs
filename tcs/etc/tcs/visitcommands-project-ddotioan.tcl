@@ -655,7 +655,7 @@ proc focusmapvisit {} {
    
    set ha    [visit::observedha    [executor::visit]]
    set delta [visit::observeddelta [executor::visit]]
-   log::summary "focusmapvisit: focusing at $ha $delta."
+   log::summary [format "focusmapvisit: focusing at %s %s." [astrometry::formatha $ha]  [astrometry::formatdelta $delta]]
 
    executor::tracktopocentric
    executor::waituntiltracking
