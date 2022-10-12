@@ -244,15 +244,18 @@ proc coarsefocusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefa
   log::summary "coarsefocusvisit: starting."
   
   setsecondaryoffset 0
-
-  track
-  setreadmode $readmode
-  setwindow "default"
-  setbinning 4
-  movefilterwheel "$filter"
-  waituntiltracking
-  log::summary "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning 4."
-  focussecondary C0 $exposuretime 500 50 false true
+  movesecondarytoinitial
+  
+  if {$false} {
+    track
+    setreadmode $readmode
+    setwindow "default"
+    setbinning 4
+    movefilterwheel "$filter"
+    waituntiltracking
+    log::summary "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning 4."
+    focussecondary C0 $exposuretime 500 50 false true
+  }
   
   log::summary "coarsefocusvisit: finished."
 
@@ -261,7 +264,7 @@ proc coarsefocusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefa
 
 ########################################################################
 
-proc focusvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
+proc focusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}} {
 
   log::summary "focusvisit: starting."
   track
@@ -284,7 +287,7 @@ proc focusvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} 
 
 ########################################################################
 
-proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
+proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}} {
 
   log::summary "focuswitnessvisit: starting."
 
@@ -332,7 +335,7 @@ proc initialpointingcorrectionvisit {{exposuretime 30} {filter "i"} {readmode "c
   tracktopocentric
   setreadmode $readmode
   setwindow "default"
-  setbinning 1
+  setbinning 2
   movefilterwheel $filter
   waituntiltracking
 
