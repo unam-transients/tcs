@@ -190,20 +190,30 @@ namespace eval "supervisor" {
           set why "weather"
 
         } elseif {
+          [client::getdata "weather" "humidity"] > 0.75 &&
           $open &&
           ![string equal $internalhumiditysensor ""] &&
           [client::getdata "sensors" "$internalhumiditysensor"] > 0.85
         } {
+
+          # In this and the next clause, we only pay attention to the internal
+          # humidity sensor if the external humidity is above 75%, on the basis
+          # that if the external humidity is less than 75% then interchange with
+          # external air will rapidly reduce the internal humidity.
 
           set maybeopen false
           set maybeopentocool false
           set why "internal humidity"
 
         } elseif {
+          [client::getdata "weather" "humidity"] > 0.75 &&
           $closed &&
           ![string equal $internalhumiditysensor ""] &&
           [client::getdata "sensors" "$internalhumiditysensor"] > 0.80
         } {
+        
+          # See the previous comment for an explanation of the check on the
+          # external humidity.
 
           set maybeopen false
           set maybeopentocool false
