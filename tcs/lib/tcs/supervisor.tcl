@@ -102,29 +102,12 @@ namespace eval "supervisor" {
       
       log::debug "loop: mode is $mode."
 
-      if {[string equal $mode "disabled"]} {
-
-        log::debug "loop: continue: mode is disabled."
-        set delay 1000
-        continue
-
-      }
-            
-      if {[string equal $mode "error"]} {
-
-        log::debug "loop: continue: mode is error."
-        set delay 1000
-        continue
-
-      }
-            
       set mustdisable false
 
       if {[string equal $mode "closed"]} {
 
         set maybeopen false
         set maybeopentocool false
-        set why "mode is closed"
         set why "mode is closed"
         
       } elseif {
@@ -179,57 +162,10 @@ namespace eval "supervisor" {
         log::debug "loop: skystate is $skystate." 
         log::debug "loop: morning is $morning." 
         log::debug "loop: end of day in [format "%.0f" [expr {$endofdayseconds - $seconds}]] seconds." 
-
-        if {
-          ![string equal $mode "open"] &&
-          [client::getdata "weather" "mustbeclosed"]
-        } {
-
-          set maybeopen false
-          set maybeopentocool false
-          set why "weather"
-
-        } elseif {
-          [client::getdata "weather" "humidity"] > 0.75 &&
-          $open &&
-          ![string equal $internalhumiditysensor ""] &&
-          [client::getdata "sensors" "$internalhumiditysensor"] > 0.85
-        } {
-
-          # In this and the next clause, we only pay attention to the internal
-          # humidity sensor if the external humidity is above 75%, on the basis
-          # that if the external humidity is less than 75% then interchange with
-          # external air will rapidly reduce the internal humidity.
-
-          set maybeopen false
-          set maybeopentocool false
-          set why "internal humidity"
-
-        } elseif {
-          [client::getdata "weather" "humidity"] > 0.75 &&
-          $closed &&
-          ![string equal $internalhumiditysensor ""] &&
-          [client::getdata "sensors" "$internalhumiditysensor"] > 0.80
-        } {
         
-          # See the previous comment for an explanation of the check on the
-          # external humidity.
+        # First determine if the Sun allows us to open.
 
-          set maybeopen false
-          set maybeopentocool false
-          set why "internal humidity"
-
-        } elseif {
-          ![string equal $mode "open"] &&
-          $withplc &&
-          [client::getdata "plc" "mustbeclosed"]
-        } {
-
-          set maybeopen false
-          set maybeopentocool false
-          set why "plc"
-
-        } elseif {[string equal $skystate "night"] || [string equal $skystate "astronomicaltwilight"]} {
+        if {[string equal $skystate "night"] || [string equal $skystate "astronomicaltwilight"]} {
 
           set maybeopen true
           set maybeopentocool true
@@ -267,6 +203,63 @@ namespace eval "supervisor" {
           set why "evening $skystate"
 
         }
+        
+        # Now determine if the weather/sensors override the Sun.
+        
+        if {$maybeopen || $maybeopentocool} {
+
+          if {
+            ![string equal $mode "open"] &&
+            [client::getdata "weather" "mustbeclosed"]
+          } {
+
+            set maybeopen false
+            set maybeopentocool false
+            set why "weather"
+
+          } elseif {
+            [client::getdata "weather" "humidity"] > 0.75 &&
+            $open &&
+            ![string equal $internalhumiditysensor ""] &&
+            [client::getdata "sensors" "$internalhumiditysensor"] > 0.85
+          } {
+
+            # In this and the next clause, we only pay attention to the internal
+            # humidity sensor if the external humidity is above 75%, on the basis
+            # that if the external humidity is less than 75% then interchange with
+            # external air will rapidly reduce the internal humidity.
+
+            set maybeopen false
+            set maybeopentocool false
+            set why "internal humidity"
+
+          } elseif {
+            [client::getdata "weather" "humidity"] > 0.75 &&
+            $closed &&
+            ![string equal $internalhumiditysensor ""] &&
+            [client::getdata "sensors" "$internalhumiditysensor"] > 0.80
+          } {
+        
+            # See the previous comment for an explanation of the check on the
+            # external humidity.
+
+            set maybeopen false
+            set maybeopentocool false
+            set why "internal humidity"
+
+          } elseif {
+            ![string equal $mode "open"] &&
+            $withplc &&
+            [client::getdata "plc" "mustbeclosed"]
+          } {
+
+            set maybeopen false
+            set maybeopentocool false
+            set why "plc"
+
+          }
+
+        }
 
       }
 
@@ -278,6 +271,22 @@ namespace eval "supervisor" {
       log::debug "loop: maybeopentocool is $maybeopentocool."
       log::debug "loop: why is $why."
 
+      if {[string equal $mode "disabled"]} {
+
+        log::debug "loop: continue: mode is disabled."
+        set delay 1000
+        continue
+
+      }
+            
+      if {[string equal $mode "error"]} {
+
+        log::debug "loop: continue: mode is error."
+        set delay 1000
+        continue
+
+      }
+            
       if {[catch {client::update "executor"} message]} {
         log::debug "loop: continue: unable to update executor data: $message"
         set delay 1000
