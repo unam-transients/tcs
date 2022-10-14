@@ -246,7 +246,7 @@ proc coarsefocusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefa
   setsecondaryoffset 0
   movesecondarytoinitial
   
-  if {$false} {
+  if {false} {
     track
     setreadmode $readmode
     setwindow "default"
