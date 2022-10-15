@@ -528,6 +528,16 @@ namespace eval "selector" {
     return
   }
   
+  proc refocus {} {
+    log::info "requesting refocus."
+    setunfocused
+    variable mode
+    if {[string equal [server::getactivity] "executing"]} {
+      client::request "executor" "stop"
+    }
+    log::info "finished requesting refocus."
+  }
+  
   proc writealerts {} {
     set tmpfilename [file join [directories::var] "alerts.json.[pid]"]
     set channel [open $tmpfilename "w"]

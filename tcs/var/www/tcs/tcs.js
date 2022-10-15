@@ -234,6 +234,9 @@ $(function () {
   $("form#selector-disable").submit(function () {
     return submitrequest("selector disable");
   });
+  $("form#selector-refocus").submit(function () {
+    return submitrequest("selector refocus");
+  });
   $("form#telescope-stop").submit(function () {
     return submitrequest("telescope stop");
   });

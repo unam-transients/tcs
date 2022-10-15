@@ -65,7 +65,7 @@ catch {
   package require log
   package require client
   
-  log::info "requesting \"$request\"." "web"
+  log::summary "requesting \"$request\"." "web"
 
   chan configure stdout -translation "crlf"
   chan configure stdout -encoding "utf-8"
