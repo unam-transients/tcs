@@ -123,7 +123,7 @@ namespace eval "gcntan" {
       set timestamp [utcclock::combinedformat]
 
       if {[string length $rawpacket] != $packetlength} {
-        log::error "packet length is [string length $rawpacket]."
+        log::warning "packet length is [string length $rawpacket]."
         break
       }
     
@@ -1456,7 +1456,7 @@ namespace eval "gcntan" {
     variable serving
     set serving true
     if {[catch {readloop $channel} message]} {
-      log::error "while serving connection from [servername $address] ($address): $message"
+      log::warning "while serving connection from [servername $address] ($address): $message"
     }
     log::info "closing connection from [servername $address] ($address)."
     catch {close $channel}
