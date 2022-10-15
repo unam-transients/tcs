@@ -67,6 +67,10 @@ namespace eval "selectorserver" {
     selector::setunfocused
   }
   
+  proc slaverefocus {} {
+    selector::refocus
+  }
+  
   proc slavewritealerts {} {
     selector::writealerts
   }
@@ -80,6 +84,7 @@ namespace eval "selectorserver" {
     interp alias $slave respondtolvcalert {} selectorserver::slaverespondtolvcalert
     interp alias $slave setfocused        {} selectorserver::slavesetfocused
     interp alias $slave setunfocused      {} selectorserver::slavesetunfocused
+    interp alias $slave refocus           {} selectorserver::slaverefocus
     interp alias $slave writealerts       {} selectorserver::slavewritealerts
   }
 
