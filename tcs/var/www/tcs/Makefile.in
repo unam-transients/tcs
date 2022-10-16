@@ -73,6 +73,7 @@ installs_project_ddotioan	:=		     \
 	webcam-b-project-ddotioan.html		 \
 	webcam-c-project-ddotioan.html		 \
 	webcam-cz-project-ddotioan.html      \
+	plots-project-ddotioan.html          \
 	plots-project-ddotioan.sh
 
 installs_project_colibricu	:=		     \
