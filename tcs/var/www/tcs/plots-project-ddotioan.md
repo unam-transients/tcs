@@ -21,12 +21,28 @@ PERFORMANCE OF THIS SOFTWARE.
 
 ----------------------------------------------------------------------->
 
-# DDOTI
+# DDOTI Plots
 
-This is the mountain-top web site for the DDOTI project at the
-[OAN/SPM](http://www.astrossp.unam.mx).
+* CCDs: 
+  + [1 day](plots/ccds-1.png) 
+  + [4 days](plots/ccds-4.png) 
+  + [30 days](plots/ccds-30.png) 
+  + [120 days](plots/ccds-120.png)
+  + [360 days](plots/ccds-360.png) 
+  + [1600 days](plots/ccds-1600.png)
+* Shed and Enclosure: 
+  + [1 day](plots/building-1.png)
+  + [4 days](plots/building-4.png)
+  + [30 days](plots/building-30.png)
+  + [120 days](plots/instrument-120.png)
+  + [360 days](plots/building-360.png)
+  + [1600 days](plots/building-1600.png)
+* Weather:
+  + [1 day](plots/weather-1.png)
+  + [4 days](plots/weather-4.png)
+  + [30 days](plots/weather-30.png)
+  + [120 days](plots/weather-120.png)
+  + [360 days](plots/weather-360.png)
+  + [1600 days](plots/weather-1600.png)
 
-* [Operations Interface](/tcs/operations.html)
-* [Documentation](documentation.html)
-* [Analysis](http://transients.astrossp.unam.mx/ddoti/)
-* [Engineering Interface](/tcs/engineering.html)
+</hr>
