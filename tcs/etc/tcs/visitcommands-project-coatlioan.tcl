@@ -585,7 +585,7 @@ proc darksvisit {} {
     setbinning $binning
     executor::setvisit [visit::updatevisitidentifier [executor::visit] $visitidentifier]
     set i 0
-    while {$i < 10} {
+    while {$i < 5} {
       expose dark 15
       analyze levels
       incr i
