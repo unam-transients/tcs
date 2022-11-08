@@ -244,18 +244,15 @@ proc coarsefocusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefa
   log::summary "coarsefocusvisit: starting."
   
   setsecondaryoffset 0
-  movesecondarytoinitial
   
-  if {false} {
-    track
-    setreadmode $readmode
-    setwindow "default"
-    setbinning 4
-    movefilterwheel "$filter"
-    waituntiltracking
-    log::summary "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning 4."
-    focussecondary C0 $exposuretime 500 50 false true
-  }
+  track
+  setreadmode $readmode
+  setwindow "default"
+  setbinning 2
+  movefilterwheel "$filter"
+  waituntiltracking
+  log::summary "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning 2."
+  focussecondary C0 $exposuretime 300 30 false true
   
   log::summary "coarsefocusvisit: finished."
 
@@ -264,7 +261,7 @@ proc coarsefocusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefa
 
 ########################################################################
 
-proc focusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}} {
+proc focusvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
 
   log::summary "focusvisit: starting."
   track
@@ -278,8 +275,6 @@ proc focusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}}
   log::summary "focusvisit: readmode is $readmode."
   focussecondary C0 $exposuretime 100 10 true false
   
-  setfocused
-
   log::summary "focusvisit: finished."
 
   return true
@@ -287,7 +282,7 @@ proc focusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}}
 
 ########################################################################
 
-proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}} {
+proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
 
   log::summary "focuswitnessvisit: starting."
 
@@ -306,10 +301,6 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldef
     -30as -30as
     +30as -30as
     -30as +30as
-    +30as   0as
-    -30as   0as
-      0as +30as
-      0as -30as
   }
 
   executor::movefilterwheel $filter
