@@ -184,6 +184,7 @@ namespace eval "executor" {
   ######################################################################
   
   proc movesecondarytoinitial {} {
+    log::info "moving secondary to the initial postion."
     client::request "telescope" "movesecondary initialz0"
     client::wait "telescope"
   }
@@ -247,6 +248,7 @@ namespace eval "executor" {
     client::wait "telescope"
     if {$witness} {
       set i 0
+      set success true
       while {$i < 3} {
         incr i
         eval expose "focus" [lrepeat [llength $detectors] $exposuretime]
@@ -259,6 +261,7 @@ namespace eval "executor" {
           set filter       [client::getdata $detector "filter"]
           if {[string equal "$fwhm" ""]} {
             log::summary [format "$fitsfilename: witness FWHM is unknown with binning $binning in filter $filter at secondary position $z0 in $exposuretime seconds."]
+            set success false
           } else {
             log::summary [format "$fitsfilename: witness FWHM is %.2f pixels with binning $binning in filter $filter at secondary position $z0 in $exposuretime seconds." $fwhm]
             if {[catch {
@@ -278,6 +281,13 @@ namespace eval "executor" {
             }
           }
         }
+      }
+      if {$success} {
+        log::summary "focusing succeeded."
+        setfocused
+      } else {
+        log::summary "focusing failed."
+        setunfocused
       }
     }
     log::info [format "finished focusing secondary after %.1f seconds." [utcclock::diff now $start]]
