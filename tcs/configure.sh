@@ -47,10 +47,7 @@ colibriohp-*)
 coatlicu-*)
   ./configure --enable-project=coatlicu
   ;;
-test-*)
-  ./configure --enable-project=test
-  ;;
-*)
+*-test-*)
   ./configure --enable-project=test
   ;;
 esac

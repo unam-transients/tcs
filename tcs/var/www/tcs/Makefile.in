@@ -105,6 +105,7 @@ installs_project_coatlicu		:=		 \
 
 installs_project_test		:=		     \
 	operations-project-test.html		 \
+	engineering-project-test.html		 \
 	C0-project-test.html  	     		 \
 	config-project-test.js			     \
 

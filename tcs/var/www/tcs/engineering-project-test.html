@@ -55,7 +55,7 @@ $(function () {
 
 <div id="navigation">
 <a href="/">Home</a> |
-<a href="engineering.html">Engineering</a> |
+<a href="operations.html">Operations</a> |
 <a href="" onclick='newcomponent("info"         , "Info"         ); return false;'>Info</a> | 
 <a href="" onclick='newcomponent("summary"      , "Summary"      ); return false;'>Summary</a> | 
 <a href="" onclick='newcomponent("warning"      , "Warning"      ); return false;'>Warning</a> |
@@ -125,18 +125,59 @@ $(function () {
 </table>
 
 <table class="control">
-<tr><th class="control full" align="center">Lights</th></tr>
+<tr><th class="control full" align="center">Software</th></tr>
 <tr>
 <td class="control">
-<form id="lights-switchon">
-<input type="submit" value="Switch On"/>
+<form id="system-restart">
+<input type="submit" value="Restart"/>
+</form>
+</td>
+</tr>
+<tr>
+<tr>
+<td class="control">
+<form id="executor-initialize">
+<input type="submit" value="Initialize"/>
+</form>
+</td>
+</tr>
+<tr>
+<tr>
+<td class="control">
+<form id="executor-recover">
+<input type="submit" value="Recover"/>
 </form>
 </td>
 </tr>
 <tr>
 <td class="control">
-<form id="lights-switchoff">
-<input type="submit" value="Switch Off"/>
+<form id="selector-refocus">
+<input type="submit" value="Refocus"/>
+</form>
+</td>
+</tr>
+</table>
+
+<table class="control">
+<tr><th class="control full" align="center">Hardware</th></tr>
+<tr>
+<td class="control">
+<form id="system-rebootcomputers">
+<input type="submit" value="Reboot Computers"/>
+</form>
+</td>
+</tr>
+<tr>
+<td class="control">
+<form id="system-rebootinstrument">
+<input type="submit" value="Reboot Instrument"/>
+</form>
+</td>
+</tr>
+<tr>
+<td class="control">
+<form id="system-rebootplatform">
+<input type="submit" value="Reboot Platform"/>
 </form>
 </td>
 </tr>
