@@ -31,7 +31,6 @@
   "html": {
     "servers": [
       "executor",
-      "gcntan",
       "instrument",
       "moon",
       "selector",
@@ -158,8 +157,8 @@
     "filterlist": [
       "w"
     ],
-    "focusertype": "ddoti",
-    "focuseridentifier": "/dev/serial/by-path/platform-fd500000.pcie-pci-0000:01:00.0-usb-0:1.4:1.0",
+    "focusertype": "null",
+    "focuseridentifier": "null",
     "focuserinitialposition": 0,
     "focuserbacklashoffset": 0,
     "focusercorrectionmodel": {},

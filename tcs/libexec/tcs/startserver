@@ -84,8 +84,8 @@ coatlicu-control)
 coatlicu-instrument)
   allargs="C0 1 instrument"
   ;;
-test-control)
-  allargs="html gcntan 1 target 1 moon sun sensors weather C0 1 telescope instrument 1 executor selector supervisor"
+*-test-*)
+  allargs="log 1 html 1 target 1 moon sun sensors weather C0 1 telescope instrument 1 executor selector supervisor"
   ;;
 esac
 

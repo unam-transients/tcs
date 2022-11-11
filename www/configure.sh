@@ -40,7 +40,7 @@ colibriohp-services)
 coatlicu-control)
   ./configure SITE=coatlicu-control
   ;;
-test-*)
+*-test-*)
   ./configure SITE=test
   ;;
 esac
