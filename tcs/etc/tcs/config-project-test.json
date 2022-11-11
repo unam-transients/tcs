@@ -151,12 +151,22 @@
     "coolerclosedsetting": "following",
     "temperaturelimit": 40,
     "temperaturelimitoutletgroup": "",
-    "filterwheeltype": "null",
-    "filterwheelidentifier": "null",
+
+//    "filterwheeltype": "null",
+//    "filterwheelidentifier": "null",
+//    "filterwheelinitialposition": 0,
+//    "filterlist": [
+//      "w"
+//    ],
+
+    "filterwheeltype": "fli",
+//    "filterwheelidentifier": "CFW-1-8-001",
+//    "filterwheelidentifier": "CF10484516",
+    "filterwheelidentifier": "first",
     "filterwheelinitialposition": 0,
     "filterlist": [
-      "w"
     ],
+
     "focusertype": "null",
     "focuseridentifier": "null",
     "focuserinitialposition": 0,
