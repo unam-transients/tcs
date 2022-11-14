@@ -55,33 +55,3 @@ fi
 tcs request plc updateweather
 
 exit
-
-mkdir -p "$tcsprefix"/var/tcs/weather
-cd "$tcsprefix"/var/tcs/weather
-
-version="b.0"
-
-weatherstatus=""
-generalstatus=""
-while test -z "$weatherstatus" || test -z "$generalstatus"
-do
-  seconds=$(date -u "+%s")
-  weatherstatus=$(
-    echo "WeatherStatus" |
-    nc -w 1 192.168.100.28 200 | 
-    tr -d '\r' |
-    sed 's/;$//;s/;/ /g'
-  )
-  generalstatus=$(
-    echo "GeneralStatus" |
-    nc -w 1 192.168.100.28 200 | 
-    tr -d '\r' |
-    sed 'h;s/[^;]*;//;s/./& /g;x;s/;.*/ /;G' |
-    tr -d '\n'
-  )
-done
-
-timestamp=$(date -u --date=@$seconds "+%F %T")
-date=$(date -u --date=@$seconds "+%F")
-
-echo "$version $timestamp $weatherstatus $generalstatus" >>$date.txt
