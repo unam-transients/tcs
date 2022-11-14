@@ -58,7 +58,6 @@
     // FW0011318 -- firmware serial number "CFW-14-5"
     // FW0021318 -- firmware serial number "FW0021318"
     // FW0031318 -- firmware serial number "FW0031318"
-    "filterwheelidentifier": "null",
     "filterwheelinitialposition": 0,
     "filterlist": [
       "w"
@@ -199,7 +198,7 @@
   },
   "instrument": {
     "activedetectors": [
-//      "C0"
+      "C0"
     ],
     "detectors": [
       "C0"
@@ -231,13 +230,12 @@
         "type": "ibootpdu",
         "outlets": "8",
         "inlets": "1"
+      },
+      "pdu2": {
+        "type": "ibootpdu",
+        "outlets": "8",
+        "inlets": "1"
       }
-//      ,
-//      "pdu2": {
-//        "type": "ibootpdu",
-//        "outlets": "8",
-//        "inlets": "1"
-//      }
     },
     "outletgroupaddresses": {
       "firewall"            : [[ "pdu1", "a", "1"]],
@@ -247,10 +245,9 @@
       "detectors"           : [[ "pdu1", "a", "5"]],
       "blue"                : [[ "pdu1", "a", "6"]],
       "sparelinux"          : [[ "pdu1", "a", "7"]],
-      "sparewindows"        : [[ "pdu1", "a", "8"]]
-//      ,
-//      "close-electronics"   : [[ "pdu2", "a", "1"]],
-//      "blue-service-cabinet": [[ "pdu2", "a", "2"]]
+      "sparewindows"        : [[ "pdu1", "a", "8"]],
+      "close-electronics"   : [[ "pdu2", "a", "1"]],
+      "blue-service-cabinet": [[ "pdu2", "a", "2"]]
     }
   },
   "safetyswitch": {
@@ -1108,7 +1105,7 @@
         "identifier": "",
         "firmware": ""
       },
-      "weather-tempèrature": {
+      "weather-temperature": {
         "file": "/usr/local/var/tcs/sensors/services/weather-temperature",
         "prettyname": "temperature",
         "group": "environmental-sensors",
