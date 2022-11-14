@@ -629,6 +629,25 @@ proc focusvisit {} {
 
 ########################################################################
 
+proc finefocusvisit {} {
+
+  log::summary "finefocusvisit: starting."
+
+  executor::track
+  executor::setreadmode 16MHz
+  executor::waituntiltracking
+  executor::setwindow "1kx1k"
+  executor::setbinning 1
+  log::summary "focusvisit: focusing with binning 1."
+  executor::focus 4 2000 250 true false
+  executor::setfocused
+
+  log::summary "finefocusvisit: finished."
+  return false
+}
+
+########################################################################
+
 proc fullfocusvisit {range binning exposuretime} {
 
   log::summary "fullfocusvisit: starting."
@@ -859,6 +878,37 @@ proc aperturesvisit {} {
     executor::expose object 4
   }
   log::summary "aperturesvisit: finished."
+  return true
+}
+########################################################################
+
+proc satellitevisit {start exposures exposuretime} {
+
+  log::summary "satellitevisit: starting."
+
+  executor::track 0 0 "default"
+  executor::setbinning 1
+  executor::setwindow "default"
+  executor::waituntiltracking
+
+  log::summary "satellitevisit: waiting until $start."
+
+  set startseconds [utcclock::scan $start]
+  while {[utcclock::seconds] <= $startseconds} {
+    coroutine::after 100
+  }
+
+  log::summary "satellitevisit: starting exposures."
+
+  set exposure 0
+  while {$exposure < $exposures} {
+    executor::expose object $exposuretime
+    incr exposure
+  }
+
+  log::summary "satellitevisit: finished exposures."
+
+  log::summary "satellitevisit: finished."
   return true
 }
 

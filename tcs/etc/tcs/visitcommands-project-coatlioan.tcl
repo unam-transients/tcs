@@ -664,3 +664,40 @@ proc readnoisevisit {} {
 }
 
 ########################################################################
+
+proc satellitevisit {start exposures exposuretime} {
+
+  log::summary "satellitevisit: starting."
+
+  executor::setsecondaryoffset 0
+  executor::track
+  executor::movefilterwheel "g"
+  executor::setreadmode "conventionaldefault"
+  executor::setwindow "default"
+  executor::setbinning 1
+  executor::waituntiltracking
+  
+  log::summary "satellitevisit: waiting until $start."
+  
+  set startseconds [utcclock::scan $start]
+  while {[utcclock::seconds] <= $startseconds} {
+    coroutine::after 100
+  }
+
+  log::summary "satellitevisit: starting exposures."
+
+  set exposure 0
+  while {$exposure < $exposures} {
+    executor::expose object $exposuretime
+    incr exposure
+  }
+
+  log::summary "satellitevisit: finished exposures."
+
+  log::summary "satellitevisit: finished."
+  return true
+}
+
+########################################################################
+
+
