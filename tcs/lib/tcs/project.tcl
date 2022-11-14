@@ -35,7 +35,13 @@ namespace eval "project" {
     if {[dict exists $project "identifier"]} {
       # Strip leading zeros and then format like "%04d".
       set identifier [dict get $project "identifier"]
+      if {[string equal $identifier ""]} {
+        error "invalid project: invalid identifier."
+      }
       set identifier [string trimleft $identifier "0"]
+      if {[string equal $identifier ""]} {
+        set identifier "0"
+      }
       set identifier [format "%04d" $identifier]
       return $identifier
     } else {
