@@ -397,7 +397,7 @@ namespace eval "mount" {
     opentsi::sendcommand "SET POINTING.SETUP.DEROTATOR.SYNCMODE=0"
     opentsi::sendcommand "SET POINTING.SETUP.USE_PORT=3"
     # Hack because the instrument is installed at an angle.
-    opentsi::sendcommand "SET POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=-20"
+    opentsi::sendcommand "SET POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=10"
     parkhardware
     set end [utcclock::seconds]
     log::info [format "finished initializing after %.1f seconds." [utcclock::diff $end $start]]
