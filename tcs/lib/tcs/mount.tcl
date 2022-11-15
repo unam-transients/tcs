@@ -753,6 +753,14 @@ namespace eval "mount" {
   }
 
   ######################################################################
+  
+  proc checkunparked {} {
+    if {![server::getdata "unparked"]} {
+      error "mount is parked."
+    }
+  }
+
+  ######################################################################
 
   proc mountdha {ha delta rotation} {
     variable pointingmodelpolarhole 
@@ -980,6 +988,7 @@ namespace eval "mount" {
   proc move {} {
     server::checkstatus
     server::checkactivity "preparedtomove"
+    checkunparked
     checkhardware "move"
     if {[catch {client::checkactivity "target" "idle"} message]} {
       stop
@@ -1013,6 +1022,7 @@ namespace eval "mount" {
   proc preparetotrack {} {
     server::checkstatus
     server::checkactivityformove
+    checkunparked
     checkhardware "preparetotrack"
     server::newactivitycommand "preparingtotrack" "preparedtotrack" mount::preparetotrackactivitycommand
   }
@@ -1020,6 +1030,7 @@ namespace eval "mount" {
   proc track {} {
     server::checkstatus
     server::checkactivity "preparedtotrack"
+    checkunparked
     checkhardware "track"
     if {[catch {client::checkactivity "target" "tracking"} message]} {
       stop
@@ -1031,6 +1042,7 @@ namespace eval "mount" {
   proc offset {} {
     server::checkstatus
     server::checkactivity "preparedtotrack"
+    checkunparked
     checkhardware "offset"
     if {[catch {client::checkactivity "target" "tracking"} message]} {
       stop
@@ -1042,6 +1054,7 @@ namespace eval "mount" {
   proc correct {solvedmountalpha solvedmountdelta equinox} {
     server::checkstatus
     server::checkactivity "tracking"
+    checkunparked
     checkhardware "correct"
     set solvedmountalpha [astrometry::parsealpha $solvedmountalpha]
     set solvedmountdelta [astrometry::parsedelta $solvedmountdelta]
