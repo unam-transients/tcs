@@ -125,8 +125,8 @@ EOF
       "C0.dat" using 1:2  title "C0 Detector"     with points linestyle 1, \
       "C0.dat" using 1:7  title "C0 Cold End"     with points linestyle 2
 
-    set yrange [-111:-109]
-    set ytics -111,0.5,-109
+    set yrange [-21:-19]
+    set ytics -21,0.5,-19
     set format y "%+.1f"
     set ylabel "Temperature (C)"
     set key on
