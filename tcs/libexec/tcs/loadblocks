@@ -5,7 +5,7 @@ export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bi
 program="tcs $(basename "$0")"
 
 usageerror () {
-  echo 1>&2 "usage: $program [date]"
+  echo 1>&2 "usage: $program [blockfile]"
   exit 1
 }
 
@@ -38,15 +38,21 @@ done
 shift
 if test $# = 0
 then
+  blockfile="$tcsprefix"/etc/tcs/blocks/BLOCKS
   targetdate=$(date +%Y%m%d)
 elif test $# = 1
 then
+  blockfile="$1"
+  targetdate=$(date +%Y%m%d)
+elif test $# = 2
+then
+  blockfile="$1"
   case $1 in
   [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])
-    targetdate="$1"
+    targetdate="$2"
     ;;
   *)
-    targetdate=$(date +%Y%m%d -d "$1")
+    targetdate=$(date +%Y%m%d -d "$2")
     ;;
   esac
 else
@@ -64,7 +70,8 @@ log info "target day of year is $targetdayofyear."
 
 ################################################################################
 
-cd "$tcsprefix"/etc/tcs/blocks
+cd $(dirname "$blockfile")
+blockfile=$(basename "$blockfile")
 
 ################################################################################
 
