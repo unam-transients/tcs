@@ -321,6 +321,30 @@ namespace eval "astrometry" {
     }
     return $newdistance
   }
+  
+  proc parseazimuth {azimuth} {
+    variable pi
+    if {
+        [catch {parseangle $azimuth dms} newazimuth] ||
+        $newazimuth < 0 ||
+        $newazimuth >= 2 * $pi
+      } {
+      error "invalid azimuth: \"$azimuth\"."
+    }
+    return $newazimuth
+  }
+
+  proc parsezenithdistance {zenithdistance} {
+    variable pi
+    if {
+        [catch {parseangle $zenithdistance dms} newzenithdistance] ||
+        $newzenithdistance < 0 ||
+        $newzenithdistance >= 2 * $pi
+      } {
+      error "invalid zenith distance: \"$zenithdistance\"."
+    }
+    return $newzenithdistance
+  }
 
   ######################################################################
 
@@ -498,6 +522,14 @@ namespace eval "astrometry" {
     }  
   }
   
+  proc formatazimuth {azimuth {precision 2}} {
+    return [format "%.${precision}fd" [radtodeg [parseazimuth $azimuth]]]
+  }
+
+  proc formatzenithdistance {zenithdistance {precision 2}} {
+    return [format "%.${precision}fd" [radtodeg [parsezenithdistance $zenithdistance]]]
+  }
+  
   ######################################################################
   
   proc equatorialtoazimuth {ha delta} {
@@ -519,6 +551,57 @@ namespace eval "astrometry" {
     set zenithdistance [expr {acos(sin($latitude) * sin($delta) + cos($latitude) * cos($delta) * cos($ha))}]
     set zenithdistance [foldradpositive $zenithdistance]
     return $zenithdistance
+  }
+
+  proc equatorialtoazimuth {ha delta} {
+    set ha    [parseha $ha]
+    set delta [parsedelta $delta]
+    variable pi
+    variable latitude
+    set y [expr {cos($delta) * sin($ha)}]
+    set x [expr {sin($latitude) * cos($delta) * cos($ha) - cos($latitude) * sin($delta)}]
+    set azimuth [expr {atan2($y, $x) + $pi}]
+    set azimuth [foldradpositive $azimuth]
+    return $azimuth
+  }
+  
+  proc equatorialtozenithdistance {ha delta} {
+    set ha    [parseha $ha]
+    set delta [parsedelta $delta]
+    variable latitude
+    set zenithdistance [expr {acos(sin($latitude) * sin($delta) + cos($latitude) * cos($delta) * cos($ha))}]
+    set zenithdistance [foldradpositive $zenithdistance]
+    return $zenithdistance
+  }
+  
+  proc horizontaltoha {azimuth zenithdistance} {
+    set azimuth        [parseazimuth        $azimuth       ]
+    set zenithdistance [parsezenithdistance $zenithdistance]
+    variable pi
+    variable latitude
+    # See https://en.wikipedia.org/wiki/Astronomical_coordinate_systems#Equatorial_↔_horizontal
+    # These formulae assume azimuth is 0 in the S and use altitude.
+    set A [expr {$azimuth + $pi}]
+    set a [expr {0.5 * $pi - $zenithdistance}]
+    set y [expr {cos($a) * sin($A)}]
+    set x [expr {sin($latitude) * cos($a) * cos($A) + cos($latitude) * sin($a)}]
+    set ha [expr {atan2($y, $x)}]
+    set ha [foldradsymmetric $ha]
+    return $ha
+  }
+
+  proc horizontaltodelta {azimuth zenithdistance} {
+    set azimuth        [parseazimuth        $azimuth       ]
+    set zenithdistance [parsezenithdistance $zenithdistance]
+    variable pi
+    variable latitude
+    # See https://en.wikipedia.org/wiki/Astronomical_coordinate_systems#Equatorial_↔_horizontal
+    # These formulae assume azimuth is 0 in the S and use altitude.
+    set A [expr {$azimuth + $pi}]
+    set a [expr {0.5 * $pi - $zenithdistance}]
+    set delta [expr {asin(sin($latitude) * sin($a) - cos($latitude) * cos($a) * cos($A))}]
+    set delta [foldradsymmetric $delta]
+    return $delta
   }
 
   proc airmass {z} {

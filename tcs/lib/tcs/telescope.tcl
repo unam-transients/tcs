@@ -483,7 +483,7 @@ namespace eval "telescope" {
   proc moveactivitycommand {ha delta} {
     set start [utcclock::seconds]
     log::info [format \
-      "moving to %s %s." \
+      "moving to equatorial position %s %s." \
       [astrometry::formatha $ha] \
       [astrometry::formatdelta $delta] \
     ]
@@ -847,28 +847,46 @@ namespace eval "telescope" {
       telescope::emergencycloseactivitycommand 1200e3
   }
   
-  proc move {ha delta} {
+  proc move {coordinate0 coordinate1 system} {
     server::checkstatus
     server::checkactivity "moving" "tracking" "idle"
     safetyswitch::checksafetyswitch
-    astrometry::parseha $ha
-    astrometry::parsedelta $delta
+    switch $system {
+      "equatorial" {
+        set ha    [astrometry::parseha    $coordinate0]
+        set delta [astrometry::parsedelta $coordinate1]
+      }
+      "horizontal" {
+        set azimuth        [astrometry::parseazimuth        $coordinate0]
+        set zenithdistance [astrometry::parsezenithdistance $coordinate1]
+        log::info [format \
+          "moving to horizontal position %s %s." \
+          [astrometry::formatazimuth        $azimuth] \
+          [astrometry::formatzenithdistance $zenithdistance] \
+        ]       
+        set ha    [astrometry::horizontaltoha    $azimuth $zenithdistance]
+        set delta [astrometry::horizontaltodelta $azimuth $zenithdistance]
+        set ha    [astrometry::formatha     $ha  ]
+        set delta [astrometry::formatdelta $delta]
+      }
+      default {
+        error "invalid coordinate system \"$system\"."
+      }
+    }
     server::newactivitycommand "moving" "idle" \
       "telescope::moveactivitycommand $ha $delta"
   }
-  
+    
   proc movetoidle {} {
-    log::info "moving to idle."
+    log::info "moving to idle position."
     variable idleha
     variable idledelta
-    move $idleha $idledelta
+    move $idleha $idledelta "equatorial"
   }
   
   proc movetozenith {} {
-    log::info "moving to idle."
-    variable idleha
-    variable idledelta
-    move 0h [astrometry::formatdelta [astrometry::latitude]]
+    log::info "moving to zenith."
+    move 0h [astrometry::formatdelta [astrometry::latitude]] "equatorial"
   }
   
   proc park {} {

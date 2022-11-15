@@ -73,8 +73,8 @@ namespace eval "telescopeserver" {
     telescope::emergencyclose
   }
 
-  proc slavemove {ha delta} {
-    telescope::move $ha $delta
+  proc slavemove {coordinate0 coordinate1 {system "equatorial"}} {
+    telescope::move $coordinate0 $coordinate1 $system
   }
   
   proc slavemovetoidle {} {

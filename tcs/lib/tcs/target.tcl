@@ -66,18 +66,30 @@ namespace eval "target" {
     server::setdata "withinlimits"            true
     updateobservedposition
     if {[string equal [server::getdata "requestedequinox"] ""]} {
-      log::info [format "requested fixed position is %s %s." \
-        [astrometry::radtohms [server::getdata "requestedha"] 2 true] \
-        [astrometry::radtodms [server::getdata "requesteddelta"] 1 true]]
+      log::info [format "requested fixed equatorial position is %s %s." \
+        [astrometry::formatha    [server::getdata "requestedha"   ]] \
+        [astrometry::formatdelta [server::getdata "requesteddelta"]] \
+      ]
+      log::info [format "requested fixed horizontal position is %s %s." \
+        [astrometry::formatazimuth        [astrometry::equatorialtoazimuth        [server::getdata "requestedha"] [server::getdata "requesteddelta"]]] \
+        [astrometry::formatzenithdistance [astrometry::equatorialtozenithdistance [server::getdata "requestedha"] [server::getdata "requesteddelta"]]] \
+      ]
     } else {
       log::info [format "requested tracking position is %s %s %.2f." \
-        [astrometry::radtohms [server::getdata "requestedalpha"] 2 false] \
-        [astrometry::radtodms [server::getdata "requesteddelta"] 1 true] \
-        [server::getdata "requestedequinox"]]
-      log::info [format "requested HA is %s." \
-        [astrometry::radtohms [server::getdata "observedha"] 2 true]]
-      log::info [format "observed airmass is %.3f." \
-        [server::getdata "observedairmass"]]
+        [astrometry::formatalpha [server::getdata "requestedalpha"]] \
+        [astrometry::formatdelta [server::getdata "requesteddelta"]] \
+        [server::getdata "requestedequinox"] \
+      ]
+      log::info [format "requested initial HA is %s." \
+        [astrometry::formatha [server::getdata "observedha"]] \
+      ]
+      log::info [format "requested initial horizontal position is %s %s." \
+        [astrometry::formatazimuth        [astrometry::equatorialtoazimuth        [server::getdata "observedha"] [server::getdata "observeddelta"]]] \
+        [astrometry::formatzenithdistance [astrometry::equatorialtozenithdistance [server::getdata "observedha"] [server::getdata "observeddelta"]]] \
+      ]
+      log::info [format "observed initial airmass is %.3f." \
+        [server::getdata "observedairmass"] \
+      ]
     }
   }
   
