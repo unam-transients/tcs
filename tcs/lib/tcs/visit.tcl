@@ -107,10 +107,18 @@ namespace eval "visit" {
         }
 
         "fixed" {
+        
+          if {[dict exists $visit "targetcoordinates" "ha"]} {
+            set ha        [dict get $visit "targetcoordinates" "ha"]
+            set delta     [dict get $visit "targetcoordinates" "delta"]
+          } else {
+            set azimuth        [dict get $visit "targetcoordinates" "azimuth"       ]
+            set zenithdistance [dict get $visit "targetcoordinates" "zenithdistance"]
+            set ha    [astrometry::horizontaltoha    $azimuth $zenithdistance]
+            set delta [astrometry::horizontaltodelta $azimuth $zenithdistance]
+           }
 
-          set ha        [dict get $visit "targetcoordinates" "ha"]
           set alpha     ""
-          set delta     [dict get $visit "targetcoordinates" "delta"]
           set equinox   "now"
           set epoch     "now"
           set alpharate 0
