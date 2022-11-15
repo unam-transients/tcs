@@ -194,9 +194,11 @@ namespace eval "sensors" {
   proc formatsensorvalue {name value} {
     if {[string is double -strict $value]} {
       switch -glob $name {
-        "*-temperature" -
-        "dewpoint-depression" {
+        "*-temperature" {
           set value [format "%+.1f" $value]
+        }
+        "*-dewpoint-depression" {
+          set value [format "%.1f" $value]
         }
         "*-humidity" {
           set value [format "%.2f" $value]
