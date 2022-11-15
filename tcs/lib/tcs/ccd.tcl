@@ -44,6 +44,7 @@ namespace eval "ccd" {
   variable identifier [config::getvalue "ccd" "identifier"]
   
   config::setdefaultvalue $identifier "startoutletgroups" ""
+  config::setdefaultvalue $identifier "lastcoolersetting" "off"
 
   variable telescopedescription            [config::getvalue $identifier "telescopedescription"           ]
   variable detectortype                    [config::getvalue $identifier "detectortype"                   ]
@@ -53,7 +54,8 @@ namespace eval "ccd" {
   variable detectorfullunbinneddatawindow  [config::getvalue $identifier "detectorfullunbinneddatawindow" ]
   variable detectorfullunbinnedbiaswindow  [config::getvalue $identifier "detectorfullunbinnedbiaswindow" ]
   variable detectorwindows                 [config::getvalue $identifier "detectorwindows"                ]
-  variable detectorreadmodes               [config::getvalue $identifier "detectorreadmodes"                ]
+  variable detectorreadmodes               [config::getvalue $identifier "detectorreadmodes"              ]
+  variable coolerstartsetting              [config::getvalue $identifier "coolerstartsetting"             ]
   variable cooleropensetting               [config::getvalue $identifier "cooleropensetting"              ]
   variable coolerclosedsetting             [config::getvalue $identifier "coolerclosedsetting"            ]
   variable filterwheeltype                 [config::getvalue $identifier "filterwheeltype"                ]
@@ -175,7 +177,7 @@ namespace eval "ccd" {
       }
 
       if {$toowarm} {
-        detector::setcooler "off"
+        setcoolerhelper "off"
         variable temperaturelimitoutletgroup
         if {![string equal "" $temperaturelimitoutletgroup]} {
           log::error "performing an emergency stop."
@@ -414,6 +416,7 @@ namespace eval "ccd" {
   proc startactivitycommand {} {
     set start [utcclock::seconds]
     log::info "starting."
+    coroutine::yield
     variable startoutletgroups
     if {[llength $startoutletgroups] != 0} {
       foreach outletgroup $startoutletgroups {
@@ -433,8 +436,7 @@ namespace eval "ccd" {
       log::warning "unable to open detector: $message"
       coroutine::after 5000
     }
-    variable coolerclosedsetting
-    detector::setcooler $coolerclosedsetting
+    setcoolerhelper "start"
     variable filterwheelidentifier
     if {[catch {filterwheel::filterwheelrawstart} message]} {
       error "unable to start filter wheel: $message"
@@ -466,6 +468,7 @@ namespace eval "ccd" {
   proc initializeactivitycommand {} {
     set start [utcclock::seconds]
     log::info "initializing."
+    coroutine::yield
     stopexposing
     stopsolving
     variable detectorfullunbinneddatawindow
@@ -488,8 +491,7 @@ namespace eval "ccd" {
     detector::setwindow $window
     variable detectorinitialbinning
     detector::setbinning $detectorinitialbinning
-    variable coolerclosedsetting
-    detector::setcooler $coolerclosedsetting
+    setcoolerhelper "closed"
     variable filterwheelinitialposition
     movefilterwheelactivitycommand $filterwheelinitialposition true
     variable focuserinitialposition
@@ -502,6 +504,7 @@ namespace eval "ccd" {
   proc stopactivitycommand {} {
     set start [utcclock::seconds]
     log::info "stopping."
+    coroutine::yield
     stopexposing
     stopsolving
     log::info [format "finished stopping after %.1f seconds." [utcclock::diff now $start]]
@@ -510,6 +513,7 @@ namespace eval "ccd" {
   proc resetactivitycommand {} {
     set start [utcclock::seconds]
     log::info "resetting."
+    coroutine::yield
     stopexposing
     stopsolving
     detector::reset
@@ -576,6 +580,7 @@ namespace eval "ccd" {
 
     set start [utcclock::seconds]
     log::info "exposing $exposuretype image for $exposuretime seconds."
+    coroutine::yield
 
     stopexposing
     stopsolving
@@ -716,6 +721,7 @@ namespace eval "ccd" {
     variable identifier
     set start [utcclock::seconds]
     log::info "analyzing last exposure."
+    coroutine::yield
     set fitsfilename [server::getdata "fitsfilename"]
     set currentfilename [file join [directories::var] $identifier "current.fits"]
     if {![file exists $currentfilename]} {
@@ -806,6 +812,7 @@ namespace eval "ccd" {
     variable filterlist
     set newfilter [lindex $filterlist $newposition]
     log::info "moving filter wheel to filter $newfilter (position $newposition)."
+    coroutine::yield
     server::setdata "requestedfilterwheelposition" $newposition
     if {[server::getdata "filterwheelmaxposition"] != 0} {
       set start [utcclock::seconds]
@@ -854,6 +861,7 @@ namespace eval "ccd" {
   proc movefocuseractivitycommand {newposition} {
     set start [utcclock::seconds]
     log::info "moving focuser to position $newposition."
+    coroutine::yield
     server::setdata "requestedfocuserposition" $newposition
     setfocusercorrection
     set newrawposition [server::getdata "requestedfocuserrawposition"]
@@ -882,6 +890,7 @@ namespace eval "ccd" {
   proc setfocuseractivitycommand {newposition} {
     set start [utcclock::seconds]
     log::info "setting focuser to position $newposition."
+    coroutine::yield
     server::setdata "requestedfocuserposition" $newposition
     setfocusercorrection
     set newrawposition [server::getdata "requestedfocuserrawposition"]
@@ -900,6 +909,7 @@ namespace eval "ccd" {
   proc mapfocusactivitycommand {exposuretime fitsfileprefix range step} {
     set start [utcclock::seconds]
     log::info "mapping focus."
+    coroutine::yield
     set originalposition [server::getdata "focuserposition"]
     set midposition $originalposition
     set minposition [expr {max($midposition - int($range / 2), [server::getdata "focuserminposition"])}]
@@ -1052,37 +1062,49 @@ namespace eval "ccd" {
     return
   }
 
-  proc setcooler {setting} {
-    set start [utcclock::seconds]
+  proc setcoolerhelper {setting} {
     log::info "setting cooler to $setting."
-    server::checkstatus
-    server::checkactivity "idle"
     if {
-      ![string equal $setting "current"] && 
+      ![string equal $setting "last"] && 
       ![string equal $setting "on"] && 
       ![string equal $setting "off"] &&
       ![string equal $setting "following"] &&
+      ![string equal $setting "start"] &&
       ![string equal $setting "open"] &&
       ![string equal $setting "closed"] &&
       ![string is double -strict $setting]} {
       error "invalid cooler setting \"$setting\"."
     }
+    if {[string equal $setting "start"]} {
+      variable coolerstartsetting
+      set setting $coolerstartsetting
+      log::info "requested to set cooler to start setting which is \"$setting\"."
+    }
     if {[string equal $setting "open"]} {
       variable cooleropensetting
       set setting $cooleropensetting
       log::info "requested to set cooler to open setting which is \"$setting\"."
-    }
+    }    
     if {[string equal $setting "closed"]} {
       variable coolerclosedsetting
       set setting $coolerclosedsetting
       log::info "requested to set cooler to closed setting which is \"$setting\"."
     }
-    if {[string equal $setting "current"]} {
-      set setting [server::getdata "detectorcoolersetting"]
-      log::info "requested to set cooler to current setting which is \"$setting\"."
+    variable identifier
+    if {[string equal $setting "last"]} {
+      set setting [config::getvalue $identifier "lastcoolersetting"]
+      log::info "requested to set cooler to last setting which is \"$setting\"."
     }
     detector::setcooler $setting
+    config::setvarvalue $identifier "lastcoolersetting" $setting
     updatedata
+  }
+
+  proc setcooler {setting} {
+    set start [utcclock::seconds]
+    server::checkstatus
+    server::checkactivity "idle"
+    setcoolerhelper $setting
     log::info [format "finished setting cooler after %.1f seconds." [utcclock::diff now $start]]
     return
   }
