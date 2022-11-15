@@ -91,7 +91,7 @@ namespace eval "mount" {
     POSITION.INSTRUMENTAL.AZ.TARGETDISTANCE
     POSITION.INSTRUMENTAL.ZD.TARGETDISTANCE
     POSITION.INSTRUMENTAL.DEROTATOR[3].TARGETDISTANCE
-    POINTING.TARGETDISTANCE
+    CURRENT.TARGETDISTANCE
   } ";"]"
 
   ######################################################################
@@ -220,7 +220,7 @@ namespace eval "mount" {
       set pendingderotatortargetdistance [astrometry::degtorad $value]
       return false
     }
-    if {[scan $response "%*d DATA INLINE POINTING.TARGETDISTANCE=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE CURRENT.TARGETDISTANCE=%f" value] == 1} {
       set pendingtargetdistance [astrometry::degtorad $value]
       return false
     }
@@ -373,9 +373,17 @@ namespace eval "mount" {
     server::setdata "unparked" true
   }
   
-  proc checkhardware {what} {
-    if {$opentsi::readystate != 1.0} {
-      error "state is \"$opentsi::readystatetext\"."
+  proc checkhardware {action} {
+    switch $action {
+      "stop" -
+      "reset" -
+      "reboot" {
+      }
+      default {
+        if {$opentsi::readystate != 1.0} {
+          error "state is \"$opentsi::readystatetext\"."
+        }
+      }
     }
   }
   

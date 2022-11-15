@@ -826,9 +826,9 @@ namespace eval "mount" {
     server::setdata "unparked" true
   }
   
-  proc checkhardware {what} {
+  proc checkhardware {action} {
     variable state
-    switch $what {
+    switch $action {
       "initialize" -
       "reset" -
       "reboot" {
