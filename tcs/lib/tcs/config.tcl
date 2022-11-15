@@ -71,7 +71,7 @@ namespace eval "config" {
   
   proc setvarvalue {key0 key1 value} {
   
-    log::info "setting var configuration value \"$key0\" \"$key1\" to \"$value\"."
+    log::debug "setting var configuration value \"$key0\" \"$key1\" to \"$value\"."
   
     variable varvaluedict
 
