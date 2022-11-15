@@ -192,14 +192,14 @@ namespace eval "secondary" {
   proc initialize {} {
     server::checkstatus
     server::checkactivityforinitialize
-    checkhardware
+    checkhardware "initialize"
     server::newactivitycommand "initializing" "idle" secondary::initializeactivitycommand 600000
   }
 
   proc stop {} {
     server::checkstatus
     server::checkactivityforstop
-    checkhardware
+    checkhardware "stop"
     set previousactivity [server::getdata "activity"]
     server::newactivitycommand "stopping" [server::getstoppedactivity] "secondary::stopactivitycommand $previousactivity"
   }
@@ -207,14 +207,14 @@ namespace eval "secondary" {
   proc reset {} {
     server::checkstatus
     server::checkactivityforreset
-    checkhardware
+    checkhardware "reset"
     server::newactivitycommand "resetting" [server::getstoppedactivity] secondary::resetactivitycommand
   }
 
   proc movewithoutcheck {z0} {
     server::checkstatus
     server::checkactivityformove
-    checkhardware
+    checkhardware "movewithoutcheck"
     set z0 [normalizez0 $z0]
     setrequestedz0 $z0
     server::newactivitycommand "moving" "idle" "secondary::moveactivitycommand false"
@@ -223,7 +223,7 @@ namespace eval "secondary" {
   proc move {z0 setasinitial} {
     server::checkstatus
     server::checkactivityformove
-    checkhardware
+    checkhardware "move"
     set z0 [normalizez0 $z0]
     if {$setasinitial} {
       config::setvarvalue "secondary" "initialz0" $z0
@@ -235,7 +235,7 @@ namespace eval "secondary" {
   proc moveforfilter {filter} {
     server::checkstatus
     server::checkactivityformove
-    checkhardware
+    checkhardware "moveforfilter"
     variable dzfilter
     variable dzfilterdict
     if {[llength $dzfilterdict] == 0} {
@@ -255,7 +255,7 @@ namespace eval "secondary" {
 
   proc setoffset {dzoffset} {
     server::checkstatus
-    checkhardware
+    checkhardware "setoffset"
     if {![string is integer -strict $dzoffset]} {
       error "invalid offset \"$dzoffset\"."
     }

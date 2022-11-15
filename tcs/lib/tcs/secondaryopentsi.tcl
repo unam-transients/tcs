@@ -213,9 +213,17 @@ namespace eval "secondary" {
     }
   }
   
-  proc checkhardware {} {
-    if {$opentsi::readystate != 1.0} {
-      error "state is \"$opentsi::readystatetext\"."
+  proc checkhardware {{action ""}} {
+    switch $action {
+      "stop" -
+      "reset" -
+      "setoffset" {
+      }
+      default {
+        if {$opentsi::readystate != 1.0} {
+          error "state is \"$opentsi::readystatetext\"."
+        }
+      }
     }
   }
   
