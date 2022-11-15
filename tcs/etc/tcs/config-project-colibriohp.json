@@ -128,8 +128,9 @@
       "nx": 50,
       "ny": 4112
     },
-    "cooleropensetting": "off",
-    "coolerclosedsetting": "off",
+    "coolerstartsetting": "last",
+    "cooleropensetting": "last",
+    "coolerclosedsetting": "last",
     "temperaturelimit": 40,
     "temperaturelimitoutletgroup": "blue-service-cabinet",
     "filterwheeltype": "fli",
