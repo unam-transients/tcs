@@ -1229,7 +1229,7 @@
     "minzenithdistancelimit": "1d",
     "maxzenithdistancelimit": "85d",
     "idleha": "0h",
-    "idledelta": "0d"
+    "idledelta": "75d"
   },
   "telescope": {
     "type": "colibriohp",
