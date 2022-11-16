@@ -21,17 +21,15 @@
 
 ########################################################################
 
-proc biasesvisit {} {
+proc biasesvisit {{binning 1} {exposures 10}} {
   log::summary "biasesvisit: starting."
   executor::move
   executor::setwindow "default"
-  executor::setbinning 1
-  set i 0
-  while {$i < 20} {
+  executor::setbinning $binning
+  set exposure 0
+  while {$exposure < $exposures} {
     executor::expose bias 0
-    executor::analyze levels
-    incr i
-    coroutine::after 10000
+    incr exposure
   }
   log::summary "biasesvisit: finished."
   return true
@@ -39,17 +37,15 @@ proc biasesvisit {} {
 
 ########################################################################
 
-proc darksvisit {} {
+proc darksvisit {{binning 1} {exposures 10}} {
   log::summary "darksvisit: starting."
   executor::move
   executor::setwindow "default"
-  executor::setbinning 1
-  set i 0
-  while {$i < 20} {
+  executor::setbinning $binning
+  set exposure 0
+  while {$exposure < $exposures} {
     executor::expose dark 60
-    executor::analyze levels
-    incr i
-    coroutine::after 10000
+    incr exposure
   }
   log::summary "darksvisit: finished."
   return true
