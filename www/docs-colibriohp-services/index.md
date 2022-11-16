@@ -37,5 +37,7 @@ This is the TCS web site for the COLIBRI telescope at OHP.
 * Power
   * <a href="/proxy/pdu1/" target="_newtab">pdu1</a>
   * <a href="/proxy/pdu2/" target="_newtab">pdu2</a>
+* Weather Forecast
+  * [Meteoblue](https://www.meteoblue.com/en/weather/week/saint-michel-lobservatoire_france_2977959)
 
 <hr/>
