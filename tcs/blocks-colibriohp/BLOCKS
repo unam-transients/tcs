@@ -1,0 +1,31 @@
+# COATLI/OAN Blocks
+#
+# This file defines the blocks that are loaded or unloaded.
+#
+# Empty lines and lines beginning with # are ignored.
+#
+# The first four fields are:
+#
+# 1. Action. Either "load" or "unload".
+#
+# 2. Priority. A letter, with a being highest priority and z being lowest
+# priority.
+#
+# 3. Duplicates. The number of copies of the block file that are loaded into the
+# queue. This is useful when breaking long observations into shorter blocks;
+# simply set this field to the number times you want to run the shorter block.
+#
+# 4. Block file. This can be a file name or a shell glob pattern to match a set
+# of file names. Omit the trailing ".json".
+#
+# After the first four columns, it is possible to add a time specification:
+#
+# - day M N. Carry out the action every N days. Specifically, only load
+# the block files into the queue if M = D mod N, in which D is the day of the
+# year (1 to 366).
+#
+# - date YYYMMDD. Carry out the action on the specified UTC date.
+#
+# If no time specification is given, the action is carried out every day.
+
+load z 1 0002-bias-map-*
