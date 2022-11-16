@@ -218,7 +218,7 @@
     "azimuthpark": "107d",
     "zenithdistancepark": "1d",
     "haunpark": "0h",
-    "deltaunpark": "0d"
+    "deltaunpark": "75d"
   },
   "plc": {
     "type": "colibri",
