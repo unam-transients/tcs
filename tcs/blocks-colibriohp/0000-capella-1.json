@@ -1,0 +1,40 @@
+{
+  "project": {
+    "identifier": "0000",
+    "name": "Bright star scattered light"
+  },
+  "identifier": "1",
+  "name": "Capella",
+  "visits": [
+    {
+      "identifier": "1001",
+      "name": "object",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "05:16:41.35",
+        "delta"  : "+45:59:52.7",
+        "equinox": "2000"
+      },
+      "command": "brightstarvisit 10 r",
+      "estimatedduration": "1m"
+    },
+    {
+      "identifier": "1002",
+      "name": "darks",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "05:16:41.35",
+        "delta"  : "+45:59:52.7",
+        "equinox": "2000"
+      },
+      "command": "darksvisit 10 1 1",
+      "estimatedduration": "1m"
+    }
+  ],
+  "constraints": {
+    "maxskybrightness": "civiltwilight",
+    "maxairmass": "2.0",
+    "minmoondistance": "15d"
+  },
+  "persistent": "false"
+}
