@@ -191,6 +191,7 @@
       "selector",
       "sensors",
       "sun",
+      "supervisor",
       "target",
       "telescope",
       "telescopecontroller",
@@ -261,7 +262,8 @@
     "maxz": "40000",
     "allowedzerror": "2",
     "zdeadzonewidth": "2",
-    "dztweak": "-1000"
+    "dztweak": "-1000",
+    "temperaturesensor": "telescope-M1-temperature"
   },
   "selector": {},
   "sensors": {
@@ -1221,6 +1223,12 @@
     "latitude": "+43.932081d",
     "altitude": "650.0",
     "civiltimezone": "Europe/Paris"
+  },
+  "supervisor": {
+    "withplc": "false",
+    "internalhumiditysensor": "instrument-external-humidity",
+    "openoffsetseconds": "0",
+    "opentocooloffsetseconds": "1800"
   },
   "swift": {
     "pointingsource": "none"
