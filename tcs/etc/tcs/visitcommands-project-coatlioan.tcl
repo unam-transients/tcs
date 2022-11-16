@@ -292,7 +292,7 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefa
   executor::setreadmode $readmode
   executor::setwindow "default"
   executor::setbinning 1
-
+  executor::movefilterwheel $filter
   executor::waituntiltracking
   
   set dithers {
@@ -302,8 +302,6 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefa
     +30as -30as
     -30as +30as
   }
-
-  executor::movefilterwheel $filter
 
   foreach {eastoffset northoffset} $dithers {
     executor::offset $eastoffset $northoffset "default"
@@ -451,9 +449,9 @@ proc twilightflatsvisit {targetngood filter} {
   }
 
   if {$ngood == 0} {
-    log::summary [format "twilightflatsvisit: $ngood good flats with filter $filter."]
+    log::summary [format "twilightflatsvisit: $ngood good flats in filter $filter."]
   } else {
-    log::summary [format "twilightflatsvisit: $ngood good flats with filter $filter (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
+    log::summary [format "twilightflatsvisit: $ngood good flats in filter $filter (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
   }
 
   log::summary "twilightflatsvisit: finished."
