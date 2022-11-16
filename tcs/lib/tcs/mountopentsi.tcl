@@ -387,6 +387,11 @@ namespace eval "mount" {
     }
   }
   
+  proc mountrotation {ha delta} {
+    # Dummy version.
+    return 0
+  }
+
   ######################################################################
 
   proc startactivitycommand {} {
