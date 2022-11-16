@@ -21,6 +21,81 @@
 
 ########################################################################
 
+proc coarsefocusvisit {{exposuretime 5} {filter "i"}} {
+
+  log::summary "coarsefocusvisit: starting."
+  
+  setsecondaryoffset 0
+  track
+  setwindow "default"
+  setbinning 8
+  movefilterwheel "$filter"
+  waituntiltracking
+
+  log::summary "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning 8."
+  focussecondary C0 $exposuretime 100 10 false false
+  
+  log::summary "coarsefocusvisit: finished."
+
+  return true
+}
+
+########################################################################
+
+proc focusvisit {{exposuretime 5} {filter "i"}} {
+
+  log::summary "focusvisit: starting."
+  
+  setsecondaryoffset 0
+  track
+  setwindow "default"
+  setbinning 1
+  movefilterwheel "$filter"
+  waituntiltracking
+
+  log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
+  focussecondary C0 $exposuretime 30 3 true false
+  
+  log::summary "focusvisit: finished."
+
+  return true
+}
+
+########################################################################
+
+proc focuswitnessvisit {{exposuretime 5} {filter "i"}} {
+
+  log::summary "focuswitnessvisit: starting."
+
+  executor::setsecondaryoffset 0
+  executor::track
+  executor::setwindow "default"
+  executor::setbinning 1
+  executor::movefilterwheel $filter
+  executor::waituntiltracking
+  
+  set dithers {
+      0as   0as
+    +30as +30as
+    -30as -30as
+    +30as -30as
+    -30as +30as
+  }
+
+  foreach {eastoffset northoffset} $dithers {
+    executor::offset $eastoffset $northoffset "default"
+    executor::waituntiltracking
+    executor::expose object $exposuretime
+    executor::focuswitness
+  }
+
+  log::summary "focuswitnessvisit: finished."
+
+  return true
+}
+
+########################################################################
+
 proc biasesvisit {{binning 1} {exposures 10}} {
   log::summary "biasesvisit: starting."
   executor::move
@@ -37,14 +112,14 @@ proc biasesvisit {{binning 1} {exposures 10}} {
 
 ########################################################################
 
-proc darksvisit {{binning 1} {exposures 10}} {
+proc darksvisit {{exposuretime 60} {binning 1} {exposures 10}} {
   log::summary "darksvisit: starting."
   executor::move
   executor::setwindow "default"
   executor::setbinning $binning
   set exposure 0
   while {$exposure < $exposures} {
-    executor::expose dark 60
+    executor::expose dark $exposuretime
     incr exposure
   }
   log::summary "darksvisit: finished."
@@ -52,3 +127,62 @@ proc darksvisit {{binning 1} {exposures 10}} {
 }
 
 ########################################################################
+
+proc twilightflatsvisit {targetngood filter} {
+
+  log::summary "twilightflatsvisit: starting."
+
+  executor::setsecondaryoffset 0
+  executor::move
+
+  executor::setwindow "default"
+  executor::setbinning 1
+
+  # The dark current is about 1000 DN/s at -10 C, so use shorter exposures than
+  # normal. The gain is about 2.2 electrons/DN and the bias about 500 DN, so
+  # these levels correspond to SNRs of 200 and 100.
+
+  set maxlevel 25000
+  set minlevel 15000
+  set exposuretime 5
+  
+  log::info "twilightflatsvisit: filter $filter."
+  executor::movefilterwheel $filter
+
+  set ngood 0
+  set mingoodlevel $maxlevel
+  set maxgoodlevel $minlevel
+  while {true} {
+    executor::expose flat $exposuretime
+    executor::analyze levels
+    set level [executor::exposureaverage C0]
+    log::info [format "twilightflatsvisit: level is %.1f DN in filter $filter in $exposuretime seconds." $level]
+    if {$level > $maxlevel} {
+      log::info "twilightflatsvisit: level is too bright."
+    } elseif {$level < $minlevel} {
+      log::info "twilightflatsvisit: level is too faint."
+      break
+    } else {
+      log::info "twilightflatsvisit: level is good."
+      incr ngood
+      set mingoodlevel [expr {min($level,$mingoodlevel)}]
+      set maxgoodlevel [expr {max($level,$maxgoodlevel)}]
+      if {$ngood == $targetngood} {
+        break
+      }
+    }
+  }
+
+  if {$ngood == 0} {
+    log::summary [format "twilightflatsvisit: $ngood good flats in filter $filter."]
+  } else {
+    log::summary [format "twilightflatsvisit: $ngood good flats in filter $filter (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
+  }
+
+  log::summary "twilightflatsvisit: finished."
+
+  return true
+}
+
+########################################################################
+
