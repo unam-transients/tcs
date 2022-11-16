@@ -700,6 +700,16 @@ namespace eval "executor" {
 
     }
     
+    catch {
+      log::summary "stopping."
+      foreach server {telescope instrument} {
+        client::request $server "stop"
+      }
+      foreach server {telescope instrument} {
+        client::wait $server
+      }
+    }
+
     if {![block::persistent [block]]} {
       log::info "deleting [filetype] file \"[file tail [filename]]\"."
       file delete -force [filename]
