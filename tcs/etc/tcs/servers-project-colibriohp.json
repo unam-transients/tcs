@@ -94,5 +94,9 @@
   "telescopecontroller": {
     "host": "services",
     "port": 5019
+  },
+  "supervisor": {
+    "host": "services",
+    "port": 5020
   }
 }

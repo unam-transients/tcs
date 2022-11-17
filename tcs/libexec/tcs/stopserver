@@ -69,7 +69,7 @@ ddotioan-instrument1)
   allargs="C1 C3"
   ;;
 colibriohp-services)
-  allargs="selector executor instrument telescope mount secondary covers telescopecontroller sun moon target weather plc power sensors html"
+  allargs="supervisor selector executor instrument telescope mount secondary covers telescopecontroller sun moon target weather plc power sensors html"
   ;;
 colibriohp-control)
   allargs="selector executor instrument telescope mount seconday covers plc telescopecontroller sun moon target weather power sensors"
