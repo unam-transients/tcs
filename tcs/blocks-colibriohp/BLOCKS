@@ -31,7 +31,12 @@
 load a 1 0004-initial-focus-*
 load b 1 0004-focus-without-witness-*
 
-load v 1 0005-photometic-standards-*
+load c 1 0012-bright-star-0
+
+#load c 1 0014-focus-tilt-2
+#load c 1 0014-focus-tilt-3
+
+load v 1 0005-photometic-monitor-*
 load w 1 0004-focus-with-witness-*
 load x 1 0001-twilight-flats-evening-0
 load y 3 0002-biases-0
