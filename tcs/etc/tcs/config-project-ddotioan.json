@@ -1500,6 +1500,6 @@
     "closeexplicitly": "true"
   },
   "weather": {
-    "windaveragespeedlimit": "30"
+    "windaveragespeedlimit": "35"
   }
 }
