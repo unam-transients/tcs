@@ -346,9 +346,10 @@ namespace eval "detector" {
     log::debug "cancelling the exposure."
     checkisopen
     set result [detectorrawcancel]
-    if {![string equal $result ok]} {
+    if {![string equal $result "ok"] && ![string equal $result "wait"]} {
       error "unable to cancel the exposure."
-    }    
+    }
+    return $result
   }
 
   proc continueexposure {} {

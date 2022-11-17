@@ -395,8 +395,14 @@ namespace eval "ccd" {
   ######################################################################
 
   proc stopexposing {} {
-    if {[catch {detector::cancelexposure} message]} {
-      log::warning $message
+    while {true} {
+      if {[catch {detector::cancelexposure} result]} {
+        log::warning $result
+      }
+      if {[string equal $result "ok"]} {
+        break
+      }
+      coroutine::after 100
     }
   }
 
