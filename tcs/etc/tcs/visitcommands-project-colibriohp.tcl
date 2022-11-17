@@ -96,13 +96,13 @@ proc coarsefocusvisit {{exposuretime 5} {filter "i"}} {
   
   setsecondaryoffset 0
   track
-  setwindow "default"
-  setbinning 8
+  setwindow "1kx1k"
+  setbinning 4
   movefilterwheel "$filter"
   waituntiltracking
 
-  log::summary "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning 8."
-  focussecondary C0 $exposuretime 100 10 false false
+  log::summary "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning 4."
+  focussecondary C0 $exposuretime 500 50 false true
   
   log::summary "coarsefocusvisit: finished."
 
@@ -117,15 +117,37 @@ proc focusvisit {{exposuretime 5} {filter "i"}} {
   
   setsecondaryoffset 0
   track
-  setwindow "default"
+  setwindow "1kx1k"
   setbinning 1
   movefilterwheel "$filter"
   waituntiltracking
 
   log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
-  focussecondary C0 $exposuretime 30 3 true false
+  focussecondary C0 $exposuretime 100 10 true false
   
   log::summary "focusvisit: finished."
+
+  return true
+}
+
+########################################################################
+
+proc focustiltvisit {{exposuretime 5} {filter "i"}} {
+
+  log::summary "focustiltvisit: starting."
+  
+  setsecondaryoffset 0
+  track
+  setwindow "4kx4k"
+  setbinning 1
+  movefilterwheel "$filter"
+  waituntiltracking
+
+  log::summary "focustiltvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
+  focussecondary C0 $exposuretime 300 15 false false
+  setunfocused
+  
+  log::summary "focustiltvisit: finished."
 
   return true
 }
@@ -249,6 +271,42 @@ proc twilightflatsvisit {targetngood filter} {
   }
 
   log::summary "twilightflatsvisit: finished."
+
+  return true
+}
+
+########################################################################
+
+proc brightstarvisit {{exposuretime 5} {filter "i"}} {
+
+  log::summary "brightstarvisit: starting."
+
+  executor::setsecondaryoffset 0
+  executor::track
+  executor::setwindow "default"
+  executor::setbinning 1
+  executor::movefilterwheel $filter
+  executor::waituntiltracking
+  
+  set dithers {
+      0am   0am
+     +0am +30am
+     -0am -30am
+    +30am  -0am
+    -30am  +0am
+    +30am +30am
+    -30am -30am
+    +30am -30am
+    -30am +30am
+  }
+
+  foreach {eastoffset northoffset} $dithers {
+    executor::offset $eastoffset $northoffset "default"
+    executor::waituntiltracking
+    executor::expose object $exposuretime
+  }
+
+  log::summary "brightstarvisit: finished."
 
   return true
 }
