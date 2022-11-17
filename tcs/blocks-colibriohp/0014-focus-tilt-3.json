@@ -1,0 +1,40 @@
+{
+  "project": {
+    "identifier": "0014",
+    "name": "focus tilts"
+  },
+  "identifier": "3",
+  "name": "focus tilt on NGC 884",
+  "visits": [
+    {
+      "identifier": "1001",
+      "name": "focus",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "02:22:00",
+        "delta"  : "+57:08:00",
+        "equinox": "2000"
+      },
+      "command": "focustiltvisit 10",
+      "estimatedduration": "10m"
+    },
+    {
+      "identifier": "1002",
+      "name": "focus",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "02:22:00",
+        "delta"  : "+57:08:00",
+        "equinox": "2000"
+      },
+      "command": "darksvisit 10",
+      "estimatedduration": "10m"
+    }
+  ],
+  "constraints": {
+    "maxskybrightness": "civiltwilight",
+    "maxairmass": "1.5",
+    "minmoondistance": "15d"
+  },
+  "persistent": "false"
+}
