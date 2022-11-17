@@ -678,8 +678,9 @@ namespace eval "html" {
 
     putshtml "<table class=\"status\">"
     
-    if {[string equal [client::getstatus "plc"] "telescopecontroller"]} {
-      writehtmlfullrow "State" [client::getdata "telescopecontroller" "state"]
+    if {[string equal [client::getstatus "telescopecontroller"] "ok"]} {
+      writehtmlfullrow "State"           [client::getdata "telescopecontroller" "state"]
+      writehtmlfullrow "Key switch"      [client::getdata "telescopecontroller" "keyswitch"]
       writehtmlrow "Ambient temperature" [formatifok "%.1f C"    [client::getdata "telescopecontroller" "ambienttemperature"]]
       writehtmlrow "Ambient pressure"    [formatifok "%.1f mbar" [client::getdata "telescopecontroller" "ambientpressure"   ]]
     }
@@ -701,9 +702,12 @@ namespace eval "html" {
     set type [config::getvalue "plc" "type"]
 
     if {[string equal [client::getstatus "plc"] "ok"]} {
-      writehtmlrow "Mode"        [client::getdata "plc" "mode"]
+      writehtmlrow "Must be closed" [client::getdata "plc" "mustbeclosed"]
       switch $type {
         "colibri" {
+          writehtmlrow "Mode"                     [client::getdata "plc" "mode"]
+          writehtmlrow "Key switch"               [client::getdata "plc" "keyswitch"]
+          writehtmlrow "Alert bits"               [client::getdata "plc" "alertbits"]
           writehtmlrow "PLC cabinet temperature"  [format "%.1f C" [client::getdata "plc" "plccabinettemperature"]]
           writehtmlrow "RIO cabinet temperature"  [format "%.1f C" [client::getdata "plc" "riocabinettemperature"]]
           writehtmlrow "Comet 1 temperature"      [format "%.1f C" [client::getdata "plc" "comet1temperature"    ]]
