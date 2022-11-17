@@ -248,7 +248,11 @@ proc twilightflatsvisit {targetngood filter} {
     executor::analyze levels
     set level [executor::exposureaverage C0]
     log::info [format "twilightflatsvisit: level is %.1f DN in filter $filter in $exposuretime seconds." $level]
-    if {$level > $maxlevel} {
+    if {$level > 2 * $maxlevel} {
+      log::info "twilightflatsvisit: level is much too bright."
+      log::info "twilightflatsvisit: waiting for 60 seconds."
+      coroutine::after 60000
+    } elseif {$level > $maxlevel} {
       log::info "twilightflatsvisit: level is too bright."
     } elseif {$level < $minlevel} {
       log::info "twilightflatsvisit: level is too faint."
