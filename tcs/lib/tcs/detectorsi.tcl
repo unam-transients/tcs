@@ -1146,16 +1146,30 @@ namespace eval "detector" {
   ######################################################################
 
   proc detectorrawcancel {} {
+
     variable rawacquiring
+    
     if {$rawacquiring} {
-# There is a bug in the firmware of the PCIe card that causes the blue PC to
-# hang if an exposure is aborted. See email with <dgilmore@specinst.com> in
-# 2020/2021.
-       log::warning "ignoring request to cancel the exposure."
-#      rawputsiimagecommandpacket "terminateacquisition"
-#      rawgetsiimagedatapacket "terminateacquisition"
-#      set rawacquiring false
+
+      # There is a bug in the firmware of the PCIe card that causes the blue PC
+      # to hang if an exposure is aborted. See email with
+      # <dgilmore@specinst.com> in 2020/2021. The best thing we can do in this
+      # circumstance is simply wait for the exposure to end and then read it
+      # out.
+
+      #rawputsiimagecommandpacket "terminateacquisition"
+      #rawgetsiimagedatapacket "terminateacquisition"
+      #set rawacquiring false
+      
+      if {![detectorrawgetreadytoberead]} {
+        return "wait"
+      } else {
+        detectorrawread
+        return "ok"
+      }
+
     }
+
     return "ok"
   }
   
