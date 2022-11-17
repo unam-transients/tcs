@@ -57,31 +57,55 @@ namespace eval "plc" {
   variable settledelayseconds 5
 
   proc isignoredresponseresponse {response} {
-    switch -- $response {
-      "" {
-        return true
-      }
-      default {
-        return false
-      }
+    if {
+      [regexp {[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-[0-9][0-9]:[0-9][0-9]:[0-9][0-9] - OK} $response] == 1 ||
+      [string equal "" $response]
+    } {
+      return true
+    } else {
+      return false
     }
   }
   
   variable mode ""
   variable keyswitch ""
+  variable localconfirmation ""
   variable mustbeclosed ""
-  variable alertbits ""
+  variable alarmbits ""
+  variable rainalarm ""
+  variable windalarm ""
+  variable cloudalarm ""
+  variable sunalarm ""
+  variable humidityalarm ""
+  variable tcsalarm ""
+  variable upsalarm ""
+  variable rioalarm ""
+  variable boltwoodalarm ""
+  variable vaisalaalarm ""
   variable weatherresponse ""
   variable generalresponse ""
   variable lastweatherresponse ""
   variable lastgeneralresponse ""
   
+  variable assertedmustbeclosedvalue ""
+
   proc updatedata {response} {
 
     variable mode
     variable keyswitch
+    variable localconfirmation
     variable mustbeclosed
-    variable alertbits
+    variable alarmbits
+    variable rainalarm
+    variable windalarm
+    variable cloudalarm
+    variable sunalarm
+    variable humidityalarm
+    variable tcsalarm
+    variable upsalarm
+    variable rioalarm
+    variable boltwoodalarm
+    variable vaisalaalarm
     variable weatherresponse
     variable generalresponce
     variable lastweatherresponse
@@ -124,19 +148,8 @@ namespace eval "plc" {
       log::summary "the keyswitch has changed from $lastkeyswitch to $keyswitch."
     }
     
-    set lastalertbits $alertbits
-    set alertbits "[string index $generalresponse 50][string index $generalresponse 49][string index $generalresponse 46][string reverse [string range $generalresponse 30 37]]"
-    if {[string equal $lastalertbits ""]} {
-      log::info "the alert bits are $alertbits."
-    } elseif {![string equal $alertbits $lastalertbits]} {
-      log::info "the alert bits have changed from $lastalertbits to $alertbits."
-    }
-
     set lastmustbeclosed $mustbeclosed
-    switch -- "[string index $generalresponse 29]" {
-      "0" { set mustbeclosed false }
-      "1" { set mustbeclosed true  }
-    }
+    set mustbeclosed [boolean [string index $generalresponse 29]]
     if {[string equal $lastmustbeclosed ""]} {
       if {$mustbeclosed} {
         log::info "the enclosure must be closed."
@@ -152,12 +165,86 @@ namespace eval "plc" {
     }
     
     set lastmode $mode
-    set mode [lindex $weatherfield 50]
-    if {[string equal $lastmode ""]} {
-      log::info "the mode is $mode."
-    } elseif {![string equal $mode $lastmode]} {
-      log::warning "the mode has changed from $lastmode to $mode."
+    set rawmode [lindex $weatherfield 50]
+    switch $rawmode {
+      "MANU"           { set mode "local" }
+      "OFF"            { set mode "off"   }
+      "WAIT_ACK"       { set mode "waiting for local confirmation"}
+      "AUTO"           { set mode "remote and may be open" }
+      "AUTO_PARK"      { set mode "remote but must be closed" }
+      "AUTO_INTRUSION" { set mode "remote but intrusion detected"}
+      "ESTOP"          { set mode "emergency stop activated"}
+      "WAIT_MANU"      { set mode "local but waiting for telescope to be switched" }
+      "WAIT_OFF"       { set mode "off but waiting for telescope to be switched"}
+      "WAIT_AUTO"      { set mode "remote but waiting for telescope to be switched" }
+      default          { set mode "error: [lindex $weatherfield 50]"}
     }
+    if {[string equal $lastmode ""]} {
+      log::info "the mode is \"$mode\" ($rawmode)."
+    } elseif {![string equal $mode $lastmode]} {
+      log::warning "the mode has changed from \"$lastmode\" to \"$mode\" ($rawmode)."
+    }
+    
+    set lastlocalconfirmation $localconfirmation
+    switch -- "[string index $generalresponse 37]" {
+      "0" { set localconfirmation "pending"   }
+      "1" { set localconfirmation "confirmed" }
+    }
+    logflag $localconfirmation $lastlocalconfirmation "local confirmation"
+    
+    if {[string equal $mode "remote and may be open"]} {
+      set alarmtimer 0
+    } else {
+      set alarmtimer [lindex $weatherfield 51]
+    }
+
+    set lastalarmbits $alarmbits
+    set alarmbits "[string index $generalresponse 50][string index $generalresponse 49][string index $generalresponse 46][string reverse [string range $generalresponse 30 36]]"
+    if {[string equal $lastalarmbits ""]} {
+      log::info "the alarm bits are $alarmbits."
+    } elseif {![string equal $alarmbits $lastalarmbits]} {
+      log::info "the alarm bits have changed from $lastalarmbits to $alarmbits."
+    }
+    
+    set lastrainalarm $rainalarm
+    set rainalarm [boolean [string index $generalresponse 30]]
+    logflag $rainalarm $lastrainalarm "rain alarm"    
+    
+    set lastwindalarm $windalarm
+    set windalarm [boolean [string index $generalresponse 31]]
+    logflag $windalarm $lastwindalarm "wind alarm"    
+    
+    set lastcloudalarm $cloudalarm
+    set cloudalarm [boolean [string index $generalresponse 32]]
+    logflag $cloudalarm $lastcloudalarm "cloud alarm"    
+    
+    set lastsunalarm $sunalarm
+    set sunalarm [boolean [string index $generalresponse 33]]
+    logflag $sunalarm $lastsunalarm "sun alarm"    
+    
+    set lasthumidityalarm $humidityalarm
+    set humidityalarm [boolean [string index $generalresponse 34]]
+    logflag $humidityalarm $lasthumidityalarm "humidity alarm"    
+    
+    set lasttcsalarm $tcsalarm
+    set tcsalarm [boolean [string index $generalresponse 35]]
+    logflag $tcsalarm $lasttcsalarm "tcs alarm"    
+    
+    set lastupsalarm $upsalarm
+    set upsalarm [boolean [string index $generalresponse 36]]
+    logflag $upsalarm $lastupsalarm "ups alarm"    
+    
+    set lastrioalarm $rioalarm
+    set rioalarm [boolean [string index $generalresponse 46]]
+    logflag $rioalarm $lastrioalarm "rio alarm"    
+    
+    set lastboltwoodalarm $boltwoodalarm
+    set boltwoodalarm [boolean [string index $generalresponse 49]]
+    logflag $boltwoodalarm $lastboltwoodalarm "boltwood alarm"    
+    
+    set lastvaisalaalarm $vaisalaalarm
+    set vaisalaalarm [boolean [string index $generalresponse 50]]
+    logflag $vaisalaalarm $lastvaisalaalarm "vaisala alarm"    
     
     server::setdata "plccabinettemperature" [lindex $weatherfield 30]
     server::setdata "riocabinettemperature" [lindex $weatherfield 31]
@@ -168,8 +255,21 @@ namespace eval "plc" {
     
     server::setdata "mode"              $mode
     server::setdata "keyswitch"         $keyswitch
-    server::setdata "mustbeclosed"            $mustbeclosed
-    server::setdata "alertbits"         $alertbits
+    server::setdata "localconfirmation" $localconfirmation
+    server::setdata "alarmtimer"             $alarmtimer
+
+    server::setdata "mustbeclosed"      $mustbeclosed
+    server::setdata "alarmbits"         $alarmbits    
+    server::setdata "rainalarm"         $rainalarm
+    server::setdata "windalarm"         $windalarm
+    server::setdata "cloudalarm"        $cloudalarm
+    server::setdata "sunalarm"          $sunalarm
+    server::setdata "humidityalarm"     $humidityalarm
+    server::setdata "tcsalarm"          $tcsalarm
+    server::setdata "upsalarm"          $upsalarm
+    server::setdata "rioalarm"          $rioalarm
+    server::setdata "boltwoodalarm"     $boltwoodalarm
+    server::setdata "vaisalaalarm"      $vaisalaalarm
 
     server::setdata "timestamp"         $timestamp
 
@@ -203,7 +303,33 @@ namespace eval "plc" {
     
     return true
   }
+
+  proc logflag {value lastvalue name} {
+    if {[string equal $lastvalue ""]} {
+      if {$value} {
+        log::summary "the $name is on."
+      } else {
+        log::summary "the $name is off."
+      }
+    } elseif {![string equal $lastvalue $value]} {
+      if {$value} {
+        log::summary "the $name has changed from off to on."
+      } else {
+        log::summary "the $name has changed from on to off."
+      }
+    }
+  }
+
+  proc boolean {x} {
+    if {$x} {
+      return "true"
+    } else {
+      return "false"
+    }
+  }
   
+  ######################################################################
+
   proc startactivitycommand {} {
     set start [utcclock::seconds]
     log::info "starting."
@@ -335,6 +461,54 @@ namespace eval "plc" {
     return
   }
   
+  ######################################################################
+
+  proc enablealarmsactivitycommand {} {
+    set start [utcclock::seconds]
+    log::info "enabling alarms."
+    controller::sendcommand "ByPassUnsafe\{OFF\}\n"
+    log::info [format "finished enabling alarms after %.1f seconds." [utcclock::diff now $start]]
+  }
+
+  proc disablealarmsactivitycommand {} {
+    set start [utcclock::seconds]
+    log::info "disabling alarms."
+    controller::sendcommand "ByPassUnsafe\{ON\}\n"
+    log::info [format "finished disabling alarms after %.1f seconds." [utcclock::diff now $start]]
+  }
+
+  proc enablesunalarmactivitycommand {} {
+    set start [utcclock::seconds]
+    log::info "enabling the sun alarm."
+    controller::sendcommand "DayLightThreshold\{ON\}\n"
+    log::info [format "finished enabling the sun alarm after %.1f seconds." [utcclock::diff now $start]]
+  }
+
+  proc disablesunalarmactivitycommand {} {
+    set start [utcclock::seconds]
+    log::info "disabling the sun alarm."
+    controller::sendcommand "DayLightThreshold\{OFF\}\n"
+    log::info [format "finished disabling the sun alarm after %.1f seconds." [utcclock::diff now $start]]
+  }
+
+  ######################################################################
+  
+  proc enablealarms {} {
+    server::newactivitycommand "enablingalarm" "idle" plc::enablealarmsactivitycommand
+  }
+
+  proc disablealarms {} {
+    server::newactivitycommand "disablingalarm" "idle" plc::disablealarmsactivitycommand
+  }
+
+  proc enablesunalarm {} {
+    server::newactivitycommand "enablingalarm" "idle" plc::enablesunalarmactivitycommand
+  }
+
+  proc disablesunalarm {} {
+    server::newactivitycommand "disablingalarm" "idle" plc::disablesunalarmactivitycommand
+  }
+
   ######################################################################
 
   proc start {} {
