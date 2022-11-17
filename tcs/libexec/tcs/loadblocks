@@ -59,10 +59,15 @@ else
   usageerror
 fi
 
-log summary "loading blocks."
+if test ! -r "$blockfile"
+then
+  log info "cannot read \"$blockfile\"."
+  exit 1
+fi
 
 ################################################################################
 
+log info "blockfile is $blockfile."
 log info "target date is $targetdate."
 
 targetdayofyear="$(date +%j -d $targetdate | sed 's/^0*//')"
@@ -89,6 +94,8 @@ do
 done
 
 ################################################################################
+
+log summary "loading blocks."
 
 expand BLOCKS |
 awk \
