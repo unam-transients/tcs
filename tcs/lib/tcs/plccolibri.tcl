@@ -67,6 +67,7 @@ namespace eval "plc" {
     }
   }
   
+  variable mode ""
   variable weatherresponse ""
   variable generalresponse ""
   variable lastweatherresponse ""
@@ -74,6 +75,7 @@ namespace eval "plc" {
   
   proc updatedata {response} {
 
+    variable mode
     variable weatherresponse
     variable generalresponce
     variable lastweatherresponse
@@ -98,9 +100,17 @@ namespace eval "plc" {
 
     set generalresponse $response
 
-    switch -- [string index $generalresponse 21] {
-      0 { set mode "local" }
-      1 { set mode "remote"  }
+    set lastmode $mode
+    switch -- "[string index $generalresponse 21][string index $generalresponse 20]" {
+      "00" { set mode "off"    }
+      "01" { set mode "local"  }
+      "10" { set mode "remote" }
+      "11" { set mode "error"  }
+    }
+    if {[string equal $lastmode ""]} {
+      log::info "the mode is \"$mode\"."
+    } elseif {![string equal $mode $lastmode]} {
+      log::info "the mode has changed from \"$lastmode\" to \"$mode\"."
     }
     
     set weatherfield [string map {" " ""} $weatherresponse]
