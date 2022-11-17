@@ -46,7 +46,7 @@ do
     }
   ],
   "constraints": {
-    "maxskybrightness": "civiltwilight",
+    "maxskybrightness": "nauticaltwilight",
     "minha": "-3h",
     "maxha": "+3h",
     "minmoondistance": "15d",
@@ -79,7 +79,7 @@ EOF
     }
   ],
   "constraints": {
-    "maxskybrightness": "civiltwilight",
+    "maxskybrightness": "nauticaltwilight",
     "minha": "-3h",
     "maxha": "+3h",
     "minmoondistance": "15d",
