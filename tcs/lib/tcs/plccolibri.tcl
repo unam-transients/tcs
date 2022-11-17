@@ -68,6 +68,8 @@ namespace eval "plc" {
   }
   
   variable mode ""
+  variable unsafe ""
+  variable alertbits ""
   variable weatherresponse ""
   variable generalresponse ""
   variable lastweatherresponse ""
@@ -76,6 +78,8 @@ namespace eval "plc" {
   proc updatedata {response} {
 
     variable mode
+    variable unsafe
+    variable alertbits
     variable weatherresponse
     variable generalresponce
     variable lastweatherresponse
@@ -110,8 +114,28 @@ namespace eval "plc" {
     if {[string equal $lastmode ""]} {
       log::info "the mode is \"$mode\"."
     } elseif {![string equal $mode $lastmode]} {
-      log::info "the mode has changed from \"$lastmode\" to \"$mode\"."
+      log::warning "the mode has changed from \"$lastmode\" to \"$mode\"."
     }
+    
+    set lastalertbits $alertbits
+    set alertbits "[string index $generalresponse 50][string index $generalresponse 49][string index $generalresponse 46][string reverse [string range $generalresponse 30 37]]"
+    if {[string equal $lastalertbits ""]} {
+      log::info "the alert bits are \"$alertbits\"."
+    } elseif {![string equal $alertbits $lastalertbits]} {
+      log::warning "the alert bits have changed from \"$lastalertbits\" to \"$alertbits\"."
+    }
+
+    set lastunsafe $unsafe
+    switch -- "[string index $generalresponse 29]" {
+      "0" { set unsafe false }
+      "1" { set unsafe true  }
+    }
+    if {[string equal $lastunsafe ""]} {
+      log::info "the unsafe flag is \"$unsafe\"."
+    } elseif {![string equal $unsafe $lastunsafe]} {
+      log::warning "the unsafe flag has changed from \"$lastunsafe\" to \"$unsafe\"."
+    }
+    
     
     set weatherfield [string map {" " ""} $weatherresponse]
     set weatherfield [split $weatherfield ";"]
@@ -127,6 +151,7 @@ namespace eval "plc" {
     
     server::setdata "timestamp"         $timestamp
     server::setdata "mode"              $mode
+    server::setdata "unsafe"            $unsafe
 
     server::setstatus "ok"
 
