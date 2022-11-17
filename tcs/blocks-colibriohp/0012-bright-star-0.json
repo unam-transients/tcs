@@ -1,9 +1,9 @@
 {
   "project": {
-    "identifier": "0000",
+    "identifier": "0012",
     "name": "Bright star scattered light"
   },
-  "identifier": "1",
+  "identifier": "0",
   "name": "Capella",
   "visits": [
     {
@@ -16,7 +16,7 @@
         "equinox": "2000"
       },
       "command": "brightstarvisit 10 r",
-      "estimatedduration": "1m"
+      "estimatedduration": "3m"
     },
     {
       "identifier": "1002",
