@@ -286,7 +286,7 @@ namespace eval "executor" {
         log::summary "focusing succeeded."
         setfocused
       } else {
-        log::summary "focusing failed."
+        log::warning "focusing failed."
         setunfocused
       }
     }
