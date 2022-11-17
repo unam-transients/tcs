@@ -74,6 +74,7 @@
   "constraints": {
     "minmoondistance": "30d",
     "maxskybrightness": "daylight",
-    "minskybrightness": "civiltwilight"
+    "minskybrightness": "civiltwilight",
+    "minsunzenithdistance": "90d"
   }
 }
