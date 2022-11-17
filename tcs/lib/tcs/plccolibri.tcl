@@ -68,7 +68,8 @@ namespace eval "plc" {
   }
   
   variable mode ""
-  variable unsafe ""
+  variable keyswitch ""
+  variable mustbeclosed ""
   variable alertbits ""
   variable weatherresponse ""
   variable generalresponse ""
@@ -78,7 +79,8 @@ namespace eval "plc" {
   proc updatedata {response} {
 
     variable mode
-    variable unsafe
+    variable keyswitch
+    variable mustbeclosed
     variable alertbits
     variable weatherresponse
     variable generalresponce
@@ -104,43 +106,58 @@ namespace eval "plc" {
 
     set generalresponse $response
 
-    set lastmode $mode
+    set weatherfield [string map {" " ""} $weatherresponse]
+    set weatherfield [split $weatherfield ";"]
+    set weatherfield [lrange $weatherfield 1 end]
+    log::debug "weatherfield = $weatherfield"
+
+    set lastkeyswitch $keyswitch
     switch -- "[string index $generalresponse 21][string index $generalresponse 20]" {
-      "00" { set mode "off"    }
-      "01" { set mode "local"  }
-      "10" { set mode "remote" }
-      "11" { set mode "error"  }
+      "00" { set keyswitch "off"    }
+      "01" { set keyswitch "local"  }
+      "10" { set keyswitch "remote" }
+      "11" { set keyswitch "error"  }
     }
-    if {[string equal $lastmode ""]} {
-      log::info "the mode is \"$mode\"."
-    } elseif {![string equal $mode $lastmode]} {
-      log::warning "the mode has changed from \"$lastmode\" to \"$mode\"."
+    if {[string equal $lastkeyswitch ""]} {
+      log::info "the keyswitch is at $keyswitch."
+    } elseif {![string equal $keyswitch $lastkeyswitch]} {
+      log::summary "the keyswitch has changed from $lastkeyswitch to $keyswitch."
     }
     
     set lastalertbits $alertbits
     set alertbits "[string index $generalresponse 50][string index $generalresponse 49][string index $generalresponse 46][string reverse [string range $generalresponse 30 37]]"
     if {[string equal $lastalertbits ""]} {
-      log::info "the alert bits are \"$alertbits\"."
+      log::info "the alert bits are $alertbits."
     } elseif {![string equal $alertbits $lastalertbits]} {
-      log::warning "the alert bits have changed from \"$lastalertbits\" to \"$alertbits\"."
+      log::info "the alert bits have changed from $lastalertbits to $alertbits."
     }
 
-    set lastunsafe $unsafe
+    set lastmustbeclosed $mustbeclosed
     switch -- "[string index $generalresponse 29]" {
-      "0" { set unsafe false }
-      "1" { set unsafe true  }
+      "0" { set mustbeclosed false }
+      "1" { set mustbeclosed true  }
     }
-    if {[string equal $lastunsafe ""]} {
-      log::info "the unsafe flag is \"$unsafe\"."
-    } elseif {![string equal $unsafe $lastunsafe]} {
-      log::warning "the unsafe flag has changed from \"$lastunsafe\" to \"$unsafe\"."
+    if {[string equal $lastmustbeclosed ""]} {
+      if {$mustbeclosed} {
+        log::info "the enclosure must be closed."
+      } else {
+        log::info "the enclosure may be open."
+      }
+    } elseif {![string equal $mustbeclosed $lastmustbeclosed]} {
+      if {$mustbeclosed} {
+        log::summary "the enclosure must be closed."
+      } else {
+        log::summary "the enclosure may be open."
+      }
     }
     
-    
-    set weatherfield [string map {" " ""} $weatherresponse]
-    set weatherfield [split $weatherfield ";"]
-    set weatherfield [lrange $weatherfield 1 end]
-    log::debug "weatherfield = $weatherfield"
+    set lastmode $mode
+    set mode [lindex $weatherfield 50]
+    if {[string equal $lastmode ""]} {
+      log::info "the mode is $mode."
+    } elseif {![string equal $mode $lastmode]} {
+      log::warning "the mode has changed from $lastmode to $mode."
+    }
     
     server::setdata "plccabinettemperature" [lindex $weatherfield 30]
     server::setdata "riocabinettemperature" [lindex $weatherfield 31]
@@ -149,9 +166,12 @@ namespace eval "plc" {
     server::setdata "comet1humidity"        [expr {[lindex $weatherfield 33] * 0.01}]
     server::setdata "comet2humidity"        [expr {[lindex $weatherfield 35] * 0.01}]
     
-    server::setdata "timestamp"         $timestamp
     server::setdata "mode"              $mode
-    server::setdata "unsafe"            $unsafe
+    server::setdata "keyswitch"         $keyswitch
+    server::setdata "mustbeclosed"            $mustbeclosed
+    server::setdata "alertbits"         $alertbits
+
+    server::setdata "timestamp"         $timestamp
 
     server::setstatus "ok"
 
@@ -233,8 +253,8 @@ namespace eval "plc" {
   ######################################################################
   
   proc checkremote {} {
-    if {![string equal [server::getdata "mode"] "remote"]} {
-      error "the PLC is not in remote mode."
+    if {![string equal [server::getdata "keyswitch"] "remote"]} {
+      error "the PLC is not in remote keyswitch."
     }
   }
 
