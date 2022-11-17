@@ -704,15 +704,27 @@ namespace eval "html" {
       writehtmlrow "Must be closed" [client::getdata "plc" "mustbeclosed"]
       switch $type {
         "colibri" {
-          writehtmlrow "Mode"                     [client::getdata "plc" "mode"]
+          writehtmlfullrow "Mode"                 [client::getdata "plc" "mode"]
           writehtmlrow "Key switch"               [client::getdata "plc" "keyswitch"]
-          writehtmlrow "Alert bits"               [client::getdata "plc" "alertbits"]
+          writehtmlrow "Local confirmation"       [client::getdata "plc" "localconfirmation"]
+          writehtmlrow "Alarm timer"              [format "%d seconds" [client::getdata "plc" "alarmtimer"]]
           writehtmlrow "PLC cabinet temperature"  [format "%.1f C" [client::getdata "plc" "plccabinettemperature"]]
           writehtmlrow "RIO cabinet temperature"  [format "%.1f C" [client::getdata "plc" "riocabinettemperature"]]
           writehtmlrow "Comet 1 temperature"      [format "%.1f C" [client::getdata "plc" "comet1temperature"    ]]
           writehtmlrow "Comet 2 temperature"      [format "%.1f C" [client::getdata "plc" "comet2temperature"    ]]
           writehtmlrow "Comet 1 humidity"         [format "%.0f%%" [expr {[client::getdata "plc" "comet1humidity"] * 100.0}]]
           writehtmlrow "Comet 2 humidity"         [format "%.0f%%" [expr {[client::getdata "plc" "comet2humidity"] * 100.0}]]
+          writehtmlrow "Alarm bits"               [client::getdata "plc" "alarmbits"    ]
+          writehtmlrow "Rain alarm"               [client::getdata "plc" "rainalarm"    ]
+          writehtmlrow "Wind alarm"               [client::getdata "plc" "windalarm"    ]
+          writehtmlrow "Cloud alarm"              [client::getdata "plc" "cloudalarm"   ]
+          writehtmlrow "Sun alarm"                [client::getdata "plc" "sunalarm"     ]
+          writehtmlrow "Humidty alarm"            [client::getdata "plc" "humidityalarm"]
+          writehtmlrow "TCS alarm"                [client::getdata "plc" "tcsalarm"     ]
+          writehtmlrow "UPS alarm"                [client::getdata "plc" "upsalarm"     ]
+          writehtmlrow "RIO alarm"                [client::getdata "plc" "rioalarm"     ]
+          writehtmlrow "Boltwood alarm"           [client::getdata "plc" "boltwoodalarm"]
+          writehtmlrow "Vaisala alarm"            [client::getdata "plc" "vaisalaalarm" ]
         }
       }
     }
