@@ -13,7 +13,7 @@
         "azimuth": "90d",
         "zenithdistance": "60d"
       },
-      "command": "twilightflatsvisit 5 y",
+      "command": "twilightflatsvisit 7 y",
       "estimatedduration": "2m"
     },    {
       "identifier": "3",
@@ -23,7 +23,7 @@
         "azimuth": "90d",
         "zenithdistance": "60d"
       },
-      "command": "twilightflatsvisit 5 z",
+      "command": "twilightflatsvisit 7 z",
       "estimatedduration": "2m"
     },
     {
@@ -34,18 +34,7 @@
         "azimuth": "90d",
         "zenithdistance": "60d"
       },
-      "command": "twilightflatsvisit 5 i",
-      "estimatedduration": "2m"
-    },
-    {
-      "identifier": "1",
-      "name": "twilight flats in r",
-      "targetcoordinates": {
-        "type": "fixed",
-        "azimuth": "90d",
-        "zenithdistance": "60d"
-      },
-      "command": "twilightflatsvisit 5 r",
+      "command": "twilightflatsvisit 7 i",
       "estimatedduration": "2m"
     },
     {
@@ -56,7 +45,18 @@
         "azimuth": "90d",
         "zenithdistance": "60d"
       },
-      "command": "twilightflatsvisit 5 g",
+      "command": "twilightflatsvisit 7 g",
+      "estimatedduration": "2m"
+    },
+    {
+      "identifier": "1",
+      "name": "twilight flats in r",
+      "targetcoordinates": {
+        "type": "fixed",
+        "azimuth": "90d",
+        "zenithdistance": "60d"
+      },
+      "command": "twilightflatsvisit 7 r",
       "estimatedduration": "2m"
     },
     {
