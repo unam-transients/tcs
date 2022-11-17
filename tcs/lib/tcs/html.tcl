@@ -680,7 +680,6 @@ namespace eval "html" {
     
     if {[string equal [client::getstatus "telescopecontroller"] "ok"]} {
       writehtmlfullrow "State"           [client::getdata "telescopecontroller" "state"]
-      writehtmlfullrow "Key switch"      [client::getdata "telescopecontroller" "keyswitch"]
       writehtmlrow "Ambient temperature" [formatifok "%.1f C"    [client::getdata "telescopecontroller" "ambienttemperature"]]
       writehtmlrow "Ambient pressure"    [formatifok "%.1f mbar" [client::getdata "telescopecontroller" "ambientpressure"   ]]
     }

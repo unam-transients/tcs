@@ -230,6 +230,13 @@ namespace eval "opentsi" {
   }
 
   ######################################################################
+  
+  proc readystate {} {
+    variable readystatetext
+    return $readystatetext
+  }
+  
+  ######################################################################
 
   proc start {statuscommand updatedata} {
     variable statuscommandidentifier

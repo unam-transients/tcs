@@ -62,6 +62,7 @@ namespace eval "telescopecontroller" {
 
   ######################################################################
 
+  variable state              ""
   variable ambienttemperature ""
   variable ambientpressure    ""
   variable sensor0            ""
@@ -79,11 +80,10 @@ namespace eval "telescopecontroller" {
   variable sensor12           ""
   variable sensor13           ""
   variable sensor14           ""
-  
-  variable laststate          ""
 
   proc updatedata {response} {
 
+    variable state
     variable ambienttemperature
     variable ambientpressure
     variable sensor0
@@ -102,8 +102,6 @@ namespace eval "telescopecontroller" {
     variable sensor13
     variable sensor14
     
-    variable laststate
-
     if {[scan $response "%*d DATA INLINE TELESCOPE.ENVIRONMENT.TEMPERATURE=%f" value] == 1} {
       set ambienttemperature $value
       return false
@@ -133,12 +131,14 @@ namespace eval "telescopecontroller" {
 
     set timestamp [utcclock::combinedformat "now"]
 
-    set state $opentsi::readystatetext
-    if {![string equal $laststate ""] && ![string equal $laststate $state]} {
+    set laststate $state
+    set state [opentsi::readystate]
+    if {[string equal $laststate ""]} {
+      log::info "state is $state."
+    } elseif {![string equal $laststate $state]} {
       log::info "state changed from $laststate to $state."
     }
-    set laststate $state
-
+    
     server::setdata "timestamp"          $timestamp
     server::setdata "state"              $state
     server::setdata "ambienttemperature" $ambienttemperature
