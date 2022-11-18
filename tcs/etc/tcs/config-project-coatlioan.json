@@ -86,6 +86,7 @@
       "em-30MHz-low-100"    : "0-0-3-0-0-100-8",
       "em-30MHz-high"       : "0-0-3-0-1-640-16"
     },
+    "coolerstartsetting": "20",
     "cooleropensetting": "-60",
     "coolerclosedsetting": "20",
     "temperaturelimit": "",

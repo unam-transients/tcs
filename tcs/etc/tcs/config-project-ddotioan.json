@@ -82,6 +82,7 @@
       "nx": "8176",
       "ny": "16"
     },
+    "coolerstartsetting": "following",
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
     "temperaturelimit": "50",
@@ -152,6 +153,7 @@
       "nx": "8176",
       "ny": "16"
     },
+    "coolerstartsetting": "following",
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
     "temperaturelimit": "50",
@@ -223,6 +225,7 @@
       "nx": "8176",
       "ny": "16"
     },
+    "coolerstartsetting": "following",
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
     "temperaturelimit": "50",
@@ -294,6 +297,7 @@
       "nx": "8176",
       "ny": "16"
     },
+    "coolerstartsetting": "following",
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
     "temperaturelimit": "50",
@@ -365,6 +369,7 @@
       "nx": "8176",
       "ny": "16"
     },
+    "coolerstartsetting": "following",
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
     "temperaturelimit": "50",
@@ -435,6 +440,7 @@
       "nx": "8176",
       "ny": "16"
     },
+    "coolerstartsetting": "following",
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
     "temperaturelimit": "50",
