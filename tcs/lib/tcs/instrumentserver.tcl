@@ -76,8 +76,8 @@ namespace eval "instrumentserver" {
     return
   }
   
-  proc slaveexpose {type fitsfiledir args} {
-    eval instrument::expose $type $fitsfiledir $args
+  proc slaveexpose {type fitsfiledir starttime args} {
+    eval instrument::expose $type $fitsfiledir $starttime $args
   }
   
   proc slaveanalyze {args} {

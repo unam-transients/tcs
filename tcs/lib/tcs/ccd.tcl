@@ -580,13 +580,24 @@ namespace eval "ccd" {
     }
   }
   
-  proc exposeactivitycommand {exposuretime exposuretype fitsfileprefix} {
-
-    variable identifier
+  proc exposeactivitycommand {exposuretime exposuretype fitsfileprefix starttime} {
 
     set start [utcclock::seconds]
+    coroutine::after 1
+
+    variable identifier
+    
+    if {![string equal $starttime "now"]} {
+      set start [utcclock::seconds]
+      log::info "waiting until [utcclock::format $starttime]."
+      set startseconds [utcclock::scan $starttime]
+      while {[utcclock::seconds] <= $startseconds} {
+        coroutine::after 100
+      }
+      log::info [format "continuing %.1f seconds after requested start time." [utcclock::diff now $startseconds]]
+    }
+
     log::info "exposing $exposuretype image for $exposuretime seconds."
-    coroutine::yield
 
     stopexposing
     stopsolving
@@ -644,6 +655,7 @@ namespace eval "ccd" {
               [string equal $exposuretype "dark"]} {
       set shutter closed
     }
+    log::info [format "starting exposing after %.1f seconds." [utcclock::diff now $start]]
     detector::startexposure $exposuretime $shutter $tmpfitscubepixfilename
     set seconds [utcclock::seconds]
     log::info [format "started exposing after %.1f seconds." [utcclock::diff now $start]]
@@ -909,7 +921,7 @@ namespace eval "ccd" {
   }
   
   proc exposeforfocus {exposuretime fitsfileprefix} {
-    exposeactivitycommand $exposuretime "focus" $fitsfileprefix/[utcclock::combinedformat now 0 false]
+    exposeactivitycommand $exposuretime "focus" $fitsfileprefix/[utcclock::combinedformat now 0 false] "now"
   }
   
   proc mapfocusactivitycommand {exposuretime fitsfileprefix range step} {
@@ -949,7 +961,8 @@ namespace eval "ccd" {
     server::newactivitycommand "resetting" [server::getstoppedactivity] ccd::resetactivitycommand 600000
   }
 
-  proc expose {exposuretime {exposuretype "object"} {fitsfileprefix ""}} {
+  proc expose {exposuretime {exposuretype "object"} {fitsfileprefix ""} {starttime "now"}} {
+    log::info "received request to expose."
     server::checkstatus
     server::checkactivity "idle"
     if {
@@ -979,7 +992,7 @@ namespace eval "ccd" {
     }
     set timeoutmilliseconds [expr {1000 * ($exposuretime + 120)}]
     server::newactivitycommand "exposing" "idle" \
-      "ccd::exposeactivitycommand $exposuretime $exposuretype $fitsfileprefix" \
+      "ccd::exposeactivitycommand $exposuretime $exposuretype $fitsfileprefix $starttime" \
       $timeoutmilliseconds
     return
   }

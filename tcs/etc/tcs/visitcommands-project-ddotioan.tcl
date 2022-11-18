@@ -882,7 +882,7 @@ proc aperturesvisit {} {
 }
 ########################################################################
 
-proc satellitevisit {start exposures exposuretime} {
+proc satellitevisit {starttime exposures exposuretime} {
 
   log::summary "satellitevisit: starting."
 
@@ -891,10 +891,10 @@ proc satellitevisit {start exposures exposuretime} {
   executor::setwindow "default"
   executor::waituntiltracking
 
-  log::summary "satellitevisit: waiting until $start."
+  log::summary "satellitevisit: waiting to take first exposure after [utcclock::format $starttime]."
 
-  set startseconds [utcclock::scan $start]
-  while {[utcclock::seconds] <= $startseconds} {
+  set startseconds [utcclock::scan $starttime]
+  while {[utcclock::seconds] + 10 <= $startseconds} {
     coroutine::after 100
   }
 
@@ -902,7 +902,7 @@ proc satellitevisit {start exposures exposuretime} {
 
   set exposure 0
   while {$exposure < $exposures} {
-    executor::expose object $exposuretime
+    executor::exposeafter object $starttime $exposuretime
     incr exposure
   }
 
