@@ -64,12 +64,12 @@ namespace eval "plcserver" {
     plc::updateweather
   }
   
-  proc slaveenablealarms {} {
-    plc::enablealarms
+  proc slaveenableweatheralarm {} {
+    plc::enableweatheralarm
   }
   
-  proc slavedisablealarms {} {
-    plc::disablealarms
+  proc slavedisableweatheralarm {} {
+    plc::disableweatheralarm
   }
   
   proc slaveenablesunalarm {} {
@@ -81,18 +81,18 @@ namespace eval "plcserver" {
   }
   
   proc configureslave {slave} {
-    interp alias $slave initialize      {} plcserver::slaveinitialize
-    interp alias $slave stop            {} plcserver::slavestop
-    interp alias $slave reset           {} plcserver::slavereset
-    interp alias $slave switchlightson  {} plcserver::slaveswitchlightson
-    interp alias $slave switchlightsoff {} plcserver::slaveswitchlightsoff
-    interp alias $slave open            {} plcserver::slaveopen
-    interp alias $slave close           {} plcserver::slaveclose
-    interp alias $slave updateweather   {} plcserver::slaveupdateweather
-    interp alias $slave enablealarms    {} plcserver::slaveenablealarms
-    interp alias $slave disablealarms   {} plcserver::slavedisablealarms
-    interp alias $slave enablesunalarm  {} plcserver::slaveenablesunalarm
-    interp alias $slave disablesunalarm {} plcserver::slavedisablesunalarm
+    interp alias $slave initialize          {} plcserver::slaveinitialize
+    interp alias $slave stop                {} plcserver::slavestop
+    interp alias $slave reset               {} plcserver::slavereset
+    interp alias $slave switchlightson      {} plcserver::slaveswitchlightson
+    interp alias $slave switchlightsoff     {} plcserver::slaveswitchlightsoff
+    interp alias $slave open                {} plcserver::slaveopen
+    interp alias $slave close               {} plcserver::slaveclose
+    interp alias $slave updateweather       {} plcserver::slaveupdateweather
+    interp alias $slave enableweatheralarm  {} plcserver::slaveenableweatheralarm
+    interp alias $slave disableweatheralarm {} plcserver::slavedisableweatheralarm
+    interp alias $slave enablesunalarm      {} plcserver::slaveenablesunalarm
+    interp alias $slave disablesunalarm     {} plcserver::slavedisablesunalarm
   }
 
   ######################################################################
