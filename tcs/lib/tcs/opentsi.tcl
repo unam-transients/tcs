@@ -130,7 +130,7 @@ namespace eval "opentsi" {
     if {[scan $response "%*d DATA INLINE TELESCOPE.READY_STATE=%f" value] == 1} {
       set readystate $value
       if {$value == -3.0} {
-        set readystatetext "local"
+        set readystatetext "local/off"
       } elseif {$value == -2.0} {
         set readystatetext "emergencystop"
       } elseif {$value == -1.0} {
@@ -200,26 +200,6 @@ namespace eval "opentsi" {
           log::debug "current controller command completed."
           set completedcurrentcommand true
         }
-      }
-      return false
-    }
-    
-
-    
-    if {[scan $response "%*d DATA INLINE TELESCOPE.READY_STATE=%f" value] == 1} {
-      set readystate $value
-      if {$value == -3.0} {
-        set readystatetext "local"
-      } elseif {$value == -2.0} {
-        set readystatetext "emergencystop"
-      } elseif {$value == -1.0} {
-        set readystatetext "blocked"
-      } elseif {$value == 0.0} {
-        set readystatetext "off"
-      } elseif {$value == 1.0} {
-        set readystatetext "operational"
-      } else {
-        set readystatetext "intermediate"
       }
       return false
     }
