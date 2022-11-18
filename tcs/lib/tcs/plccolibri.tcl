@@ -148,22 +148,6 @@ namespace eval "plc" {
       log::summary "the keyswitch has changed from $lastkeyswitch to $keyswitch."
     }
     
-    set lastalarm $alarm
-    set alarm [boolean [string index $generalresponse 29]]
-    if {[string equal $lastalarm ""]} {
-      if {$alarm} {
-        log::info "the enclosure must be closed."
-      } else {
-        log::info "the enclosure may be open."
-      }
-    } elseif {![string equal $alarm $lastalarm]} {
-      if {$alarm} {
-        log::summary "the enclosure must be closed."
-      } else {
-        log::summary "the enclosure may be open."
-      }
-    }
-    
     set lastmode $mode
     set rawmode [lindex $weatherfield 50]
     switch $rawmode {
@@ -208,43 +192,47 @@ namespace eval "plc" {
     
     set lastrainalarm $rainalarm
     set rainalarm [boolean [string index $generalresponse 30]]
-    logflag $rainalarm $lastrainalarm "rain alarm"    
+    logalarm $rainalarm $lastrainalarm "rain alarm"    
     
     set lastwindalarm $windalarm
     set windalarm [boolean [string index $generalresponse 31]]
-    logflag $windalarm $lastwindalarm "wind alarm"    
+    logalarm $windalarm $lastwindalarm "wind alarm"    
     
     set lastcloudalarm $cloudalarm
     set cloudalarm [boolean [string index $generalresponse 32]]
-    logflag $cloudalarm $lastcloudalarm "cloud alarm"    
+    logalarm $cloudalarm $lastcloudalarm "cloud alarm"    
     
     set lastlightlevelalarm $lightlevelalarm
     set lightlevelalarm [boolean [string index $generalresponse 33]]
-    logflag $lightlevelalarm $lastlightlevelalarm "light-level alarm"    
+    logalarm $lightlevelalarm $lastlightlevelalarm "light-level alarm"    
     
     set lasthumidityalarm $humidityalarm
     set humidityalarm [boolean [string index $generalresponse 34]]
-    logflag $humidityalarm $lasthumidityalarm "humidity alarm"    
+    logalarm $humidityalarm $lasthumidityalarm "humidity alarm"    
     
     set lasttcsalarm $tcsalarm
     set tcsalarm [boolean [string index $generalresponse 35]]
-    logflag $tcsalarm $lasttcsalarm "tcs alarm"    
+    logalarm $tcsalarm $lasttcsalarm "tcs alarm"    
     
     set lastupsalarm $upsalarm
     set upsalarm [boolean [string index $generalresponse 36]]
-    logflag $upsalarm $lastupsalarm "ups alarm"    
+    logalarm $upsalarm $lastupsalarm "ups alarm"    
     
     set lastrioalarm $rioalarm
     set rioalarm [boolean [string index $generalresponse 46]]
-    logflag $rioalarm $lastrioalarm "rio alarm"    
+    logalarm $rioalarm $lastrioalarm "rio alarm"    
     
     set lastboltwoodalarm $boltwoodalarm
     set boltwoodalarm [boolean [string index $generalresponse 49]]
-    logflag $boltwoodalarm $lastboltwoodalarm "boltwood alarm"    
+    logalarm $boltwoodalarm $lastboltwoodalarm "boltwood alarm"    
     
     set lastvaisalaalarm $vaisalaalarm
     set vaisalaalarm [boolean [string index $generalresponse 50]]
-    logflag $vaisalaalarm $lastvaisalaalarm "vaisala alarm"    
+    logalarm $vaisalaalarm $lastvaisalaalarm "vaisala alarm"    
+    
+    set lastalarm $alarm
+    set alarm [boolean [string index $generalresponse 29]]
+    logalarm $alarm $alarm "alarm"    
     
     server::setdata "plccabinettemperature" [lindex $weatherfield 30]
     server::setdata "riocabinettemperature" [lindex $weatherfield 31]
@@ -304,16 +292,16 @@ namespace eval "plc" {
     return true
   }
 
-  proc logflag {value lastvalue name} {
+  proc logalarm {value lastvalue name} {
     if {[string equal $lastvalue ""]} {
       if {$value} {
-        log::summary "the $name is on."
+        log::info "the $name is on."
       } else {
-        log::summary "the $name is off."
+        log::info "the $name is off."
       }
     } elseif {![string equal $lastvalue $value]} {
       if {$value} {
-        log::summary "the $name has changed from off to on."
+        log::warning "the $name has changed from off to on."
       } else {
         log::summary "the $name has changed from on to off."
       }
