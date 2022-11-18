@@ -169,7 +169,7 @@ namespace eval "plc" {
     switch $rawmode {
       "MANU"           { set mode "local" }
       "OFF"            { set mode "off"   }
-      "WAIT_ACK"       { set mode "waiting for local confirmation"}
+      "WAIT_ACK"       { set mode "remote but waiting for local confirmation"}
       "AUTO"           { set mode "remote and may be open" }
       "AUTO_PARK"      { set mode "remote but must be closed" }
       "AUTO_INTRUSION" { set mode "remote but intrusion detected"}
@@ -190,13 +190,13 @@ namespace eval "plc" {
       "0" { set localconfirmation "pending"   }
       "1" { set localconfirmation "confirmed" }
     }
-    logflag $localconfirmation $lastlocalconfirmation "local confirmation"
-    
-    if {[string equal $mode "remote and may be open"]} {
-      set alarmtimer 0
-    } else {
-      set alarmtimer [lindex $weatherfield 51]
+    if {[string equal $lastlocalconfirmation ""]} {
+      log::info "the local confirmation is \"$localconfirmation\"."
+    } elseif {![string equal $localconfirmation $lastlocalconfirmation]} {
+      log::warning "the local confirmation has changed from \"$lastlocalconfirmation\" to \"$localconfirmation\"."
     }
+    
+    set alarmtimer [lindex $weatherfield 51]
 
     set lastalarmbits $alarmbits
     set alarmbits "[string index $generalresponse 50][string index $generalresponse 49][string index $generalresponse 46][string reverse [string range $generalresponse 30 36]]"
@@ -256,7 +256,7 @@ namespace eval "plc" {
     server::setdata "mode"              $mode
     server::setdata "keyswitch"         $keyswitch
     server::setdata "localconfirmation" $localconfirmation
-    server::setdata "alarmtimer"             $alarmtimer
+    server::setdata "alarmtimer"        $alarmtimer
 
     server::setdata "mustbeclosed"      $mustbeclosed
     server::setdata "alarmbits"         $alarmbits    
