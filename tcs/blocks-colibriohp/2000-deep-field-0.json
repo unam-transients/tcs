@@ -1,0 +1,83 @@
+{
+  "project": {
+    "identifier": "2000",
+    "name": "deep fields"
+  },
+  "identifier": "0",
+  "name": "deep field near 2h +30d",
+  "visits": [
+    {
+//      "identifier": "0",
+//      "name": "grid in g",
+//      "targetcoordinates": {
+//        "type"   : "equatorial",
+//        "alpha"  : "02:00:00",
+//        "delta"  : "+30:00:00",
+//        "equinox": "2000"
+//      },
+//      "command": "gridvisit 1 5 1 15 g",
+//      "estimatedduration": "3m"
+//    },{
+      "identifier": "1",
+      "name": "grid in r",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "02:00:00",
+        "delta"  : "+30:00:00",
+        "equinox": "2000"
+      },
+      "command": "gridvisit 3 9 1 15 r",
+      "estimatedduration": "12m"
+//    },{
+//      "identifier": "2",
+//      "name": "grid in i",
+//      "targetcoordinates": {
+//        "type"   : "equatorial",
+//        "alpha"  : "02:00:00",
+//        "delta"  : "+30:00:00",
+//        "equinox": "2000"
+//      },
+//      "command": "gridvisit 1 5 1 15 i",
+//      "estimatedduration": "3m"
+//    },    {
+//      "identifier": "3",
+//      "name": "grid in z",
+//      "targetcoordinates": {
+//        "type"   : "equatorial",
+//        "alpha"  : "02:00:00",
+//        "delta"  : "+30:00:00",
+//        "equinox": "2000"
+//      },
+//      "command": "gridvisit 1 5 1 15 z",
+//      "estimatedduration": "3m"
+//    },{
+//      "identifier": "4",
+//      "name": "grid in y",
+//      "targetcoordinates": {
+//        "type"   : "equatorial",
+//        "alpha"  : "02:00:00",
+//        "delta"  : "+30:00:00",
+//        "equinox": "2000"
+//      },
+//      "command": "gridvisit 1 5 1 15 y",
+//      "estimatedduration": "3m"
+    },{
+      "identifier": "10",
+      "name": "darks",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "02:00:00",
+        "delta"  : "+30:00:00",
+        "equinox": "2000"
+      },
+      "command": "darksvisit 15",
+      "estimatedduration": "5m"
+    }
+  ],
+  "constraints": {
+    "maxskybrightness": "nauticaltwilight",
+    "maxairmass": "1.5",
+    "minmoondistance": "15d"
+  },
+  "persistent": "true"
+}
