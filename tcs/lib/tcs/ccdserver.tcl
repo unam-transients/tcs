@@ -43,8 +43,8 @@ namespace eval "ccdserver" {
     ccd::reset
   }
 
-  proc slaveexpose {exposuretime {type "object"} {fitsfileprefix ""}} {
-    ccd::expose $exposuretime $type $fitsfileprefix
+  proc slaveexpose {exposuretime {type "object"} {fitsfileprefix ""} {starttime "now"}} {
+    ccd::expose $exposuretime $type $fitsfileprefix $starttime
   }
   
   proc slaveanalyze {type} {

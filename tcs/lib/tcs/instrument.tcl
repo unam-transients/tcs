@@ -334,9 +334,13 @@ namespace eval "instrument" {
     log::info [format "finished moving filter wheel after %.1f seconds." [utcclock::diff now $start]]
   }
 
-  proc exposeactivitycommand {type fitsfileprefix args} {
+  proc exposeactivitycommand {type fitsfileprefix starttime args} {
     set start [utcclock::seconds]
-    log::info "exposing $type image."
+    if {[string equal $starttime "now"]} {
+      log::info "exposing $type image."
+    } else {
+      log::info "exposing $type image after waiting until [utcclock::format $starttime]."
+    }
     set exposuretimes $args
     log::info "FITS file prefix is $fitsfileprefix."
     file mkdir [file dirname $fitsfileprefix]
@@ -344,15 +348,17 @@ namespace eval "instrument" {
     foreach detector $activedetectors {
       client::resetifnecessary $detector
     }
+    log::info [format "finished checking detectors after %.1f seconds." [utcclock::diff now $start]]
     variable detectors
     foreach detector $detectors exposuretime $exposuretimes {
       if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
         log::info "exposing $detector for $exposuretime seconds."
-        client::request $detector "expose $exposuretime $type $fitsfileprefix"
+        client::request $detector "expose $exposuretime $type $fitsfileprefix $starttime"
       }
     }
+    log::info [format "finished requesting exposures after %.1f seconds." [utcclock::diff now $start]]
     foreach detector $activedetectors {
-      client::wait $detector
+      client::wait $detector 1000
     }
     log::info [format "finished exposing $type image after %.1f seconds." [utcclock::diff now $start]]
   }
@@ -430,7 +436,7 @@ namespace eval "instrument" {
       set fitsfileprefix "$fitsfiledir/$dateandtime"
       foreach detector $detectors exposuretime $exposuretimes {
         if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
-          client::request $detector "expose $exposuretime object $fitsfileprefix"
+          client::request $detector "expose $exposuretime object $fitsfileprefix now"
         }
       }
       foreach detector $detectors exposuretime $exposuretimes {
@@ -502,7 +508,7 @@ namespace eval "instrument" {
       set fitsfileprefix "$fitsfiledir/$dateandtime"
       foreach detector $detectors exposuretime $exposuretimes {
         if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
-          client::request $detector "expose $exposuretime object $fitsfileprefix"
+          client::request $detector "expose $exposuretime object $fitsfileprefix now"
         }
       }
       foreach detector $detectors exposuretime $exposuretimes {
@@ -712,7 +718,7 @@ namespace eval "instrument" {
       "instrument::movefilterwheelactivitycommand $positions"
   }
   
-  proc expose {type fitsfiledir args} {
+  proc expose {type fitsfiledir starttime args} {
     server::checkstatus
     server::checkactivity "idle"
     safetyswitch::checksafetyswitch
@@ -756,7 +762,7 @@ namespace eval "instrument" {
     set dateandtime [utcclock::combinedformat now 0 false]
     set fitsfileprefix "$fitsfiledir/$dateandtime"
     server::newactivitycommand "exposing" "idle" \
-      "instrument::exposeactivitycommand $type $fitsfileprefix $exposuretimes" \
+      "instrument::exposeactivitycommand $type $fitsfileprefix $starttime $exposuretimes" \
       $timeoutmilliseconds
   }
   
