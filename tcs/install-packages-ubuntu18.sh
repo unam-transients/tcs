@@ -113,16 +113,16 @@ cd ..
 
 sudo apt-get -y install astrometry.net
 
-# (
-#   for file in $(
-#     cd $prefix/opt/astrometry
-#     echo bin/*
-#   )
-#   do
-#     sudo mkdir -p $prefix/$(dirname $file)
-#     sudo ln -sf $prefix/opt/astrometry/$file $prefix/$file
-#   done
-# )
+(
+  for file in $(
+    cd $prefix/opt/astrometry
+    echo bin/*
+  )
+  do
+    sudo mkdir -p $prefix/$(dirname $file)
+    sudo ln -sf $prefix/opt/astrometry/$file $prefix/$file
+  done
+)
 
 ########################################################################
 

@@ -137,6 +137,12 @@ namespace eval "telescopecontroller" {
       log::info "state is $state."
     } elseif {![string equal $laststate $state]} {
       log::info "state changed from $laststate to $state."
+      if {[string equal $state "emergency stop"]} {
+        log::warning "an emergency stop button has been activated."
+        log::warning "deactivate the button and clear the error on the telescope cabinet."
+      } elseif {[string equal $laststate "emergency stop"]} {
+        log::summary "the emergency stop state has been cleared."
+      }
     }
     
     server::setdata "timestamp"          $timestamp

@@ -70,6 +70,10 @@ namespace eval "plc" {
   variable mode ""
   variable keyswitch ""
   variable localconfirmation ""
+  variable emergencystopbuttons ""
+  variable intrusionsensor ""
+  variable weatheralarmdisabled ""
+  variable daylightalarmdisabled ""
   variable alarm ""
   variable alarmbits ""
   variable rainalarm ""
@@ -94,6 +98,10 @@ namespace eval "plc" {
     variable mode
     variable keyswitch
     variable localconfirmation
+    variable emergencystopbuttons
+    variable intrusionsensor
+    variable weatheralarmdisabled
+    variable daylightalarmdisabled
     variable alarm
     variable alarmbits
     variable rainalarm
@@ -119,7 +127,7 @@ namespace eval "plc" {
     }
 
     log::debug "length is [string length $response]."
-    if {[string length $response] != 85} {
+    if {[string length $response] != 86} {
       set weatherresponse $response
       return false
     }
@@ -159,6 +167,40 @@ namespace eval "plc" {
       log::warning "the local confirmation has changed from \"$lastlocalconfirmation\" to \"$localconfirmation\"."
     }
     
+    set lastemergencystopbuttons $emergencystopbuttons
+    set emergencystopbuttons [boolean [expr {![string index $generalresponse 39]}]]
+    if {[string equal $lastemergencystopbuttons ""]} {
+      if {$emergencystopbuttons} {
+        log::error "an emergency stop button is activated."
+      } else {
+        log::info "the emergency stop buttons are not activated."
+      }
+    } elseif {![string equal $lastemergencystopbuttons $emergencystopbuttons]} {
+      if {$emergencystopbuttons} {
+        log::error "an emergency stop button has been activated."
+        log::error "deactivate the button and clear the error on the telescope cabinet."
+      } else {
+        log::warning "the emergency stop buttons are not activated."
+        log::warning "clear the error on the telescope cabinet."
+      }
+    }
+
+    set lastintrusionsensor $intrusionsensor
+    set intrusionsensor [boolean [expr {[string index $generalresponse 41]}]]
+    if {[string equal $lastintrusionsensor ""]} {
+      if {$intrusionsensor} {
+        log::error "the intrusion sensor is activated."
+      } else {
+        log::info "the intrusion sensor is not activated."
+      }
+    } elseif {![string equal $lastintrusionsensor $intrusionsensor]} {
+      if {$intrusionsensor} {
+        log::error "the intrusion sensor has been activated."
+      } else {
+        log::warning "the intrusion sensor has been deactivated."
+      }
+    }
+
     set lastmode $mode
     set rawmode [lindex $weatherfield 50]
     switch $rawmode {
@@ -180,6 +222,14 @@ namespace eval "plc" {
       log::warning "the mode has changed from \"$lastmode\" to \"$mode\" ($rawmode)."
     }
     
+    set lastweatheralarmdisabled $weatheralarmdisabled
+    set weatheralarmdisabled [boolean [string index $generalresponse 45]]
+    logalarm $weatheralarmdisabled $lastweatheralarmdisabled "weather alarm disabled"    
+
+    set lastdaylightalarmdisabled $daylightalarmdisabled
+    set daylightalarmdisabled [boolean [string index $generalresponse 85]]
+    logalarm $daylightalarmdisabled $lastdaylightalarmdisabled "daylight alarm disabled"    
+
     set alarmtimer [lindex $weatherfield 51]
 
     set lastalarmbits $alarmbits
@@ -241,25 +291,27 @@ namespace eval "plc" {
     server::setdata "comet1humidity"        [expr {[lindex $weatherfield 33] * 0.01}]
     server::setdata "comet2humidity"        [expr {[lindex $weatherfield 35] * 0.01}]
     
-    server::setdata "mode"              $mode
-    server::setdata "keyswitch"         $keyswitch
-    server::setdata "localconfirmation" $localconfirmation
+    server::setdata "mode"                 $mode
+    server::setdata "keyswitch"            $keyswitch
+    server::setdata "localconfirmation"    $localconfirmation
+    server::setdata "emergencystopbuttons" $emergencystopbuttons
+    server::setdata "intrusionsensor"      $intrusionsensor
 
-    server::setdata "alarm"             $alarm
-    server::setdata "alarmtimer"        $alarmtimer
-    server::setdata "alarmbits"         $alarmbits    
-    server::setdata "rainalarm"         $rainalarm
-    server::setdata "windalarm"         $windalarm
-    server::setdata "cloudalarm"        $cloudalarm
-    server::setdata "lightlevelalarm"   $lightlevelalarm
-    server::setdata "humidityalarm"     $humidityalarm
-    server::setdata "tcsalarm"          $tcsalarm
-    server::setdata "upsalarm"          $upsalarm
-    server::setdata "rioalarm"          $rioalarm
-    server::setdata "boltwoodalarm"     $boltwoodalarm
-    server::setdata "vaisalaalarm"      $vaisalaalarm
+    server::setdata "alarm"               $alarm
+    server::setdata "alarmtimer"          $alarmtimer
+    server::setdata "alarmbits"           $alarmbits    
+    server::setdata "rainalarm"           $rainalarm
+    server::setdata "windalarm"           $windalarm
+    server::setdata "cloudalarm"          $cloudalarm
+    server::setdata "lightlevelalarm"     $lightlevelalarm
+    server::setdata "humidityalarm"       $humidityalarm
+    server::setdata "tcsalarm"            $tcsalarm
+    server::setdata "upsalarm"            $upsalarm
+    server::setdata "rioalarm"            $rioalarm
+    server::setdata "boltwoodalarm"       $boltwoodalarm
+    server::setdata "vaisalaalarm"        $vaisalaalarm
 
-    server::setdata "timestamp"         $timestamp
+    server::setdata "timestamp"           $timestamp
 
     server::setstatus "ok"
 
@@ -454,14 +506,14 @@ namespace eval "plc" {
   proc enableweatheralarmactivitycommand {} {
     set start [utcclock::seconds]
     log::info "enabling the weather alarm."
-    controller::sendcommand "ByPassUnsafe\{OFF\}\n"
+    controller::sendcommand "ByPassWeather\{OFF\}\n"
     log::info [format "finished enabling the weather alarm after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc disableweatheralarmactivitycommand {} {
     set start [utcclock::seconds]
     log::info "disabling the weather alarm."
-    controller::sendcommand "ByPassUnsafe\{ON\}\n"
+    controller::sendcommand "ByPassWeather\{ON\}\n"
     log::info [format "finished disabling the weather alarm after %.1f seconds." [utcclock::diff now $start]]
   }
 

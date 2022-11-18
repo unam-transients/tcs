@@ -710,6 +710,16 @@ namespace eval "html" {
           writehtmlfullrow "Mode"                 [client::getdata "plc" "mode"]
           writehtmlrow "Key switch"               [client::getdata "plc" "keyswitch"]
           writehtmlrow "Local confirmation"       [client::getdata "plc" "localconfirmation"]
+          if {[client::getdata "plc" "emergencystopbuttons"]} {
+            writehtmlrowwithemph "Emergency stop buttons"  "error" "activated"
+          } else {
+            writehtmlrow "Emergency stop buttons" "deactivated"
+          }
+          if {[client::getdata "plc" "intrusionsensor"]} {
+            writehtmlrowwithemph "Intrusion sensor"  "error" "activated"
+          } else {
+            writehtmlrow "Intrusion sensor" "deactivated"
+          }
           writealarm   "Alarm"                    [client::getdata "plc" "alarm"]
           writehtmlrow "Alarm timer"              [format "%d seconds" [client::getdata "plc" "alarmtimer"]]
           writealarm   "Rain alarm"               [client::getdata "plc" "rainalarm"      ]

@@ -130,9 +130,9 @@ namespace eval "opentsi" {
     if {[scan $response "%*d DATA INLINE TELESCOPE.READY_STATE=%f" value] == 1} {
       set readystate $value
       if {$value == -3.0} {
-        set readystatetext "local/off"
+        set readystatetext "local or off"
       } elseif {$value == -2.0} {
-        set readystatetext "emergencystop"
+        set readystatetext "emergency stop"
       } elseif {$value == -1.0} {
         set readystatetext "blocked"
       } elseif {$value == 0.0} {
