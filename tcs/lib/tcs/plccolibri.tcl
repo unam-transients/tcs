@@ -143,9 +143,20 @@ namespace eval "plc" {
       "11" { set keyswitch "error"  }
     }
     if {[string equal $lastkeyswitch ""]} {
-      log::info "the keyswitch is at $keyswitch."
+      log::info "the key switch is \"$keyswitch\"."
     } elseif {![string equal $keyswitch $lastkeyswitch]} {
-      log::summary "the keyswitch has changed from $lastkeyswitch to $keyswitch."
+      log::summary "the key switch has changed from \"$lastkeyswitch\" to \"$keyswitch\"."
+    }
+    
+    set lastlocalconfirmation $localconfirmation
+    switch -- "[string index $generalresponse 37]" {
+      "0" { set localconfirmation "pending"   }
+      "1" { set localconfirmation "confirmed" }
+    }
+    if {[string equal $lastlocalconfirmation ""]} {
+      log::info "the local confirmation is \"$localconfirmation\"."
+    } elseif {![string equal $localconfirmation $lastlocalconfirmation]} {
+      log::warning "the local confirmation has changed from \"$lastlocalconfirmation\" to \"$localconfirmation\"."
     }
     
     set lastmode $mode
@@ -167,17 +178,6 @@ namespace eval "plc" {
       log::info "the mode is \"$mode\" ($rawmode)."
     } elseif {![string equal $mode $lastmode]} {
       log::warning "the mode has changed from \"$lastmode\" to \"$mode\" ($rawmode)."
-    }
-    
-    set lastlocalconfirmation $localconfirmation
-    switch -- "[string index $generalresponse 37]" {
-      "0" { set localconfirmation "pending"   }
-      "1" { set localconfirmation "confirmed" }
-    }
-    if {[string equal $lastlocalconfirmation ""]} {
-      log::info "the local confirmation is \"$localconfirmation\"."
-    } elseif {![string equal $localconfirmation $lastlocalconfirmation]} {
-      log::warning "the local confirmation has changed from \"$lastlocalconfirmation\" to \"$localconfirmation\"."
     }
     
     set alarmtimer [lindex $weatherfield 51]
@@ -232,7 +232,7 @@ namespace eval "plc" {
     
     set lastalarm $alarm
     set alarm [boolean [string index $generalresponse 29]]
-    logalarm $alarm $alarm "alarm"    
+    logalarm $alarm $lastalarm "alarm"    
     
     server::setdata "plccabinettemperature" [lindex $weatherfield 30]
     server::setdata "riocabinettemperature" [lindex $weatherfield 31]
@@ -465,18 +465,18 @@ namespace eval "plc" {
     log::info [format "finished disabling the weather alarm after %.1f seconds." [utcclock::diff now $start]]
   }
 
-  proc enablesunalarmactivitycommand {} {
+  proc enabledaylightalarmactivitycommand {} {
     set start [utcclock::seconds]
-    log::info "enabling the sun alarm."
+    log::info "enabling the daylight alarm."
     controller::sendcommand "DayLightThreshold\{ON\}\n"
-    log::info [format "finished enabling the sun alarm after %.1f seconds." [utcclock::diff now $start]]
+    log::info [format "finished enabling the daylight alarm after %.1f seconds." [utcclock::diff now $start]]
   }
 
-  proc disablesunalarmactivitycommand {} {
+  proc disabledaylightalarmactivitycommand {} {
     set start [utcclock::seconds]
-    log::info "disabling the sun alarm."
+    log::info "disabling the daylight alarm."
     controller::sendcommand "DayLightThreshold\{OFF\}\n"
-    log::info [format "finished disabling the sun alarm after %.1f seconds." [utcclock::diff now $start]]
+    log::info [format "finished disabling the daylight alarm after %.1f seconds." [utcclock::diff now $start]]
   }
 
   ######################################################################
@@ -489,12 +489,12 @@ namespace eval "plc" {
     server::newactivitycommand "disablingalarm" "idle" plc::disableweatheralarmactivitycommand
   }
 
-  proc enablesunalarm {} {
-    server::newactivitycommand "enablingalarm" "idle" plc::enablesunalarmactivitycommand
+  proc enabledaylightalarm {} {
+    server::newactivitycommand "enablingalarm" "idle" plc::enabledaylightalarmactivitycommand
   }
 
-  proc disablesunalarm {} {
-    server::newactivitycommand "disablingalarm" "idle" plc::disablesunalarmactivitycommand
+  proc disabledaylightalarm {} {
+    server::newactivitycommand "disablingalarm" "idle" plc::disabledaylightalarmactivitycommand
   }
 
   ######################################################################
