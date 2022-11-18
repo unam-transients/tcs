@@ -219,17 +219,18 @@ namespace eval "utcclock" {
   ######################################################################
 
   proc diff {a {b "now"}} {
+    set now [seconds]
     if {[string is double -strict $a]} {
       set aseconds $a
     } elseif {[string equal $a "now"]} {
-      set aseconds [seconds]
+      set aseconds $now
     } else {
       set aseconds [scan $a]
     }
     if {[string is double -strict $b]} {
       set bseconds $b
     } elseif {[string equal $b "now"]} {
-      set bseconds [seconds]
+      set bseconds $now
     } else {
       set bseconds [scan $b]
     }
