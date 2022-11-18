@@ -448,7 +448,7 @@ namespace eval "server" {
 
   proc start {script} {
     if {[catch {
-      log::summary "starting server."
+      log::info "starting server."
       log::debug "executable is \"[info nameofexecutable]\"."
       log::debug "patch level is \"[info patchlevel]\"."
       log::debug "prefix is \"[directories::prefix]\"."
