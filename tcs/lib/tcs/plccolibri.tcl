@@ -70,12 +70,12 @@ namespace eval "plc" {
   variable mode ""
   variable keyswitch ""
   variable localconfirmation ""
-  variable mustbeclosed ""
+  variable alarm ""
   variable alarmbits ""
   variable rainalarm ""
   variable windalarm ""
   variable cloudalarm ""
-  variable sunalarm ""
+  variable lightlevelalarm ""
   variable humidityalarm ""
   variable tcsalarm ""
   variable upsalarm ""
@@ -87,19 +87,19 @@ namespace eval "plc" {
   variable lastweatherresponse ""
   variable lastgeneralresponse ""
   
-  variable assertedmustbeclosedvalue ""
+  variable assertedalarmvalue ""
 
   proc updatedata {response} {
 
     variable mode
     variable keyswitch
     variable localconfirmation
-    variable mustbeclosed
+    variable alarm
     variable alarmbits
     variable rainalarm
     variable windalarm
     variable cloudalarm
-    variable sunalarm
+    variable lightlevelalarm
     variable humidityalarm
     variable tcsalarm
     variable upsalarm
@@ -148,16 +148,16 @@ namespace eval "plc" {
       log::summary "the keyswitch has changed from $lastkeyswitch to $keyswitch."
     }
     
-    set lastmustbeclosed $mustbeclosed
-    set mustbeclosed [boolean [string index $generalresponse 29]]
-    if {[string equal $lastmustbeclosed ""]} {
-      if {$mustbeclosed} {
+    set lastalarm $alarm
+    set alarm [boolean [string index $generalresponse 29]]
+    if {[string equal $lastalarm ""]} {
+      if {$alarm} {
         log::info "the enclosure must be closed."
       } else {
         log::info "the enclosure may be open."
       }
-    } elseif {![string equal $mustbeclosed $lastmustbeclosed]} {
-      if {$mustbeclosed} {
+    } elseif {![string equal $alarm $lastalarm]} {
+      if {$alarm} {
         log::summary "the enclosure must be closed."
       } else {
         log::summary "the enclosure may be open."
@@ -218,9 +218,9 @@ namespace eval "plc" {
     set cloudalarm [boolean [string index $generalresponse 32]]
     logflag $cloudalarm $lastcloudalarm "cloud alarm"    
     
-    set lastsunalarm $sunalarm
-    set sunalarm [boolean [string index $generalresponse 33]]
-    logflag $sunalarm $lastsunalarm "sun alarm"    
+    set lastlightlevelalarm $lightlevelalarm
+    set lightlevelalarm [boolean [string index $generalresponse 33]]
+    logflag $lightlevelalarm $lastlightlevelalarm "light-level alarm"    
     
     set lasthumidityalarm $humidityalarm
     set humidityalarm [boolean [string index $generalresponse 34]]
@@ -256,14 +256,14 @@ namespace eval "plc" {
     server::setdata "mode"              $mode
     server::setdata "keyswitch"         $keyswitch
     server::setdata "localconfirmation" $localconfirmation
-    server::setdata "alarmtimer"        $alarmtimer
 
-    server::setdata "mustbeclosed"      $mustbeclosed
+    server::setdata "alarm"             $alarm
+    server::setdata "alarmtimer"        $alarmtimer
     server::setdata "alarmbits"         $alarmbits    
     server::setdata "rainalarm"         $rainalarm
     server::setdata "windalarm"         $windalarm
     server::setdata "cloudalarm"        $cloudalarm
-    server::setdata "sunalarm"          $sunalarm
+    server::setdata "lightlevelalarm"   $lightlevelalarm
     server::setdata "humidityalarm"     $humidityalarm
     server::setdata "tcsalarm"          $tcsalarm
     server::setdata "upsalarm"          $upsalarm
@@ -463,18 +463,18 @@ namespace eval "plc" {
   
   ######################################################################
 
-  proc enablealarmsactivitycommand {} {
+  proc enableweatheralarmactivitycommand {} {
     set start [utcclock::seconds]
-    log::info "enabling alarms."
+    log::info "enabling the weather alarm."
     controller::sendcommand "ByPassUnsafe\{OFF\}\n"
-    log::info [format "finished enabling alarms after %.1f seconds." [utcclock::diff now $start]]
+    log::info [format "finished enabling the weather alarm after %.1f seconds." [utcclock::diff now $start]]
   }
 
-  proc disablealarmsactivitycommand {} {
+  proc disableweatheralarmactivitycommand {} {
     set start [utcclock::seconds]
-    log::info "disabling alarms."
+    log::info "disabling the weather alarm."
     controller::sendcommand "ByPassUnsafe\{ON\}\n"
-    log::info [format "finished disabling alarms after %.1f seconds." [utcclock::diff now $start]]
+    log::info [format "finished disabling the weather alarm after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc enablesunalarmactivitycommand {} {
@@ -493,12 +493,12 @@ namespace eval "plc" {
 
   ######################################################################
   
-  proc enablealarms {} {
-    server::newactivitycommand "enablingalarm" "idle" plc::enablealarmsactivitycommand
+  proc enableweatheralarm {} {
+    server::newactivitycommand "enablingalarm" "idle" plc::enableweatheralarmactivitycommand
   }
 
-  proc disablealarms {} {
-    server::newactivitycommand "disablingalarm" "idle" plc::disablealarmsactivitycommand
+  proc disableweatheralarm {} {
+    server::newactivitycommand "disablingalarm" "idle" plc::disableweatheralarmactivitycommand
   }
 
   proc enablesunalarm {} {
