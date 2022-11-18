@@ -288,6 +288,10 @@ namespace eval "html" {
     } 
   }
 
+  proc writealarm {name value} {
+    writehtmlrowwithemph $name  [alarmemph $value] $value
+  }
+
   ######################################################################
 
   proc writehtmlstatusblock {server} {
@@ -687,7 +691,7 @@ namespace eval "html" {
     putshtml "</table>"
 
   }
-
+  
   proc writeplc {} {
 
     putshtml "<table class=\"status\">"
@@ -706,18 +710,18 @@ namespace eval "html" {
           writehtmlfullrow "Mode"                 [client::getdata "plc" "mode"]
           writehtmlrow "Key switch"               [client::getdata "plc" "keyswitch"]
           writehtmlrow "Local confirmation"       [client::getdata "plc" "localconfirmation"]
-          writehtmlrow "Alarm"                    [client::getdata "plc" "alarm"]
+          writealarm   "Alarm"                    [client::getdata "plc" "alarm"]
           writehtmlrow "Alarm timer"              [format "%d seconds" [client::getdata "plc" "alarmtimer"]]
-          writehtmlrow "Rain alarm"               [client::getdata "plc" "rainalarm"      ]
-          writehtmlrow "Wind alarm"               [client::getdata "plc" "windalarm"      ]
-          writehtmlrow "Cloud alarm"              [client::getdata "plc" "cloudalarm"     ]
-          writehtmlrow "Light-level alarm"        [client::getdata "plc" "lightlevelalarm"]
-          writehtmlrow "Humidty alarm"            [client::getdata "plc" "humidityalarm"  ]
-          writehtmlrow "TCS alarm"                [client::getdata "plc" "tcsalarm"       ]
-          writehtmlrow "UPS alarm"                [client::getdata "plc" "upsalarm"       ]
-          writehtmlrow "RIO alarm"                [client::getdata "plc" "rioalarm"       ]
-          writehtmlrow "Boltwood alarm"           [client::getdata "plc" "boltwoodalarm"  ]
-          writehtmlrow "Vaisala alarm"            [client::getdata "plc" "vaisalaalarm"   ]
+          writealarm   "Rain alarm"               [client::getdata "plc" "rainalarm"      ]
+          writealarm   "Wind alarm"               [client::getdata "plc" "windalarm"      ]
+          writealarm   "Cloud alarm"              [client::getdata "plc" "cloudalarm"     ]
+          writealarm   "Light-level alarm"        [client::getdata "plc" "lightlevelalarm"]
+          writealarm   "Humidty alarm"            [client::getdata "plc" "humidityalarm"  ]
+          writealarm   "TCS alarm"                [client::getdata "plc" "tcsalarm"       ]
+          writealarm   "UPS alarm"                [client::getdata "plc" "upsalarm"       ]
+          writealarm   "RIO alarm"                [client::getdata "plc" "rioalarm"       ]
+          writealarm   "Boltwood alarm"           [client::getdata "plc" "boltwoodalarm"  ]
+          writealarm   "Vaisala alarm"            [client::getdata "plc" "vaisalaalarm"   ]
           writehtmlrow "Alarm bits"               [client::getdata "plc" "alarmbits"      ]
           writehtmlrow "PLC cabinet temperature"  [format "%.1f C" [client::getdata "plc" "plccabinettemperature"]]
           writehtmlrow "RIO cabinet temperature"  [format "%.1f C" [client::getdata "plc" "riocabinettemperature"]]
@@ -1051,7 +1055,7 @@ namespace eval "html" {
     putshtml "<table class=\"status\">"
 
     if {[string equal [client::getstatus "weather"] "ok"]} {
-      writehtmlrowwithemph "Must be closed" [alarmemph [client::getdata "weather" "mustbeclosed"]] [client::getdata "weather" "mustbeclosed"]
+      writealarm "Must be closed" [client::getdata "weather" "mustbeclosed"]
       writehtmlrow "Temperature" \
         [format "%+.1f C" [client::getdata "weather" "temperature"]] \
         [client::getdata "weather" "temperaturetrend"]
@@ -1113,9 +1117,9 @@ namespace eval "html" {
       }
       writehtmlrow "Humidity limit" \
         [formatpercentifok "%.0f%%" [client::getdata "weather" "humiditylimit"]]
-      writehtmlrowwithemph "Humidity alarm" [alarmemph [client::getdata "weather" "humidityalarm"]] [client::getdata "weather" "humidityalarm"]
-      writehtmlrowwithemph "Wind alarm"     [alarmemph [client::getdata "weather" "windalarm"]]     [client::getdata "weather" "windalarm"]
-      writehtmlrowwithemph "Rain alarm"     [alarmemph [client::getdata "weather" "rainalarm"]]      [client::getdata "weather" "rainalarm"]
+      writealarm   "Humidity alarm" [client::getdata "weather" "humidityalarm"]
+      writealarm   "Wind alarm"     [client::getdata "weather" "windalarm"]
+      writealarm   "Rain alarm"     [client::getdata "weather" "rainalarm"]
     }
 
     putshtml "</table>"
