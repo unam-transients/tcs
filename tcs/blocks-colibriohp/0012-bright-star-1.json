@@ -3,19 +3,19 @@
     "identifier": "0012",
     "name": "Bright star scattered light"
   },
-  "identifier": "0",
-  "name": "Capella",
+  "identifier": "1",
+  "name": "Deneb",
   "visits": [
     {
       "identifier": "1001",
       "name": "object",
       "targetcoordinates": {
         "type"   : "equatorial",
-        "alpha"  : "05:16:41.35",
-        "delta"  : "+45:59:52.7",
+        "alpha"  : "20:41:25.9",
+        "delta"  : "+45:16:49",
         "equinox": "2000"
       },
-      "command": "brightstarvisit 15am 10 r",
+      "command": "brightstarvisit 10am 10 r",
       "estimatedduration": "3m"
     },
     {
@@ -23,8 +23,8 @@
       "name": "darks",
       "targetcoordinates": {
         "type"   : "equatorial",
-        "alpha"  : "05:16:41.35",
-        "delta"  : "+45:59:52.7",
+        "alpha"  : "20:41:25.9",
+        "delta"  : "+45:16:49",
         "equinox": "2000"
       },
       "command": "darksvisit 10 1 1",

@@ -63,7 +63,7 @@
       "estimatedduration": "2m"
     },{
       "identifier": "1002",
-      "name": "focus",
+      "name": "darks",
       "targetcoordinates": {
         "type"   : "equatorial",
         "alpha"  : "21:31:48",

@@ -281,7 +281,7 @@ proc twilightflatsvisit {targetngood filter} {
 
 ########################################################################
 
-proc brightstarvisit {{exposuretime 5} {filter "i"}} {
+proc brightstarvisit {{offset 10am} {exposuretime 5} {filter "i"}} {
 
   log::summary "brightstarvisit: starting."
 
@@ -292,17 +292,19 @@ proc brightstarvisit {{exposuretime 5} {filter "i"}} {
   executor::movefilterwheel $filter
   executor::waituntiltracking
   
-  set dithers {
-      0am   0am
-     +0am +30am
-     -0am -30am
-    +30am  -0am
-    -30am  +0am
-    +30am +30am
-    -30am -30am
-    +30am -30am
-    -30am +30am
-  }
+  log::summary "brightstarvisit: offset is $offset."
+  
+  set dithers "       \
+     0am      0am     \
+     0am     +$offset \
+     0am     -$offset \
+    +$offset  0am     \
+    -$offset  0am     \
+    +$offset +$offset \
+    -$offset -$offset \
+    +$offset -$offset \
+    -$offset +$offset \
+  "
 
   foreach {eastoffset northoffset} $dithers {
     executor::offset $eastoffset $northoffset "default"
