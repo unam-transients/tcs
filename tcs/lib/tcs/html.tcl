@@ -720,6 +720,11 @@ namespace eval "html" {
           } else {
             writehtmlrow "Intrusion sensor" "deactivated"
           }
+
+          writealarm   "Weather alarm disabled"   [client::getdata "plc" "weatheralarmdisabled"      ]
+          writealarm   "Daylight alarm disabled"  [client::getdata "plc" "daylightalarmdisabled"      ]
+
+
           writealarm   "Alarm"                    [client::getdata "plc" "alarm"]
           writehtmlrow "Alarm timer"              [format "%d seconds" [client::getdata "plc" "alarmtimer"]]
           writealarm   "Rain alarm"               [client::getdata "plc" "rainalarm"      ]
