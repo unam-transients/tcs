@@ -296,6 +296,9 @@ namespace eval "plc" {
     server::setdata "localconfirmation"    $localconfirmation
     server::setdata "emergencystopbuttons" $emergencystopbuttons
     server::setdata "intrusionsensor"      $intrusionsensor
+    
+    server::setdata "weatheralarmdisabled"  $weatheralarmdisabled
+    server::setdata "daylightalarmdisabled" $daylightalarmdisabled
 
     server::setdata "alarm"               $alarm
     server::setdata "alarmtimer"          $alarmtimer
