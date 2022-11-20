@@ -563,24 +563,20 @@ proc initialfocusvisit {} {
   executor::track
   executor::setreadmode 16MHz
   executor::setwindow "2kx2k"
-  executor::setbinning 4
-  log::summary "initialfocusvisit: focusing with binning 4."
+  executor::setbinning 8
+  log::summary "initialfocusvisit: focusing with binning 8."
   executor::waituntiltracking
-  executor::focus 1 8000 800 false true
-  executor::setwindow "2kx2k"
-  executor::setbinning 2
-  log::summary "initialfocusvisit: focusing with binning 2."
-  executor::focus 2 4000 400 false false
-  executor::setwindow "1kx1k"
-  executor::setbinning 1
-  log::summary "initialfocusvisit: focusing with binning 1."
-  executor::focus 4 4000 400 true false
-  executor::setfocused
+  executor::focus 1 8000 800 true true
+#  executor::setwindow "1kx1k"
+#  executor::setbinning 1
+#  log::summary "initialfocusvisit: focusing with binning 1."
+#  executor::focus 4 2000 200 true false
+#  executor::setfocused
 
-  log::summary "initialfocusvisit: taking tilt witness."
-  executor::setwindow "default"
-  executor::expose object 4
-  executor::setbinning 1
+#  log::summary "initialfocusvisit: taking tilt witness."
+#  executor::setwindow "default"
+#  executor::expose object 4
+#  executor::setbinning 1
 
   log::summary "initialfocusvisit: finished."
 
@@ -821,7 +817,7 @@ proc domeflatsvisit {} {
 
 ########################################################################
 
-proc biasesvisit {} {
+proc biasesvisit {{exposures 10}} {
   log::summary "biasesvisit: starting."
   if {[executor::isunparked]} {
     executor::move
@@ -829,11 +825,11 @@ proc biasesvisit {} {
   executor::setwindow "default"
   executor::setreadmode "16MHz"
   executor::setbinning 1
-  set i 0
-  while {$i < 10} {
+  set exposure 0
+  while {$i < $exposures} {
     executor::expose bias 0
     executor::analyze levels
-    incr i
+    incr exposure
     coroutine::after 10000
   }
   log::summary "biasesvisit: finished."
@@ -842,7 +838,7 @@ proc biasesvisit {} {
 
 ########################################################################
 
-proc darksvisit {} {
+proc darksvisit {{exposures 10} {exposuretime 60}} {
   log::summary "darksvisit: starting."
   if {[executor::isunparked]} {
     executor::move
@@ -850,11 +846,11 @@ proc darksvisit {} {
   executor::setwindow "default"
   executor::setreadmode "16MHz"
   executor::setbinning 1
-  set i 0
-  while {$i < 10} {
-    executor::expose dark 60
+  set exposure 0
+  while {$i < $exposures} {
+    executor::expose dark $exposuretime
     executor::analyze levels
-    incr i
+    incr exposure
     coroutine::after 10000
   }
   log::summary "darksvisit: finished."
