@@ -73,9 +73,9 @@ sudo mv /etc/hosts.tmp /etc/hosts
 *      *  *  *  *  tcs checkreboot
 *      *  *  *  *  tcs checkrestart
 *      *  *  *  *  tcs checkhalt
-00     *  *  *  *  rsync -aH --exclude="*.jpg" --exclude="*.fits" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw/
-01-59  *  *  *  *  rsync -aH --include="*/" --include="*.txt" --exclude="debug*.txt" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw/
-*      *  *  *  *  rsync -aH --remove-source-files --include="*/" --include="*.fits.*" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw/
+00     *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="*.jpg" --exclude="*.fits" --exclude="*.fits.*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw
+01-59  *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="debug*.txt" --include="*.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw
+*      *  *  *  *  rsync -aH --remove-source-files --exclude="*.tmp" --include="*.fits.*" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw/
 EOF
 
   case $host in
