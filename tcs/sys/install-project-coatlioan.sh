@@ -67,12 +67,15 @@ sudo mv /etc/hosts.tmp /etc/hosts
   echo 'MAILTO=""'
 
   cat <<"EOF"
-00 21 *  *  *  tcs cleanfiles
-*  *  *  *  *  tcs updatevarlatestlink
-*  *  *  *  *  tcs updatelocalsensorsfiles
-*  *  *  *  *  tcs checkreboot
-*  *  *  *  *  tcs checkrestart
-*  *  *  *  *  tcs checkhalt
+00     18 *  *  *  tcs cleanfiles
+*      *  *  *  *  tcs updatevarlatestlink
+*      *  *  *  *  tcs updatelocalsensorsfiles
+*      *  *  *  *  tcs checkreboot
+*      *  *  *  *  tcs checkrestart
+*      *  *  *  *  tcs checkhalt
+00     *  *  *  *  rsync -aH --exclude="*.jpg" --exclude="*.fits" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw/
+01-59  *  *  *  *  rsync -aH --include="*/" --include="*.txt" --exclude="debug*.txt" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw/
+*      *  *  *  *  rsync -aH --remove-source-files --include="*/" --include="*.fits.*" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw/
 EOF
 
   case $host in
@@ -81,20 +84,15 @@ EOF
 *  *  *  *  *  sleep 10; tcs updatesensorsfiles services control platform instrument
 *  *  *  *  *  tcs updateweatherfiles-oan
 00 18 *  *  *  tcs updateweatherfiles-oan -a
-*  *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
-*  *  *  *  *  rsync -aH --delete /usr/local/var/tcs/selector rsync://transients.astrossp.unam.mx/coatli-raw/
-00 *  *  *  *  rsync -aH /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw/
+*  *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
 00 00 *  *  *  tcs fetchblocks
 01 00 *  *  *  tcs loadblocks
 EOF
     ;;
   services)
     cat <<"EOF"
-*/5 *  *  *  *  sh /usr/local/var/www/tcs/plots.sh
+*   *  *  *  *  sh /usr/local/var/www/tcs/plots.sh
 */5 *  *  *  *  tcs logsensors
-*   *  *  *  *  rsync -aH --include="error.txt" --include="warning.txt" --include="summary.txt" --include="info.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw/
-00  *  *  *  *  rsync -aH --exclude="*.jpg" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw/
-*/5 *  *  *  *  rsync -aH --remove-source-files --include="*/" --include="*.fits.*" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/coatli-raw/
 EOF
     ;;
   instrument)
@@ -146,24 +144,15 @@ EOF
     ;;
   esac
   
-  case $host in
-  control|platform|instrument)
-    echo "owserver -c /etc/owfs.conf"
-    ;;
-  esac
+  echo "owserver -c /etc/owfs.conf"
 
   case $host in
-  services)
-    echo "tcs instrumentdataserver -f rsync://transients.astrossp.unam.mx/coatli-raw/ &"
-    ;;
   instrument)
-    echo "tcs instrumentdataserver -f -d rsync://services/tcs/ &"
+    echo "tcs instrumentdataserver -f -d rsync://transients.astrossp.unam.mx/coatli-raw/ &"
+    echo "tcs newinstrumentimageserver C0 services &"
     ;;
-  esac
-
-  case $host in
   services)
-    echo "tcs instrumentimageserver C0 instrument &"
+    echo "tcs newinstrumentimageserver C0 &"
     echo "tcs webcamimageserver a http://coatli:coatli@webcam-a/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver b http://coatli:coatli@webcam-b/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver c http://coatli:coatli@webcam-c/cgi-bin/viewer/video.jpg &"

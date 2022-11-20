@@ -63,6 +63,9 @@ sudo mv /etc/hosts.tmp /etc/hosts
 *  *  *  *  *  /usr/local/bin/tcs updatelocalsensorsfiles
 *  *  *  *  *  /usr/local/bin/tcs checkreboot
 *  *  *  *  *  /usr/local/bin/tcs checkrestart
+00     *  *  *  *  rsync -aH --exclude="*.jpg" --exclude="*.fits" /usr/local/var/tcs/ /nas/tcs
+01-59  *  *  *  *  rsync -aH --include="*/" --include="*.txt" --exclude="debug*.txt" --exclude="*" /usr/local/var/tcs/ /nas/tcs
+*      *  *  *  *  rsync -aH --remove-source-files --include="*/" --include="*.fits.*" --exclude="*" /usr/local/var/tcs/ /nas/tcs
 EOF
 
   case $host in
@@ -77,21 +80,13 @@ EOF
   esac
   
   case $host in
-  detectors)
-    cat <<"EOF"
-01-59  *  *  *  *  rsync -aH --exclude="*.jpg" /usr/local/var/tcs/ rsync://services/tcs/
-EOF
-    ;;
   services)
     cat <<"EOF"
 *      *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles services detectors
 *      *  *  *  *  /usr/local/bin/tcs updateweatherfiles-colibri
-*      *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
+*      *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
 */5    *  *  *  *  /usr/local/bin/tcs logsensors
 *      *  *  *  *  cd /usr/local/var/www/tcs/; sh plots.sh >plots.txt 2>&1
-00     *  *  *  *  rsync -aH --exclude="*.jpg" /usr/local/var/tcs/ /nas/tcs
-01-59  *  *  *  *  rsync -aH --include="error.txt" --include="warning.txt" --include="summary.txt" --include="info.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ /nas/tcs/
-01-59  *  *  *  *  rsync -aH --remove-source-files --include="*/" --include="*.fits.fz" --exclude="*" /usr/local/var/tcs/ /nas/tcs
 EOF
     ;;
   esac
@@ -128,22 +123,15 @@ EOF
   echo "  sleep 10"
   echo "done"  
 
-  case $host in
-  control|detectors)
-    echo "owserver -c /etc/owfs.conf"
-    ;;
-  esac
+  echo "owserver -c /etc/owfs.conf"
   
   case $host in
   detectors)
-    echo "tcs instrumentdataserver -f -d rsync://services/tcs/ &"
+    echo "tcs instrumentdataserver -f -d /nas/tcs/ &"
+    echo "tcs newinstrumentimageserver C0 services &"
     ;;
-  esac
-
-  case $host in
   services)
-    echo "owserver -c /etc/owfs.conf"
-    echo "tcs instrumentimageserver C0 detectors &"
+    echo "tcs newinstrumentimageserver C0 &"
     echo "tcs webcamimageserver a https://www.colibri-obs.org/wp-content/uploads/2021/01/cam-colibri1.jpeg &"
     echo "tcs allskyimageserver http://iris.lam.fr/wp-includes/images/ftp_iris/allskyISM.jpg &"
     echo "mkdir -p /usr/local/var/tcs/reboot"
