@@ -763,7 +763,7 @@ namespace eval "ccd" {
       } else {
         set fitsfwhmarg ""
       }
-      log::info "command is [directories::bin]/tcs newpgrp [directories::bin]/tcs fitsfwhm $fitsfwhmarg -- \"$currentfilename\""
+      log::debug "command is [directories::bin]/tcs newpgrp [directories::bin]/tcs fitsfwhm $fitsfwhmarg -- \"$currentfilename\""
       set fitsfwhmchannel [open "|[directories::bin]/tcs newpgrp [directories::bin]/tcs fitsfwhm $fitsfwhmarg -- \"$currentfilename\"" "r"]
       chan configure $fitsfwhmchannel -buffering "line"
       chan configure $fitsfwhmchannel -encoding "ascii"
