@@ -19,7 +19,7 @@ do
         "azimuth": "$azimuth",
         "zenithdistance": "$zenithdistance"
       },
-      "command": "biasesvisit 1",
+      "command": "biasesvisit 10 1",
       "estimatedduration": "2m"
     },
     {
@@ -30,7 +30,7 @@ do
         "azimuth": "$azimuth",
         "zenithdistance": "$zenithdistance"
       },
-      "command": "biasesvisit 2",
+      "command": "biasesvisit 10 2",
       "estimatedduration": "2m"
     }
   ],
