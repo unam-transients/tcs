@@ -187,7 +187,7 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"}} {
 
 ########################################################################
 
-proc biasesvisit {{binning 1} {exposures 10}} {
+proc biasesvisit {{exposures 10} {binning 1}} {
   log::summary "biasesvisit: starting."
   executor::move
   executor::setwindow "default"
@@ -203,7 +203,7 @@ proc biasesvisit {{binning 1} {exposures 10}} {
 
 ########################################################################
 
-proc darksvisit {{exposuretime 60} {binning 1} {exposures 10}} {
+proc darksvisit {{exposuretime 60} {exposures 10} {binning 1}} {
   log::summary "darksvisit: starting."
   executor::move
   executor::setwindow "default"
@@ -313,6 +313,89 @@ proc brightstarvisit {{offset 10am} {exposuretime 5} {filter "i"}} {
   }
 
   log::summary "brightstarvisit: finished."
+
+  return true
+}
+
+########################################################################
+
+proc hartmanntestvisit {secondaryoffset {eastoffset 0am} {northoffset 0am} {exposuretime 10} {filter "g"} {exposures 10}} {
+
+  log::summary "hartmanntestvisit: starting."
+
+  log::summary "hartmanntestvisit: offset is $eastoffset $northoffset."
+
+  executor::setwindow "default"
+  executor::setbinning 1
+  executor::movefilterwheel $filter
+
+  log::summary "hartmanntestvisit: extrafocal images: secondary offset is +$secondaryoffset."
+
+  executor::setsecondaryoffset +$secondaryoffset
+  executor::track $eastoffset $northoffset
+  executor::waituntiltracking
+  
+  set exposure 0
+  while {$exposure < $exposures} {
+    executor::expose object $exposuretime
+    incr exposure
+  }
+  
+  log::summary "hartmanntestvisit: intrafocal images: secondary offset is -$secondaryoffset."
+
+  executor::setsecondaryoffset -$secondaryoffset
+  executor::track $eastoffset $northoffset
+  executor::waituntiltracking
+
+  set exposure 0
+  while {$exposure < $exposures} {
+    executor::expose object $exposuretime
+    incr exposure
+  }
+
+  executor::setsecondaryoffset 0
+
+  log::summary "hartmanntestvisit: finished."
+  
+
+  return true
+}
+
+########################################################################
+
+proc tokovinintestvisit {{eastoffset 0am} {northoffset 0am} {exposuretime 10} {filter "g"} {exposures 10}} {
+
+  log::summary "tokovinintestvisit: starting."
+
+  log::summary "tokovinintestvisit: offset is $eastoffset $northoffset."
+
+  executor::setwindow "default"
+  executor::setbinning 1
+  executor::movefilterwheel $filter
+
+  executor::track $eastoffset $northoffset
+  executor::waituntiltracking
+
+  foreach secondaryoffset {-1000 +1000} {
+
+    log::summary "tokovinintestvisit: images with secondary offset of $secondaryoffset."
+
+    executor::setsecondaryoffset $secondaryoffset
+    executor::track $eastoffset $northoffset
+    executor::waituntiltracking
+      
+    set exposure 0
+    while {$exposure < $exposures} {
+      executor::expose object $exposuretime
+      incr exposure
+    }
+  
+  }
+
+  executor::setsecondaryoffset 0
+
+  log::summary "tokovinintestvisit: finished."
+  
 
   return true
 }
