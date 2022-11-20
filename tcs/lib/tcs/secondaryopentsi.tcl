@@ -133,7 +133,7 @@ namespace eval "secondary" {
     log::info "waiting while moving."
     variable moving
     variable zerror
-    set startingdelay 1
+    set startingdelay 2
     set settlingdelay 0
     set moving true
     set start [utcclock::seconds]
