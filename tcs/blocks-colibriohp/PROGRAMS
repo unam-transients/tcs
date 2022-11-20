@@ -6,7 +6,7 @@ COLIBRI Program Identifiers
 0004 focusing
 0005 photometic monitors
 0006 dome flats
-0007 donuts
+0007 Tokovinin tests
 0008 pointing map
 0009 full focus
 0010 focus map
@@ -18,4 +18,5 @@ COLIBRI Program Identifiers
 0016 reference image tests
 0017 tracking tests
 0018 scale tests
+0019 Hartmann tests
 

@@ -1,0 +1,27 @@
+{
+  "project": {
+    "identifier": "0019",
+    "name": "hartmann tests"
+  },
+  "identifier": "6",
+  "name": "hartmann test on bet Per (Algol)",
+  "visits": [
+    {
+      "identifier": "0",
+      "name": "hartmann test",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "03:08:10.1324535",
+        "delta"  : "+40:57:20.328013",
+        "equinox": "2000"
+      },
+      "command": "hartmanntestvisit 11000  0am 0am 10 g 10",
+      "estimatedduration": "5m"
+    }
+  ],
+  "constraints": {
+    "maxskybrightness": "civiltwilight",
+    "minmoondistance": "15d"
+  },
+  "persistent": "true"
+}
