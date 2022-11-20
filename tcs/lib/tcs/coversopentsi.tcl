@@ -60,12 +60,12 @@ namespace eval "covers" {
 
   ######################################################################
 
-  variable covers
-  variable port2cover
-  variable port3cover
-  variable coverstarget
-  variable port2covertarget
-  variable port3covertarget
+  variable covers ""
+  variable port2cover ""
+  variable port3cover ""
+  variable coverstarget ""
+  variable port2covertarget ""
+  variable port3covertarget ""
   variable moving
 
   proc updatedata {response} {
