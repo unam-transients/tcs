@@ -1,3 +1,5 @@
+// This star has a fainter companion. It's probably not great for this purpose.
+
 {
   "project": {
     "identifier": "0007",
@@ -164,7 +166,7 @@
     },
     {
       "identifier": "1000",
-      "name": "darks test",
+      "name": "darks",
       "targetcoordinates": {
         "type"   : "equatorial",
         "alpha"  : "03:57:11.838",
