@@ -71,6 +71,9 @@ sudo mv /etc/hosts.tmp /etc/hosts
 *  *  *  *  *  tcs checkreboot
 *  *  *  *  *  tcs checkrestart
 *  *  *  *  *  tcs checkhalt
+00     *  *  *  *  rsync -aH --exclude="*.jpg" --exclude="*.fits" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/ddoti-raw/
+01-59  *  *  *  *  rsync -aH --include="*/" --include="*.txt" --exclude="debug*.txt" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/ddoti-raw/
+*      *  *  *  *  rsync -aH --remove-source-files --include="*/" --include="*.fits.*" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/ddoti-raw/
 EOF
   
   case $host in
@@ -79,9 +82,7 @@ EOF
 *  *  *  *  *  sleep 10; tcs updatesensorsfiles services control platform instrument0 instrument1
 *  *  *  *  *  tcs updateweatherfiles-oan
 00 18 *  *  *  tcs updateweatherfiles-oan -a
-*  *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
-*  *  *  *  *  rsync -aH --delete /usr/local/var/tcs/selector rsync://transients.astrossp.unam.mx/ddoti-raw/
-00 *  *  *  *  rsync -aH /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/ddoti-raw/ 
+*  *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
 00 00 *  *  *  tcs fetchblocks
 01 00 *  *  *  tcs loadblocks
 EOF
@@ -90,9 +91,6 @@ EOF
     cat <<"EOF"
 */5 *  *  *  *  sh /usr/local/var/www/tcs/plots.sh
 */5 *  *  *  *  tcs logsensors
-*   *  *  *  *  rsync -aH --include="error.txt" --include="warning.txt" --include="summary.txt" --include="info.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/ddoti-raw/
-00  *  *  *  *  rsync -aH --exclude="*.jpg" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/ddoti-raw/
-*/5 *  *  *  *  rsync -aH --remove-source-files --include="*/" --include="*.fits.*" --exclude="*" /usr/local/var/tcs/ rsync://transients.astrossp.unam.mx/ddoti-raw/
 EOF
     ;;
   esac
@@ -137,27 +135,24 @@ EOF
     ;;
   esac
 
-  case $host in
-  control|platform|instrument0|instrument1)
-    echo "owserver -c /etc/owfs.conf"
-    ;;
-  esac
+  echo "owserver -c /etc/owfs.conf"
 
   case $host in
-  services)
-    echo "tcs instrumentdataserver -f rsync://transients.astrossp.unam.mx/ddoti-raw/ &"
+  instrument0)
+    echo "tcs instrumentdataserver -f -d rsync://transients.astrossp.unam.mx/ddoti-raw/ &"
+    echo "tcs newinstrumentimageserver C2 services &"
+    echo "tcs newinstrumentimageserver C4 services &"
     ;;
-  instrument0|instrument1)
-    echo "tcs instrumentdataserver -f -d rsync://services/tcs/ &"
+  instrument1)
+    echo "tcs instrumentdataserver -f -d rsync://transients.astrossp.unam.mx/ddoti-raw/ &"
+    echo "tcs newinstrumentimageserver C1 services &"
+    echo "tcs newinstrumentimageserver C3 services &"
     ;;
-  esac
-
-  case $host in
   services)
-    echo "tcs instrumentimageserver C1 instrument1 &"
-    echo "tcs instrumentimageserver C2 instrument0 &"
-    echo "tcs instrumentimageserver C3 instrument1 &"
-    echo "tcs instrumentimageserver C4 instrument0 &"
+    echo "tcs newinstrumentimageserver C1 &"
+    echo "tcs newinstrumentimageserver C2 &"
+    echo "tcs newinstrumentimageserver C3 &"
+    echo "tcs newinstrumentimageserver C4 &"
     echo "tcs webcamimageserver a http://ddoti:ddoti@webcam-a/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver b http://ddoti:ddoti@webcam-b/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver c http://ddoti:ddoti@webcam-c/cgi-bin/viewer/video.jpg &"
