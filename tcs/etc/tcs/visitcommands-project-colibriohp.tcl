@@ -230,10 +230,12 @@ proc twilightflatsvisit {targetngood filter} {
   executor::setbinning 1
 
   # The dark current is about 1000 DN/s at -10 C, so use shorter exposures than
-  # normal. The gain is about 2.2 electrons/DN and the bias about 500 DN, so
-  # these levels correspond to SNRs of 200 and 100.
+  # normal. The gain is about 2.2 electrons/DN and the bias about 500 DN, so 15k
+  # and 25k correspond to SNRs of 200 and 100. We set the upper limit to 30k in
+  # order to change from i to g earlier. We take the flats in the order y, z, i,
+  # g, and finally r.
 
-  set maxlevel 25000
+  set maxlevel 30000
   set minlevel 15000
   set exposuretime 5
   
