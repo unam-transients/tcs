@@ -88,10 +88,8 @@ namespace eval "mount" {
     POSITION.EQUATORIAL.DEC_CURRENT
     POSITION.LOCAL.SIDEREAL_TIME
     POSITION.INSTRUMENTAL.DEROTATOR[3].CURRPOS
-    POSITION.INSTRUMENTAL.AZ.TARGETDISTANCE
-    POSITION.INSTRUMENTAL.ZD.TARGETDISTANCE
-    POSITION.INSTRUMENTAL.DEROTATOR[3].TARGETDISTANCE
     CURRENT.TARGETDISTANCE
+    CURRENT.DEROTATOR_OFFSET
   } ";"]"
 
   ######################################################################
@@ -112,6 +110,7 @@ namespace eval "mount" {
   server::setdata "mountpvnorthtrackingerror"   ""
   server::setdata "mountazimuth"                ""
   server::setdata "mountzenithdistance"         ""
+  server::setdata "mountderotatorangle"         ""
   server::setdata "mountrotation"               ""
   server::setdata "state"                       ""
   server::setdata "timestamp"                   ""
@@ -140,39 +139,30 @@ namespace eval "mount" {
 
   variable pendingmountazimuth
   variable pendingmountzenithdistance
+  variable pendingmountderotatorangle
   variable pendingmountrotation
   variable pendingmountalpha
   variable pendingmountdelta
   variable pendingmountst
   variable pendingtelescopemotionstate
-  variable pendingazimuthtargetdistance
-  variable pendingzenithdistancetargetdistance
-  variable pendingderotatortargetdistance
   variable pendingtargetdistance
   
   variable telescopemotionstate         ""
-  variable azimuthtargetdistance        ""
-  variable zenithdistancetargetdistance ""
-  variable derotatortargetdistance      ""
   variable targetdistance               ""
 
   proc updatedata {response} {
 
     variable pendingmountazimuth
     variable pendingmountzenithdistance
+    variable pendingmountderotatorangle
     variable pendingmountrotation
     variable pendingmountalpha
     variable pendingmountdelta
     variable pendingmountst
     variable pendingtelescopemotionstate
-    variable pendingazimuthtargetdistance
-    variable pendingzenithdistancetargetdistance
-    variable pendingderotatortargetdistance
     variable pendingtargetdistance
 
     variable telescopemotionstate
-    variable azimuthtargetdistance
-    variable zenithdistancetargetdistance
     variable targetdistance
 
     set response [string trim $response]
@@ -189,7 +179,7 @@ namespace eval "mount" {
       return false
     }
     if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.DEROTATOR\[3\].CURRPOS=%f" value] == 1} {
-      set pendingmountrotation [astrometry::degtorad $value]
+      set pendingmountderotatorangle [astrometry::degtorad $value]
       return false
     }
     if {[scan $response "%*d DATA INLINE POSITION.EQUATORIAL.RA_CURRENT=%f" value] == 1} {
@@ -208,20 +198,12 @@ namespace eval "mount" {
       set pendingtelescopemotionstate $value
       return false
     }
-    if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.AZ.TARGETDISTANCE=%f" value] == 1} {
-      set pendingazimuthtargetdistance [astrometry::degtorad $value]
-      return false
-    }
-    if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.ZD.TARGETDISTANCE=%f" value] == 1} {
-      set pendingzenithdistancetargetdistance [astrometry::degtorad $value]
-      return false
-    }
-    if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.DEROTATOR\[3\].TARGETDISTANCE=%f" value] == 1} {
-      set pendingderotatortargetdistance [astrometry::degtorad $value]
-      return false
-    }
     if {[scan $response "%*d DATA INLINE CURRENT.TARGETDISTANCE=%f" value] == 1} {
       set pendingtargetdistance [astrometry::degtorad $value]
+      return false
+    }
+    if {[scan $response "%*d DATA INLINE CURRENT.DEROTATOR_OFFSET=%f" value] == 1} {
+      set pendingmountrotation [astrometry::degtorad $value]
       return false
     }
     if {[regexp {[0-9]+ DATA INLINE } $response] == 1} {
@@ -235,6 +217,7 @@ namespace eval "mount" {
     
     set mountazimuth                 $pendingmountazimuth
     set mountzenithdistance          $pendingmountzenithdistance
+    set mountderotatorangle          $pendingmountderotatorangle
     set mountrotation                $pendingmountrotation
     set mountalpha                   $pendingmountalpha
     set mountdelta                   $pendingmountdelta
@@ -242,31 +225,15 @@ namespace eval "mount" {
     set mountha                      [astrometry::foldradsymmetric [expr {$mountst - $mountalpha}]]
 
     set telescopemotionstate         $pendingtelescopemotionstate
-    set azimuthtargetdistance        $pendingazimuthtargetdistance
-    set zenithdistancetargetdistance $pendingzenithdistancetargetdistance
-    set derotatortargetdistance      $pendingderotatortargetdistance
     set targetdistance               $pendingtargetdistance
     
-    if {false} {
-
-      # The axis target distances always seem to be close to zero when the
-      # telescope motion state indicates that the telescope has arrived. However,
-      # the global target distance seems to also include a multipled of 90 degrees.
-    
-      log::info [format "target distances are: %+.2fd %+.2fd %+.2fd %.2fd." \
-        [astrometry::radtodeg $azimuthtargetdistance] \
-        [astrometry::radtodeg $zenithdistancetargetdistance] \
-        [astrometry::radtodeg $derotatortargetdistance] \
-        [astrometry::radtodeg $targetdistance] \
-      ]
-    }
- 
     set timestamp [utcclock::combinedformat "now"]
 
     server::setdata "timestamp"           $timestamp
     server::setdata "state"               $opentsi::readystatetext
     server::setdata "mountazimuth"        $mountazimuth
     server::setdata "mountzenithdistance" $mountzenithdistance
+    server::setdata "mountderotatorangle" $mountderotatorangle
     server::setdata "mountrotation"       $mountrotation
     server::setdata "mountalpha"          $mountalpha
     server::setdata "mountha"             $mountha
@@ -388,8 +355,8 @@ namespace eval "mount" {
   }
   
   proc mountrotation {ha delta} {
-    # Dummy version.
-    return 0
+    variable mountrotation
+    return $mountrotation
   }
 
   ######################################################################

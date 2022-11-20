@@ -864,15 +864,16 @@ namespace eval "html" {
         [formatrateifdouble [client::getdata "mount" "requestedmountdeltarate"]]
 
       writehtmlrow "Current mount rotation" \
-        [formatradtodegifdouble "%.4f°"  [client::getdata "mount" "mountrotation"]]
+        [formatradtodegifdouble "%.2f°"  [client::getdata "mount" "mountrotation"]]
       writehtmlrow "Current mount position (α,HA,δ)" \
         [formatalphaifdouble [client::getdata "mount" "mountalpha"]] \
         [formathaifdouble    [client::getdata "mount" "mountha"]] \
         [formatdeltaifdouble [client::getdata "mount" "mountdelta"]]
 
-      writehtmlrow "Current mount position (A,z)" \
+      writehtmlrow "Current mount position (A,z,derotator)" \
           [formatradtodegifdouble "%.2f°" [client::getdata "mount" "mountazimuth"]] \
-          [formatradtodegifdouble "%.2f°" [client::getdata "mount" "mountzenithdistance"]]
+          [formatradtodegifdouble "%.2f°" [client::getdata "mount" "mountzenithdistance"]] \
+          [formatradtodegifdouble "%+.2f°" [client::getdata "mount" "mountderotatorangle"]]
 
       if {[string equal [client::getdata "mount" "configuration"] "equatorial"]} {
 

@@ -136,6 +136,7 @@ namespace eval "mount" {
   server::setdata "mountpvnorthtrackingerror"   ""
   server::setdata "mountazimuth"                ""
   server::setdata "mountzenithdistance"         ""
+  server::setdata "mountderotatorangle"         ""
   server::setdata "mountrotation"               ""
   server::setdata "state"                       ""
   server::setdata "timestamp"                   ""
