@@ -61,6 +61,22 @@ case $# in
   ;;
 esac
 
+########################################################################
+
+if test -z "$host"
+then
+  vartcsdir="$tcsprefix/var/tcs/$camera"
+  varwwwdir="$tcsprefix/var/www/tcs/instrument/$camera"
+  mkdir -p "$varwwwdir"
+  cd "$varwwwdir"
+  rm -f *.jpg
+  ln -sf "$vartcsdir"/latest.jpg .
+  ln -sf "$vartcsdir"/latest-small.jpg .
+  exit 0
+fi
+
+########################################################################
+
 if convert -list font | grep 'Font: Verdana$' >/dev/null
 then
   fontargs="-pointsize 10 -font Verdana"
@@ -71,20 +87,13 @@ else
   fontargs="-pointsize 10"
 fi
 
-dir="$tcsprefix/var/www/tcs/instrument/$camera"
+dir="$tcsprefix/var/tcs/$camera"
 mkdir -p "$dir"
 cd "$dir"
 
 while true
 do
 
-  if test -z "$host"
-  then
-    ln -f "$tcsprefix"/var/tcs/$camera/latest.fits .
-  else
-    rsync --timeout=10 rsync://$host/tcs/$camera/latest.fits . 2>/dev/null
-  fi
-  
   if test -f latest.fits && (test ! -f previous.fits || ! cmp -s latest.fits previous.fits)
   then
   
@@ -129,9 +138,11 @@ do
     mv latest-small-new.jpg latest-small.jpg
 
     ln -f latest.fits previous.fits
+    
+    rsync --timeout=10 *.jpg rsync://$host/tcs/$camera/ 2>/dev/null
       
   fi
     
-  sleep 5
+  sleep 1
   
 done

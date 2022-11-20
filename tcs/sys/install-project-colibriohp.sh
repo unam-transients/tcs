@@ -128,10 +128,10 @@ EOF
   case $host in
   detectors)
     echo "tcs instrumentdataserver -f -d /nas/tcs/ &"
-    echo "tcs newinstrumentimageserver C0 services &"
+    echo "tcs instrumentimageserver C0 services &"
     ;;
   services)
-    echo "tcs newinstrumentimageserver C0 &"
+    echo "tcs instrumentimageserver C0 &"
     echo "tcs webcamimageserver a https://www.colibri-obs.org/wp-content/uploads/2021/01/cam-colibri1.jpeg &"
     echo "tcs allskyimageserver http://iris.lam.fr/wp-includes/images/ftp_iris/allskyISM.jpg &"
     echo "mkdir -p /usr/local/var/tcs/reboot"

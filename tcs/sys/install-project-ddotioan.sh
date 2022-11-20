@@ -140,19 +140,19 @@ EOF
   case $host in
   instrument0)
     echo "tcs instrumentdataserver -f -d rsync://transients.astrossp.unam.mx/ddoti-raw/ &"
-    echo "tcs newinstrumentimageserver C2 services &"
-    echo "tcs newinstrumentimageserver C4 services &"
+    echo "tcs instrumentimageserver C2 services &"
+    echo "tcs instrumentimageserver C4 services &"
     ;;
   instrument1)
     echo "tcs instrumentdataserver -f -d rsync://transients.astrossp.unam.mx/ddoti-raw/ &"
-    echo "tcs newinstrumentimageserver C1 services &"
-    echo "tcs newinstrumentimageserver C3 services &"
+    echo "tcs instrumentimageserver C1 services &"
+    echo "tcs instrumentimageserver C3 services &"
     ;;
   services)
-    echo "tcs newinstrumentimageserver C1 &"
-    echo "tcs newinstrumentimageserver C2 &"
-    echo "tcs newinstrumentimageserver C3 &"
-    echo "tcs newinstrumentimageserver C4 &"
+    echo "tcs instrumentimageserver C1 &"
+    echo "tcs instrumentimageserver C2 &"
+    echo "tcs instrumentimageserver C3 &"
+    echo "tcs instrumentimageserver C4 &"
     echo "tcs webcamimageserver a http://ddoti:ddoti@webcam-a/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver b http://ddoti:ddoti@webcam-b/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver c http://ddoti:ddoti@webcam-c/cgi-bin/viewer/video.jpg &"

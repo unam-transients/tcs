@@ -149,10 +149,10 @@ EOF
   case $host in
   instrument)
     echo "tcs instrumentdataserver -f -d rsync://transients.astrossp.unam.mx/coatli-raw/ &"
-    echo "tcs newinstrumentimageserver C0 services &"
+    echo "tcs instrumentimageserver C0 services &"
     ;;
   services)
-    echo "tcs newinstrumentimageserver C0 &"
+    echo "tcs instrumentimageserver C0 &"
     echo "tcs webcamimageserver a http://coatli:coatli@webcam-a/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver b http://coatli:coatli@webcam-b/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver c http://coatli:coatli@webcam-c/cgi-bin/viewer/video.jpg &"
