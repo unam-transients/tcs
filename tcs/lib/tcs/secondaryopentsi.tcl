@@ -213,7 +213,7 @@ namespace eval "secondary" {
     }
   }
   
-  proc checkhardware {{action ""}} {
+  proc checkhardware {action} {
     switch $action {
       "stop" -
       "reset" -
