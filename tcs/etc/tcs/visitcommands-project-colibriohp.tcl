@@ -404,3 +404,25 @@ proc tokovinintestvisit {{eastoffset 0am} {northoffset 0am} {exposuretime 10} {f
 
 ########################################################################
 
+proc pointingmapvisit {{exposuretime 15} {filter "i"} {readmode "conventionaldefault"}} {
+
+  log::summary "pointingmapvisit: starting."
+
+  setsecondaryoffset 0
+  tracktopocentric
+
+  setwindow "default"
+  setreadmode "default"
+  setbinning 1
+  movefilterwheel $filter
+  waituntiltracking
+
+  expose object $exposuretime
+
+  log::summary "pointingmapvisit: finished."
+  return true
+}
+
+########################################################################
+
+
