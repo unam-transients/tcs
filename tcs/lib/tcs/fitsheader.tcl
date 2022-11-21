@@ -239,7 +239,6 @@ namespace eval "fitsheader" {
       filterwheeldescription         FWDS  string
       filterwheelposition            FWPS  string
       filterwheelmaxposition         FWMX  integer
-      filterwheelpositionerror       FWE   integer
       filter                         FL    string
       focuserdescription             FCDS  string
       focuserposition                FCPS  integer
