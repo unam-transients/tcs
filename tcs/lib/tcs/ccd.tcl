@@ -809,9 +809,8 @@ namespace eval "ccd" {
     variable filters
     set newposition [dict get $filters $newfilter]
     log::info "moving filter wheel to filter $newfilter (position $newposition)."
-    coroutine::yield
-    server::setdata "requestedfilterwheelposition" $newposition
     if {$forcemove || ![string equal [server::getdata "filterwheelposition"] $newposition]} {
+      server::setdata "requestedfilterwheelposition" $newposition
       filterwheel::move $newposition
       filterwheel::waitwhilemoving
     }
