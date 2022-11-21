@@ -60,8 +60,6 @@ namespace eval "ccd" {
   variable coolerclosedsetting             [config::getvalue $identifier "coolerclosedsetting"            ]
   variable filterwheeltype                 [config::getvalue $identifier "filterwheeltype"                ]
   variable filterwheelidentifier           [config::getvalue $identifier "filterwheelidentifier"          ]
-  variable filterwheelinitialposition      [config::getvalue $identifier "filterwheelinitialposition"     ]
-  variable filterwheelidleposition         [config::getvalue $identifier "filterwheelidleposition"        ]
   variable filters                         [config::getvalue $identifier "filters"                        ]
   variable focusertype                     [config::getvalue $identifier "focusertype"                    ]
   variable focuseridentifier               [config::getvalue $identifier "focuseridentifier"              ]
@@ -478,8 +476,7 @@ namespace eval "ccd" {
     variable detectorinitialbinning
     detector::setbinning $detectorinitialbinning
     setcoolerhelper "closed"
-    variable filterwheelinitialposition
-    movefilterwheelactivitycommand $filterwheelinitialposition true
+    movefilterwheelactivitycommand "initial" true
     variable focuserinitialposition
     movefocuseractivitycommand $focuserinitialposition
     checkfocuserpositionerror "after initializing"
@@ -808,6 +805,10 @@ namespace eval "ccd" {
     set start [utcclock::seconds]
     variable filters
     set newposition [dict get $filters $newfilter]
+    while {[dict exists $filters $newposition]} {
+      set newfilter $newposition
+      set newposition [dict get $filters $newfilter] 
+    }
     log::info "moving filter wheel to filter $newfilter (position $newposition)."
     if {$forcemove || ![string equal [server::getdata "filterwheelposition"] $newposition]} {
       server::setdata "requestedfilterwheelposition" $newposition
@@ -989,10 +990,6 @@ namespace eval "ccd" {
     server::checkstatus
     server::checkactivity "idle"
     variable filters
-    if {[string equal $filter "idle"]} {
-      variable filterwheelidleposition
-      set filter $filterwheelidleposition
-    }
     if {![dict exists $filters $filter]} {
       error "invalid filter \"$filter\"."
     }

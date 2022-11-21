@@ -89,9 +89,10 @@
     "temperaturelimitoutletgroup": "",
     "filterwheeltype": "null",
     "filterwheelidentifier": "null",
-    "filterwheelinitialposition": "w",
     "filters": {
-      "w": "0"
+      "w"      : "0",
+      "initial": "w",
+      "idle"   : "w"
     },
     "focusertype": "null",
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:5:1.0",
@@ -160,9 +161,10 @@
     "temperaturelimitoutletgroup": "",
     "filterwheeltype": "null",
     "filterwheelidentifier": "null",
-    "filterwheelinitialposition": "w",
     "filters": {
-      "w": "0"
+      "w"      : "0",
+      "initial": "w",
+      "idle"   : "w"
     },
     // Controller A (red)
     "focusertype": "ddoti",

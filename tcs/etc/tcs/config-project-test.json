@@ -155,7 +155,6 @@
 
 //    "filterwheeltype": "null",
 //    "filterwheelidentifier": "null",
-//    "filterwheelinitialposition": 0,
 //    "filterlist": [
 //      "w"
 //    ],
@@ -168,13 +167,14 @@
       "usb:2-1:1.0",
       "usb:2-2.2:1.0"
     ],
-    "filterwheelinitialposition": "a",
     "filters": {
       "a": "0 0 0",
       "b": "1 1 1",
       "c": "2 2 2",
       "d": "1 0 1",
-      "e": "4 7 7"
+      "e": "4 7 7",
+      "initial": "a",
+      "idle"   : "a"
     },
     "focusertype": "null",
     "focuseridentifier": "null",

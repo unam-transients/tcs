@@ -58,9 +58,10 @@
     // FW0011318 -- firmware serial number "CFW-14-5"
     // FW0021318 -- firmware serial number "FW0021318"
     // FW0031318 -- firmware serial number "FW0031318"
-    "filterwheelinitialposition": 0,
     "filters": {
-      "w": "0"
+      "w"      : "0",
+      "initial": "w",
+      "idle"   : "w"
     },
     "focusertype": "null",
     "focuseridentifier": "null",
@@ -139,14 +140,15 @@
     // FW0021318 -- firmware serial number "FW0021318"
     // FW0031318 -- firmware serial number "FW0031318"
     "filterwheelidentifier": "CFW-14-5",
-    "filterwheelinitialposition": "r",
     "filters": {
       // 2021-09-13: r and g were accidentally installed in the wrong slots at OHP.
-      "r": "0",
-      "g": "1",
-      "i": "2",
-      "z": "3",
-      "y": "4"
+      "r"      : "0",
+      "g"      : "1",
+      "i"      : "2",
+      "z"      : "3",
+      "y"      : "4",
+      "initial": "r",
+      "idle"   : "r"
     },
     "focusertype": "null",
     "focuseridentifier": "null",

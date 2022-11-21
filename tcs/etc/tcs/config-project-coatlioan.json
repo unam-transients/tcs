@@ -93,10 +93,8 @@
     "temperaturelimitoutletgroup": "",
     "filterwheeltype": "fli",
     "filterwheelidentifier": "CFW-1-8-001",
-    "filterwheelinitialposition": "r",
     "focusertype": "null",
     "focuseridentifier": "null",
-    "focuserinitialposition": "0",
     "focuserbacklashoffset": "0",
     "focusercorrectionmodel": {},
     "pointingmodelparameters": {},
@@ -109,14 +107,16 @@
       "16": "-A"
     },
     "filters": {
-      "g"     : "0",
-      "r"     : "1",
-      "i"     : "2",
-      "z"     : "3",
-      "470/10": "4",
-      "dark"  : "5",
-      "640/10": "6",
-      "656/3" : "7"
+      "g"      : "0",
+      "r"      : "1",
+      "i"      : "2",
+      "z"      : "3",
+      "470/10" : "4",
+      "dark"   : "5",
+      "640/10" : "6",
+      "656/3"  : "7",
+      "initial": "r",
+      "idle"   : "r"
     },
     "startoutletgroups": [
       "detector"
