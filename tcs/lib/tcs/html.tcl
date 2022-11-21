@@ -853,7 +853,7 @@ namespace eval "html" {
           [formatradtodegifdouble "%.2f°" [client::getdata "mount" "requestedobservedzenithdistance"]]
 
       writehtmlrow "Requested mount rotation" \
-        [formatradtodegifdouble "%.4f°"  [client::getdata "mount" "requestedmountrotation"]]
+        [formatradtodegifdouble "%.2f°"  [client::getdata "mount" "requestedmountrotation"]]
       writehtmlrow "Requested mount position (α,HA,δ)" \
         [formatalphaifdouble [client::getdata "mount" "requestedmountalpha"]] \
         [formathaifdouble    [client::getdata "mount" "requestedmountha"]] \
