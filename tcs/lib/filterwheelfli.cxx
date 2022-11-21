@@ -32,14 +32,16 @@
 
 ////////////////////////////////////////////////////////////////////////
 
-static char description[FILTERWHEEL_STR_BUFFER_SIZE] = "";
-static long maxposition;
-static long position;
-static bool ishomed;
+static char description[FILTERWHEEL_MAX_INDEX + 1][FILTERWHEEL_STR_BUFFER_SIZE];
+static long maxposition[FILTERWHEEL_MAX_INDEX + 1];
+static long position[FILTERWHEEL_MAX_INDEX + 1];
+static bool ishomed[FILTERWHEEL_MAX_INDEX + 1];
 
 ////////////////////////////////////////////////////////////////////////
 
 #include "libfli.h"
+
+static flidev_t device[FILTERWHEEL_MAX_INDEX + 1];
 
 #define CHECK_FLI_CALL(f,e) \
   do { \
@@ -49,7 +51,6 @@ static bool ishomed;
     } \
   } while (0)
 
-static flidev_t device = -1;
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -114,15 +115,15 @@ opendevice(flidev_t *device, flidomain_t domain, const char *identifier)
 ////////////////////////////////////////////////////////////////////////
 
 const char *
-filterwheelrawopen(char *identifier)
+filterwheelrawopen(size_t index, char *identifier)
 {
   //FLISetDebugLevel(NULL, FLIDEBUG_ALL);
 
-  if (filterwheelrawgetisopen())
-    FILTERWHEEL_ERROR("a filterwheel is currently opened.");
+  if (filterwheelrawgetisopen(index))
+    FILTERWHEEL_ERROR("filterwheel is currently opened.");
   
   { 
-    const char *result = opendevice(&device, FLIDEVICE_FILTERWHEEL|FLIDOMAIN_USB, identifier);
+    const char *result = opendevice(&device[index], FLIDEVICE_FILTERWHEEL|FLIDOMAIN_USB, identifier);
     if (strcmp(result, "ok") != 0)
       return result;
   }
@@ -130,7 +131,7 @@ filterwheelrawopen(char *identifier)
   char model[FILTERWHEEL_STR_BUFFER_SIZE];
   char serial[FILTERWHEEL_STR_BUFFER_SIZE];
   CHECK_FLI_CALL(
-    FLIGetModel(device, model, sizeof(model)),
+    FLIGetModel(device[index], model, sizeof(model)),
     "unable to determine the filter wheel model."
   );
   const char *microlineprefix = "MicroLine ";
@@ -142,22 +143,22 @@ filterwheelrawopen(char *identifier)
     );
   }
   CHECK_FLI_CALL(
-    FLIGetSerialString(device, serial, sizeof(serial)),
+    FLIGetSerialString(device[index], serial, sizeof(serial)),
     "unable to determine the serial number of the filter wheel."
   );
   stripspace(model);
   stripspace(serial);
-  snprintf(description, sizeof(description), "FLI %s (%s)", model, serial);    
+  snprintf(description[index], sizeof(description[index]), "FLI-%s-(%s)", model, serial);    
   
-  filterwheelrawsetisopen(true);
+  filterwheelrawsetisopen(index, true);
 
   CHECK_FLI_CALL(
-    FLIGetFilterCount(device, &maxposition),
+    FLIGetFilterCount(device[index], &maxposition[index]),
     "unable to determine the filter wheel maximum position."
   );
-  maxposition -= 1;
+  maxposition[index] -= 1;
   CHECK_FLI_CALL(
-    FLISetFilterPos(device, 0),
+    FLISetFilterPos(device[index], 0),
     "unable to initialize the filter wheel."
   );
   FILTERWHEEL_OK();
@@ -167,11 +168,11 @@ filterwheelrawopen(char *identifier)
 ////////////////////////////////////////////////////////////////////////
 
 const char *
-filterwheelrawclose(void)
+filterwheelrawclose(size_t index)
 {
-  filterwheelrawsetisopen(false);
+  filterwheelrawsetisopen(index, false);
   CHECK_FLI_CALL(
-    FLIClose(device),
+    FLIClose(device[index]),
     "unable to close the filter wheel."
   );
   FILTERWHEEL_OK();
@@ -180,7 +181,7 @@ filterwheelrawclose(void)
 ////////////////////////////////////////////////////////////////////////
 
 const char *
-filterwheelrawreset(void)
+filterwheelrawreset(size_t index)
 {
   FILTERWHEEL_OK();
 }
@@ -188,11 +189,11 @@ filterwheelrawreset(void)
 ////////////////////////////////////////////////////////////////////////
 
 const char *
-filterwheelrawmove(long newposition)
+filterwheelrawmove(size_t index, long newposition)
 {
-  FILTERWHEEL_CHECK_OPEN();
+  FILTERWHEEL_CHECK_OPEN(index);
   CHECK_FLI_CALL(
-    FLISetFilterPos(device, newposition),
+    FLISetFilterPos(device[index], newposition),
     "unable to set the filter wheel position."
   );
   FILTERWHEEL_OK();
@@ -201,11 +202,11 @@ filterwheelrawmove(long newposition)
 ////////////////////////////////////////////////////////////////////////
 
 const char *
-filterwheelrawhome(void)
+filterwheelrawhome(size_t index)
 {
-  FILTERWHEEL_CHECK_OPEN();
+  FILTERWHEEL_CHECK_OPEN(index);
   CHECK_FLI_CALL(
-    FLIHomeDevice(device),
+    FLIHomeDevice(device[index]),
     "unable to move the filter wheel to the home position."
   );
   FILTERWHEEL_OK();
@@ -214,33 +215,33 @@ filterwheelrawhome(void)
 ////////////////////////////////////////////////////////////////////////
 
 const char *
-filterwheelrawupdatestatus(void)
+filterwheelrawupdatestatus(size_t index)
 {
-  FILTERWHEEL_CHECK_OPEN();
+  FILTERWHEEL_CHECK_OPEN(index);
 
   CHECK_FLI_CALL(
-    FLIGetFilterPos(device, &position),
+    FLIGetFilterPos(device[index], &position[index]),
     "unable to determine the filter wheel position."
   );
   long status;
-  FLIGetDeviceStatus(device, &status);
-  ishomed = (status == 0x80);
+  FLIGetDeviceStatus(device[index], &status);
+  ishomed[index] = (status == 0x80);
 
   FILTERWHEEL_OK();
 }
 
 const char *
-filterwheelrawgetvalue(const char *name)
+filterwheelrawgetvalue(size_t index, const char *name)
 {
   static char value[FILTERWHEEL_STR_BUFFER_SIZE];
   if (strcmp(name, "description") == 0)
-    snprintf(value, sizeof(value), "%s", description);
+    snprintf(value, sizeof(value), "%s", description[index]);
   else if (strcmp(name, "position") == 0)
-    snprintf(value, sizeof(value), "%ld", position);
+    snprintf(value, sizeof(value), "%ld", position[index]);
   else if (strcmp(name, "maxposition") == 0)
-    snprintf(value, sizeof(value), "%ld", maxposition);
+    snprintf(value, sizeof(value), "%ld", maxposition[index]);
   else if (strcmp(name, "ishomed") == 0)
-    snprintf(value, sizeof(value), "%s", ishomed ? "true" : "false");
+    snprintf(value, sizeof(value), "%s", ishomed[index] ? "true" : "false");
   else
     snprintf(value, sizeof(value), "");
   return value;

@@ -46,11 +46,11 @@ namespace eval "filterwheel" {
     set ishomed false
     while {!$ishomed} {
       log::debug "filterwheel: home: moving to the home position."
-      set result [filterwheelrawhome]
+      set result [filterwheelrawhome 0]
       while {![string equal $result ok]} {
         log::debug "filterwheel: move: moving again to the home position."
         coroutine::after 1000
-        set result [filterwheelrawhome]
+        set result [filterwheelrawhome 0]
       }
       coroutine::after 100
       set start [utcclock::seconds]
@@ -67,11 +67,11 @@ namespace eval "filterwheel" {
       log::debug "filterwheel: home: position is $position."
       coroutine::after 100
       log::debug "filterwheel: home: moving to position 0."
-      set result [filterwheelrawmove 0]
+      set result [filterwheelrawmove 0 0]
       while {![string equal $result ok]} {
         log::debug "filterwheel: home: moving again to position 0."
         coroutine::after 1000
-        set result [filterwheelrawmove 0]
+        set result [filterwheelrawmove 0 0]
       }
     }
     log::debug "filterwheel: home: done."
@@ -101,11 +101,11 @@ namespace eval "filterwheel" {
           set nextposition [expr {$position + 1}]
         }
         log::debug "filterwheel: move: moving to position $nextposition."
-        set result [filterwheelrawmove $nextposition]
+        set result [filterwheelrawmove 0 $nextposition]
         while {![string equal $result ok]} {
           log::debug "filterwheel: move: moving again to position $nextposition."
           coroutine::after 100
-          set result [filterwheelrawmove $nextposition]
+          set result [filterwheelrawmove 0 $nextposition]
         }
       }
       log::debug "filterwheel: move: position is $position."

@@ -22,8 +22,11 @@
 
 ////////////////////////////////////////////////////////////////////////
 
+#include <stddef.h>
+
 #if !SWIG
 
+#define FILTERWHEEL_MAX_INDEX 9
 #define FILTERWHEEL_STR_BUFFER_SIZE 1024
 
 #define FILTERWHEEL_ERROR(s)  return (s)
@@ -36,9 +39,9 @@
     abort(); \
   } while(0)
 
-#define FILTERWHEEL_CHECK_OPEN() \
+#define FILTERWHEEL_CHECK_OPEN(index) \
   do { \
-    if (!filterwheelrawgetisopen()) \
+    if (!filterwheelrawgetisopen(index)) \
       FILTERWHEEL_ERROR("no filter wheel is currently opened."); \
   } while (0)
 
@@ -47,19 +50,19 @@
 // These functions must be implemented for each type of filter wheel, either in C++ or Tcl.
 
 extern const char *filterwheelrawstart(void);
-extern const char *filterwheelrawopen(char *);
-extern const char *filterwheelrawclose(void);
+extern const char *filterwheelrawopen(size_t index, char *);
+extern const char *filterwheelrawclose(size_t index);
 
-extern const char *filterwheelrawreset(void);
+extern const char *filterwheelrawreset(size_t index);
 
-extern const char *filterwheelrawupdatestatus(void);
-extern const char *filterwheelrawgetvalue(const char *);
+extern const char *filterwheelrawupdatestatus(size_t index);
+extern const char *filterwheelrawgetvalue(size_t index, const char *);
 
-extern const char *filterwheelrawmove(long);
-extern const char *filterwheelrawhome(void);
+extern const char *filterwheelrawmove(size_t index, long);
+extern const char *filterwheelrawhome(size_t index);
 
 // These C++ functions are shared by all filterwheels.
 
-extern const char *filterwheelrawsetisopen(bool);
-extern bool        filterwheelrawgetisopen(void);
+extern const char *filterwheelrawsetisopen(size_t index, bool);
+extern bool        filterwheelrawgetisopen(size_t index);
 
