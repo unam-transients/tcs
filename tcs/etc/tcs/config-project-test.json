@@ -163,10 +163,10 @@
     "filterwheeltype": "fli",
 //    "filterwheelidentifier": "CFW-1-8-001",
 //    "filterwheelidentifier": "CF10484516",
-    "filterwheelidentifier": [ 
-      "first",
-      "second", 
-      "third"
+    "filterwheelidentifier": [
+      "usb:2-2.1:1.0",
+      "usb:2-1:1.0",
+      "usb:2-2.2:1.0"
     ],
     "filterwheelinitialposition": "a",
     "filters": {
@@ -174,7 +174,7 @@
       "b": "1 1 1",
       "c": "2 2 2",
       "d": "1 0 1",
-      "e": "7 7 4"
+      "e": "4 7 7"
     },
     "focusertype": "null",
     "focuseridentifier": "null",
