@@ -84,15 +84,23 @@ filterwheelrawstart(void)
 static const char *
 opendevice(flidev_t *device, flidomain_t domain, const char *identifier)
 {
+  int j = 0;
   for (int i = 0; i < 10; ++i) {
     *device = FLI_INVALID_DEVICE;
     char name[FILTERWHEEL_STR_BUFFER_SIZE];
     snprintf(name, sizeof(name), "/dev/fliusb%x", i);
+fprintf(stderr, "trying \"%s\".\n", name);
     if (FLIOpen(device, name, domain) != 0) {
       *device = FLI_INVALID_DEVICE;
       continue;
     }
-    if (strcmp(identifier, "first") == 0)
+    ++j;
+fprintf(stderr, "j == %d  and identifier is %s.\n", j, identifier);
+    if (j == 1 && strcmp(identifier, "first") == 0)
+      break;
+    if (j == 2 && strcmp(identifier, "second") == 0)
+      break;
+    if (j == 3 && strcmp(identifier, "third") == 0)
       break;
     char serialstring[FILTERWHEEL_STR_BUFFER_SIZE];
     CHECK_FLI_CALL(
@@ -107,6 +115,7 @@ opendevice(flidev_t *device, flidomain_t domain, const char *identifier)
     );
     *device = FLI_INVALID_DEVICE;
   }
+fprintf(stderr, "found device\n");
   if (*device == FLI_INVALID_DEVICE)
     FILTERWHEEL_ERROR("unable to open device.");
   return "ok";
@@ -119,14 +128,21 @@ filterwheelrawopen(size_t index, char *identifier)
 {
   //FLISetDebugLevel(NULL, FLIDEBUG_ALL);
 
+fprintf(stderr, "filterwheelrawopen: index is %ld.\n", (unsigned long) index);
+fprintf(stderr, "filterwheelrawopen: identifier is \"%s\".\n", (unsigned long) identifier);
+
   if (filterwheelrawgetisopen(index))
-    FILTERWHEEL_ERROR("filterwheel is currently opened.");
+    FILTERWHEEL_ERROR("filter wheel is currently opened.");
   
+fprintf(stderr, "filter wheel is not currently open.\n");
+
   { 
     const char *result = opendevice(&device[index], FLIDEVICE_FILTERWHEEL|FLIDOMAIN_USB, identifier);
     if (strcmp(result, "ok") != 0)
       return result;
   }
+
+fprintf(stderr, "filter wheel is now open.\n");
 
   char model[FILTERWHEEL_STR_BUFFER_SIZE];
   char serial[FILTERWHEEL_STR_BUFFER_SIZE];
@@ -147,8 +163,10 @@ filterwheelrawopen(size_t index, char *identifier)
     "unable to determine the serial number of the filter wheel."
   );
   stripspace(model);
+fprintf(stderr, "model is \"%s\".\n", model);
   stripspace(serial);
-  snprintf(description[index], sizeof(description[index]), "FLI-%s-(%s)", model, serial);    
+fprintf(stderr, "serial is \"%s\".\n", serial);
+  snprintf(description[index], sizeof(description[index]), "%s-(%s)", model, serial);    
   
   filterwheelrawsetisopen(index, true);
 
@@ -157,10 +175,14 @@ filterwheelrawopen(size_t index, char *identifier)
     "unable to determine the filter wheel maximum position."
   );
   maxposition[index] -= 1;
+printf("maxposition is %d.\n", (int) maxposition[index]);
   CHECK_FLI_CALL(
     FLISetFilterPos(device[index], 0),
     "unable to initialize the filter wheel."
   );
+
+fprintf(stderr, "finished opening.\n");
+
   FILTERWHEEL_OK();
 
 }
@@ -217,6 +239,7 @@ filterwheelrawhome(size_t index)
 const char *
 filterwheelrawupdatestatus(size_t index)
 {
+fprintf(stderr, "filterwheelrawupdatestatus: index is %ld.\n", (unsigned long) index);
   FILTERWHEEL_CHECK_OPEN(index);
 
   CHECK_FLI_CALL(
@@ -227,6 +250,7 @@ filterwheelrawupdatestatus(size_t index)
   FLIGetDeviceStatus(device[index], &status);
   ishomed[index] = (status == 0x80);
 
+fprintf(stderr, "filterwheelrawupdatestatus: finished.\n");
   FILTERWHEEL_OK();
 }
 

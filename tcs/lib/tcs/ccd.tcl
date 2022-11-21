@@ -62,8 +62,7 @@ namespace eval "ccd" {
   variable filterwheelidentifier           [config::getvalue $identifier "filterwheelidentifier"          ]
   variable filterwheelinitialposition      [config::getvalue $identifier "filterwheelinitialposition"     ]
   variable filterwheelidleposition         [config::getvalue $identifier "filterwheelidleposition"        ]
-  variable allowedfilterwheelpositionerror [config::getvalue $identifier "allowedfilterwheelpositionerror"]
-  variable filterlist                      [config::getvalue $identifier "filterlist"                     ]
+  variable filters                         [config::getvalue $identifier "filters"                        ]
   variable focusertype                     [config::getvalue $identifier "focusertype"                    ]
   variable focuseridentifier               [config::getvalue $identifier "focuseridentifier"              ]
   variable focuserinitialposition          [config::getvalue $identifier "focuserinitialposition"         ]
@@ -139,11 +138,6 @@ namespace eval "ccd" {
     set lastfilterwheelposition           [server::getdata "filterwheelposition"]
     set filterwheelposition               [filterwheel::getposition]
     set requestedfilterwheelposition      [server::getdata "requestedfilterwheelposition"]
-    if {[catch {
-      expr {$filterwheelposition - $requestedfilterwheelposition}
-    } filterwheelpositionerror]} {
-      set filterwheelpositionerror ""
-    }
     
     set lastfocuserrawposition [server::getdata "focuserrawposition"]
     set focuserrawposition     [focuser::getposition]
@@ -228,7 +222,6 @@ namespace eval "ccd" {
     server::setdata "detectorcoolerlowflow"            [detector::getcoolerlowflow]
     server::setdata "filterwheeldescription"           [filterwheel::getdescription]
     server::setdata "filterwheelposition"              $filterwheelposition
-    server::setdata "filterwheelpositionerror"         $filterwheelpositionerror
     server::setdata "lastfilterwheelposition"          $lastfilterwheelposition
     server::setdata "filterwheelmaxposition"           [filterwheel::getmaxposition]
     server::setdata "filter"                           [getfilter $filterwheelposition]
@@ -274,14 +267,14 @@ namespace eval "ccd" {
   }
   
   proc getfilter {filterwheelposition} {
-    variable filterlist
-    if {[string is integer -strict $filterwheelposition] &&
-        0 <= $filterwheelposition && 
-        $filterwheelposition < [llength $filterlist]} {
-      set filter [lindex $filterlist $filterwheelposition]
-    } else {
-      set filter ""
+    variable filters
+    foreach filter [dict keys $filters] {
+      set position [dict get $filters $filter]
+      if {[string equal $position $filterwheelposition]} {
+        return $filter
+      }
     }
+    return ""
   }
   
   ######################################################################
@@ -296,17 +289,6 @@ namespace eval "ccd" {
       server::resumeactivitycommand
       variable pollmilliseconds
       coroutine::after $pollmilliseconds
-    }
-  }
-
-  ######################################################################
-
-  proc checkfilterwheelpositionerror {when} {
-    updatedata
-    set filterwheelpositionerror [server::getdata "filterwheelpositionerror"]
-    variable allowedfilterwheelpositionerror
-    if {abs($filterwheelpositionerror) > $allowedfilterwheelpositionerror} {
-      log::warning [format "filter wheel position error is %+d $when." $filterwheelpositionerror]
     }
   }
 
@@ -452,14 +434,12 @@ namespace eval "ccd" {
       coroutine::after 5000
     }
     filterwheel::waitwhilemoving
-    variable filterlist
-    if {[llength $filterlist] == 0} {
+    variable filters
+    if {[llength $filters] == 0} {
       log::info "no filters installed."
     } else {
-      set position 0
-      foreach filter $filterlist {
-        log::info "filter $filter is in position $position."
-        incr position
+      foreach filter [dict keys $filters] {
+        log::info "filter $filter is at position [dict get $filters $filter]."
       }
     }
     variable focuseridentifier
@@ -502,7 +482,6 @@ namespace eval "ccd" {
     movefilterwheelactivitycommand $filterwheelinitialposition true
     variable focuserinitialposition
     movefocuseractivitycommand $focuserinitialposition
-    checkfilterwheelpositionerror "after initializing"
     checkfocuserpositionerror "after initializing"
     log::info [format "finished initializing after %.1f seconds." [utcclock::diff now $start]]
   }
@@ -825,24 +804,16 @@ namespace eval "ccd" {
     }
   }
   
-  proc movefilterwheelactivitycommand {newposition forcemove} {
+  proc movefilterwheelactivitycommand {newfilter forcemove} {
     set start [utcclock::seconds]
-    variable filterlist
-    set newfilter [lindex $filterlist $newposition]
+    variable filters
+    set newposition [dict get $filters $newfilter]
     log::info "moving filter wheel to filter $newfilter (position $newposition)."
     coroutine::yield
     server::setdata "requestedfilterwheelposition" $newposition
-    if {[server::getdata "filterwheelmaxposition"] != 0} {
-      set start [utcclock::seconds]
-      log::debug "filterwheel: ccd: moving filter wheel to $newposition."
-      if {$forcemove || [server::getdata "filterwheelposition"] != $newposition} {
-        filterwheel::move $newposition
-        filterwheel::waitwhilemoving
-        checkfilterwheelpositionerror "after moving filter wheel"
-      }
-      set end [utcclock::seconds]
-      log::debug [format "filterwheel: ccd: moving the filter wheel took %.1f seconds." [expr {$end - $start}]]
-      log::debug "filterwheel: ccd: done."
+    if {$forcemove || ![string equal [server::getdata "filterwheelposition"] $newposition]} {
+      filterwheel::move $newposition
+      filterwheel::waitwhilemoving
     }
     log::info [format "finished moving filter wheel after %.1f seconds." [utcclock::diff now $start]]
   }
@@ -1015,25 +986,18 @@ namespace eval "ccd" {
     return
   }
   
-  proc movefilterwheel {position} {
+  proc movefilterwheel {filter} {
     server::checkstatus
     server::checkactivity "idle"
-    variable filterlist
-    if {[string equal $position "idle"]} {
+    variable filters
+    if {[string equal $filter "idle"]} {
       variable filterwheelidleposition
-      set position $filterwheelidleposition
+      set filter $filterwheelidleposition
     }
-    if {[lsearch -exact $filterlist $position] != -1} {
-      set position [lsearch -exact $filterlist $position]
+    if {![dict exists $filters $filter]} {
+      error "invalid filter \"$filter\"."
     }
-    if {
-      ![string is integer -strict $position] ||
-      $position < 0 ||
-      $position > [server::getdata "filterwheelmaxposition"]
-    } {
-      error "invalid filter wheel position \"$position\"."
-    }
-    server::newactivitycommand "moving" "idle" "ccd::movefilterwheelactivitycommand $position false"
+    server::newactivitycommand "moving" "idle" "ccd::movefilterwheelactivitycommand $filter false"
     return
   }
   

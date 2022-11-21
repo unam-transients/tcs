@@ -40,84 +40,100 @@ namespace eval "filterwheel" {
     }  
   }
   
-  proc home {} {
-    checkisopen
-    variable ishomed
-    set ishomed false
-    while {!$ishomed} {
-      log::debug "filterwheel: home: moving to the home position."
-      set result [filterwheelrawhome 0]
-      while {![string equal $result ok]} {
-        log::debug "filterwheel: move: moving again to the home position."
-        coroutine::after 1000
-        set result [filterwheelrawhome 0]
-      }
-      coroutine::after 100
-      set start [utcclock::seconds]
-      while {[updatestatus] && !$ishomed && [utcclock::diff now $start] < 10} {
-        log::debug "filterwheel: home: moving."
-        coroutine::after 100
-      }
-    }
-    log::debug "filterwheel: home: homed."
-    coroutine::after 100
-    log::debug "filterwheel: home: moving to position 0."
-    variable position
-    while {[updatestatus] && $position != 0} {
-      log::debug "filterwheel: home: position is $position."
-      coroutine::after 100
-      log::debug "filterwheel: home: moving to position 0."
-      set result [filterwheelrawmove 0 0]
-      while {![string equal $result ok]} {
-        log::debug "filterwheel: home: moving again to position 0."
-        coroutine::after 1000
-        set result [filterwheelrawmove 0 0]
-      }
-    }
-    log::debug "filterwheel: home: done."
-  }
-    
   proc move {newposition} {
     log::debug "filterwheel: move: moving to position $newposition."
-    checkisopen
     variable position
     variable maxposition
-    if {[updatestatus] && $position != $newposition} {
-      # FLI wheels only turns in one direction to higher position number.
-      # To move to a lower position number, we have to move past 0. If
-      # we are going to do this, we may as well home the wheel, which leaves
-      # the wheel in position 0 and will correct any lost steps.
-      if {$newposition < $position} {
-        home
-      }
-      while {[updatestatus] && $position != $newposition} {
-        # Move position by position. This is more reliable than
-        # commanding a move of several positions.
-        log::debug "filterwheel: move: position is $position."
-        coroutine::after 100
-        if {$position == $maxposition} {
-          set nextposition 0
-        } else {
-          set nextposition [expr {$position + 1}]
-        }
-        log::debug "filterwheel: move: moving to position $nextposition."
-        set result [filterwheelrawmove 0 $nextposition]
-        while {![string equal $result ok]} {
-          log::debug "filterwheel: move: moving again to position $nextposition."
-          coroutine::after 100
-          set result [filterwheelrawmove 0 $nextposition]
-        }
-      }
-      log::debug "filterwheel: move: position is $position."
-    }
-    if {[updatestatus] && $position != $newposition} {
-      log::warning "the filter wheel did not move correctly; position is $position."
+    variable nfilterwheels
+    set index 0
+    while {$index < $nfilterwheels} {
+      log::debug "filterwheel: move: moving filter wheel $index"
+      checkisopen $index
+      movesingle $index [lindex $newposition $index]
+      incr index
     }
     log::debug "filterwheel: move: done."
     variable stoppedtimestamp
     set stoppedtimestamp ""
     return
   }
+  
+  proc movesingle {index newposition} {
+    log::debug "filterwheel: movesingle: moving filter wheel $index to $newposition."
+    variable position
+    variable maxposition
+    if {[updatestatus] && [lindex $position $index] != $newposition} {
+      # FLI wheels only turns in one direction to higher position number.
+      # To move to a lower position number, we have to move past 0. If
+      # we are going to do this, we may as well home the wheel, which leaves
+      # the wheel in position 0 and will correct any lost steps.
+      if {$newposition < [lindex $position $index]} {
+        homesingle $index
+      }
+      while {[updatestatus] && [lindex $position $index] != $newposition} {
+        # Move position by position. This is more reliable than
+        # commanding a move of several positions.
+        log::debug "filterwheel: movesingle: position is [lindex $position $index]."
+        coroutine::after 100
+        if {[lindex $position $index] == [lindex $maxposition $index]} {
+          set nextposition 0
+        } else {
+          set nextposition [expr {[lindex $position $index] + 1}]
+        }
+        log::debug "filterwheel: movesingle: moving to position $nextposition."
+        set result [filterwheelrawmove $index $nextposition]
+        while {![string equal $result ok]} {
+          log::debug "filterwheel: movesingle: move: moving again to position $nextposition."
+          coroutine::after 100
+          set result [filterwheelrawmove $index $nextposition]
+        }
+      }
+      log::debug "filterwheel: movesingle: position is [lindex $position $index]."
+    }
+    if {[updatestatus] && [lindex $position $index] != $newposition} {
+      log::warning "filter wheel $index did not move correctly and its position is [lindex $position $index]."
+    }
+  }
+
+  proc homesingle {index} {
+    log::debug "filterwheel $index: home: start."
+    checkisopen $index
+    variable ishomed
+    set first true
+    while {$first || ![lindex $ishomed $index]} {
+      set first false
+      log::debug "filterwheel $index: home: moving to the home position."
+      set result [filterwheelrawhome $index]
+      while {![string equal $result ok]} {
+        log::debug "filterwheel $index: move: moving again to the home position."
+        coroutine::after 1000
+        set result [filterwheelrawhome $index]
+      }
+      coroutine::after 100
+      set start [utcclock::seconds]
+      while {[updatestatus] && ![lindex $ishomed $index] && [utcclock::diff now $start] < 10} {
+        log::debug "filterwheel $index: home: moving."
+        coroutine::after 100
+      }
+    }
+    log::debug "filterwheel $index: home: homed."
+    coroutine::after 100
+    log::debug "filterwheel $index: home: moving to position 0."
+    variable position
+    while {[updatestatus] && [lindex $position $index] != 0} {
+      log::debug "filterwheel $index: home: position is [lindex $position $index]."
+      coroutine::after 100
+      log::debug "filterwheel $index: home: moving to position 0."
+      set result [filterwheelrawmove $index 0]
+      while {![string equal $result ok]} {
+        log::debug "filterwheel $index: home: moving again to position 0."
+        coroutine::after 1000
+        set result [filterwheelrawmove $index 0]
+      }
+    }
+    log::debug "filterwheel $index: home: done."
+  }
+    
   
 }
 
