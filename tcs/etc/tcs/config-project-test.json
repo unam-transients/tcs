@@ -147,6 +147,7 @@
       "nx": 0,
       "ny": 0
     },
+    "coolerstartsetting": "off",
     "cooleropensetting": "-80",
     "coolerclosedsetting": "following",
     "temperaturelimit": 40,
@@ -166,7 +167,6 @@
     "filterwheelinitialposition": 0,
     "filterlist": [
     ],
-
     "focusertype": "null",
     "focuseridentifier": "null",
     "focuserinitialposition": 0,
