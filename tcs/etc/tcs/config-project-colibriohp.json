@@ -172,8 +172,10 @@
   "fitsheader": {
     "servers": [
       "target",
-      "sun",
       "moon",
+      "sun",
+      "secondary",
+      "mount",
       "sensors",
       "weather"
     ]
