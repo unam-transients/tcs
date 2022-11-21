@@ -453,8 +453,8 @@ namespace eval "html" {
       writehtmlfullrow "Filter wheel"              [client::getdata $server "filterwheeldescription"]
       writehtmlfullrow "Filter"                    [client::getdata $server "filter"]
       if {![string equal "null" [client::getdata $server "filterwheeldescription"]]} {
-        writehtmlrow "Filter wheel position"         [formatifok "%d" [client::getdata $server "filterwheelposition"]]
-        writehtmlrow "Filter wheel maximum position" [formatifok "%d" [client::getdata $server "filterwheelmaxposition"]]
+        writehtmlrow "Filter wheel position"         [client::getdata $server "filterwheelposition"]
+        writehtmlrow "Filter wheel maximum position" [client::getdata $server "filterwheelmaxposition"]
       }
       writehtmlfullrow "Focuser"                   [client::getdata $server "focuserdescription"]
       if {![string equal "null" [client::getdata $server "focuserdescription"]]} {

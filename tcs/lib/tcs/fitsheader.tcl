@@ -237,7 +237,7 @@ namespace eval "fitsheader" {
       detectorcoolersettemperature   CLTM  double
       detectorcoolerpower            CLPW  double
       filterwheeldescription         FWDS  string
-      filterwheelposition            FWPS  integer
+      filterwheelposition            FWPS  string
       filterwheelmaxposition         FWMX  integer
       filterwheelpositionerror       FWE   integer
       filter                         FL    string
