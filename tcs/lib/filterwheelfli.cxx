@@ -164,21 +164,14 @@ filterwheelrawopen(size_t index, char *identifier)
 {
   //FLISetDebugLevel(NULL, FLIDEBUG_ALL);
 
-fprintf(stderr, "filterwheelrawopen: index is %ld.\n", (unsigned long) index);
-fprintf(stderr, "filterwheelrawopen: identifier is \"%s\".\n", (unsigned long) identifier);
-
   if (filterwheelrawgetisopen(index))
     FILTERWHEEL_ERROR("filter wheel is currently opened.");
   
-fprintf(stderr, "filter wheel is not currently open.\n");
-
   { 
     const char *result = opendevice(&device[index], FLIDEVICE_FILTERWHEEL|FLIDOMAIN_USB, identifier);
     if (strcmp(result, "ok") != 0)
       return result;
   }
-
-fprintf(stderr, "filter wheel is now open.\n");
 
   char model[FILTERWHEEL_STR_BUFFER_SIZE];
   char serial[FILTERWHEEL_STR_BUFFER_SIZE];
@@ -199,10 +192,11 @@ fprintf(stderr, "filter wheel is now open.\n");
     "unable to determine the serial number of the filter wheel."
   );
   stripspace(model);
-fprintf(stderr, "model is \"%s\".\n", model);
   stripspace(serial);
-fprintf(stderr, "serial is \"%s\".\n", serial);
-  snprintf(description[index], sizeof(description[index]), "%s-(%s)", model, serial);    
+  if (strcmp(serial, "") == 0)
+    snprintf(description[index], sizeof(description[index]), "FLI %s", model);    
+  else
+    snprintf(description[index], sizeof(description[index]), "FLI %s (%s)", model, serial);    
   
   filterwheelrawsetisopen(index, true);
 
@@ -211,13 +205,10 @@ fprintf(stderr, "serial is \"%s\".\n", serial);
     "unable to determine the filter wheel maximum position."
   );
   maxposition[index] -= 1;
-printf("maxposition is %d.\n", (int) maxposition[index]);
   CHECK_FLI_CALL(
     FLISetFilterPos(device[index], 0),
     "unable to initialize the filter wheel."
   );
-
-fprintf(stderr, "finished opening.\n");
 
   FILTERWHEEL_OK();
 
@@ -275,7 +266,6 @@ filterwheelrawhome(size_t index)
 const char *
 filterwheelrawupdatestatus(size_t index)
 {
-fprintf(stderr, "filterwheelrawupdatestatus: index is %ld.\n", (unsigned long) index);
   FILTERWHEEL_CHECK_OPEN(index);
 
   CHECK_FLI_CALL(
@@ -286,7 +276,6 @@ fprintf(stderr, "filterwheelrawupdatestatus: index is %ld.\n", (unsigned long) i
   FLIGetDeviceStatus(device[index], &status);
   ishomed[index] = (status == 0x80);
 
-fprintf(stderr, "filterwheelrawupdatestatus: finished.\n");
   FILTERWHEEL_OK();
 }
 
