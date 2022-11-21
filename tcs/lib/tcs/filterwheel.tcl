@@ -63,7 +63,7 @@ namespace eval "filterwheel" {
         exec "/bin/sh" "-c" "echo $port >/sys/bus/usb/drivers/fliusb/bind"
       }
       coroutine::after 1000
-      log::info "opening filter wheel $index: $identifier."
+      log::info "opening filter wheel $index using $identifier."
       if {[filterwheelrawgetisopen $index]} {
         error "a filter wheel is already open."
       }
@@ -71,7 +71,8 @@ namespace eval "filterwheel" {
       if {![string equal $result ok]} {
         error $result
       }
-      lappend description [filterwheelrawgetvalue $index "description"]
+      log::info "filter wheel $index is [filterwheelrawgetvalue $index "description"]."
+      lappend description $identifier
       incr index
     }
     log::info "finished opening filter wheels."
