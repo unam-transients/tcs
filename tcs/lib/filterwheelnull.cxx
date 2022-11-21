@@ -47,12 +47,12 @@ filterwheelrawstart(void)
 ////////////////////////////////////////////////////////////////////////
 
 const char *
-filterwheelrawopen(char *identifier)
+filterwheelrawopen(size_t index, char *identifier)
 {
-  if (filterwheelrawgetisopen())
+  if (filterwheelrawgetisopen(index))
     FILTERWHEEL_ERROR("a filter wheel is currently opened.");
   snprintf(description, sizeof(description), "%s", "null");    
-  filterwheelrawsetisopen(true);
+  filterwheelrawsetisopen(index, true);
   maxposition = 0;
   position = 0;
   ishomed = 1;
@@ -62,16 +62,16 @@ filterwheelrawopen(char *identifier)
 ////////////////////////////////////////////////////////////////////////
 
 const char *
-filterwheelrawclose(void)
+filterwheelrawclose(size_t index)
 {
-  filterwheelrawsetisopen(false);
+  filterwheelrawsetisopen(index, false);
   FILTERWHEEL_OK();
 }
 
 ////////////////////////////////////////////////////////////////////////
 
 const char *
-filterwheelrawreset(void)
+filterwheelrawreset(size_t index)
 {
   FILTERWHEEL_OK();
 }
@@ -79,34 +79,34 @@ filterwheelrawreset(void)
 ////////////////////////////////////////////////////////////////////////
 
 const char *
-filterwheelrawmove(long newposition)
+filterwheelrawmove(size_t index, long newposition)
 {
-  FILTERWHEEL_CHECK_OPEN();
+  FILTERWHEEL_CHECK_OPEN(index);
   FILTERWHEEL_OK();
 }
 
 ////////////////////////////////////////////////////////////////////////
 
 const char *
-filterwheelrawhome(void)
+filterwheelrawhome(size_t index)
 {
-  FILTERWHEEL_CHECK_OPEN();
+  FILTERWHEEL_CHECK_OPEN(index);
   FILTERWHEEL_OK();
 }
 
 ////////////////////////////////////////////////////////////////////////
 
 const char *
-filterwheelrawupdatestatus(void)
+filterwheelrawupdatestatus(size_t index)
 {
-  FILTERWHEEL_CHECK_OPEN();
+  FILTERWHEEL_CHECK_OPEN(index);
   FILTERWHEEL_OK();
 }
 
 ////////////////////////////////////////////////////////////////////////
 
 const char *
-filterwheelrawgetvalue(const char *name)
+filterwheelrawgetvalue(size_t index, const char *name)
 {
   static char value[FILTERWHEEL_STR_BUFFER_SIZE];
   value[0] = 0;

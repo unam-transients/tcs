@@ -34,16 +34,16 @@ namespace eval "filterwheel" {
 
   proc open {identifier} {
     log::info "opening filter wheel $identifier."
-    if {[filterwheelrawgetisopen]} {
+    if {[filterwheelrawgetisopen 0]} {
       error "a filter wheel is already open."
     }
-    set result [filterwheelrawopen $identifier]
+    set result [filterwheelrawopen 0 $identifier]
     if {![string equal $result ok]} {
       error $result
     }
     updatestatus
     variable description
-    set description [filterwheelrawgetvalue "description"]
+    set description [filterwheelrawgetvalue 0 "description"]
     log::debug "filter wheel is \"$description\"."
     return
   }
@@ -55,7 +55,7 @@ namespace eval "filterwheel" {
     set description {}
     variable maxposition
     set maxposition {}
-    set result [filterwheelrawclose]
+    set result [filterwheelrawclose 0]
     if {![string equal $result ok]} {
       error $result
     }
@@ -69,13 +69,13 @@ namespace eval "filterwheel" {
   }
   
   proc isopen {} {
-    return [filterwheelrawgetisopen]
+    return [filterwheelrawgetisopen 0]
   }
   
   ######################################################################
 
   proc reset {} {
-    set result [filterwheelrawreset]
+    set result [filterwheelrawreset 0]
     if {![string equal $result ok]} {
       error $result
     }
@@ -140,7 +140,7 @@ namespace eval "filterwheel" {
     
     checkisopen
     
-    set result [filterwheelrawupdatestatus]
+    set result [filterwheelrawupdatestatus 0]
     if {![string equal $result "ok"]} {
       log::debug "unable to update the filter wheel status."
       return false   
@@ -150,9 +150,9 @@ namespace eval "filterwheel" {
     set lastposition  $position
 
     set timestamp   [utcclock::combinedformat now]
-    set position    [filterwheelrawgetvalue "position"]
-    set maxposition [filterwheelrawgetvalue "maxposition"]
-    set ishomed     [filterwheelrawgetvalue "ishomed"]
+    set position    [filterwheelrawgetvalue 0 "position"]
+    set maxposition [filterwheelrawgetvalue 0 "maxposition"]
+    set ishomed     [filterwheelrawgetvalue 0 "ishomed"]
 
     if {$position == -1} {
       set position {}

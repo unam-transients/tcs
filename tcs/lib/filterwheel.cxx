@@ -26,21 +26,21 @@
 
 ////////////////////////////////////////////////////////////////////////
 
-static bool isopen = false;
+static bool isopen[FILTERWHEEL_MAX_INDEX + 1];
 
 ////////////////////////////////////////////////////////////////////////
 
 const char *
-filterwheelrawsetisopen(bool newisopen)
+filterwheelrawsetisopen(size_t index, bool newisopen)
 {
-  isopen = newisopen;
+  isopen[index] = newisopen;
   FILTERWHEEL_OK();
 }
 
 bool
-filterwheelrawgetisopen(void)
+filterwheelrawgetisopen(size_t index)
 {
-  return isopen;
+  return isopen[index];
 }
 
 ////////////////////////////////////////////////////////////////////////
