@@ -42,6 +42,27 @@ namespace eval "filterwheel" {
     set index 0
     while {$index < $nfilterwheels} {
       set identifier [lindex $identifiers $index]
+      if {[string equal -length 4 "usb:" $identifier]} {
+        set port [string range $identifier 4 end]
+        if {[file exists "/sys/bus/usb/drivers/fliusb/$port"]} {
+          log::info "disabling usb port $port."
+          exec "/bin/sh" "-c" "echo $port >/sys/bus/usb/drivers/fliusb/unbind"
+        } else {
+          log::info "usb port $port is already disabled."
+        }
+        coroutine::after 1000
+      }
+      incr index
+    }
+    set index 0
+    while {$index < $nfilterwheels} {
+      set identifier [lindex $identifiers $index]
+      if {[string equal -length 4 "usb:" $identifier]} {
+        set port [string range $identifier 4 end]
+        log::info "enabling usb port $port."
+        exec "/bin/sh" "-c" "echo $port >/sys/bus/usb/drivers/fliusb/bind"
+      }
+      coroutine::after 1000
       log::info "opening filter wheel $index: $identifier."
       if {[filterwheelrawgetisopen $index]} {
         error "a filter wheel is already open."

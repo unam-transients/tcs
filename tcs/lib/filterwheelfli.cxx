@@ -82,26 +82,16 @@ filterwheelrawstart(void)
 ////////////////////////////////////////////////////////////////////////
 
 static const char *
-opendevice(flidev_t *device, flidomain_t domain, const char *identifier)
+opendevicebyidentifier(flidev_t *device, const char *identifier)
 {
-  int j = 0;
-  for (int i = 0; i < 10; ++i) {
+  for (int i = 0; i <= FILTERWHEEL_MAX_INDEX; ++i) {
     *device = FLI_INVALID_DEVICE;
     char name[FILTERWHEEL_STR_BUFFER_SIZE];
     snprintf(name, sizeof(name), "/dev/fliusb%x", i);
-fprintf(stderr, "trying \"%s\".\n", name);
-    if (FLIOpen(device, name, domain) != 0) {
+    if (FLIOpen(device, name, FLIDEVICE_FILTERWHEEL|FLIDOMAIN_USB) != 0) {
       *device = FLI_INVALID_DEVICE;
       continue;
     }
-    ++j;
-fprintf(stderr, "j == %d  and identifier is %s.\n", j, identifier);
-    if (j == 1 && strcmp(identifier, "first") == 0)
-      break;
-    if (j == 2 && strcmp(identifier, "second") == 0)
-      break;
-    if (j == 3 && strcmp(identifier, "third") == 0)
-      break;
     char serialstring[FILTERWHEEL_STR_BUFFER_SIZE];
     CHECK_FLI_CALL(
       FLIGetSerialString(*device, serialstring, sizeof(serialstring)),
@@ -115,10 +105,56 @@ fprintf(stderr, "j == %d  and identifier is %s.\n", j, identifier);
     );
     *device = FLI_INVALID_DEVICE;
   }
-fprintf(stderr, "found device\n");
   if (*device == FLI_INVALID_DEVICE)
     FILTERWHEEL_ERROR("unable to open device.");
   return "ok";
+}
+
+static const char *
+openfirstdevice(flidev_t *device)
+{
+  for (int i = 0; i <= FILTERWHEEL_MAX_INDEX; ++i) {
+    *device = FLI_INVALID_DEVICE;
+    char name[FILTERWHEEL_STR_BUFFER_SIZE];
+    snprintf(name, sizeof(name), "/dev/fliusb%x", i);
+    if (FLIOpen(device, name, FLIDEVICE_FILTERWHEEL|FLIDOMAIN_USB) != 0) {
+      *device = FLI_INVALID_DEVICE;
+      continue;
+    }
+    break;
+  }
+  if (*device == FLI_INVALID_DEVICE)
+    FILTERWHEEL_ERROR("unable to open device.");
+  return "ok";
+}
+
+static const char *
+openlastdevice(flidev_t *device)
+{
+  for (int i = FILTERWHEEL_MAX_INDEX - 1; i >= 0; --i) {
+    *device = FLI_INVALID_DEVICE;
+    char name[FILTERWHEEL_STR_BUFFER_SIZE];
+    snprintf(name, sizeof(name), "/dev/fliusb%x", i);
+    if (FLIOpen(device, name, FLIDEVICE_FILTERWHEEL|FLIDOMAIN_USB) != 0) {
+      *device = FLI_INVALID_DEVICE;
+      continue;
+    }
+    break;
+  }
+  if (*device == FLI_INVALID_DEVICE)
+    FILTERWHEEL_ERROR("unable to open device.");
+  return "ok";
+}
+
+static const char *
+opendevice(flidev_t *device, flidomain_t domain, const char *identifier)
+{
+  if (strcmp(identifier, "first") == 0)
+    return openfirstdevice(device);
+  else if (strncmp(identifier, "usb:", strlen("usb:")) == 0)
+    return openlastdevice(device);
+  else
+    return opendevicebyidentifier(device, identifier);      
 }
 
 ////////////////////////////////////////////////////////////////////////
