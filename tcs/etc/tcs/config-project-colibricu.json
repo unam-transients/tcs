@@ -166,13 +166,11 @@
     "temperaturelimitoutletgroup": "blue-service-cabinet",
 //    "filterwheeltype": "null",
 //    "filterwheelidentifier": "null",
-//    "filterwheelinitialposition": 0,
 //    "filterlist": [
 //      "open"
 //    ],
     "filterwheeltype": "fli",
     "filterwheelidentifier": "CFW-14-5",
-    "filterwheelinitialposition": 0,
     "filterlist": [
       // 2021-09-13: r and g were accidentally installed in the wrong slots at OHP.
       "r",
@@ -245,7 +243,6 @@
 //     "temperaturelimitoutletgroup": "",
 //     "filterwheeltype": "null",
 //     "filterwheelidentifier": "null",
-//     "filterwheelinitialposition": 0,
 //     "filterlist": [
 //       "w"
 //     ],
@@ -312,7 +309,6 @@
 //     "temperaturelimit": 40,
 //     "filterwheeltype": "null",
 //     "filterwheelidentifier": "null",
-//     "filterwheelinitialposition": 0,
 //     "filterlist": [
 //       "w"
 //     ],
@@ -379,7 +375,6 @@
 //     "temperaturelimit": 40,
 //     "filterwheeltype": "fli",
 //     "filterwheelidentifier": "CFW-14-5",
-//     "filterwheelinitialposition": 0,
 //     "filterlist": [
 //       "w"
 //     ],
