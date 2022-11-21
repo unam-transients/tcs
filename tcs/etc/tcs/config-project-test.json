@@ -163,10 +163,19 @@
     "filterwheeltype": "fli",
 //    "filterwheelidentifier": "CFW-1-8-001",
 //    "filterwheelidentifier": "CF10484516",
-    "filterwheelidentifier": "first",
-    "filterwheelinitialposition": 0,
-    "filterlist": [
+    "filterwheelidentifier": [ 
+      "first",
+      "second", 
+      "third"
     ],
+    "filterwheelinitialposition": "a",
+    "filters": {
+      "a": "0 0 0",
+      "b": "1 1 1",
+      "c": "2 2 2",
+      "d": "1 0 1",
+      "e": "7 7 4"
+    },
     "focusertype": "null",
     "focuseridentifier": "null",
     "focuserinitialposition": 0,

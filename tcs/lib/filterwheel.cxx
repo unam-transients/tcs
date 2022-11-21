@@ -37,6 +37,8 @@ filterwheelrawsetisopen(size_t index, bool newisopen)
   FILTERWHEEL_OK();
 }
 
+#include <stdio.h>
+
 bool
 filterwheelrawgetisopen(size_t index)
 {

@@ -33,7 +33,7 @@ namespace eval "filterwheel" {
     return "ok"
   }
   
-  proc filterwheelrawopen {identifier} {
+  proc filterwheelrawopen {index identifier} {
     if {![detector::detectorrawgetisopen]} {
       return "no detector is open."
     }
@@ -41,35 +41,35 @@ namespace eval "filterwheel" {
     return "ok"
   }
 
-  proc filterwheelrawclose {} {
+  proc filterwheelrawclose {index} {
     filterwheelrawsetisopen false
     return "ok"
   }
   
-  proc filterwheelrawupdatestatus {} {
+  proc filterwheelrawupdatestatus {index} {
     return [detector::detectorrawfilterwheelupdatestatus]
   }
   
-  proc filterwheelrawgetvalue {name} {
+  proc filterwheelrawgetvalue {index name} {
     return [detector::detectorrawfilterwheelgetvalue $name]
   }
   
-  proc filterwheelrawmove {newposition} {
+  proc filterwheelrawmove {index newposition} {
     return [detector::detectorrawfilterwheelmove $newposition]
   }
   
   proc move {newposition} {
     log::debug "filterwheel: move: moving to position $newposition."
-    checkisopen
+    checkisopen 0
     variable position
     variable maxposition
     if {[updatestatus] && $position != $newposition} {
       log::debug "filterwheel: move: position is $position."
-      set result [filterwheelrawmove $newposition]
+      set result [filterwheelrawmove 0 $newposition]
       while {![string equal $result ok]} {
         log::info "filterwheel: move: moving again to position $newposition."
         coroutine::after 100
-        set result [filterwheelrawmove $newposition]
+        set result [filterwheelrawmove 0 $newposition]
       }
     }
     if {[updatestatus] && $position != $newposition} {

@@ -30,54 +30,73 @@ if {[catch {info coroutine}]} {
 
 namespace eval "filterwheel" {
 
+  variable nfilterwheels
+
   ######################################################################
 
-  proc open {identifier} {
-    log::info "opening filter wheel $identifier."
-    if {[filterwheelrawgetisopen 0]} {
-      error "a filter wheel is already open."
+  proc open {identifiers} {
+    log::info "opening filter wheels."
+    variable nfilterwheels
+    set nfilterwheels [llength $identifiers]
+    variable description {}
+    set index 0
+    while {$index < $nfilterwheels} {
+      set identifier [lindex $identifiers $index]
+      log::info "opening filter wheel $index: $identifier."
+      if {[filterwheelrawgetisopen $index]} {
+        error "a filter wheel is already open."
+      }
+      set result [filterwheelrawopen $index $identifier]
+      if {![string equal $result ok]} {
+        error $result
+      }
+      lappend description [filterwheelrawgetvalue $index "description"]
+      incr index
     }
-    set result [filterwheelrawopen 0 $identifier]
-    if {![string equal $result ok]} {
-      error $result
-    }
+    log::info "finished opening filter wheels."
     updatestatus
-    variable description
-    set description [filterwheelrawgetvalue 0 "description"]
-    log::debug "filter wheel is \"$description\"."
     return
   }
 
   proc close {} {
-    log::info "closing filter wheel."
-    checkisopen
+    log::info "closing filter wheels."
+    variable nfilterwheels
+    set index [expr {$nfilterwheels - 1}]
+    while {$index >= 0} {
+      checkisopen $index
+      set result [filterwheelrawclose $index]
+      if {![string equal $result ok]} {
+        error $result
+      }
+      set nfilterwheels [expr {$nfilterwheels - 1}]
+    }
     variable description
     set description {}
     variable maxposition
     set maxposition {}
-    set result [filterwheelrawclose 0]
-    if {![string equal $result ok]} {
-      error $result
-    }
     return
   }
   
-  proc checkisopen {} {
-    if {![isopen]} {
-      error "no filter wheel is currently open."
+  proc checkisopen {index} {
+    if {![isopen $index]} {
+      error "filter wheel $index is not currently open."
     }
   }
   
-  proc isopen {} {
-    return [filterwheelrawgetisopen 0]
+  proc isopen {index} {
+    return [filterwheelrawgetisopen $index]
   }
   
   ######################################################################
 
   proc reset {} {
-    set result [filterwheelrawreset 0]
-    if {![string equal $result ok]} {
-      error $result
+    variable nfilterwheels
+    set index 0
+    while {$index < $nfilterwheels} {
+      set result [filterwheelrawreset $index]
+      if {![string equal $result ok]} {
+        error $result
+      }
     }
     return
   }
@@ -138,30 +157,39 @@ namespace eval "filterwheel" {
     variable timestamp
     variable stoppedtimestamp
     
-    checkisopen
-    
-    set result [filterwheelrawupdatestatus 0]
-    if {![string equal $result "ok"]} {
-      log::debug "unable to update the filter wheel status."
-      return false   
-    } 
+    variable nfilterwheels
+
+    set index 0
+    while {$index < $nfilterwheels} {
+        checkisopen $index
+        set result [filterwheelrawupdatestatus $index]
+        if {![string equal $result "ok"]} {
+          log::debug "unable to update the filter wheel status."
+          return false   
+        } 
+        incr index
+    }
 
     set lasttimestamp $timestamp
     set lastposition  $position
 
-    set timestamp   [utcclock::combinedformat now]
-    set position    [filterwheelrawgetvalue 0 "position"]
-    set maxposition [filterwheelrawgetvalue 0 "maxposition"]
-    set ishomed     [filterwheelrawgetvalue 0 "ishomed"]
-
-    if {$position == -1} {
-      set position {}
+    set position    {}
+    set maxposition {}
+    set ishomed     {}
+    set index 0
+    while {$index < $nfilterwheels} {
+      lappend position    [filterwheelrawgetvalue $index "position"]
+      lappend maxposition [filterwheelrawgetvalue $index "maxposition"]
+      lappend ishomed     [filterwheelrawgetvalue $index "ishomed"]
+      incr index
     }
+
+    set timestamp   [utcclock::combinedformat now]
 
     if {
       [string equal $position ""] ||
       [string equal $lastposition ""] || 
-      $position != $lastposition
+      ![string equal $position $lastposition]
     } {
       set stoppedtimestamp ""
     } elseif {[string equal $stoppedtimestamp ""]} {
