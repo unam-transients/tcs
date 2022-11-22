@@ -605,18 +605,14 @@ proc focusvisit {} {
   executor::track
   executor::setreadmode 16MHz
   executor::setwindow "2kx2k"
-  executor::setbinning 4
+  executor::setbinning 8
   executor::waituntiltracking
   log::summary "focusvisit: focusing with binning 4."
   executor::focus 1 8000 800 false true
-  executor::setwindow "2kx2k"
-  executor::setbinning 2
-  log::summary "focusvisit: focusing with binning 2."
-  executor::focus 2 4000 400 false false
   executor::setwindow "1kx1k"
   executor::setbinning 1
   log::summary "focusvisit: focusing with binning 1."
-  executor::focus 4 4000 400 true false
+  executor::focus 4 2000 1250 true false
   executor::setfocused
 
   log::summary "focusvisit: finished."
@@ -666,25 +662,21 @@ proc fullfocusvisit {range binning exposuretime} {
 
 proc focusmapvisit {} {
 
-   log::summary "focusmapvisit: starting."
+  log::summary "focusmapvisit: starting."
    
-   set ha    [visit::observedha    [executor::visit]]
-   set delta [visit::observeddelta [executor::visit]]
-   log::summary [format "focusmapvisit: focusing at %s %s." [astrometry::formatha $ha]  [astrometry::formatdelta $delta]]
+  set ha    [visit::observedha    [executor::visit]]
+  set delta [visit::observeddelta [executor::visit]]
+  log::summary [format "focusmapvisit: focusing at %s %s." [astrometry::formatha $ha]  [astrometry::formatdelta $delta]]
 
-   executor::tracktopocentric
-   executor::waituntiltracking
+  executor::tracktopocentric
    
-   executor::setwindow "2kx2k"
-   executor::setreadmode 16MHz
-   executor::setbinning 4
-   executor::focus 1 12000 1200 false true
-   executor::setwindow "1kx1k"
-   executor::setreadmode 16MHz
-   executor::setbinning 2
-   executor::focus 2 8000 800 true false
- 
-   log::summary "focusmapvisit: finished."
+  executor::setreadmode 16MHz
+  executor::setwindow "2kx2k"
+  executor::setbinning 8
+  executor::waituntiltracking
+  executor::focus 1 8000 800 true false
+
+  log::summary "focusmapvisit: finished."
 
   return true
 }
