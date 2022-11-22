@@ -88,6 +88,7 @@ namespace eval "mount" {
     POSITION.EQUATORIAL.DEC_CURRENT
     POSITION.LOCAL.SIDEREAL_TIME
     POSITION.INSTRUMENTAL.DEROTATOR[3].CURRPOS
+    CURRENT.TRACK
     CURRENT.TARGETDISTANCE
     CURRENT.DEROTATOR_OFFSET
   } ";"]"
@@ -196,6 +197,13 @@ namespace eval "mount" {
     }
     if {[scan $response "%*d DATA INLINE TELESCOPE.MOTION_STATE=%d" value] == 1} {
       set pendingtelescopemotionstate $value
+      return false
+    }
+    if {[scan $response "%*d DATA INLINE CURRENT.TRACK=%d" value] == 1} {
+      if {$value == 0 && [string equal [server::getactivity] "tracking"]} {
+        log::error "the mount is no longer tracking."
+        server::setactivity "error"
+      }
       return false
     }
     if {[scan $response "%*d DATA INLINE CURRENT.TARGETDISTANCE=%f" value] == 1} {
