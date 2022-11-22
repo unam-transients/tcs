@@ -1498,18 +1498,6 @@ namespace eval "mount" {
       sendcommandandwait "SET CABINET.STATUS.CLEAR=1"
       waituntiloperational
     }
-    variable emergencystopped
-    if {$emergencystopped} {
-      log::info "recovering from emergency stop."
-      server::setactivity "parking"
-      log::info "parking."
-      parkhardware
-      server::setactivity "unparking"
-      log::info "unparking."
-      unparkhardware
-      set emergencystopped false
-      log::info "finished recovering from emergency stop."
-    }
     set end [utcclock::seconds]
     log::info [format "finished resetting after %.1f seconds." [utcclock::diff $end $start]]
   }

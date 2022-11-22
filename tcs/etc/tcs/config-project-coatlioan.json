@@ -207,7 +207,7 @@
     "northdeltalimit": "+90:00:00",
     "easthalimit": "-12:00:00",
     "westhalimit": "+12:00:00",
-    "zenithdistancelimit": "75d",
+    "maxzenithdistancelimit": "80d",
     "meridianhalimit": "+00:30:00",
     "polardeltalimit": "+65d",
     "pointingmodelpolarhole": "1d",
@@ -625,7 +625,7 @@
     "opentocooloffsetseconds": "1800"
   },
   "target": {
-    "maxzenithdistancelimit": "72d",
+    "maxzenithdistancelimit": "75d",
     "idleha": "0h",
     "idledelta": "30d",
     "pointingapertures": {
