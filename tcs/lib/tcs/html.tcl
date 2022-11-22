@@ -449,10 +449,8 @@ namespace eval "html" {
         writehtmlrow "Cold end heater current"       [formatifok "%.2f A" [client::getdata $server "detectorcoldendheatercurrent"]]
       }
       writehtmlfullrow "Filter"                    [client::getdata $server "filter"]
-      if {![string equal "null" [client::getdata $server "filterwheeldescription"]]} {
-        writehtmlrow "Filter wheel position"         [client::getdata $server "filterwheelposition"]
-        writehtmlrow "Filter wheel maximum position" [client::getdata $server "filterwheelmaxposition"]
-      }
+      writehtmlrow "Filter wheel position"         [client::getdata $server "filterwheelposition"]
+      writehtmlrow "Filter wheel maximum position" [client::getdata $server "filterwheelmaxposition"]
       if {![string equal "null" [client::getdata $server "focuserdescription"]]} {
         writehtmlrow "Focuser requested position"    [formatifok "%d" [client::getdata $server "requestedfocuserposition"]]
         writehtmlrow "Focuser position"              [formatifok "%d" [client::getdata $server "focuserposition"]]
