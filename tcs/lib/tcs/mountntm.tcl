@@ -698,7 +698,7 @@ namespace eval "mount" {
   ######################################################################
 
   proc emergencystophardware {} {
-    log::debug "emergencystophardware: sending emergency stop."
+    log::warning "starting emergency stop."
     variable emergencystopcommandidentifier
     set command "$emergencystopcommandidentifier SET HA.STOP=1;DEC.STOP=1"
     controller::flushcommandqueue
@@ -909,17 +909,6 @@ namespace eval "mount" {
       log::info "clearing errors."
       sendcommandandwait "SET CABINET.STATUS.CLEAR=1"
       waituntiloperational
-    }
-    variable emergencystopped
-    if {$emergencystopped} {
-      log::info "recovering from emergency stop."
-      server::setactivity "parking"
-      log::info "parking."
-      parkhardware
-      log::info "unparking."
-      unparkhardware
-      set emergencystopped false
-      log::info "finished recovering from emergency stop."
     }
     set end [utcclock::seconds]
     log::info [format "finished resetting after %.1f seconds." [utcclock::diff $end $start]]

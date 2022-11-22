@@ -206,24 +206,24 @@ namespace eval "covers" {
   
   proc opencovers {} {
     server::setdata "requestedcovers" "open"
-    opentsi::sendcommand "SET AUXILIARY.COVER.TARGETPOS=1"
-    opentsi::sendcommand "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=1"
-    opentsi::sendcommand "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=1"
+#    opentsi::sendcommand "SET AUXILIARY.COVER.TARGETPOS=1"
+#    opentsi::sendcommand "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=1"
+#    opentsi::sendcommand "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=1"
     waitwhilemoving
-    if {![string equal [server::getdata "covers"] "open"]} {
-      error "the covers did not open."
-    }
+#    if {![string equal [server::getdata "covers"] "open"]} {
+#      error "the covers did not open."
+#    }
   }
   
   proc closecovers {} {
     server::setdata "requestedcovers" "closed"
-    opentsi::sendcommand "SET AUXILIARY.COVER.TARGETPOS=0"
-    opentsi::sendcommand "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=0"
-    opentsi::sendcommand "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=0"
+#    opentsi::sendcommand "SET AUXILIARY.COVER.TARGETPOS=0"
+#    opentsi::sendcommand "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=0"
+#    opentsi::sendcommand "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=0"
     waitwhilemoving
-    if {![string equal [server::getdata "covers"] "closed"]} {
-      error "the covers did not close."
-    }
+#    if {![string equal [server::getdata "covers"] "closed"]} {
+#      error "the covers did not close."
+#   }
   }
   
   ######################################################################

@@ -281,11 +281,7 @@ namespace eval "mount" {
 
   ######################################################################
 
-  variable emergencystopped false
-
-  proc startemergencystop {} {
-    log::error "starting emergency stop."
-    log::warning "stopping the mount."
+  proc emergencystophardware {} {
     log::debug "emergency stop: sending emergency stop."
     variable emergencystopcommandidentifier
     set command "$emergencystopcommandidentifier SET TELESCOPE.STOP=1"
@@ -293,9 +289,14 @@ namespace eval "mount" {
     controller::flushcommandqueue
     controller::pushcommand "$command\n"
     log::debug "emergency stop: finished sending emergency stop."
+  }
+
+  ######################################################################
+
+  proc startemergencystop {} {
+    log::warning "starting emergency stop."
+    emergencystophardware
     server::setdata "mounttracking" false
-    variable emergencystopped
-    set emergencystopped true
     server::erroractivity
   }
 
@@ -304,6 +305,20 @@ namespace eval "mount" {
   }
 
   ######################################################################
+
+  proc emergencystophardware {} {
+    log::debug "emergency stop: sending emergency stop."
+    controller::flushcommandqueue
+    opentsi::sendcommand "SET TELESCOPE.STOP=1"
+    log::debug "emergency stop: finished sending emergency stop."
+  }
+
+  proc stophardware {} {
+    log::info "stopping the mount."
+    controller::flushcommandqueue
+    opentsi::sendcommand "SET TELESCOPE.STOP=1"
+    waitwhilemoving
+  }
 
   proc parkhardware {} {
     variable azimuthpark
@@ -399,6 +414,7 @@ namespace eval "mount" {
   proc stopactivitycommand {} {
     set start [utcclock::seconds]
     log::info "stopping."
+    stophardware
     set end [utcclock::seconds]
     log::info [format "finished stopping after %.1f seconds." [utcclock::diff $end $start]]
   }
