@@ -234,9 +234,10 @@
     "temperaturelimitoutletgroup": "",
     "filterwheeltype": "null",
     "filterwheelidentifier": "null",
-    "filterwheelinitialposition": "w",
     "filters": {
-      "w": "0"
+      "w"      : "0",
+      "initial": "w",
+      "idle"   : "w"
     },
     // Controller E (yellow)
     "focusertype": "ddoti",
@@ -306,9 +307,10 @@
     "temperaturelimitoutletgroup": "",
     "filterwheeltype": "null",
     "filterwheelidentifier": "null",
-    "filterwheelinitialposition": "w",
     "filters": {
-      "w": "0"
+      "w"      : "0",
+      "initial": "w",
+      "idle"   : "w"
     },
     // Controller B (yellow)
     "focusertype": "ddoti",
@@ -378,9 +380,10 @@
     "temperaturelimitoutletgroup": "",
     "filterwheeltype": "null",
     "filterwheelidentifier": "null",
-    "filterwheelinitialposition": "w",
     "filters": {
-      "w": "0"
+      "w"      : "0",
+      "initial": "w",
+      "idle"   : "w"
     },
     "focusertype": "ddoti",
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:8:1.0",
@@ -449,9 +452,10 @@
     "temperaturelimitoutletgroup": "",
     "filterwheeltype": "null",
     "filterwheelidentifier": "null",
-    "filterwheelinitialposition": "w",
     "filters": {
-      "w": "0"
+      "w"      : "0",
+      "initial": "w",
+      "idle"   : "w"
     },
     "focusertype": "null",
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:7:1.0",
