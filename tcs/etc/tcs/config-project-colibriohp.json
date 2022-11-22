@@ -223,7 +223,9 @@
     "azimuthpark": "107d",
     "zenithdistancepark": "1d",
     "haunpark": "0h",
-    "deltaunpark": "75d"
+    "deltaunpark": "75d",
+    "minzenithdistancelimit": "0.5d",
+    "maxzenithdistancelimit": "80d"
   },
   "plc": {
     "type": "colibri",
@@ -1238,8 +1240,12 @@
     "pointingsource": "none"
   },
   "target": {
+    // Although the telescope can't track fast enough close to the zenith, it
+    // has no formal limit. It does have a soft limit on zenith distance and
+    // this configured to be 85d as of 2022-11-22
+    // (TELESCOPE.CONFIG.POINTING.HORIZON_LIMIT).
     "minzenithdistancelimit": "1d",
-    "maxzenithdistancelimit": "85d",
+    "maxzenithdistancelimit": "75d",
     "idleha": "0h",
     "idledelta": "75d"
   },
