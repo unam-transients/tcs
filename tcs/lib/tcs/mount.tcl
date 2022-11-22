@@ -35,7 +35,8 @@ config::setdefaultvalue "mount" "meridianhalimit"            ""
 config::setdefaultvalue "mount" "northdeltalimit"            ""
 config::setdefaultvalue "mount" "southdeltalimit"            ""
 config::setdefaultvalue "mount" "polardeltalimit"            ""
-config::setdefaultvalue "mount" "zenithdistancelimit"        ""
+config::setdefaultvalue "mount" "minzenithdistancelimit"     ""
+config::setdefaultvalue "mount" "maxzenithdistancelimit"     ""
 
 namespace eval "mount" {
 
@@ -56,7 +57,8 @@ namespace eval "mount" {
   variable northdeltalimit
   variable southdeltalimit
   variable polardeltalimit
-  variable zenithdistancelimit
+  variable minzenithdistancelimit
+  variable maxzenithdistancelimit
   
   if {[string equal "" [config::getvalue "mount" "easthalimit"]]} {
     set easthalimit ""
@@ -94,10 +96,16 @@ namespace eval "mount" {
     set polardeltalimit [astrometry::parsedelta [config::getvalue "mount" "polardeltalimit"]]
   }
 
-  if {[string equal "" [config::getvalue "mount" "zenithdistancelimit"]]} {
-    set zenithdistancelimit ""
+  if {[string equal "" [config::getvalue "mount" "minzenithdistancelimit"]]} {
+    set minzenithdistancelimit ""
   } else {
-    set zenithdistancelimit [astrometry::parseangle [config::getvalue "mount" "zenithdistancelimit"]]
+    set minzenithdistancelimit [astrometry::parseangle [config::getvalue "mount" "minzenithdistancelimit"]]
+  }
+
+  if {[string equal "" [config::getvalue "mount" "maxzenithdistancelimit"]]} {
+    set maxzenithdistancelimit ""
+  } else {
+    set maxzenithdistancelimit [astrometry::parseangle [config::getvalue "mount" "maxzenithdistancelimit"]]
   }
 
   ######################################################################
@@ -865,19 +873,12 @@ namespace eval "mount" {
 
   ######################################################################
 
-  variable emergencystopped false
-
   proc checklimits {} {
 
-    variable emergencystopped  
-    if {$emergencystopped} {
-      return
-    }
-
-    set requestedactivity [server::getactivity]
+    set activity [server::getactivity]
     if {
-      ![string equal $requestedactivity "moving"  ] &&
-      ![string equal $requestedactivity "tracking"]
+      ![string equal $activity "moving"  ] &&
+      ![string equal $activity "tracking"]
     } {
       return
     }
@@ -888,7 +889,8 @@ namespace eval "mount" {
     variable polardeltalimit
     variable southdeltalimit
     variable northdeltalimit
-    variable zenithdistancelimit
+    variable minzenithdistancelimit
+    variable maxzenithdistancelimit
     
     set mountha       [server::getdata "mountha"]
     set mountdelta    [server::getdata "mountdelta"]
@@ -896,45 +898,52 @@ namespace eval "mount" {
 
     set mountzenithdistance [astrometry::equatorialtozenithdistance $mountha $mountdelta]
     
+    set withintargetlimits [client::getdata "target" "withinlimits"]
+    
     if {![string equal $easthalimit ""] && $mountha < $easthalimit && $mountdelta < $polardeltalimit} {
       log::warning "HA exceeds eastern limit."
-      set withinlimits false
+      set withinmountlimits false
     } elseif {![string equal $westhalimit ""] && $mountha > $westhalimit && $mountdelta < $polardeltalimit} {
       log::warning "HA exceeds western limit."
-      set withinlimits false
+      set withinmountlimits false
     } elseif {![string equal $southdeltalimit ""] && $mountdelta < $southdeltalimit} {
       log::warning "δ exceeds southern limit."
-      set withinlimits false
+      set withinmountlimits false
     } elseif {![string equal $northdeltalimit ""] && $mountdelta > $northdeltalimit} {
       log::warning "δ exceeds northern limit."
-      set withinlimits false
-    } elseif {![string equal $zenithdistancelimit ""] && $mountzenithdistance > $zenithdistancelimit} {
-      log::warning "zenith distance exceeds limit."
-      set withinlimits false
+      set withinmountlimits false
+    } elseif {![string equal $minzenithdistancelimit ""] && $mountzenithdistance < $minzenithdistancelimit} {
+      log::warning "zenith distance exceeds minimum limit."
+      set withinmountlimits false
+    } elseif {![string equal $maxzenithdistancelimit ""] && $mountzenithdistance > $maxzenithdistancelimit} {
+      log::warning "zenith distance exceeds maximum limit."
+      set withinmountlimits false
     } elseif {![string equal $meridianhalimit ""] && $mountrotation == 0 && $mountha <= -$meridianhalimit && $mountdelta < $polardeltalimit} {
       log::warning "HA exceeds eastern meridian limit."
-      set withinlimits false
+      set withinmountlimits false
     } elseif {![string equal $meridianhalimit ""] && $mountrotation != 0 && $mountha >= +$meridianhalimit && $mountdelta < $polardeltalimit} {
       log::warning "HA exceeds western meridian limit."
-      set withinlimits false
+      set withinmountlimits false
     } else {
-      set withinlimits true
+      set withinmountlimits true
     }
     
-    if {$withinlimits} {
+    if {!$withinmountlimits} {
+      log::warning "mount is moving and not within the limits."
+    } elseif {[string equal $activity "tracking"] && !$withintargetlimits} {
+      log::warning "tracking and target is not within the limits."
+    } else {
       return
-    }
-    
-    log::error "mount is moving and not within the limits."
-    log::error "mount position is [astrometry::formatha $mountha] [astrometry::formatdelta $mountdelta]."
-    log::error [format "mount rotation is %.0f°." [astrometry::radtodeg $mountrotation]]
+    }    
 
-    log::error "starting emergency stop."
+    log::warning "mount position is [astrometry::formatha $mountha] [astrometry::formatdelta $mountdelta]."
+    log::warning "mount zenith distance is [astrometry::formatzenithdistance $mountzenithdistance]."
+    log::warning [format "mount rotation is %.0f°." [astrometry::radtodeg $mountrotation]]
 
+    log::warning "starting emergency stop."
     emergencystophardware
 
     server::setdata "mounttracking" false
-    set emergencystopped true
 
     server::erroractivity
 
