@@ -380,8 +380,6 @@ namespace eval "html" {
     putshtml "<table class=\"status\">"
 
     if {[string equal [client::getstatus $server] "ok"]} {
-      writehtmlfullrow "Telescope"                 [client::getdata $server "telescopedescription"]
-      writehtmlfullrow "Detector"                  [client::getdata $server "detectordescription"]
       writehtmlrow "Exposure time"                 [formatifok "%.3f s" [client::getdata $server "exposuretime"]]
       writehtmlfullrow "FITS file"                 [file tail [client::getdata $server "fitsfilename"]]
       if {![string equal "" [client::getdata $server "detectorreadmode"]]} {
@@ -450,13 +448,11 @@ namespace eval "html" {
       if {![string equal "" [client::getdata $server "detectorcoldendheatercurrent"]]} {
         writehtmlrow "Cold end heater current"       [formatifok "%.2f A" [client::getdata $server "detectorcoldendheatercurrent"]]
       }
-      writehtmlfullrow "Filter wheel"              [client::getdata $server "filterwheeldescription"]
       writehtmlfullrow "Filter"                    [client::getdata $server "filter"]
       if {![string equal "null" [client::getdata $server "filterwheeldescription"]]} {
         writehtmlrow "Filter wheel position"         [client::getdata $server "filterwheelposition"]
         writehtmlrow "Filter wheel maximum position" [client::getdata $server "filterwheelmaxposition"]
       }
-      writehtmlfullrow "Focuser"                   [client::getdata $server "focuserdescription"]
       if {![string equal "null" [client::getdata $server "focuserdescription"]]} {
         writehtmlrow "Focuser requested position"    [formatifok "%d" [client::getdata $server "requestedfocuserposition"]]
         writehtmlrow "Focuser position"              [formatifok "%d" [client::getdata $server "focuserposition"]]
