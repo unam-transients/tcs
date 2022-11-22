@@ -178,7 +178,7 @@ namespace eval "telescopecontroller" {
     } elseif {![string equal $lasterrorstate $errorstate]} {
       log::info "error state has changed from $lasterrorstate to $errorstate."
     }
-    if {$errorstateflag & 7} {
+    if {$errorstateflag & 7 && ![string equal [server::getactivity] "resetting"]} {
       server::setactivity "error"
     }
 
@@ -325,10 +325,16 @@ namespace eval "telescopecontroller" {
     log::info "resetting."
     set i 0
     while {$errorstateflag != 0 && $i < 3} {
-      log::info "clearing errors."
+      if {$errorstateflag & 1} {
+        error "reset will not attempt to clear a panic."
+      }
+      log::info "attempting to clear errors."
       opentsi::sendcommand "SET TELESCOPE.STATUS.CLEAR_ERROR=$errorstateflag"
       coroutine::after 5000
       incr i
+    }
+    if {$errorstateflag != 0} {
+      error "unable to clear errors."
     }
     log::info "stopping hardware"
     stophardware
