@@ -171,12 +171,15 @@ namespace eval "telescopecontroller" {
       if {$errorstateflag & 8} {
         lappend errorstate "info"
       }
-      set errorstate [join $errorstate " "]
+      set errorstate [join $errorstate "/"]
     }
     if {[string equal $lasterrorstate ""]} {
       log::info "error state is $errorstate"
     } elseif {![string equal $lasterrorstate $errorstate]} {
       log::info "error state has changed from $lasterrorstate to $errorstate."
+    }
+    if {$errorstateflag & 7} {
+      server::setactivity "error"
     }
 
     set lastreadystate $readystate
@@ -187,11 +190,11 @@ namespace eval "telescopecontroller" {
       log::info "ready state changed from $lastreadystate to $readystate."
     }
     
-    if {[string equal $lasterrorlist ""]} {
-      log::info "error list is $errorlist"
-    } elseif {![string equal $lasterrorlist $errorlist]} {
-      log::info "error list has changed from $lasterrorlist to $errorlist."
-    }
+#    if {[string equal $lasterrorlist ""]} {
+#      log::info "error list is $errorlist"
+#    } elseif {![string equal $lasterrorlist $errorlist]} {
+#      log::info "error list has changed from $lasterrorlist to $errorlist."
+#    }
     if {![string equal $lasterrorlist $errorlist]} {
       set anyerror false
       foreach grouppart [split $errorlist ","] {
@@ -207,7 +210,7 @@ namespace eval "telescopecontroller" {
       }
     }
     set lasterrorlist $errorlist
-
+    
     server::setdata "timestamp"          $timestamp
     server::setdata "readystate"         $readystate
     server::setdata "errorstate"         $errorstate
@@ -316,6 +319,23 @@ namespace eval "telescopecontroller" {
     log::info [format "finished stopping after %.1f seconds." [utcclock::diff $end $start]]
   }
 
+  proc resetactivitycommand {} {
+    variable errorstateflag
+    set start [utcclock::seconds]
+    log::info "resetting."
+    set i 0
+    while {$errorstateflag != 0 && $i < 3} {
+      log::info "clearing errors."
+      opentsi::sendcommand "SET TELESCOPE.STATUS.CLEAR_ERROR=$errorstateflag"
+      coroutine::after 5000
+      incr i
+    }
+    log::info "stopping hardware"
+    stophardware
+    set end [utcclock::seconds]
+    log::info [format "finished resetting after %.1f seconds." [utcclock::diff $end $start]]
+  }
+
   ######################################################################
 
   proc initialize {} {
@@ -335,7 +355,7 @@ namespace eval "telescopecontroller" {
   proc reset {} {
     server::checkstatus
     server::checkactivityforreset
-    server::newactivitycommand "resetting" [server::getstoppedactivity] server::resetactivitycommand
+    server::newactivitycommand "resetting" [server::getstoppedactivity] telescopecontroller::resetactivitycommand
   }
 
   proc switchon {} {
