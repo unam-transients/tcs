@@ -41,6 +41,8 @@ namespace eval "telescopecontroller" {
   ######################################################################
 
   set statuscommand "GET [join {
+    TELESCOPE.STATUS.GLOBAL
+    TELESCOPE.STATUS.LIST
     TELESCOPE.ENVIRONMENT.TEMPERATURE
     TELESCOPE.ENVIRONMENT.PRESSURE
     AUXILIARY.SENSOR[0].VALUE
@@ -62,7 +64,11 @@ namespace eval "telescopecontroller" {
 
   ######################################################################
 
-  variable state              ""
+  variable readystate         ""
+  variable errorstateflag     ""
+  variable errorstate         ""
+  variable errorlist          ""
+  variable lasterrorlist      ""
   variable ambienttemperature ""
   variable ambientpressure    ""
   variable sensor0            ""
@@ -83,7 +89,11 @@ namespace eval "telescopecontroller" {
 
   proc updatedata {response} {
 
-    variable state
+    variable readystate
+    variable errorstateflag
+    variable errorstate
+    variable errorlist
+    variable lasterrorlist
     variable ambienttemperature
     variable ambientpressure
     variable sensor0
@@ -102,6 +112,16 @@ namespace eval "telescopecontroller" {
     variable sensor13
     variable sensor14
     
+    if {[scan $response "%*d DATA INLINE TELESCOPE.STATUS.GLOBAL=%d" value] == 1} {
+      set errorstateflag $value
+      return false
+    }
+
+    if {[scan $response "%*d DATA INLINE TELESCOPE.STATUS.LIST=\"%\[^\"\]\"" value] == 1} {
+      set errorlist $value
+      return false
+    }
+
     if {[scan $response "%*d DATA INLINE TELESCOPE.ENVIRONMENT.TEMPERATURE=%f" value] == 1} {
       set ambienttemperature $value
       return false
@@ -130,23 +150,67 @@ namespace eval "telescopecontroller" {
     }
 
     set timestamp [utcclock::combinedformat "now"]
-
-    set laststate $state
-    set state [opentsi::readystate]
-    if {[string equal $laststate ""]} {
-      log::info "state is $state."
-    } elseif {![string equal $laststate $state]} {
-      log::info "state changed from $laststate to $state."
-      if {[string equal $state "emergency stop"]} {
-        log::warning "an emergency stop button has been activated."
-        log::warning "deactivate the button and clear the error on the telescope cabinet."
-      } elseif {[string equal $laststate "emergency stop"]} {
-        log::summary "the emergency stop state has been cleared."
+    
+    set lasterrorstate $errorstate
+    set errorstate ""
+    if {$errorstateflag < 0} {
+      set errorstate "invalid"
+    } elseif {$errorstateflag == 0} {
+      set errorstate "operational"
+    } else {
+      set errorstate ""
+      if {$errorstateflag & 1} {
+        lappend errorstate "panic"
       }
+      if {$errorstateflag & 2} {
+        lappend errorstate "error"
+      }
+      if {$errorstateflag & 4} {
+        lappend errorstate "warning"
+      }
+      if {$errorstateflag & 8} {
+        lappend errorstate "info"
+      }
+      set errorstate [join $errorstate " "]
+    }
+    if {[string equal $lasterrorstate ""]} {
+      log::info "error state is $errorstate"
+    } elseif {![string equal $lasterrorstate $errorstate]} {
+      log::info "error state has changed from $lasterrorstate to $errorstate."
+    }
+
+    set lastreadystate $readystate
+    set readystate [opentsi::readystate]
+    if {[string equal $lastreadystate ""]} {
+      log::info "ready state is $readystate."
+    } elseif {![string equal $lastreadystate $readystate]} {
+      log::info "ready state changed from $lastreadystate to $readystate."
     }
     
+    if {[string equal $lasterrorlist ""]} {
+      log::info "error list is $errorlist"
+    } elseif {![string equal $lasterrorlist $errorlist]} {
+      log::info "error list has changed from $lasterrorlist to $errorlist."
+    }
+    if {![string equal $lasterrorlist $errorlist]} {
+      set anyerror false
+      foreach grouppart [split $errorlist ","] {
+        if {[catch {scan $grouppart "%\[^|\]|%d" group level}]} {
+          log::error "unexpected error format \"$grouppart\"."
+        } elseif {$level != 0} {
+          log::warning "error \"$grouppart\"."
+          set anyerror true
+        }
+      }
+      if {!$anyerror} {
+        log::info "no errors present."
+      }
+    }
+    set lasterrorlist $errorlist
+
     server::setdata "timestamp"          $timestamp
-    server::setdata "state"              $state
+    server::setdata "readystate"         $readystate
+    server::setdata "errorstate"         $errorstate
     server::setdata "ambienttemperature" $ambienttemperature
     server::setdata "ambientpressure"    $ambientpressure
     server::setdata "sensor0"            $sensor0
@@ -173,7 +237,7 @@ namespace eval "telescopecontroller" {
 
     return true
   }
-
+  
   ######################################################################
   
   proc switchonhardware {} {
