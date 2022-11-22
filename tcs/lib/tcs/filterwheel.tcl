@@ -50,7 +50,7 @@ namespace eval "filterwheel" {
         } else {
           log::info "usb port $port is already disabled."
         }
-        coroutine::after 1000
+        coroutine::after 500
       }
       incr index
     }
@@ -62,7 +62,7 @@ namespace eval "filterwheel" {
         log::info "enabling usb port $port."
         exec "/bin/sh" "-c" "echo $port >/sys/bus/usb/drivers/fliusb/bind"
       }
-      coroutine::after 1000
+      coroutine::after 500
       log::info "opening filter wheel $index using $identifier."
       if {[filterwheelrawgetisopen $index]} {
         error "a filter wheel is already open."
