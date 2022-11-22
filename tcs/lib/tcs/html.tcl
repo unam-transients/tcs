@@ -677,7 +677,8 @@ namespace eval "html" {
     putshtml "<table class=\"status\">"
     
     if {[string equal [client::getstatus "telescopecontroller"] "ok"]} {
-      writehtmlfullrow "State"           [client::getdata "telescopecontroller" "state"]
+      writehtmlfullrow "Error state"     [client::getdata "telescopecontroller" "errorstate"]
+      writehtmlfullrow "Ready state"     [client::getdata "telescopecontroller" "readystate"]
       writehtmlrow "Ambient temperature" [formatifok "%.1f C"    [client::getdata "telescopecontroller" "ambienttemperature"]]
       writehtmlrow "Ambient pressure"    [formatifok "%.1f mbar" [client::getdata "telescopecontroller" "ambientpressure"   ]]
     }
