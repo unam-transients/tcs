@@ -220,8 +220,6 @@ namespace eval "fitsheader" {
   proc writekeysandvaluesforccd {channel ccd prefix componentprefix} {
     writekeysandvaluesforcomponent $channel $ccd $prefix $componentprefix {
       identifier                     ID    string
-      telescopedescription           TLDS  string
-      detectordescription            DTDS  string
       detectorwidth                  DTWD  angle
       detectorframetime              DTFT  double
       detectorreadmode               DTRM  string
@@ -236,11 +234,9 @@ namespace eval "fitsheader" {
       detectorcoolerstate            CLST  string
       detectorcoolersettemperature   CLTM  double
       detectorcoolerpower            CLPW  double
-      filterwheeldescription         FWDS  string
       filterwheelposition            FWPS  string
       filterwheelmaxposition         FWMX  integer
       filter                         FL    string
-      focuserdescription             FCDS  string
       focuserposition                FCPS  integer
       focuserminposition             FCMN  integer
       focusermaxposition             FCMX  integer

@@ -218,7 +218,12 @@ namespace eval "ccd" {
     server::setdata "detectorcoolersettemperature"     [detector::getcoolersettemperature]
     server::setdata "detectorcoolerpower"              [detector::getcoolerpower]
     server::setdata "detectorcoolerlowflow"            [detector::getcoolerlowflow]
-    server::setdata "filterwheeldescription"           [filterwheel::getdescription]
+    server::setdata "filterwheels"                     [llength [filterwheel::getdescription]]
+    set i 0
+    while {$i < [llength [filterwheel::getdescription]]} {
+      server::setdata "filterwheeldescription$i"  [lindex [filterwheel::getdescription] $i]
+      incr i
+    }
     server::setdata "filterwheelposition"              $filterwheelposition
     server::setdata "lastfilterwheelposition"          $lastfilterwheelposition
     server::setdata "filterwheelmaxposition"           [filterwheel::getmaxposition]
@@ -526,7 +531,6 @@ namespace eval "ccd" {
       fitsheader::writekeyandvalue $channel "CYCTIME"  double [server::getdata "detectorcycletime"]
     }
     fitsheader::writekeyandvalue $channel "EXPTYPE"  string $exposuretype
-    fitsheader::writekeyandvalue $channel "FILTER"   string [server::getdata "filter"]
     fitsheader::writekeyandvalue $channel "CCD_NAME" string [server::getdata "identifier"]
     fitsheader::writekeyandvalue $channel "BINNING"  string [server::getdata "detectorbinning"]
     fitsheader::writekeyandvalue $channel "READMODE" string [server::getdata "detectorreadmode"]
@@ -537,6 +541,17 @@ namespace eval "ccd" {
     if {![string equal "" [server::getdata "detectorbiaswindow"]]} {
       fitsheader::writekeyandvalue $channel "BIASSEC"  string [formatirafsection [server::getdata "detectorbiaswindow"]]
     }
+    fitsheader::writekeyandvalue $channel "FILTER"   string [server::getdata "filter"]
+    fitsheader::writekeyandvalue $channel "FWPS"     string [server::getdata "filterwheelposition"]
+    fitsheader::writekeyandvalue $channel "DTDS"     string  [server::getdata "detectordescription"]
+    fitsheader::writekeyandvalue $channel "FCDS"     string  [server::getdata "focuserdescription"]
+    fitsheader::writekeyandvalue $channel "NFW "     integer  [server::getdata "filterwheels"]
+    set i 0
+    while {$i < [server::getdata "filterwheels"]} {
+      set iplus1 [expr {$i + 1}]
+      fitsheader::writekeyandvalue $channel "FWDS$iplus1" string [server::getdata "filterwheeldescription$i"]
+      incr i
+    }    
     fitsheader::writekeysandvaluesforproject $channel
     fitsheader::writeccdfitsheader $channel [server::getdata "identifier"] "S"
     fitsheader::writetcsfitsheader $channel "S"

@@ -72,7 +72,7 @@ namespace eval "filterwheel" {
         error $result
       }
       log::info "filter wheel $index is [filterwheelrawgetvalue $index "description"]."
-      lappend description $identifier
+      lappend description [filterwheelrawgetvalue $index "description"]
       incr index
     }
     log::info "finished opening filter wheels."
