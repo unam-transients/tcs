@@ -171,16 +171,16 @@ namespace eval "plc" {
     set emergencystopbuttons [boolean [expr {![string index $generalresponse 39]}]]
     if {[string equal $lastemergencystopbuttons ""]} {
       if {$emergencystopbuttons} {
-        log::error "an emergency stop button is activated."
+        log::error "the emergency stop buttons are activated."
       } else {
-        log::info "the emergency stop buttons are not activated."
+        log::info "the emergency stop buttons are deactivated."
       }
     } elseif {![string equal $lastemergencystopbuttons $emergencystopbuttons]} {
       if {$emergencystopbuttons} {
-        log::error "an emergency stop button has been activated."
-        log::error "deactivate the button and clear the error on the telescope cabinet."
+        log::error "the emergency stop buttons have been activated."
+        log::error "deactivate the buttons and clear the error on the telescope cabinet."
       } else {
-        log::warning "the emergency stop buttons are not activated."
+        log::warning "the emergency stop buttons have been deactivated."
         log::warning "clear the error on the telescope cabinet."
       }
     }
@@ -214,7 +214,7 @@ namespace eval "plc" {
       "WAIT_MANU"      { set mode "local but waiting for telescope to be switched" }
       "WAIT_OFF"       { set mode "off but waiting for telescope to be switched"}
       "WAIT_AUTO"      { set mode "remote but waiting for telescope to be switched" }
-      default          { set mode "error: [lindex $weatherfield 50]"}
+      default          { set mode "error: $rawmode"}
     }
     if {[string equal $lastmode ""]} {
       log::info "the mode is \"$mode\" ($rawmode)."
