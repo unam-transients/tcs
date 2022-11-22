@@ -95,6 +95,7 @@
     "filterwheelidentifier": "CFW-1-8-001",
     "focusertype": "null",
     "focuseridentifier": "null",
+    "focuserinitialposition": 0,
     "focuserbacklashoffset": "0",
     "focusercorrectionmodel": {},
     "pointingmodelparameters": {},
