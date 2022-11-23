@@ -220,8 +220,13 @@
   "mount": {
     "type": "opentsi",
     "configuration": "azimuth-zenithdistance",
+    // The parked derotator offset is with respect to the instrument structure.
+    "derotatoroffsetpark": "10d",
+    // The unparked derotator offset is with respect to the detector.
+    "derotatoroffsetunparked": "23d",
     "azimuthpark": "107d",
     "zenithdistancepark": "1d",
+    "derotatoranglepark": "0d",
     "haunpark": "0h",
     "deltaunpark": "75d",
     "minzenithdistancelimit": "0.5d",
