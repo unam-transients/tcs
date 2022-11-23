@@ -219,7 +219,7 @@ namespace eval "covers" {
     server::setdata "requestedcovers" "closed"
     opentsi::sendcommand "SET AUXILIARY.COVER.TARGETPOS=0"
     opentsi::sendcommand "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=0"
-#    opentsi::sendcommand "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=0"
+    opentsi::sendcommand "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=0"
     waitwhilemoving
     if {![string equal [server::getdata "covers"] "closed"]} {
       error "the covers did not close."
@@ -236,7 +236,7 @@ namespace eval "covers" {
     }
     opentsi::sendcommand [format "SET TELESCOPE.CONFIG.COVER.PARK_POS=0"]
     opentsi::sendcommand [format "SET TELESCOPE.CONFIG.PORT\[2\].PORT_COVER.PARK_POS=0"]
-    opentsi::sendcommand [format "SET TELESCOPE.CONFIG.PORT\[3\].PORT_COVER.PARK_POS=1"]
+    opentsi::sendcommand [format "SET TELESCOPE.CONFIG.PORT\[3\].PORT_COVER.PARK_POS=0"]
     set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
   }
