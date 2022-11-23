@@ -601,7 +601,7 @@ namespace eval "mount" {
     }
   }
 
-  proc mountrotation {ha delta} {
+  proc defaultmountrotation {ha delta} {
     if {$ha >= 0} {
       return 0
     } else {
