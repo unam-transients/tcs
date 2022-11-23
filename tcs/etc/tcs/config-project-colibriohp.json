@@ -224,11 +224,11 @@
     "derotatoroffsetpark": "10d",
     // The unparked derotator offset is with respect to the detector.
     "derotatoroffsetunparked": "23d",
-    "azimuthpark": "107d",
+    "azimuthpark": "1d",
     "zenithdistancepark": "1d",
     "derotatoranglepark": "0d",
     "haunpark": "0h",
-    "deltaunpark": "75d",
+    "deltaunpark": "30d",
     "minzenithdistancelimit": "0.5d",
     "maxzenithdistancelimit": "80d"
   },
