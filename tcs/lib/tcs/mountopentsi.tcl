@@ -331,8 +331,8 @@ namespace eval "mount" {
     variable derotatoroffsetpark
     log::info "moving to park."
     opentsi::sendcommand [format "SET [join {
-        "OBJECT.HORIZONTAL.AZ=%.6f"
-        "OBJECT.HORIZONTAL.ZD=%.6f"
+        "OBJECT.INSTRUMENTAL.AZ=%.6f"
+        "OBJECT.INSTRUMENTAL.ZD=%.6f"
         "POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=%.6f"
         "POINTING.SETUP.DEROTATOR.OFFSET=%.6f"
         "POINTING.SETUP.DEROTATOR.SYNCMODE=1"
