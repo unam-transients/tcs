@@ -346,7 +346,7 @@ proc hartmanntestvisit {secondaryoffset {eastoffset 0am} {northoffset 0am} {expo
   log::summary "hartmanntestvisit: intrafocal images: secondary offset is -$secondaryoffset."
 
   executor::setsecondaryoffset -$secondaryoffset
-  executor::track $eastoffset $northoffset
+  executor::offset $eastoffset $northoffset
   executor::waituntiltracking
 
   set exposure 0
@@ -383,7 +383,7 @@ proc tokovinintestvisit {{eastoffset 0am} {northoffset 0am} {exposuretime 10} {f
     log::summary "tokovinintestvisit: images with secondary offset of $secondaryoffset."
 
     executor::setsecondaryoffset $secondaryoffset
-    executor::track $eastoffset $northoffset
+    executor::offset  $eastoffset $northoffset
     executor::waituntiltracking
       
     set exposure 0
