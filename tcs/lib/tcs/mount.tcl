@@ -114,7 +114,7 @@ namespace eval "mount" {
 
   ######################################################################
 
-  proc updaterequestedpositiondata {{updaterequestedrotation false}} {
+  proc updaterequestedpositiondata {{defaultmountrotation false}} {
   
     variable configuration
     variable usemountcoordinates
@@ -171,8 +171,8 @@ namespace eval "mount" {
       set requestedobservedazimuth        [client::getdata "target" "observedazimuth"]
       set requestedobservedzenithdistance [client::getdata "target" "observedzenithdistance"]
       
-      if {$updaterequestedrotation} {
-        set requestedmountrotation [mountrotation $requestedobservedha $requestedobservedalpha]
+      if {$defaultmountrotation} {
+        set requestedmountrotation [defaultmountrotation $requestedobservedha $requestedobservedalpha]
       } else {
         set requestedmountrotation [server::getdata "mountrotation"]
       }
@@ -255,14 +255,14 @@ namespace eval "mount" {
       set requestedobservedazimuth        [client::getdata "target" "observedazimuth"]
       set requestedobservedzenithdistance [client::getdata "target" "observedzenithdistance"]
 
-      if {$updaterequestedrotation} {
-        set requestedmountrotation [mountrotation $requestedobservedha $requestedobservedalpha]
+      if {$defaultmountrotation} {
+        set requestedmountrotation [defaultmountrotation $requestedobservedha $requestedobservedalpha]
       } else {
         set requestedmountrotation [server::getdata "mountrotation"]
       }
-      
+            
       if {$usemountcoordinates} {
-      
+
         set mountha       [server::getdata "mountha"      ]
         set mountalpha    [server::getdata "mountalpha"   ]
         set mountdelta    [server::getdata "mountdelta"   ]

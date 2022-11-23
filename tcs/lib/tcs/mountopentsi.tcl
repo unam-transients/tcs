@@ -383,9 +383,8 @@ namespace eval "mount" {
     }
   }
   
-  proc mountrotation {ha delta} {
-    variable mountrotation
-    return $mountrotation
+  proc defaultmountrotation {ha delta} {
+    return ""
   }
 
   ######################################################################
