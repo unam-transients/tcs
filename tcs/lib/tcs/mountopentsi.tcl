@@ -396,6 +396,12 @@ namespace eval "mount" {
     while {[string equal [server::getstatus] "starting"]} {
       coroutine::yield
     }
+    variable azimuthpark
+    variable zenithdistancepark
+    variable derotatoranglepark
+    opentsi::sendcommand [format "SET TELESCOPE.CONFIG.AZ.PARK_POS=%.6f" [astrometry::radtodeg $azimuthpark]]
+    opentsi::sendcommand [format "SET TELESCOPE.CONFIG.ZD.PARK_POS=%.6f" [astrometry::radtodeg $zenithdistancepark]]
+    opentsi::sendcommand [format "SET TELESCOPE.CONFIG.PORT\[3\].DEROTATOR.PARK_POS=%.6f" [astrometry::radtodeg $derotatoranglepark]]
     set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
   }
