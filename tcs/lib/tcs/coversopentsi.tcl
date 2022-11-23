@@ -234,6 +234,9 @@ namespace eval "covers" {
     while {[string equal [server::getstatus] "starting"]} {
       coroutine::yield
     }
+    opentsi::sendcommand [format "SET TELESCOPE.CONFIG.COVER.PARK_POS=0"]
+    opentsi::sendcommand [format "SET TELESCOPE.CONFIG.PORT\[2\].PORT_COVER.PARK_POS=0"]
+    opentsi::sendcommand [format "SET TELESCOPE.CONFIG.PORT\[3\].PORT_COVER.PARK_POS=1"]
     set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
   }
