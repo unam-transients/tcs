@@ -206,7 +206,7 @@ namespace eval "telescopecontroller" {
         }
       }
       if {!$anyerror} {
-        log::info "no errors present."
+        log::summary "no errors present."
       }
     }
     set lasterrorlist $errorlist
