@@ -47,7 +47,9 @@ config::setdefaultvalue "mount" "axisdhacorrection"          "0"
 config::setdefaultvalue "mount" "axisddeltacorrection"       "0"
 config::setdefaultvalue "mount" "azimuthpark"                "0h"
 config::setdefaultvalue "mount" "zenithdistancepark"         "80d"
-config::setdefaultvalue "mount" "derotatorpark"              "0d"
+config::setdefaultvalue "mount" "derotatoranglepark"         "0d"
+config::setdefaultvalue "mount" "derotatoroffsetpark"        "0d"
+config::setdefaultvalue "mount" "derotatoroffsetunpark"      "0d"
 config::setdefaultvalue "mount" "haunpark"                   "0h"
 config::setdefaultvalue "mount" "deltaunpark"                "0d"
 
@@ -62,7 +64,9 @@ namespace eval "mount" {
   variable trackingsettledlimit        [astrometry::parseoffset [config::getvalue "mount" "trackingsettledlimit"]]
   variable azimuthpark                 [astrometry::parseangle [config::getvalue "mount" "azimuthpark"]]
   variable zenithdistancepark          [astrometry::parseangle [config::getvalue "mount" "zenithdistancepark"]]
-  variable derotatorpark               [astrometry::parseangle [config::getvalue "mount" "derotatorpark"]]
+  variable derotatoranglepark          [astrometry::parseangle [config::getvalue "mount" "derotatoranglepark"]]
+  variable derotatoroffsetpark         [astrometry::parseangle [config::getvalue "mount" "derotatoroffsetpark"]]
+  variable derotatoroffsetunpark       [astrometry::parseangle [config::getvalue "mount" "derotatoroffsetunpark"]]
   variable haunpark                    [astrometry::parseha    [config::getvalue "mount" "haunpark"]]
   variable deltaunpark                 [astrometry::parsedelta [config::getvalue "mount" "deltaunpark"]]
   
@@ -323,22 +327,21 @@ namespace eval "mount" {
   proc parkhardware {} {
     variable azimuthpark
     variable zenithdistancepark
-    variable derotatorpark
+    variable derotatoranglepark
+    variable derotatoroffsetpark
     log::info "moving to park."
     opentsi::sendcommand [format "SET [join {
         "OBJECT.HORIZONTAL.AZ=%.6f"
         "OBJECT.HORIZONTAL.ZD=%.6f"
-        "POINTING.SETUP.DEROTATOR.SYNCMODE=0"
+        "POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=%.6f"
+        "POINTING.SETUP.DEROTATOR.OFFSET=%.6f"
+        "POINTING.SETUP.DEROTATOR.SYNCMODE=1"
         "POINTING.TRACK=2"
       } ";"]" \
       [astrometry::radtodeg $azimuthpark        ] \
       [astrometry::radtodeg $zenithdistancepark ] \
-    ]
-    waitwhilemoving
-    opentsi::sendcommand [format "SET [join {
-        "POSITION.INSTRUMENTAL.DEROTATOR[3].TARGETPOS=%.6f"
-      } ";"]" \
-      [astrometry::radtodeg $derotatorpark      ] \
+      [astrometry::radtodeg $derotatoroffsetpark] \
+      [astrometry::radtodeg $derotatoranglepark ] \
     ]
     waitwhilemoving
     server::setdata "unparked" false
@@ -347,17 +350,20 @@ namespace eval "mount" {
   proc unparkhardware {} {
     variable haunpark
     variable deltaunpark
+    variable derotatoroffsetunpark
     log::info "moving to unpark."
     set azimuth        [astrometry::equatorialtoazimuth        $haunpark $deltaunpark]
     set zenithdistance [astrometry::equatorialtozenithdistance $haunpark $deltaunpark]
     opentsi::sendcommand [format "SET [join {
         "OBJECT.HORIZONTAL.AZ=%.6f"
         "OBJECT.HORIZONTAL.ZD=%.6f"
+        "POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=%.6f"
         "POINTING.SETUP.DEROTATOR.SYNCMODE=4"
         "POINTING.TRACK=2"
       } ";"]" \
-      [astrometry::radtodeg $azimuth        ] \
-      [astrometry::radtodeg $zenithdistance ] \
+      [astrometry::radtodeg $azimuth              ] \
+      [astrometry::radtodeg $zenithdistance       ] \
+      [astrometry::radtodeg $derotatoroffsetunpark] \
     ]      
     waitwhilemoving
     server::setdata "unparked" true
@@ -397,10 +403,7 @@ namespace eval "mount" {
   proc initializeactivitycommand {} {
     set start [utcclock::seconds]
     log::info "initializing."
-    opentsi::sendcommand "SET POINTING.SETUP.DEROTATOR.SYNCMODE=0"
     opentsi::sendcommand "SET POINTING.SETUP.USE_PORT=3"
-    # Hack because the instrument is installed at an angle.
-    opentsi::sendcommand "SET POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=23"
     parkhardware
     set end [utcclock::seconds]
     log::info [format "finished initializing after %.1f seconds." [utcclock::diff $end $start]]
@@ -456,6 +459,7 @@ namespace eval "mount" {
   proc parkactivitycommand {} {
     set start [utcclock::seconds]
     log::info "parking."
+    opentsi::sendcommand "SET POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=0"
     parkhardware
     set end [utcclock::seconds]
     log::info [format "finished parking after %.1f seconds." [utcclock::diff $end $start]]
@@ -465,6 +469,7 @@ namespace eval "mount" {
     set start [utcclock::seconds]
     log::info "unparking."
     unparkhardware
+    opentsi::sendcommand "SET POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=23"
     set end [utcclock::seconds]
     log::info [format "finished unparking after %.1f seconds." [utcclock::diff $end $start]]
   }
