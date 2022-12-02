@@ -96,9 +96,9 @@
       // A: CFW-1-5 CF10484516
       // B: CFW-1-8 CF10024514
       // C: CFW-1-8 CF10014514
-      "usb:2-2.1:1.0",
-      "usb:2-1:1.0",
-      "usb:2-2.2:1.0"
+      "usb:1-7.1:1.0",
+      "usb:1-7.2:1.0",
+      "usb:1-7.3:1.0"
     ],
     "filters": {
       // dark is the combination of B, z, and 656/8.
