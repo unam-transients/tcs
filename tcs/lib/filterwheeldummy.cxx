@@ -54,6 +54,7 @@ filterwheelrawopen(size_t index, char *identifier)
   if (sscanf(identifier, "%ld", &maxposition[index]) != 1)
     FILTERWHEEL_ERROR("invalid filter wheel identifier.");
   snprintf(description[index], sizeof(description[index]), "%s:%ld", "dummy", (long) maxposition[index]);    
+  --maxposition[index];
   filterwheelrawsetisopen(index, true);
   position[index] = 0;
   ishomed[index] = 1;
