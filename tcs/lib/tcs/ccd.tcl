@@ -819,10 +819,9 @@ namespace eval "ccd" {
   proc movefilterwheelactivitycommand {newfilter forcemove} {
     set start [utcclock::seconds]
     variable filters
-    set newposition [dict get $filters $newfilter]
+    set newposition $newfilter
     while {[dict exists $filters $newposition]} {
-      set newfilter $newposition
-      set newposition [dict get $filters $newfilter] 
+      set newposition [dict get $filters $newposition]
     }
     log::info "moving filter wheel to filter $newfilter (position $newposition)."
     if {$forcemove || ![string equal [server::getdata "filterwheelposition"] $newposition]} {
@@ -1005,7 +1004,7 @@ namespace eval "ccd" {
     server::checkstatus
     server::checkactivity "idle"
     variable filters
-    if {![dict exists $filters $filter]} {
+    if {![dict exists $filters $filter] && ![regexp -- {^[0-9]+(:[0-9]+)*$} $filter]} {
       error "invalid filter \"$filter\"."
     }
     server::newactivitycommand "moving" "idle" "ccd::movefilterwheelactivitycommand $filter false"

@@ -45,11 +45,15 @@ namespace eval "filterwheel" {
     variable position
     variable maxposition
     variable nfilterwheels
+    set newpositionlist [split $newposition ":"]
+    if {[llength $newpositionlist] != $nfilterwheels} {
+      error "invalid filter position \"$newposition\"."
+    }
     set index 0
     while {$index < $nfilterwheels} {
       log::debug "filterwheel: move: moving filter wheel $index"
       checkisopen $index
-      movesingle $index [lindex $newposition $index]
+      movesingle $index [lindex $newpositionlist $index]
       incr index
     }
     log::debug "filterwheel: move: done."
