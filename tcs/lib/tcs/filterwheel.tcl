@@ -205,6 +205,10 @@ namespace eval "filterwheel" {
       lappend ishomed     [filterwheelrawgetvalue $index "ishomed"]
       incr index
     }
+    
+    set position    [join $position    ":"]
+    set maxposition [join $maxposition ":"]
+    set ishomed     [join $ishomed     ":"]
 
     set timestamp   [utcclock::combinedformat now]
 
@@ -222,6 +226,29 @@ namespace eval "filterwheel" {
 
   }
 
+  ######################################################################
+
+  proc getpositionsingle {index} {
+     variable position
+     updatestatus
+     set positionlist [split $position ":"]
+     return [lindex $positionlist $index]
+  }
+  
+  proc getmaxpositionsingle {index} {
+     variable maxposition
+     updatestatus
+     set maxpositionlist [split $maxposition ":"]
+     return [lindex $maxpositionlist $index]
+  }
+  
+  proc getishomedsingle {index} {
+     variable ishomed
+     updatestatus
+     set ishomedlist [split $ishomed ":"]
+     return [lindex $ishomedlist $index]
+  }
+  
   ######################################################################
 
   proc updateloop {} {

@@ -47,14 +47,21 @@ namespace eval "filterwheel" {
     }
     set index 0
     while {$index < $nfilterwheels} {
+      if {[lindex $newpositionlist $index] >= [getmaxpositionsingle $index]} {
+        error "invalid filter position \"$newposition\"."
+      }
+      incr index
+    }
+    set index 0
+    while {$index < $nfilterwheels} {
       log::debug "filterwheel: move: moving filter wheel $index"
       checkisopen $index
       set result [filterwheelrawmove $index [lindex $newpositionlist $index]]
       if {![string equal $result "ok"]} {
         log::warning "filter wheel $index did not move correctly: $result"
       }
-      if {[updatestatus] && [lindex $position $index] != [lindex $newpositionlist $index]} {
-        log::warning "filter wheel $index did not move correctly and its position is [lindex $position $index]."
+      if {[getpositionsingle $index] != [lindex $newpositionlist $index]} {
+        log::warning "filter wheel $index did not move correctly and its position is [getpositionsingle $index]."
       }
       incr index
     }
