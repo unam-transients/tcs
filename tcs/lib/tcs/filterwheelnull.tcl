@@ -33,10 +33,12 @@ namespace eval "filterwheel" {
     return "ok"
   }
 
-  proc home {} {
+  proc movesingle {index newposition} {
+    return "ok"
   }
-    
-  proc move {newposition} {
+
+  proc homesingle {index} {
+    return "ok"
   }
 
 }

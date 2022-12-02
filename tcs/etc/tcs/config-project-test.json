@@ -155,9 +155,11 @@
 
 //    "filterwheeltype": "null",
 //    "filterwheelidentifier": "null",
-//    "filterlist": [
-//      "w"
-//    ],
+//    "filters": {
+//      "w"      : "0",
+//      "initial": "w",
+//      "idle"   : "w"
+//    },
 
     "filterwheeltype": "dummy",
     "filterwheelidentifier": [
