@@ -41,11 +41,13 @@ installs_project_test	    	:=	\
 	detectordummy.so		        \
 	focuserfli.so		        	\
 	filterwheelfli.so               \
-	filterwheelnull.so
+	filterwheelnull.so              \
+	filterwheeldummy.so
 else
 installs_project_test	    	:=	\
 	detectordummy.so		      	\
-	filterwheelnull.so
+	filterwheelnull.so              \
+	filterwheeldummy.so
 endif
 
 ifeq ($(UNAME_N),coatlioan-instrument)
@@ -205,6 +207,15 @@ filterwheelnull.so		:	filterwheelwrap.o           \
 		        			filterwheelnull.o
 	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o filterwheelnull.so \
 	  filterwheelwrap.o filterwheel.o filterwheelnull.o \
+	  $(LIBS) $(SWIGLIBS)
+
+filterwheeldummy.o		:	filterwheeldummy.cxx         \
+        					filterwheel.h
+filterwheeldummy.so		:	filterwheelwrap.o           \
+        					filterwheel.o               \
+		        			filterwheeldummy.o
+	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o filterwheeldummy.so \
+	  filterwheelwrap.o filterwheel.o filterwheeldummy.o \
 	  $(LIBS) $(SWIGLIBS)
 
 filterwheelqsi.o		:	filterwheelqsi.cxx          \
