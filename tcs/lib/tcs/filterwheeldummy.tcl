@@ -33,44 +33,14 @@ namespace eval "filterwheel" {
     return "ok"
   }
 
-  proc home {} {
-  }
-    
-  proc move {newposition} {
-    log::debug "filterwheel: move: moving to position $newposition."
-    variable position
-    variable maxposition
-    variable nfilterwheels
-    set newpositionlist [split $newposition ":"]
-    if {[llength $newpositionlist] != $nfilterwheels} {
-      error "invalid filter position \"$newposition\"."
-    }
-    set index 0
-    while {$index < $nfilterwheels} {
-      if {[lindex $newpositionlist $index] >= [getmaxpositionsingle $index]} {
-        error "invalid filter position \"$newposition\"."
-      }
-      incr index
-    }
-    set index 0
-    while {$index < $nfilterwheels} {
-      log::debug "filterwheel: move: moving filter wheel $index"
-      checkisopen $index
-      set result [filterwheelrawmove $index [lindex $newpositionlist $index]]
-      if {![string equal $result "ok"]} {
-        log::warning "filter wheel $index did not move correctly: $result"
-      }
-      if {[getpositionsingle $index] != [lindex $newpositionlist $index]} {
-        log::warning "filter wheel $index did not move correctly and its position is [getpositionsingle $index]."
-      }
-      incr index
-    }
-    log::debug "filterwheel: move: done."
-    variable stoppedtimestamp
-    set stoppedtimestamp ""
-    return
+  proc movesingle {index newposition} {
+    return [filterwheelrawmove $index $newposition]
   }
 
+  proc homesingle {} {
+    return [filterwheelrawhome $index]
+  }
+    
 }
 
 source [file join [directories::prefix] "lib" "tcs" "filterwheel.tcl"]
