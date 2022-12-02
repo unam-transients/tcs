@@ -103,6 +103,7 @@
     "filters": {
       // dark is the combination of B, z, and 656/8.
       "dark"   : "1:3:6",
+      "open"   : "0:0:0",
       "g"      : "0:0:1",
       "r"      : "0:0:2",
       "i"      : "0:0:3",
