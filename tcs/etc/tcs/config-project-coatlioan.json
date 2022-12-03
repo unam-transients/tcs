@@ -124,11 +124,11 @@
       "initial": "dark",
       "idle"   : "dark"
     },
-    "focusertype": "null",
-    "focuseridentifier": "null",
-    "focuserinitialposition": 0,
-    "focuserbacklashoffset": "0",
-    "focusercorrectionmodel": {},
+    "focusertype": "gemini",
+    "focuseridentifier": "/dev/ttyOPTEC",
+    "focuserinitialposition": "57600",
+    "focuserbacklashoffset": "500",
+    "focusercorrectionmodel": {},    
     "pointingmodelparameters": {},
     "isstandalone": false,
     "fitsfwhmargs": {
