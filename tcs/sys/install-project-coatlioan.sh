@@ -247,6 +247,7 @@ fi
 if test -d /etc/udev/rules.d
 then
   sudo cp /dev/stdin <<"EOF" /etc/udev/rules.d/99-ttyFTDI.rules
+SUBSYSTEMS=="usb", ATTRS{manufacturer}=="Optec, Inc.", ATTRS{product}=="Optec USB/Serial Cable", SYMLINK+="ttyOPTEC"
 SUBSYSTEMS=="usb", ATTRS{manufacturer}=="FTDI", ATTRS{product}=="FT232R USB UART", SYMLINK+="ttyFTDI"
 EOF
 fi
