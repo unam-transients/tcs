@@ -29,9 +29,11 @@ namespace eval "focuser" {
 
   variable channel
   
-  variable rawposition
-  variable rawdescription "Optec Gemini"
-  variable rawmaxposition
+  variable rawposition        ""
+  variable rawmaxposition     ""
+  variable rawrotatorangle    ""
+  variable rawrotatorposition ""
+  variable rawdescription     "Optec Gemini"
   
   proc openspecific {identifier} {
     variable channel
@@ -94,8 +96,12 @@ namespace eval "focuser" {
   }
   
   proc focuserrawupdateposition {} {
+
     variable channel
     variable rawposition
+    variable rawrotatorangle
+    variable rawrotatorposition
+
     log::debug "focuserrawupdateposition: sending <F100GETSTA>."
     puts $channel "<F100GETSTA>"
     flush $channel
@@ -104,6 +110,27 @@ namespace eval "focuser" {
       scan $line "CurrStep = %d" rawposition
     }
     log::debug "focuserrawupdateposition: rawposition = $rawposition."
+    
+    log::debug "focuserrawupdateposition: sending <R100GETSTA>."
+    puts $channel "<R100GETSTA>"
+    flush $channel
+    set lastrawrotatorangle    $rawrotatorangle
+    set lastrawrotatorposition $rawrotatorposition
+    while {[gets $channel line] && ![string equal $line "END"]} {
+      log::debug "focuserrawupdateposition: line = \"$line\"."
+      scan $line "CurrStep = %d" rawrotatorposition
+      scan $line "CurentPA = %d" rawrotatorangle
+    }
+    set rawrotatorangle [astrometry::degtorad [expr {$rawrotatorangle * 1e-4}]]
+    log::debug "focuserrawupdateposition: rawrotatorangle    = $rawrotatorangle."
+    log::debug "focuserrawupdateposition: rawrotatorposition = $rawrotatorposition."
+    if {[string equal $lastrawrotatorposition ""] || $rawrotatorposition != $lastrawrotatorposition} {
+      log::info [format "rotator position is %d." $rawrotatorposition]
+    }
+    if {[string equal $lastrawrotatorangle ""] || $rawrotatorangle != $lastrawrotatorangle} {
+      log::info [format "rotator angle is %.4fd." [astrometry::radtodeg $rawrotatorangle]]
+    }
+    
     return "ok"
   }
   
