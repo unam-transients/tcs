@@ -43,79 +43,8 @@
     "detectoridentifier": "ML2351018",
     "detectorpixelscale": "2.0as",
     "detectorreadmodes": {
-    "initial": "default",
-    "default": "16MHz"
-    },
-    "detectorinitialsoftwaregain": "16",
-    "detectorinitialbinning": "1",
-    "detectorwindows": {
       "initial": "default",
-      "default": "6kx6k",
-      "1kx1k": {
-        "sx": "3640",
-        "sy": "2598",
-        "nx": "1024",
-        "ny": "1024"
-      },
-      "2kx2k": {
-        "sx": "2104",
-        "sy": "2086",
-        "nx": "2048",
-        "ny": "2048"
-      },
-      "6kx6k": {
-        "sx": "1080",
-        "sy": "0",
-        "nx": "6144",
-        "ny": "6220"
-      }
-    },
-    "detectorfullunbinneddatawindow": {
-      "sx": "64",
-      "sy": "54",
-      "nx": "8176",
-      "ny": "6144"
-    },
-    "detectorfullunbinnedbiaswindow": {
-      "sx": "64",
-      "sy": "6",
-      "nx": "8176",
-      "ny": "16"
-    },
-    "coolerstartsetting": "following",
-    "cooleropensetting": "-20",
-    "coolerclosedsetting": "following",
-    "temperaturelimit": "50",
-    "temperaturelimitoutletgroup": "",
-    "filterwheeltype": "null",
-    "filterwheelidentifier": "null",
-    "filters": {
-      "w"      : "0",
-      "initial": "w",
-      "idle"   : "w"
-    },
-    "focusertype": "null",
-    "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:5:1.0",
-    "focuserinitialposition": 40000,
-    "focuserbacklashoffset": "-450",
-    "focusercorrectionmodel": {},
-    "pointingmodelparameters": {},
-    "isstandalone": "false",
-    "fitsfwhmargs": {
-      "1": "-m",
-      "2": "-A",
-      "4": "-A",
-      "8": "-A",
-      "16": "-A"
-    }
-  },
-  "C1": {
-    "telescopedescription": "DDOTI 28-cm f/2.2",
-    "detectortype": "fli",
-    "detectoridentifier": "ML2341018",
-    "detectorpixelscale": "2.0as",
-    "detectorreadmodes": {
-      "initial": "default",
+      "closed" : "default",
       "default": "16MHz"
     },
     "detectorinitialsoftwaregain": "16",
@@ -164,7 +93,82 @@
     "filters": {
       "w"      : "0",
       "initial": "w",
-      "idle"   : "w"
+      "idle"   : "w",
+      "closed" : "w"
+    },
+    "focusertype": "null",
+    "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:5:1.0",
+    "focuserinitialposition": 40000,
+    "focuserbacklashoffset": "-450",
+    "focusercorrectionmodel": {},
+    "pointingmodelparameters": {},
+    "isstandalone": "false",
+    "fitsfwhmargs": {
+      "1": "-m",
+      "2": "-A",
+      "4": "-A",
+      "8": "-A",
+      "16": "-A"
+    }
+  },
+  "C1": {
+    "telescopedescription": "DDOTI 28-cm f/2.2",
+    "detectortype": "fli",
+    "detectoridentifier": "ML2341018",
+    "detectorpixelscale": "2.0as",
+    "detectorreadmodes": {
+      "initial": "default",
+      "closed" : "default",
+      "default": "16MHz"
+    },
+    "detectorinitialsoftwaregain": "16",
+    "detectorinitialbinning": "1",
+    "detectorwindows": {
+      "initial": "default",
+      "default": "6kx6k",
+      "1kx1k": {
+        "sx": "3640",
+        "sy": "2598",
+        "nx": "1024",
+        "ny": "1024"
+      },
+      "2kx2k": {
+        "sx": "2104",
+        "sy": "2086",
+        "nx": "2048",
+        "ny": "2048"
+      },
+      "6kx6k": {
+        "sx": "1080",
+        "sy": "0",
+        "nx": "6144",
+        "ny": "6220"
+      }
+    },
+    "detectorfullunbinneddatawindow": {
+      "sx": "64",
+      "sy": "54",
+      "nx": "8176",
+      "ny": "6144"
+    },
+    "detectorfullunbinnedbiaswindow": {
+      "sx": "64",
+      "sy": "6",
+      "nx": "8176",
+      "ny": "16"
+    },
+    "coolerstartsetting": "following",
+    "cooleropensetting": "-20",
+    "coolerclosedsetting": "following",
+    "temperaturelimit": "50",
+    "temperaturelimitoutletgroup": "",
+    "filterwheeltype": "null",
+    "filterwheelidentifier": "null",
+    "filters": {
+      "w"      : "0",
+      "initial": "w",
+      "idle"   : "w",
+      "closed" : "w"
     },
     // Controller A (red)
     "focusertype": "ddoti",
@@ -189,6 +193,7 @@
     "detectorpixelscale": "2.0as",
     "detectorreadmodes": {
       "initial": "default",
+      "closed" : "default",
       "default": "16MHz"
     },
     "detectorinitialsoftwaregain": "16",
@@ -237,7 +242,8 @@
     "filters": {
       "w"      : "0",
       "initial": "w",
-      "idle"   : "w"
+      "idle"   : "w",
+      "closed" : "w"
     },
     // Controller E (yellow)
     "focusertype": "ddoti",
@@ -262,6 +268,7 @@
     "detectorpixelscale": "2.0as",
     "detectorreadmodes": {
       "initial": "default",
+      "closed" : "default",
       "default": "16MHz"
     },
     "detectorinitialsoftwaregain": "16",
@@ -310,7 +317,8 @@
     "filters": {
       "w"      : "0",
       "initial": "w",
-      "idle"   : "w"
+      "idle"   : "w",
+      "closed" : "w"
     },
     // Controller B (yellow)
     "focusertype": "ddoti",
@@ -334,7 +342,8 @@
     "detectoridentifier": "ML2331018",
     "detectorpixelscale": "2.0as",
     "detectorreadmodes": {
-    "initial": "default",
+      "initial": "default",
+      "closed" : "default",
       "default": "16MHz"
     },
     "detectorinitialsoftwaregain": "16",
@@ -383,7 +392,8 @@
     "filters": {
       "w"      : "0",
       "initial": "w",
-      "idle"   : "w"
+      "idle"   : "w",
+      "closed" : "w"
     },
     "focusertype": "ddoti",
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:8:1.0",
@@ -407,6 +417,7 @@
     "detectorpixelscale": "2.0as",
     "detectorreadmodes": {
       "initial": "default",
+      "closed" : "default",
       "default": "16MHz"
     },
     "detectorinitialsoftwaregain": "16",
@@ -455,7 +466,8 @@
     "filters": {
       "w"      : "0",
       "initial": "w",
-      "idle"   : "w"
+      "idle"   : "w",
+      "closed" : "w"
     },
     "focusertype": "null",
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:7:1.0",

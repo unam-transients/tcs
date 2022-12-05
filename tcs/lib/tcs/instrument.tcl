@@ -195,6 +195,20 @@ namespace eval "instrument" {
     foreach detector $activedetectors {
       client::wait $detector
     }
+    foreach detector $activedetectors {
+      client::resetifnecessary $detector
+      client::request $detector "setreadmode closed"
+    }
+    foreach detector $activedetectors {
+      client::wait $detector
+    }
+    foreach detector $activedetectors {
+      client::resetifnecessary $detector
+      client::request $detector "movefilterwheel closed"
+    }
+    foreach detector $activedetectors {
+      client::wait $detector
+    }
     variable outletgroups
     foreach outletgroup $outletgroups {
       client::resetifnecessary "power"
