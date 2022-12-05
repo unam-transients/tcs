@@ -745,7 +745,7 @@ namespace eval "telescope" {
   
   proc trackcatalogobject {catalogname objectname aperture} {
     variable catalogdirectory
-    set channel [::open "|[directories::bin]/tcs getcatalogobject -d \"$catalogdirectory\" -- \"$catalogname\" \"$objectname\"" "r"]
+    set channel [::open "|[directories::bin]/tcs getcatalogobject -- \"$catalogname\" \"$objectname\"" "r"]
     set line [coroutine::gets $channel]
     catch {::close $channel}
     if {[string equal $line ""]} {
