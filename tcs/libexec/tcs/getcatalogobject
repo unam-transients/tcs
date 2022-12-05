@@ -54,7 +54,7 @@ fi
 catalogname="$1"
 objectname="$2"
 
-catalogdir="$tcsprefix"/share/tcs/catalog
+catalogdir="$tcsprefix"/share/tcs/catalogs
 
 if test -e "$catalogname"
 then
