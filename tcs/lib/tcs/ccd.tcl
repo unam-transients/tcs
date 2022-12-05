@@ -823,7 +823,7 @@ namespace eval "ccd" {
     while {[dict exists $filters $newposition]} {
       set newposition [dict get $filters $newposition]
     }
-    log::info "moving filter wheel to filter $newfilter (position $newposition)."
+    log::info "moving filter wheel to filter [getfilter $newposition] (position $newposition)."
     if {$forcemove || ![string equal [server::getdata "filterwheelposition"] $newposition]} {
       server::setdata "requestedfilterwheelposition" $newposition
       filterwheel::move $newposition
