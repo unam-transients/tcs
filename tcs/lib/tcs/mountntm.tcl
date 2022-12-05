@@ -543,19 +543,19 @@ namespace eval "mount" {
   
   proc waituntilsafetomovebothaxes {} {
     log::debug "waituntilsafetomovebothaxes: starting."
-    variable zenithdistancelimit
+    variable maxzenithdistancelimit
     while {true} {
       set requestedmountha       [server::getdata "requestedmountha"]
       set requestedmountdelta    [server::getdata "requestedmountdelta"]
       set mountha                [server::getdata "mountha"]
       set mountdelta             [server::getdata "mountdelta"]
       if {
-        [astrometry::equatorialtozenithdistance $requestedmountha $requestedmountdelta] > $zenithdistancelimit
+        [astrometry::equatorialtozenithdistance $requestedmountha $requestedmountdelta] > $maxzenithdistancelimit
       } {
         error "the requested position is below the zenith distance limit."
       } elseif {
-        [astrometry::equatorialtozenithdistance $mountha $requestedmountdelta] < $zenithdistancelimit &&
-        [astrometry::equatorialtozenithdistance $requestedmountha $mountdelta] < $zenithdistancelimit
+        [astrometry::equatorialtozenithdistance $mountha $requestedmountdelta] < $maxzenithdistancelimit &&
+        [astrometry::equatorialtozenithdistance $requestedmountha $mountdelta] < $maxzenithdistancelimit
       } {
         log::debug "waituntilsafetomovebothaxes: finished."
         return
@@ -753,13 +753,13 @@ namespace eval "mount" {
     set requestedaxisha    [axisha    $requestedmountha $requestedmountdelta $requestedmountrotation]
     set requestedaxisdelta [axisdelta $requestedmountha $requestedmountdelta $requestedmountrotation]
     
-    variable zenithdistancelimit
+    variable maxzenithdistancelimit
     if {
-      [astrometry::equatorialtozenithdistance $requestedmountha $requestedmountdelta] > $zenithdistancelimit
+      [astrometry::equatorialtozenithdistance $requestedmountha $requestedmountdelta] > $maxzenithdistancelimit
     } {
       error "the requested position is below the zenith distance limit."
     } elseif {
-      [astrometry::equatorialtozenithdistance $mountha $requestedmountdelta] > $zenithdistancelimit
+      [astrometry::equatorialtozenithdistance $mountha $requestedmountdelta] > $maxzenithdistancelimit
     } {
       log::info "moving first in HA to stay above the zenith distance limit."
       sendcommandandwait \
@@ -771,7 +771,7 @@ namespace eval "mount" {
           [format "SET DEC.TARGETPOS=%.5f" [astrometry::radtodeg $requestedaxisdelta]]
       }
     } elseif {
-      [astrometry::equatorialtozenithdistance $requestedmountha $mountdelta] > $zenithdistancelimit
+      [astrometry::equatorialtozenithdistance $requestedmountha $mountdelta] > $maxzenithdistancelimit
     } {
       log::info "moving first in δ to stay above the zenith distance limit."
       sendcommandandwait \
