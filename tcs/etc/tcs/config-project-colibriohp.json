@@ -29,8 +29,9 @@
     "detectoridentifier": "PL1344016",
     "detectorpixelscale": "0.381as",
     "detectorreadmodes": {
-      "initial"   : "default",
-      "default"   : "8MHz"
+      "initial": "default",
+      "closed" : "default",
+      "default": "8MHz"
     },
     "detectorinitialsoftwaregain": 1,
     "detectorinitialbinning": 1,
@@ -54,14 +55,11 @@
     "temperaturelimit": 50,
     "temperaturelimitoutletgroup": "",
     "filterwheeltype": "null",
-    // The DDRAGO CFW-14-5 filter wheels are:
-    // FW0011318 -- firmware serial number "CFW-14-5"
-    // FW0021318 -- firmware serial number "FW0021318"
-    // FW0031318 -- firmware serial number "FW0031318"
     "filters": {
       "w"      : "0",
       "initial": "w",
-      "idle"   : "w"
+      "idle"   : "w",
+      "closed" : "w"
     },
     "focusertype": "null",
     "focuseridentifier": "null",
@@ -84,8 +82,9 @@
     "detectoridentifier": "blue:2055",
     "detectorpixelscale": "0.381as",
     "detectorreadmodes": {
-      "initial"   : "default",
-      "default"   : "0"
+      "initial": "default",
+      "closed" : "default",
+      "default": "0"
     },
     "detectorinitialsoftwaregain": 1,
     "detectorinitialbinning": 1,
@@ -148,7 +147,8 @@
       "z"      : "3",
       "y"      : "4",
       "initial": "r",
-      "idle"   : "r"
+      "idle"   : "r",
+      "closed" : "r"
     },
     "focusertype": "null",
     "focuseridentifier": "null",

@@ -115,8 +115,9 @@
     "detectoridentifier": "blue:2055",
     "detectorpixelscale": "0.381as",
     "detectorreadmodes": {
-      "initial"   : "default",
-      "default"   : "0"
+      "initial": "default",
+      "closed" : "default",
+      "default": "0"
     },
     "detectorinitialsoftwaregain": 1,
     "detectorinitialbinning": 1,
