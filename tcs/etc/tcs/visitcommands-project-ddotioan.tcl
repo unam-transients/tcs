@@ -818,7 +818,7 @@ proc biasesvisit {{exposures 10}} {
   executor::setreadmode "16MHz"
   executor::setbinning 1
   set exposure 0
-  while {$i < $exposures} {
+  while {$exposure < $exposures} {
     executor::expose bias 0
     executor::analyze levels
     incr exposure
@@ -839,7 +839,7 @@ proc darksvisit {{exposures 10} {exposuretime 60}} {
   executor::setreadmode "16MHz"
   executor::setbinning 1
   set exposure 0
-  while {$i < $exposures} {
+  while {$exposure < $exposures} {
     executor::expose dark $exposuretime
     executor::analyze levels
     incr exposure
