@@ -121,14 +121,14 @@ namespace eval "focuser" {
       scan $line "CurrStep = %d" rawrotatorposition
       scan $line "CurentPA = %d" rawrotatorangle
     }
-    set rawrotatorangle [astrometry::degtorad [expr {$rawrotatorangle * 1e-4}]]
+    set rawrotatorangle [astrometry::degtorad [expr {$rawrotatorangle * 1e-3}]]
     log::debug "focuserrawupdateposition: rawrotatorangle    = $rawrotatorangle."
     log::debug "focuserrawupdateposition: rawrotatorposition = $rawrotatorposition."
     if {[string equal $lastrawrotatorposition ""] || $rawrotatorposition != $lastrawrotatorposition} {
       log::info [format "rotator position is %d." $rawrotatorposition]
     }
     if {[string equal $lastrawrotatorangle ""] || $rawrotatorangle != $lastrawrotatorangle} {
-      log::info [format "rotator angle is %.4fd." [astrometry::radtodeg $rawrotatorangle]]
+      log::info [format "rotator angle is %.3fd." [astrometry::radtodeg $rawrotatorangle]]
     }
     
     return "ok"
