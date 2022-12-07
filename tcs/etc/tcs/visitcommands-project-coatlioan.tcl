@@ -663,6 +663,58 @@ proc readnoisevisit {} {
 
 ########################################################################
 
+proc hartmanntestvisit {secondaryoffset {exposuretime 10} {filter "470/10"} {exposures 10} {dither "20as"}} {
+
+  log::summary "hartmanntestvisit: starting."
+
+  executor::setwindow "default"
+  executor::setbinning 4
+  executor::movefilterwheel $filter
+
+  log::summary "hartmanntestvisit: extrafocal images: secondary offset is +$secondaryoffset."
+
+  executor::setsecondaryoffset +$secondaryoffset
+  executor::track
+  executor::waituntiltracking
+  
+  set dither [astrometry::parseoffset $dither]
+  
+  set exposure 0
+  while {$exposure < $exposures} {
+    set eastoffset [expr {$dither * (rand() - 0.5)}]
+    set northoffset [expr {$dither * (rand() - 0.5)}]
+    executor::offset $eastoffset $northoffset
+    executor::waituntiltracking
+    executor::expose object $exposuretime
+    incr exposure
+  }
+  
+  log::summary "hartmanntestvisit: intrafocal images: secondary offset is -$secondaryoffset."
+
+  executor::setsecondaryoffset -$secondaryoffset
+  executor::offset
+  executor::waituntiltracking
+
+  set exposure 0
+  while {$exposure < $exposures} {
+    set eastoffset [expr {$dither * (rand() - 0.5)}]
+    set northoffset [expr {$dither * (rand() - 0.5)}]
+    executor::offset $eastoffset $northoffset
+    executor::waituntiltracking
+    executor::expose object $exposuretime
+    incr exposure
+  }
+
+  executor::setsecondaryoffset 0
+
+  log::summary "hartmanntestvisit: finished."
+  
+
+  return true
+}
+
+########################################################################
+
 proc satellitevisit {start exposures exposuretime} {
 
   log::summary "satellitevisit: starting."
