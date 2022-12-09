@@ -62,25 +62,39 @@ namespace eval "focuser" {
       scan $line "MaxSteps = %d" rawmaxposition
     }
 
-    # Find the home position.
-    log::debug "openspecific: sending <F100DOHOME>."
-    puts $channel "<F100DOHOME>"
+    # Find the home position if necessary.
+    log::debug "openspecific: sending <F100GETSTA>."
+    puts $channel "<F100GETSTA>"
     flush $channel
     log::debug "openspecific: waiting"
+    set ishomed 0
     while {[gets $channel line] && ![string equal $line "END"]} {
       log::debug "openspecific: line = \"$line\"."
+      scan $line "Is Homed = %d" ishomed
     }
-    set ishomed 0
-    while {!$ishomed} {
-      log::debug "openspecific: sending <F100GETSTA>."
-      puts $channel "<F100GETSTA>"
+    if {$ishomed} {
+      log::info "home position is known."
+    } else {
+      log::info "finding home position."
+      log::debug "openspecific: sending <F100DOHOME>."
+      puts $channel "<F100DOHOME>"
       flush $channel
       log::debug "openspecific: waiting"
       while {[gets $channel line] && ![string equal $line "END"]} {
         log::debug "openspecific: line = \"$line\"."
-        scan $line "Is Homed = %d" ishomed
       }
-      coroutine::after 1000
+      while {!$ishomed} {
+        log::debug "openspecific: sending <F100GETSTA>."
+        puts $channel "<F100GETSTA>"
+        flush $channel
+        log::debug "openspecific: waiting"
+        while {[gets $channel line] && ![string equal $line "END"]} {
+          log::debug "openspecific: line = \"$line\"."
+          scan $line "Is Homed = %d" ishomed
+        }
+        coroutine::after 1000
+      }
+      log::info "finished finding home position."
     }
 
     log::debug "openspecific: rawmaxposition = \"$rawmaxposition\"."
