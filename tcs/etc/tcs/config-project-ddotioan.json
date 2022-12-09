@@ -41,7 +41,7 @@
     "telescopedescription": "DDOTI 28-cm f/2.2",
     "detectortype": "fli",
     "detectoridentifier": "ML2351018",
-    "detectorpixelscale": "2.0as",
+    "detectorunbinnedpixelscale": "2.0as",
     "detectorreadmodes": {
       "initial": "default",
       "closed" : "default",
@@ -115,7 +115,7 @@
     "telescopedescription": "DDOTI 28-cm f/2.2",
     "detectortype": "fli",
     "detectoridentifier": "ML2341018",
-    "detectorpixelscale": "2.0as",
+    "detectorunbinnedpixelscale": "2.0as",
     "detectorreadmodes": {
       "initial": "default",
       "closed" : "default",
@@ -190,7 +190,7 @@
     "telescopedescription": "DDOTI 28-cm f/2.2",
     "detectortype": "fli",
     "detectoridentifier": "ML2351018",
-    "detectorpixelscale": "2.0as",
+    "detectorunbinnedpixelscale": "2.0as",
     "detectorreadmodes": {
       "initial": "default",
       "closed" : "default",
@@ -265,7 +265,7 @@
     "telescopedescription": "DDOTI 28-cm f/2.2",
     "detectortype": "fli",
     "detectoridentifier": "ML3442818",
-    "detectorpixelscale": "2.0as",
+    "detectorunbinnedpixelscale": "2.0as",
     "detectorreadmodes": {
       "initial": "default",
       "closed" : "default",
@@ -340,7 +340,7 @@
     "telescopedescription": "DDOTI 28-cm f/2.2",
     "detectortype": "fli",
     "detectoridentifier": "ML2331018",
-    "detectorpixelscale": "2.0as",
+    "detectorunbinnedpixelscale": "2.0as",
     "detectorreadmodes": {
       "initial": "default",
       "closed" : "default",
@@ -414,7 +414,7 @@
     "telescopedescription": "DDOTI 28-cm f/2.2",
     "detectortype": "fli",
     "detectoridentifier": "ML2341018",
-    "detectorpixelscale": "2.0as",
+    "detectorunbinnedpixelscale": "2.0as",
     "detectorreadmodes": {
       "initial": "default",
       "closed" : "default",
