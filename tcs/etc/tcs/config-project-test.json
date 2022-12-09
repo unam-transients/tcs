@@ -105,7 +105,7 @@
     "telescopedescription": "TEST",
     "detectortype": "dummy",
     "detectoridentifier": "",
-    "detectorpixelscale": "0.381as",
+    "detectorunbinnedpixelscale": "0.381as",
     "detectorinitialsoftwaregain": 1,
     "detectorinitialbinning": 1,
     "detectorreadmodes": {

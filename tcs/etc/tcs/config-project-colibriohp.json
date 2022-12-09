@@ -27,7 +27,7 @@
     "telescopedescription": "OHP COLIBRI 1.3-m",
     "detectortype": "fli",
     "detectoridentifier": "PL1344016",
-    "detectorpixelscale": "0.381as",
+    "detectorunbinnedpixelscale": "0.381as",
     "detectorreadmodes": {
       "initial": "default",
       "closed" : "default",
@@ -80,7 +80,7 @@
     "telescopedescription": "OHP COLIBRI 1.3-m",
     "detectortype": "si",
     "detectoridentifier": "blue:2055",
-    "detectorpixelscale": "0.381as",
+    "detectorunbinnedpixelscale": "0.381as",
     "detectorreadmodes": {
       "initial": "default",
       "closed" : "default",

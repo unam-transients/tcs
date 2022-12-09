@@ -68,7 +68,7 @@ namespace eval "ccd" {
   variable focusercorrectionmodel          [config::getvalue $identifier "focusercorrectionmodel" ]
   variable allowedfocuserpositionerror     [config::getvalue $identifier "allowedfocuserpositionerror"    ]
   variable isstandalone                    [config::getvalue $identifier "isstandalone"                   ]
-  variable detectorpixelscale              [astrometry::parseangle [config::getvalue $identifier "detectorpixelscale"]]
+  variable detectorunbinnedpixelscale              [astrometry::parseangle [config::getvalue $identifier "detectorunbinnedpixelscale"]]
   variable pointingmodelparameters         [config::getvalue $identifier "pointingmodelparameters"        ]
   variable temperaturelimit                [config::getvalue $identifier "temperaturelimit"               ]
   variable temperaturelimitoutletgroup     [config::getvalue $identifier "temperaturelimitoutletgroup"    ]
@@ -1175,9 +1175,9 @@ namespace eval "ccd" {
   }
   
   proc getwidth {} {
-    variable detectorpixelscale
+    variable detectorunbinnedpixelscale
     set window [detector::getwindow]
-    return [expr {$detectorpixelscale * [dict get $window nx]}]
+    return [expr {$detectorunbinnedpixelscale * [dict get $window nx]}]
   }
   
   proc setbinning {binning} {
