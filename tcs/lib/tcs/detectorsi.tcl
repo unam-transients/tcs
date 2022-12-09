@@ -160,7 +160,7 @@ namespace eval "detector" {
         
     detectorrawsetisopen true
     
-    detectorrawsetwindow 0 0 0 0
+    detectorrawsetunbinnedwindow 0 0 0 0
 
     detectorrawupdatestatus
         
@@ -822,21 +822,21 @@ namespace eval "detector" {
         variable rawreadmode
         return $rawreadmode
       }
-      "windowsx" {
-        variable rawwindowsx
-        return $rawwindowsx
+      "unbinnedwindowsx" {
+        variable rawunbinnedwindowsx
+        return $rawunbinnedwindowsx
       }
-      "windowsy" {
-        variable rawwindowsy
-        return $rawwindowsy
+      "unbinnedwindowsy" {
+        variable rawunbinnedwindowsy
+        return $rawunbinnedwindowsy
       }
-      "windownx" {
-        variable rawwindownx
-        return $rawwindownx
+      "unbinnedwindownx" {
+        variable rawunbinnedwindownx
+        return $rawunbinnedwindownx
       }
-      "windowny" {
-        variable rawwindowny
-        return $rawwindowny
+      "unbinnedwindowny" {
+        variable rawunbinnedwindowny
+        return $rawunbinnedwindowny
       }
       "binning" {
         variable rawbinning
@@ -904,32 +904,32 @@ namespace eval "detector" {
     rawputsiimagecommandpacket "setcameramode" $newreadmode
     rawgetsiimagedatapacket "setcameramode"
     set rawreadmode $newreadmode
-    return [detectorrawsetwindow 0 0 0 0]
+    return [detectorrawsetunbinnedwindow 0 0 0 0]
   }
 
   ######################################################################
 
-  variable rawwindowsx
-  variable rawwindowsy
-  variable rawwindownx
-  variable rawwindowny
+  variable rawunbinnedwindowsx
+  variable rawunbinnedwindowsy
+  variable rawunbinnedwindownx
+  variable rawunbinnedwindowny
 
-  proc detectorrawsetwindow {newwindowsx newwindowsy newwindownx newwindowny} {
+  proc detectorrawsetunbinnedwindow {newunbinnedwindowsx newunbinnedwindowsy newunbinnedwindownx newunbinnedwindowny} {
   
-    variable rawwindowsx
-    variable rawwindowsy
-    variable rawwindownx
-    variable rawwindowny
+    variable rawunbinnedwindowsx
+    variable rawunbinnedwindowsy
+    variable rawunbinnedwindownx
+    variable rawunbinnedwindowny
     variable rawbinning
   
     set fullnx 4196
     set fullny 4112
   
-    if {$newwindownx == 0} {
-      set newwindownx $fullnx
+    if {$newunbinnedwindownx == 0} {
+      set newunbinnedwindownx $fullnx
     }
-    if {$newwindowny == 0} {
-      set newwindowny $fullny
+    if {$newunbinnedwindowny == 0} {
+      set newunbinnedwindowny $fullny
     }
 
     # The SI CCD we have is four-ported. The raw window refers to the
@@ -938,39 +938,39 @@ namespace eval "detector" {
     # window must be continuous. This means that windows must be
     # centered.
 
-    if {2 * $newwindowsx + $newwindownx != $fullnx} {
+    if {2 * $newunbinnedwindowsx + $newunbinnedwindownx != $fullnx} {
       error "invalid window: not centered in x."
     }
-    if {2 * $newwindowsy + $newwindowny != $fullny} {
+    if {2 * $newunbinnedwindowsy + $newunbinnedwindowny != $fullny} {
       error "invalid window: not centered in y."
     }
     
-    set rawwindowsx $newwindowsx
-    set rawwindowsy $newwindowsy
-    set rawwindownx $newwindownx
-    set rawwindowny $newwindowny
+    set rawunbinnedwindowsx $newunbinnedwindowsx
+    set rawunbinnedwindowsy $newunbinnedwindowsy
+    set rawunbinnedwindownx $newunbinnedwindownx
+    set rawunbinnedwindowny $newunbinnedwindowny
     
     return [detectorrawsetbinning 1]
   }
 
-  proc detectorrawgetwindowsx {} {
-    variable rawwindowsx
-    return $rawwindowsx
+  proc detectorrawgetunbinnedwindowsx {} {
+    variable rawunbinnedwindowsx
+    return $rawunbinnedwindowsx
   }
 
-  proc detectorrawgetwindowsy {} {
-    variable rawwindowsy
-    return $rawwindowsy
+  proc detectorrawgetunbinnedwindowsy {} {
+    variable rawunbinnedwindowsy
+    return $rawunbinnedwindowsy
   }
 
-  proc detectorrawgetwindownx {} {
-    variable rawwindownx
-    return $rawwindownx
+  proc detectorrawgetunbinnedwindownx {} {
+    variable rawunbinnedwindownx
+    return $rawunbinnedwindownx
   }
 
-  proc detectorrawgetwindowny {} {
-    variable rawwindowny
-    return $rawwindowny
+  proc detectorrawgetunbinnedwindowny {} {
+    variable rawunbinnedwindowny
+    return $rawunbinnedwindowny
   }
 
   ######################################################################
@@ -981,17 +981,17 @@ namespace eval "detector" {
 
     variable rawbinning
     
-    variable rawwindowsx
-    variable rawwindownx
-    variable rawwindowsy
-    variable rawwindowny
+    variable rawunbinnedwindowsx
+    variable rawunbinnedwindownx
+    variable rawunbinnedwindowsy
+    variable rawunbinnedwindowny
 
     # To be conservative, we reject binnings that are not commensurate
     # with the window.
 
     if {
-      ($rawwindownx / 2) % $newbinning != 0 ||
-      ($rawwindowny / 2) % $newbinning != 0
+      ($rawunbinnedwindownx / 2) % $newbinning != 0 ||
+      ($rawunbinnedwindowny / 2) % $newbinning != 0
     } {
       error "binning is not commensurate with the window."
     }
@@ -1003,10 +1003,10 @@ namespace eval "detector" {
     # in unbinned pixels but nx and ny in binned pixels. See §3.2.1 of
     # the SI Image manual.
 
-    set sx $rawwindowsx
-    set sy $rawwindowsy
-    set nx [expr {$rawwindownx / 2 / $rawbinning}]
-    set ny [expr {$rawwindowny / 2 / $rawbinning}]
+    set sx $rawunbinnedwindowsx
+    set sy $rawunbinnedwindowsy
+    set nx [expr {$rawunbinnedwindownx / 2 / $rawbinning}]
+    set ny [expr {$rawunbinnedwindowny / 2 / $rawbinning}]
     
     rawputsiimagecommandpacket "setformat" $sx $nx $rawbinning $sy $ny $rawbinning
     rawgetsiimagedatapacket "setformat"

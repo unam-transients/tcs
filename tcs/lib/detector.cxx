@@ -50,10 +50,10 @@ static unsigned short *pix = NULL;
 static unsigned long long cubepixi = 0;
 static FILE *cubepixfp = NULL;
 
-static unsigned long pixdatawindowsx = 0;
-static unsigned long pixdatawindowsy = 0;
-static unsigned long pixdatawindownx = 0;
-static unsigned long pixdatawindowny = 0;
+static unsigned long pixdataunbinnedwindowsx = 0;
+static unsigned long pixdataunbinnedwindowsy = 0;
+static unsigned long pixdataunbinnedwindownx = 0;
+static unsigned long pixdataunbinnedwindowny = 0;
 
 static double average = 0;
 static double standarddeviation = 0;
@@ -240,8 +240,8 @@ detectorrawupdatestatistics(void)
   double s1 = 0;
   double s2 = 0;
   
-  for (unsigned long iy = pixdatawindowsy; iy < pixdatawindowsy + pixdatawindowny; ++iy) {
-    for (unsigned long ix = pixdatawindowsx; ix < pixdatawindowsx + pixdatawindownx; ++ix) {
+  for (unsigned long iy = pixdataunbinnedwindowsy; iy < pixdataunbinnedwindowsy + pixdataunbinnedwindowny; ++iy) {
+    for (unsigned long ix = pixdataunbinnedwindowsx; ix < pixdataunbinnedwindowsx + pixdataunbinnedwindownx; ++ix) {
       double z = pix[iy * pixnx + ix];
       s0 += 1;
       s1 += z;
@@ -266,10 +266,10 @@ detectorrawupdatestatistics(void)
 const char *
 detectorrawsetpixdatawindow(unsigned long sx, unsigned long sy, unsigned long nx, unsigned long ny)
 {
-  pixdatawindowsx = sx;
-  pixdatawindowsy = sy;
-  pixdatawindownx = nx;
-  pixdatawindowny = ny;
+  pixdataunbinnedwindowsx = sx;
+  pixdataunbinnedwindowsy = sy;
+  pixdataunbinnedwindownx = nx;
+  pixdataunbinnedwindowny = ny;
   DETECTOR_OK();
 }
 

@@ -68,7 +68,7 @@ namespace eval "ccd" {
   variable focusercorrectionmodel          [config::getvalue $identifier "focusercorrectionmodel" ]
   variable allowedfocuserpositionerror     [config::getvalue $identifier "allowedfocuserpositionerror"    ]
   variable isstandalone                    [config::getvalue $identifier "isstandalone"                   ]
-  variable detectorunbinnedpixelscale              [astrometry::parseangle [config::getvalue $identifier "detectorunbinnedpixelscale"]]
+  variable detectorunbinnedpixelscale      [astrometry::parseangle [config::getvalue $identifier "detectorunbinnedpixelscale"]]
   variable pointingmodelparameters         [config::getvalue $identifier "pointingmodelparameters"        ]
   variable temperaturelimit                [config::getvalue $identifier "temperaturelimit"               ]
   variable temperaturelimitoutletgroup     [config::getvalue $identifier "temperaturelimitoutletgroup"    ]
@@ -188,7 +188,7 @@ namespace eval "ccd" {
     server::setdata "detectordescription"              [detector::getdescription]
     server::setdata "detectorsoftwaregain"             [detector::getsoftwaregain]
     server::setdata "detectorsaturationlevel"          [detector::getsaturationlevel]
-    server::setdata "detectorwindow"                   [detector::getwindow]
+    server::setdata "detectorunbinnedwindow"           [detector::getunbinnedwindow]
     server::setdata "detectorwidth"                    [getwidth]
     server::setdata "detectorbinning"                  [detector::getbinning]
     server::setdata "detectorfullunbinneddatawindow"   [detector::getfullunbinneddatawindow]
@@ -477,7 +477,7 @@ namespace eval "ccd" {
     while {[dict exists $detectorwindows $window]} {
       set window [dict get $detectorwindows $window]
     }
-    detector::setwindow $window
+    detector::setunbinnedwindow $window
     variable detectorinitialbinning
     detector::setbinning $detectorinitialbinning
     setcoolerhelper "closed"
@@ -1119,7 +1119,7 @@ namespace eval "ccd" {
     return
   }
 
-  proc setwindow {window} {
+  proc setunbinnedwindow {window} {
     set start [utcclock::seconds]
     log::info "setting window to $window."
     server::checkstatus
@@ -1166,7 +1166,7 @@ namespace eval "ccd" {
         error "invalid detector ny \"$ny\"."
       }
     }
-    detector::setwindow $window
+    detector::setunbinnedwindow $window
     variable detectorinitialbinning
     detector::setbinning $detectorinitialbinning
     updatedata
@@ -1176,7 +1176,7 @@ namespace eval "ccd" {
   
   proc getwidth {} {
     variable detectorunbinnedpixelscale
-    set window [detector::getwindow]
+    set window [detector::getunbinnedwindow]
     return [expr {$detectorunbinnedpixelscale * [dict get $window nx]}]
   }
   
@@ -1216,7 +1216,7 @@ namespace eval "ccd" {
     while {[dict exists $detectorwindows $window]} {
       set window [dict get $detectorwindows $window]
     }
-    detector::setwindow $window
+    detector::setunbinnedwindow $window
     variable detectorinitialbinning
     detector::setbinning $detectorinitialbinning
     updatedata

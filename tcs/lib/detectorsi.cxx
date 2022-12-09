@@ -88,7 +88,7 @@ detectorrawsetreadmode(const char *newreadmode)
 }
 
 const char *
-detectorrawsetwindow(unsigned long newsx, unsigned long newsy, unsigned long newnx, unsigned long newny)
+detectorrawsetunbinnedwindow(unsigned long newsx, unsigned long newsy, unsigned long newnx, unsigned long newny)
 {
   DETECTOR_SHOULD_NOT_BE_CALLED();
 }

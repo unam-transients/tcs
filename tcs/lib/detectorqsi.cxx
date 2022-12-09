@@ -38,10 +38,10 @@ static char readmode[DETECTOR_STR_BUFFER_SIZE] = "";
 
 static unsigned long fullnx = 0;
 static unsigned long fullny = 0;
-static unsigned long windowsx = 0;
-static unsigned long windowsy = 0;
-static unsigned long windownx = 0;
-static unsigned long windowny = 0;
+static unsigned long unbinnedwindowsx = 0;
+static unsigned long unbinnedwindowsy = 0;
+static unsigned long unbinnedwindownx = 0;
+static unsigned long unbinnedwindowny = 0;
 static unsigned long binning = 1;
 
 static double coolerpower = 0;
@@ -126,7 +126,7 @@ detectorrawopen(char *identifier)
     "unable to determine detector size in y.");
   fullny = ny;
 
-  return detectorrawsetwindow(0, 0, 0, 0);
+  return detectorrawsetunbinnedwindow(0, 0, 0, 0);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -258,7 +258,7 @@ detectorrawgetreadmode(void)
 ////////////////////////////////////////////////////////////////////////
 
 const char *
-detectorrawsetwindow(unsigned long newsx, unsigned long newsy, unsigned long newnx, unsigned long newny)
+detectorrawsetunbinnedwindow(unsigned long newsx, unsigned long newsy, unsigned long newnx, unsigned long newny)
 {
   DETECTOR_CHECK_OPEN();
 
@@ -272,10 +272,10 @@ detectorrawsetwindow(unsigned long newsx, unsigned long newsy, unsigned long new
 //  if (newsx != 0 && newsy != 0)
 //    DETECTOR_ERROR("invalid window.");
 
-  windowsx = newsx;
-  windowsy = newsy;
-  windownx = newnx;
-  windowny = newny;
+  unbinnedwindowsx = newsx;
+  unbinnedwindowsy = newsy;
+  unbinnedwindownx = newnx;
+  unbinnedwindowny = newny;
   return detectorrawsetbinning(1);
 }
 
@@ -287,10 +287,10 @@ detectorrawsetbinning(unsigned long newbinning)
   DETECTOR_CHECK_OPEN();
   
   if (
-    windowsx % newbinning != 0 || 
-    windowsy % newbinning != 0 ||
-    windownx % newbinning != 0 ||
-    windowny % newbinning != 0
+    unbinnedwindowsx % newbinning != 0 || 
+    unbinnedwindowsy % newbinning != 0 ||
+    unbinnedwindownx % newbinning != 0 ||
+    unbinnedwindowny % newbinning != 0
   )
     DETECTOR_ERROR("binning is not commensurate with the window.");
     
@@ -317,13 +317,13 @@ detectorrawsetbinning(unsigned long newbinning)
     cam.put_BinY(newbinning),
     "unable to set the detector binning.");
   binning = newbinning;  
-  detectorrawsetpixnx(windownx / binning);
-  detectorrawsetpixny(windowny / binning);
+  detectorrawsetpixnx(unbinnedwindownx / binning);
+  detectorrawsetpixny(unbinnedwindowny / binning);
   CHECK_QSI_CALL(
-    cam.put_StartX(windowsx / binning),
+    cam.put_StartX(unbinnedwindowsx / binning),
     "cannot set format");
   CHECK_QSI_CALL(
-    cam.put_StartY(windowsy / binning),
+    cam.put_StartY(unbinnedwindowsy / binning),
     "cannot set format");
   CHECK_QSI_CALL(
     cam.put_NumX(detectorrawgetpixnx()),
@@ -376,14 +376,14 @@ detectorrawgetvalue(const char *name)
     snprintf(value, sizeof(value), "%s", cooler);
   else if (strcmp(name, "readmode") == 0)
     snprintf(value, sizeof(value), "%s", readmode);
-  else if (strcmp(name, "windowsx") == 0)
-    snprintf(value, sizeof(value), "%lu", windowsx);
-  else if (strcmp(name, "windowsy") == 0)
-    snprintf(value, sizeof(value), "%lu", windowsy);
-  else if (strcmp(name, "windownx") == 0)
-    snprintf(value, sizeof(value), "%lu", windownx);
-  else if (strcmp(name, "windowny") == 0)
-    snprintf(value, sizeof(value), "%lu", windowny);
+  else if (strcmp(name, "unbinnedwindowsx") == 0)
+    snprintf(value, sizeof(value), "%lu", unbinnedwindowsx);
+  else if (strcmp(name, "unbinnedwindowsy") == 0)
+    snprintf(value, sizeof(value), "%lu", unbinnedwindowsy);
+  else if (strcmp(name, "unbinnedwindownx") == 0)
+    snprintf(value, sizeof(value), "%lu", unbinnedwindownx);
+  else if (strcmp(name, "unbinnedwindowny") == 0)
+    snprintf(value, sizeof(value), "%lu", unbinnedwindowny);
   else if (strcmp(name, "binning") == 0)
     snprintf(value, sizeof(value), "%lu", binning);
   else
