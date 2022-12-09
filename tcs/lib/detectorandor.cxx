@@ -60,10 +60,10 @@ static char readmode[DETECTOR_STR_BUFFER_SIZE] = "";
 
 static unsigned long fullnx = 0;
 static unsigned long fullny = 0;
-static unsigned long windowsx = 0;
-static unsigned long windowsy = 0;
-static unsigned long windownx = 0;
-static unsigned long windowny = 0;
+static unsigned long unbinnedwindowsx = 0;
+static unsigned long unbinnedwindowsy = 0;
+static unsigned long unbinnedwindownx = 0;
+static unsigned long unbinnedwindowny = 0;
 
 static unsigned long binning = 1;
 
@@ -366,7 +366,7 @@ detectorrawopen(char *identifier)
 
   }
 
-  return detectorrawsetwindow(0, 0, 0, 0);
+  return detectorrawsetunbinnedwindow(0, 0, 0, 0);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -874,7 +874,7 @@ detectorrawsetreadmode(const char *newreadmode)
 ////////////////////////////////////////////////////////////////////////
 
 const char *
-detectorrawsetwindow(unsigned long newsx, unsigned long newsy, unsigned long newnx, unsigned long newny)
+detectorrawsetunbinnedwindow(unsigned long newsx, unsigned long newsy, unsigned long newnx, unsigned long newny)
 {
   DETECTOR_CHECK_OPEN();
   if (newsx == 0 && newnx == 0) {
@@ -883,10 +883,10 @@ detectorrawsetwindow(unsigned long newsx, unsigned long newsy, unsigned long new
   if (newsy == 0 && newny == 0) {
     newny = fullny;
   }
-  windowsx = newsx;
-  windowsy = newsy;
-  windownx = newnx;
-  windowny = newny;
+  unbinnedwindowsx = newsx;
+  unbinnedwindowsy = newsy;
+  unbinnedwindownx = newnx;
+  unbinnedwindowny = newny;
   return detectorrawsetbinning(1);
 }
 
@@ -917,14 +917,14 @@ detectorrawsetbinning(unsigned long newbinning)
   if (newbinning > maxbinning)
     DETECTOR_ERROR(msg("requested binning (%d) exceeds maximum supported binning (%d)", newbinning, maxbinning));
 
-  status = SetImage(newbinning, newbinning, windowsx + 1, windowsx + windownx, windowsy + 1, windowsy + windowny);
+  status = SetImage(newbinning, newbinning, unbinnedwindowsx + 1, unbinnedwindowsx + unbinnedwindownx, unbinnedwindowsy + 1, unbinnedwindowsy + unbinnedwindowny);
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR(msg("unable to set detector window and binning (status is %u).", status));
 
   binning = newbinning;
 
-  detectorrawsetpixnx(windownx / binning);
-  detectorrawsetpixny(windowny / binning);
+  detectorrawsetpixnx(unbinnedwindownx / binning);
+  detectorrawsetpixny(unbinnedwindowny / binning);
 
   DETECTOR_OK();
 }
@@ -988,14 +988,14 @@ detectorrawgetvalue(const char *name)
     snprintf(value, sizeof(value), "%d", igain);
   else if (strcmp(name, "emgain") == 0)
     snprintf(value, sizeof(value), "%d", emgain);
-  else if (strcmp(name, "windowsx") == 0)
-    snprintf(value, sizeof(value), "%lu", windowsx);
-  else if (strcmp(name, "windowsy") == 0)
-    snprintf(value, sizeof(value), "%lu", windowsy);
-  else if (strcmp(name, "windownx") == 0)
-    snprintf(value, sizeof(value), "%lu", windownx);
-  else if (strcmp(name, "windowny") == 0)
-    snprintf(value, sizeof(value), "%lu", windowny);
+  else if (strcmp(name, "unbinnedwindowsx") == 0)
+    snprintf(value, sizeof(value), "%lu", unbinnedwindowsx);
+  else if (strcmp(name, "unbinnedwindowsy") == 0)
+    snprintf(value, sizeof(value), "%lu", unbinnedwindowsy);
+  else if (strcmp(name, "unbinnedwindownx") == 0)
+    snprintf(value, sizeof(value), "%lu", unbinnedwindownx);
+  else if (strcmp(name, "unbinnedwindowny") == 0)
+    snprintf(value, sizeof(value), "%lu", unbinnedwindowny);
   else if (strcmp(name, "binning") == 0)
     snprintf(value, sizeof(value), "%lu", binning);
   else if (strcmp(name, "frametime") == 0)

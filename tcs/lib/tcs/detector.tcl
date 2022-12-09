@@ -120,7 +120,7 @@ namespace eval "detector" {
     if {![string equal $result ok]} {
       error $result
     }
-    detectorrawsetwindow 0 0 0 0
+    detectorrawsetunbinnedwindow 0 0 0 0
   }
   
   ######################################################################
@@ -272,7 +272,7 @@ namespace eval "detector" {
 
   }
   
-  proc setwindow {window} {
+  proc setunbinnedwindow {window} {
     log::debug "setting detector window to \"$window\"."
     checkisopen
     if {[string equal $window "full"]} {
@@ -286,7 +286,7 @@ namespace eval "detector" {
       set nx [dict get $window "nx"]
       set ny [dict get $window "ny"]
     }
-    set result [detectorrawsetwindow $sx $sy $nx $ny]
+    set result [detectorrawsetunbinnedwindow $sx $sy $nx $ny]
     if {![string equal $result ok]} {
       error $result
     }
@@ -492,7 +492,7 @@ namespace eval "detector" {
   variable softwaregain             {}
   variable rawsaturationlevel       65535
   variable saturationlevel          {}
-  variable window                   {}
+  variable unbinnedwindow           {}
   variable binning                  {}
   variable detectortemperature      {}
   variable housingtemperature       {}
@@ -570,9 +570,9 @@ namespace eval "detector" {
     return $saturationlevel
   }
 
-  proc getwindow {} {
-    variable window
-    return $window
+  proc getunbinnedwindow {} {
+    variable unbinnedwindow
+    return $unbinnedwindow
   }
 
   proc getbinning {} {
@@ -673,7 +673,7 @@ namespace eval "detector" {
     variable cycletime
     variable softwaregain
     variable saturationlevel
-    variable window
+    variable unbinnedwindow
     variable binning
     variable detectortemperature
     variable detectorheatercurrent
@@ -724,11 +724,11 @@ namespace eval "detector" {
       return
     }
 
-    set window [dict create \
-      "sx" [detectorrawgetvalue "windowsx"] \
-      "sy" [detectorrawgetvalue "windowsy"] \
-      "nx" [detectorrawgetvalue "windownx"] \
-      "ny" [detectorrawgetvalue "windowny"] \
+    set unbinnedwindow [dict create \
+      "sx" [detectorrawgetvalue "unbinnedwindowsx"] \
+      "sy" [detectorrawgetvalue "unbinnedwindowsy"] \
+      "nx" [detectorrawgetvalue "unbinnedwindownx"] \
+      "ny" [detectorrawgetvalue "unbinnedwindowny"] \
     ]
     set readmode                 [detectorrawgetvalue "readmode"]
     set adc                      [detectorrawgetvalue "adc"]

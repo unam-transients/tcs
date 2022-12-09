@@ -410,7 +410,7 @@ namespace eval "html" {
         writehtmlrow "Detector cycle time" [format "%.1f ms" [expr {1e3 * [client::getdata $server "detectorcycletime"]}]]
       }
       writehtmlrow "Detector software gain"        [formatifok "%d" [client::getdata $server "detectorsoftwaregain"]]
-      writehtmlfullrow "Detector window"           [client::getdata $server "detectorwindow"]
+      writehtmlfullrow "Detector window"           [client::getdata $server "detectorunbinnedwindow"]
       writehtmlrow "Detector binning"              [formatifok "%d" [client::getdata $server "detectorbinning"]]
       writehtmlrow "Cooler state"                  [format "%s" [client::getdata $server "detectorcoolerstate"]]
       writehtmlrow "Cooler set temperature"        [formatifok "%+.1f C" [client::getdata $server "detectorcoolersettemperature"]]

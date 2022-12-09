@@ -57,7 +57,7 @@ extern const char *detectorrawgetvalue(const char *);
 
 extern const char *detectorrawsetcooler(const char *);
 extern const char *detectorrawsetreadmode(const char *);
-extern const char *detectorrawsetwindow(unsigned long, unsigned long, unsigned long, unsigned long);
+extern const char *detectorrawsetunbinnedwindow(unsigned long, unsigned long, unsigned long, unsigned long);
 extern const char *detectorrawsetbinning(unsigned long);
 
 extern const char *detectorrawexpose(double, const char *);
