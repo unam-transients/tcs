@@ -779,7 +779,7 @@ namespace eval "ccd" {
         server::setdata "fwhm" $fwhm
         server::setdata "fwhmpixels" $fwhmpixels
         log::info [format \
-          "FWHM is %.2fas (%.2f pixels with binning $binning) in filter %s in %s seconds." \
+          "FWHM is %.2f arcssec (%.2f pixels with binning $binning) in filter %s in %s seconds." \
           [astrometry::radtoarcsec $fwhm] $fwhmpixels $filter $exposuretime \
         ]
       }

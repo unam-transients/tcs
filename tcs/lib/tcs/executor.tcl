@@ -217,13 +217,14 @@ namespace eval "executor" {
         eval analyze $analyzetypes
         client::update $detector
         set fitsfilename [file tail [client::getdata $detector "fitsfilename"]]
-        set fwhm         [client::getdata $detector "fwhm"]
+        set fwhm         [astrometry::radtoarcsec [client::getdata $detector "fwhm"]]
+        set fwhmpixels   [client::getdata $detector "fwhmpixels"]
         set binning      [client::getdata $detector "detectorbinning"]
         set filter       [client::getdata $detector "filter"]
         if {[string equal "$fwhm" ""]} {
           log::info [format "$fitsfilename: FWHM is unknown with binning $binning in filter $filter at secondary position $z0 in %.0f seconds." $exposuretime]
         } else {
-          log::info [format "$fitsfilename: FWHM is %.2f pixels with binning $binning in filter $filter at secondary position $z0 in %.0f seconds." $fwhm $exposuretime]
+          log::info [format "$fitsfilename: FWHM is %.2f arcsec (%.2f pixels with binning $binning) in filter $filter at secondary position $z0 in %.0f seconds." $fwhm $fwhmpixels $exposuretime]
           lappend z0list   $z0
           lappend fwhmlist $fwhm
         }
@@ -256,14 +257,15 @@ namespace eval "executor" {
         foreach detector $detectors {
           client::update $detector
           set fitsfilename [file tail [client::getdata $detector "fitsfilename"]]
-          set fwhm         [client::getdata $detector "fwhm"]
+          set fwhm         [astrometry::radtoarcsec [client::getdata $detector "fwhm"]]
+          set fwhmpixels   [client::getdata $detector "fwhmpixels"]
           set binning      [client::getdata $detector "detectorbinning"]
           set filter       [client::getdata $detector "filter"]
           if {[string equal "$fwhm" ""]} {
             log::summary [format "$fitsfilename: witness FWHM is unknown with binning $binning in filter $filter at secondary position $z0 in $exposuretime seconds."]
             set success false
           } else {
-            log::summary [format "$fitsfilename: witness FWHM is %.2f pixels with binning $binning in filter $filter at secondary position $z0 in $exposuretime seconds." $fwhm]
+            log::summary [format "$fitsfilename: witness FWHM is %.2f arcsec (%.2f pixels with binning $binning) in filter $filter at secondary position $z0 in $exposuretime seconds." $fwhm $fwhmpixels]
             if {[catch {
               client::update "secondary"
               set T [client::getdata "secondary" "T"]
@@ -299,14 +301,15 @@ namespace eval "executor" {
     foreach detector $detectors {
       client::update $detector
       set fitsfilename [file tail [client::getdata $detector "fitsfilename"]]
-      set fwhm         [client::getdata $detector "fwhm"]
+      set fwhm         [astrometry::radtoarcsec [client::getdata $detector "fwhm"]]
+      set fwhmpixels   [client::getdata $detector "fwhmpixels"]
       set binning      [client::getdata $detector "detectorbinning"]
       set filter       [client::getdata $detector "filter"]
       set exposuretime [client::getdata $detector "exposuretime"]
       if {[string equal "$fwhm" ""]} {
         log::summary [format "$fitsfilename: witness FWHM is unknown with binning $binning in filter $filter in %.0f seconds." $exposuretime]
       } else {
-        log::summary [format "$fitsfilename: witness FWHM is %.2f pixels with binning $binning in filter $filter in %.0f seconds." $fwhm $exposuretime]
+        log::summary [format "$fitsfilename: witness FWHM is %.2f arcsec (%.2f pixels with binning $binning) in filter $filter in %.0f seconds." $fwhm $fwhmpixels $exposuretime]
         if {[catch {
           client::update "secondary"
           set T [client::getdata "secondary" "T"]
