@@ -225,12 +225,12 @@ namespace eval "fitfocus" {
     }
     foreach x $xlist y $ylist chi $chilist {
       if {$y <= $maxfwhm && abs($chi) <= $maxabschi} {
-        log::info [format "fitfocus $detector: FWHM = %4.1f pixels at %d (chi = %+6.2f)" $y $x $chi]
+        log::info [format "fitfocus $detector: FWHM = %4.2fas at %d (chi = %+6.2f)" $y $x $chi]
       } else {
-        log::info [format "fitfocus $detector: FWHM = %4.1f pixels at %d (chi = %+6.2f rejected)" $y $x $chi]
+        log::info [format "fitfocus $detector: FWHM = %4.2fas at %d (chi = %+6.2f rejected)" $y $x $chi]
       }
     }
-    log::info [format "fitfocus $detector: model minimum: FWHM = %.1f pixels at %d." $miny $minx]
+    log::info [format "fitfocus $detector: model minimum: FWHM = %.2fas at %d." $miny $minx]
     return $minx
   }
   
