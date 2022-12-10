@@ -1125,7 +1125,7 @@ namespace eval "ccd" {
     return
   }
 
-  proc setunbinnedwindow {window} {
+  proc setwindow {window} {
     set start [utcclock::seconds]
     log::info "setting window to $window."
     server::checkstatus
