@@ -475,7 +475,7 @@ namespace eval "html" {
         [formatoffsetifdouble [client::getdata $server "lastcorrectioneastoffset"]] \
         [formatoffsetifdouble [client::getdata $server "lastcorrectionnorthoffset"]]
       writehtmlrow "FWHM" \
-        [formatifok "%.2f pixels" [client::getdata $server "fwhm"]]
+        [formatarcsecifdouble "%.2fas" [client::getdata $server "fwhm"]]
       writehtmlrow "Average and Standard Deviation" \
         [formatifok "%.1f" [client::getdata $server "average"]] \
         [formatifok "%.1f" [client::getdata $server "standarddeviation"]] \
