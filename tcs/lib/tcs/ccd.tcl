@@ -729,7 +729,7 @@ namespace eval "ccd" {
   proc analyzeactivitycommand {type} {
     variable identifier
     set start [utcclock::seconds]
-    log::info "analyzing last exposure."
+    log::info "analyzing current exposure."
     coroutine::yield
     set fitsfilename [server::getdata "fitsfilename"]
     set currentfilename [file join [directories::var] $identifier "current.fits"]
@@ -763,19 +763,25 @@ namespace eval "ccd" {
       set fitsfwhmchannel {}
       if {
         [string equal $line ""] ||
-        [scan $line "%f %f %f" fwhm x y] != 3
+        [scan $line "%f %f %f" fwhmpixels x y] != 3
       } {
         log::debug "fitsfwhm failed: \"$line\"."
         log::info "unable to determine FWHM."
       } else {
-        set fwhm [format "%.2f" $fwhm]
-        set x [format "%.2f" $x]
-        set y [format "%.2f" $y]
-        server::setdata "fwhm" $fwhm
         set binning      [server::getdata "detectorbinning"]
         set filter       [server::getdata "filter"]
         set exposuretime [server::getdata "exposuretime"]
-        log::info "FWHM is $fwhm pixels with binning $binning in filter $filter in ${exposuretime} seconds."
+        variable detectorunbinnedpixelscale
+        set fwhm [expr {$fwhmpixels * $binning * $detectorunbinnedpixelscale}]
+        set fwhmpixels [format "%.2f" $fwhmpixels]
+        set x [format "%.2f" $x]
+        set y [format "%.2f" $y]
+        server::setdata "fwhm" $fwhm
+        server::setdata "fwhmpixels" $fwhmpixels
+        log::info [format \
+          "FWHM is %.2fas (%.2f pixels with binning $binning) in filter %s in %s seconds." \
+          [astrometry::radtoarcsec $fwhm] $fwhmpixels $filter $exposuretime \
+        ]
       }
     } elseif {[string equal $type "astrometry"]} {
       variable solvingchannel
@@ -992,9 +998,9 @@ namespace eval "ccd" {
     } {
       error "invalid analysis type \"$type\"."
     }
-    if {[string equal [server::getdata "fitsfilename"] ""]} {
-      error "no previous exposure to analyze."
-    }
+#    if {[string equal [server::getdata "fitsfilename"] ""]} {
+#      error "no previous exposure to analyze."
+#    }
     server::newactivitycommand "analyzing" "idle" \
       "ccd::analyzeactivitycommand $type"
     return
