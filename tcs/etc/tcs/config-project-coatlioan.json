@@ -317,7 +317,7 @@
     "allowedzerror": "1",
     "zdeadzonewidth": "5",
     "dztweak": "-25",
-    "dzdT": "-9.26",
+    // "dzdT": "-9.26",
     "temperaturesensor": "enclosure-temperature",
     "dzfilter": {
       "open"  : "0",
