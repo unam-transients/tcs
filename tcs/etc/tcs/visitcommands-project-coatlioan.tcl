@@ -239,9 +239,9 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
 
 ########################################################################
 
-proc coarsefocusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}} {
+proc coarsefocussecondaryvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}} {
 
-  log::summary "coarsefocusvisit: starting."
+  log::summary "coarsefocussecondaryvisit: starting."
   
   setsecondaryoffset 0
   
@@ -251,19 +251,19 @@ proc coarsefocusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefa
   setbinning 2
   movefilterwheel "$filter"
   waituntiltracking
-  log::summary "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning 2."
+  log::summary "coarsefocussecondaryvisit: focusing in filter $filter with $exposuretime second exposures and binning 2."
   focussecondary C0 $exposuretime 300 30 false true
   
-  log::summary "coarsefocusvisit: finished."
+  log::summary "coarsefocussecondaryvisit: finished."
 
   return true
 }
 
 ########################################################################
 
-proc focusvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
+proc focussecondaryvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
 
-  log::summary "focusvisit: starting."
+  log::summary "focussecondaryvisit: starting."
   track
   setreadmode $readmode
   setwindow "default"
@@ -271,11 +271,11 @@ proc focusvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} 
   movefilterwheel $filter
   waituntiltracking
 
-  log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
-  log::summary "focusvisit: readmode is $readmode."
+  log::summary "focussecondaryvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
+  log::summary "focussecondaryvisit: readmode is $readmode."
   focussecondary C0 $exposuretime 100 10 true false
   
-  log::summary "focusvisit: finished."
+  log::summary "focussecondaryvisit: finished."
 
   return true
 }
