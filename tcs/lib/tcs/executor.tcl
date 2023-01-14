@@ -265,11 +265,11 @@ namespace eval "executor" {
           set binning      [client::getdata $detector "detectorbinning"]
           set filter       [client::getdata $detector "filter"]
           if {[string equal "$fwhm" ""]} {
-            log::summary [format "$fitsfilename: witness FWHM is unknown with binning $binning in filter $filter at secondary position $z0 in $exposuretime seconds."]
+            log::summary [format "$fitsfilename: $detector witness FWHM is unknown (with binning $binning) in filter $filter at secondary position $z0 in $exposuretime seconds."]
             set success false
           } else {
             log::summary [format \
-              "$fitsfilename: witness FWHM is %.2fas (%.2f pixels with binning $binning) in filter $filter at secondary position $z0 in $exposuretime seconds." \
+              "$fitsfilename: $detector witness FWHM is %.2fas (%.2f pixels with binning $binning) in filter $filter at secondary position $z0 in $exposuretime seconds." \
               [astrometry::radtoarcsec $fwhm] $fwhmpixels \
             ]
             if {[catch {
