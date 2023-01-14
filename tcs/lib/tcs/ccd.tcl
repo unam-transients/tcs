@@ -67,6 +67,7 @@ namespace eval "ccd" {
   variable focuserbacklashoffset           [config::getvalue $identifier "focuserbacklashoffset"          ]
   variable focusercorrectionmodel          [config::getvalue $identifier "focusercorrectionmodel" ]
   variable allowedfocuserpositionerror     [config::getvalue $identifier "allowedfocuserpositionerror"    ]
+  variable focuserfilteroffset             [config::getvalue $identifier "focuserfilteroffset"            ]
   variable isstandalone                    [config::getvalue $identifier "isstandalone"                   ]
   variable detectorunbinnedpixelscale      [astrometry::parseangle [config::getvalue $identifier "detectorunbinnedpixelscale"]]
   variable pointingmodelparameters         [config::getvalue $identifier "pointingmodelparameters"        ]
@@ -482,10 +483,10 @@ namespace eval "ccd" {
     variable detectorinitialbinning
     detector::setbinning $detectorinitialbinning
     setcoolerhelper "closed"
-    movefilterwheelactivitycommand "initial" true
     variable focuserinitialposition
     movefocuseractivitycommand $focuserinitialposition
     checkfocuserpositionerror "after initializing"
+    movefilterwheelactivitycommand "initial" true
     log::info [format "finished initializing after %.1f seconds." [utcclock::diff now $start]]
   }
   
@@ -838,6 +839,7 @@ namespace eval "ccd" {
       filterwheel::waitwhilemoving
     }
     log::info [format "finished moving filter wheel after %.1f seconds." [utcclock::diff now $start]]
+    movefocuseractivitycommand [server::getdata "requestedfocuserposition"]
   }
   
   proc setfocusercorrection {} {
@@ -850,6 +852,11 @@ namespace eval "ccd" {
       log::debug [format "determining focuser correction for X = %.2f." $X]
       log::debug "focuser correction model is $focusercorrectionmodel."
       set correction 0
+      variable focuserfilteroffset
+      set filter [server::getdata "filter"]
+      if {[dict exists $focuserfilteroffset $filter]} {
+        set correction [expr {$correction + [dict get $focuserfilteroffset $filter]}]
+      }
       if {[dict exists $focusercorrectionmodel "C"]} {
         set correction [expr {$correction + [dict get $focusercorrectionmodel "C"]}]
       }
