@@ -474,7 +474,7 @@ namespace eval "instrument" {
           set z [client::getdata $detector "focuserposition"]
           if {![string equal $w ""]} {
             set channel [::open $filename "a"]
-            puts $channel [format "%.0f %.2f" $z $w]
+            puts $channel [format "%.0f %.2e" $z $w]
             ::close $channel
           }
         }
@@ -550,10 +550,10 @@ namespace eval "instrument" {
           set exposuretime [client::getdata $detector "exposuretime"]
           set z            [client::getdata $detector "focuserposition"]
           if {[string equal "$w" ""]} {
-            log::summary [format "witness $detector: $fitsfilename: FWHM is unknown with binning $binning in filter $filter at position $z in %.0f seconds." $exposuretime]
+            log::summary [format "$fitsfilename: $detector witness FWHM is unknown (with binning $binning) in filter $filter at focuser position $z in $exposuretime seconds."]
           } else {
             log::summary [format \
-              "witness $detector: $fitsfilename: FWHM is %.2fas (%.2f pixels with binning $binning) in filter $filter at position $z in $exposuretime seconds." \
+              "$fitsfilename: $detector witness FWHM is %.2fas (%.2f pixels with binning $binning) in filter $filter at focuser position $z in $exposuretime seconds." \
               [astrometry::radtoarcsec $fwhm] $fwhmpixels \
             ]
           }
