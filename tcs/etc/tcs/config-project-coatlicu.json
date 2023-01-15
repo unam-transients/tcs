@@ -147,7 +147,7 @@
     "focuseridentifier": "null",
     "focuserinitialposition": 0,
     "focuserbacklashoffset": 0,
-    "focusercorrectionmodel": {},
+    "focuserdzmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": false,
     "fitsfwhmargs": {
