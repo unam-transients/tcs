@@ -65,9 +65,8 @@ namespace eval "ccd" {
   variable focuseridentifier               [config::getvalue $identifier "focuseridentifier"              ]
   variable focuserinitialposition          [config::getvalue $identifier "focuserinitialposition"         ]
   variable focuserbacklashoffset           [config::getvalue $identifier "focuserbacklashoffset"          ]
-  variable focusercorrectionmodel          [config::getvalue $identifier "focusercorrectionmodel" ]
+  variable focuserdzmodel                  [config::getvalue $identifier "focuserdzmodel"                 ]
   variable allowedfocuserpositionerror     [config::getvalue $identifier "allowedfocuserpositionerror"    ]
-  variable focuserfilteroffset             [config::getvalue $identifier "focuserfilteroffset"            ]
   variable isstandalone                    [config::getvalue $identifier "isstandalone"                   ]
   variable detectorunbinnedpixelscale      [astrometry::parseangle [config::getvalue $identifier "detectorunbinnedpixelscale"]]
   variable pointingmodelparameters         [config::getvalue $identifier "pointingmodelparameters"        ]
@@ -98,7 +97,9 @@ namespace eval "ccd" {
   server::setdata "focuserrawposition"                ""
   server::setdata "requestedfocuserposition"          ""
   server::setdata "requestedfocuserrawposition"       ""
-  server::setdata "focusercorrection"                 0
+  server::setdata "focuserdz"                         0
+  server::setdata "focuserdzfilter"                   0
+  server::setdata "focuserdzposition"                 0
   server::setdata "exposuretime"                      ""
   server::setdata "fitsfilename"                      ""
   server::setdata "lastcorrectiontimestamp"           ""
@@ -142,8 +143,8 @@ namespace eval "ccd" {
     set lastfocuserrawposition [server::getdata "focuserrawposition"]
     set focuserrawposition     [focuser::getposition]
     set lastfocuserposition    [server::getdata "focuserposition"]
-    set focusercorrection      [server::getdata "focusercorrection"]
-    set focuserposition        [expr {$focuserrawposition - $focusercorrection}]
+    set focuserdz              [server::getdata "focuserdz"]
+    set focuserposition        [expr {$focuserrawposition - $focuserdz}]
 
     set requestedfocuserrawposition [server::getdata "requestedfocuserrawposition"]
     if {[catch {
@@ -842,36 +843,49 @@ namespace eval "ccd" {
     movefocuseractivitycommand [server::getdata "requestedfocuserposition"]
   }
   
-  proc setfocusercorrection {} {
-    variable focusercorrectionmodel
+  proc setfocuserdz {} {
+
     if {[catch {client::update "target"}]} {
+
       log::warning "unable to determine focuser correction."
       set correction 0
+
     } else {
+
+      variable focuserdzmodel
+      log::debug "focuser correction model is $focuserdzmodel."
+
+      set filter [server::getdata "filter"]
+      if {[dict exists $focuserdzmodel "filter" $filter]} {
+        set dzfilter [expr {$correction + [dict get $focuserdzmodel "filter" $filter]}]
+      } else {
+        set dzfilter 0
+      }
+      
       set X [client::getdata "target" "observedairmass"]
       log::debug [format "determining focuser correction for X = %.2f." $X]
-      log::debug "focuser correction model is $focusercorrectionmodel."
-      set correction 0
-      variable focuserfilteroffset
-      set filter [server::getdata "filter"]
-      if {[dict exists $focuserfilteroffset $filter]} {
-        set correction [expr {$correction + [dict get $focuserfilteroffset $filter]}]
+      set dzposition 0
+      if {[dict exists $focuserdzmodel "position" "C"]} {
+        set dzposition [expr {$dzposition + [dict get $focuserdzmodel "position" "C"]}]
       }
-      if {[dict exists $focusercorrectionmodel "C"]} {
-        set correction [expr {$correction + [dict get $focusercorrectionmodel "C"]}]
+      if {[dict exists $focuserdzmodel "position" "XM"]} {
+        set dzposition [expr {$dzposition + [dict get $focuserdzmodel "position" "XM"] * ($X - 1)}]
       }
-      if {[dict exists $focusercorrectionmodel "XM"]} {
-        set correction [expr {$correction + [dict get $focusercorrectionmodel "XM"] * ($X - 1)}]
-      }
-      if {[dict exists $focusercorrectionmodel "XM2"]} {
-        set correction [expr {$correction + [dict get $focusercorrectionmodel "XM2"] * ($X - 1) * ($X - 1)}]
-      }
-      set correction [expr {int($correction)}]
+      if {[dict exists $focuserdzmodel "position" "XM2"]} {
+        set dzposition [expr {$dzposition + [dict get $focuserdzmodel "position" "XM2"] * ($X - 1) * ($X - 1)}]
+      }            
+      set dzposition [expr {int($dzposition)}]
+
     }
-    server::setdata "focusercorrection" $correction
-    log::debug "focuser correction is $correction."
+    
+    set dz [expr {$dzfilter + $dzposition}]
+    log::debug "focuser correction is $dz."
+    server::setdata "focuserdzfilter"   $dzfilter
+    server::setdata "focuserdzposition" $dzposition
+    server::setdata "focuserdz"         $dz
+
     set requestedposition [server::getdata "requestedfocuserposition"]
-    set requestedrawposition [expr {$requestedposition + $correction}]
+    set requestedrawposition [expr {$requestedposition + $dz}]
     server::setdata "requestedfocuserrawposition" $requestedrawposition
     log::debug "focuser raw position is $requestedrawposition."
   }
@@ -881,7 +895,7 @@ namespace eval "ccd" {
     log::info "moving focuser to position $newposition."
     coroutine::yield
     server::setdata "requestedfocuserposition" $newposition
-    setfocusercorrection
+    setfocuserdz
     set newrawposition [server::getdata "requestedfocuserrawposition"]
     set rawposition [focuser::getposition]
     if {[server::getdata "focusermaxposition"] != 0 && $rawposition != $newrawposition} {
@@ -910,7 +924,7 @@ namespace eval "ccd" {
     log::info "setting focuser to position $newposition."
     coroutine::yield
     server::setdata "requestedfocuserposition" $newposition
-    setfocusercorrection
+    setfocuserdz
     set newrawposition [server::getdata "requestedfocuserrawposition"]
     set rawposition [server::getdata "focuserrawposition"]
     focuser::setposition $newrawposition

@@ -100,7 +100,7 @@
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:5:1.0",
     "focuserinitialposition": 40000,
     "focuserbacklashoffset": "-450",
-    "focusercorrectionmodel": {},
+    "focuserdzmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
@@ -175,7 +175,7 @@
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:5:1.0",
     "focuserinitialposition": 40000,
     "focuserbacklashoffset": "-450",
-    "focusercorrectionmodel": {},
+    "focuserdzmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
@@ -250,7 +250,7 @@
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:7:1.0",
     "focuserinitialposition": 40000,
     "focuserbacklashoffset": "-450",
-    "focusercorrectionmodel": {},
+    "focuserdzmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
@@ -325,7 +325,7 @@
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:8:1.0",
     "focuserinitialposition": 40000,
     "focuserbacklashoffset": "-450",
-    "focusercorrectionmodel": {},
+    "focuserdzmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
@@ -399,7 +399,7 @@
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:8:1.0",
     "focuserinitialposition": 40000,
     "focuserbacklashoffset": "-450",
-    "focusercorrectionmodel": {},
+    "focuserdzmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
@@ -473,7 +473,7 @@
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:7:1.0",
     "focuserinitialposition": 40000,
     "focuserbacklashoffset": "-450",
-    "focusercorrectionmodel": {},
+    "focuserdzmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
