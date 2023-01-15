@@ -363,8 +363,8 @@ namespace eval "fitsheader" {
     writekeysandvaluesforcomponent $channel secondary $prefix "SC" {
       requestedz0       RQZ0  double
       requestedz        RQZ   double
-      dzT               DZT   double
-      dzP               DZP   double
+      dztemperature     DZT   double
+      dzposition        DZP   double
       dzoffset          DZO   double
       dzfilter          DZF   double
       z                 Z     double
