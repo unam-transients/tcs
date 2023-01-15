@@ -276,12 +276,12 @@ namespace eval "executor" {
               client::update "secondary"
               set T [client::getdata "secondary" "T"]
               set z [client::getdata "secondary" "z"]
-              set dzT [client::getdata "secondary" "dzT"]
-              set dzP [client::getdata "secondary" "dzP"]
+              set dztemperature [client::getdata "secondary" "dztemperature"]
+              set dzposition [client::getdata "secondary" "dzposition"]
               set channel [::open [file join [directories::vartoday] "focus.csv"] "a"]
               puts $channel [format \
                 "\"%s\",%.2f,%d,%.1f,\"%s\",%.2f,%.0f,%.0f,%.0f" \
-                $fitsfilename $fwhm $binning $exposuretime $filter $T $z $dzT $dzP \
+                $fitsfilename $fwhm $binning $exposuretime $filter $T $z $dztemperature $dzposition \
               ]
               ::close $channel
             } message]} {
@@ -323,12 +323,12 @@ namespace eval "executor" {
           client::update "secondary"
           set T [client::getdata "secondary" "T"]
           set z [client::getdata "secondary" "z"]
-          set dzT [client::getdata "secondary" "dzT"]
-          set dzP [client::getdata "secondary" "dzP"]
+          set dztemperature [client::getdata "secondary" "dztemperature"]
+          set dzposition [client::getdata "secondary" "dzposition"]
           set channel [::open [file join [directories::vartoday] "focus.csv"] "a"]
           puts $channel [format \
             "\"%s\",%.2f,%d,%.1f,\"%s\",%.2f,%.0f,%.0f,%.0f" \
-            $fitsfilename $fwhm $binning $exposuretime $filter $T $z $dzT $dzP \
+            $fitsfilename $fwhm $binning $exposuretime $filter $T $z $dztemperature $dzposition \
           ]
           ::close $channel
         } message]} {

@@ -28,9 +28,6 @@ package require "log"
 package require "coroutine"
 package require "server"
 
-config::setdefaultvalue "secondary" "dzdzenithdistance" 0
-config::setdefaultvalue "secondary" "dzdha"             0
-config::setdefaultvalue "secondary" "dzddelta"          0
 config::setdefaultvalue "secondary" "dzdT"              0
 config::setdefaultvalue "secondary" "temperaturesensor" ""
 config::setdefaultvalue "secondary" "dzfilter"          {}
@@ -40,18 +37,13 @@ namespace eval "secondary" {
   ######################################################################
 
   variable initialz0         [config::getvalue "secondary" "initialz0"        ]
-  variable dzdzenithdistance [config::getvalue "secondary" "dzdzenithdistance"]
-  variable dzdha             [config::getvalue "secondary" "dzdha"            ]
-  variable dzddelta          [config::getvalue "secondary" "dzddelta"         ]
-  variable dzdT              [config::getvalue "secondary" "dzdT"             ]
   variable temperaturesensor [config::getvalue "secondary" "temperaturesensor"]
   variable dztweak           [config::getvalue "secondary" "dztweak"          ]
   variable allowedzerror     [config::getvalue "secondary" "allowedzerror"    ]
   variable zdeadzonewidth    [config::getvalue "secondary" "zdeadzonewidth"   ]
   variable minz              [config::getvalue "secondary" "minz"             ]
   variable maxz              [config::getvalue "secondary" "maxz"             ]
-  
-  variable dzfilterdict      [config::getvalue "secondary" "dzfilter"]
+  variable dzmodel           [config::getvalue "secondary" "dzmodel"]
   
   ######################################################################
 
@@ -93,42 +85,48 @@ namespace eval "secondary" {
     }
   }
   
-  proc dzT {} {
-    variable dzdT
+  proc dztemperature {} {
+    variable dzmodel
     variable T
     getsensorsdata
-    if {[string is double -strict "$T"]} {
-      set dzT [expr {$dzdT * $T}]
-      set dzT [expr {int(round($dzT))}]
+    log::debug "dztemperature: dzmodel is $dzmodel."
+    if {[string is double -strict "$T"] && [dict exists $dzmodel "temperature" "dzdT"]} {
+      log::debug "dztemperature: dzdT is [dict get $dzmodel "temperature" "dzdT"]."
+      set dztemperature [expr {$T * [dict get $dzmodel "temperature" "dzdT"]}]
+      set dztemperature [expr {int(round($dztemperature))}]
     } else {
-      set dzT 0
+      set dztemperature 0
     }
-    return $dzT
+    log::debug "dztemperature: dztemperature is $dztemperature."
+    return $dztemperature
   }
   
-  proc dzP {} {
-    variable dzdzenithdistance
-    variable dzdha
-    variable dzddelta
+  proc dzposition {} {
+    variable dzmodel
     while {[catch {client::update "target"} message]} {
       log::warning "unable to determine the target data: $message"
     }
     set zenithdistance [client::getdata "target" "observedzenithdistance"]
     set ha             [client::getdata "target" "observedha"]
     set delta          [client::getdata "target" "observeddelta"]
-    set dzP [expr {
-      $dzdzenithdistance * (1 - cos($zenithdistance)) + 
-      $dzdha             * $ha + 
-      $dzddelta          * ($delta - [astrometry::latitude])
-    }]
-    set dzP [expr {int(round($dzP))}]
-    log::debug [format "zenithdistance = %.1fd; ha = %+.1fd; delta = %.1fd; dzP = %+d." \
+    set dzposition 0
+    if {[dict exists $dzmodel "position" "dzdcoszenithdistance"]} {
+      set dzposition [expr {$dzposition + (cos($zenithdistance) - 1) * [dict get "position" "dzdcoszenithdistance"]}]
+    }
+    if {[dict exists $dzmodel "position" "dzdha"]} {
+      set dzposition [expr {$dzposition + $ha * [dict get "position" "dzdha"]}]
+    }
+    if {[dict exists $dzmodel "position" "dzddelta"]} {
+      set dzposition [expr {$dzposition + ($delta - [astrometry::latitude]) * [dict get "position" "dzddelta"]}]
+    }
+    set dzposition [expr {int(round($dzposition))}]
+    log::debug [format "dzposition: zenithdistance = %.1fd; ha = %+.1fd; delta = %.1fd; dzposition = %+d." \
       [astrometry::radtodeg $zenithdistance] \
       [astrometry::radtodeg $ha] \
       [astrometry::radtodeg $delta] \
-      $dzP \
+      $dzposition \
     ]
-    return $dzP
+    return $dzposition
   }
 
   ######################################################################
@@ -142,17 +140,17 @@ namespace eval "secondary" {
     set dzfilter [server::getdata "dzfilter"]
     set dzoffset [server::getdata "dzoffset"]
     if {[string equal $z0 ""]} {
-      set dzT ""
-      set dzP ""
+      set dztemperature ""
+      set dzposition ""
       set z   ""
     } else {
-      set dzT [dzT]
-      set dzP [dzP]
-      set z   [expr {$z0 + $dzfilter + $dzT + $dzP + $dzoffset}]
+      set dztemperature [dztemperature]
+      set dzposition    [dzposition]
+      set z [expr {$z0 + $dzfilter + $dztemperature + $dzposition + $dzoffset}]
     }
-    server::setdata "dzT"         $dzT
-    server::setdata "dzP"         $dzP
-    server::setdata "requestedz"  $z
+    server::setdata "dztemperature" $dztemperature
+    server::setdata "dzposition"    $dzposition
+    server::setdata "requestedz"    $z
   }
   
   proc checkzerror {when} {
@@ -237,13 +235,11 @@ namespace eval "secondary" {
     server::checkactivityformove
     checkhardware "moveforfilter"
     variable dzfilter
-    variable dzfilterdict
-    if {[llength $dzfilterdict] == 0} {
-      set dzfilter 0
-    } elseif {![dict exists $dzfilterdict $filter]} {
-      error "invalid filter \"$filter\"."
+    variable dzmodel
+    if {[dict exists $dzmodel "filter" $filter]} {
+      set dzfilter [dict get $dzmodel "filter" $filter]
     } else {
-      set dzfilter [dict get $dzfilterdict $filter]
+      set dzfilter 0
     }
     set lastdzfilter [server::getdata "dzfilter"]
     server::setdata "dzfilter" $dzfilter

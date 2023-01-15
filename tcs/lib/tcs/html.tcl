@@ -976,8 +976,8 @@ namespace eval "html" {
         writehtmlrow "State" [client::getdata "secondary" "state"]
       }
       writehtmlrow "Requested position (z0)" [formatifok "%d" [client::getdata "secondary" "requestedz0"]]
-      writehtmlrow "Temperature correction (dzT)" [formatifok "%+d" [client::getdata "secondary" "dzT"]]
-      writehtmlrow "Position correction (dzP)" [formatifok "%+d" [client::getdata "secondary" "dzP"]]
+      writehtmlrow "Temperature correction " [formatifok "%+d" [client::getdata "secondary" "dztemperature"]]
+      writehtmlrow "Position correction" [formatifok "%+d" [client::getdata "secondary" "dzposition"]]
       writehtmlrow "Filter correction" [formatifok "%+d" [client::getdata "secondary" "dzfilter"]]
       writehtmlrow "Offset" [formatifok "%+d" [client::getdata "secondary" "dzoffset"]]
       writehtmlrow "Requested position (z)" [formatifok "%d" [client::getdata "secondary" "requestedz"]]
