@@ -21,6 +21,7 @@
 
 ########################################################################
 
+package require "astrometry"
 package require "client"
 package require "fitfocus"
 package require "safetyswitch"

@@ -249,10 +249,13 @@ proc coarsefocussecondaryvisit {{exposuretime 5} {filter "i"} {readmode "convent
   setreadmode $readmode
   setwindow "default"
   setbinning 2
+  client::request "C0" "movefocuser 0"
+  client::wait "C0"
   movefilterwheel "$filter"
   waituntiltracking
   log::summary "coarsefocussecondaryvisit: focusing in filter $filter with $exposuretime second exposures and binning 2."
   focussecondary C0 $exposuretime 300 30 false true
+  executor::setfocused
   
   log::summary "coarsefocussecondaryvisit: finished."
 
@@ -261,19 +264,22 @@ proc coarsefocussecondaryvisit {{exposuretime 5} {filter "i"} {readmode "convent
 
 ########################################################################
 
-proc focussecondaryvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
+proc focussecondaryvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}} {
 
   log::summary "focussecondaryvisit: starting."
   track
   setreadmode $readmode
   setwindow "default"
   setbinning 1
+  client::request "C0" "movefocuser 0"
+  client::wait "C0"
   movefilterwheel $filter
   waituntiltracking
 
   log::summary "focussecondaryvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
   log::summary "focussecondaryvisit: readmode is $readmode."
   focussecondary C0 $exposuretime 100 10 true false
+  executor::setfocused
   
   log::summary "focussecondaryvisit: finished."
 
@@ -282,7 +288,7 @@ proc focussecondaryvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingde
 
 ########################################################################
 
-proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
+proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}} {
 
   log::summary "focuswitnessvisit: starting."
 
@@ -313,6 +319,44 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefa
   log::summary "focuswitnessvisit: finished."
 
   return true
+}
+
+########################################################################
+
+proc coarsefocusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}} {
+
+  log::summary "coarsefocusvisit: starting."
+  track
+  setreadmode $readmode
+  setwindow "default"
+  setbinning 2
+  movefilterwheel $filter
+  waituntiltracking
+
+  executor::focus $exposuretime 100000 10000 true true
+  executor::setfocused
+
+  log::summary "coarsefocusvisit: finished."
+  return false
+}
+
+########################################################################
+
+proc focusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}} {
+
+  log::summary "focusvisit: starting."
+  track
+  setreadmode $readmode
+  setwindow "default"
+  setbinning 1
+  movefilterwheel $filter
+  waituntiltracking
+
+  executor::focus $exposuretime 60000 6000 true false
+  executor::setfocused
+
+  log::summary "focusvisit: finished."
+  return false
 }
 
 ########################################################################
@@ -357,7 +401,7 @@ proc pointingcorrectionvisit {{exposuretime 15} {filter "i"} {readmode "conventi
 
 ########################################################################
 
-proc donutvisit {{exposuretime 5} {filter "i"} {offset 400}} {
+proc donutvisit {{exposuretime 10} {filter "i"}} {
 
   log::summary "donutvisit: starting."
   setreadmode "conventionaldefault"
@@ -365,17 +409,44 @@ proc donutvisit {{exposuretime 5} {filter "i"} {offset 400}} {
   setbinning 1
   movefilterwheel $filter
 
-  setsecondaryoffset $offset
   track
   waituntiltracking
-  expose object $exposuretime
+  
+  set n 3
 
-  setsecondaryoffset -$offset
-  offset
-  waituntiltracking
-  expose object $exposuretime
+  log::summary "donutvisit: moving focuser to intrafocal position."
+  client::request "C0" "movefocuser 0"
+  client::wait "C0"
+  log::summary "donutvisit: taking intrafocal images."
+  set i 0
+  while {$i < $n} { 
+    expose object $exposuretime
+    incr i
+  }
+  
+  log::summary "donutvisit: moving focuser to nominal position."
+  client::request "C0" "movefocuser 57600"
+  client::wait "C0"
+  log::summary "donutvisit: taking nominal images."
+  set i 0
+  while {$i < $n} { 
+    expose object $exposuretime
+    incr i
+  }
 
-  setsecondaryoffset 0
+  log::summary "donutvisit: moving focuser to extrafocal position."
+  client::request "C0" "movefocuser 115200"
+  client::wait "C0"
+  log::summary "donutvisit: taking extrafocal images."
+  set i 0
+  while {$i < $n} { 
+    expose object $exposuretime
+    incr i
+  }
+
+  log::summary "donutvisit: moving focuser to nominal position."
+  client::request "C0" "movefocuser 57600"
+  client::wait "C0"
 
   log::summary "donutvisit: finished."
 
