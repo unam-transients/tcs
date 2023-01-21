@@ -848,7 +848,7 @@ namespace eval "ccd" {
     if {[catch {client::update "target"}]} {
 
       log::warning "unable to determine focuser correction."
-      set correction 0
+      set dzfilter 0
 
     } else {
 
@@ -857,7 +857,7 @@ namespace eval "ccd" {
 
       set filter [server::getdata "filter"]
       if {[dict exists $focuserdzmodel "filter" $filter]} {
-        set dzfilter [expr {$correction + [dict get $focuserdzmodel "filter" $filter]}]
+        set dzfilter [dict get $focuserdzmodel "filter" $filter]
       } else {
         set dzfilter 0
       }
