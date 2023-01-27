@@ -249,7 +249,7 @@ proc coarsefocussecondaryvisit {{exposuretime 5} {filter "i"} {readmode "convent
   setreadmode $readmode
   setwindow "default"
   setbinning 2
-  client::request "C0" "movefocuser 0"
+  client::request "C0" "movefocuser 57600"
   client::wait "C0"
   movefilterwheel "$filter"
   waituntiltracking
@@ -264,14 +264,14 @@ proc coarsefocussecondaryvisit {{exposuretime 5} {filter "i"} {readmode "convent
 
 ########################################################################
 
-proc focussecondaryvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}} {
+proc focussecondaryvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
 
   log::summary "focussecondaryvisit: starting."
   track
   setreadmode $readmode
   setwindow "default"
   setbinning 1
-  client::request "C0" "movefocuser 0"
+  client::request "C0" "movefocuser 57600"
   client::wait "C0"
   movefilterwheel $filter
   waituntiltracking
@@ -288,7 +288,7 @@ proc focussecondaryvisit {{exposuretime 5} {filter "i"} {readmode "conventionald
 
 ########################################################################
 
-proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}} {
+proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
 
   log::summary "focuswitnessvisit: starting."
 
@@ -301,19 +301,28 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldef
   executor::movefilterwheel $filter
   executor::waituntiltracking
   
-  set dithers {
-      0as   0as
-    +30as +30as
-    -30as -30as
-    +30as -30as
-    -30as +30as
-  }
+  foreach filter {g r i z y w} {
+  
+   log::summary "focuswitnessvisit: taking images in $filter."
 
-  foreach {eastoffset northoffset} $dithers {
-    executor::offset $eastoffset $northoffset "default"
-    executor::waituntiltracking
-    executor::expose object $exposuretime
-    executor::focuswitness
+  
+    movefilterwheel $filter
+
+    set dithers {
+        0as   0as
+      +30as +30as
+      -30as -30as
+      +30as -30as
+      -30as +30as
+    }
+
+    foreach {eastoffset northoffset} $dithers {
+      executor::offset $eastoffset $northoffset "default"
+      executor::waituntiltracking
+      executor::expose object $exposuretime
+      executor::focuswitness
+    }
+    
   }
 
   log::summary "focuswitnessvisit: finished."
@@ -342,7 +351,7 @@ proc coarsefocusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefa
 
 ########################################################################
 
-proc focusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}} {
+proc focusvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
 
   log::summary "focusvisit: starting."
   track
@@ -424,16 +433,6 @@ proc donutvisit {{exposuretime 10} {filter "i"}} {
     incr i
   }
   
-  log::summary "donutvisit: moving focuser to nominal position."
-  client::request "C0" "movefocuser 57600"
-  client::wait "C0"
-  log::summary "donutvisit: taking nominal images."
-  set i 0
-  while {$i < $n} { 
-    expose object $exposuretime
-    incr i
-  }
-
   log::summary "donutvisit: moving focuser to extrafocal position."
   client::request "C0" "movefocuser 115200"
   client::wait "C0"
