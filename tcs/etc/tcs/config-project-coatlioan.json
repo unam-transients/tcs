@@ -337,30 +337,30 @@
     "minz": "0",
     "maxz": "7000",
     "allowedzerror": "1",
-    "zdeadzonewidth": "5",
+    "zdeadzonewidth": "0",
     "dztweak": "-25",
     "temperaturesensor": "enclosure-temperature",
     "dzmodel": {
       "filter": {
         "open"  : "0",
         "dark"  : "0",
-        "g"     : "10",
-        "r"     : "0",
+        "g"     : "7",
+        "r"     : "13",
         "i"     : "0",
-        "z"     : "0",
-        "y"     : "0",
-        "w"     : "0",
-        "B"     : "0",
-        "V"     : "0",
-        "R"     : "0",
-        "I"     : "0",
-        "Is"    : "0",
-        "470/10": "0",
-        "515/10": "0", 
-        "640/10": "0",
-        "501/8" : "0",
-        "656/3" : "0",
-        "656/8" : "0"
+        "z"     : "-30",
+        "y"     : "-37",
+        "w"     : "24",
+        "B"     : "-2",
+        "V"     : "17",
+        "R"     : "10",
+        "I"     : "-30",
+        "Is"    : "-5",
+        "470/10": "-14",
+        "515/10": "-12", 
+        "640/10": "-18",
+        "501/8" : "6",
+        "656/3" : "-18",
+        "656/8" : "1"
       },
       "temperature": {
         "dzdT": "-9.26"
@@ -670,7 +670,7 @@
   "supervisor": {
     "withplc": "false",
     "internalhumiditysensor": "enclosure-humidity",
-    "openoffsetseconds": "0",
+    "openoffsetseconds": "600",
     "opentocooloffsetseconds": "1800"
   },
   "target": {
