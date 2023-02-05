@@ -52,7 +52,7 @@ then
   oan-coatli-services)
     set services control platform instrument
     ;;
-  ddotioan-services)
+  oan-ddoti-services)
     set services control platform instrument0 instrument1
     ;;
   colibriohp-*)

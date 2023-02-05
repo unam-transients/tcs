@@ -35,8 +35,8 @@ case $host in
 oan-coatli-*)
   ./configure --enable-project=coatli
   ;;
-ddotioan-*)
-  ./configure --enable-project=ddotioan
+oan-ddoti-*)
+  ./configure --enable-project=ddoti
   ;;
 colibricu-*)
   ./configure --enable-project=colibricu

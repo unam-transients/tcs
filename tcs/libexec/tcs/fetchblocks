@@ -42,8 +42,8 @@ then
   oan-coatli-*)
     url="https://github.com/alanwatsonforster/oan-coatli-blocks.git"
     ;;
-  ddotioan-*)
-    url="https://github.com/alanwatsonforster/ddotioan-blocks.git"
+  oan-ddoti-*)
+    url="https://github.com/alanwatsonforster/oan-ddoti-blocks.git"
     ;;
   *)
     error "unable to determing URL."

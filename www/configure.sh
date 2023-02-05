@@ -28,8 +28,8 @@ case $host in
 oan-coatli-control)
   ./configure SITE=coatli
   ;;
-ddotioan-services)
-  ./configure SITE=ddotioan-services
+oan-ddoti-control)
+  ./configure SITE=ddoti
   ;;
 colibricu-services)
   ./configure SITE=colibricu-services

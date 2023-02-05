@@ -32,24 +32,24 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
   cat <<"EOF"
 # Start of tcs epilog.
 
-10.0.1.1        firewall                ddotioan-firewall
-10.0.1.2        console                 ddotioan-console
-10.0.1.3        services                ddotioan-services
-10.0.1.4        ibb-220                 ddotioan-ibb-220
-10.0.1.5        ibb-127                 ddotioan-ibb-127
-10.0.1.6        mount                   ddotioan-mount
-10.0.1.7        serial                  ddotioan-serial
-10.0.1.8        access                  ddotioan-access
-10.0.1.9        control                 ddotioan-control
-10.0.1.10       airport-express         ddotioan-airport-express
-10.0.1.20       webcam-a                ddotioan-webcam-a
-10.0.1.21       webcam-b                ddotioan-webcam-b
-10.0.1.22       platform                ddotioan-platform
-10.0.1.23       instrument0             ddotioan-instrument0
-10.0.1.24       instrument1             ddotioan-instrument1
-10.0.1.99       spare                   ddotioan-spare
+10.0.1.1        firewall                oan-ddoti-firewall
+10.0.1.2        console                 oan-ddoti-console
+10.0.1.3        services                oan-ddoti-services
+10.0.1.4        ibb-220                 oan-ddoti-ibb-220
+10.0.1.5        ibb-127                 oan-ddoti-ibb-127
+10.0.1.6        mount                   oan-ddoti-mount
+10.0.1.7        serial                  oan-ddoti-serial
+10.0.1.8        access                  oan-ddoti-access
+10.0.1.9        control                 oan-ddoti-control
+10.0.1.10       airport-express         oan-ddoti-airport-express
+10.0.1.20       webcam-a                oan-ddoti-webcam-a
+10.0.1.21       webcam-b                oan-ddoti-webcam-b
+10.0.1.22       platform                oan-ddoti-platform
+10.0.1.23       instrument0             oan-ddoti-instrument0
+10.0.1.24       instrument1             oan-ddoti-instrument1
+10.0.1.99       spare                   oan-ddoti-spare
 
-132.248.4.26    webcam-c                ddotioan-webcam-c
+132.248.4.26    webcam-c                oan-ddoti-webcam-c
 EOF
 ) | 
 sudo cp /dev/stdin /etc/hosts.tmp
@@ -79,16 +79,12 @@ EOF
   case $host in
   control)
     cat <<"EOF"
-*  *  *  *  *  sleep 10; tcs updatesensorsfiles services control platform instrument0 instrument1
+*  *  *  *  *  sleep 10; tcs updatesensorsfiles control platform instrument0 instrument1
 *  *  *  *  *  tcs updateweatherfiles-oan
 00 18 *  *  *  tcs updateweatherfiles-oan -a
 *  *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
 00 00 *  *  *  tcs fetchblocks
 01 00 *  *  *  tcs loadblocks
-EOF
-    ;;
-  services)
-    cat <<"EOF"
 */5 *  *  *  *  sh /usr/local/var/www/tcs/plots.sh
 */5 *  *  *  *  tcs logsensors
 EOF
@@ -106,7 +102,7 @@ EOF
   echo "PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
   case $host in
-  services)
+  control)
     # Start the log server as soon as possible.
     echo "tcs startserver log &"
   esac
@@ -140,15 +136,15 @@ EOF
   case $host in
   instrument0)
     echo "tcs instrumentdataserver -f -d rsync://transients.astrossp.unam.mx/ddoti-raw/ &"
-    echo "tcs instrumentimageserver C2 services &"
-    echo "tcs instrumentimageserver C4 services &"
+    echo "tcs instrumentimageserver C2 control &"
+    echo "tcs instrumentimageserver C4 control &"
     ;;
   instrument1)
     echo "tcs instrumentdataserver -f -d rsync://transients.astrossp.unam.mx/ddoti-raw/ &"
-    echo "tcs instrumentimageserver C1 services &"
-    echo "tcs instrumentimageserver C3 services &"
+    echo "tcs instrumentimageserver C1 control &"
+    echo "tcs instrumentimageserver C3 control &"
     ;;
-  services)
+  control)
     echo "tcs instrumentimageserver C1 &"
     echo "tcs instrumentimageserver C2 &"
     echo "tcs instrumentimageserver C3 &"
@@ -185,7 +181,7 @@ sudo update-rc.d owserver disable
 # /etc/owfs.conf
 
 case $host in
-services|control|platform)
+control|platform)
   sudo cp /dev/stdin <<"EOF" /etc/owfs.conf.tmp
 server: device = /dev/ttyFTDI-ow
 server: port = localhost:4304
@@ -300,7 +296,7 @@ sudo rm -f /tmp/sudoers-tcs
 (
   echo 'ddoti ALL=(ALL) ALL'
   case $host in
-  services)
+  control)
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs reboot'
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs restart'
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs rebootinstrument'

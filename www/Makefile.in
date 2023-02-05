@@ -51,15 +51,16 @@ clean-coatli			:
 	
 ########################################################################
 
-all-ddotioan-services				:	docs-ddotioan-services/index.html		\
-							docs-ddotioan-services/documentation.html
-docs-ddotioan-services/index.html		:	docs-ddotioan-services/index.md
-docs-ddotioan-services/documentation.html	:	docs-ddotioan-services/documentation.md
+all-ddoti				        :	\
+    docs-ddoti/index.html		    \
+	docs-ddoti/documentation.html
+docs-ddoti/index.html	    	:	docs-ddoti/index.md
+docs-ddoti/documentation.html	:	docs-ddoti/documentation.md
 
-install-ddotioan-services			:	install-linux
+install-ddoti			:	install-linux
 
-clean-ddotioan-services				:
-	-rm -f docs-ddotioan-services/*.html
+clean-ddoti				:
+	-rm -f docs-ddoti/*.html
 	
 ########################################################################
 

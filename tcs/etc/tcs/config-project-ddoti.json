@@ -493,7 +493,7 @@
     "opentocoolposition": "60"
   },
   "executor": {
-    "type": "ddotioan"
+    "type": "ddoti"
   },
   "fitsheader": {
     "servers": [
@@ -1518,7 +1518,7 @@
     }
   },
   "telescope": {
-    "type": "ddotioan",
+    "type": "ddoti",
     "idleha": "0h",
     "idledelta": "30d",
     "closeexplicitly": "true"
