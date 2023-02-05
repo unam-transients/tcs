@@ -190,14 +190,14 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
   
   set dithers [lrange {
           0as   0as
-        +30as +30as
-        -30as -30as
-        +30as -30as
-        -30as +30as
-        +30as   0as
-        -30as   0as
-          0as +30as
-          0as -30as
+        +10as +10as
+        -10as -10as
+        +10as -10as
+        -10as +10as
+        +10as   0as
+        -10as   0as
+          0as +10as
+          0as -10as
       } 0 [expr {$gridpoints * 2 - 1}]]
 
   set gridrepeat 0
@@ -269,7 +269,7 @@ proc focussecondaryvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingde
   log::summary "focussecondaryvisit: starting."
   track
   setreadmode $readmode
-  setwindow "default"
+  setwindow "256x256"
   setbinning 1
   client::request "C0" "movefocuser 57600"
   client::wait "C0"
@@ -296,7 +296,7 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefa
   executor::track
 
   executor::setreadmode $readmode
-  executor::setwindow "default"
+  executor::setwindow "256x256"
   executor::setbinning 1
   executor::movefilterwheel $filter
   executor::waituntiltracking
@@ -310,10 +310,10 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefa
 
     set dithers {
         0as   0as
-      +30as +30as
-      -30as -30as
-      +30as -30as
-      -30as +30as
+      +10as +10as
+      -10as -10as
+      +10as -10as
+      -10as +10as
     }
 
     foreach {eastoffset northoffset} $dithers {
@@ -356,7 +356,7 @@ proc focusvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} 
   log::summary "focusvisit: starting."
   track
   setreadmode $readmode
-  setwindow "default"
+  setwindow "256x256"
   setbinning 1
   movefilterwheel $filter
   waituntiltracking
