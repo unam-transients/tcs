@@ -31,7 +31,7 @@ AC_SUBST(SITE)
 
 AC_CONFIG_FILES(
   Makefile
-  httpd.conf-coatlioan-services
+  httpd.conf-coatli
   httpd.conf-ddotioan-services
   httpd.conf-colibricu-services
   httpd.conf-colibriohp-services

@@ -38,16 +38,16 @@ usageerror () {
 
 host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
 case "$host" in
-coatlioan-services)
+oan-coatli-services)
   allargs="gcntan html"
   ;;
-coatlioan-control)
+oan-coatli-control)
   allargs="sensors power supervisor selector executor telescope mount enclosure secondary weather sun moon target"
   ;;
-coatlioan-instrument)
+oan-coatli-instrument)
   allargs="instrument C0"
   ;;
-coatlioan-platform)
+oan-coatli-platform)
   allargs="heater lights"
   ;;
 ddotioan-services)

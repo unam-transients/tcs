@@ -38,15 +38,16 @@ install						:	all install-$(SITE)
 	
 ########################################################################
 
-all-coatlioan-services				:	docs-coatlioan-services/index.html		\
-							docs-coatlioan-services/documentation.html
-docs-coatlioan-services/index.html		:	docs-coatlioan-services/index.md
-docs-coatlioan-services/documentation.html	:	docs-coatlioan-services/documentation.md
+all-coatli				            :   \
+    docs-coatli/index.html		        \
+	docs-coatli/documentation.html
+docs-oan-coatli/index.html  		:	docs-coatli/index.md
+docs-oan-coatli/documentation.html	:	docs-coatli/documentation.md
 
-install-coatlioan-services			:	install-linux
+install-coatli			:	install-linux
 
-clean-coatlioan-services			:
-	-rm -f docs-coatlioan-services/*.html
+clean-coatli			:
+	-rm -f docs-coatli/*.html
 	
 ########################################################################
 

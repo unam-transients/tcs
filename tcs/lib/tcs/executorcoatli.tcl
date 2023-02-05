@@ -23,7 +23,7 @@
 
 package require "directories"
 
-package provide "executorcoatlioan" 0.0
+package provide "executorcoatli" 0.0
 
 namespace eval "executor" {
 

@@ -25,4 +25,4 @@ PERFORMANCE OF THIS SOFTWARE.
 
 ## Technical Manual
 
-* [Technical Manual](https://github.com/alanwatsonforster/coatlioan-ddotioan-technical-manual/raw/main/ddotioan.pdf)
+* [Technical Manual](https://github.com/alanwatsonforster/oan-coatli-ddotioan-technical-manual/raw/main/ddotioan.pdf)

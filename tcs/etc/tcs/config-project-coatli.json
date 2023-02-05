@@ -175,7 +175,7 @@
     "opentocoolposition": "60"
   },
   "executor": {
-    "type": "coatlioan"
+    "type": "coatli"
   },
   "fitsheader": {
     "servers": [
@@ -522,17 +522,6 @@
         "identifier": "7E.3E3900001000",
         "firmware": ""
       },
-      "host-services-load": {
-        "file": "/usr/local/var/tcs/sensors/services/load",
-        "keyword": "",
-        "prettyname": "load on host services",
-        "group": "host-services",
-        "type": "float",
-        "unit": "processes",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
       "host-control-load": {
         "file": "/usr/local/var/tcs/sensors/control/load",
         "keyword": "",
@@ -562,17 +551,6 @@
         "group": "host-platform",
         "type": "float",
         "unit": "processes",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
-      "host-services-disk-space-used": {
-        "file": "/usr/local/var/tcs/sensors/services/disk-space-used",
-        "keyword": "",
-        "prettyname": "relative disk space used on host services",
-        "group": "host-services",
-        "type": "float",
-        "unit": "",
         "model": "",
         "identifier": "",
         "firmware": ""
@@ -690,7 +668,7 @@
     }
   },
   "telescope": {
-    "type": "coatlioan",
+    "type": "coatli",
     "idleha": "0h",
     "idledelta": "75d",
     "closeexplicitly": "true"

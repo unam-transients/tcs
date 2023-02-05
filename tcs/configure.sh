@@ -32,8 +32,8 @@ done
 
 host=$(uname -n | sed 's/\..*//')
 case $host in
-coatlioan-*)
-  ./configure --enable-project=coatlioan
+oan-coatli-*)
+  ./configure --enable-project=coatli
   ;;
 ddotioan-*)
   ./configure --enable-project=ddotioan

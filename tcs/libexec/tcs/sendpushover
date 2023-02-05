@@ -73,7 +73,7 @@ case $(uname -n) in
 ddotioan-*)
   from=a8unfz1ihyc1kgkcbnbmrb26g4fynf
   ;;
-coatlioan-*)
+oan-coatli-*)
   from=a211448fi9nio3gpj731v2red8o4nc
   ;;
 esac
