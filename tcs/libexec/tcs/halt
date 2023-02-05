@@ -32,10 +32,10 @@ export TCSLOGTOSTDERR=true
 
 host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
 case $host in
-*-services)
+*-control)
   ;;
 *)
-  echo 1>&2 "$program: error: must run on the services host." 
+  echo 1>&2 "$program: error: must run on the control host." 
   exit 1
   ;;
 esac
@@ -49,14 +49,14 @@ then
   coatlicu-*)
     set control instrument
     ;;
-  oan-coatli-services)
-    set services control platform instrument
+  oan-coatli-*)
+    set control platform instrument
     ;;
-  oan-ddoti-services)
-    set services control platform instrument0 instrument1
+  oan-ddoti-*)
+    set control platform instrument0 instrument1
     ;;
   colibriohp-*)
-    set services detectors
+    set control detectors
     ;;
   *)
     echo 2>&1 "$program: error: unknown host."
