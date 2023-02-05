@@ -240,6 +240,7 @@
   },
   "mount": {
     "type": "ntm",
+    "trackingsettlingdelayseconds": 1,
     "hapark": "6h",
     "deltapark": "85d",
     "haunpark": "12h",
