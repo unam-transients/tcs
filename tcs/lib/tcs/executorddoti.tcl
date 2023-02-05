@@ -21,7 +21,7 @@
 
 ########################################################################
 
-package provide "executorddotioan" 0.0
+package provide "executorddoti" 0.0
 
 namespace eval "executor" {
 

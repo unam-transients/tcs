@@ -39,9 +39,6 @@ usageerror () {
 
 host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
 case "$host" in
-oan-coatli-services)
-  allargs=""
-  ;;
 oan-coatli-control)
   allargs="html gcntan 1 sensors power weather 1 target 1 moon sun 1 secondary enclosure mount 1 telescope 1 executor selector supervisor"
   ;;
@@ -51,22 +48,16 @@ oan-coatli-instrument)
 oan-coatli-platform)
   allargs="lights heater"
   ;;
-ddotioan-control)
-  allargs="sensors power weather 1 target 1 moon sun 1 enclosure mount 1 telescope instrument 1 executor selector supervisor"
+oan-ddoti-control)
+  allargs="html gcntan 1 sensors power weather 1 target 1 moon sun 1 enclosure mount 1 telescope instrument 1 executor selector supervisor"
   ;;
-ddotioan-services)
-  allargs="html gcntan"
-  ;;
-ddotioan-a0)
-  allargs=""
-  ;;
-ddotioan-platform)
+oan-ddoti-platform)
   allargs="lights heater"
   ;;
-ddotioan-instrument0)
+oan-ddoti-instrument0)
   allargs="C2 C4"
   ;;
-ddotioan-instrument1)
+oan-ddoti-instrument1)
   allargs="C1 C3"
   ;;
 colibriohp-services)

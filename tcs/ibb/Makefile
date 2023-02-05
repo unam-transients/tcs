@@ -22,8 +22,8 @@
 all-coatli		:
 	PROJECT="coatli" make all
 
-all-ddotioan		:
-	PROJECT="ddotioan" make all
+all-ddoti		:
+	PROJECT="ddoti" make all
 
 all			:
 	mkdir -p etc/tcs

@@ -56,25 +56,25 @@ installs_project_coatli	:=		     \
 	plots-project-coatli.html         \
 	plots-project-coatli.sh
 
-installs_project_ddotioan	:=		     \
-	allsky-project-ddotioan.html		 \
-	C0-project-ddotioan.html  	     	 \
-	C1-project-ddotioan.html  	     	 \
-	C2-project-ddotioan.html  	     	 \
-	C3-project-ddotioan.html  	     	 \
-	C4-project-ddotioan.html  	     	 \
-	C5-project-ddotioan.html  	     	 \
-	config-project-ddotioan.js		     \
-	operations-project-ddotioan.html  	 \
+installs_project_ddoti	:=		     \
+	allsky-project-ddoti.html		 \
+	C0-project-ddoti.html  	     	 \
+	C1-project-ddoti.html  	     	 \
+	C2-project-ddoti.html  	     	 \
+	C3-project-ddoti.html  	     	 \
+	C4-project-ddoti.html  	     	 \
+	C5-project-ddoti.html  	     	 \
+	config-project-ddoti.js		     \
+	operations-project-ddoti.html  	 \
 	interface.html                       \
-	engineering-project-ddotioan.html    \
-	alerts-project-ddotioan.html	     \
-	webcam-a-project-ddotioan.html		 \
-	webcam-b-project-ddotioan.html		 \
-	webcam-c-project-ddotioan.html		 \
-	webcam-cz-project-ddotioan.html      \
-	plots-project-ddotioan.html          \
-	plots-project-ddotioan.sh
+	engineering-project-ddoti.html    \
+	alerts-project-ddoti.html	     \
+	webcam-a-project-ddoti.html		 \
+	webcam-b-project-ddoti.html		 \
+	webcam-c-project-ddoti.html		 \
+	webcam-cz-project-ddoti.html      \
+	plots-project-ddoti.html          \
+	plots-project-ddoti.sh
 
 installs_project_colibricu	:=		     \
 	allsky-project-colibricu.html      	 \

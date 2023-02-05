@@ -59,11 +59,11 @@ installs_project_coatli	    :=
 endif
 
 ifeq ($(UNAME_M),x86_64)
-installs_project_ddotioan	    :=	\
+installs_project_ddoti	    :=	\
 	detectorfli.so		    	    \
 	filterwheelnull.so
 else
-installs_project_ddotioan	    :=
+installs_project_ddoti	    :=
 endif
 
 ifeq ($(UNAME_M),x86_64)

@@ -23,13 +23,13 @@
 
 package require "astrometry"
 
-package provide "telescopeddotioan" 0.0
+package provide "telescopeddoti" 0.0
 
 namespace eval "telescope" {
 
   ######################################################################
   
-  variable identifier "ddotioan"
+  variable identifier "ddoti"
 
   ######################################################################
 

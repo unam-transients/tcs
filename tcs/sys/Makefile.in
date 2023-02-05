@@ -28,8 +28,8 @@ EXTRA_INSTALLS			:=	install-project-$(PROJECT)
 install-project-coatli	:
 	sh install-project-coatli.sh
 
-install-project-ddotioan	:
-	sh install-project-ddotioan.sh
+install-project-ddoti	:
+	sh install-project-ddoti.sh
 
 install-project-colibricu	:
 	sh install-project-colibricu.sh

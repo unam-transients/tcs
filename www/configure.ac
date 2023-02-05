@@ -32,7 +32,7 @@ AC_SUBST(SITE)
 AC_CONFIG_FILES(
   Makefile
   httpd.conf-coatli
-  httpd.conf-ddotioan-services
+  httpd.conf-ddoti
   httpd.conf-colibricu-services
   httpd.conf-colibriohp-services
   httpd.conf-coatlicu-control

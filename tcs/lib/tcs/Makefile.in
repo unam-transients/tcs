@@ -51,7 +51,7 @@ installs	:=			           \
 	environment.tcl		    	   \
 	executor.tcl 		    	   \
 	executorcoatli.tcl 		   \
-	executorddotioan.tcl 		   \
+	executorddoti.tcl 		   \
 	executorserver.tcl 		       \
 	fans.tcl		        	   \
 	fansserver.tcl	    		   \
@@ -126,7 +126,7 @@ installs	:=			           \
 	telescope.tcl		    	   \
 	telescopecoatli.tcl		   \
 	telescopecolibriohp.tcl	       \
-	telescopeddotioan.tcl		   \
+	telescopeddoti.tcl		   \
 	telescopedummy.tcl		       \
 	telescopeserver.tcl		       \
 	telescopecontrolleropentsi.tcl \

@@ -47,7 +47,7 @@ then
   oan-coatli-services)
     set platform
     ;;
-  ddotioan-services)
+  oan-ddoti-services)
     set platform
     ;;
   *)

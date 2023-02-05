@@ -51,14 +51,14 @@ installs_project_coatli	:=		        \
 installbins_project_coatli	:=		    \
 	alertscript-project-coatli	
 
-installs_project_ddotioan	:=		        \
-	alert-project-ddotioan		            \
-	config-project-ddotioan.json		    \
-	servers-project-ddotioan.json		    \
-	visitcommands-project-ddotioan.tcl
+installs_project_ddoti	:=		        \
+	alert-project-ddoti		            \
+	config-project-ddoti.json		    \
+	servers-project-ddoti.json		    \
+	visitcommands-project-ddoti.tcl
 	
-installbins_project_ddotioan	:=		    \
-	alertscript-project-ddotioan
+installbins_project_ddoti	:=		    \
+	alertscript-project-ddoti
 
 installs_project_colibriohp	:=		        \
 	config-project-colibriohp.json		    \

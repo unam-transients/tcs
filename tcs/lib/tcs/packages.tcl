@@ -76,8 +76,8 @@ package ifneeded executor              0.0 \
   [list source [file join [file dirname [info script]] executor.tcl]]
 package ifneeded executorcoatli     0.0 \
   [list source [file join [file dirname [info script]] executorcoatli.tcl]]
-package ifneeded executorddotioan      0.0 \
-  [list source [file join [file dirname [info script]] executorddotioan.tcl]]
+package ifneeded executorddoti      0.0 \
+  [list source [file join [file dirname [info script]] executorddoti.tcl]]
 package ifneeded executorserver        0.0 \
   [list source [file join [file dirname [info script]] executorserver.tcl]]
 package ifneeded fans                  0.0 \
@@ -214,8 +214,8 @@ package ifneeded telescopecoatli    0.0 \
   [list source [file join [file dirname [info script]] telescopecoatli.tcl]]
 package ifneeded telescopecolibriohp   0.0 \
   [list source [file join [file dirname [info script]] telescopecolibriohp.tcl]]
-package ifneeded telescopeddotioan     0.0 \
-  [list source [file join [file dirname [info script]] telescopeddotioan.tcl]]
+package ifneeded telescopeddoti     0.0 \
+  [list source [file join [file dirname [info script]] telescopeddoti.tcl]]
 package ifneeded telescopedummy        0.0 \
   [list source [file join [file dirname [info script]] telescopedummy.tcl]]
 package ifneeded telescopeserver       0.0 \
