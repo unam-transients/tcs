@@ -49,6 +49,7 @@ installbins         :=            \
 	fitsheadervalue               \
 	fitsmean                      \
 	fitswcsvalue                  \
+	gcntanserver                  \
 	getblockfiles                 \
 	getcatalogobject              \
 	gpio                          \
