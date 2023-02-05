@@ -671,10 +671,10 @@ proc focusmapvisit {} {
   executor::tracktopocentric
    
   executor::setreadmode 16MHz
-  executor::setwindow "2kx2k"
-  executor::setbinning 8
+  executor::setwindow "1kx1k"
+  executor::setbinning 1
   executor::waituntiltracking
-  executor::focus 1 8000 800 true false
+  executor::focus 4 2000 250 true false
 
   log::summary "focusmapvisit: finished."
 
