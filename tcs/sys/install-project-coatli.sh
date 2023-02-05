@@ -34,24 +34,24 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
   cat <<"EOF"
 # Start of tcs epilog.
 
-10.0.1.1        firewall                coatlioan-firewall
-10.0.1.2        console                 coatlioan-console
-10.0.1.3        services                coatlioan-services
-10.0.1.4        ibb-220                 coatlioan-ibb-220
-10.0.1.5        ibb-127                 coatlioan-ibb-127
-10.0.1.6        mount                   coatlioan-mount
-10.0.1.7        serial                  coatlioan-serial
-10.0.1.8        access                  coatlioan-access
-10.0.1.9        control                 coatlioan-control
-10.0.1.10       airport-express         coatlioan-airport-express
+10.0.1.1        firewall                oan-coatli-firewall
+10.0.1.2        console                 oan-coatli-console
+10.0.1.3        services                oan-coatli-services
+10.0.1.4        ibb-220                 oan-coatli-ibb-220
+10.0.1.5        ibb-127                 oan-coatli-ibb-127
+10.0.1.6        mount                   oan-coatli-mount
+10.0.1.7        serial                  oan-coatli-serial
+10.0.1.8        access                  oan-coatli-access
+10.0.1.9        control                 oan-coatli-control
+10.0.1.10       airport-express         oan-coatli-airport-express
 10.0.1.11       ib-detector             coatloan-ib-detector
-10.0.1.15       instrument              coatlioan-instrument C0-host
-10.0.1.16       platform                coatlioan-platform
-10.0.1.20       webcam-a                coatlioan-webcam-a
-10.0.1.21       webcam-b                coatlioan-webcam-b
-10.0.1.99       spare                   coatlioan-spare
+10.0.1.15       instrument              oan-coatli-instrument C0-host
+10.0.1.16       platform                oan-coatli-platform
+10.0.1.20       webcam-a                oan-coatli-webcam-a
+10.0.1.21       webcam-b                oan-coatli-webcam-b
+10.0.1.99       spare                   oan-coatli-spare
 
-132.248.4.16    webcam-c                coatlioan-webcam-c
+132.248.4.16    webcam-c                oan-coatli-webcam-c
 EOF
 ) | 
 sudo cp /dev/stdin /etc/hosts.tmp
@@ -81,16 +81,12 @@ EOF
   case $host in
   control)
     cat <<"EOF"
-*  *  *  *  *  sleep 10; tcs updatesensorsfiles services control platform instrument
+*  *  *  *  *  sleep 10; tcs updatesensorsfiles control platform instrument
 *  *  *  *  *  tcs updateweatherfiles-oan
 00 18 *  *  *  tcs updateweatherfiles-oan -a
 *  *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
 00 00 *  *  *  tcs fetchblocks
 01 00 *  *  *  tcs loadblocks
-EOF
-    ;;
-  services)
-    cat <<"EOF"
 *   *  *  *  *  sh /usr/local/var/www/tcs/plots.sh
 */5 *  *  *  *  tcs logsensors
 EOF
@@ -115,7 +111,7 @@ EOF
   echo "PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
   case $host in
-  services)
+  control)
     # Start the log server as soon as possible.
     echo "tcs startserver log &"
   esac
@@ -149,9 +145,9 @@ EOF
   case $host in
   instrument)
     echo "tcs instrumentdataserver -f -d rsync://transients.astrossp.unam.mx/coatli-raw/ &"
-    echo "tcs instrumentimageserver C0 services &"
+    echo "tcs instrumentimageserver C0 control &"
     ;;
-  services)
+  control)
     echo "tcs instrumentimageserver C0 &"
     echo "tcs webcamimageserver a http://coatli:coatli@webcam-a/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver b http://coatli:coatli@webcam-b/cgi-bin/viewer/video.jpg &"
@@ -185,7 +181,7 @@ sudo update-rc.d owserver disable
 # /etc/owfs.conf
 
 case $host in
-services|control|platform)
+control|platform)
   sudo cp /dev/stdin <<"EOF" /etc/owfs.conf.tmp
 server: device = /dev/ttyFTDI
 server: port = localhost:4304
@@ -300,7 +296,7 @@ sudo rm -f /tmp/sudoers-tcs
 (
   echo 'coatli ALL=(ALL) ALL'
   case $host in
-  services)
+  control)
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs reboot'
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs restart'
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs rebootinstrument'

@@ -19,8 +19,8 @@
 
 ########################################################################
 	
-all-coatlioan		:
-	PROJECT="coatlioan" make all
+all-coatli		:
+	PROJECT="coatli" make all
 
 all-ddotioan		:
 	PROJECT="ddotioan" make all

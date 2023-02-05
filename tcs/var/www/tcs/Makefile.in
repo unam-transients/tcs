@@ -42,19 +42,19 @@ installs			:=	\
 installbins			:=	\
 	request.cgi			\
 
-installs_project_coatlioan	:=		     \
-	allsky-project-coatlioan.html		 \
-	C0-project-coatlioan.html       	 \
-	config-project-coatlioan.js		     \
-	operations-project-coatlioan.html	 \
-	engineering-project-coatlioan.html   \
+installs_project_coatli	:=		     \
+	allsky-project-coatli.html		 \
+	C0-project-coatli.html       	 \
+	config-project-coatli.js		     \
+	operations-project-coatli.html	 \
+	engineering-project-coatli.html   \
 	interface.html                       \
-	webcam-a-project-coatlioan.html		 \
-	webcam-b-project-coatlioan.html		 \
-	webcam-c-project-coatlioan.html		 \
-	webcam-cz-project-coatlioan.html     \
-	plots-project-coatlioan.html         \
-	plots-project-coatlioan.sh
+	webcam-a-project-coatli.html		 \
+	webcam-b-project-coatli.html		 \
+	webcam-c-project-coatli.html		 \
+	webcam-cz-project-coatli.html     \
+	plots-project-coatli.html         \
+	plots-project-coatli.sh
 
 installs_project_ddotioan	:=		     \
 	allsky-project-ddotioan.html		 \
@@ -124,5 +124,5 @@ install-webcam-link		:
 	sudo rm -f $(INSTALL_DIR)/webcam
 	sudo ln -s $(prefix)/var/tcs/latest/webcam $(INSTALL_DIR)
 	
-plots-project-coatlioan.html    : plots-project-coatlioan.md
+plots-project-coatli.html    : plots-project-coatli.md
 

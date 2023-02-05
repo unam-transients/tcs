@@ -50,7 +50,7 @@ installs	:=			           \
 	enclosureserver.tcl 		   \
 	environment.tcl		    	   \
 	executor.tcl 		    	   \
-	executorcoatlioan.tcl 		   \
+	executorcoatli.tcl 		   \
 	executorddotioan.tcl 		   \
 	executorserver.tcl 		       \
 	fans.tcl		        	   \
@@ -124,7 +124,7 @@ installs	:=			           \
 	target.tcl		        	   \
 	targetserver.tcl    		   \
 	telescope.tcl		    	   \
-	telescopecoatlioan.tcl		   \
+	telescopecoatli.tcl		   \
 	telescopecolibriohp.tcl	       \
 	telescopeddotioan.tcl		   \
 	telescopedummy.tcl		       \

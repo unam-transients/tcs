@@ -25,8 +25,8 @@ include ../Makefile.prolog
 
 EXTRA_INSTALLS			:=	install-project-$(PROJECT)
 
-install-project-coatlioan	:
-	sh install-project-coatlioan.sh
+install-project-coatli	:
+	sh install-project-coatli.sh
 
 install-project-ddotioan	:
 	sh install-project-ddotioan.sh

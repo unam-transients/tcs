@@ -49,7 +49,7 @@ then
   coatlicu-*)
     set control instrument
     ;;
-  coatlioan-*)
+  oan-coatli-*)
     set services control platform instrument
     ;;
   ddotioan-*)

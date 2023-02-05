@@ -97,7 +97,7 @@ installbins_project_test :=       \
 	C0server                      \
 	updateweatherfiles-oan
 	
-installbins_project_coatlioan :=  \
+installbins_project_coatli :=  \
 	C0server                      \
 	enclosureserver               \
 	secondaryserver               \

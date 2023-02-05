@@ -23,13 +23,13 @@
 
 package require "astrometry"
 
-package provide "telescopecoatlioan" 0.0
+package provide "telescopecoatli" 0.0
 
 namespace eval "telescope" {
 
   ######################################################################
   
-  variable identifier "coatlioan"
+  variable identifier "coatli"
 
   ######################################################################
 

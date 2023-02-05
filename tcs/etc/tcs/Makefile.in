@@ -42,14 +42,14 @@ installs_project_test		:=		        \
 installbins_project_test	:=		        \
 	alertscript-project-test
 
-installs_project_coatlioan	:=		        \
-	alert-project-coatlioan		            \
-	config-project-coatlioan.json		    \
-	servers-project-coatlioan.json		    \
-	visitcommands-project-coatlioan.tcl
+installs_project_coatli	:=		        \
+	alert-project-coatli		            \
+	config-project-coatli.json		    \
+	servers-project-coatli.json		    \
+	visitcommands-project-coatli.tcl
 
-installbins_project_coatlioan	:=		    \
-	alertscript-project-coatlioan	
+installbins_project_coatli	:=		    \
+	alertscript-project-coatli	
 
 installs_project_ddotioan	:=		        \
 	alert-project-ddotioan		            \

@@ -44,7 +44,7 @@ esac
 if test $# = 0
 then
   case "$host" in
-  coatlioan-services)
+  oan-coatli-services)
     set platform
     ;;
   ddotioan-services)

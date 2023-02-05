@@ -25,8 +25,8 @@ autoconf
 
 host=$(uname -n | sed 's/\..*//')
 case $host in
-coatlioan-services)
-  ./configure SITE=coatlioan-services
+oan-coatli-control)
+  ./configure SITE=coatli
   ;;
 ddotioan-services)
   ./configure SITE=ddotioan-services

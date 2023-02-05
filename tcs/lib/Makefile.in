@@ -50,12 +50,12 @@ installs_project_test	    	:=	\
 	filterwheeldummy.so
 endif
 
-ifeq ($(UNAME_N),coatlioan-instrument)
-installs_project_coatlioan	    :=	\
+ifeq ($(UNAME_N),oan-coatli-instrument)
+installs_project_coatli	    :=	\
 	detectorandor.so		    	\
 	filterwheelfli.so
 else
-installs_project_coatlioan	    :=
+installs_project_coatli	    :=
 endif
 
 ifeq ($(UNAME_M),x86_64)
