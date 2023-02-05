@@ -33,8 +33,8 @@ fi
 mkdir -p "$tcsprefix"/var/tcs/halt
 cd "$tcsprefix"/var/tcs/halt
 
-# Get the unqualified host name and remove any prefix before "-".
-host="$(uname -n | sed 's/\..*//;s/[^-]*-//')"
+# Get the unqualified host name and remove any prefix before the last "-".
+host="$(uname -n | sed 's/\..*//;s/.*-//')"
 
 # The sleep below aim to ensure that the log server stops after the
 # other servers have stopped.
@@ -48,7 +48,7 @@ then
   shutdown -H now
 else
   # We are not on the main host.
-  rsync -a --timeout=10 --include="$host" --exclude="*" --remove-source-files rsync://services/tcs/halt/. .
+  rsync -a --timeout=10 --include="$host" --exclude="*" --remove-source-files rsync://control/tcs/halt/. .
   if test -f "$host"
   then
     tcs log "tcs checkhalt" summary "halting $host."

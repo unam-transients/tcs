@@ -33,10 +33,10 @@ export TCSLOGTOSTDERR=true
 
 host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
 case $host in
-*-services)
+*-control)
   ;;
 *)
-  echo 1>&2 "$program: error: must run on the services host." 
+  echo 1>&2 "$program: error: must run on the control host." 
   exit 1
   ;;
 esac
@@ -44,10 +44,10 @@ esac
 if test $# = 0
 then
   case "$host" in
-  oan-coatli-services)
+  oan-coatli-control)
     set instrument
     ;;
-  oan-ddoti-services)
+  oan-ddoti-control)
     set instrument0 instrument1
     ;;
   *)
