@@ -48,7 +48,7 @@ then
     set instrument
     ;;
   oan-ddoti-control)
-    set instrument0 instrument1
+    set detectors0 detectors1
     ;;
   *)
     echo 2>&1 "$program: error: unknown host."

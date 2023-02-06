@@ -53,10 +53,10 @@ oan-ddoti-control)
 oan-ddoti-platform)
   allargs="heater lights"
   ;;
-oan-ddoti-instrument0)
+oan-ddoti-detectors0)
   allargs="C2 C4"
   ;;
-oan-ddoti-instrument1)
+oan-ddoti-detectors1)
   allargs="C1 C3"
   ;;
 ohp-colibri-control)
