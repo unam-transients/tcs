@@ -125,10 +125,6 @@ installbins_project_colibriohp := \
 installbins_project_ddoticu :=    \
 	C0server
 	
-installbins_project_coatlicu :=   \
-	C0server                      \
-	updateweatherfiles-dummy
-	
 CLEAN_FILES         :=  *.o newpgrp
 
 INSTALL_DIR         :=  $(prefix)/libexec/tcs

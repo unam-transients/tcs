@@ -41,9 +41,6 @@ oan-ddoti-*)
 colibriohp-*)
   ./configure --enable-project=colibriohp
   ;;
-coatlicu-*)
-  ./configure --enable-project=coatlicu
-  ;;
 *-test-*)
   ./configure --enable-project=test
   ;;

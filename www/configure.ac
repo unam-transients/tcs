@@ -34,7 +34,6 @@ AC_CONFIG_FILES(
   httpd.conf-coatli
   httpd.conf-ddoti
   httpd.conf-colibriohp-services
-  httpd.conf-coatlicu-control
   httpd.conf-test
 )
 AC_OUTPUT

@@ -34,9 +34,6 @@ oan-ddoti-control)
 colibriohp-services)
   ./configure SITE=colibriohp-services
   ;;
-coatlicu-control)
-  ./configure SITE=coatlicu-control
-  ;;
 *-test-*)
   ./configure SITE=test
   ;;
