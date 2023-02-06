@@ -256,8 +256,8 @@
     "outletgroupaddresses": {
       "firewall"            : [[ "pdu1", "a", "1"]],
       "access"              : [[ "pdu1", "a", "2"]],
-      "services"            : [[ "pdu1", "a", "3"]],
-      "control"             : [[ "pdu1", "a", "4"]],
+      "control"             : [[ "pdu1", "a", "3"]],
+      "oldcontrol"          : [[ "pdu1", "a", "4"]],
       "detectors"           : [[ "pdu1", "a", "5"]],
       "blue"                : [[ "pdu1", "a", "6"]],
       "sparelinux"          : [[ "pdu1", "a", "7"]],
@@ -296,8 +296,6 @@
       "rack-internal-humidity",
       "rack-external-temperature",
       "rack-external-humidity",
-      "host-services-load",
-      "host-services-disk-space-used",
       "host-control-load",
       "host-control-disk-space-used",
       "host-detectors-load",
@@ -398,7 +396,7 @@
         "firmware": ""
       },
       "blue-service-cabinet-external-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/ow/26.FE7D1A020000/temperature",
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.FE7D1A020000/temperature",
         "keyword": "CR3TM",
         "prettyname": "blue service cabinet external temperature",
         "subsystem": "ddraguito",
@@ -412,7 +410,7 @@
         "firmware": ""
       },
       "blue-service-cabinet-internal-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/ow/26.F3961A020000/temperature",
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.F3961A020000/temperature",
         "keyword": "CR4TM",
         "prettyname": "blue service cabinet internal temperature",
         "subsystem": "ddraguito",
@@ -426,7 +424,7 @@
         "firmware": ""
       },
       "rack-external-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/ow/26.659DE1010000/temperature",
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.659DE1010000/temperature",
         "keyword": "CR2TM",
         "prettyname": "rack external temperature",
         "subsystem": "control-system",
@@ -440,7 +438,7 @@
         "firmware": ""
       },
       "rack-internal-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/ow/26.FAAE1A020000/temperature",
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.FAAE1A020000/temperature",
         "keyword": "CR1TM",
         "prettyname": "rack internal temperature",
         "subsystem": "control-system",
@@ -510,7 +508,7 @@
         "firmware": ""
       },
       "blue-service-cabinet-external-humidity": {
-        "file": "/usr/local/var/tcs/sensors/services/ow/26.FE7D1A020000/HIH4000/humidity",
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.FE7D1A020000/HIH4000/humidity",
         "keyword": "CR3HM",
         "prettyname": "blue service cabinet external humidity",
         "subsystem": "ddraguito",
@@ -524,7 +522,7 @@
         "firmware": ""
       },
       "blue-service-cabinet-internal-humidity": {
-        "file": "/usr/local/var/tcs/sensors/services/ow/26.F3961A020000/HIH4000/humidity",
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.F3961A020000/HIH4000/humidity",
         "keyword": "CR4HM",
         "prettyname": "blue service cabinet internal humidity",
         "subsystem": "ddraguito",
@@ -538,7 +536,7 @@
         "firmware": ""
       },
       "rack-external-humidity": {
-        "file": "/usr/local/var/tcs/sensors/services/ow/26.659DE1010000/HIH4000/humidity",
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.659DE1010000/HIH4000/humidity",
         "keyword": "CR2HM",
         "prettyname": "rack external humidity",
         "subsystem": "control-system",
@@ -552,7 +550,7 @@
         "firmware": ""
       },
       "rack-internal-humidity": {
-        "file": "/usr/local/var/tcs/sensors/services/ow/26.FAAE1A020000/HIH4000/humidity",
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.FAAE1A020000/HIH4000/humidity",
         "keyword": "CR1HM",
         "prettyname": "rack internal humidity",
         "subsystem": "control-system",
@@ -593,13 +591,13 @@
         "identifier": "7E.983100001000",
         "firmware": ""
       },
-      "host-services-load": {
-        "file": "/usr/local/var/tcs/sensors/services/load",
+      "host-control-load": {
+        "file": "/usr/local/var/tcs/sensors/control/load",
         "keyword": "",
-        "prettyname": "load on host services",
+        "prettyname": "load on host control",
         "subsystem": "control-system",
-        "component": "host-services",
-        "group": "host-services",
+        "component": "host-control",
+        "group": "host-control",
         "type": "float",
         "unit": "processes",
         "model": "",
@@ -607,7 +605,7 @@
         "firmware": ""
       },
       "host-control-load": {
-        "file": "/usr/local/var/tcs/sensors/services/load",
+        "file": "/usr/local/var/tcs/sensors/control/load",
         "keyword": "",
         "prettyname": "load on host control",
         "subsystem": "control-system",
@@ -632,21 +630,8 @@
         "identifier": "",
         "firmware": ""
       },
-      "host-services-disk-space-used": {
-        "file": "/usr/local/var/tcs/sensors/services/disk-space-used",
-        "keyword": "",
-        "prettyname": "relative disk space used on host services",
-        "subsystem": "control-system",
-        "component": "host-services",
-        "group": "host-services",
-        "type": "float",
-        "unit": "",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
       "host-control-disk-space-used": {
-        "file": "/usr/local/var/tcs/sensors/services/disk-space-used",
+        "file": "/usr/local/var/tcs/sensors/control/disk-space-used",
         "keyword": "",
         "prettyname": "relative disk space used on host control",
         "subsystem": "control-system",
@@ -672,7 +657,7 @@
         "firmware": ""
       },
       "pdu1-current": {
-        "file": "/usr/local/var/tcs/sensors/services/pdu1-current",
+        "file": "/usr/local/var/tcs/sensors/control/pdu1-current",
         "keyword": "",
         "prettyname": "inlet current for PDU1",
         "subsystem": "control-system",
@@ -685,7 +670,7 @@
         "firmware": "1.03.12212017"
       },      
       "pdu2-current": {
-        "file": "/usr/local/var/tcs/sensors/services/pdu2-current",
+        "file": "/usr/local/var/tcs/sensors/control/pdu2-current",
         "keyword": "",
         "prettyname": "inlet current for PDU2",
         "subsystem": "control-system",
@@ -815,7 +800,7 @@
         "firmware": ""
       },
       "C0-service-cabinet-external-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/ow/26.FE7D1A020000/temperature",
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.FE7D1A020000/temperature",
         "keyword": "CR3TM",
         "prettyname": "blue service cabinet external temperature",
         "subsystem": "ddraguito",
@@ -829,7 +814,7 @@
         "firmware": ""
       },
       "C0-service-cabinet-internal-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/ow/26.F3961A020000/temperature",
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.F3961A020000/temperature",
         "keyword": "CR4TM",
         "prettyname": "blue service cabinet internal temperature",
         "subsystem": "ddraguito",
@@ -843,7 +828,7 @@
         "firmware": ""
       },
       "C0-service-cabinet-external-humidity": {
-        "file": "/usr/local/var/tcs/sensors/services/ow/26.FE7D1A020000/HIH4000/humidity",
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.FE7D1A020000/HIH4000/humidity",
         "keyword": "CR3HM",
         "prettyname": "blue service cabinet external humidity",
         "subsystem": "ddraguito",
@@ -857,7 +842,7 @@
         "firmware": ""
       },
       "C0-service-cabinet-internal-humidity": {
-        "file": "/usr/local/var/tcs/sensors/services/ow/26.F3961A020000/HIH4000/humidity",
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.F3961A020000/HIH4000/humidity",
         "keyword": "CR4HM",
         "prettyname": "blue service cabinet internal humidity",
         "subsystem": "ddraguito",
@@ -871,7 +856,7 @@
         "firmware": ""
       },
       "telescope-cabinet-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/opentsi-0",
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-0",
         "prettyname": "telescope cabinet temperature",
         "subsystem": "telescope",
         "component": "cabinet",
@@ -883,7 +868,7 @@
         "firmware": ""
       },
       "telescope-manual-control-speed": {
-        "file": "/usr/local/var/tcs/sensors/services/opentsi-1",
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-1",
         "prettyname": "telescope manual control speed",
         "subsystem": "telescope",
         "component": "hand-paddle",
@@ -895,7 +880,7 @@
         "firmware": ""
       },
       "telescope-pneumatics-pressure": {
-        "file": "/usr/local/var/tcs/sensors/services/opentsi-2",
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-2",
         "prettyname": "telescope pneumatics pressure",
         "subsystem": "telescope",
         "component": "cabinet",
@@ -907,7 +892,7 @@
         "firmware": ""
       },
       "telescope-M1-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/opentsi-3",
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-3",
         "prettyname": "telescope M1 temperature",
         "group": "environmental-sensors",
         "subsystem": "telescope",
@@ -919,7 +904,7 @@
         "firmware": ""
       },
       "telescope-M1-cell-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/opentsi-4",
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-4",
         "prettyname": "telescope M1 cell temperature",
         "group": "environmental-sensors",
         "subsystem": "telescope",
@@ -931,7 +916,7 @@
         "firmware": ""
       },
       "telescope-M2-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/opentsi-5",
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-5",
         "prettyname": "telescope M2 temperature",
         "subsystem": "telescope",
         "component": "M2",
@@ -943,7 +928,7 @@
         "firmware": ""
       },
       "telescope-M3-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/opentsi-6",
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-6",
         "prettyname": "telescope M3 temperature",
         "group": "environmental-sensors",
         "subsystem": "telescope",
@@ -955,7 +940,7 @@
         "firmware": ""
       },
       "telescope-spider-1-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/opentsi-7",
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-7",
         "prettyname": "telescope spider 1 temperature",
         "group": "environmental-sensors",
         "subsystem": "telescope",
@@ -967,7 +952,7 @@
         "firmware": ""
       },
       "telescope-spider-2-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/opentsi-8",
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-8",
         "prettyname": "telescope spider 2 temperature",
         "group": "environmental-sensors",
         "subsystem": "telescope",
@@ -979,7 +964,7 @@
         "firmware": ""
       },
       "telescope-pivot-box-1-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/opentsi-9",
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-9",
         "prettyname": "telescope pivot box 1 temperature",
         "group": "environmental-sensors",
         "subsystem": "telescope",
@@ -991,7 +976,7 @@
         "firmware": ""
       },
       "telescope-pivot-box-2-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/opentsi-10",
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-10",
         "prettyname": "telescope pivot box 2 temperature",
         "group": "environmental-sensors",
         "subsystem": "telescope",
@@ -1003,7 +988,7 @@
         "firmware": ""
       },
       "telescope-front-ring-1-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/opentsi-11",
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-11",
         "prettyname": "telescope front ring 1 temperature",
         "group": "environmental-sensors",
         "subsystem": "telescope",
@@ -1015,7 +1000,7 @@
         "firmware": ""
       },
       "telescope-front-ring-2-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/opentsi-12",
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-12",
         "prettyname": "telescope front ring 2 temperature",
         "group": "environmental-sensors",
         "subsystem": "telescope",
@@ -1027,7 +1012,7 @@
         "firmware": ""
       },
       "telescope-fork-arm-1-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/opentsi-13",
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-13",
         "prettyname": "telescope cabinet temperature",
         "group": "environmental-sensors",
         "subsystem": "telescope",
@@ -1039,7 +1024,7 @@
         "firmware": ""
       },
       "telescope-fork-arm-2-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/opentsi-14",
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-14",
         "prettyname": "telescope cabinet temperature",
         "group": "environmental-sensors",
         "subsystem": "telescope",
@@ -1051,7 +1036,7 @@
         "firmware": ""
       },
       "plc-plc-cabinet-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/plc-plc-cabinet-temperature",
+        "file": "/usr/local/var/tcs/sensors/control/plc-plc-cabinet-temperature",
         "prettyname": "PLC cabinet temperature",
         "group": "environmental-sensors",
         "subsystem": "plc",
@@ -1063,7 +1048,7 @@
         "firmware": ""
       },
       "plc-rio-cabinet-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/plc-rio-cabinet-temperature",
+        "file": "/usr/local/var/tcs/sensors/control/plc-rio-cabinet-temperature",
         "prettyname": "RIO cabinet temperature",
         "group": "environmental-sensors",
         "subsystem": "plc",
@@ -1075,7 +1060,7 @@
         "firmware": ""
       },
       "plc-comet1-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/plc-comet1-temperature",
+        "file": "/usr/local/var/tcs/sensors/control/plc-comet1-temperature",
         "prettyname": "Comet 1 temperature",
         "group": "environmental-sensors",
         "subsystem": "plc",
@@ -1087,7 +1072,7 @@
         "firmware": ""
       },
       "plc-comet2-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/plc-comet2-temperature",
+        "file": "/usr/local/var/tcs/sensors/control/plc-comet2-temperature",
         "prettyname": "Comet 2 temperature",
         "group": "environmental-sensors",
         "subsystem": "plc",
@@ -1099,7 +1084,7 @@
         "firmware": ""
       },
       "plc-comet1-humidity": {
-        "file": "/usr/local/var/tcs/sensors/services/plc-comet1-humidity",
+        "file": "/usr/local/var/tcs/sensors/control/plc-comet1-humidity",
         "prettyname": "Comet 1 humidity",
         "group": "environmental-sensors",
         "subsystem": "plc",
@@ -1111,7 +1096,7 @@
         "firmware": ""
       },
       "plc-comet2-humidity": {
-        "file": "/usr/local/var/tcs/sensors/services/plc-comet2-humidity",
+        "file": "/usr/local/var/tcs/sensors/control/plc-comet2-humidity",
         "prettyname": "Comet 2 humidity",
         "group": "environmental-sensors",
         "subsystem": "plc",
@@ -1123,7 +1108,7 @@
         "firmware": ""
       },
       "weather-temperature": {
-        "file": "/usr/local/var/tcs/sensors/services/weather-temperature",
+        "file": "/usr/local/var/tcs/sensors/control/weather-temperature",
         "prettyname": "temperature",
         "group": "environmental-sensors",
         "subsystem": "weather",
@@ -1135,7 +1120,7 @@
         "firmware": ""
       },
       "weather-humidity": {
-        "file": "/usr/local/var/tcs/sensors/services/weather-humidity",
+        "file": "/usr/local/var/tcs/sensors/control/weather-humidity",
         "prettyname": "humidity",
         "group": "environmental-sensors",
         "subsystem": "weather",
@@ -1147,7 +1132,7 @@
         "firmware": ""
       },
       "weather-dewpoint": {
-        "file": "/usr/local/var/tcs/sensors/services/weather-dewpoint",
+        "file": "/usr/local/var/tcs/sensors/control/weather-dewpoint",
         "prettyname": "dewpoint",
         "group": "environmental-sensors",
         "subsystem": "weather",
@@ -1159,7 +1144,7 @@
         "firmware": ""
       },
       "weather-dewpoint-depression": {
-        "file": "/usr/local/var/tcs/sensors/services/weather-dewpoint-depression",
+        "file": "/usr/local/var/tcs/sensors/control/weather-dewpoint-depression",
         "prettyname": "dewpoint depression",
         "group": "environmental-sensors",
         "subsystem": "weather",
@@ -1171,7 +1156,7 @@
         "firmware": ""
       },
       "weather-wind-average-speed": {
-        "file": "/usr/local/var/tcs/sensors/services/weather-wind-average-speed",
+        "file": "/usr/local/var/tcs/sensors/control/weather-wind-average-speed",
         "prettyname": "wind average speed",
         "group": "environmental-sensors",
         "subsystem": "weather",
@@ -1183,7 +1168,7 @@
         "firmware": ""
       },
       "weather-wind-gust-speed": {
-        "file": "/usr/local/var/tcs/sensors/services/weather-wind-gust-speed",
+        "file": "/usr/local/var/tcs/sensors/control/weather-wind-gust-speed",
         "prettyname": "wind gust speed",
         "group": "environmental-sensors",
         "subsystem": "weather",
@@ -1195,7 +1180,7 @@
         "firmware": ""
       },
       "weather-wind-average-azimuth": {
-        "file": "/usr/local/var/tcs/sensors/services/weather-wind-average-azimuth",
+        "file": "/usr/local/var/tcs/sensors/control/weather-wind-average-azimuth",
         "prettyname": "wind average azimuth",
         "group": "environmental-sensors",
         "subsystem": "weather",
@@ -1207,7 +1192,7 @@
         "firmware": ""
       },
       "weather-rain-rate": {
-        "file": "/usr/local/var/tcs/sensors/services/weather-rain-rate",
+        "file": "/usr/local/var/tcs/sensors/control/weather-rain-rate",
         "prettyname": "rain rate",
         "group": "environmental-sensors",
         "subsystem": "weather",
@@ -1219,7 +1204,7 @@
         "firmware": ""
       },
       "weather-pressure": {
-        "file": "/usr/local/var/tcs/sensors/services/weather-pressure",
+        "file": "/usr/local/var/tcs/sensors/control/weather-pressure",
         "prettyname": "pressure",
         "group": "environmental-sensors",
         "subsystem": "weather",
@@ -1258,7 +1243,7 @@
     "idledelta": "75d"
   },
   "telescope": {
-    "type": "colibriohp",
+    "type": "colibri",
     "idleha": "0h",
     "idledelta": "0d"
   },

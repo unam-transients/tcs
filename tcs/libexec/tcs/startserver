@@ -60,14 +60,11 @@ oan-ddoti-instrument0)
 oan-ddoti-instrument1)
   allargs="C1 C3"
   ;;
-colibriohp-services)
+ohp-colibri-control)
   allargs="html 1 sensors power weather plc 1 target 1 moon sun 1 telescopecontroller 1 covers secondary mount 1 telescope instrument 1 executor selector supervisor"
   ;;
-colibriohp-control)
-  allargs="sensors power weather plc 1 target 1 moon sun 1 telescopecontroller plc 1 covers secondary mount 1 telescope instrument 1 executor selector"
-  ;;
-colibriohp-detectors)
-  allargs="C0"
+ohp-colibri-detectors)
+  allargs="instrument C0"
   ;;
 *-test-*)
   allargs="log 1 html 1 target 1 moon sun sensors weather C0 1 telescope instrument 1 executor selector supervisor"

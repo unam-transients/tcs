@@ -212,8 +212,8 @@ package ifneeded telescope             0.0 \
   [list source [file join [file dirname [info script]] telescope.tcl]]
 package ifneeded telescopecoatli    0.0 \
   [list source [file join [file dirname [info script]] telescopecoatli.tcl]]
-package ifneeded telescopecolibriohp   0.0 \
-  [list source [file join [file dirname [info script]] telescopecolibriohp.tcl]]
+package ifneeded telescopecolibri   0.0 \
+  [list source [file join [file dirname [info script]] telescopecolibri.tcl]]
 package ifneeded telescopeddoti     0.0 \
   [list source [file join [file dirname [info script]] telescopeddoti.tcl]]
 package ifneeded telescopedummy        0.0 \

@@ -33,7 +33,7 @@ AC_CONFIG_FILES(
   Makefile
   httpd.conf-coatli
   httpd.conf-ddoti
-  httpd.conf-colibriohp-services
+  httpd.conf-colibri
   httpd.conf-test
 )
 AC_OUTPUT

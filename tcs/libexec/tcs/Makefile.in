@@ -114,7 +114,7 @@ installbins_project_ddoti :=   \
 	enclosureserver               \
 	updateweatherfiles-oan
 	
-installbins_project_colibriohp := \
+installbins_project_colibri := \
     coversserver                  \
 	C0server                      \
 	telescopecontrollerserver     \

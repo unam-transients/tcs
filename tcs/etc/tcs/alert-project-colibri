@@ -21,7 +21,7 @@
 
 ////////////////////////////////////////////////////////////////////////
 
-// This is the initial partial block for alerts for the colibriohp site. The
+// This is the initial partial block for alerts for the colibri site. The
 // remaining fields are populated by merging this iteratively with the partial
 // blocks read from the alert file.
 
