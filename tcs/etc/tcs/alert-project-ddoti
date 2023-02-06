@@ -21,7 +21,7 @@
 
 ////////////////////////////////////////////////////////////////////////
 
-// This is the initial partial alert for the ratiroan site. The
+// This is the initial partial alert for the ddoti site. The
 // remaining fields are populated by merging this iteratively with the partial
 // blocks read from the alert file.
 
