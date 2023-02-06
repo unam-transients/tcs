@@ -46,9 +46,6 @@ cd "$tcsprefix"/var/tcs/halt
 if test $# = 0
 then
   case "$host" in
-  coatlicu-*)
-    set control instrument
-    ;;
   oan-coatli-*)
     set control platform instrument
     ;;

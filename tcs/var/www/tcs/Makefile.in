@@ -86,14 +86,6 @@ installs_project_colibriohp	:=		     \
 	webcam-a-project-colibriohp.html	 \
 	plots-project-colibriohp.sh
 
-installs_project_coatlicu		:=		 \
-	operations-project-coatlicu.html	 \
-	engineering-project-coatlicu.html    \
-	interface.html                       \
-	alerts-project-coatlicu.html	     \
-	C0-project-coatlicu.html  	         \
-	config-project-coatlicu.js		     \
-
 installs_project_test		:=		     \
 	operations-project-test.html		 \
 	engineering-project-test.html		 \

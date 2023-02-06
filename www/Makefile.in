@@ -86,16 +86,6 @@ clean-test				:
 	
 ########################################################################
 
-all-coatlicu-control				    	:	docs-coatlicu-control/index.html
-docs-coatlicu-control/index.html			:	docs-coatlicu-control/index.md
-
-install-coatlicu-control					:	install-linux
-
-clean-coatlicu-control				        :
-	-rm -f docs-coatlicu-control/*.html
-	
-########################################################################
-
 install-macos					:
 	sudo mkdir -p $(prefix)/var/www/
 	sudo cp -r style.css docs-@SITE@/. $(prefix)/var/www/

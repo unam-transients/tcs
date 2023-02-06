@@ -34,10 +34,6 @@ install-project-ddoti	:
 install-project-colibriohp	:
 	sh install-project-colibriohp.sh
 
-
-install-project-coatlicu	:
-	sh install-project-coatlicu.sh
-
 install-project-test		:
 	sh install-project-test.sh
 
