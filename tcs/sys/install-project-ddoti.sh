@@ -45,8 +45,8 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 10.0.1.20       webcam-a                oan-ddoti-webcam-a
 10.0.1.21       webcam-b                oan-ddoti-webcam-b
 10.0.1.22       platform                oan-ddoti-platform
-10.0.1.23       instrument0             oan-ddoti-instrument0
-10.0.1.24       instrument1             oan-ddoti-instrument1
+10.0.1.23       detectors0              oan-ddoti-detectors0
+10.0.1.24       detectors1              oan-ddoti-detectors1
 10.0.1.99       spare                   oan-ddoti-spare
 
 132.248.4.26    webcam-c                oan-ddoti-webcam-c
@@ -79,7 +79,7 @@ EOF
   case $host in
   control)
     cat <<"EOF"
-*  *  *  *  *  sleep 10; tcs updatesensorsfiles control platform instrument0 instrument1
+*  *  *  *  *  sleep 10; tcs updatesensorsfiles control platform detectors0 detectors1
 *  *  *  *  *  tcs updateweatherfiles-oan
 00 18 *  *  *  tcs updateweatherfiles-oan -a
 *  *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
@@ -134,12 +134,12 @@ EOF
   echo "owserver -c /etc/owfs.conf"
 
   case $host in
-  instrument0)
+  detectors0)
     echo "tcs instrumentdataserver -f -d rsync://transients.astrossp.unam.mx/ddoti-raw/ &"
     echo "tcs instrumentimageserver C2 control &"
     echo "tcs instrumentimageserver C4 control &"
     ;;
-  instrument1)
+  detectors1)
     echo "tcs instrumentdataserver -f -d rsync://transients.astrossp.unam.mx/ddoti-raw/ &"
     echo "tcs instrumentimageserver C1 control &"
     echo "tcs instrumentimageserver C3 control &"
