@@ -64,15 +64,16 @@ clean-ddoti				:
 	
 ########################################################################
 
-all-colibriohp-services				:	docs-colibriohp-services/index.html		\
-							docs-colibriohp-services/documentation.html
-docs-colibriohp-services/index.html		:	docs-colibriohp-services/index.md
-docs-colibriohp-services/documentation.html	:	docs-colibriohp-services/documentation.md
+all-colibri			    	    :	\
+    docs-colibri/index.html 		\
+	docs-colibri/documentation.html
+docs-colibri/index.html		    :	docs-colibri/index.md
+docs-colibri/documentation.html	:	docs-colibri/documentation.md
 
-install-colibriohp-services			:	install-linux
+install-colibri			:	install-linux
 
-clean-colibriohp-services				:
-	-rm -f docs-colibriohp-services/*.html
+clean-colibri				:
+	-rm -f docs-colibri/*.html
 	
 ########################################################################
 

@@ -75,12 +75,12 @@ installs_project_ddoticu	    :=
 endif
 
 ifeq ($(UNAME_M),x86_64)
-installs_project_colibriohp	    :=	\
+installs_project_colibri	    :=	\
 	detectorsi.so			        \
 	detectorfli.so                  \
 	filterwheelfli.so
 else
-installs_project_colibriohp	    :=
+installs_project_colibri	    :=
 endif
 	
 ########################################################################

@@ -125,7 +125,7 @@ installs	:=			           \
 	targetserver.tcl    		   \
 	telescope.tcl		    	   \
 	telescopecoatli.tcl		   \
-	telescopecolibriohp.tcl	       \
+	telescopecolibri.tcl	       \
 	telescopeddoti.tcl		   \
 	telescopedummy.tcl		       \
 	telescopeserver.tcl		       \

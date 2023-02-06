@@ -60,23 +60,23 @@ installs_project_ddoti	:=		        \
 installbins_project_ddoti	:=		    \
 	alertscript-project-ddoti
 
-installs_project_colibriohp	:=		        \
-	config-project-colibriohp.json		    \
-	servers-project-colibriohp.json		    \
-	visitcommands-project-colibriohp.tcl	\
+installs_project_colibri	:=		        \
+	config-project-colibri.json		    \
+	servers-project-colibri.json		    \
+	visitcommands-project-colibri.tcl	\
 	
-installbins_project_colibriohp	:=		    \
+installbins_project_colibri	:=		    \
 
-installs_project_colibriohp	:=	        	\
-	alert-project-colibriohp		        \
-	config-project-colibriohp.json		    \
-	servers-project-colibriohp.json		    \
-	visitcommands-project-colibriohp.tcl	\
+installs_project_colibri	:=	        	\
+	alert-project-colibri		        \
+	config-project-colibri.json		    \
+	servers-project-colibri.json		    \
+	visitcommands-project-colibri.tcl	\
 	
-installbins_project_colibriohp	:=		    \
-	alertscript-project-colibriohp
+installbins_project_colibri	:=		    \
+	alertscript-project-colibri
 	
-installbins_project_colibriohp	:=
+installbins_project_colibri	:=
 
 INSTALL_DIR	:=	$(prefix)/etc/tcs/
 

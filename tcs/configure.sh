@@ -38,8 +38,8 @@ oan-coatli-*)
 oan-ddoti-*)
   ./configure --enable-project=ddoti
   ;;
-colibriohp-*)
-  ./configure --enable-project=colibriohp
+ohp-colibri-*)
+  ./configure --enable-project=colibri
   ;;
 *-test-*)
   ./configure --enable-project=test

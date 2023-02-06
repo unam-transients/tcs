@@ -52,7 +52,7 @@ then
   oan-ddoti-*)
     set control platform instrument0 instrument1
     ;;
-  colibriohp-*)
+  ohp-colibri-*)
     set control detectors
     ;;
   *)

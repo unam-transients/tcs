@@ -32,18 +32,18 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
   cat <<"EOF"
 # Start of tcs epilog.
 
-192.168.100.1     firewall                colibriohp-firewall
-192.168.100.23    opentsi                 colibriohp-opentsi
-192.168.100.50    access                  colibriohp-access
-192.168.100.51    pdu1                    colibriohp-pdu1
-192.168.100.52    pdu2                    colibriohp-pdu2
-192.168.100.53    sparepdu                colibriohp-sparepdu
-192.168.100.54    services                colibriohp-services
-192.168.100.55    control                 colibriohp-control
-192.168.100.56    detectors               colibriohp-detectors
-192.168.100.57    blue                    colibriohp-blue
-192.168.100.58    sparelinux              colibriohp-sparelinux
-192.168.100.59    sparewindows            colibriohp-sparewindows
+192.168.100.1     firewall                ohp-colibri-firewall
+192.168.100.23    opentsi                 ohp-colibri-opentsi
+192.168.100.50    access                  ohp-colibri-access
+192.168.100.51    pdu1                    ohp-colibri-pdu1
+192.168.100.52    pdu2                    ohp-colibri-pdu2
+192.168.100.53    sparepdu                ohp-colibri-sparepdu
+192.168.100.54    control                 ohp-colibri-control
+192.168.100.55    oldcontrol              ohp-colibri-oldcontrol
+192.168.100.56    detectors               ohp-colibri-detectors
+192.168.100.57    blue                    ohp-colibri-blue
+192.168.100.58    sparelinux              ohp-colibri-sparelinux
+192.168.100.59    sparewindows            ohp-colibri-sparewindows
 EOF
 ) | 
 sudo cp /dev/stdin /etc/hosts.tmp
@@ -66,23 +66,13 @@ sudo mv /etc/hosts.tmp /etc/hosts
 00     *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="*.jpg" --exclude="*.fits" --exclude="*.fits.*" /usr/local/var/tcs/ /nas/tcs
 01-59  *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="debug*.txt" --include="*.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ /nas/tcs
 *      *  *  *  *  rsync -aH --remove-source-files --exclude="*.tmp" --include="*.fits.*" --include="*/" --exclude="*" /usr/local/var/tcs/ /nas/tcs
-EOF
-
-  case $host in
-  access)
-    # Do not run checkhalt on the Macs; they do not automatically start again after a halt if we cycle the power.
-    ;;  
-  *)
-    cat <<"EOF"
 *  *  *  *  *  /usr/local/bin/tcs checkhalt
 EOF
-    ;;
-  esac
   
   case $host in
-  services)
+  control)
     cat <<"EOF"
-*      *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles services detectors
+*      *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles control detectors
 *      *  *  *  *  /usr/local/bin/tcs updateweatherfiles-colibri
 *      *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
 */5    *  *  *  *  /usr/local/bin/tcs logsensors
@@ -102,7 +92,7 @@ EOF
   echo "PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
   case $host in
-  services)
+  control)
     # Start the log server as soon as possible.
     echo "tcs startserver log &"
   esac
@@ -128,9 +118,9 @@ EOF
   case $host in
   detectors)
     echo "tcs instrumentdataserver -f -d /nas/tcs/ &"
-    echo "tcs instrumentimageserver C0 services &"
+    echo "tcs instrumentimageserver C0 control &"
     ;;
-  services)
+  control)
     echo "tcs instrumentimageserver C0 &"
     echo "tcs webcamimageserver a https://www.colibri-obs.org/wp-content/uploads/2021/01/cam-colibri1.jpeg &"
     echo "tcs allskyimageserver http://iris.lam.fr/wp-includes/images/ftp_iris/allskyISM.jpg &"
@@ -293,7 +283,7 @@ sudo rm -f /tmp/sudoers-tcs
 (
   echo 'colibri ALL=(ALL) ALL'
   case $host in
-  services)
+  control)
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs reboot'
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs restart'
     ;;

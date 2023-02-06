@@ -23,13 +23,13 @@
 
 package require "astrometry"
 
-package provide "telescopecolibriohp" 0.0
+package provide "telescopecolibri" 0.0
 
 namespace eval "telescope" {
 
   ######################################################################
   
-  variable identifier "colibriohp"
+  variable identifier "colibri"
 
   ######################################################################
 
