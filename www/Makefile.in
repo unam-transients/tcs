@@ -86,14 +86,6 @@ clean-test				:
 	
 ########################################################################
 
-install-macos					:
-	sudo mkdir -p $(prefix)/var/www/
-	sudo cp -r style.css docs-@SITE@/. $(prefix)/var/www/
-	sudo cp httpd.conf-@SITE@ /etc/apache2/httpd.conf
-	sudo apachectl restart
-
-########################################################################
-
 install-linux					:
 	sudo mkdir -p $(prefix)/var/www/
 	sudo cp -r style.css docs-@SITE@/. $(prefix)/var/www/.
