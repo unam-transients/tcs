@@ -31,9 +31,6 @@ install-project-coatli	:
 install-project-ddoti	:
 	sh install-project-ddoti.sh
 
-install-project-colibricu	:
-	sh install-project-colibricu.sh
-
 install-project-colibriohp	:
 	sh install-project-colibriohp.sh
 

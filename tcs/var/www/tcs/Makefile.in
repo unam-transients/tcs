@@ -76,15 +76,6 @@ installs_project_ddoti	:=		     \
 	plots-project-ddoti.html          \
 	plots-project-ddoti.sh
 
-installs_project_colibricu	:=		     \
-	allsky-project-colibricu.html      	 \
-	C0-project-colibricu.html  	     	 \
-	config-project-colibricu.js		     \
-	operations-project-colibricu.html	 \
-	engineering-project-colibricu.html   \
-	interface.html                       \
-	plots-project-colibricu.sh
-
 installs_project_colibriohp	:=		     \
 	allsky-project-colibriohp.html     	 \
 	C0-project-colibriohp.html  	   	 \
