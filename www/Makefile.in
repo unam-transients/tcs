@@ -64,18 +64,6 @@ clean-ddoti				:
 	
 ########################################################################
 
-all-colibricu-services				:	docs-colibricu-services/index.html		\
-							docs-colibricu-services/documentation.html
-docs-colibricu-services/index.html		:	docs-colibricu-services/index.md
-docs-colibricu-services/documentation.html	:	docs-colibricu-services/documentation.md
-
-install-colibricu-services			:	install-linux
-
-clean-colibricu-services				:
-	-rm -f docs-colibricu-services/*.html
-	
-########################################################################
-
 all-colibriohp-services				:	docs-colibriohp-services/index.html		\
 							docs-colibriohp-services/documentation.html
 docs-colibriohp-services/index.html		:	docs-colibriohp-services/index.md

@@ -33,7 +33,6 @@ AC_CONFIG_FILES(
   Makefile
   httpd.conf-coatli
   httpd.conf-ddoti
-  httpd.conf-colibricu-services
   httpd.conf-colibriohp-services
   httpd.conf-coatlicu-control
   httpd.conf-test
