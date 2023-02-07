@@ -46,7 +46,7 @@ cd "$tcsprefix"/var/tcs/reboot
 if test $# = 0
 then
   case "$host" in
-  oan-coatli-*)
+  coatli-*)
     set control platform instrument
     ;;
   oan-ddoti-*)

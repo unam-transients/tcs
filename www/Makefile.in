@@ -41,8 +41,8 @@ install						:	all install-$(SITE)
 all-coatli				            :   \
     docs-coatli/index.html		        \
 	docs-coatli/documentation.html
-docs-oan-coatli/index.html  		:	docs-coatli/index.md
-docs-oan-coatli/documentation.html	:	docs-coatli/documentation.md
+docs-coatli/index.html  		:	docs-coatli/index.md
+docs-coatli/documentation.html	:	docs-coatli/documentation.md
 
 install-coatli			:	install-linux
 

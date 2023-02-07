@@ -25,7 +25,7 @@ autoconf
 
 host=$(uname -n | sed 's/\..*//')
 case $host in
-oan-coatli-control)
+coatli-control)
   ./configure SITE=coatli
   ;;
 oan-ddoti-control)

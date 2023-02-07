@@ -34,24 +34,24 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
   cat <<"EOF"
 # Start of tcs epilog.
 
-10.0.1.1        firewall                oan-coatli-firewall
-10.0.1.2        console                 oan-coatli-console
-10.0.1.3        services                oan-coatli-services
-10.0.1.4        ibb-220                 oan-coatli-ibb-220
-10.0.1.5        ibb-127                 oan-coatli-ibb-127
-10.0.1.6        mount                   oan-coatli-mount
-10.0.1.7        serial                  oan-coatli-serial
-10.0.1.8        access                  oan-coatli-access
-10.0.1.9        control                 oan-coatli-control
-10.0.1.10       airport-express         oan-coatli-airport-express
+10.0.1.1        firewall                coatli-firewall
+10.0.1.2        console                 coatli-console
+10.0.1.3        services                coatli-services
+10.0.1.4        ibb-220                 coatli-ibb-220
+10.0.1.5        ibb-127                 coatli-ibb-127
+10.0.1.6        mount                   coatli-mount
+10.0.1.7        serial                  coatli-serial
+10.0.1.8        access                  coatli-access
+10.0.1.9        control                 coatli-control
+10.0.1.10       airport-express         coatli-airport-express
 10.0.1.11       ib-detector             coatloan-ib-detector
-10.0.1.15       instrument              oan-coatli-instrument C0-host
-10.0.1.16       platform                oan-coatli-platform
-10.0.1.20       webcam-a                oan-coatli-webcam-a
-10.0.1.21       webcam-b                oan-coatli-webcam-b
-10.0.1.99       spare                   oan-coatli-spare
+10.0.1.15       instrument              coatli-instrument C0-host
+10.0.1.16       platform                coatli-platform
+10.0.1.20       webcam-a                coatli-webcam-a
+10.0.1.21       webcam-b                coatli-webcam-b
+10.0.1.99       spare                   coatli-spare
 
-132.248.4.16    webcam-c                oan-coatli-webcam-c
+132.248.4.16    webcam-c                coatli-webcam-c
 EOF
 ) | 
 sudo cp /dev/stdin /etc/hosts.tmp

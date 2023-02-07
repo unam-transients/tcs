@@ -73,7 +73,7 @@ case $(uname -n) in
 oan-ddoti-*)
   from=a8unfz1ihyc1kgkcbnbmrb26g4fynf
   ;;
-oan-coatli-*)
+coatli-*)
   from=a211448fi9nio3gpj731v2red8o4nc
   ;;
 esac

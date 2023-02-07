@@ -1,5 +1,5 @@
 case $(uname -n) in
-transientsoan-coatli)
+transientscoatli)
   DIR=/usr/local/var/coatli/
   sudo mkdir -p $DIR
   sudo cp direct-coatli.sh $DIR/direct.sh

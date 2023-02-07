@@ -39,11 +39,11 @@ shift
 if test $# = 0
 then
   case $(hostname) in
-  oan-coatli-*)
-    url="https://github.com/alanwatsonforster/oan-coatli-blocks.git"
+  coatli-*)
+    url="https://github.com/alanwatsonforster/coatli-blocks.git"
     ;;
   oan-ddoti-*)
-    url="https://github.com/alanwatsonforster/oan-ddoti-blocks.git"
+    url="https://github.com/alanwatsonforster/ddoti-blocks.git"
     ;;
   *)
     error "unable to determing URL."

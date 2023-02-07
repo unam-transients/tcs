@@ -44,7 +44,7 @@ esac
 if test $# = 0
 then
   case "$host" in
-  oan-coatli-control)
+  coatli-control)
     set instrument
     ;;
   oan-ddoti-control)
