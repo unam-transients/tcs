@@ -39,13 +39,13 @@ usageerror () {
 
 host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
 case "$host" in
-oan-coatli-control)
+coatli-control)
   allargs="html gcntan 1 sensors power weather 1 target 1 moon sun 1 secondary enclosure mount 1 telescope 1 executor selector supervisor"
   ;;
-oan-coatli-instrument)
+coatli-instrument)
   allargs="C0 1 instrument"
   ;;
-oan-coatli-platform)
+coatli-platform)
   allargs="lights heater"
   ;;
 oan-ddoti-control)

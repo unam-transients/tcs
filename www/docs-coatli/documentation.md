@@ -25,4 +25,4 @@ PERFORMANCE OF THIS SOFTWARE.
 
 ## Technical Manual
 
-* [Technical Manual](https://github.com/alanwatsonforster/oan-coatli-oan-ddoti-technical-manual/raw/main/coatli.pdf)
+* [Technical Manual](https://github.com/alanwatsonforster/coatli-oan-ddoti-technical-manual/raw/main/coatli.pdf)

@@ -32,7 +32,7 @@ done
 
 host=$(uname -n | sed 's/\..*//')
 case $host in
-oan-coatli-*)
+coatli-*)
   ./configure --enable-project=coatli
   ;;
 oan-ddoti-*)
