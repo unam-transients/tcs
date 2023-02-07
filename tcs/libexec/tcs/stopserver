@@ -47,16 +47,16 @@ coatli-instrument)
 coatli-platform)
   allargs="heater lights"
   ;;
-oan-ddoti-control)
+ddoti-control)
   allargs="sensors power supervisor selector executor instrument telescope mount enclosure weather sun moon target gcntan html"
   ;;
-oan-ddoti-platform)
+ddoti-platform)
   allargs="heater lights"
   ;;
-oan-ddoti-detectors0)
+ddoti-detectors0)
   allargs="C2 C4"
   ;;
-oan-ddoti-detectors1)
+ddoti-detectors1)
   allargs="C1 C3"
   ;;
 ohp-colibri-control)

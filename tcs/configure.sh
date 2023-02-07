@@ -35,7 +35,7 @@ case $host in
 coatli-*)
   ./configure --enable-project=coatli
   ;;
-oan-ddoti-*)
+ddoti-*)
   ./configure --enable-project=ddoti
   ;;
 ohp-colibri-*)

@@ -49,7 +49,7 @@ then
   coatli-*)
     set control platform instrument
     ;;
-  oan-ddoti-*)
+  ddoti-*)
     set control platform detectors0 detectors1
     ;;
   ohp-colibri-*)
