@@ -42,7 +42,7 @@ then
   coatli-*)
     url="https://github.com/alanwatsonforster/coatli-blocks.git"
     ;;
-  oan-ddoti-*)
+  ddoti-*)
     url="https://github.com/alanwatsonforster/ddoti-blocks.git"
     ;;
   *)

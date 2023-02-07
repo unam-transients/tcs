@@ -70,7 +70,7 @@ to="$1"
 body=$(cat)
 
 case $(uname -n) in
-oan-ddoti-*)
+ddoti-*)
   from=a8unfz1ihyc1kgkcbnbmrb26g4fynf
   ;;
 coatli-*)

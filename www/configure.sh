@@ -28,7 +28,7 @@ case $host in
 coatli-control)
   ./configure SITE=coatli
   ;;
-oan-ddoti-control)
+ddoti-control)
   ./configure SITE=ddoti
   ;;
 ohp-colibri-control)
