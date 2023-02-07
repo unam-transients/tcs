@@ -38,7 +38,7 @@ coatli-*)
 ddoti-*)
   ./configure --enable-project=ddoti
   ;;
-ohp-colibri-*)
+colibri-*)
   ./configure --enable-project=colibri
   ;;
 *-test-*)
