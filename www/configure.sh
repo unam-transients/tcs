@@ -31,7 +31,7 @@ coatli-control)
 ddoti-control)
   ./configure SITE=ddoti
   ;;
-ohp-colibri-control)
+colibri-control)
   ./configure SITE=colibri
   ;;
 *-test-*)

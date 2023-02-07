@@ -52,7 +52,7 @@ then
   ddoti-*)
     set control platform detectors0 detectors1
     ;;
-  ohp-colibri-*)
+  colibri-*)
     set control detectors
     ;;
   *)

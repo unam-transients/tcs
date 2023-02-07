@@ -32,18 +32,18 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
   cat <<"EOF"
 # Start of tcs epilog.
 
-192.168.100.1     firewall                ohp-colibri-firewall
-192.168.100.23    opentsi                 ohp-colibri-opentsi
-192.168.100.50    access                  ohp-colibri-access
-192.168.100.51    pdu1                    ohp-colibri-pdu1
-192.168.100.52    pdu2                    ohp-colibri-pdu2
-192.168.100.53    sparepdu                ohp-colibri-sparepdu
-192.168.100.54    control                 ohp-colibri-control
-192.168.100.55    oldcontrol              ohp-colibri-oldcontrol
-192.168.100.56    detectors               ohp-colibri-detectors
-192.168.100.57    blue                    ohp-colibri-blue
-192.168.100.58    sparelinux              ohp-colibri-sparelinux
-192.168.100.59    sparewindows            ohp-colibri-sparewindows
+192.168.100.1     firewall                colibri-firewall
+192.168.100.23    opentsi                 colibri-opentsi
+192.168.100.50    access                  colibri-access
+192.168.100.51    pdu1                    colibri-pdu1
+192.168.100.52    pdu2                    colibri-pdu2
+192.168.100.53    sparepdu                colibri-sparepdu
+192.168.100.54    control                 colibri-control
+192.168.100.55    oldcontrol              colibri-oldcontrol
+192.168.100.56    detectors               colibri-detectors
+192.168.100.57    blue                    colibri-blue
+192.168.100.58    sparelinux              colibri-sparelinux
+192.168.100.59    sparewindows            colibri-sparewindows
 EOF
 ) | 
 sudo cp /dev/stdin /etc/hosts.tmp

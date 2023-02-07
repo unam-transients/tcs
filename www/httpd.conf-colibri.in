@@ -22,7 +22,7 @@
 ########################################################################
 
 ServerAdmin alan@astro.unam.mx
-ServerName ohp-colibri-services
+ServerName colibri-services
 
 <Directory @prefix@/var/www/>
   Options Indexes FollowSymLinks
@@ -39,7 +39,7 @@ ServerName ohp-colibri-services
 
 <VirtualHost *:80>
 
-  ServerName ohp-colibri-services
+  ServerName colibri-services
   DocumentRoot /usr/local/var/www/
 
   ############################################################
