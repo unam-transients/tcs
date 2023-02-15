@@ -41,7 +41,7 @@ ddoti-*)
 colibri-*)
   ./configure --enable-project=colibri
   ;;
-*-test-*)
+test-*)
   ./configure --enable-project=test
   ;;
 esac

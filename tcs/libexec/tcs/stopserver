@@ -65,7 +65,7 @@ colibri-control)
 colibri-detectors)
   allargs="C0"
   ;;
-*-test-*)
+test-*)
   allargs="supervisor selector executor instrument telescope C0 weather sensors sun moon target html log"
   ;;
 esac
