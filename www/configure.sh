@@ -34,7 +34,7 @@ ddoti-control)
 colibri-control)
   ./configure SITE=colibri
   ;;
-*-test-*)
+test-*)
   ./configure SITE=test
   ;;
 esac
