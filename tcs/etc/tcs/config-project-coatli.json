@@ -26,7 +26,7 @@
     "telescopedescription": "OAN/SPM COATLI 50-cm f/8",
     "detectortype": "andor",
     "detectoridentifier": "",
-    "detectorunbinnedpixelscale": "0.27as",
+    "detectorunbinnedpixelscale": "0.25as",
     "detectorinitialsoftwaregain": "1",
     "detectorinitialbinning": "1",
     "detectorwindows": {
