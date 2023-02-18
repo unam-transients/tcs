@@ -65,6 +65,7 @@ ServerName coatli.astrossp.unam.mx
     Allow from 132.248.4
     Allow from 100.
     Allow from 10.0.1
+    Allow from 192.168
     Allow from 127.0.0
     Allow from ::1
   </LocationMatch>
