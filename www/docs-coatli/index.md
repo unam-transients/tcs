@@ -26,9 +26,14 @@ PERFORMANCE OF THIS SOFTWARE.
 This is the mountain-top web site for the COATLI project at the
 [OAN/SPM](http://www.astrossp.unam.mx).
 
-* [Operations Interface](/tcs/operations.html)
+* Operations
+  * [Interface](/tcs/operations.html)
+* Engineering:
+  * [Interface](/tcs/engineering.html)
+  * [mount](/proxy/mount/)
+  * [ibb-127](/proxy/ibb-127/)
+  * [ibb-220](/proxy/ibb-220/)
+* Weather Forecast
+  * [Meteoblue](https://www.meteoblue.com/en/weather/week/parque-nacional-san-pedro-mártir_mexico_3983083)
 * [Documentation](documentation.html)
 * [Analysis](http://transients.astrossp.unam.mx/coatli/)
-* [Engineering Interface](/tcs/engineering.html)
-* Weather Forecasts
-  * [Meteoblue](https://www.meteoblue.com/en/weather/week/parque-nacional-san-pedro-mártir_mexico_3983083)
