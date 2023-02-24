@@ -634,7 +634,6 @@
     "outletgroupaddresses": {
       "firewall":           [["ibb-127", "a", "5"]],
       "access":             [["ibb-127", "a", "2"]],
-      "services":           [["ibb-127", "a", "6"]],
       "control":            [["ibb-127", "a", "7"]],
       "mount":              [["ibb-127", "a", "4"]],
       "serial":             [["ibb-127", "a", "8"]],
@@ -844,19 +843,6 @@
         "identifier": "7E.2C3900001000",
         "firmware": ""
       },
-      "host-services-load": {
-        "file": "/usr/local/var/tcs/sensors/services/load",
-        "keyword": "",
-        "prettyname": "load on host services",
-        "subsystem": "control-system",
-        "component": "host-services",
-        "group": "load",
-        "type": "float",
-        "unit": "processes",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
       "host-control-load": {
         "file": "/usr/local/var/tcs/sensors/control/load",
         "keyword": "",
@@ -918,19 +904,6 @@
         "group": "load",
         "type": "float",
         "unit": "processes",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
-      "host-services-disk-space-used": {
-        "file": "/usr/local/var/tcs/sensors/services/disk-space-used",
-        "keyword": "",
-        "prettyname": "relative disk space used on host services",
-        "subsystem": "control-system",
-        "component": "host-services",
-        "group": "disk-space",
-        "type": "float",
-        "unit": "",
         "model": "",
         "identifier": "",
         "firmware": ""
