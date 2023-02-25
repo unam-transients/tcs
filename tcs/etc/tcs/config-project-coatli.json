@@ -334,7 +334,7 @@
     "type": "optec",
     "controllerhost": "serial",
     "controllerport": "10002",
-    "initialz0": "2350",
+    "initialz0": "3600",
     "minz": "0",
     "maxz": "7000",
     "allowedzerror": "1",
