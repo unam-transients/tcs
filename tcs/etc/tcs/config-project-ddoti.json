@@ -114,7 +114,7 @@
   "C1": {
     "telescopedescription": "DDOTI 28-cm f/2.2",
     "detectortype": "fli",
-    "detectoridentifier": "ML2341018",
+    "detectoridentifier": "ML6104016",
     "detectorunbinnedpixelscale": "2.0as",
     "detectorreadmodes": {
       "initial": "default",
@@ -189,7 +189,7 @@
   "C2": {
     "telescopedescription": "DDOTI 28-cm f/2.2",
     "detectortype": "fli",
-    "detectoridentifier": "ML2351018",
+    "detectoridentifier": "ML2120717",
     "detectorunbinnedpixelscale": "2.0as",
     "detectorreadmodes": {
       "initial": "default",
@@ -264,7 +264,7 @@
   "C3": {
     "telescopedescription": "DDOTI 28-cm f/2.2",
     "detectortype": "fli",
-    "detectoridentifier": "ML3442818",
+    "detectoridentifier": "ML4182816",
     "detectorunbinnedpixelscale": "2.0as",
     "detectorreadmodes": {
       "initial": "default",

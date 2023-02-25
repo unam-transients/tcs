@@ -60,14 +60,15 @@ fi
 mkdir -p "$tcsprefix"/var/tcs/weather-a
 rsync -a rsync://132.248.4.66/weather/Archive/. "$tcsprefix"/var/tcs/weather-a/.
 
-mkdir -p "$tcsprefix"/var/tcs/weather-b
-rsync -a rsync://132.248.4.141/weather/Archive/. "$tcsprefix"/var/tcs/weather-b/.
+# Station b failed in 2023-02.
+#mkdir -p "$tcsprefix"/var/tcs/weather-b
+#rsync -a rsync://132.248.4.141/weather/Archive/. "$tcsprefix"/var/tcs/weather-b/.
 
 mkdir -p "$tcsprefix"/var/tcs/weather
 cd "$tcsprefix"/var/tcs/weather
 (
   ls "$tcsprefix"/var/tcs/weather-a
-  ls "$tcsprefix"/var/tcs/weather-b
+  #ls "$tcsprefix"/var/tcs/weather-b
 ) | 
 sort -ur | 
 grep '^ARC-[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].txt$' |
@@ -79,14 +80,14 @@ else
 fi |
 while read file
 do
-  # Give priority to weather-b.
+  # Give priority to weather-a.
   (
     (
-      test -f "$tcsprefix"/var/tcs/weather-b/"$file" && head --lines=2 "$tcsprefix"/var/tcs/weather-b/"$file"
+      #test -f "$tcsprefix"/var/tcs/weather-b/"$file" && head --lines=2 "$tcsprefix"/var/tcs/weather-b/"$file"
       test -f "$tcsprefix"/var/tcs/weather-a/"$file" && head --lines=2 "$tcsprefix"/var/tcs/weather-a/"$file"
     ) | head --lines=2
     (
-      test -f "$tcsprefix"/var/tcs/weather-b/"$file" && tail --lines=+3 "$tcsprefix"/var/tcs/weather-b/"$file"
+      #test -f "$tcsprefix"/var/tcs/weather-b/"$file" && tail --lines=+3 "$tcsprefix"/var/tcs/weather-b/"$file"
       test -f "$tcsprefix"/var/tcs/weather-a/"$file" && tail --lines=+3 "$tcsprefix"/var/tcs/weather-a/"$file"
     ) |
     sort -u -k1,2
