@@ -1,0 +1,46 @@
+ibb0
+
+set ipaddress 192.168.104.3
+set subnet 255.255.255.0
+set gateway 192.168.104.1
+set ipmode static
+get network
+
+set time server 129.6.15.29
+set time zone 0
+set time usents yes
+get time
+
+set device 1
+set device #1 name ibb0-a
+set unit 1CC9 device 2
+set device #2 name ibb0-b
+get devices
+
+
+add user transients
+set user transients password transients transients
+set user transients role admin
+set user transients device #1 outlet all yes
+set user transients device #2 outlet all yes
+get user transients
+
+set device #1 outlet 1 name oan-firewall
+set device #1 outlet 2 name oan-node0
+set device #1 outlet 3 name oan-node1
+set device #1 outlet 4 name oan-node2
+set device #1 outlet 5 name ddoti-redux0
+set device #1 outlet 6 name ddoti-redux1
+set device #1 outlet 7 name ddoti-redux2
+set device #1 outlet 8 name oan-nas
+get device #1
+
+set device #2 outlet 1 name ddoti-redux3
+set device #2 outlet 2 name ddoti-redux4
+set device #2 outlet 3 name ddoti-redux5
+set device #2 outlet 4 name ddoti-redux6
+set device #2 outlet 5 name ddoti-redux7
+set device #2 outlet 6 name ratir-redux
+set device #2 outlet 7 name coatli-redux
+set device #2 outlet 8 name nas
+get device #2
