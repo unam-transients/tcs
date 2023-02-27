@@ -269,7 +269,7 @@ proc focussecondaryvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingde
   log::summary "focussecondaryvisit: starting."
   track
   setreadmode $readmode
-  setwindow "256x256"
+  setwindow "default"
   setbinning 1
   client::request "C0" "movefocuser 57600"
   client::wait "C0"
@@ -296,7 +296,7 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefa
   executor::track
 
   executor::setreadmode $readmode
-  executor::setwindow "256x256"
+  executor::setwindow "default"
   executor::setbinning 1
   executor::movefilterwheel $filter
   executor::waituntiltracking
@@ -356,7 +356,7 @@ proc focusvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} 
   log::summary "focusvisit: starting."
   track
   setreadmode $readmode
-  setwindow "256x256"
+  setwindow "default"
   setbinning 1
   movefilterwheel $filter
   waituntiltracking
