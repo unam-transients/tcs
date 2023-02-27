@@ -195,11 +195,18 @@
       "closed" : "dark"
     },
 
-    "focusertype": "null",
-    "focuseridentifier": "null",
-    "focuserinitialposition": 0,
-    "focuserbacklashoffset": 0,
+//    "focusertype": "null",
+//    "focuseridentifier": "null",
+//    "focuserinitialposition": 0,
+//    "focuserbacklashoffset": 0,
+//    "focuserdzmodel": {},
+    
+    "focusertype": "ddoti",
+    "focuseridentifier": "/dev/ttyUSB0",
+    "focuserinitialposition": 40000,
+    "focuserbacklashoffset": "-450",
     "focuserdzmodel": {},
+    
 
     "pointingmodelparameters": {},
     "isstandalone": false,
