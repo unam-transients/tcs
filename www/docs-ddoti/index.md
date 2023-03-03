@@ -36,4 +36,6 @@ This is the mountain-top web site for the DDOTI project at the
 * Weather Forecast
   * [Meteoblue](https://www.meteoblue.com/en/weather/week/parque-nacional-san-pedro-mártir_mexico_3983083)
 * [Documentation](documentation.html)
-* [Analysis](http://transients.astrossp.unam.mx/ddoti/)
+* Data
+  * [Raw](http://oan-data/archive-ddoti/raw/)
+  * [Reduced](http://oan-data/redux-ddoti/www/)

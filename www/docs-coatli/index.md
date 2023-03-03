@@ -36,4 +36,6 @@ This is the mountain-top web site for the COATLI project at the
 * Weather Forecast
   * [Meteoblue](https://www.meteoblue.com/en/weather/week/parque-nacional-san-pedro-mártir_mexico_3983083)
 * [Documentation](documentation.html)
-* [Analysis](http://transients.astrossp.unam.mx/coatli/)
+* Data
+  * [Raw](http://oan-data/archive-coatli/raw/)
+  * [Reduced](http://oan-data/redux-coatli/)
