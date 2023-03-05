@@ -70,7 +70,7 @@ namespace eval "focuser" {
   
   proc focuserrawclose {} {
     variable channel
-    ::close $channel
+    catch {::close $channel}
   }
   
   proc focuserrawgetcharacteristics {} {
