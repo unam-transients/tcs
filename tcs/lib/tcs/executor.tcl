@@ -415,6 +415,15 @@ namespace eval "executor" {
     log::info [format "finished moving filter wheel after %.1f seconds." [utcclock::diff now $start]]
   }
 
+  proc movefocuser {args} {
+    set start [utcclock::seconds]
+    set positions $args
+    log::info "moving focuser to [join $positions /]."
+    client::request "instrument" "movefocuser $positions"
+    client::wait "instrument"
+    log::info [format "finished moving focuser after %.1f seconds." [utcclock::diff now $start]]
+  }
+  
   proc setfocuser {args} {
     set start [utcclock::seconds]
     set positions $args
