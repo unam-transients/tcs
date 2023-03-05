@@ -1044,14 +1044,27 @@ namespace eval "ccd" {
     variable focuserinitialposition
     server::checkstatus
     server::checkactivity "idle"
+    set minposition [server::getdata "focuserminposition"]
+    set maxposition [server::getdata "focusermaxposition"]
     if {[string equal $position "current"]} {
+      log::info "moving focuser to the current position."
       set position [server::getdata "requestedfocuserposition"]
     } elseif {[string equal $position "initial"]} {
+      log::info "moving focuser to the initial position."
       set position $focuserinitialposition
+    } elseif {[string equal $position "center"]} {
+      log::info "moving focuser to the center position."
+      set position [expr {int(($minposition + $maxposition) / 2)}]
+    } elseif {[string equal $position "minimum"]} {
+      log::info "moving focuser to the minimum position."
+      set position $minposition
+    } elseif {[string equal $position "maximum"]} {
+      log::info "moving focuser to the maximum position."
+      set position $maxposition
     } elseif {
       ![string is integer -strict $position] ||
-      $position < [server::getdata "focuserminposition"] ||
-      $position > [server::getdata "focusermaxposition"]
+      $position < $minposition ||
+      $position > $maxposition
     } {
       error "invalid focuser position \"$position\"."
     }
