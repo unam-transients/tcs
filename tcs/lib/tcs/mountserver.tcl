@@ -86,7 +86,7 @@ namespace eval "mountserver" {
     return
   }
 
-  proc slavecorrect {truemountalpha truemountdelta equinox} {
+  proc slavecorrect {{truemountalpha ""} {truemountdelta ""} {equinox ""}} {
     mount::correct $truemountalpha $truemountdelta $equinox
     return
   }

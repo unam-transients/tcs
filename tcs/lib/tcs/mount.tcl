@@ -1053,38 +1053,59 @@ namespace eval "mount" {
     server::newactivitycommand "offsetting" "tracking" mount::offsetactivitycommand
   }
 
-  proc correct {solvedmountalpha solvedmountdelta equinox} {
+  proc correct {truemountalpha truemountdelta equinox} {
+
+    set start [utcclock::seconds]
+
     server::checkstatus
     server::checkactivity "tracking"
     checkunparked
     checkhardware "correct"
-    set solvedmountalpha [astrometry::parsealpha $solvedmountalpha]
-    set solvedmountdelta [astrometry::parsedelta $solvedmountdelta]
-    set start [utcclock::seconds]
-    log::info "solved position is [astrometry::formatalpha $solvedmountalpha] [astrometry::formatdelta $solvedmountdelta] $equinox"
-    if {[string equal $equinox "observed"]} {
-      set solvedmountobservedalpha $solvedmountalpha
-      set solvedmountobserveddelta $solvedmountdelta
-    } else {
-      set solvedmountobservedalpha [astrometry::observedalpha $solvedmountalpha $solvedmountdelta $equinox]
-      set solvedmountobserveddelta [astrometry::observeddelta $solvedmountalpha $solvedmountdelta $equinox]    
+
+    if {[catch {client::update "target"} message]} {
+      error "unable to update target data: $message"
     }
-    log::info "solved mount observed position is [astrometry::formatalpha $solvedmountobservedalpha] [astrometry::formatdelta $solvedmountobserveddelta]."
+    if {[string equal $truemountalpha ""]} {
+      set truemountalpha [client::getdata "target" "requestedalpha"]
+    } else {
+      set truemountalpha [astrometry::parsealpha $truemountalpha]
+    }
+    if {[string equal $truemountdelta ""]} {
+      set truemountdelta [client::getdata "target" "requesteddelta"]
+    } else {
+      set truemountdelta [astrometry::parsealpha $truemountdelta]
+    }
+    if {[string equal $equinox ""]} {
+      set equinox [client::getdata "target" "requestedequinox"]
+    } else {
+      set equinox [astrometry::parseequinox $equinox]
+    }
+
+    log::info "true position is [astrometry::formatalpha $truemountalpha] [astrometry::formatdelta $truemountdelta] $equinox"
+
+    set truemountobservedalpha [astrometry::observedalpha $truemountalpha $truemountdelta $equinox]
+    set truemountobserveddelta [astrometry::observeddelta $truemountalpha $truemountdelta $equinox]    
+    log::info "true mount observed position is [astrometry::formatalpha $truemountobservedalpha] [astrometry::formatdelta $truemountobserveddelta]."
+
     set requestedobservedalpha [server::getdata "requestedobservedalpha"]
     set requestedobserveddelta [server::getdata "requestedobserveddelta"]
     log::info "requested mount observed position is [astrometry::formatalpha $requestedobservedalpha] [astrometry::formatdelta $requestedobserveddelta]."
+
     set mountalphaerror [server::getdata "mountalphaerror"]
     set mountdeltaerror [server::getdata "mountdeltaerror"]
     set mountobservedalpha [astrometry::foldradpositive  [expr {$requestedobservedalpha + $mountalphaerror}]]
     set mountobserveddelta [astrometry::foldradsymmetric [expr {$requestedobserveddelta + $mountdeltaerror}]]
     log::info "mount observed position is [astrometry::formatalpha $mountobservedalpha] [astrometry::formatdelta $mountobserveddelta]."
-    set d [astrometry::distance $mountobservedalpha $mountobserveddelta $solvedmountobservedalpha $solvedmountobserveddelta]
+
+    set d [astrometry::distance $mountobservedalpha $mountobserveddelta $truemountobservedalpha $truemountobserveddelta]
     log::info [format "correction is %s." [astrometry::formatdistance $d]]
-    set dalpha [astrometry::foldradsymmetric [expr {$mountobservedalpha - $solvedmountobservedalpha}]]
-    set ddelta [astrometry::foldradsymmetric [expr {$mountobserveddelta - $solvedmountobserveddelta}]]
-    set alphaoffset [expr {$dalpha * cos($solvedmountobserveddelta)}]
+
+    set dalpha [astrometry::foldradsymmetric [expr {$mountobservedalpha - $truemountobservedalpha}]]
+    set ddelta [astrometry::foldradsymmetric [expr {$mountobserveddelta - $truemountobserveddelta}]]
+    set alphaoffset [expr {$dalpha * cos($truemountobserveddelta)}]
     set deltaoffset $ddelta
     log::info [format "correction is %s E and %s N." [astrometry::formatoffset $alphaoffset] [astrometry::formatoffset $deltaoffset]]
+
     variable maxcorrection
     if {$d >= $maxcorrection} {
       log::warning [format "ignoring correction: the correction distance of %s is larger than the maximum allowed of %s." [astrometry::formatdistance $d] [astrometry::formatdistance $maxcorrection]]
@@ -1099,7 +1120,9 @@ namespace eval "mount" {
       set requestedobserveddelta [server::getdata "requestedobserveddelta"]
       log::info "requested mount observed position is [astrometry::formatalpha $requestedobservedalpha] [astrometry::formatdelta $requestedobserveddelta]."  
     }
+
     log::info [format "finished correcting after %.1f seconds." [utcclock::diff now $start]]
+
     return
   }
 
