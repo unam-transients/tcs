@@ -144,7 +144,7 @@ EOF
 
   case $host in
   instrument)
-    echo "tcs instrumentdataserver -f -d rsync://transients.astrossp.unam.mx/coatli-raw/ &"
+    echo "tcs instrumentdataserver -f -d rsync://oan-nas/coatli-raw/ &"
     echo "tcs instrumentimageserver C0 control &"
     ;;
   control)
