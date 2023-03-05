@@ -980,13 +980,6 @@ namespace eval "mount" {
     server::newactivitycommand "resetting" [server::getstoppedactivity] mount::resetactivitycommand
   }
 
-  proc reboot {} {
-    server::checkstatus
-    server::checkactivityforreset
-    checkhardware "reboot"
-    server::newactivitycommand "rebooting" [server::getstoppedactivity] mount::rebootactivitycommand
-  }
-
   proc preparetomove {} {
     server::checkstatus
     server::checkactivityformove

@@ -372,8 +372,7 @@ namespace eval "mount" {
   proc checkhardware {action} {
     switch $action {
       "stop" -
-      "reset" -
-      "reboot" {
+      "reset" {
       }
       default {
         if {$opentsi::readystate != 1.0} {
@@ -432,13 +431,6 @@ namespace eval "mount" {
     log::info "resetting."
     set end [utcclock::seconds]
     log::info [format "finished resetting after %.1f seconds." [utcclock::diff $end $start]]
-  }
-
-  proc rebootactivitycommand {} {
-    set start [utcclock::seconds]
-    log::info "rebooting."
-    set end [utcclock::seconds]
-    log::info [format "finished rebooting after %.1f seconds." [utcclock::diff $end $start]]
   }
 
   proc preparetomoveactivitycommand {} {
