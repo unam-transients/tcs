@@ -307,6 +307,27 @@ namespace eval "instrument" {
     log::info [format "finished setting binning after %.1f seconds." [utcclock::diff now $start]]
   }
 
+  proc movefocuseractivitycommand {args} {
+    set start [utcclock::seconds]
+    log::info "moving focuser."
+    set positions $args
+    variable activedetectors
+    foreach detector $activedetectors {
+      client::resetifnecessary $detector
+    }
+    variable detectors
+    foreach detector $detectors position $positions {
+      if {![string equal $position "none"] && [isactivedetector $detector]} {
+        log::info "moving $detector focuser to $position."
+        client::request $detector "movefocuser $position"
+      }
+    }
+    foreach detector $activedetectors {
+      client::wait $detector
+    }
+    log::info [format "finished moving focuser after %.1f seconds." [utcclock::diff now $start]]
+  }
+
   proc setfocuseractivitycommand {args} {
     set start [utcclock::seconds]
     log::info "setting focuser."
@@ -703,6 +724,22 @@ namespace eval "instrument" {
     }
     server::newactivitycommand "setting" "idle" \
       "instrument::setbinningactivitycommand $binnings"
+  }
+  
+  proc movefocuser {args} {
+    server::checkstatus
+    server::checkactivity "idle"
+    safetyswitch::checksafetyswitch
+    variable detectors
+    if {[llength $args] == 1} {
+      set args [lrepeat [llength $detectors] $args]
+    }
+    set positions $args
+    if {[llength $positions] != [llength $detectors]} {
+      error "incorrect number of positions."
+    }
+    server::newactivitycommand "moving" "idle" \
+      "instrument::movefocuseractivitycommand $positions"
   }
   
   proc setfocuser {args} {

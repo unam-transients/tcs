@@ -99,6 +99,11 @@ namespace eval "instrumentserver" {
     return
   }
   
+  proc slavemovefocuser {args} {
+    eval instrument::movefocuser $args
+    return
+  }
+  
   proc slavesetfocuser {args} {
     eval instrument::setfocuser $args
     return
@@ -135,6 +140,7 @@ namespace eval "instrumentserver" {
     interp alias $slave setreadmode          {} instrumentserver::slavesetreadmode
     interp alias $slave setwindow            {} instrumentserver::slavesetwindow
     interp alias $slave setbinning           {} instrumentserver::slavesetbinning
+    interp alias $slave movefocuser          {} instrumentserver::slavemovefocuser
     interp alias $slave setfocuser           {} instrumentserver::slavesetfocuser
     interp alias $slave movefilterwheel      {} instrumentserver::slavemovefilterwheel
     interp alias $slave focus                {} instrumentserver::slavefocus
