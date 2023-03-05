@@ -97,7 +97,7 @@ done
 
 log summary "loading blocks."
 
-expand BLOCKS |
+expand "$blockfile" |
 awk \
  -v queuedir="$queuedir" \
  -v targetdate="$targetdate" \
