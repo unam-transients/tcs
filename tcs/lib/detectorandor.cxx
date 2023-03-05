@@ -139,6 +139,8 @@ detectorrawopen(char *identifier)
   if (detectorrawgetisopen())
     DETECTOR_ERROR("a detector is currently open");
 
+  sleep(2);
+
   char etcdir[] = "/usr/local/etc/andor";
   status = Initialize(etcdir);
   log("Initialize(%s): status = %d.", etcdir, status);
