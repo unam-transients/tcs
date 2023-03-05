@@ -135,12 +135,12 @@ EOF
 
   case $host in
   detectors0)
-    echo "tcs instrumentdataserver -f -d rsync://transients.astrossp.unam.mx/ddoti-raw/ &"
+    echo "tcs instrumentdataserver -f -d rsync://oan-nas/ddoti-raw/ &"
     echo "tcs instrumentimageserver C2 control &"
     echo "tcs instrumentimageserver C4 control &"
     ;;
   detectors1)
-    echo "tcs instrumentdataserver -f -d rsync://transients.astrossp.unam.mx/ddoti-raw/ &"
+    echo "tcs instrumentdataserver -f -d rsync://oan-nas/ddoti-raw/ &"
     echo "tcs instrumentimageserver C1 control &"
     echo "tcs instrumentimageserver C3 control &"
     ;;
