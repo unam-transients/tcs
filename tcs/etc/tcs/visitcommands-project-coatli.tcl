@@ -78,6 +78,7 @@ proc alertvisit {{filters "r"} {readmode "conventionaldefault"}} {
 
   executor::track
 
+  executor::movefocuser "center"
   executor::setreadmode $readmode
   executor::setwindow "default"
   executor::setbinning $binning
@@ -174,8 +175,10 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
   log::summary "gridvisit: starting."
 
   executor::setsecondaryoffset 0
+
   executor::track
 
+  executor::movefocuser "center"
   executor::setreadmode $readmode
   executor::setwindow "default"
   executor::setbinning 1
@@ -246,13 +249,15 @@ proc coarsefocussecondaryvisit {{exposuretime 5} {filter "i"} {readmode "convent
   setsecondaryoffset 0
   
   track
+
+  executor::movefocuser "center"
   setreadmode $readmode
   setwindow "default"
   setbinning 2
-  client::request "C0" "movefocuser 57600"
-  client::wait "C0"
   movefilterwheel "$filter"
+
   waituntiltracking
+
   log::summary "coarsefocussecondaryvisit: focusing in filter $filter with $exposuretime second exposures and binning 2."
   focussecondary C0 $exposuretime 300 30 false true
   executor::setfocused
@@ -267,13 +272,17 @@ proc coarsefocussecondaryvisit {{exposuretime 5} {filter "i"} {readmode "convent
 proc focussecondaryvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
 
   log::summary "focussecondaryvisit: starting."
+
+  setsecondaryoffset 0
+
   track
+
+  executor::movefocuser "center"
   setreadmode $readmode
   setwindow "default"
   setbinning 1
-  client::request "C0" "movefocuser 57600"
-  client::wait "C0"
   movefilterwheel $filter
+
   waituntiltracking
 
   log::summary "focussecondaryvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
@@ -293,12 +302,15 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefa
   log::summary "focuswitnessvisit: starting."
 
   executor::setsecondaryoffset 0
+
   executor::track
 
+  executor::movefocuser "center"
   executor::setreadmode $readmode
   executor::setwindow "default"
-  executor::setbinning 1
   executor::movefilterwheel $filter
+  executor::setbinning 1
+
   executor::waituntiltracking
   
   foreach filter {g r i z y w} {
@@ -335,11 +347,16 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefa
 proc coarsefocusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}} {
 
   log::summary "coarsefocusvisit: starting."
+
+  executor::setsecondaryoffset 0
+
   track
+
   setreadmode $readmode
   setwindow "default"
   setbinning 2
   movefilterwheel $filter
+
   waituntiltracking
 
   executor::focus $exposuretime 100000 10000 true true
@@ -354,11 +371,16 @@ proc coarsefocusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefa
 proc focusvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
 
   log::summary "focusvisit: starting."
+
+  executor::setsecondaryoffset 0
+
   track
+
   setreadmode $readmode
   setwindow "default"
   setbinning 1
   movefilterwheel $filter
+
   waituntiltracking
 
   executor::focus $exposuretime 60000 6000 true false
@@ -374,11 +396,16 @@ proc initialpointingcorrectionvisit {{exposuretime 30} {filter "i"} {readmode "c
 
   log::summary "initialpointingcorrectionvisit: starting."
 
+  executor::setsecondaryoffset 0
+
   tracktopocentric
+
+  executor::movefocuser "center"
   setreadmode $readmode
   setwindow "default"
   setbinning 2
   movefilterwheel $filter
+
   waituntiltracking
 
   log::summary "initialpointingcorrectionvisit: correcting pointing."
@@ -394,11 +421,16 @@ proc pointingcorrectionvisit {{exposuretime 15} {filter "i"} {readmode "conventi
 
   log::summary "correctpointingvisit: starting."
 
+  executor::setsecondaryoffset 0
+
   track
+
+  executor::movefocuser "center"
   setreadmode $readmode
   setwindow "default"
   setbinning 1
   movefilterwheel $filter
+
   waituntiltracking
 
   log::summary "correctpointingvisit: correcting pointing."
@@ -413,19 +445,23 @@ proc pointingcorrectionvisit {{exposuretime 15} {filter "i"} {readmode "conventi
 proc donutvisit {{exposuretime 10} {filter "i"}} {
 
   log::summary "donutvisit: starting."
+
+  executor::setsecondaryoffset 0
+
+  track
+
   setreadmode "conventionaldefault"
   setwindow "default"
   setbinning 1
   movefilterwheel $filter
 
-  track
   waituntiltracking
   
   set n 3
 
   log::summary "donutvisit: moving focuser to intrafocal position."
-  client::request "C0" "movefocuser 0"
-  client::wait "C0"
+  executor::movefocuser "minimum"
+
   log::summary "donutvisit: taking intrafocal images."
   set i 0
   while {$i < $n} { 
@@ -434,8 +470,8 @@ proc donutvisit {{exposuretime 10} {filter "i"}} {
   }
   
   log::summary "donutvisit: moving focuser to extrafocal position."
-  client::request "C0" "movefocuser 115200"
-  client::wait "C0"
+  executor::movefocuser "maximum"
+
   log::summary "donutvisit: taking extrafocal images."
   set i 0
   while {$i < $n} { 
@@ -443,9 +479,8 @@ proc donutvisit {{exposuretime 10} {filter "i"}} {
     incr i
   }
 
-  log::summary "donutvisit: moving focuser to nominal position."
-  client::request "C0" "movefocuser 57600"
-  client::wait "C0"
+  log::summary "donutvisit: moving focuser to center position."
+  executor::movefocuser "center"
 
   log::summary "donutvisit: finished."
 
@@ -459,8 +494,10 @@ proc pointingmapvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefa
   log::summary "pointingmapvisit: starting."
 
   setsecondaryoffset 0
+
   tracktopocentric
 
+  executor::movefocuser "center"
   setwindow "default"
   setreadmode "default"
   setbinning 1
@@ -480,8 +517,10 @@ proc twilightflatsvisit {targetngood filter} {
   log::summary "twilightflatsvisit: starting."
 
   executor::setsecondaryoffset 0
+
   executor::move
 
+  executor::movefocuser "center"
   executor::setreadmode "conventionaldefault"
   executor::setwindow "default"
   executor::setbinning 1
@@ -534,13 +573,18 @@ proc twilightflatsvisit {targetngood filter} {
 proc domeflatsvisit {} {
 
   log::summary "domeflatsvisit: starting."
+
   executor::setsecondaryoffset 0
+
   if {[executor::isunparked]} {
     executor::move
   }
+
+  executor::movefocuser "center"
   executor::setreadmode "conventionaldefault"
   executor::setwindow "default"
   executor::setbinning 1
+
   set maxlevel 16000
   set minlevel 3500
   set exposuretime 10
@@ -604,11 +648,16 @@ proc domeflatsvisit {} {
 
 proc biasesvisit {} {
   log::summary "biasesvisit: starting."
+
   setsecondaryoffset 0
+
   if {[executor::isunparked]} {
     executor::move
   }
+
+  executor::movefocuser "center"
   movefilterwheel "dark"
+
   foreach {readmode binning visitidentifier} {
      "1MHz-low"  1 0
      "1MHz-high" 1 1
@@ -632,9 +681,14 @@ proc biasesvisit {} {
 
 proc darksvisit {} {
   log::summary "darksvisit: starting."
+
   setsecondaryoffset 0
+
   move
+
+  executor::movefocuser "center"
   movefilterwheel "dark"
+
   foreach {readmode binning visitidentifier} {
      "1MHz-low"         1 0
      "1MHz-high"        1 1
@@ -667,8 +721,13 @@ proc darksvisit {} {
 
 proc gainvisit {} {
   log::summary "gainvisit: starting."
+
   setsecondaryoffset 0
+
   move
+
+  executor::movefocuser "center"
+  
 #     "1MHz-0"     1 0 "656/3"  0.1
 #     "1MHz-1"     1 1 "656/3"  0.1
 #     "em-10MHz-0" 1 2 "656/3"  1
@@ -701,9 +760,14 @@ proc gainvisit {} {
 
 proc readnoisevisit {} {
   log::summary "readnoisevisit: starting."
+
   setsecondaryoffset 0
+
   move
+
+  executor::movefocuser "center"
   movefilterwheel "dark"
+
 #     "em-10MHz-0" 1 2 0
 #     "em-10MHz-1" 1 3 0
 #     "em-20MHz-0" 1 4 0
@@ -740,8 +804,10 @@ proc hartmanntestvisit {secondaryoffset {exposuretime 10} {filter "470/10"} {exp
   executor::setwindow "default"
   executor::setbinning 4
   executor::movefilterwheel $filter
+  executor::movefocuser "center"
 
   log::summary "hartmanntestvisit: extrafocal images: secondary offset is +$secondaryoffset."
+
 
   executor::setsecondaryoffset +$secondaryoffset
   executor::track
@@ -790,7 +856,10 @@ proc satellitevisit {start exposures exposuretime} {
   log::summary "satellitevisit: starting."
 
   executor::setsecondaryoffset 0
+
   executor::track
+
+  executor::movefocuser "center"
   executor::movefilterwheel "g"
   executor::setreadmode "conventionaldefault"
   executor::setwindow "default"
