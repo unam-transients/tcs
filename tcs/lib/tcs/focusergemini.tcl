@@ -28,6 +28,7 @@ namespace eval "focuser" {
   variable settledelayseconds 1.0
 
   variable channel
+  variable identifier
   
   variable rawposition        ""
   variable rawmaxposition     ""
@@ -35,13 +36,24 @@ namespace eval "focuser" {
   variable rawrotatorposition ""
   variable rawdescription     "Optec Gemini"
   
-  proc openspecific {identifier} {
-    variable channel
-    variable rawdescription
-    variable rawdescriptiondict
-    variable rawmaxposition
-    
+  proc openspecific {identifierarg} {
+
     log::debug "openspecific: starting."
+
+    variable identifier
+    set identifier $identifierarg
+
+    focuserrawopen
+    focuserrawgetcharacteristics
+    return "ok"
+
+  }
+  
+  proc focuserrawopen {} {
+
+    variable identifier
+    variable channel
+    
 
     log::debug "openspecific: opening \"$identifier\"."
     if {[catch {set channel [::open $identifier "r+"]}]} {
@@ -52,54 +64,6 @@ namespace eval "focuser" {
       error "unable to configure $identifier."
     }
     
-    # Get the maximum position.
-    log::debug "openspecific: sending <F100GETCFG>."
-    puts $channel "<F100GETCFG>"
-    flush $channel
-    log::debug "openspecific: waiting"
-    while {[gets $channel line] && ![string equal $line "END"]} {
-      log::debug "openspecific: line = \"$line\"."
-      scan $line "MaxSteps = %d" rawmaxposition
-    }
-
-    # Find the home position if necessary.
-    log::debug "openspecific: sending <F100GETSTA>."
-    puts $channel "<F100GETSTA>"
-    flush $channel
-    log::debug "openspecific: waiting"
-    set ishomed 0
-    while {[gets $channel line] && ![string equal $line "END"]} {
-      log::debug "openspecific: line = \"$line\"."
-      scan $line "Is Homed = %d" ishomed
-    }
-    if {$ishomed} {
-      log::info "home position is known."
-    } else {
-      log::info "finding home position."
-      log::debug "openspecific: sending <F100DOHOME>."
-      puts $channel "<F100DOHOME>"
-      flush $channel
-      log::debug "openspecific: waiting"
-      while {[gets $channel line] && ![string equal $line "END"]} {
-        log::debug "openspecific: line = \"$line\"."
-      }
-      while {!$ishomed} {
-        log::debug "openspecific: sending <F100GETSTA>."
-        puts $channel "<F100GETSTA>"
-        flush $channel
-        log::debug "openspecific: waiting"
-        while {[gets $channel line] && ![string equal $line "END"]} {
-          log::debug "openspecific: line = \"$line\"."
-          scan $line "Is Homed = %d" ishomed
-        }
-        coroutine::after 1000
-      }
-      log::info "finished finding home position."
-    }
-
-    log::debug "openspecific: rawmaxposition = \"$rawmaxposition\"."
-    log::debug "openspecific: rawdescription = \"$rawdescription\"."
-    
     log::debug "openspecific: done."
     return "ok"
   }
@@ -109,6 +73,84 @@ namespace eval "focuser" {
     ::close $channel
   }
   
+  proc focuserrawgetcharacteristics {} {
+
+    variable channel
+    variable rawdescription
+    variable rawdescriptiondict
+    variable rawmaxposition
+    
+    # Get the maximum position.
+    while {[catch {
+      log::debug "focuserrawgetcharacteristics: sending <F100GETCFG>."
+      puts $channel "<F100GETCFG>"
+      flush $channel
+      log::debug "focuserrawgetcharacteristics: waiting"
+      while {[gets $channel line] && ![string equal $line "END"]} {
+        log::debug "focuserrawgetcharacteristics: line = \"$line\"."
+        scan $line "MaxSteps = %d" rawmaxposition
+      }
+    } message]} {
+      log::warning "focuserrawgetcharacteristics: communication failure with focuser: $message"
+      focuserrawclose
+      coroutine::after 1000
+      focuserrawopen
+    }
+    
+    log::debug "focuserrawgetcharacteristics: rawmaxposition = \"$rawmaxposition\"."
+
+    # Find the home position if necessary.
+    while {[catch {
+      log::debug "focuserrawgetcharacteristics: sending <F100GETSTA>."
+      puts $channel "<F100GETSTA>"
+      flush $channel
+      log::debug "focuserrawgetcharacteristics: waiting"
+      set ishomed 0
+      while {[gets $channel line] && ![string equal $line "END"]} {
+        log::debug "focuserrawgetcharacteristics: line = \"$line\"."
+        scan $line "Is Homed = %d" ishomed
+      }
+    } message]} {
+      log::warning "focuserrawgetcharacteristics: communication failure with focuser: $message"
+      focuserrawclose
+      coroutine::after 1000
+      focuserrawopen
+    }
+
+    if {$ishomed} {
+      log::info "home position is known."
+    } else {
+      log::info "finding home position."
+      while {[catch {
+        log::debug "focuserrawgetcharacteristics: sending <F100DOHOME>."
+        puts $channel "<F100DOHOME>"
+        flush $channel
+        log::debug "focuserrawgetcharacteristics: waiting"
+        while {[gets $channel line] && ![string equal $line "END"]} {
+          log::debug "focuserrawgetcharacteristics: line = \"$line\"."
+        }
+        while {!$ishomed} {
+          log::debug "focuserrawgetcharacteristics: sending <F100GETSTA>."
+          puts $channel "<F100GETSTA>"
+          flush $channel
+          log::debug "focuserrawgetcharacteristics: waiting"
+          while {[gets $channel line] && ![string equal $line "END"]} {
+            log::debug "focuserrawgetcharacteristics: line = \"$line\"."
+            scan $line "Is Homed = %d" ishomed
+          }
+          coroutine::after 1000
+        }
+      } message]} {
+        log::warning "focuserrawgetcharacteristics: communication failure with focuser: $message"
+        focuserrawclose
+        coroutine::after 1000
+        focuserrawopen
+      }
+      log::info "finished finding home position."
+    }
+
+  }
+  
   proc focuserrawupdateposition {} {
 
     variable channel
@@ -116,25 +158,40 @@ namespace eval "focuser" {
     variable rawrotatorangle
     variable rawrotatorposition
 
-    log::debug "focuserrawupdateposition: sending <F100GETSTA>."
-    puts $channel "<F100GETSTA>"
-    flush $channel
-    while {[gets $channel line] && ![string equal $line "END"]} {
-      log::debug "focuserrawupdateposition: line = \"$line\"."
-      scan $line "CurrStep = %d" rawposition
+    while {[catch {
+      log::debug "focuserrawupdateposition: sending <F100GETSTA>."
+      puts $channel "<F100GETSTA>"
+      flush $channel
+      while {[gets $channel line] && ![string equal $line "END"]} {
+        log::debug "focuserrawupdateposition: line = \"$line\"."
+        scan $line "CurrStep = %d" rawposition
+      }
+    } message]} {
+      log::warning "focuserrawupdateposition: communication failure with focuser: $message"
+      focuserrawclose
+      coroutine::after 1000
+      focuserrawopen
     }
     log::debug "focuserrawupdateposition: rawposition = $rawposition."
     
-    log::debug "focuserrawupdateposition: sending <R100GETSTA>."
-    puts $channel "<R100GETSTA>"
-    flush $channel
-    set lastrawrotatorangle    $rawrotatorangle
-    set lastrawrotatorposition $rawrotatorposition
-    while {[gets $channel line] && ![string equal $line "END"]} {
-      log::debug "focuserrawupdateposition: line = \"$line\"."
-      scan $line "CurrStep = %d" rawrotatorposition
-      scan $line "CurentPA = %d" rawrotatorangle
+    while {[catch {
+      log::debug "focuserrawupdateposition: sending <R100GETSTA>."
+      puts $channel "<R100GETSTA>"
+      flush $channel
+      set lastrawrotatorangle    $rawrotatorangle
+      set lastrawrotatorposition $rawrotatorposition
+      while {[gets $channel line] && ![string equal $line "END"]} {
+        log::debug "focuserrawupdateposition: line = \"$line\"."
+        scan $line "CurrStep = %d" rawrotatorposition
+        scan $line "CurentPA = %d" rawrotatorangle
+      }
+    } message]} {
+      log::warning "focuserrawupdateposition: communication failure with rotator: $message"
+      focuserrawclose
+      coroutine::after 1000
+      focuserrawopen
     }
+    
     set rawrotatorangle [astrometry::degtorad [expr {$rawrotatorangle * 1e-3}]]
     log::debug "focuserrawupdateposition: rawrotatorangle    = $rawrotatorangle."
     log::debug "focuserrawupdateposition: rawrotatorposition = $rawrotatorposition."
@@ -177,13 +234,20 @@ namespace eval "focuser" {
     if {$newposition < [focuserrawgetminposition] || $newposition > [focuserrawgetmaxposition]} {
       return "invalid position"
     } else {
-      set line [format "<F100MOVABS%06d>" $newposition]
-      log::debug "focuserrawmove: sending \"$line\"."
-      puts $channel $line
-      flush $channel
-      while {[gets $channel line] && ![string equal $line "END"]} {
-        log::debug "focuserrawupdateposition: line = \"$line\"."
-      }
+      while {[catch {  
+        set line [format "<F100MOVABS%06d>" $newposition]
+        log::debug "focuserrawmove: sending \"$line\"."
+        puts $channel $line
+        flush $channel
+        while {[gets $channel line] && ![string equal $line "END"]} {
+          log::debug "focuserrawupdateposition: line = \"$line\"."
+        }
+      } message]} {
+        log::warning "focuserrawmove: communication failure with focuser: $message"
+        focuserrawclose
+        coroutine::after 1000
+        focuserrawopen
+      }    
     }
     log::debug "focuserrawmove: done."
     return "ok"
