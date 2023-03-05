@@ -133,21 +133,29 @@ NF == 6 && $5 == "date" {
     duplicates = 999
   }
 }
-{
+action == "load" {
   for (i = 0; i < duplicates; ++i)
-    printf("for blockfile in %s.json; do echo %s $blockfile %s-%03d-$blockfile; done\n", blockfile, action, priority, i)
+    printf("for blockfile in %s.json; do echo load $blockfile %s-%03d-$blockfile; done\n", blockfile, priority, i)
 }
-' | 
+action == "unload" {
+  if (duplicates == "*") {
+    printf("echo unload - \"%s-*-%s.json\"\n", priority, blockfile)
+  } else {
+    for (i = 0; i < duplicates; ++i)
+      printf("unload - \"%s-%03d-%s.json\"\n", priority, i, blockfile)
+  }
+}
+' | tee /tmp/foo |
 sh |
 while read action src dst
 do
   if test "$action" = "load"
   then
     log info "loading $dst."
-    sudo cp "$src" "$queuedir"/"$dst"
+    sudo cp "$src" "$queuedir"/$dst
   else
     log info "unloading $dst."
-    sudo rm -f "$queuedir"/"$dst"
+    sudo rm -f "$queuedir"/$dst
   fi
 done
 
