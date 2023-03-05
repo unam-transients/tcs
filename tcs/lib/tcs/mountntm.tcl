@@ -831,6 +831,7 @@ namespace eval "mount" {
     variable state
     switch $action {
       "initialize" -
+      "stop" -
       "reset" -
       "reboot" {
       }
@@ -903,11 +904,16 @@ namespace eval "mount" {
     log::info "resetting."
     updaterequestedpositiondata false
     server::setdata "mounttracking" false
-#    stophardware
+    stophardware
     if {![isoperational]} {
+      log::info "switching off cabinet."
+      sendcommandandwait "SET CABINET.POWER=0"
+      coroutine::after 1000
       log::info "attempting to change the controller state from [server::getdata "state"] to operational."
-      log::info "clearing errors."
       sendcommandandwait "SET CABINET.STATUS.CLEAR=1"
+      coroutine::after 1000
+      sendcommandandwait "SET CABINET.POWER=1"
+      coroutine::after 1000
       waituntiloperational
     }
     set end [utcclock::seconds]
