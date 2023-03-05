@@ -34,45 +34,57 @@ usageerror () {
   echo 1>&2 "usage: $program [-d] [--] servername [...]"
   echo 1>&2 "usage: $program [-d] [-f] [--] servername"
   echo 1>&2 "usage: $program [-d] [-a] [--]"
+  echo 1>&2 "usage: $program [-d] [-A] [--]"
   exit 1
 }
 
 host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
 case "$host" in
 coatli-control)
-  allargs="html gcntan 1 sensors power weather 1 target 1 moon sun 1 secondary enclosure mount 1 telescope 1 executor selector supervisor"
+  allargs="html 1 sensors power weather 1 target 1 moon sun 1 secondary enclosure mount 1 telescope 1 executor selector supervisor"
+  ALLARGS="gcntan"
   ;;
 coatli-instrument)
   allargs="C0 1 instrument"
+  ALLARGS=""
   ;;
 coatli-platform)
   allargs="lights heater"
+  ALLARGS=""
   ;;
 ddoti-control)
-  allargs="html gcntan 1 sensors power weather 1 target 1 moon sun 1 enclosure mount 1 telescope instrument 1 executor selector supervisor"
+  allargs="html 1 sensors power weather 1 target 1 moon sun 1 enclosure mount 1 telescope instrument 1 executor selector supervisor"
+  ALLARGS="gcntan"
   ;;
 ddoti-platform)
   allargs="lights heater"
+  ALLARGS=""
   ;;
 ddoti-detectors0)
   allargs="C2 C4"
+  ALLARGS=""
   ;;
 ddoti-detectors1)
   allargs="C1 C3"
+  ALLARGS=""
   ;;
 colibri-control)
   allargs="html 1 sensors power weather plc 1 target 1 moon sun 1 telescopecontroller 1 covers secondary mount 1 telescope instrument 1 executor selector supervisor"
+  ALLARGS=""
   ;;
 colibri-detectors)
-  allargs="instrument C0"
+  allargs="C0"
+  ALLARGS=""
   ;;
 *)
   allargs="log 1 html 1 target 1 moon sun sensors weather C0 1 telescope instrument 1 executor selector supervisor"
+  ALLARGS=""
   ;;
 esac
 
-optstring=adf
+optstring=aAdf
 all=false
+ALL=false
 debug=false
 foreground=false
 if ! getopt -qQ -- "$optstring" "$@"
@@ -85,6 +97,10 @@ do
   case "$1" in
   -a)
     all=true
+    shift 1
+    ;;
+  -A)
+    ALL=true
     shift 1
     ;;
   -d)
@@ -102,13 +118,16 @@ do
 done
 shift
 
-if $all && $foreground
+if $all && $ALL
 then
   usageerror
-elif $all && test $# != 0
+elif ($all || $ALL) && $foreground
 then
   usageerror
-elif ! $all && test $# = 0
+elif ($all || $ALL) && test $# != 0
+then
+  usageerror
+elif ! ($all || $ALL) && test $# = 0
 then
   usageerror
 elif $foreground && test $# != 1
@@ -119,6 +138,10 @@ fi
 if $all
 then
   set -- $allargs
+fi
+if $ALL
+then
+  set -- $allargs $ALLARGS
 fi
 
 for arg in "$@"

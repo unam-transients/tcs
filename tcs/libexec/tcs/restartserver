@@ -32,11 +32,13 @@ usageerror () {
   echo 1>&2 "usage: $program [-d] [--] servername [...]"
   echo 1>&2 "usage: $program [-d] [-f] [--] servername"
   echo 1>&2 "usage: $program [-d] [-a] [--]"
+  echo 1>&2 "usage: $program [-d] [-A] [--]"
   exit 1
 }
 
-optstring=adf
+optstring=aAdf
 all=false
+ALL=false
 debug=false
 foreground=false
 startopts=""
@@ -50,6 +52,10 @@ do
   case "$1" in
   -a)
     all=true
+    shift 1
+    ;;
+  -A)
+    ALL=true
     shift 1
     ;;
   -d)
@@ -69,13 +75,16 @@ do
 done
 shift
 
-if $all && $foreground
+if $all && $ALL
 then
   usageerror
-elif $all && test $# != 0
+elif ($all || $ALL) && $foreground
 then
   usageerror
-elif ! $all && test $# = 0
+elif ($all || $ALL) && test $# != 0
+then
+  usageerror
+elif ! ($all || $ALL) && test $# = 0
 then
   usageerror
 elif $foreground && test $# != 1
@@ -87,6 +96,10 @@ if $all
 then
   "$libexecdir"/stopserver -a
   "$libexecdir"/startserver $startopts -a
+elif $ALL
+then
+  "$libexecdir"/stopserver -A
+  "$libexecdir"/startserver $startopts -A
 else
   "$libexecdir"/stopserver -- "$@"
   "$libexecdir"/startserver $startopts -- "$@"
