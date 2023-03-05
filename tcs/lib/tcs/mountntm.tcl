@@ -402,7 +402,7 @@ namespace eval "mount" {
     } elseif {![string equal $state $laststate]} {
       if {
         [string equal $state "error"] ||
-        ([string equal $laststate "operational"] && ![string equal "rebooting" [server::getdata "activity"]])
+        [string equal $laststate "operational"]
       } {
         log::error "the controller state changed from $laststate to $state."
         server::erroractivity
@@ -832,8 +832,7 @@ namespace eval "mount" {
     switch $action {
       "initialize" -
       "stop" -
-      "reset" -
-      "reboot" {
+      "reset" {
       }
       default {
         if {![string equal $state "operational"]} {
@@ -918,29 +917,6 @@ namespace eval "mount" {
     }
     set end [utcclock::seconds]
     log::info [format "finished resetting after %.1f seconds." [utcclock::diff $end $start]]
-  }
-
-  proc rebootactivitycommand {} {
-    set start [utcclock::seconds]
-    maybeendtracking
-    log::info "rebooting."
-    updaterequestedpositiondata false
-    server::setdata "mounttracking" false
-    stophardware
-    coroutine::after 1000
-    log::info "switching off cabinet."
-    sendcommandandwait "SET CABINET.POWER=0"
-    coroutine::after 1000
-    log::info "attempting to change the controller state from [server::getdata "state"] to operational."
-    log::info "clearing errors."
-    sendcommandandwait "SET CABINET.STATUS.CLEAR=1"
-    coroutine::after 1000
-    log::info "switching on cabinet."
-    sendcommandandwait "SET CABINET.POWER=1"
-    coroutine::after 1000
-    waituntiloperational
-    set end [utcclock::seconds]
-    log::info [format "finished rebooting after %.1f seconds." [utcclock::diff $end $start]]
   }
 
   proc preparetomoveactivitycommand {} {

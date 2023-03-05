@@ -51,11 +51,6 @@ namespace eval "mountserver" {
     return
   }
 
-  proc slavereboot {} {
-    mount::reboot
-    return
-  }
-
   proc slavepreparetomove {} {
     mount::preparetomove
     return
@@ -111,7 +106,6 @@ namespace eval "mountserver" {
     interp alias $slave open                {} mountserver::slaveopen
     interp alias $slave stop                {} mountserver::slavestop
     interp alias $slave reset               {} mountserver::slavereset
-    interp alias $slave reboot              {} mountserver::slavereboot
     interp alias $slave preparetomove       {} mountserver::slavepreparetomove
     interp alias $slave move                {} mountserver::slavemove
     interp alias $slave park                {} mountserver::slavepark
