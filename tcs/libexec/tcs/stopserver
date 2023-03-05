@@ -33,45 +33,57 @@ sudo -v
 usageerror () {
   echo 1>&2 "usage: $program [--] servername [...]"
   echo 1>&2 "usage: $program [-a] [--]"
+  echo 1>&2 "usage: $program [-A] [--]"
   exit 1
 }
 
 host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
 case "$host" in
 coatli-control)
-  allargs="sensors power supervisor selector executor telescope mount enclosure secondary weather sun moon target gcntan html"
+  allargs="sensors power supervisor selector executor telescope mount enclosure secondary weather sun moon target html"
+  ALLARGS="gcntan"
   ;;
 coatli-instrument)
   allargs="instrument C0"
+  ALLARGS=""
   ;;
 coatli-platform)
   allargs="heater lights"
+  ALLARGS=""
   ;;
 ddoti-control)
-  allargs="sensors power supervisor selector executor instrument telescope mount enclosure weather sun moon target gcntan html"
+  allargs="sensors power supervisor selector executor instrument telescope mount enclosure weather sun moon target html"
+  ALLARGS="gcntan"
   ;;
 ddoti-platform)
   allargs="heater lights"
+  ALLARGS=""
   ;;
 ddoti-detectors0)
   allargs="C2 C4"
+  ALLARGS=""
   ;;
 ddoti-detectors1)
   allargs="C1 C3"
+  ALLARGS=""
   ;;
 colibri-control)
   allargs="supervisor selector executor instrument telescope mount secondary covers telescopecontroller sun moon target weather plc power sensors html"
+  ALLARGS=""
   ;;
 colibri-detectors)
   allargs="C0"
+  ALLARGS=""
   ;;
 *)
   allargs="supervisor selector executor instrument telescope C0 weather sensors sun moon target html log"
+  ALLARGS=""
   ;;
 esac
 
-optstring=a
+optstring=aA
 all=false
+ALL=false
 if ! getopt -qQ -- "$optstring" "$@"
 then
   usageerror
@@ -84,6 +96,10 @@ do
     all=true
     shift 1
     ;;
+  -A)
+    ALL=true
+    shift 1
+    ;;
   *)
     usageerror
     ;;
@@ -91,10 +107,13 @@ do
 done
 shift
 
-if $all && test $# != 0
+if $all && $ALL
 then
   usageerror
-elif ! $all && test $# = 0
+elif ($all || $ALL) && test $# != 0
+then
+  usageerror
+elif ! ($all || $ALL) && test $# = 0
 then
   usageerror
 fi
@@ -102,6 +121,10 @@ fi
 if $all
 then
   set -- $allargs
+fi
+if $ALL
+then
+  set -- $allargs $ALLARGS
 fi
 
 for arg in "$@"

@@ -132,7 +132,7 @@ EOF
 
   echo "service rsync start"
 
-  echo "tcs startserver -a &"
+  echo "tcs startserver -A &"
   
   echo "sleep 10"
   echo "tcs log boot summary \"finished booting tcs on $host.\""
