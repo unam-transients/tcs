@@ -348,7 +348,7 @@ namespace eval "executor" {
     set projectfullidentifier [server::getdata "projectfullidentifier"]
     set fitsfiledir "[directories::vartoday]/executor/images/[project::fullidentifier [project]]/[block::identifier [block]]/[visit::identifier [visit]]"
     file mkdir $fitsfiledir
-    client::request "instrument" "expose $type $fitsfiledir now $exposuretimes"
+    client::request "instrument" "exposefull $type $fitsfiledir now $exposuretimes"
     client::wait "instrument"
     log::info [format "finished exposing $type image (exposure $exposure) after %.1f seconds." [utcclock::diff now $start]]
     set exposure [expr {$exposure + 1}]
@@ -362,7 +362,7 @@ namespace eval "executor" {
     set projectfullidentifier [server::getdata "projectfullidentifier"]
     set fitsfiledir "[directories::vartoday]/executor/images/[project::fullidentifier [project]]/[block::identifier [block]]/[visit::identifier [visit]]"
     file mkdir $fitsfiledir
-    client::request "instrument" "expose $type $fitsfiledir $starttime $exposuretimes"
+    client::request "instrument" "exposefull $type $fitsfiledir $starttime $exposuretimes"
     client::wait "instrument"
     log::info [format "finished exposing $type image (exposure $exposure) after %.1f seconds." [utcclock::diff now $start]]
     set exposure [expr {$exposure + 1}]

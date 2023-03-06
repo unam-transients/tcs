@@ -774,7 +774,12 @@ namespace eval "instrument" {
       "instrument::movefilterwheelactivitycommand $positions"
   }
   
-  proc expose {type fitsfiledir starttime args} {
+  proc expose {type args} {
+    set fitsfileprefix [file join [directories::vartoday] "instrument" "images"]
+    eval exposefull $type $fitsfileprefix "now" $args
+  }
+  
+  proc exposefull {type fitsfiledir starttime args} {
     server::checkstatus
     server::checkactivity "idle"
     safetyswitch::checksafetyswitch
