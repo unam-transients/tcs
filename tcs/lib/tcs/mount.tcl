@@ -1062,25 +1062,9 @@ namespace eval "mount" {
     checkunparked
     checkhardware "correct"
 
-    if {[catch {client::update "target"} message]} {
-      error "unable to update target data: $message"
-    }
-    if {[string equal $truemountalpha ""]} {
-      set truemountalpha [client::getdata "target" "requestedalpha"]
-    } else {
-      set truemountalpha [astrometry::parsealpha $truemountalpha]
-    }
-    if {[string equal $truemountdelta ""]} {
-      set truemountdelta [client::getdata "target" "requesteddelta"]
-    } else {
-      set truemountdelta [astrometry::parsealpha $truemountdelta]
-    }
-    if {[string equal $equinox ""]} {
-      set equinox [client::getdata "target" "requestedequinox"]
-    } else {
-      set equinox [astrometry::parseequinox $equinox]
-    }
-
+    set truemountalpha [astrometry::parsealpha $truemountalpha]
+    set truemountdelta [astrometry::parsealpha $truemountdelta]
+    set equinox [astrometry::parseequinox $equinox]
     log::info "true position is [astrometry::formatalpha $truemountalpha] [astrometry::formatdelta $truemountdelta] $equinox"
 
     set truemountobservedalpha [astrometry::observedalpha $truemountalpha $truemountdelta $equinox]

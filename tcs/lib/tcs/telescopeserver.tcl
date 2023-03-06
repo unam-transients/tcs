@@ -113,7 +113,7 @@ namespace eval "telescopeserver" {
     telescope::setpointingaperture $aperture
   }
 
-  proc slavecorrect {truemountalpha truemountdelta equinox} {
+  proc slavecorrect {{truemountalpha ""} {truemountdelta ""} {equinox ""}} {
     telescope::correct $truemountalpha $truemountdelta $equinox
   }
   
