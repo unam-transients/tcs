@@ -76,8 +76,12 @@ namespace eval "instrumentserver" {
     return
   }
   
-  proc slaveexpose {type fitsfiledir starttime args} {
-    eval instrument::expose $type $fitsfiledir $starttime $args
+  proc slaveexpose {type args} {
+    eval instrument::expose $type $args
+  }
+  
+  proc slaveexposefull {type fitsfiledir starttime args} {
+    eval instrument::exposefull $type $fitsfiledir $starttime $args
   }
   
   proc slaveanalyze {args} {
@@ -136,6 +140,7 @@ namespace eval "instrumentserver" {
     interp alias $slave idle                 {} instrumentserver::slaveidle
     interp alias $slave movefilterwheel      {} instrumentserver::slavemovefilterwheel
     interp alias $slave expose               {} instrumentserver::slaveexpose
+    interp alias $slave exposefull           {} instrumentserver::slaveexposefull
     interp alias $slave analyze              {} instrumentserver::slaveanalyze
     interp alias $slave setreadmode          {} instrumentserver::slavesetreadmode
     interp alias $slave setwindow            {} instrumentserver::slavesetwindow
