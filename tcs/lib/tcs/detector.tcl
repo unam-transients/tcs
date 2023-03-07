@@ -509,6 +509,8 @@ namespace eval "detector" {
   variable coolerpower              {}
   variable average                  {}
   variable standarddeviation        {}
+  variable saasigmax                {}
+  variable saasigmay                {}
 
   proc getdescription {} {
     variable description
@@ -660,6 +662,16 @@ namespace eval "detector" {
     return $standarddeviation
   }
   
+  proc getsaasigmax {} {
+    variable saasigmax
+    return $saasigmax
+  }
+  
+  proc getsaasigmay {} {
+    variable saasigmay
+    return $saasigmay
+  }
+  
   proc updatestatus {} {
     
     variable readmode
@@ -689,6 +701,8 @@ namespace eval "detector" {
     variable coolerpower
     variable coolerstate
     variable coolerlowflow
+    variable saasigmax
+    variable saasigmay
     
     set readmode                 {}
     set adc                      {}
@@ -715,6 +729,8 @@ namespace eval "detector" {
     set coolersettemperature     {}
     set coolerpower              {}
     set coolerlowflow            {}
+    set saasigmax                {}
+    set saasigmay                {}
     
     checkisopen
     
@@ -755,6 +771,8 @@ namespace eval "detector" {
     set coolersettemperature     [detectorrawgetvalue "coolersettemperature"]
     set coolerpower              [detectorrawgetvalue "coolerpower"]
     set softwaregain             [detectorrawgetvalue "softwaregain"]
+    set saasigmax                [detectorrawgetvalue "saasigmax"]
+    set saasigmay                [detectorrawgetvalue "saasigmay"]
 
     variable rawsaturationlevel
     set saturationlevel [expr {int($rawsaturationlevel / $softwaregain)}]

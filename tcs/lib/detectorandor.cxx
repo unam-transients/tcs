@@ -52,6 +52,9 @@ static double frametime = 0;
 static double cycletime = 0;
 static int nframe = 0;
 
+static double saasigmax = 0;
+static double saasigmay = 0;
+
 static char amplifier[DETECTOR_STR_BUFFER_SIZE] = "";
 static char vsspeed[DETECTOR_STR_BUFFER_SIZE] = "";
 static char hsspeed[DETECTOR_STR_BUFFER_SIZE] = "";
@@ -411,6 +414,11 @@ static int iyref;
 static int ixref;
 static int dosaa;
 
+static double sdx;
+static double sdx2;
+static double sdy;
+static double sdy2;
+
 const char *
 detectorrawexpose(double exposuretime, const char *shutter)
 {
@@ -493,6 +501,14 @@ detectorrawexpose(double exposuretime, const char *shutter)
       framen[iy][ix] = 0;
     }
   }
+  
+  sdx  = 0;
+  sdx2 = 0;
+  sdy  = 0;
+  sdy2 = 0;
+
+  saasigmax = 0.0;
+  saasigmay = 0.0;
 
   DETECTOR_OK();
 }
@@ -595,20 +611,36 @@ detectorrawgetreadytoberead(void)
             }
           }
         }
+        
+        int idx = ixmax - ixref;
+        int idy = iymax - iyref;
       
         log("detectorrawgetreadytoberead: frame %4d: max at (%d,%d) is %d.", (int) iframe, (int) iymax, (int) ixmax, (int) zmax);      
-        log("detectorrawgetreadytoberead: frame %4d: shift is (%+d,%+d).", (int) iframe, (int) (iymax - iyref), (int) (ixmax - ixref));
+        log("detectorrawgetreadytoberead: frame %4d: shift is (%+d,%+d).", (int) iframe, (int) idy, (int) idx);
 
         for (unsigned long iy = 0; iy < ny; ++iy) {
           for (unsigned long ix = 0; ix < nx; ++ix) {
-            int jy = iy + (iymax - iyref);
-            int jx = ix + (ixmax - ixref);
+            int jy = iy + idy;
+            int jx = ix + idx;
             if (0 <= jy && jy < 1024 && 0 <= jx && jx < 1024) {
               framesum[iy][ix] += frame[jy][jx];
               framen[iy][ix]   += 1;
             }
           }
         }
+        
+        sdx  += idx;
+        sdx2 += idx * idx;
+        sdy  += idy;
+        sdy2 += idy * idy;
+
+        double n = iframe + 1;
+        double meandx = sdx / n;
+        double meandy = sdy / n;
+        double meandx2 = sdx2 / n;
+        double meandy2 = sdy2 / n;
+        saasigmax = sqrt(meandx2 - meandx * meandx);
+        saasigmay = sqrt(meandy2 - meandy * meandy);
 
       } else {
       
@@ -673,7 +705,7 @@ detectorrawread(void)
         frame[iy][ix] = framen[iy][ix] == 0 ? 0 : framesum[iy][ix] / framen[iy][ix];
       detectorrawpixnext(&frame[iy][0], nx);
     }
-
+    
   } else {
 
    log("detectorrawgetreadytoberead: reading exposure.");
@@ -694,6 +726,9 @@ detectorrawread(void)
       }
       detectorrawpixnext(&frame[iy][0], nx);
     }
+
+    saasigmax = 0.0;
+    saasigmay = 0.0;
 
   }
 
@@ -1004,6 +1039,10 @@ detectorrawgetvalue(const char *name)
     snprintf(value, sizeof(value), "%.6f", frametime);
   else if (strcmp(name, "cycletime") == 0)
     snprintf(value, sizeof(value), "%.6f", cycletime);
+  else if (strcmp(name, "saasigmax") == 0)
+    snprintf(value, sizeof(value), "%.2f", saasigmax);
+  else if (strcmp(name, "saasigmay") == 0)
+    snprintf(value, sizeof(value), "%.2f", saasigmay);
   else
     snprintf(value, sizeof(value), "%s", detectorrawgetdatavalue(name));
   return value;
