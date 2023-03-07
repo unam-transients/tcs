@@ -81,14 +81,17 @@ namespace eval "focuser" {
     variable rawmaxposition
     
     # Get the maximum position.
+    set rawmaxposition -1
     while {[catch {
-      log::debug "focuserrawgetcharacteristics: sending <F100GETCFG>."
-      puts $channel "<F100GETCFG>"
-      flush $channel
-      log::debug "focuserrawgetcharacteristics: waiting"
-      while {[gets $channel line] && ![string equal $line "END"]} {
-        log::debug "focuserrawgetcharacteristics: line = \"$line\"."
-        scan $line "MaxSteps = %d" rawmaxposition
+      while {$rawmaxposition == -1} {
+        log::debug "focuserrawgetcharacteristics: sending <F100GETCFG>."
+        puts $channel "<F100GETCFG>"
+        flush $channel
+        log::debug "focuserrawgetcharacteristics: waiting"
+        while {[gets $channel line] && ![string equal $line "END"]} {
+          log::debug "focuserrawgetcharacteristics: line = \"$line\"."
+          scan $line "MaxSteps = %d" rawmaxposition
+        }
       }
     } message]} {
       log::warning "focuserrawgetcharacteristics: communication failure with focuser: $message"
@@ -100,15 +103,17 @@ namespace eval "focuser" {
     log::debug "focuserrawgetcharacteristics: rawmaxposition = \"$rawmaxposition\"."
 
     # Find the home position if necessary.
+    set ishomed -1
     while {[catch {
-      log::debug "focuserrawgetcharacteristics: sending <F100GETSTA>."
-      puts $channel "<F100GETSTA>"
-      flush $channel
-      log::debug "focuserrawgetcharacteristics: waiting"
-      set ishomed 0
-      while {[gets $channel line] && ![string equal $line "END"]} {
-        log::debug "focuserrawgetcharacteristics: line = \"$line\"."
-        scan $line "Is Homed = %d" ishomed
+      while {$ishomed == -1} {
+        log::debug "focuserrawgetcharacteristics: sending <F100GETSTA>."
+        puts $channel "<F100GETSTA>"
+        flush $channel
+        log::debug "focuserrawgetcharacteristics: waiting"
+        while {[gets $channel line] && ![string equal $line "END"]} {
+          log::debug "focuserrawgetcharacteristics: line = \"$line\"."
+          scan $line "Is Homed = %d" ishomed
+        }
       }
     } message]} {
       log::warning "focuserrawgetcharacteristics: communication failure with focuser: $message"
@@ -116,7 +121,6 @@ namespace eval "focuser" {
       coroutine::after 1000
       focuserrawopen
     }
-
     if {$ishomed} {
       log::info "home position is known."
     } else {
