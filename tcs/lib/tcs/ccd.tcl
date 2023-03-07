@@ -119,6 +119,8 @@ namespace eval "ccd" {
   
   proc updatedata {} {
   
+    variable detectorunbinnedpixelscale
+
     set identifier [server::getdata "identifier"]
     
     if {![detector::isopen] || ![focuser::opened]} {
@@ -221,6 +223,8 @@ namespace eval "ccd" {
     server::setdata "detectorcoolersettemperature"     [detector::getcoolersettemperature]
     server::setdata "detectorcoolerpower"              [detector::getcoolerpower]
     server::setdata "detectorcoolerlowflow"            [detector::getcoolerlowflow]
+    server::setdata "detectorsaasigmax"                [expr {[detector::getsaasigmax] * [detector::getbinning] * $detectorunbinnedpixelscale}]
+    server::setdata "detectorsaasigmay"                [expr {[detector::getsaasigmay] * [detector::getbinning] * $detectorunbinnedpixelscale}]
     server::setdata "filterwheels"                     [llength [filterwheel::getdescription]]
     set i 0
     while {$i < [llength [filterwheel::getdescription]]} {
@@ -716,6 +720,15 @@ namespace eval "ccd" {
     server::setactivity "writing"
     if {[catch {detector::writeexposure $tmpfitsfilename $finalfitsfilename $latestfilename $currentfilename $tmpfitscubehdrfilename $finalfitscubehdrfilename $tmpfitscubepixfilename $finalfitscubepixfilename false} message]} {
       error "while writing FITS data: $message"
+    }
+    
+    if {[withcube]} {
+      if {[catch {updatedata} message]} {
+        error "unable to update date: $message"
+      }
+      set saasigmax [server::getdata "detectorsaasigmax"]
+      set saasigmay [server::getdata "detectorsaasigmay"]
+      log::info [format "SAA sigma are %.2fas in x and %.2fas in y." [astrometry::radtoarcsec $saasigmax] [astrometry::radtoarcsec $saasigmay]]
     }
     log::info [format "finished exposing after %.1f seconds." [utcclock::diff now $start]]
   }
