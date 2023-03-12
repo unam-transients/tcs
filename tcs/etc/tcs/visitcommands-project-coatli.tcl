@@ -341,7 +341,7 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefa
 
   executor::center $exposuretime
   executor::waituntiltracking
-  executor::expose object $exposuretime
+  executor::expose "astrometry" $exposuretime
   client::request C0 "analyze center" 
 
   log::summary "focuswitnessvisit: finished."

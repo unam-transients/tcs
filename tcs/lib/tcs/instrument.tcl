@@ -472,7 +472,7 @@ namespace eval "instrument" {
       set fitsfileprefix "$fitsfiledir/$dateandtime"
       foreach detector $detectors exposuretime $exposuretimes {
         if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
-          client::request $detector "expose $exposuretime object $fitsfileprefix now"
+          client::request $detector "expose $exposuretime focus $fitsfileprefix now"
         }
       }
       foreach detector $detectors exposuretime $exposuretimes {
@@ -544,7 +544,7 @@ namespace eval "instrument" {
       set fitsfileprefix "$fitsfiledir/$dateandtime"
       foreach detector $detectors exposuretime $exposuretimes {
         if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
-          client::request $detector "expose $exposuretime object $fitsfileprefix now"
+          client::request $detector "expose $exposuretime focus $fitsfileprefix now"
         }
       }
       foreach detector $detectors exposuretime $exposuretimes {

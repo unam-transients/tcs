@@ -575,7 +575,7 @@ proc initialfocusvisit {} {
 
 #  log::summary "initialfocusvisit: taking tilt witness."
 #  executor::setwindow "default"
-#  executor::expose object 4
+#  executor::expose focus 4
 #  executor::setbinning 1
 
   log::summary "initialfocusvisit: finished."

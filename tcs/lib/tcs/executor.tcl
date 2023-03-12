@@ -213,7 +213,7 @@ namespace eval "executor" {
       while {$z0 <= $z0max} {
         client::request "telescope" "movesecondary $z0"
         client::wait "telescope"
-        eval expose "object" $exposuretimes
+        eval expose "focus" $exposuretimes
         eval analyze $analyzetypes
         client::update $detector
         set fitsfilename [file tail [client::getdata $detector "fitsfilename"]]
@@ -471,7 +471,7 @@ namespace eval "executor" {
       lset analyzetypes  [lsearch -exact $detectors $detector] "astrometry"
     } 
     if {$exposuretime != 0} {
-      eval expose "object" $exposuretimes
+      eval expose "astrometry" $exposuretimes
     }
     eval analyze $analyzetypes
     set alphalist {}
@@ -511,7 +511,7 @@ namespace eval "executor" {
     lset exposuretimes [lsearch -exact $detectors $detector] $exposuretime
     lset analyzetypes  [lsearch -exact $detectors $detector] "center"
     if {$exposuretime != 0} {
-      eval expose "object" $exposuretimes
+      eval expose "astrometry" $exposuretimes
     }
     eval analyze $analyzetypes
     client::update $detector
