@@ -600,7 +600,7 @@ detectorrawgetreadytoberead(void)
           log("detectorrawgetreadytoberead: frame %4d: max at (%d,%d) is %d.", (int) iframe, (int) iymax, (int) ixmax, (int) zmax);      
         }
       
-        int searchsize = 16;
+        int searchsize = 64;
         zmax = 0;
         for (int iy = iyref - searchsize; iy <= iyref + searchsize; ++iy) {
           for (int ix = ixref - searchsize; ix <= ixref + searchsize; ++ix) {
