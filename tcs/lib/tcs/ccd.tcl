@@ -130,7 +130,7 @@ namespace eval "ccd" {
     if {[catch {detector::updatestatus} message]} {
       error "unable to update detector status: $message"
     }
-    
+
     if {[catch {focuser::update} message]} {
       error "unable to update focuser data: $message"
     }
@@ -223,8 +223,12 @@ namespace eval "ccd" {
     server::setdata "detectorcoolersettemperature"     [detector::getcoolersettemperature]
     server::setdata "detectorcoolerpower"              [detector::getcoolerpower]
     server::setdata "detectorcoolerlowflow"            [detector::getcoolerlowflow]
-    server::setdata "detectorsaasigmax"                [expr {[detector::getsaasigmax] * [detector::getbinning] * $detectorunbinnedpixelscale}]
-    server::setdata "detectorsaasigmay"                [expr {[detector::getsaasigmay] * [detector::getbinning] * $detectorunbinnedpixelscale}]
+    if {![string equal "" [detector::getsaasigmax]]} {
+      server::setdata "detectorsaasigmax"                [expr {[detector::getsaasigmax] * [detector::getbinning] * $detectorunbinnedpixelscale}]
+    }
+    if {![string equal "" [detector::getsaasigmay]]} {
+      server::setdata "detectorsaasigmay"                [expr {[detector::getsaasigmay] * [detector::getbinning] * $detectorunbinnedpixelscale}]
+    }
     server::setdata "filterwheels"                     [llength [filterwheel::getdescription]]
     set i 0
     while {$i < [llength [filterwheel::getdescription]]} {
@@ -339,10 +343,12 @@ namespace eval "ccd" {
   proc getfitsfilename {exposuretype fitsfileprefix} {
     variable identifier
     switch $exposuretype {
-      "object" -
+      "object" {
+        set suffix "o"
+      }
       "focus" -
       "astrometry" {
-        set suffix "o"
+        set suffix "u"
       }
       "bias" {
         set suffix "b"
@@ -363,10 +369,12 @@ namespace eval "ccd" {
   proc getfitscubefilename {exposuretype fitsfileprefix} {
     variable identifier
     switch $exposuretype {
-      "object" -
+      "object" {
+        set suffix "oc"
+      }
       "focus" -
       "astrometry" {
-        set suffix "oc"
+        set suffix "uc"
       }
       "bias" {
         set suffix "bc"
@@ -569,15 +577,6 @@ namespace eval "ccd" {
     fitsheader::writetcsfitsheader $channel "E"  
   }
   
-  proc withcube {} {
-    set amplifier [detector::getamplifier]
-    if {[string equal $amplifier "conventional"]} {
-      return false
-    } else {
-      return true
-    }
-  }
-  
   proc exposeactivitycommand {exposuretime exposuretype fitsfileprefix starttime} {
 
     set start [utcclock::seconds]
@@ -599,11 +598,27 @@ namespace eval "ccd" {
 
     stopexposing
     stopsolving
+    
+    switch $exposuretype {
+      "object" -
+      "dark" - 
+      "bias" {
+        set amplifier [detector::getamplifier]
+        if {[string equal $amplifier "conventional"]} {
+          set withcube false
+        } else {
+          set withcube true
+        }
+      }
+      default {
+        set withcube false
+      }
+    }
 
     set finalfitsfilename [getfitsfilename $exposuretype $fitsfileprefix]
     log::info [format "FITS file is %s." $finalfitsfilename]
     set tmpfitsfilename "$finalfitsfilename.tmp"
-    if {[withcube]} {
+    if {$withcube} {
       set finalfitscubefilename    [getfitscubefilename $exposuretype $fitsfileprefix]
       log::info [format "FITS cube file is %s." $finalfitscubefilename]
       set finalfitscubehdrfilename "$finalfitscubefilename.hdr"
@@ -671,7 +686,7 @@ namespace eval "ccd" {
       catch {close $channel}
     }
 
-    if {[withcube]} {
+    if {$withcube} {
       if {[catch {
         set cubehdrchannel [detector::openfitscubeheader $tmpfitscubehdrfilename]
         writefitsheaderprolog $cubehdrchannel $seconds $finalfitscubefilename $exposuretime $exposuretype
@@ -701,7 +716,7 @@ namespace eval "ccd" {
       catch {close $channel}
       catch {close $cubehdrchannel}
     }
-    if {[withcube]} {
+    if {$withcube} {
       if {[catch {
         fitsheader::writeccdfitsheader $cubehdrchannel [server::getdata "identifier"] "E"
         fitsheader::writetcsfitsheader $cubehdrchannel "E"
@@ -724,7 +739,7 @@ namespace eval "ccd" {
       error "while writing FITS data: $message"
     }
     
-    if {[withcube]} {
+    if {$withcube} {
       if {[catch {updatedata} message]} {
         error "unable to update date: $message"
       }
