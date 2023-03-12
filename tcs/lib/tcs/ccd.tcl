@@ -812,6 +812,48 @@ namespace eval "ccd" {
       chan configure $fitsfwhmchannel -encoding "ascii"
       set line [coroutine::gets $fitsfwhmchannel 0 100]
       catch {close $fitsfwhmchannel}
+      set fitsfwhmchannel {}
+      if {
+        [string equal $line ""] ||
+        [scan $line "%f %f %f" fwhmpixels x y] != 3
+      } {
+        log::debug "fitsfwhm failed: \"$line\"."
+        log::info "unable to determine offset."
+      } else {
+        set binning [server::getdata "detectorbinning"]
+        variable detectorunbinnedpixelscale
+        log::info [format "x is %.0f and y is %.0f px." $x $y]
+        # This code currently had hard-wired constants for COATLI full-frame
+        set dx [expr {($x * $binning - 512) * $detectorunbinnedpixelscale}]
+        set dy [expr {($y * $binning - 512) * $detectorunbinnedpixelscale}]
+        log::info [format "dx is %s and dy is %s" \
+          [astrometry::formatoffset $dx] [astrometry::formatoffset $dy] \
+        ]
+        # We need to account for the current offsets from the target server.
+        catch {client::update "target"}
+        catch {client::update "mount"}
+        set mountrotation [client::getdata "mount" "mountrotation"]
+        log::info [format "mountrotation is %.0fd." [astrometry::radtodeg $mountrotation]]
+        if {$mountrotation == 0} {
+          set dalphaoffset [expr {-($dy)}]
+          set ddeltaoffset [expr {-($dx)}]
+        } else {
+          set dalphaoffset [expr {+($dy)}]
+          set ddeltaoffset [expr {+($dx)}]
+        }
+        log::info [format \
+          "relative offset to brightest source is %s E and %s N." \
+          [astrometry::formatoffset $dalphaoffset] [astrometry::formatoffset $ddeltaoffset] \
+        ]
+        set alphaoffset [expr {[client::getdata "target" "requestedalphaoffset"] + $dalphaoffset}]
+        set deltaoffset [expr {[client::getdata "target" "requesteddeltaoffset"] + $ddeltaoffset}]
+        log::info [format \
+          "offset to brightest source is %s E and %s N." \
+          [astrometry::formatoffset $alphaoffset] [astrometry::formatoffset $deltaoffset] \
+        ]
+        server::setdata "alphaoffset" $alphaoffset
+        server::setdata "deltaoffset" $deltaoffset
+      }
     } elseif {[string equal $type "astrometry"]} {
       variable solvingchannel
       set solvingchannel [open "|[directories::bin]/tcs newpgrp [directories::bin]/tcs fitssolvewcs -c -f -- \"$currentfilename\"" "r"]
@@ -1042,6 +1084,7 @@ namespace eval "ccd" {
     if {
       ![string equal $type "levels"         ] &&
       ![string equal $type "fwhm"           ] &&
+      ![string equal $type "center"         ] &&
       ![string equal $type "astrometry"     ]
     } {
       error "invalid analysis type \"$type\"."
