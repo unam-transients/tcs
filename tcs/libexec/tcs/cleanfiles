@@ -25,13 +25,6 @@
 
 export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
 
-case $(hostname) in
-tcs-a)
-  find /data1/H*/FSRamp -mindepth 1 -maxdepth 1 -mtime +4 | sudo -u nrbutler xargs -r rm -rf
-  find /data2/H*/FSRamp -mindepth 1 -maxdepth 1 -mtime +4 | sudo -u nrbutler xargs -r rm -rf
-  ;;
-esac
-
 cd "$tcsprefix"/var/tcs
 find . -type f -mtime +4 -name "*.tmp" | xargs rm
 find . -type f -mtime +4 -regex './[^/]*/log/debug.*\.txt' -delete
