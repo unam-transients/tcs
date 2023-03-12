@@ -643,6 +643,8 @@ namespace eval "ccd" {
     server::setdata "fwhmpixels"          ""
     server::setdata "average"             ""
     server::setdata "standarddeviation"   ""
+    server::setdata "alphaoffset"          ""
+    server::setdata "deltaoffset"         ""
 
     if {[string equal $exposuretype "object"          ] || 
         [string equal $exposuretype "flat"            ] || 
@@ -800,6 +802,16 @@ namespace eval "ccd" {
           [astrometry::radtoarcsec $fwhm] $fwhmpixels $filter $exposuretime \
         ]
       }
+    } elseif {[string equal $type "center"]} {
+      variable fitsfwhmchannel
+      # Run fitsfwhm without arguments to get the coordinates of the brightest source.
+      set fitsfwhmarg ""
+      log::debug "command is [directories::bin]/tcs newpgrp [directories::bin]/tcs fitsfwhm $fitsfwhmarg -- \"$currentfilename\""
+      set fitsfwhmchannel [open "|[directories::bin]/tcs newpgrp [directories::bin]/tcs fitsfwhm $fitsfwhmarg -- \"$currentfilename\"" "r"]
+      chan configure $fitsfwhmchannel -buffering "line"
+      chan configure $fitsfwhmchannel -encoding "ascii"
+      set line [coroutine::gets $fitsfwhmchannel 0 100]
+      catch {close $fitsfwhmchannel}
     } elseif {[string equal $type "astrometry"]} {
       variable solvingchannel
       set solvingchannel [open "|[directories::bin]/tcs newpgrp [directories::bin]/tcs fitssolvewcs -c -f -- \"$currentfilename\"" "r"]
