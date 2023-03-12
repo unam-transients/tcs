@@ -844,6 +844,7 @@ namespace eval "instrument" {
         ![string equal $type "none"] &&
         ![string equal $type "levels"] &&
         ![string equal $type "fwhm"] &&
+        ![string equal $type "center"] &&
         ![string equal $type "astrometry"]
       } {
         error "invalid  type \"$type\"."

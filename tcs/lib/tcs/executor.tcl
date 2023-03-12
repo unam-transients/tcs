@@ -502,6 +502,45 @@ namespace eval "executor" {
     log::info [format "finished attempting to correct the pointing model after %.1f seconds." [utcclock::diff now $start]]
   }
 
+  proc center {exposuretime {detector "C0"}} {
+    set start [utcclock::seconds]
+    log::info "attempting to center the brightest source in the field of $detector."
+    variable detectors
+    set exposuretimes [lrepeat [llength $detectors] "none"]
+    set analyzetypes  [lrepeat [llength $detectors] "none"]
+    lset exposuretimes [lsearch -exact $detectors $detector] $exposuretime
+    lset analyzetypes  [lsearch -exact $detectors $detector] "center"
+    if {$exposuretime != 0} {
+      eval expose "object" $exposuretimes
+    }
+    eval analyze $analyzetypes
+    client::update $detector
+    set alphaoffset [client::getdata $detector "alphaoffset"]
+    set deltaoffset [client::getdata $detector "deltaoffset"]
+    if {[string equal $alphaoffset ""]} {
+      log::warning "unable to center the brightest source."
+      client::resetifnecessary "instrument"
+      client::wait "instrument"
+      log::info [format "finished attempting to center the brightest source in the field of $detector after %.1f seconds." [utcclock::diff now $start]]
+      return
+    }
+    log::info [format \
+      "offset to brightest source is %s E and %s N." \
+      [astrometry::formatoffset $alphaoffset] [astrometry::formatoffset $deltaoffset] \
+    ]
+    variable trackstart
+    set trackstart [utcclock::seconds]
+    client::update "target"
+    set aperture [client::getdata "target" "requestedaperture"]
+    log::info [format \
+      "offsetting %s E and %s N at aperture %s." \
+      [astrometry::formatoffset $alphaoffset] \
+      [astrometry::formatoffset $deltaoffset] \
+      $aperture \
+    ]
+    client::request "telescope" "offset $alphaoffset $deltaoffset $aperture"
+  }
+  
   ######################################################################
 
   variable exposure
