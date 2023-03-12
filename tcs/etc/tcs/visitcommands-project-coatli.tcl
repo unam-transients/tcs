@@ -317,7 +317,6 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefa
   
    log::summary "focuswitnessvisit: taking images in $filter."
 
-  
     executor::movefilterwheel $filter
 
     set dithers {
@@ -336,6 +335,14 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefa
     }
     
   }
+  
+  executor::offset 60as 30as "default"
+  executor::waituntiltracking
+
+  executor::center $exposuretime
+  executor::waituntiltracking
+  executor::expose object $exposuretime
+  client::request C0 "analyze center" 
 
   log::summary "focuswitnessvisit: finished."
 
