@@ -26,6 +26,8 @@
 export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
 
 cd "$tcsprefix"/var/tcs
+rm -f latest.*
+rm -f alerts.json.*
 find . -type f -mtime +4 -name "*.tmp" | xargs rm
 find . -type f -mtime +4 -regex './[^/]*/log/debug.*\.txt' -delete
 find . -type f -mtime +4 -regex './[^/]*/webcam/.*' -delete
