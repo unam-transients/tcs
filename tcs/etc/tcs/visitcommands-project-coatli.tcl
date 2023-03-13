@@ -297,7 +297,7 @@ proc focussecondaryvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingde
 
 ########################################################################
 
-proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
+proc focuswitnessvisit {{exposuretime 5} {readmode "fastguidingdefault"}} {
 
   log::summary "focuswitnessvisit: starting."
 
@@ -308,11 +308,14 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefa
   executor::movefocuser "center"
   executor::setreadmode $readmode
   executor::setwindow "default"
-  executor::movefilterwheel $filter
+  executor::movefilterwheel i
   executor::setbinning 1
 
   executor::waituntiltracking
   
+  executor::center $exposuretime
+  executor::waituntiltracking
+
   foreach filter {g r i z y w} {
   
    log::summary "focuswitnessvisit: taking images in $filter."
@@ -320,12 +323,23 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefa
     executor::movefilterwheel $filter
 
     set dithers {
-        0as   0as
-      +10as +10as
-      -10as -10as
-      +10as -10as
-      -10as +10as
+       0as  0as
+      +5as +5as
+      -5as -5as
+      +5as -5as
+      -5as +5as
     }
+
+    executor::setwindow "default"
+
+    foreach {eastoffset northoffset} $dithers {
+      executor::offset $eastoffset $northoffset "default"
+      executor::waituntiltracking
+      executor::expose object $exposuretime
+      executor::focuswitness
+    }
+    
+    executor::setwindow "256x256"
 
     foreach {eastoffset northoffset} $dithers {
       executor::offset $eastoffset $northoffset "default"
@@ -336,13 +350,15 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefa
     
   }
   
+  executor::setwindow "default"
+
   executor::offset 60as 30as "default"
   executor::waituntiltracking
 
   executor::center $exposuretime
   executor::waituntiltracking
-  executor::expose "astrometry" $exposuretime
-  client::request C0 "analyze center" 
+  executor::center $exposuretime
+  executor::waituntiltracking
 
   log::summary "focuswitnessvisit: finished."
 
