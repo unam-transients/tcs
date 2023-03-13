@@ -145,7 +145,7 @@ action == "unload" {
       printf("unload - \"%s-%03d-%s.json\"\n", priority, i, blockfile)
   }
 }
-' | tee /tmp/foo |
+' |
 sh |
 while read action src dst
 do
