@@ -189,7 +189,7 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"}} {
 
 proc biasesvisit {{exposures 10} {binning 1}} {
   log::summary "biasesvisit: starting."
-#  executor::move
+  executor::move
   executor::setwindow "default"
   executor::setbinning $binning
   set exposure 0
