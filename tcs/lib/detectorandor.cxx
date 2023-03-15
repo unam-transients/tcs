@@ -584,10 +584,10 @@ detectorrawgetreadytoberead(void)
 
         int ixmax, iymax, zmax;
         if (iframe == 0) {
-          int margin = 64;
+          int margin = 32;
           zmax = 0;
-          for (int iy = margin; iy < 1024 - margin; ++iy) {
-            for (int ix = margin; ix < 1024 - margin; ++ix) {
+          for (int iy = margin; iy < ny - margin; ++iy) {
+            for (int ix = margin; ix < nx - margin; ++ix) {
               if (frame[iy][ix] > zmax) {
                 ixmax = ix;
                 iymax = iy;
@@ -600,7 +600,7 @@ detectorrawgetreadytoberead(void)
           log("detectorrawgetreadytoberead: frame %4d: max at (%d,%d) is %d.", (int) iframe, (int) iymax, (int) ixmax, (int) zmax);      
         }
       
-        int searchsize = 64;
+        int searchsize = 32;
         zmax = 0;
         for (int iy = iyref - searchsize; iy <= iyref + searchsize; ++iy) {
           for (int ix = ixref - searchsize; ix <= ixref + searchsize; ++ix) {
@@ -622,7 +622,7 @@ detectorrawgetreadytoberead(void)
           for (unsigned long ix = 0; ix < nx; ++ix) {
             int jy = iy + idy;
             int jx = ix + idx;
-            if (0 <= jy && jy < 1024 && 0 <= jx && jx < 1024) {
+            if (0 <= jy && jy < ny && 0 <= jx && jx < nx) {
               framesum[iy][ix] += frame[jy][jx];
               framen[iy][ix]   += 1;
             }
