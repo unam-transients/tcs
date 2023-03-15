@@ -601,6 +601,8 @@ namespace eval "ccd" {
     
     switch $exposuretype {
       "object" -
+      "focus" -
+      "astrometry" -
       "dark" - 
       "bias" {
         set amplifier [detector::getamplifier]
