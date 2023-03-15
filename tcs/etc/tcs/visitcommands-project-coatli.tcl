@@ -242,9 +242,9 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
 
 ########################################################################
 
-proc coarsefocussecondaryvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}} {
+proc coarsefocusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}} {
 
-  log::summary "coarsefocussecondaryvisit: starting."
+  log::summary "coarsefocusvisit: starting."
   
   executor::setsecondaryoffset 0
   
@@ -258,20 +258,20 @@ proc coarsefocussecondaryvisit {{exposuretime 5} {filter "i"} {readmode "convent
 
   executor::waituntiltracking
 
-  log::summary "coarsefocussecondaryvisit: focusing in filter $filter with $exposuretime second exposures and binning 2."
-  executor::focussecondary C0 $exposuretime 300 30 false true
+  log::summary "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning 2."
+  executor::focus C0 $exposuretime 300 30 false true
   executor::setfocused
   
-  log::summary "coarsefocussecondaryvisit: finished."
+  log::summary "coarsefocusvisit: finished."
 
   return true
 }
 
 ########################################################################
 
-proc focussecondaryvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
+proc focusvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
 
-  log::summary "focussecondaryvisit: starting."
+  log::summary "focusvisit: starting."
 
   executor::setsecondaryoffset 0
 
@@ -292,12 +292,12 @@ proc focussecondaryvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingde
   executor::setwindow "default"
   executor::setbinning 1
 
-  log::summary "focussecondaryvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
-  log::summary "focussecondaryvisit: readmode is $readmode."
-  executor::focussecondary C0 $exposuretime 100 10 true false
+  log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
+  log::summary "focusvisit: readmode is $readmode."
+  executor::focus C0 $exposuretime 100 10 true false
   executor::setfocused
   
-  log::summary "focussecondaryvisit: finished."
+  log::summary "focusvisit: finished."
 
   return true
 }
@@ -364,9 +364,9 @@ proc focuswitnessvisit {{exposuretime 5} {readmode "fastguidingdefault"}} {
 
 ########################################################################
 
-proc coarsefocusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}} {
+proc coarsefocusfocuservisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}} {
 
-  log::summary "coarsefocusvisit: starting."
+  log::summary "coarsefocusfocuservisit: starting."
 
   executor::setsecondaryoffset 0
 
@@ -382,15 +382,15 @@ proc coarsefocusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefa
   executor::focus $exposuretime 100000 10000 true true
   executor::setfocused
 
-  log::summary "coarsefocusvisit: finished."
+  log::summary "coarsefocusfocuservisit: finished."
   return false
 }
 
 ########################################################################
 
-proc focusvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
+proc focusfocuservisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
 
-  log::summary "focusvisit: starting."
+  log::summary "focusfocuservisit: starting."
 
   executor::setsecondaryoffset 0
 
@@ -406,7 +406,7 @@ proc focusvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} 
   executor::focus $exposuretime 60000 6000 true false
   executor::setfocused
 
-  log::summary "focusvisit: finished."
+  log::summary "focusfocuservisit: finished."
   return false
 }
 
