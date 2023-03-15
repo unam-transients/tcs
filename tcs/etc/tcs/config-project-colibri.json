@@ -138,7 +138,7 @@
     // FW0011318 -- firmware serial number "CFW-14-5"
     // FW0021318 -- firmware serial number "FW0021318"
     // FW0031318 -- firmware serial number "FW0031318"
-    "filterwheelidentifier": "CFW-14-5",
+    "filterwheelidentifier": "first",
     "filters": {
       // 2021-09-13: r and g were accidentally installed in the wrong slots at OHP.
       "r"      : "0",
@@ -277,7 +277,10 @@
     "allowedzerror": "2",
     "zdeadzonewidth": "2",
     "dztweak": "-1000",
-    "temperaturesensor": "telescope-M1-temperature"
+    "temperaturesensor": "telescope-M1-temperature",
+    "dzmodel": {
+      "filter": {}
+    }
   },
   "selector": {},
   "sensors": {
@@ -1243,7 +1246,8 @@
     "idledelta": "75d"
   },
   "telescope": {
-    "type": "colibri",
+    "type": "dummy",
+//    "type": "colibri",
     "idleha": "0h",
     "idledelta": "0d"
   },
