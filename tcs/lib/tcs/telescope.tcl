@@ -791,7 +791,7 @@ namespace eval "telescope" {
     if {[string equal $truemountdelta ""]} {
       set truemountdelta [client::getdata "target" "requesteddelta"]
     } else {
-      set truemountdelta [astrometry::parsealpha $truemountdelta]
+      set truemountdelta [astrometry::parsedelta $truemountdelta]
     }
     if {[string equal $equinox ""]} {
       set equinox [client::getdata "target" "requestedequinox"]

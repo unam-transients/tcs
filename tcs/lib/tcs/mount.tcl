@@ -1063,7 +1063,7 @@ namespace eval "mount" {
     checkhardware "correct"
 
     set truemountalpha [astrometry::parsealpha $truemountalpha]
-    set truemountdelta [astrometry::parsealpha $truemountdelta]
+    set truemountdelta [astrometry::parsedelta $truemountdelta]
     set equinox [astrometry::parseequinox $equinox]
     log::info "true position is [astrometry::formatalpha $truemountalpha] [astrometry::formatdelta $truemountdelta] $equinox"
 
