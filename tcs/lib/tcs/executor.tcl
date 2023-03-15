@@ -316,7 +316,7 @@ namespace eval "executor" {
         log::summary [format "$fitsfilename: witness FWHM is unknown with binning $binning in filter $filter in %.0f seconds." $exposuretime]
       } else {
         log::summary [format \
-          "$fitsfilename: witness FWHM is %.2fas (%.2f pixels with binning $binning) in filter $filter in  $exposuretime seconds." \
+          "$fitsfilename: witness FWHM is %.2fas (%.2f pixels with binning $binning) in filter $filter in $exposuretime seconds." \
           [astrometry::radtoarcsec $fwhm] $fwhmpixels \
         ]
         if {[catch {
