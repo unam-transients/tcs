@@ -1246,8 +1246,7 @@
     "idledelta": "75d"
   },
   "telescope": {
-    "type": "dummy",
-//    "type": "colibri",
+    "type": "colibri",
     "idleha": "0h",
     "idledelta": "0d"
   },
