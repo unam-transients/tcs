@@ -285,9 +285,6 @@ proc focusvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} 
 
   executor::waituntiltracking
   
-  #executor::center $exposuretime
-  #executor::waituntiltracking
-  
   executor::setreadmode $readmode
   executor::setwindow "default"
   executor::setbinning 1
@@ -320,9 +317,6 @@ proc focuswitnessvisit {{exposuretime 5} {readmode "fastguidingdefault"}} {
 
   executor::waituntiltracking
   
-  #executor::center $exposuretime
-  #executor::waituntiltracking
-
   foreach filter {g r i z y w} {
   
    log::summary "focuswitnessvisit: taking images in $filter."
