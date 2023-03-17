@@ -25,4 +25,7 @@ package provide "executorddoti" 0.0
 
 namespace eval "executor" {
 
+  proc focus {exposuretime range step {witness false} {initial false}} {
+    focusinstrument $exposuretime $range $step $witness $initial
+  }
 }

@@ -23,12 +23,12 @@
 
 package require "directories"
 
-package provide "executorcoatli" 0.0
+package provide "executorcolibri" 0.0
 
 namespace eval "executor" {
 
   proc focus {exposuretime range step {witness false} {initial false}} {
-    focussecondary "C0" $exposuretime $range $step $witness $initial
+    proc focussecondary "C0" $exposuretime $range $step $witness $initial
   }
 
 }

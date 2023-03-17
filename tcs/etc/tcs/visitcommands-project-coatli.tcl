@@ -180,7 +180,6 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
 
   executor::movefocuser "center"
   executor::setreadmode $readmode
-  executor::setwindow "default"
   executor::setbinning 1
 
   executor::waituntiltracking
@@ -202,6 +201,42 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
          0as +5as
          0as -5as
       } 0 [expr {$gridpoints * 2 - 1}]]
+
+  executor::setwindow "default"
+
+  set gridrepeat 0
+  while {$gridrepeat < $gridrepeats} {
+    if {$offsetfastest} {
+      foreach filter $filters exposuretime $exposuretimes {
+        executor::movefilterwheel $filter
+        foreach {eastoffset northoffset} $dithers {
+          executor::offset $eastoffset $northoffset "default"
+          executor::waituntiltracking
+          set exposure 0
+          while {$exposure < $exposurerepeats} {
+            executor::expose object $exposuretime
+            incr exposure
+          }
+        }
+      }
+    } else {
+      foreach {eastoffset northoffset} $dithers {
+        executor::offset $eastoffset $northoffset "default"
+        executor::waituntiltracking
+        foreach filter $filters exposuretime $exposuretimes {
+          executor::movefilterwheel $filter
+          set exposure 0
+          while {$exposure < $exposurerepeats} {
+            executor::expose object $exposuretime
+            incr exposure
+          }
+        }
+      }
+    }
+    incr gridrepeat
+  }
+
+  executor::setwindow "256x256"
 
   set gridrepeat 0
   while {$gridrepeat < $gridrepeats} {
@@ -259,7 +294,7 @@ proc coarsefocusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefa
   executor::waituntiltracking
 
   log::summary "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning 2."
-  executor::focus C0 $exposuretime 300 30 false true
+  executor::focus $exposuretime 300 30 false true
   executor::setfocused
   
   log::summary "coarsefocusvisit: finished."
@@ -279,19 +314,17 @@ proc focusvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} 
 
   executor::movefocuser "center"
   executor::setreadmode "conventionaldefault"
-  executor::setwindow "default"
-  executor::setbinning 2
   executor::movefilterwheel $filter
 
   executor::waituntiltracking
   
   executor::setreadmode $readmode
-  executor::setwindow "default"
+  executor::setwindow "256x256"
   executor::setbinning 1
 
   log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
   log::summary "focusvisit: readmode is $readmode."
-  executor::focus C0 $exposuretime 100 10 true false
+  executor::focus $exposuretime 100 10 true false
   executor::setfocused
   
   log::summary "focusvisit: finished."
@@ -358,7 +391,7 @@ proc focuswitnessvisit {{exposuretime 5} {readmode "fastguidingdefault"}} {
 
 ########################################################################
 
-proc coarsefocusfocuservisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}} {
+proc coarsefocusinstrumentvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}} {
 
   log::summary "coarsefocusfocuservisit: starting."
 
@@ -373,7 +406,7 @@ proc coarsefocusfocuservisit {{exposuretime 5} {filter "i"} {readmode "conventio
 
   executor::waituntiltracking
 
-  executor::focus $exposuretime 100000 10000 true true
+  executor::focusinstrument $exposuretime 100000 10000 true true
   executor::setfocused
 
   log::summary "coarsefocusfocuservisit: finished."
@@ -382,7 +415,7 @@ proc coarsefocusfocuservisit {{exposuretime 5} {filter "i"} {readmode "conventio
 
 ########################################################################
 
-proc focusfocuservisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
+proc focusinstrumentvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
 
   log::summary "focusfocuservisit: starting."
 
@@ -397,7 +430,7 @@ proc focusfocuservisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefa
 
   executor::waituntiltracking
 
-  executor::focus $exposuretime 60000 6000 true false
+  executor::focusinstrument $exposuretime 60000 6000 true false
   executor::setfocused
 
   log::summary "focusfocuservisit: finished."
