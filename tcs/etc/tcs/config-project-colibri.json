@@ -227,9 +227,13 @@
     // The unparked derotator offset is with respect to the detector.
     "derotatoroffsetunparked": "23d",
     // When the PLC parks the telescope, it uses these positions. These are not
-    // configuarable using OpenTSI, so we simply adopt them.
-    "azimuthpark": "-0.0025d",
-    "zenithdistancepark": "0.0036d",
+    // configuarable using OpenTSI.
+    // "azimuthpark": "-0.0025d",
+    // "zenithdistancepark": "0.0036d",
+    // "derotatoranglepark": "0d",
+    // François recommends this position to place DDRAGUITO further from the enclosure entrance.
+    "azimuthpark": "165d",
+    "zenithdistancepark": "0.25d",
     "derotatoranglepark": "0d",
     // Unpark to the north.
     "haunpark": "0h",
