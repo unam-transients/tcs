@@ -94,12 +94,12 @@ proc coarsefocusvisit {{exposuretime 5} {filter "i"}} {
 
   log::summary "coarsefocusvisit: starting."
   
-  setsecondaryoffset 0
-  track
-  setwindow "1kx1k"
-  setbinning 4
-  movefilterwheel "$filter"
-  waituntiltracking
+  executor::setsecondaryoffset 0
+  executor::track
+  executor::setwindow "1kx1k"
+  executor::setbinning 4
+  executor::movefilterwheel "$filter"
+  executor::waituntiltracking
 
   log::summary "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning 4."
   executor::focus $exposuretime 500 50 false true
@@ -115,12 +115,12 @@ proc focusvisit {{exposuretime 5} {filter "i"}} {
 
   log::summary "focusvisit: starting."
   
-  setsecondaryoffset 0
-  track
-  setwindow "1kx1k"
-  setbinning 1
-  movefilterwheel "$filter"
-  waituntiltracking
+  executor::setsecondaryoffset 0
+  executor::track
+  executor::setwindow "1kx1k"
+  executor::setbinning 1
+  executor::movefilterwheel "$filter"
+  executor::waituntiltracking
 
   log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
   executor::focus $exposuretime 100 10 true false
@@ -136,16 +136,16 @@ proc focustiltvisit {{exposuretime 5} {filter "i"}} {
 
   log::summary "focustiltvisit: starting."
   
-  setsecondaryoffset 0
-  track
-  setwindow "4kx4k"
-  setbinning 1
-  movefilterwheel "$filter"
-  waituntiltracking
+  executor::setsecondaryoffset 0
+  executor::track
+  executor::setwindow "4kx4k"
+  executor::setbinning 1
+  executor::movefilterwheel "$filter"
+  executor::waituntiltracking
 
   log::summary "focustiltvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
   executor::focus $exposuretime 300 15 false false
-  setunfocused
+  executor::setunfocused
   
   log::summary "focustiltvisit: finished."
 
@@ -408,16 +408,16 @@ proc pointingmapvisit {{exposuretime 15} {filter "i"} {readmode "conventionaldef
 
   log::summary "pointingmapvisit: starting."
 
-  setsecondaryoffset 0
-  tracktopocentric
+  executor::setsecondaryoffset 0
+  executor::tracktopocentric
 
-  setwindow "default"
-  setreadmode "default"
-  setbinning 1
-  movefilterwheel $filter
-  waituntiltracking
+  executor::setwindow "default"
+  executor::setreadmode "default"
+  executor::setbinning 1
+  executor::movefilterwheel $filter
+  executor::waituntiltracking
 
-  expose object $exposuretime
+  executor::expose object $exposuretime
 
   log::summary "pointingmapvisit: finished."
   return true
