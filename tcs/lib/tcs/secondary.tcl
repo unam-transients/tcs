@@ -224,6 +224,8 @@ namespace eval "secondary" {
     checkhardware "move"
     set z0 [normalizez0 $z0]
     if {$setasinitial} {
+      variable initialz0
+      set initialz0 $z0    
       config::setvarvalue "secondary" "initialz0" $z0
     }
     setrequestedz0 $z0
