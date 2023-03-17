@@ -63,9 +63,9 @@ sudo mv /etc/hosts.tmp /etc/hosts
 *  *  *  *  *  /usr/local/bin/tcs updatelocalsensorsfiles
 *  *  *  *  *  /usr/local/bin/tcs checkreboot
 *  *  *  *  *  /usr/local/bin/tcs checkrestart
-00     *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="*.jpg" --exclude="*.fits" --exclude="*.fits.*" /usr/local/var/tcs/ /nas/tcs
-01-59  *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="debug*.txt" --include="*.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ /nas/tcs
-*      *  *  *  *  rsync -aH --remove-source-files --exclude="*.tmp" --include="*.fits.*" --include="*/" --exclude="*" /usr/local/var/tcs/ /nas/tcs
+00     *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="*.jpg" --exclude="*.fits" --exclude="*.fits.*" /usr/local/var/tcs/ rsync://ohp-nas/colibri-raw/
+01-59  *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="debug*.txt" --include="*.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://ohp-nas/colibri-raw/
+*      *  *  *  *  rsync -aH --remove-source-files --exclude="*.tmp" --include="*.fits.*" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://ohp-nas/colibri-raw/
 *  *  *  *  *  /usr/local/bin/tcs checkhalt
 EOF
   
