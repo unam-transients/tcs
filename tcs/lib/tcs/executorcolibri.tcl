@@ -28,7 +28,7 @@ package provide "executorcolibri" 0.0
 namespace eval "executor" {
 
   proc focus {exposuretime range step {witness false} {initial false}} {
-    proc focussecondary "C0" $exposuretime $range $step $witness $initial
+    focussecondary "C0" $exposuretime $range $step $witness $initial
   }
 
 }
