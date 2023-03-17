@@ -50,8 +50,9 @@ installs	:=			           \
 	enclosureserver.tcl 		   \
 	environment.tcl		    	   \
 	executor.tcl 		    	   \
-	executorcoatli.tcl 		   \
-	executorddoti.tcl 		   \
+	executorcoatli.tcl 		       \
+	executorcolibri.tcl            \
+	executorddoti.tcl 		       \
 	executorserver.tcl 		       \
 	fans.tcl		        	   \
 	fansserver.tcl	    		   \

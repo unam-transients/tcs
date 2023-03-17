@@ -74,9 +74,11 @@ package ifneeded environment           0.0 \
   [list source [file join [file dirname [info script]] environment.tcl]]
 package ifneeded executor              0.0 \
   [list source [file join [file dirname [info script]] executor.tcl]]
-package ifneeded executorcoatli     0.0 \
+package ifneeded executorcoatli        0.0 \
   [list source [file join [file dirname [info script]] executorcoatli.tcl]]
-package ifneeded executorddoti      0.0 \
+package ifneeded executorcolibri       0.0 \
+  [list source [file join [file dirname [info script]] executorcolibri.tcl]]
+package ifneeded executorddoti         0.0 \
   [list source [file join [file dirname [info script]] executorddoti.tcl]]
 package ifneeded executorserver        0.0 \
   [list source [file join [file dirname [info script]] executorserver.tcl]]

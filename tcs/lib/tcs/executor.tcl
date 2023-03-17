@@ -433,7 +433,7 @@ namespace eval "executor" {
     log::info [format "finished setting focuser after %.1f seconds." [utcclock::diff now $start]]
   }
   
-  proc focus {exposuretime range step {witness false} {initial false}} {
+  proc focusinstrument {exposuretime range step {witness false} {initial false}} {
     set start [utcclock::seconds]
     log::info "focusing with range $range and step $step."
     set projectfullidentifier [server::getdata "projectfullidentifier"]

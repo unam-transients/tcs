@@ -102,7 +102,7 @@ proc coarsefocusvisit {{exposuretime 5} {filter "i"}} {
   waituntiltracking
 
   log::summary "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning 4."
-  focussecondary C0 $exposuretime 500 50 false true
+  executor::focus $exposuretime 500 50 false true
   
   log::summary "coarsefocusvisit: finished."
 
@@ -123,7 +123,7 @@ proc focusvisit {{exposuretime 5} {filter "i"}} {
   waituntiltracking
 
   log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
-  focussecondary C0 $exposuretime 100 10 true false
+  executor::focus $exposuretime 100 10 true false
   
   log::summary "focusvisit: finished."
 
@@ -144,7 +144,7 @@ proc focustiltvisit {{exposuretime 5} {filter "i"}} {
   waituntiltracking
 
   log::summary "focustiltvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
-  focussecondary C0 $exposuretime 300 15 false false
+  executor::focus $exposuretime 300 15 false false
   setunfocused
   
   log::summary "focustiltvisit: finished."
