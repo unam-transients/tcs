@@ -50,7 +50,7 @@ static int emgain;
 static int flipped;
 static double frametime = 0;
 static double cycletime = 0;
-static int nframe = 0;
+static unsigned long nframe = 0;
 
 static double saasigmax = 0;
 static double saasigmay = 0;
@@ -69,6 +69,10 @@ static unsigned long unbinnedwindownx = 0;
 static unsigned long unbinnedwindowny = 0;
 
 static unsigned long binning = 1;
+
+static void detectorframestart(void);
+static void detectorframenext(unsigned long);
+static void detectorframeend(void);
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -126,7 +130,7 @@ const static void
 logbits(const char *name, unsigned int u)
 {
   log("%s: set bits are:", name);
-  for (int i = 0; i < 32; ++i) {
+  for (unsigned int i = 0; i < 32; ++i) {
     if ((u >> i) & 1)
       log("- %d", i);
   }
@@ -406,18 +410,9 @@ detectorrawmovefilterwheel(unsigned long position)
 
 ////////////////////////////////////////////////////////////////////////
 
-static long framesum[1024][1024];
-static long framen[1024][1024];
 static long frame[1024][1024];
-static int iframe;
-static int iyref;
-static int ixref;
+static unsigned long iframe;
 static int dosaa;
-
-static double sdx;
-static double sdx2;
-static double sdy;
-static double sdy2;
 
 const char *
 detectorrawexpose(double exposuretime, const char *shutter)
@@ -495,18 +490,6 @@ detectorrawexpose(double exposuretime, const char *shutter)
   if (status != DRV_SUCCESS)
     DETECTOR_ERROR(msg("unable to start acquisition (status is %u).", status));
     
-  for (unsigned long iy = 0; iy < ny; ++iy) {
-    for (unsigned long ix = 0; ix < nx; ++ix) {
-      framesum[iy][ix] = 0;
-      framen[iy][ix] = 0;
-    }
-  }
-  
-  sdx  = 0;
-  sdx2 = 0;
-  sdy  = 0;
-  sdy2 = 0;
-
   saasigmax = 0.0;
   saasigmay = 0.0;
 
@@ -578,83 +561,9 @@ detectorrawgetreadytoberead(void)
       for (unsigned long iy = 0; iy < ny; ++iy)
         detectorrawcubepixnext(&frame[iy][0], nx, cubebzero, cubebscale);
 
-      if (dosaa) {
-
-        log("detectorrawgetreadytoberead: doing shift-and-add.");
-
-        int ixmax, iymax, zmax;
-        if (iframe == 0) {
-          int margin = 32;
-          zmax = 0;
-          for (int iy = margin; iy < ny - margin; ++iy) {
-            for (int ix = margin; ix < nx - margin; ++ix) {
-              if (frame[iy][ix] > zmax) {
-                ixmax = ix;
-                iymax = iy;
-                zmax = frame[iy][ix];
-              }
-            }
-          }
-          ixref = ixmax;
-          iyref = iymax;
-          log("detectorrawgetreadytoberead: frame %4d: max at (%d,%d) is %d.", (int) iframe, (int) iymax, (int) ixmax, (int) zmax);      
-        }
-      
-        int searchsize = 32;
-        zmax = 0;
-        for (int iy = iyref - searchsize; iy <= iyref + searchsize; ++iy) {
-          for (int ix = ixref - searchsize; ix <= ixref + searchsize; ++ix) {
-            if (frame[iy][ix] > zmax) {
-              ixmax = ix;
-              iymax = iy;
-              zmax = frame[iy][ix];
-            }
-          }
-        }
-        
-        int idx = ixmax - ixref;
-        int idy = iymax - iyref;
-      
-        log("detectorrawgetreadytoberead: frame %4d: max at (%d,%d) is %d.", (int) iframe, (int) iymax, (int) ixmax, (int) zmax);      
-        log("detectorrawgetreadytoberead: frame %4d: shift is (%+d,%+d).", (int) iframe, (int) idy, (int) idx);
-
-        for (unsigned long iy = 0; iy < ny; ++iy) {
-          for (unsigned long ix = 0; ix < nx; ++ix) {
-            int jy = iy + idy;
-            int jx = ix + idx;
-            if (0 <= jy && jy < ny && 0 <= jx && jx < nx) {
-              framesum[iy][ix] += frame[jy][jx];
-              framen[iy][ix]   += 1;
-            }
-          }
-        }
-        
-        sdx  += idx;
-        sdx2 += idx * idx;
-        sdy  += idy;
-        sdy2 += idy * idy;
-
-        double n = iframe + 1;
-        double meandx = sdx / n;
-        double meandy = sdy / n;
-        double meandx2 = sdx2 / n;
-        double meandy2 = sdy2 / n;
-        saasigmax = sqrt(meandx2 - meandx * meandx);
-        saasigmay = sqrt(meandy2 - meandy * meandy);
-
-      } else {
-      
-        log("detectorrawgetreadytoberead: just adding.");
-
-        for (unsigned long iy = 0; iy < ny; ++iy) {
-          for (unsigned long ix = 0; ix < nx; ++ix) {
-            framesum[iy][ix] += frame[iy][ix];
-            framen[iy][ix]   += 1;
-          }
-        }
-
-      }
-      
+      if (iframe == 0)
+        detectorframestart();
+      detectorframenext(iframe);
 
       ++iframe;
       
@@ -697,14 +606,11 @@ detectorrawread(void)
     status = AbortAcquisition();
     if (status != DRV_SUCCESS && status != DRV_IDLE)
       DETECTOR_ERROR(msg("unable to abort acquisition (status is %u).", status));
+      
+    detectorframeend();
 
-    log("detectorrawgetreadytoberead: processing sum of frames.");
-
-    for (unsigned long iy = 0; iy < ny; ++iy) {
-      for (unsigned long ix = 0; ix < nx; ++ix)
-        frame[iy][ix] = framen[iy][ix] == 0 ? 0 : framesum[iy][ix] / framen[iy][ix];
+    for (unsigned long iy = 0; iy < ny; ++iy)
       detectorrawpixnext(&frame[iy][0], nx);
-    }
     
   } else {
 
@@ -1107,3 +1013,163 @@ detectorrawfilterwheelgetvalue(const char *name)
 }
 
 ////////////////////////////////////////////////////////////////////////
+
+static int iyref;
+static int ixref;
+
+static double sdx;
+static double sdx2;
+static double sdy;
+static double sdy2;
+
+static long framesum[1024][1024];
+static long framen[1024][1024];
+
+static double
+filteredz(int iy, int ix)
+{
+  // This filter is the central pixel and the four pixels above, below, left,
+  // and right, all with equal weights.
+  int dx[]   = { 0,  0,  0, -1, +1};
+  int dy[]   = { 0, +1, -1,  0,  0};
+  double w[] = { 1,  1,  1,  1,  1};
+
+  size_t n = sizeof(w) / sizeof(*w);
+  double sumwz = 0;
+  double sumw = 0;
+
+  for (size_t i = 0; i < n; ++i) {
+    sumwz += w[i] * frame[iy + dy[i]][ix + dx[i]];
+    sumw  += w[i];
+  }
+  
+  return sumwz / sumw;
+}
+
+static void
+detectorframestart(void)
+{
+  int nx = detectorrawgetpixnx();
+  int ny = detectorrawgetpixny();
+  
+  for (int iy = 0; iy < ny; ++iy) {
+    for (int ix = 0; ix < nx; ++ix) {
+      framesum[iy][ix] = 0;
+      framen[iy][ix] = 0;
+    }
+  }
+
+  if (dosaa) {      
+
+    log("detectorframestart: doing shift-and-add.");
+
+    int margin = 32;
+
+    int ixmax, iymax;
+    double zmax = 0;
+    for (int iy = margin; iy < ny - margin; ++iy) {
+      for (int ix = margin; ix < nx - margin; ++ix) {
+        if (filteredz(iy, ix) > zmax) {
+          ixmax = ix;
+          iymax = iy;
+          zmax = filteredz(iy, ix);
+        }
+      }
+    }
+
+    ixref = ixmax;
+    iyref = iymax;
+
+    log("detectorframestart: max at (%d,%d) is %d.", (int) iframe, (int) iymax, (int) ixmax, (int) zmax);
+
+    sdx  = 0;
+    sdx2 = 0;
+    sdy  = 0;
+    sdy2 = 0;
+  
+  }
+
+}
+
+static void
+detectorframenext(unsigned long iframe)
+{
+  int nx = detectorrawgetpixnx();
+  int ny = detectorrawgetpixny();
+
+  if (dosaa) {      
+
+    int searchsize = 32;
+
+    int ixmax, iymax;
+    double zmax = 0;
+    for (int iy = iyref - searchsize; iy <= iyref + searchsize; ++iy) {
+      for (int ix = ixref - searchsize; ix <= ixref + searchsize; ++ix) {
+        if (filteredz(iy, ix) > zmax) {
+          ixmax = ix;
+          iymax = iy;
+          zmax = filteredz(iy, ix);
+        }
+      }
+    }
+        
+    int idx = ixmax - ixref;
+    int idy = iymax - iyref;
+      
+    log("detectorframenext: frame %4d: max at (%d,%d) is %.0f.", (int) iframe, (int) iymax, (int) ixmax, zmax);      
+    log("detectorframenext: frame %4d: shift is (%+d,%+d).", (int) iframe, (int) idy, (int) idx);
+
+    for (int iy = 0; iy < ny; ++iy) {
+      for (int ix = 0; ix < nx; ++ix) {
+        int jy = iy + idy;
+        int jx = ix + idx;
+        if (0 <= jy && jy < ny && 0 <= jx && jx < nx) {
+          framesum[iy][ix] += frame[jy][jx];
+          framen[iy][ix]   += 1;
+        }
+      }
+    }
+      
+    sdx  += idx;
+    sdx2 += idx * idx;
+    sdy  += idy;
+    sdy2 += idy * idy;
+
+    double n = iframe + 1;
+    double meandx = sdx / n;
+    double meandy = sdy / n;
+    double meandx2 = sdx2 / n;
+    double meandy2 = sdy2 / n;
+    saasigmax = sqrt(meandx2 - meandx * meandx);
+    saasigmay = sqrt(meandy2 - meandy * meandy);
+    
+  } else {
+
+    for (int iy = 0; iy < ny; ++iy) {
+      for (int ix = 0; ix < nx; ++ix) {
+        framesum[iy][ix] += frame[iy][ix];
+        framen[iy][ix]   += 1;
+      }
+    }
+
+  }
+        
+}
+
+
+static void
+detectorframeend(void)
+{
+  int nx = detectorrawgetpixnx();
+  int ny = detectorrawgetpixny();
+
+  log("detectorframeend: processing sum of frames.");
+
+  for (int iy = 0; iy < ny; ++iy)
+    for (int ix = 0; ix < nx; ++ix)
+      if (framen[iy][ix] == 0)
+        frame[iy][ix] = 0;
+      else
+        frame[iy][ix] = framesum[iy][ix] / framen[iy][ix];
+
+}
