@@ -288,7 +288,7 @@ proc coarsefocusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefa
   executor::movefocuser "center"
   executor::setreadmode $readmode
   executor::setwindow "default"
-  executor::setbinning 2
+  executor::setbinning 4
   executor::movefilterwheel "$filter"
 
   executor::waituntiltracking
