@@ -80,6 +80,7 @@ EOF
   control)
     cat <<"EOF"
 *  *  *  *  *  sleep 10; tcs updatesensorsfiles control platform detectors0 detectors1
+*  *  *  *  *  tcs updateseeingfiles-oan
 *  *  *  *  *  tcs updateweatherfiles-oan
 00 18 *  *  *  tcs updateweatherfiles-oan -a
 *  *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
