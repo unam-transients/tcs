@@ -181,8 +181,8 @@ namespace eval "covers" {
   proc waitwhilemoving {} {
     log::info "waiting while moving."
     variable moving
-    set startingdelay 1
-    set settlingdelay 1
+    set startingdelay 5
+    set settlingdelay 5
     set start [utcclock::seconds]
     while {[utcclock::diff now $start] < $startingdelay} {
       coroutine::yield
