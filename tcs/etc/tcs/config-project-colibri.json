@@ -223,7 +223,7 @@
     "type": "opentsi",
     "configuration": "azimuth-zenithdistance",
     // The parked derotator offset is with respect to the instrument structure.
-    "derotatoroffsetpark": "10d",
+    "derotatoroffsetpark": "-5d",
     // The unparked derotator offset is with respect to the detector.
     "derotatoroffsetunparked": "23d",
     // When the PLC parks the telescope, it uses these positions. These are not
