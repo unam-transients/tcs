@@ -96,12 +96,14 @@ installbins         :=            \
 
 installbins_project_test :=       \
 	C0server                      \
+	updateseeingfiles-oan         \
 	updateweatherfiles-oan
 	
 installbins_project_coatli :=     \
 	C0server                      \
 	enclosureserver               \
 	secondaryserver               \
+	updateseeingfiles-oan         \
 	updateweatherfiles-oan
 
 installbins_project_ddoti :=      \
@@ -112,6 +114,7 @@ installbins_project_ddoti :=      \
 	C4server                      \
 	C5server                      \
 	enclosureserver               \
+	updateseeingfiles-oan         \
 	updateweatherfiles-oan
 	
 installbins_project_colibri :=    \
