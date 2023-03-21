@@ -342,6 +342,15 @@ namespace eval "fitsheader" {
     }
   }
   
+  proc writekeysandvaluesforseeing {channel prefix} {
+    writekeysandvaluesforcomponent $channel seeing $prefix "SG" {
+      seeing                      SG    angle
+      timestamp                   SGTS  string
+      seeinga                     SGA   angle
+      timestampa                  SGATS string
+    }
+  }
+
   proc writekeysandvaluesforowsensors {channel prefix} {
     if {
       [catch {client::update "owsensors"} message] ||
@@ -359,7 +368,6 @@ namespace eval "fitsheader" {
     }
     writekeysandvaluesforcomponent $channel owsensors $prefix "OW" $args
   }
-
 
   proc writekeysandvaluesforsecondary {channel prefix} {
     writekeysandvaluesforcomponent $channel secondary $prefix "SC" {

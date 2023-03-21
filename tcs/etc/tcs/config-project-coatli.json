@@ -184,6 +184,7 @@
       "sun",
       "secondary",
       "mount",
+      "seeing",
       "sensors",
       "weather"
     ]
@@ -211,6 +212,7 @@
       "moon",
       "mount",
       "power",
+      "seeing",
       "selector",
       "secondary",
       "sensors",

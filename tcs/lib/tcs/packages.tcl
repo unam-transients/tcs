@@ -178,6 +178,10 @@ package ifneeded safetyswitchnone      0.0 \
   [list source [file join [file dirname [info script]] safetyswitchnone.tcl]]
 package ifneeded safetyswitchplc       0.0 \
   [list source [file join [file dirname [info script]] safetyswitchplc.tcl]]
+package ifneeded seeing                0.0 \
+  [list source [file join [file dirname [info script]] seeing.tcl]]
+package ifneeded seeingserver          0.0 \
+  [list source [file join [file dirname [info script]] seeingserver.tcl]]
 package ifneeded selector              0.0 \
   [list source [file join [file dirname [info script]] selector.tcl]]
 package ifneeded selectorserver        0.0 \

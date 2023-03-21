@@ -1143,6 +1143,31 @@ namespace eval "html" {
 
   }
 
+  proc writeseeing {} {
+
+    putshtml "<table class=\"status\">"
+
+    writehtmlstatusblock "seeing"
+
+    putshtml "</table>"
+
+    putshtml "<table class=\"status\">"
+
+    if {[string equal [client::getstatus "seeing"] "ok"]} {
+      writehtmlrow "Seeing" \
+        [formatarcsecifdouble "%.2fas" [client::getdata "seeing" "seeing"]]
+      writehtmlrow "Seeing A" \
+        [formatarcsecifdouble "%.2fas" [client::getdata "seeing" "seeinga"]]
+      set timestamp [client::getdata "seeing" "timestampa"]
+      set diff      [format "%.0f" [utcclock::diff $timestamp]]
+      writehtmlfullrow "Seeing A Timestamp" \
+        "$timestamp ($diff seconds)"
+    }
+
+    putshtml "</table>"
+
+  }
+
   proc writeselector {} {
 
     putshtml "<table class=\"status\">"
@@ -1516,6 +1541,7 @@ if {false} {
       moon                {Moon}
       mount               {Mount}
       plc                 {PLC}
+      seeing              {Seeing}
       secondary           {Secondary}
       selector            {Selector}
       sensors             {Sensors}
