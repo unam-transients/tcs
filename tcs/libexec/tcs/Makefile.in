@@ -76,6 +76,7 @@ installbins         :=            \
 	request                       \
 	restartserver                 \
 	restart                       \
+	seeingserver                  \
 	selectorserver                \
 	sendpushover                  \
 	sensorsserver                 \

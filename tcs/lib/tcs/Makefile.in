@@ -107,6 +107,8 @@ installs	:=			           \
 	safetyswitcharts.tcl		   \
 	safetyswitchnone.tcl		   \
 	safetyswitchplc.tcl	    	   \
+	seeing.tcl 		         	   \
+	seeingserver.tcl 	    	   \
 	selector.tcl 		    	   \
 	selectorserver.tcl 	    	   \
 	secondary.tcl			       \

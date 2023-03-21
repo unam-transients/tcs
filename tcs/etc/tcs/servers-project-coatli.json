@@ -42,5 +42,6 @@
   "supervisor" : { "host" : "control"   , "port" : 5022 },
   "target"     : { "host" : "control"   , "port" : 5023 },
   "telescope"  : { "host" : "control"   , "port" : 5024 },
-  "weather"    : { "host" : "control"   , "port" : 5025 }
+  "weather"    : { "host" : "control"   , "port" : 5025 },
+  "seeing"     : { "host" : "control"   , "port" : 5026 }
 }
