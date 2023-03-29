@@ -330,18 +330,28 @@ namespace eval "mount" {
     variable derotatoranglepark
     variable derotatoroffsetpark
     log::info "moving to park."
+    # Turn off derotator movement.
     opentsi::sendcommand [format "SET [join {
-        "OBJECT.INSTRUMENTAL.AZ=%.6f"
-        "OBJECT.INSTRUMENTAL.ZD=%.6f"
+        "POINTING.SETUP.DEROTATOR.SYNCMODE=0"
+      } ";"]" \
+    ]
+    # Move the derotator to the parked position.
+    opentsi::sendcommand [format "SET [join {
         "POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=%.6f"
         "POINTING.SETUP.DEROTATOR.OFFSET=%.6f"
         "POINTING.SETUP.DEROTATOR.SYNCMODE=1"
-        "POINTING.TRACK=2"
       } ";"]" \
-      [astrometry::radtodeg $azimuthpark        ] \
-      [astrometry::radtodeg $zenithdistancepark ] \
       [astrometry::radtodeg $derotatoroffsetpark] \
       [astrometry::radtodeg $derotatoranglepark ] \
+    ]
+    # Move the mount to the parked position.
+    opentsi::sendcommand [format "SET [join {
+        "OBJECT.INSTRUMENTAL.AZ=%.6f"
+        "OBJECT.INSTRUMENTAL.ZD=%.6f"
+        "POINTING.TRACK=2"
+      } ";"]" \
+      [astrometry::radtodeg $azimuthpark       ] \
+      [astrometry::radtodeg $zenithdistancepark] \
     ]
     waitwhilemoving
     server::setdata "unparked" false
@@ -352,18 +362,28 @@ namespace eval "mount" {
     variable deltaunpark
     variable derotatoroffsetunpark
     log::info "moving to unpark."
-    set azimuth        [astrometry::equatorialtoazimuth        $haunpark $deltaunpark]
-    set zenithdistance [astrometry::equatorialtozenithdistance $haunpark $deltaunpark]
+    set azimuthunpark        [astrometry::equatorialtoazimuth        $haunpark $deltaunpark]
+    set zenithdistanceunpark [astrometry::equatorialtozenithdistance $haunpark $deltaunpark]
+    # Turn off derotator movement.
     opentsi::sendcommand [format "SET [join {
-        "OBJECT.HORIZONTAL.AZ=%.6f"
-        "OBJECT.HORIZONTAL.ZD=%.6f"
+        "POINTING.SETUP.DEROTATOR.SYNCMODE=0"
+      } ";"]" \
+    ]
+    # Turn on derotator syncronization.
+    opentsi::sendcommand [format "SET [join {
         "POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=%.6f"
         "POINTING.SETUP.DEROTATOR.SYNCMODE=4"
+      } ";"]" \
+      [astrometry::radtodeg $derotatoroffsetunpark] \
+    ]      
+    # Move to unparked position.
+    opentsi::sendcommand [format "SET [join {
+        "OBJECT.INSTRUMENTAL.AZ=%.6f"
+        "OBJECT.INSTRUMENTAL.ZD=%.6f"
         "POINTING.TRACK=2"
       } ";"]" \
-      [astrometry::radtodeg $azimuth              ] \
-      [astrometry::radtodeg $zenithdistance       ] \
-      [astrometry::radtodeg $derotatoroffsetunpark] \
+      [astrometry::radtodeg $azimuthunpark       ] \
+      [astrometry::radtodeg $zenithdistanceunpark] \
     ]      
     waitwhilemoving
     server::setdata "unparked" true
@@ -443,8 +463,11 @@ namespace eval "mount" {
     set start [utcclock::seconds]
     log::info "moving."
     updaterequestedpositiondata
-    opentsi::sendcommand [format \
-      "SET OBJECT.HORIZONTAL.AZ=%.6f;OBJECT.HORIZONTAL.ZD=%.6f;POINTING.TRACK=2" \
+    opentsi::sendcommand [format "SET [join {
+        "OBJECT.HORIZONTAL.AZ=%.6f"
+        "OBJECT.HORIZONTAL.ZD=%.6f"
+        "POINTING.TRACK=2"
+      } ";"]" \
       [astrometry::radtodeg [server::getdata "requestedobservedazimuth"]] \
       [astrometry::radtodeg [server::getdata "requestedobservedzenithdistance"]] \
     ]      
@@ -456,7 +479,6 @@ namespace eval "mount" {
   proc parkactivitycommand {} {
     set start [utcclock::seconds]
     log::info "parking."
-    opentsi::sendcommand "SET POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=0"
     parkhardware
     set end [utcclock::seconds]
     log::info [format "finished parking after %.1f seconds." [utcclock::diff $end $start]]
@@ -466,7 +488,6 @@ namespace eval "mount" {
     set start [utcclock::seconds]
     log::info "unparking."
     unparkhardware
-    opentsi::sendcommand "SET POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=23"
     set end [utcclock::seconds]
     log::info [format "finished unparking after %.1f seconds." [utcclock::diff $end $start]]
   }
