@@ -93,14 +93,14 @@ proc alertvisit {{filters "r"} {readmode "conventionaldefault"}} {
   set first true
   foreach {eastoffset northoffset} {
       0as   0as
-    +30as +30as
-    +30as -30as
-    -30as -30as
-    -30as +30as
-      0as -30as
-    +30as   0as
-      0as +30as
-    -30as   0as
+    +15as +15as
+    +15as -15as
+    -15as -15as
+    -15as +15as
+      0as -15as
+    +15as   0as
+      0as +15as
+    -15as   0as
   } {
   
     log::info "alertvisit: dithering $eastoffset E and $northoffset N."    
