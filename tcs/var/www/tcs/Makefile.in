@@ -31,59 +31,60 @@ include ../../../Makefile.prolog
 	
 ########################################################################
 
-installs			:=	\
-	.htaccess			\
-	blank.png			\
-	cgi.tcl				\
-	jquery.js			\
-	style.css			\
+installs			:=	                 \
+	.htaccess			                 \
+	blank.png			                 \
+	cgi.tcl				                 \
+	jquery.js			                 \
+	style.css			                 \
 	tcs.js
 	
-installbins			:=	\
-	request.cgi			\
+installbins			:=	                 \
+	request.cgi			                 \
 
-installs_project_coatli	:=		     \
-	allsky-project-coatli.html		 \
-	C0-project-coatli.html       	 \
+installs_project_coatli	:=		         \
+	allsky-project-coatli.html		     \
+	C0-project-coatli.html       	     \
 	config-project-coatli.js		     \
-	operations-project-coatli.html	 \
-	engineering-project-coatli.html   \
+	operations-project-coatli.html	     \
+	engineering-project-coatli.html      \
 	interface.html                       \
 	webcam-a-project-coatli.html		 \
 	webcam-b-project-coatli.html		 \
 	webcam-c-project-coatli.html		 \
-	webcam-cz-project-coatli.html     \
-	plots-project-coatli.html         \
+	webcam-cz-project-coatli.html        \
+	plots-project-coatli.html            \
 	plots-project-coatli.sh
 
-installs_project_ddoti	:=		     \
-	allsky-project-ddoti.html		 \
-	C0-project-ddoti.html  	     	 \
-	C1-project-ddoti.html  	     	 \
-	C2-project-ddoti.html  	     	 \
-	C3-project-ddoti.html  	     	 \
-	C4-project-ddoti.html  	     	 \
-	C5-project-ddoti.html  	     	 \
-	config-project-ddoti.js		     \
-	operations-project-ddoti.html  	 \
+installs_project_ddoti	:=		         \
+	allsky-project-ddoti.html		     \
+	C0-project-ddoti.html  	     	     \
+	C1-project-ddoti.html  	     	     \
+	C2-project-ddoti.html  	     	     \
+	C3-project-ddoti.html  	     	     \
+	C4-project-ddoti.html  	     	     \
+	C5-project-ddoti.html  	     	     \
+	config-project-ddoti.js		         \
+	operations-project-ddoti.html  	     \
 	interface.html                       \
-	engineering-project-ddoti.html    \
-	alerts-project-ddoti.html	     \
-	webcam-a-project-ddoti.html		 \
-	webcam-b-project-ddoti.html		 \
-	webcam-c-project-ddoti.html		 \
-	webcam-cz-project-ddoti.html      \
-	plots-project-ddoti.html          \
+	engineering-project-ddoti.html       \
+	alerts-project-ddoti.html	         \
+	webcam-a-project-ddoti.html		     \
+	webcam-b-project-ddoti.html		     \
+	webcam-c-project-ddoti.html		     \
+	webcam-cz-project-ddoti.html         \
+	plots-project-ddoti.html             \
 	plots-project-ddoti.sh
 
 installs_project_colibri	:=		     \
 	allsky-project-colibri.html     	 \
-	C0-project-colibri.html  	   	 \
-	config-project-colibri.js	     \
-	operations-project-colibri.html   \
-	engineering-project-colibri.html  \
+	C0-project-colibri.html  	      	 \
+	config-project-colibri.js	         \
+	operations-project-colibri.html      \
+	engineering-project-colibri.html     \
 	interface.html                       \
-	webcam-a-project-colibri.html	 \
+	webcam-a-project-colibri.html	     \
+	plots-project-colibri.html           \
 	plots-project-colibri.sh
 
 installs_project_test		:=		     \
