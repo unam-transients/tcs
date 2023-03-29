@@ -335,6 +335,7 @@ namespace eval "mount" {
         "POINTING.SETUP.DEROTATOR.SYNCMODE=0"
       } ";"]" \
     ]
+    log::info [format "setting derotator offset to %+.2fd." [astrometry::radtodeg $derotatoroffsetpark]]
     # Move the derotator to the parked position.
     opentsi::sendcommand [format "SET [join {
         "POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=%.6f"
@@ -370,9 +371,10 @@ namespace eval "mount" {
       } ";"]" \
     ]
     # Turn on derotator syncronization.
+    log::info [format "setting derotator offset to %+.2fd." [astrometry::radtodeg $derotatoroffsetunpark]]
     opentsi::sendcommand [format "SET [join {
         "POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=%.6f"
-        "POINTING.SETUP.DEROTATOR.SYNCMODE=4"
+        "POINTING.SETUP.DEROTATOR.SYNCMODE=5"
       } ";"]" \
       [astrometry::radtodeg $derotatoroffsetunpark] \
     ]      
