@@ -43,7 +43,7 @@ do
     lines=1
   fi
   
-  for component in weather sensors C0
+  for component in weather sensors C0 seeing
   do
     (
       cd /usr/local/var/tcs
@@ -196,10 +196,6 @@ EOF
     plot \
       "weather.dat" using 1:(\$4*100) title "Humidity" with lines linestyle 1
 
-    set format x "%Y%m%dT%H"
-    set xtics rotate by 90 right
-    set xlabel "UTC"
-
     set yrange [0:100]
     set ytics 0,10,100
     set format y "%g"
@@ -208,6 +204,18 @@ EOF
     plot \
       "weather.dat" using 1:10 title "Wind Average Speed"  with lines linestyle 1, \
       ""            using 1:11 title "Wind Gust Speed" with lines linestyle 2
+
+    set format x "%Y%m%dT%H"
+    set xtics rotate by 90 right
+    set xlabel "UTC"
+
+    set yrange [0:5]
+    set ytics 0,0.5,5
+    set format y "%.1f"
+    set ylabel "Seeing (arcsec)"
+    set key on
+    plot \
+      "seeing.dat" using 1:(\$2*206264) title "Seeing"  with points
 
     unset multiplot
 
