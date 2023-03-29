@@ -104,7 +104,7 @@
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
-      "1": "-m",
+      "1": "",
       "2": "-A",
       "4": "-A",
       "8": "-A",
@@ -179,7 +179,7 @@
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
-      "1": "-m",
+      "1": "",
       "2": "-A",
       "4": "-A",
       "8": "-A",
@@ -254,7 +254,7 @@
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
-      "1": "-m",
+      "1": "",
       "2": "-A",
       "4": "-A",
       "8": "-A",
@@ -329,7 +329,7 @@
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
-      "1": "-m",
+      "1": "",
       "2": "-A",
       "4": "-A",
       "8": "-A",
@@ -403,7 +403,7 @@
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
-      "1": "-m",
+      "1": "",
       "2": "-A",
       "4": "-A",
       "8": "-A",
@@ -477,7 +477,7 @@
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
-      "1": "-m",
+      "1": "",
       "2": "-A",
       "4": "-A",
       "8": "-A",
