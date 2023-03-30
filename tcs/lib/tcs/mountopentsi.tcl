@@ -526,6 +526,29 @@ namespace eval "mount" {
 
   ######################################################################
 
+  proc correcthardware {truemountalpha truemountdelta equinox dalpha ddelta} {
+      
+      set dseconds [utcclock::diff "now" "19700101T000000"]
+      # Add leap seconds.
+      set dseconds [expr {$dseconds + 37.0}]
+
+      opentsi::sendcommand [format "SET [join {
+          "TELESCOPE.MEASUREMENT.MODEL.NEW.RA=%.6f"
+          "TELESCOPE.MEASUREMENT.MODEL.NEW.DEC=%.6f"
+          "TELESCOPE.MEASUREMENT.MODEL.NEW.EQUINOX=%.3f"
+          "TELESCOPE.MEASUREMENT.MODEL.NEW.UTC=%.0f"
+          "TELESCOPE.MEASUREMENT.MODEL.NEW.ADD=2"
+        } ";"]" \
+        [astrometry::radtodeg $truemountalpha] \
+        [astrometry::radtodeg $truemountdelta] \
+        $equinox \
+        $dseconds \
+      ]  
+
+  }
+
+  ######################################################################
+
   proc start {} {
     opentsi::start $mount::statuscommand mount::updatedata
     server::newactivitycommand "starting" "started" mount::startactivitycommand

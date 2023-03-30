@@ -49,7 +49,6 @@ config::setdefaultvalue "mount" "hapark"                     "0h"
 config::setdefaultvalue "mount" "deltapark"                  "90h"
 config::setdefaultvalue "mount" "haunpark"                   "0h"
 config::setdefaultvalue "mount" "deltaunpark"                "0d"
-config::setdefaultvalue "mount" "maxcorrection"              "1d"
 
 namespace eval "mount" {
 
@@ -64,7 +63,6 @@ namespace eval "mount" {
   variable deltapark                   [astrometry::parseangle [config::getvalue "mount" "deltapark"]]
   variable haunpark                    [astrometry::parseangle [config::getvalue "mount" "haunpark"]]
   variable deltaunpark                 [astrometry::parseangle [config::getvalue "mount" "deltaunpark"]]
-  variable maxcorrection               [astrometry::parseangle [config::getvalue "mount" "maxcorrection"]]
 
   variable usemountcoordinates true
 
@@ -1096,6 +1094,20 @@ namespace eval "mount" {
       set move true
     }
     trackoroffsetactivitycommand $move
+  }
+
+  ######################################################################
+
+  proc correcthardware {truealpha truedelta equinox dalpha ddelta} {
+
+    set dha [expr {-($dalpha)}]
+    updatepointingmodel $dha $ddelta [server::getdata "mountrotation"]
+
+    updaterequestedpositiondata
+    set requestedobservedalpha [server::getdata "requestedobservedalpha"]
+    set requestedobserveddelta [server::getdata "requestedobserveddelta"]
+    log::info "requested mount observed position is [astrometry::formatalpha $requestedobservedalpha] [astrometry::formatdelta $requestedobserveddelta]."  
+
   }
 
   ######################################################################
