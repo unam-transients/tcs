@@ -187,6 +187,29 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"}} {
 
 ########################################################################
 
+proc pointingcorrectionvisit {{exposuretime 5} {filter "i"}} {
+
+  log::summary "correctpointingvisit: starting."
+
+  executor::setsecondaryoffset 0
+
+  executor::track
+
+  executor::setwindow "default"
+  executor::setbinning 1
+  executor::movefilterwheel $filter
+
+  executor::waituntiltracking
+
+  log::summary "correctpointingvisit: correcting pointing."
+  executor::correctpointing $exposuretime
+
+  log::summary "correctpointingvisit: finished."
+  return true
+}
+
+########################################################################
+
 proc biasesvisit {{exposures 10} {binning 1}} {
   log::summary "biasesvisit: starting."
   executor::move

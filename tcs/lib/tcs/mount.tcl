@@ -37,6 +37,7 @@ config::setdefaultvalue "mount" "southdeltalimit"            ""
 config::setdefaultvalue "mount" "polardeltalimit"            ""
 config::setdefaultvalue "mount" "minzenithdistancelimit"     ""
 config::setdefaultvalue "mount" "maxzenithdistancelimit"     ""
+config::setdefaultvalue "mount" "maxcorrection"              "1d"
 
 namespace eval "mount" {
 
@@ -48,6 +49,7 @@ namespace eval "mount" {
   variable fixedpositionerrorlimit      [astrometry::parseoffset [config::getvalue "mount" "fixedpositionerrorlimit"]]
   variable trackingsettlingdelayseconds [config::getvalue "mount" "trackingsettlingdelayseconds"]
   variable movingsettlingdelayseconds   [config::getvalue "mount" "movingsettlingdelayseconds"]
+  variable maxcorrection                [astrometry::parseangle [config::getvalue "mount" "maxcorrection"]]
   
   ######################################################################
 
@@ -228,6 +230,12 @@ namespace eval "mount" {
         set mountalphaerror [astrometry::foldradsymmetric [expr {$mountalpha - $requestedmountalpha}]]
         set mountdeltaerror [expr {$mountdelta - $requestedmountdelta}]
         
+      } else {
+
+        set mounthaerror    ""
+        set mountalphaerror 0
+        set mountdeltaerror 0
+
       }
 
     } elseif {
@@ -1092,17 +1100,17 @@ namespace eval "mount" {
 
     variable maxcorrection
     if {$d >= $maxcorrection} {
+
       log::warning [format "ignoring correction: the correction distance of %s is larger than the maximum allowed of %s." [astrometry::formatdistance $d] [astrometry::formatdistance $maxcorrection]]
+
     } else {
+
       server::setdata "lastcorrectiontimestamp" [utcclock::format]
       server::setdata "lastcorrectiondalpha"    $dalpha
       server::setdata "lastcorrectionddelta"    $ddelta
-      set dha [expr {-($dalpha)}]
-      updatepointingmodel $dha $ddelta [server::getdata "mountrotation"]
-      updaterequestedpositiondata
-      set requestedobservedalpha [server::getdata "requestedobservedalpha"]
-      set requestedobserveddelta [server::getdata "requestedobserveddelta"]
-      log::info "requested mount observed position is [astrometry::formatalpha $requestedobservedalpha] [astrometry::formatdelta $requestedobserveddelta]."  
+      
+      correcthardware $truemountalpha $truemountdelta $equinox $dalpha $ddelta
+      
     }
 
     log::info [format "finished correcting after %.1f seconds." [utcclock::diff now $start]]
