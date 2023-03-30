@@ -26,6 +26,18 @@ package provide "utcclock" 0.0
 namespace eval "utcclock" {
 
   ######################################################################
+  
+  # The value of currentleapsecondcorrection is TAI-UTC-10. The -10 comes from
+  # TAI already being 10 seconds ahead of UTC in 1972.
+  
+  # We assume the current value applies to all times, which is not correct but
+  # in our application will not give problems.
+  
+  # This value is correct as of 2023-03-29.
+  
+  variable currentleapsecondcorrection 27
+  
+  ######################################################################
 
   variable resolution
   variable precision
@@ -50,7 +62,11 @@ namespace eval "utcclock" {
 
   ######################################################################
 
-  proc seconds {} {
+  # The posixseconds and posixmilliseconds procedures return the number of POSIX
+  # seconds since 19700101T000000. There are 86400 POSIX seconds in each UTC
+  # day.
+
+  proc posixseconds {} {
     variable resolution
     if {$resolution == 1.0} {
       set seconds [expr {double([clock seconds])}]
@@ -60,7 +76,7 @@ namespace eval "utcclock" {
     return $seconds
   }
   
-  proc milliseconds {} {
+  proc posixmilliseconds {} {
     variable resolution
     if {$resolution == 1.0} {
       set milliseconds [expr {double([clock seconds]) * 1e3}]
@@ -69,12 +85,30 @@ namespace eval "utcclock" {
     }
     return $milliseconds
   }
+  
+  ######################################################################
+  
+  # The seconds and milliseconds procedures return the number of UTC seconds and
+  # milliseconds since 19700101T000000 UTC, including leap seconds.
+  
+  proc seconds {} {
+    variable currentleapsecondcorrection
+    return [expr {[posixseconds] + $currentleapsecondcorrection}]
+  }
+  
+  proc milliseconds {} {
+    variable currentleapsecondcorrection
+    return [expr {[posixmilliseconds] + $currentleapsecondcorrection * 1000}]
+  }
+
+  ######################################################################
 
   proc mjd {{seconds "now"}} {
     if {[string equal $seconds now]} {
       set seconds [seconds]
     }
-    # We rely on the absence of leap seconds.
+    variable currentleapsecondcorrection
+    set seconds [expr {$seconds - $currentleapsecondcorrection}]
     set epochmjd 40587.0
     expr {$seconds / (24.0 * 60.0 * 60.0) + $epochmjd}
   }
@@ -83,7 +117,8 @@ namespace eval "utcclock" {
     if {[string equal $seconds now]} {
       set seconds [seconds]
     }
-    # We rely on the absence of leap seconds.
+    variable currentleapsecondcorrection
+    set seconds [expr {$seconds - $currentleapsecondcorrection}]
     set epochjd 2440587.5
     expr {$seconds / (24.0 * 60.0 * 60.0) + $epochjd}
   }
@@ -95,6 +130,9 @@ namespace eval "utcclock" {
   }
 
   ######################################################################
+  
+  # These format procedures return the UTC time corresponding to a given number
+  # of UTC seconds after 19700101T000000 UTC.
 
   proc generalformat {seconds precision format} {
     if {[string equal $seconds now]} {
@@ -102,6 +140,8 @@ namespace eval "utcclock" {
     } elseif {![string is double -strict $seconds]} {
       set seconds [scan $seconds]
     }    
+    variable currentleapsecondcorrection
+    set seconds [expr {$seconds - $currentleapsecondcorrection}]
     set iseconds [expr {int(floor($seconds))}]
     set fseconds [expr {$seconds - $iseconds}]
     set fscale   [expr {pow(10,$precision)}]
@@ -164,6 +204,27 @@ namespace eval "utcclock" {
 
   ######################################################################
 
+  # These scan procedure returns the number of UTC seconds between the given UTC
+  # time and 19700101T000000 UTC.
+
+  proc scan {text} {
+    if {[::scan $text "%4d-%2d-%2d %2d:%2d:%f" years months days hours minutes seconds] == 6 || \
+        [::scan $text "%4d-%2d-%2dT%2d:%2d:%f" years months days hours minutes seconds] == 6 || \
+        [::scan $text "%4d%2d%2d %2d%2d%f" years months days hours minutes seconds] == 6 || \
+        [::scan $text "%4d%2d%2dT%2d%2d%f" years months days hours minutes seconds] == 6 } {
+      set iseconds [expr {int(floor($seconds))}]
+      set fseconds [expr {$seconds - $iseconds}]
+      set itext [::format "%04d-%02d-%02d %02d:%02d:%02d" $years $months $days $hours $minutes $iseconds]
+      set iseconds [clock scan $itext -gmt true]
+      set seconds [expr {$iseconds + $fseconds}]
+      variable currentleapsecondcorrection
+      set seconds [expr {$seconds + $currentleapsecondcorrection}]
+      return $seconds
+    } else {
+      error "invalid ISO 8601 time format: \"$text\"."
+    }
+  }
+
   proc scaninterval {interval} {
     if {[string is double -strict $interval]} {
       set newinterval $interval
@@ -198,24 +259,6 @@ namespace eval "utcclock" {
     return $newinterval
   }
   
-  ######################################################################
-
-  proc scan {text} {
-    if {[::scan $text "%4d-%2d-%2d %2d:%2d:%f" years months days hours minutes seconds] == 6 || \
-        [::scan $text "%4d-%2d-%2dT%2d:%2d:%f" years months days hours minutes seconds] == 6 || \
-        [::scan $text "%4d%2d%2d %2d%2d%f" years months days hours minutes seconds] == 6 || \
-        [::scan $text "%4d%2d%2dT%2d%2d%f" years months days hours minutes seconds] == 6 } {
-      set iseconds [expr {int(floor($seconds))}]
-      set fseconds [expr {$seconds - $iseconds}]
-      set itext [::format "%04d-%02d-%02d %02d:%02d:%02d" $years $months $days $hours $minutes $iseconds]
-      set iseconds [clock scan $itext -gmt true]
-      set seconds [expr {$iseconds + $fseconds}]
-      return $seconds
-    } else {
-      error "invalid ISO 8601 time format: \"$text\"."
-    }
-  }
-
   ######################################################################
 
   proc diff {a {b "now"}} {
