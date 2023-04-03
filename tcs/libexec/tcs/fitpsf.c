@@ -228,6 +228,35 @@ fit_cmp(const void *vx, const void *vy)
 }
 
 int
+double_cmp(const void *vx, const void *vy)
+{
+  double x = * (double *) vx;
+  double y = * (double *) vy;
+  if (x < y)
+    return -1;
+  else if (x > y)
+    return +1;
+  else
+    return 0;
+}
+
+void
+destripey(long ny, long nx, double z[ny][nx])
+{
+  for (int ix = 0; ix < nx; ++ix) {
+    double columnz[ny];
+    for (int iy = 0; iy < ny; ++iy) {
+      columnz[iy] = z[iy][ix];
+    }
+    qsort(columnz, ny, sizeof(*columnz), double_cmp);
+    double medianz = columnz[ny / 2];
+    for (int iy = 0; iy < ny; ++iy) {
+      z[iy][ix] -= medianz;
+    }
+  }
+}
+
+int
 main(int argc, char *argv[])
 {
   double pi = 4.0 * atan(1.0);
@@ -268,6 +297,8 @@ main(int argc, char *argv[])
     fits_report_error(stderr, status);
     exit(1);
   }
+  
+  destripey(ny, nx, (void *) z);
 
   fit_t fit[wn];
   for (int i = 0; i < wn; ++i) {
