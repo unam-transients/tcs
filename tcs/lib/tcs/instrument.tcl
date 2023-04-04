@@ -571,7 +571,7 @@ namespace eval "instrument" {
           set filter       [client::getdata $detector "filter"]
           set exposuretime [client::getdata $detector "exposuretime"]
           set z            [client::getdata $detector "focuserposition"]
-          if {[string equal "$w" ""]} {
+          if {[string equal "$fwhm" ""]} {
             log::summary [format "$fitsfilename: $detector witness FWHM is unknown (with binning $binning) in filter $filter at focuser position $z in $exposuretime seconds."]
           } else {
             log::summary [format \
