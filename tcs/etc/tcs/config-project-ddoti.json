@@ -104,11 +104,11 @@
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
-      "1": "",
-      "2": "-A",
-      "4": "-A",
-      "8": "-A",
-      "16": "-A"
+      "1": "-m",
+      "2": "-m",
+      "4": "-m",
+      "8": "-m",
+      "16": "-m"
     }
   },
   "C1": {
@@ -179,11 +179,11 @@
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
-      "1": "",
-      "2": "-A",
-      "4": "-A",
-      "8": "-A",
-      "16": "-A"
+      "1": "-m",
+      "2": "-m",
+      "4": "-m",
+      "8": "-m",
+      "16": "-m"
     }
   },
   "C2": {
@@ -254,11 +254,11 @@
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
-      "1": "",
-      "2": "-A",
-      "4": "-A",
-      "8": "-A",
-      "16": "-A"
+      "1": "-m",
+      "2": "-m",
+      "4": "-m",
+      "8": "-m",
+      "16": "-m"
     }
   },
   "C3": {
@@ -329,11 +329,11 @@
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
-      "1": "",
-      "2": "-A",
-      "4": "-A",
-      "8": "-A",
-      "16": "-A"
+      "1": "-m",
+      "2": "-m",
+      "4": "-m",
+      "8": "-m",
+      "16": "-m"
     }
   },
   "C4": {
@@ -403,11 +403,11 @@
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
-      "1": "",
-      "2": "-A",
-      "4": "-A",
-      "8": "-A",
-      "16": "-A"
+      "1": "-m",
+      "2": "-m",
+      "4": "-m",
+      "8": "-m",
+      "16": "-m"
     }
   },
   "C5": {
@@ -477,11 +477,11 @@
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
-      "1": "",
-      "2": "-A",
-      "4": "-A",
-      "8": "-A",
-      "16": "-A"
+      "1": "-m",
+      "2": "-m",
+      "4": "-m",
+      "8": "-m",
+      "16": "-m"
     }
   },
   "enclosure": {
