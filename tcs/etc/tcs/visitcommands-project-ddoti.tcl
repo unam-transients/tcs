@@ -562,16 +562,18 @@ proc initialfocusvisit {} {
 
   executor::track
   executor::setreadmode 16MHz
+
+  log::summary "initialfocusvisit: focusing with binning 8."
   executor::setwindow "2kx2k"
   executor::setbinning 8
-  log::summary "initialfocusvisit: focusing with binning 8."
   executor::waituntiltracking
-  executor::focus 1 8000 800 true true
-#  executor::setwindow "1kx1k"
-#  executor::setbinning 1
-#  log::summary "initialfocusvisit: focusing with binning 1."
-#  executor::focus 4 2000 200 true false
-#  executor::setfocused
+  executor::focus 1 8000 1000 true true
+
+  log::summary "initialfocusvisit: focusing with binning 1."
+  executor::setwindow "1kx1k"
+  executor::setbinning 1
+  executor::focus 4 2000 250 true false
+  executor::setfocused
 
 #  log::summary "initialfocusvisit: taking tilt witness."
 #  executor::setwindow "default"
@@ -604,15 +606,18 @@ proc focusvisit {} {
 
   executor::track
   executor::setreadmode 16MHz
+  
+  log::summary "focusvisit: focusing with binning 8."
   executor::setwindow "2kx2k"
   executor::setbinning 8
   executor::waituntiltracking
-  log::summary "focusvisit: focusing with binning 4."
-  executor::focus 1 8000 800 false true
+  executor::focus 1 8000 1000 true true
+
+  log::summary "focusvisit: focusing with binning 1."
   executor::setwindow "1kx1k"
   executor::setbinning 1
-  log::summary "focusvisit: focusing with binning 1."
-  executor::focus 4 2000 1250 true false
+  executor::focus 4 2000 250 true false
+
   executor::setfocused
 
   log::summary "focusvisit: finished."
@@ -627,11 +632,13 @@ proc finefocusvisit {} {
 
   executor::track
   executor::setreadmode 16MHz
-  executor::waituntiltracking
+
+  log::summary "focusvisit: focusing with binning 1."
   executor::setwindow "1kx1k"
   executor::setbinning 1
-  log::summary "focusvisit: focusing with binning 1."
+  executor::waituntiltracking
   executor::focus 4 2000 250 true false
+
   executor::setfocused
 
   log::summary "finefocusvisit: finished."
@@ -677,6 +684,39 @@ proc focusmapvisit {} {
   executor::focus 4 2000 250 true false
 
   log::summary "focusmapvisit: finished."
+
+  return true
+}
+
+########################################################################
+
+proc focuswitnessvisit {} {
+
+  log::summary "focuswitnessvisit: starting."
+
+  executor::track
+
+  executor::setwindow "1kx1k"
+  executor::setbinning 1
+
+  executor::waituntiltracking
+  
+  set dithers {
+     0as  0as
+    +5am +5am
+    -5am -5am
+    +5am -5am
+    -5am +5am
+  }
+
+  foreach {eastoffset northoffset} $dithers {
+    executor::offset $eastoffset $northoffset "default"
+    executor::waituntiltracking
+    executor::expose object 4
+    executor::focusinstrumentwitness
+  }
+    
+  log::summary "focuswitnessvisit: finished."
 
   return true
 }
