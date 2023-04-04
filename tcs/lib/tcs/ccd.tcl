@@ -347,6 +347,7 @@ namespace eval "ccd" {
         set suffix "o"
       }
       "focus" -
+      "focuswitness" -
       "astrometry" {
         set suffix "u"
       }
@@ -373,6 +374,7 @@ namespace eval "ccd" {
         set suffix "oc"
       }
       "focus" -
+      "focuswitness" -
       "astrometry" {
         set suffix "uc"
       }
@@ -602,6 +604,7 @@ namespace eval "ccd" {
     switch $exposuretype {
       "object" -
       "focus" -
+      "focuswitness" -
       "astrometry" -
       "dark" - 
       "bias" {
@@ -666,7 +669,8 @@ namespace eval "ccd" {
     if {[string equal $exposuretype "object"          ] || 
         [string equal $exposuretype "flat"            ] || 
         [string equal $exposuretype "astrometry"      ] ||
-        [string equal $exposuretype "focus"           ]
+        [string equal $exposuretype "focus"           ] ||
+        [string equal $exposuretype "focuswitness"    ]
     } {
       set shutter open
     } elseif {[string equal $exposuretype "bias"] ||
@@ -1075,7 +1079,8 @@ namespace eval "ccd" {
       ![string equal $exposuretype "dark"            ] &&
       ![string equal $exposuretype "flat"            ] &&
       ![string equal $exposuretype "astrometry"      ] &&
-      ![string equal $exposuretype "focus"           ]
+      ![string equal $exposuretype "focus"           ] &&
+      ![string equal $exposuretype "focuswitness"    ]
     } {
       error "invalid exposure type \"$exposuretype\"."
     }

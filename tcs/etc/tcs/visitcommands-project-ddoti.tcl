@@ -567,12 +567,16 @@ proc initialfocusvisit {} {
   executor::setwindow "2kx2k"
   executor::setbinning 8
   executor::waituntiltracking
-  executor::focus 1 8000 1000 true true
+  executor::focus 1 8000 1000 false true
 
+  log::summary "initialfocusvisit: focus witness with binning 4."
+  executor::setbinning 4
+  executor::expose focuswitness 1
+  
   log::summary "initialfocusvisit: focusing with binning 1."
   executor::setwindow "1kx1k"
   executor::setbinning 1
-  executor::focus 4 2000 250 true false
+  executor::focus 4 2000 250 false false
   executor::setfocused
 
 #  log::summary "initialfocusvisit: taking tilt witness."
@@ -580,6 +584,9 @@ proc initialfocusvisit {} {
 #  executor::expose focus 4
 #  executor::setbinning 1
 
+  log::summary "initialfocusvisit: focus witness with binning 1."
+  executor::expose focuswitness 1
+  
   log::summary "initialfocusvisit: finished."
 
   return false
@@ -611,14 +618,21 @@ proc focusvisit {} {
   executor::setwindow "2kx2k"
   executor::setbinning 8
   executor::waituntiltracking
-  executor::focus 1 8000 1000 true true
+  executor::focus 1 8000 1000 false true
 
+  log::summary "focusvisit: focus witness with binning 4."
+  executor::setbinning 4
+  executor::expose focuswitness 1
+  
   log::summary "focusvisit: focusing with binning 1."
   executor::setwindow "1kx1k"
   executor::setbinning 1
-  executor::focus 4 2000 250 true false
+  executor::focus 4 2000 250 false false
 
   executor::setfocused
+
+  log::summary "focusvisit: focus witness with binning 1."
+  executor::expose focuswitness 4
 
   log::summary "focusvisit: finished."
   return false
@@ -637,9 +651,12 @@ proc finefocusvisit {} {
   executor::setwindow "1kx1k"
   executor::setbinning 1
   executor::waituntiltracking
-  executor::focus 4 2000 250 true false
+  executor::focus 4 2000 250 false false
 
   executor::setfocused
+
+  log::summary "finefocusvisit: focus witness with binning 1."
+  executor::expose focuswitness 4
 
   log::summary "finefocusvisit: finished."
   return false
@@ -712,8 +729,7 @@ proc focuswitnessvisit {} {
   foreach {eastoffset northoffset} $dithers {
     executor::offset $eastoffset $northoffset "default"
     executor::waituntiltracking
-    executor::expose object 4
-    executor::focusinstrumentwitness
+    executor::expose focuswitness 4
   }
     
   log::summary "focuswitnessvisit: finished."

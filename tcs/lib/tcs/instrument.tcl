@@ -396,6 +396,29 @@ namespace eval "instrument" {
     foreach detector $activedetectors {
       client::wait $detector 1000
     }
+    if {[string equal $type "focuswitness"]} {
+      foreach detector $detectors exposuretime $exposuretimes {
+        if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
+          client::request $detector "analyze fwhm"
+        }
+      }
+      foreach detector $detectors exposuretime $exposuretimes {
+        client::wait $detector
+        set fitsfilename [file tail [client::getdata $detector "fitsfilename"]]
+        set fwhm         [client::getdata $detector "fwhm"]
+        set fwhmpixels   [client::getdata $detector "fwhmpixels"]
+        set binning      [client::getdata $detector "detectorbinning"]
+        set filter       [client::getdata $detector "filter"]
+        if {[string equal "$fwhm" ""]} {
+          set fwhmarcsec "unknown"
+          set fwhmpixels "unknown"
+        } else {
+          set fwhmarcsec [format "%5.2fas" [astrometry::radtoarcsec $fwhm]]
+          set fwhmpixels [format "%.2f" $fwhmpixels]
+        }
+        log::summary "$fitsfilename: $detector witness FWHM is $fwhmarcsec ($fwhmpixels pixels with binning $binning) in filter $filter in $exposuretime seconds."
+      }
+    }
     log::info [format "finished exposing $type image after %.1f seconds." [utcclock::diff now $start]]
   }
   
@@ -803,6 +826,7 @@ namespace eval "instrument" {
       ![string equal $type "object"] &&
       ![string equal $type "astrometry"] &&
       ![string equal $type "focus"] &&
+      ![string equal $type "focuswitness"] &&
       ![string equal $type "flat"] &&
       ![string equal $type "dark"] &&
       ![string equal $type "bias"]
