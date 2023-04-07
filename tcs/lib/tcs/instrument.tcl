@@ -404,19 +404,20 @@ namespace eval "instrument" {
       }
       foreach detector $detectors exposuretime $exposuretimes {
         client::wait $detector
-        set fitsfilename [file tail [client::getdata $detector "fitsfilename"]]
-        set fwhm         [client::getdata $detector "fwhm"]
-        set fwhmpixels   [client::getdata $detector "fwhmpixels"]
-        set binning      [client::getdata $detector "detectorbinning"]
-        set filter       [client::getdata $detector "filter"]
+        set fitsfilename    [file tail [client::getdata $detector "fitsfilename"]]
+        set fwhm            [client::getdata $detector "fwhm"]
+        set fwhmpixels      [client::getdata $detector "fwhmpixels"]
+        set binning         [client::getdata $detector "detectorbinning"]
+        set filter          [client::getdata $detector "filter"]
+        set focuserposition [client::getdata $detector "focuserposition"]
         if {[string equal "$fwhm" ""]} {
           set fwhmarcsec "unknown"
           set fwhmpixels "unknown"
         } else {
-          set fwhmarcsec [format "%5.2fas" [astrometry::radtoarcsec $fwhm]]
+          set fwhmarcsec [format "%.2fas" [astrometry::radtoarcsec $fwhm]]
           set fwhmpixels [format "%.2f" $fwhmpixels]
         }
-        log::summary "$fitsfilename: $detector witness FWHM is $fwhmarcsec ($fwhmpixels pixels with binning $binning) in filter $filter in $exposuretime seconds."
+        log::summary "$fitsfilename: $detector witness FWHM is $fwhmarcsec ($fwhmpixels pixels with binning $binning) at $focuserposition in filter $filter in $exposuretime seconds."
       }
     }
     log::info [format "finished exposing $type image after %.1f seconds." [utcclock::diff now $start]]
