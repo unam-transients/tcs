@@ -32,7 +32,7 @@ usageerror () {
   exit 1
 }
 
-optstring=s:S:mAw:
+optstring=s:S:m:Aw:
 saturationlevel="DATASAT"
 section="DATASEC"
 median=0
@@ -55,8 +55,8 @@ do
     shift 2
     ;;
   -m)
-    median=1
-    shift 1
+    median="$2"
+    shift 2
     ;;
   -A)
     autocorrelation=true
@@ -130,29 +130,31 @@ else
   }
   ' |
   sort -k 4n |
-  awk -v median=$median '
-  BEGIN {
-    i = 0;
-  }
-  {
-    x[i]    = $1;
-    y[i]    = $2;
-    fwhm[i] = $3;
-    mag[i]  = $4;
-    ++i;
-  }
-  END {
-    if (NR == 0) {
-      print "fitsfwhm: no sources";
-      exit(1);
+  if test $median != 0
+  then
+    head -$median | sort -k 3n
+  else
+    head -1
+  fi |
+  awk '
+    BEGIN {
+      i = 0;
     }
-    if (median) {
+    {
+      x[i]    = $1;
+      y[i]    = $2;
+      fwhm[i] = $3;
+      mag[i]  = $4;
+      ++i;
+    }
+    END {
+      if (NR == 0) {
+        print "fitsfwhm: no sources";
+        exit(1);
+      }
       iselected = int(NR / 2);
-    } else {
-      iselected = 0
+      printf "%6.2f %6.2f %6.2f\n", fwhm[iselected], x[iselected], y[iselected];
+      exit(0);
     }
-    printf "%6.2f %6.2f %6.2f\n", fwhm[iselected], x[iselected], y[iselected];
-    exit(0);
-  }
   '
 fi
