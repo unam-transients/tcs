@@ -104,11 +104,11 @@
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
-      "1": "-m",
-      "2": "-m",
-      "4": "-m",
-      "8": "-m",
-      "16": "-m"
+      "1": "-m 9",
+      "2": "-m 9",
+      "4": "-m 9",
+      "8": "-m 9",
+      "16": "-m 9"
     }
   },
   "C1": {
@@ -179,11 +179,11 @@
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
-      "1": "-m",
-      "2": "-m",
-      "4": "-m",
-      "8": "-m",
-      "16": "-m"
+      "1": "-m 9",
+      "2": "-m 9",
+      "4": "-m 9",
+      "8": "-m 9",
+      "16": "-m 9"
     }
   },
   "C2": {
@@ -254,11 +254,11 @@
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
-      "1": "-m",
-      "2": "-m",
-      "4": "-m",
-      "8": "-m",
-      "16": "-m"
+      "1": "-m 9",
+      "2": "-m 9",
+      "4": "-m 9",
+      "8": "-m 9",
+      "16": "-m 9"
     }
   },
   "C3": {
@@ -329,11 +329,11 @@
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
-      "1": "-m",
-      "2": "-m",
-      "4": "-m",
-      "8": "-m",
-      "16": "-m"
+      "1": "-m 9",
+      "2": "-m 9",
+      "4": "-m 9",
+      "8": "-m 9",
+      "16": "-m 9"
     }
   },
   "C4": {
@@ -403,11 +403,11 @@
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
-      "1": "-m",
-      "2": "-m",
-      "4": "-m",
-      "8": "-m",
-      "16": "-m"
+      "1": "-m 9",
+      "2": "-m 9",
+      "4": "-m 9",
+      "8": "-m 9",
+      "16": "-m 9"
     }
   },
   "C5": {
@@ -477,11 +477,11 @@
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
-      "1": "-m",
-      "2": "-m",
-      "4": "-m",
-      "8": "-m",
-      "16": "-m"
+      "1": "-m 9",
+      "2": "-m 9",
+      "4": "-m 9",
+      "8": "-m 9",
+      "16": "-m 9"
     }
   },
   "enclosure": {
