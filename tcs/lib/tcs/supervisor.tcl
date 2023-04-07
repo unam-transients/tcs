@@ -206,10 +206,9 @@ namespace eval "supervisor" {
         
         # Now determine if the weather/sensors override the Sun.
         
-        if {$maybeopen || $maybeopentocool} {
+        if {![string equal $mode "open"] && ($maybeopen || $maybeopentocool)} {
 
           if {
-            ![string equal $mode "open"] &&
             [client::getdata "weather" "mustbeclosed"]
           } {
 
@@ -248,7 +247,6 @@ namespace eval "supervisor" {
             set why "internal humidity"
 
           } elseif {
-            ![string equal $mode "open"] &&
             $withplc &&
             [client::getdata "plc" "mustbeclosed"]
           } {
