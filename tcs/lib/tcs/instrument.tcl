@@ -402,6 +402,7 @@ namespace eval "instrument" {
           client::request $detector "analyze fwhm"
         }
       }
+      set worstfwhmpixels ""
       foreach detector $detectors exposuretime $exposuretimes {
         client::wait $detector
         set fitsfilename    [file tail [client::getdata $detector "fitsfilename"]]
@@ -413,12 +414,21 @@ namespace eval "instrument" {
         if {[string equal "$fwhm" ""]} {
           set fwhmarcsec "unknown"
           set fwhmpixels "unknown"
+          set worstfwhmpixels "unknown"
         } else {
           set fwhmarcsec [format "%.2fas" [astrometry::radtoarcsec $fwhm]]
           set fwhmpixels [format "%.2f" $fwhmpixels]
+          if {
+            [string equal $worstfwhmpixels ""] ||
+            (![string equal $worstfwhmpixels "unknown"] && $fwhmpixels > $worstfwhmpixels)
+          } {
+            set worstfwhmpixels $fwhmpixels
+          }
         }
         log::summary "$fitsfilename: $detector witness FWHM is $fwhmarcsec ($fwhmpixels pixels with binning $binning) at $focuserposition in filter $filter in $exposuretime seconds."
       }
+      log::summary "worst witness FWHM is $worstfwhmpixels pixels with binning $binning."
+      server::setdata "worstfwhmpixels" $worstfwhmpixels
     }
     log::info [format "finished exposing $type image after %.1f seconds." [utcclock::diff now $start]]
   }
