@@ -196,9 +196,9 @@ namespace eval "utcclock" {
     if {$seconds < 60} {
       return [::format "%.1f seconds" $seconds]
     } elseif {$seconds < 3600} {
-      return [::format "%.1f seconds (%.1f minutes)" $seconds [expr {$seconds / 60}]]
+      return [::format "%.1f seconds (%.1f minutes)" $seconds [expr {$seconds / 60.0}]]
     } else {
-      return [::format "%.1f seconds (%.1f hours)" $seconds [expr {$seconds / 3600}]]
+      return [::format "%.1f seconds (%.1f hours)" $seconds [expr {$seconds / 3600.0}]]
     }
   }
 
