@@ -72,8 +72,8 @@ proc testobserved {alpha delta epoch} {
   puts ""
 }
 
-testobserved [astrometry::radtohms [astrometry::last] 1 false] "+31:00:00" 2009.6
-testobserved [astrometry::radtohms [astrometry::last] 1 false] "+31:00:00" 2009.6
+testobserved [astrometry::radtohms [astrometry::last] 1 false] "+31:02:43.0" "now"
+testobserved [astrometry::radtohms [astrometry::last] 1 false] "+31:02:43.0" 2000
 testobserved "15:16:00" "+31:00:00" 2009.6
 testobserved "07:16:00" "+31:00:00" 2009.6
 testobserved [astrometry::radtohms [astrometry::last] 1 false] "+00:00:00" 2009.67
