@@ -1061,7 +1061,7 @@ namespace eval "mount" {
     server::newactivitycommand "offsetting" "tracking" mount::offsetactivitycommand
   }
 
-  proc correct {truemountalpha truemountdelta equinox} {
+  proc correct {truealpha truedelta equinox} {
 
     set start [utcclock::seconds]
 
@@ -1070,31 +1070,25 @@ namespace eval "mount" {
     checkunparked
     checkhardware "correct"
 
-    set truemountalpha [astrometry::parsealpha $truemountalpha]
-    set truemountdelta [astrometry::parsedelta $truemountdelta]
+    set truealpha [astrometry::parsealpha $truealpha]
+    set truedelta [astrometry::parsedelta $truedelta]
     set equinox [astrometry::parseequinox $equinox]
-    log::info "true position is [astrometry::formatalpha $truemountalpha] [astrometry::formatdelta $truemountdelta] $equinox"
+    log::info "true position is [astrometry::formatalpha $truealpha] [astrometry::formatdelta $truedelta] $equinox"
 
-    set truemountobservedalpha [astrometry::observedalpha $truemountalpha $truemountdelta $equinox]
-    set truemountobserveddelta [astrometry::observeddelta $truemountalpha $truemountdelta $equinox]    
-    log::info "true mount observed position is [astrometry::formatalpha $truemountobservedalpha] [astrometry::formatdelta $truemountobserveddelta]."
+    set trueobservedalpha [astrometry::observedalpha $truealpha $truedelta $equinox]
+    set trueobserveddelta [astrometry::observeddelta $truealpha $truedelta $equinox]    
+    log::info "true observed position is [astrometry::formatalpha $trueobservedalpha] [astrometry::formatdelta $trueobserveddelta]."
 
     set requestedobservedalpha [server::getdata "requestedobservedalpha"]
     set requestedobserveddelta [server::getdata "requestedobserveddelta"]
-    log::info "requested mount observed position is [astrometry::formatalpha $requestedobservedalpha] [astrometry::formatdelta $requestedobserveddelta]."
+    log::info "requested observed position is [astrometry::formatalpha $requestedobservedalpha] [astrometry::formatdelta $requestedobserveddelta]."
 
-    set mountalphaerror [server::getdata "mountalphaerror"]
-    set mountdeltaerror [server::getdata "mountdeltaerror"]
-    set mountobservedalpha [astrometry::foldradpositive  [expr {$requestedobservedalpha + $mountalphaerror}]]
-    set mountobserveddelta [astrometry::foldradsymmetric [expr {$requestedobserveddelta + $mountdeltaerror}]]
-    log::info "mount observed position is [astrometry::formatalpha $mountobservedalpha] [astrometry::formatdelta $mountobserveddelta]."
-
-    set d [astrometry::distance $mountobservedalpha $mountobserveddelta $truemountobservedalpha $truemountobserveddelta]
+    set d [astrometry::distance $requestedobservedalpha $requestedobserveddelta $trueobservedalpha $trueobserveddelta]
     log::info [format "correction is %s." [astrometry::formatdistance $d]]
 
-    set dalpha [astrometry::foldradsymmetric [expr {$mountobservedalpha - $truemountobservedalpha}]]
-    set ddelta [astrometry::foldradsymmetric [expr {$mountobserveddelta - $truemountobserveddelta}]]
-    set alphaoffset [expr {$dalpha * cos($truemountobserveddelta)}]
+    set dalpha [astrometry::foldradsymmetric [expr {$requestedobservedalpha - $trueobservedalpha}]]
+    set ddelta [astrometry::foldradsymmetric [expr {$requestedobserveddelta - $trueobserveddelta}]]
+    set alphaoffset [expr {$dalpha * cos($trueobserveddelta)}]
     set deltaoffset $ddelta
     log::info [format "correction is %s E and %s N." [astrometry::formatoffset $alphaoffset] [astrometry::formatoffset $deltaoffset]]
 
@@ -1109,7 +1103,7 @@ namespace eval "mount" {
       server::setdata "lastcorrectiondalpha"    $dalpha
       server::setdata "lastcorrectionddelta"    $ddelta
       
-      correcthardware $truemountalpha $truemountdelta $equinox $dalpha $ddelta
+      correcthardware $truealpha $truedelta $equinox $dalpha $ddelta
       
     }
 
