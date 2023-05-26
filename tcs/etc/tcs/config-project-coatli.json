@@ -70,7 +70,7 @@
       "default"             : "conventionaldefault",
       "closed"              : "conventionaldefault",
       "conventionaldefault" : "1MHz-low",
-      "fastguidingdefault"  : "em-30MHz-low",
+      "fastguidingdefault"  : "conventionaldefault",
       "1MHz"                : "1MHz-low",
       "1MHz-low"            : "0-1-3-0-0-1-1",
       "1MHz-high"           : "0-1-3-0-1-1-2",
@@ -126,10 +126,10 @@
       "idle"   : "dark",
       "closed" : "dark"
     },
-    "focusertype": "null",
-    "focuseridentifier": "null",
-//    "focusertype": "gemini",
-//    "focuseridentifier": "/dev/ttyOPTEC",
+//    "focusertype": "null",
+//    "focuseridentifier": "null",
+    "focusertype": "gemini",
+    "focuseridentifier": "/dev/ttyOPTEC",
     "focuserinitialposition": "57600",
     "focuserbacklashoffset": "500",
     "focuserdzmodel": {
