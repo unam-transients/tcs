@@ -217,20 +217,18 @@ proc alertprologvisit {} {
   # First refocus.
 
   executor::track
+
+
+  log::summary "alertprologvisit: focusing with binning 8."
   executor::setwindow "2kx2k"
-  executor::setbinning 4
-  log::summary "alertprologvisit: focusing with binning 4."
+  executor::setbinning 8
   executor::waituntiltracking
-  executor::focus 1 8000 800 false true
-  executor::setwindow "2kx2k"
-  executor::setbinning 2
-  log::summary "alertprologvisit: focusing with binning 2."
-  executor::focus 2 4000 400 false false
-  executor::setwindow "1kx1k"
+  executor::focus 1 8000 1000 false true
+
   log::summary "alertprologvisit: focusing with binning 1."
+  executor::setwindow "1kx1k"
   executor::setbinning 1
-  executor::focus 4 4000 400 false true
-  executor::setfocused
+  executor::focus 4 2000 250 false false
 
   # Then correct pointing
 
@@ -560,33 +558,48 @@ proc initialfocusvisit {} {
 
   log::summary "initialfocusvisit: starting."
 
-  executor::track
   executor::setreadmode 16MHz
 
-  log::summary "initialfocusvisit: focusing with binning 8."
-  executor::setwindow "2kx2k"
-  executor::setbinning 8
-  executor::waituntiltracking
-  executor::focus 1 8000 1000 false true
+  while {true}   {
 
-  log::summary "initialfocusvisit: focus witness with binning 4."
-  executor::setbinning 4
-  executor::expose focuswitness 1
+    executor::track
+
+    log::summary "initialfocusvisit: focusing with binning 8."
+    executor::setwindow "2kx2k"
+    executor::setbinning 8
+    executor::waituntiltracking
+    executor::focus 1 8000 1000 false true
+
+    log::summary "initialfocusvisit: focus witness with binning 4."
+    executor::setbinning 4
+    executor::expose focuswitness 1
+    
+    set worstfwhmpixels [client::getdata "instrument" "worstfwhmpixels"]
+    if {[string equal $worstfwhmpixels "unknown"] || $worstfwhmpixels > 6} {
+      log::warning "initialfocusvisit: refocusing as worst witness FWHM is $worstfwhmpixels pixels."
+      continue
+    }
+
+    log::summary "initialfocusvisit: focusing with binning 1."
+    executor::setwindow "1kx1k"
+    executor::setbinning 1
+    executor::focus 4 2000 250 false false
+
+    log::summary "initialfocusvisit: focus witness with binning 1."
+    executor::expose focuswitness 4
+
+    set worstfwhmpixels [client::getdata "instrument" "worstfwhmpixels"]
+    if {[string equal $worstfwhmpixels "unknown"] || $worstfwhmpixels > 6} {
+      log::warning "initialfocusvisit: refocusing as worst witness FWHM is $worstfwhmpixels pixels."
+      continue
+    }
+    
+    break
+
+  }
   
-  log::summary "initialfocusvisit: focusing with binning 1."
-  executor::setwindow "1kx1k"
-  executor::setbinning 1
-  executor::focus 4 2000 250 false false
   executor::setfocused
 
-#  log::summary "initialfocusvisit: taking tilt witness."
-#  executor::setwindow "default"
-#  executor::expose focus 4
-#  executor::setbinning 1
-
-  log::summary "initialfocusvisit: focus witness with binning 1."
-  executor::expose focuswitness 1
-  
   log::summary "initialfocusvisit: finished."
 
   return false
@@ -611,30 +624,50 @@ proc focusvisit {} {
 
   log::summary "focusvisit: starting."
 
-  executor::track
   executor::setreadmode 16MHz
-  
-  log::summary "focusvisit: focusing with binning 8."
-  executor::setwindow "2kx2k"
-  executor::setbinning 8
-  executor::waituntiltracking
-  executor::focus 1 8000 1000 false true
 
-  log::summary "focusvisit: focus witness with binning 4."
-  executor::setbinning 4
-  executor::expose focuswitness 1
-  
-  log::summary "focusvisit: focusing with binning 1."
-  executor::setwindow "1kx1k"
-  executor::setbinning 1
-  executor::focus 4 2000 250 false false
+  while {true}   {
+
+    executor::track
+
+    log::summary "focusvisit: focusing with binning 8."
+    executor::setwindow "2kx2k"
+    executor::setbinning 8
+    executor::waituntiltracking
+    executor::focus 1 8000 1000 false true
+
+    log::summary "focusvisit: focus witness with binning 4."
+    executor::setbinning 4
+    executor::expose focuswitness 1
+    
+    set worstfwhmpixels [client::getdata "instrument" "worstfwhmpixels"]
+    if {[string equal $worstfwhmpixels "unknown"] || $worstfwhmpixels > 6} {
+      log::warning "focusvisit: refocusing as worst witness FWHM is $worstfwhmpixels pixels."
+      continue
+    }
+
+    log::summary "focusvisit: focusing with binning 1."
+    executor::setwindow "1kx1k"
+    executor::setbinning 1
+    executor::focus 4 2000 250 false false
+
+    log::summary "focusvisit: focus witness with binning 1."
+    executor::expose focuswitness 4
+
+    set worstfwhmpixels [client::getdata "instrument" "worstfwhmpixels"]
+    if {[string equal $worstfwhmpixels "unknown"] || $worstfwhmpixels > 6} {
+      log::warning "focusvisit: refocusing as worst witness FWHM is $worstfwhmpixels pixels."
+      continue
+    }
+    
+    break
+
+  }
 
   executor::setfocused
 
-  log::summary "focusvisit: focus witness with binning 1."
-  executor::expose focuswitness 4
-
   log::summary "focusvisit: finished."
+
   return false
 }
 
@@ -691,14 +724,46 @@ proc focusmapvisit {} {
   set ha    [visit::observedha    [executor::visit]]
   set delta [visit::observeddelta [executor::visit]]
   log::summary [format "focusmapvisit: focusing at %s %s." [astrometry::formatha $ha]  [astrometry::formatdelta $delta]]
-
-  executor::tracktopocentric
    
   executor::setreadmode 16MHz
-  executor::setwindow "1kx1k"
-  executor::setbinning 1
-  executor::waituntiltracking
-  executor::focus 4 2000 250 true false
+
+  while {true}   {
+
+    executor::tracktopocentric
+
+    log::summary "focusmapvisit: focusing with binning 8."
+    executor::setwindow "2kx2k"
+    executor::setbinning 8
+    executor::waituntiltracking
+    executor::focus 1 8000 1000 false true
+
+    log::summary "focusmapvisit: focus witness with binning 4."
+    executor::setbinning 4
+    executor::expose focuswitness 1
+    
+    set worstfwhmpixels [client::getdata "instrument" "worstfwhmpixels"]
+    if {[string equal $worstfwhmpixels "unknown"] || $worstfwhmpixels > 6} {
+      log::warning "focusmapvisit: refocusing as worst witness FWHM is $worstfwhmpixels pixels."
+      continue
+    }
+
+    log::summary "focusmapvisit: focusing with binning 1."
+    executor::setwindow "1kx1k"
+    executor::setbinning 1
+    executor::focus 4 2000 250 false false
+
+    log::summary "focusmapvisit: focus witness with binning 1."
+    executor::expose focuswitness 4
+
+    set worstfwhmpixels [client::getdata "instrument" "worstfwhmpixels"]
+    if {[string equal $worstfwhmpixels "unknown"] || $worstfwhmpixels > 6} {
+      log::warning "focusmapvisit: refocusing as worst witness FWHM is $worstfwhmpixels pixels."
+      continue
+    }
+    
+    break
+
+  }
 
   log::summary "focusmapvisit: finished."
 
