@@ -236,40 +236,6 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
     incr gridrepeat
   }
 
-  executor::setwindow "256x256"
-
-  set gridrepeat 0
-  while {$gridrepeat < $gridrepeats} {
-    if {$offsetfastest} {
-      foreach filter $filters exposuretime $exposuretimes {
-        executor::movefilterwheel $filter
-        foreach {eastoffset northoffset} $dithers {
-          executor::offset $eastoffset $northoffset "default"
-          executor::waituntiltracking
-          set exposure 0
-          while {$exposure < $exposurerepeats} {
-            executor::expose object $exposuretime
-            incr exposure
-          }
-        }
-      }
-    } else {
-      foreach {eastoffset northoffset} $dithers {
-        executor::offset $eastoffset $northoffset "default"
-        executor::waituntiltracking
-        foreach filter $filters exposuretime $exposuretimes {
-          executor::movefilterwheel $filter
-          set exposure 0
-          while {$exposure < $exposurerepeats} {
-            executor::expose object $exposuretime
-            incr exposure
-          }
-        }
-      }
-    }
-    incr gridrepeat
-  }
-
   log::summary "gridvisit: finished."
   return true
 }
@@ -313,17 +279,14 @@ proc focusvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} 
   executor::track
 
   executor::movefocuser "center"
-  executor::setreadmode "conventionaldefault"
+  executor::setreadmode $readmode
   executor::movefilterwheel $filter
+  executor::setbinning 1
+  executor::setwindow "256x256"
 
   executor::waituntiltracking
-  
-  executor::setreadmode $readmode
-  executor::setwindow "256x256"
-  executor::setbinning 1
 
   log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
-  log::summary "focusvisit: readmode is $readmode."
   executor::focus $exposuretime 100 10 true false
   executor::setfocused
   
@@ -334,7 +297,7 @@ proc focusvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} 
 
 ########################################################################
 
-proc focuswitnessvisit {{exposuretime 5} {readmode "fastguidingdefault"}} {
+proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} {
 
   log::summary "focuswitnessvisit: starting."
 
@@ -344,9 +307,8 @@ proc focuswitnessvisit {{exposuretime 5} {readmode "fastguidingdefault"}} {
 
   executor::movefocuser "center"
   executor::setreadmode $readmode
-  executor::setwindow "default"
-  executor::movefilterwheel i
   executor::setbinning 1
+  executor::setwindow "256x256"
 
   executor::waituntiltracking
   
@@ -363,17 +325,6 @@ proc focuswitnessvisit {{exposuretime 5} {readmode "fastguidingdefault"}} {
       +5as -5as
       -5as +5as
     }
-
-    executor::setwindow "default"
-
-    foreach {eastoffset northoffset} $dithers {
-      executor::offset $eastoffset $northoffset "default"
-      executor::waituntiltracking
-      executor::expose object $exposuretime
-      executor::focuswitness
-    }
-    
-    executor::setwindow "256x256"
 
     foreach {eastoffset northoffset} $dithers {
       executor::offset $eastoffset $northoffset "default"
