@@ -70,7 +70,7 @@
       "default"             : "conventionaldefault",
       "closed"              : "conventionaldefault",
       "conventionaldefault" : "1MHz-low",
-      "fastguidingdefault"  : "conventionaldefault",
+      "fastguidingdefault"  : "em-30MHz-low",
       "1MHz"                : "1MHz-low",
       "1MHz-low"            : "0-1-3-0-0-1-1",
       "1MHz-high"           : "0-1-3-0-1-1-2",
