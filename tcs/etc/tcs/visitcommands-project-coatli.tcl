@@ -259,7 +259,7 @@ proc coarsefocusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefa
 
   executor::waituntiltracking
 
-  log::summary "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning 2."
+  log::summary "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning 4."
   executor::focus $exposuretime 300 30 false true
   executor::setfocused
   
@@ -352,7 +352,7 @@ proc coarsefocusinstrumentvisit {{exposuretime 5} {filter "i"} {readmode "conven
 
   executor::setreadmode $readmode
   executor::setwindow "default"
-  executor::setbinning 2
+  executor::setbinning 4
   executor::movefilterwheel $filter
 
   executor::waituntiltracking
