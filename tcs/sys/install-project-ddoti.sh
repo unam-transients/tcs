@@ -34,19 +34,18 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 
 10.0.1.1        firewall                ddoti-firewall
 10.0.1.2        console                 ddoti-console
-10.0.1.3        services                ddoti-services
 10.0.1.4        ibb-220                 ddoti-ibb-220
 10.0.1.5        ibb-127                 ddoti-ibb-127
 10.0.1.6        mount                   ddoti-mount
 10.0.1.7        serial                  ddoti-serial
-10.0.1.8        access                  ddoti-access
 10.0.1.9        control                 ddoti-control
-10.0.1.10       airport-express         ddoti-airport-express
 10.0.1.20       webcam-a                ddoti-webcam-a
 10.0.1.21       webcam-b                ddoti-webcam-b
 10.0.1.22       platform                ddoti-platform
 10.0.1.23       detectors0              ddoti-detectors0
 10.0.1.24       detectors1              ddoti-detectors1
+10.0.1.30       airport-express0        ddoti-airport-express0
+10.0.1.31       airport-express1        ddoti-airport-express1
 10.0.1.99       spare                   ddoti-spare
 
 132.248.4.26    webcam-c                ddoti-webcam-c
