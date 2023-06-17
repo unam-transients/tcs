@@ -282,7 +282,7 @@ proc focusvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} 
   executor::setreadmode $readmode
   executor::movefilterwheel $filter
   executor::setbinning 1
-  executor::setwindow "256x256"
+  executor::setwindow "default"
 
   executor::waituntiltracking
 
@@ -308,7 +308,7 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefa
   executor::movefocuser "center"
   executor::setreadmode $readmode
   executor::setbinning 1
-  executor::setwindow "256x256"
+  executor::setwindow "default"
 
   executor::waituntiltracking
   
