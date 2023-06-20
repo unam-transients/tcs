@@ -34,7 +34,7 @@ PERFORMANCE OF THIS SOFTWARE.
   + [1 day](plots/building-1.png)
   + [4 days](plots/building-4.png)
   + [30 days](plots/building-30.png)
-  + [120 days](plots/instrument-120.png)
+  + [120 days](plots/building-120.png)
   + [360 days](plots/building-360.png)
   + [1600 days](plots/building-1600.png)
 * Weather:
