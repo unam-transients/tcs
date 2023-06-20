@@ -559,8 +559,8 @@
     // We part the mount slightly off the meridian to avoid vibrations. We
     // choose 170d rather than -10d so that the mount initializes upwards in
     // delta.
-    "hapark": "170d",
-    "deltapark": "70d",
+    "hapark": "100d",
+    "deltapark": "160d",
     "haunpark": "0d",
     "deltaunpark": "85d",
     "axisdhacorrection": "1.16as",
