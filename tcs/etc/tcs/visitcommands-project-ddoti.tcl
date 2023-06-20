@@ -778,7 +778,7 @@ proc focuswitnessvisit {} {
 
   executor::track
 
-  executor::setwindow "1kx1k"
+  executor::setwindow "6kx6k"
   executor::setbinning 1
 
   executor::waituntiltracking
