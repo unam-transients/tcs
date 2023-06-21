@@ -109,11 +109,11 @@ then
   set -x
   if which source-extractor >/dev/null
   then
-    SEXTRACTOR=source-extractor
+    SOURCEEXTRACTOR=source-extractor
   else
-    SEXTRACTOR=sextractor
+    SOURCEEXTRACTOR=sextractor
   fi
-  time $SEXTRACTOR \
+  time $SOURCEEXTRACTOR \
     -c "$etcdir"/fitssolvewcs.sex \
     -PARAMETERS_NAME "$etcdir"/fitssolvewcs.param \
     -FILTER_NAME "$etcdir"/fitssolvewcs.conv \
