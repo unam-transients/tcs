@@ -27,6 +27,9 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 
 # /etc/hosts
 
+# If you change or add IP addresses, you must update /etc/hosts on the console
+# computer manually.
+
 (
   sed '/^# Start of tcs epilog./q' /etc/hosts
   cat <<"EOF"
@@ -39,14 +42,13 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 10.0.1.6        mount                   ddoti-mount
 10.0.1.7        serial                  ddoti-serial
 10.0.1.9        control                 ddoti-control
+10.0.1.10       platform                ddoti-platform
+10.0.1.11       detectors0              ddoti-detectors0
+10.0.1.12       detectors1              ddoti-detectors1
 10.0.1.20       webcam-a                ddoti-webcam-a
 10.0.1.21       webcam-b                ddoti-webcam-b
-10.0.1.22       platform                ddoti-platform
-10.0.1.23       detectors0              ddoti-detectors0
-10.0.1.24       detectors1              ddoti-detectors1
-10.0.1.30       airport-express0        ddoti-airport-express0
-10.0.1.31       airport-express1        ddoti-airport-express1
-10.0.1.99       spare                   ddoti-spare
+10.0.1.30       airport0                ddoti-airport0
+10.0.1.31       airport1                ddoti-airport1
 
 132.248.4.26    webcam-c                ddoti-webcam-c
 EOF
