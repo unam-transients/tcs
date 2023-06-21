@@ -116,9 +116,9 @@ else
   fi
   if which source-extractor >/dev/null
   then
-    SEXTRACTOR=source-extractor
+    SOURCEEXTRACTOR=source-extractor
   else
-    SEXTRACTOR=sextractor
+    SOURCEEXTRACTOR=sextractor
   fi
   "$SOURCEEXTRACTOR" "$fitsfile" \
     -c "$etcdir"/fitsfwhm.sex \
