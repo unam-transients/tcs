@@ -114,7 +114,13 @@ else
   then
     saturationlevelflags="-SATUR_LEVEL $saturationlevel"
   fi
-  sextractor "$fitsfile" \
+  if which source-extractor >/dev/null
+  then
+    SEXTRACTOR=source-extractor
+  else
+    SEXTRACTOR=sextractor
+  fi
+  "$SOURCEEXTRACTOR" "$fitsfile" \
     -c "$etcdir"/fitsfwhm.sex \
     -PARAMETERS_NAME "$etcdir"/fitsfwhm.param \
     $saturationlevelflags \
