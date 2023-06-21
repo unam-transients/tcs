@@ -155,7 +155,7 @@ else
     }
     END {
       if (NR == 0) {
-        print "fitsfwhm: no sources";
+        print "fitsfwhm: no sources" >/dev/stderr;
         exit(1);
       }
       iselected = int(NR / 2);
