@@ -40,6 +40,7 @@ installbins         :=            \
 	fitschpix                     \
 	fitsdatawindow                \
 	fitsfocus                     \
+	fitsfocustilt                 \
 	fitsfwhm                      \
 	fitssoftgain                  \
 	fitssolvewcs                  \
@@ -97,6 +98,7 @@ installbins         :=            \
 
 installbins_project_test :=       \
 	C0server                      \
+	C1server                      \
 	updateseeingfiles-oan         \
 	updateweatherfiles-oan
 	

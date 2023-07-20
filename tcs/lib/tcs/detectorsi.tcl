@@ -442,7 +442,7 @@ namespace eval "detector" {
     } 
     
     binary scan $packetrest ISuIa* packeterrorcode packetdatatype packetdatalength packetstructure
-    $logprocedure "rawgetsiimagedatapacket: $command: packet error code is $packeterrorcode."
+    $logprocedure "rawgetsiimagedatapacket: $command: packet erroconfigr code is $packeterrorcode."
     $logprocedure "rawgetsiimagedatapacket: $command: packet data type is $packetdatatype."
     $logprocedure "rawgetsiimagedatapacket: $command: packet data length is $packetdatalength."
 
