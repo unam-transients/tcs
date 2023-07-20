@@ -126,10 +126,10 @@
       "idle"   : "dark",
       "closed" : "dark"
     },
-//    "focusertype": "null",
-//    "focuseridentifier": "null",
-    "focusertype": "gemini",
-    "focuseridentifier": "/dev/ttyOPTEC",
+    "focusertype": "null",
+    "focuseridentifier": "null",
+//    "focusertype": "gemini",
+//    "focuseridentifier": "/dev/ttyOPTEC",
     "focuserinitialposition": "57600",
     "focuserbacklashoffset": "500",
     "focuserdzmodel": {
