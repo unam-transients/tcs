@@ -849,6 +849,7 @@ namespace eval "mount" {
       coroutine::yield
     }
     stophardware
+    sendcommandandwait [format "SET LOCAL.TAI-UTC=%d" [utcclock::gettaiminusutc]]
     set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
   }
