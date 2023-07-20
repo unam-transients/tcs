@@ -88,71 +88,128 @@
   },
   "instrument": {
     "detectors": [
-      "C0"
+      "C1"
     ],
     "activedetectors": [
-      "C0"
+      "C1"
     ],
     "idlefilterwheelpositions": [
       "w"
     ],
     "pointingdetectors": [
-      "C0"
+      "C1"
     ],
     "outletgroups": []
   },
-  "C0": {
+  "C1": {
     "telescopedescription": "TEST",
-    "detectortype": "dummy",
-    "detectoridentifier": "",
+
+//    "detectortype": "dummy",
+//    "detectoridentifier": "",
+//    "detectorunbinnedpixelscale": "0.381as",
+//    "detectorreadmodes": {
+//      "initial": "default",
+//      "closed" : "default",
+//      "default": ""
+//    },
+//    "detectorinitialsoftwaregain": 1,
+//    "detectorinitialbinning": 1,
+//    "detectorwindows": {
+//      "initial": "default",
+//      "default": "4kx4k",
+//      "center": "1kx1k",
+//      "1kx1k": {
+//        "sx": 0,
+//        "sy": 0,
+//        "nx": 1024,
+//        "ny": 1024
+//      },
+//      "2kx2k": {
+//        "sx": 1024,
+//        "sy": 1024,
+//        "nx": 2048,
+//        "ny": 2048
+//      },
+//      "4kx4k": {
+//        "sx": 1536,
+//        "sy": 1536,
+//        "nx": 4096,
+//        "ny": 4096
+//      }
+//    },
+//    "detectorfullunbinneddatawindow": {
+//      "sx": 0,
+//      "sy": 0,
+//      "nx": 4096,
+//      "ny": 4096
+//    },
+//    "detectorfullunbinnedbiaswindow": {
+//      "sx": 0,
+//      "sy": 0,
+//      "nx": 0,
+//      "ny": 0
+//    },
+//    "coolerstartsetting": "off",
+//    "cooleropensetting": "-80",
+//    "coolerclosedsetting": "following",
+//    "temperaturelimit": 40,
+//    "temperaturelimitoutletgroup": "",
+
+    "detectortype": "si",
+    "detectoridentifier": "10.0.3.197:2055",
     "detectorunbinnedpixelscale": "0.381as",
-    "detectorinitialsoftwaregain": 1,
-    "detectorinitialbinning": 1,
     "detectorreadmodes": {
       "initial": "default",
       "closed" : "default",
-      "default": ""
+      "default": "0"
     },
+    "detectorinitialsoftwaregain": 1,
+    "detectorinitialbinning": 1,
     "detectorwindows": {
       "initial": "default",
       "default": "4kx4k",
       "center": "1kx1k",
       "1kx1k": {
-        "sx": 0,
-        "sy": 0,
+        "sx": 1586,
+        "sy": 1544,
         "nx": 1024,
         "ny": 1024
       },
       "2kx2k": {
-        "sx": 1024,
-        "sy": 1024,
+        "sx": 1074,
+        "sy": 1032,
         "nx": 2048,
         "ny": 2048
       },
+      // For the default "4kx4k" window, we skip the first and last 8 rows for
+      // two reasons. First, the first and last row show odd behavior both in
+      // the underscan (high values) and the active (low value) regions. Second,
+      // it makes the data section square. If we really want the full CCD, we
+      // can use the implicit "full" window.
       "4kx4k": {
-        "sx": 1536,
-        "sy": 1536,
-        "nx": 4096,
+        "sx": 2,
+        "sy": 8,
+        "nx": 4192,
         "ny": 4096
       }
     },
     "detectorfullunbinneddatawindow": {
-      "sx": 0,
+      "sx": 50,
       "sy": 0,
       "nx": 4096,
-      "ny": 4096
+      "ny": 4112
     },
     "detectorfullunbinnedbiaswindow": {
       "sx": 0,
       "sy": 0,
-      "nx": 0,
-      "ny": 0
+      "nx": 50,
+      "ny": 4112
     },
-    "coolerstartsetting": "off",
-    "cooleropensetting": "-80",
-    "coolerclosedsetting": "following",
+    "coolerstartsetting": "last",
+    "cooleropensetting": "last",
+    "coolerclosedsetting": "last",
     "temperaturelimit": 40,
-    "temperaturelimitoutletgroup": "",
+    "temperaturelimitoutletgroup": "blue-service-cabinet",
 
 //    "filterwheeltype": "null",
 //    "filterwheelidentifier": "null",
@@ -195,17 +252,17 @@
       "closed" : "dark"
     },
 
-//    "focusertype": "null",
-//    "focuseridentifier": "null",
-//    "focuserinitialposition": 0,
-//    "focuserbacklashoffset": 0,
-//    "focuserdzmodel": {},
-    
-    "focusertype": "ddoti",
-    "focuseridentifier": "/dev/ttyUSB0",
-    "focuserinitialposition": 40000,
-    "focuserbacklashoffset": "-450",
+    "focusertype": "null",
+    "focuseridentifier": "null",
+    "focuserinitialposition": 0,
+    "focuserbacklashoffset": 0,
     "focuserdzmodel": {},
+    
+//    "focusertype": "ddoti",
+//    "focuseridentifier": "/dev/ttyUSB0",
+//    "focuserinitialposition": 40000,
+//    "focuserbacklashoffset": "-450",
+//    "focuserdzmodel": {},
     
 
     "pointingmodelparameters": {},
@@ -217,6 +274,7 @@
       "8": "-A",
       "16": "-A"
     }
+
   },
   "weather": {
     "windaveragespeedlimit": "30"
