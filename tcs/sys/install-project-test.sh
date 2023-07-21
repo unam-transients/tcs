@@ -52,6 +52,7 @@ sudo mv /etc/hosts.tmp /etc/hosts
 *  *  *  *  *  /usr/local/bin/tcs checkreboot
 *  *  *  *  *  /usr/local/bin/tcs checkrestart
 *  *  *  *  *  /usr/local/bin/tcs checkhalt
+30 *  *  *  *  /usr/local/bin/tcs updateiersfiles
 EOF
 
   case $host in

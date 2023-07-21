@@ -88,6 +88,7 @@ installbins         :=            \
 	sunserver                     \
 	targetserver                  \
 	telescopeserver               \
+    updateiersfiles               \
 	updatelocalsensorsfiles       \
 	updateowsensorsfiles          \
 	updatesensorsfiles            \
