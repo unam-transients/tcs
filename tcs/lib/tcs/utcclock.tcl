@@ -27,15 +27,28 @@ namespace eval "utcclock" {
 
   ######################################################################
   
-  # The value of currentleapsecondcorrection is TAI-UTC-10. The -10 comes from
-  # TAI already being 10 seconds ahead of UTC in 1972.
+  # For TAI-UTC, consult Bulletin A of the IERS at:
+  #
+  #   https://www.iers.org/IERS/EN/Publications/Bulletins/bulletins.html
   
   # We assume the current value applies to all times, which is not correct but
   # in our application will not give problems.
   
-  # This value is correct as of 2023-03-29.
+  # The value is 37 as of 2023-03-29 and, since the current Bulletin A states
+  # that there will be no leap second at the end of December 2023, will be
+  # correct at least until 30 June 2024.
   
-  variable currentleapsecondcorrection 27
+  variable taiminusutc 37
+
+  # The value of currentleapsecondcorrection is TAI-UTC-10. The -10 comes from
+  # TAI already being 10 seconds ahead of UTC in 1972. 
+  
+  variable currentleapsecondcorrection [expr {$taiminusutc - 10}]
+
+  proc gettaiminusutc {} {
+    variable taiminusutc
+    return $taiminusutc
+  }
   
   ######################################################################
 
