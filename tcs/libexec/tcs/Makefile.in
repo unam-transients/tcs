@@ -53,6 +53,7 @@ installbins         :=            \
 	gcntanserver                  \
 	getblockfiles                 \
 	getcatalogobject              \
+	gettaiminusutc                \
 	gpio                          \
 	halt                          \
 	heaterserver                  \

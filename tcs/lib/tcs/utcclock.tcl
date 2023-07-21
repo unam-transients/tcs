@@ -23,31 +23,59 @@
 
 package provide "utcclock" 0.0
 
+package require directories
+package require log
+
 namespace eval "utcclock" {
 
   ######################################################################
   
-  # For TAI-UTC, consult Bulletin A of the IERS at:
+  # This variable holds the value of TAI-UTC, ultimately derived from Bulletin A
+  # of the IERS at:
   #
   #   https://www.iers.org/IERS/EN/Publications/Bulletins/bulletins.html
-  
+  #
   # We assume the current value applies to all times, which is not correct but
   # in our application will not give problems.
-  
-  # The value is 37 as of 2023-03-29 and, since the current Bulletin A states
-  # that there will be no leap second at the end of December 2023, will be
-  # correct at least until 30 June 2024.
+  # 
+  # We initially set it to the current value as of July 2023 so that the UTC
+  # routines will at least work for error reporting even if we cannot update it
+  # to the correct current value.
   
   variable taiminusutc 37
 
-  # The value of currentleapsecondcorrection is TAI-UTC-10. The -10 comes from
-  # TAI already being 10 seconds ahead of UTC in 1972. 
-  
+  # This variable holds the number of leap seconds since 1972. It is 10 less
+  # than TAI-UTC, since TAI was already 10 seconds ahead of UTC in 1972. 
+
   variable currentleapsecondcorrection [expr {$taiminusutc - 10}]
 
   proc gettaiminusutc {} {
     variable taiminusutc
     return $taiminusutc
+  }
+  
+  proc updatetaiminusutcs {} {
+  
+    if {[catch {
+      set channel [::open "|[directories::bin]/tcs gettaiminusutc" "r"]
+      set line [coroutine::gets $channel]
+      catch {::close $channel}
+    }]} {
+      log::error "unable to update taiminusutc: tcs gettaiminusutc failed."
+      return
+    }
+
+    global taiminusutc
+    if {[::scan $line "%d" taiminusutc] != 1} {
+      log::error "unable to update taiminusutc: tcs gettaiminusutc produced \"$line\"."
+      return
+    }
+    
+    log::debug [::format "updated taiminusutc to %d." $taiminusutc]
+    
+    variable currentleapsecondcorrection
+    set currentleapsecondcorrection [expr {$taiminusutc - 10}]
+  
   }
   
   ######################################################################
@@ -303,6 +331,10 @@ namespace eval "utcclock" {
       return [::format "%04dB" $year]
     }
   }
+
+  ######################################################################
+
+  updatetaiminusutcs
 
   ######################################################################
 
