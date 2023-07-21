@@ -556,11 +556,8 @@
   "mount": {
     "type": "ntm",
     "configuration": "equatorial",
-    // We part the mount slightly off the meridian to avoid vibrations. We
-    // choose 170d rather than -10d so that the mount initializes upwards in
-    // delta.
     "hapark": "90d",
-    "deltapark": "100d",
+    "deltapark": "110d",
     "haunpark": "0d",
     "deltaunpark": "85d",
     "axisdhacorrection": "1.16as",
