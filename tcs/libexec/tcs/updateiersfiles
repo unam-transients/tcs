@@ -59,7 +59,12 @@ fi
 sudo mkdir -p "$tcsprefix"/var/tcs/iers
 cd "$tcsprefix"/var/tcs/iers
 
-if sudo curl -q -s -o bulletinA.txt.tmp https://datacenter.iers.org/data/latestVersion/bulletinA.txt 
-then
-  sudo mv bulletinA.txt.tmp bulletinA.txt
-fi
+for bulletin in A B C D
+do
+  if sudo curl -q -s -o bulletin$bulletin.txt.tmp https://datacenter.iers.org/data/latestVersion/bulletin$bulletin.txt 
+  then
+    sudo mv bulletin$bulletin.txt.tmp bulletin$bulletin.txt
+  else
+    tcs log "tcs $program" warning "unable to update bulletin $bulletin."
+  fi
+done
