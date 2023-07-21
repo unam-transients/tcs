@@ -1023,10 +1023,16 @@ namespace eval "mount" {
           set halist    "$halist,"
           set deltalist "$deltalist,"
           set timelist  "$timelist,"
-        } 
+        }
+        # The NTM documentation states that the times in trajectories should be
+        # in UT1 seconds, which we approximate by UTC. However, the LOCAL.UTC
+        # variable appears to return the number of POSIX seconds since the
+        # epoch, not the number of UTC seconds. Thus, we assume that times in
+        # trajectories need to be given in POSIX seconds.
+        set futurerequestedposixseconds [expr {$futurerequestedseconds - [utcclock::getutcminusposix]}]
+        set timelist  [format "%s%.4f" $timelist  $futurerequestedposixseconds]
         set halist    [format "%s%.6f" $halist    [astrometry::radtodeg $futurerequestedaxisha   ]] 
-        set deltalist [format "%s%.6f" $deltalist [astrometry::radtodeg $futurerequestedaxisdelta]] 
-        set timelist  [format "%s%.4f" $timelist  $futurerequestedseconds]
+        set deltalist [format "%s%.6f" $deltalist [astrometry::radtodeg $futurerequestedaxisdelta]]
         set i [expr {$i + 1}]
       }
     } message]} {
