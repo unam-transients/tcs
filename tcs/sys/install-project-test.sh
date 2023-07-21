@@ -43,16 +43,17 @@ sudo mv /etc/hosts.tmp /etc/hosts
 # crontab
 
 (
+  echo 'PATH=/usr/local/bin:/usr/bin:/bin'
   echo 'MAILTO=""'
 
   cat <<"EOF"
-00 21 *  *  *  /usr/local/bin/tcs cleanfiles
-*  *  *  *  *  /usr/local/bin/tcs updatevarlatestlink
-*  *  *  *  *  /usr/local/bin/tcs updatelocalsensorsfiles
-*  *  *  *  *  /usr/local/bin/tcs checkreboot
-*  *  *  *  *  /usr/local/bin/tcs checkrestart
-*  *  *  *  *  /usr/local/bin/tcs checkhalt
-30 *  *  *  *  /usr/local/bin/tcs updateiersfiles
+00 21 *  *  *  tcs cleanfiles
+*  *  *  *  *  tcs updatevarlatestlink
+*  *  *  *  *  tcs updatelocalsensorsfiles
+*  *  *  *  *  tcs checkreboot
+*  *  *  *  *  tcs checkrestart
+*  *  *  *  *  tcs checkhalt
+30 *  *  *  *  tcs updateiersfiles
 EOF
 
   case $host in
