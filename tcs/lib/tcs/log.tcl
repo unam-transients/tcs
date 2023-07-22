@@ -246,13 +246,19 @@ namespace  eval log {
     set line [join [list $timestamp $who $type $payload] "\t"]
     set notification [jsonrpc::notification "log" [dict create "timestamp" [utcclock::format $timestamp 3 false] "who" $who "type" $type "payload" $payload]]
     set notificationstring [jsonrpc::notificationstring $notification]
-    if {[string equal "" $logserverchannel]} {
-      set logserverchannel [openlogserverchannel]
-    }
-    if {[catch {puts $logserverchannel $notificationstring}]} {
-      catch {close $logserverchannel}
-      set logserverchannel [openlogserverchannel]
-      catch {puts $logserverchannel $notificationstring}
+    foreach attempt {0 1 2} {
+      if {[catch {
+        if {[string equal "" $logserverchannel]} {
+          set logserverchannel [openlogserverchannel]
+        }
+        puts $logserverchannel $notificationstring
+      }]} {
+        catch {close $logserverchannel}
+        set logserverchannel ""
+        coroutine::after 10
+      } else {
+        break
+      }
     }
   }
   
