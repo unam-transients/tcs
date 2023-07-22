@@ -51,15 +51,19 @@ namespace eval "coroutine" {
   }
 
   proc after {milliseconds} {
-    set start [clock milliseconds]
-    while {true} {
-      set now [clock milliseconds]
-      if {$now >= $start + $milliseconds} {
-        return
+    if {![incoroutine]} {
+      ::after $milliseconds
+    } else {
+      set start [clock milliseconds]
+      while {true} {
+        set now [clock milliseconds]
+        if {$now >= $start + $milliseconds} {
+          return
+        }
+        set remaining [expr {$start + $milliseconds - $now}]
+        ::after $remaining [info coroutine]
+        yield
       }
-      set remaining [expr {$start + $milliseconds - $now}]
-      ::after $remaining [info coroutine]
-      yield
     }
   }
 
