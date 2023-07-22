@@ -1029,7 +1029,7 @@ namespace eval "mount" {
         # variable appears to return the number of POSIX seconds since the
         # epoch, not the number of UTC seconds. Thus, we assume that times in
         # trajectories need to be given in POSIX seconds.
-        set futurerequestedposixseconds [expr {$futurerequestedseconds - [utcclock::getutcminusposix]}]
+        set futurerequestedposixseconds [utcclock::utctoposixseconds $futurerequestedseconds]
         set timelist  [format "%s%.4f" $timelist  $futurerequestedposixseconds]
         set halist    [format "%s%.6f" $halist    [astrometry::radtodeg $futurerequestedaxisha   ]] 
         set deltalist [format "%s%.6f" $deltalist [astrometry::radtodeg $futurerequestedaxisdelta]]

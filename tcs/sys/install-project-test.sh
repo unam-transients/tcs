@@ -53,7 +53,8 @@ sudo mv /etc/hosts.tmp /etc/hosts
 *  *  *  *  *  tcs checkreboot
 *  *  *  *  *  tcs checkrestart
 *  *  *  *  *  tcs checkhalt
-30 *  *  *  *  tcs updateiersfiles
+00 18 *  *  *  tcs updateiersfiles
+00 18 *  *  *  tcs updateleapsecondsfile
 EOF
 
   case $host in

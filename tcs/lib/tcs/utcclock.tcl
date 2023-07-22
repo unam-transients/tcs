@@ -23,6 +23,7 @@
 
 package provide "utcclock" 0.0
 
+package require coroutine
 package require directories
 package require log
 
@@ -30,62 +31,92 @@ namespace eval "utcclock" {
 
   ######################################################################
   
-  # This variable holds the value of TAI-UTC, ultimately derived from Bulletin A
-  # of the IERS at:
-  #
-  #   https://www.iers.org/IERS/EN/Publications/Bulletins/bulletins.html
-  #
-  # We assume the current value applies to all times, which is not correct but
-  # in our application will not give problems.
-  # 
-  # We initially set it to the current value as of July 2023 so that the UTC
-  # routines will at least work for error reporting even if we cannot update it
-  # to the correct current value.
+  # taiminusutclist is a list that contains triples of entries corresponding to
+  # leap seconds being added or removed. The first member of each pair is the
+  # number of POSIX seconds, the seconds is the corresponding number of UTC
+  # seconds, and the third is the TAI-UTC offset valid from that moment. The
+  # list is in reverse order, with the latest entry being first.
   
-  variable taiminusutc 37
-
-  proc gettaiminusutc {} {
-    variable taiminusutc
-    return $taiminusutc
-  }
+  variable taiminusutclist {}
   
-  # This variable holds the difference between the number of POSIX seconds since
-  # 1970-01-01 00:00:00 UTC and the number of UTC seconds since that same epoch.
-  # This is equal to the number of leap seconds added, since POSIX ignores leap
-  # seconds. The value is 10 seconds less than TAI-UTC, since TAI was already 10
-  # seconds ahead of UTC in 1972. 
-  
-  variable utcminusposix [expr {$taiminusutc - 10}]
-  
-  proc getutcminusposix {} {
-    variable utcminusposix
-    return $utcminusposix
-  }
-  
-  proc updatetaiminusutcs {} {
-  
-    if {[catch {
-      set channel [open "|[directories::bin]/tcs gettaiminusutc" "r"]
-      set line [gets $channel]
-      catch {close $channel}
-    }]} {
-      log::error "unable to update taiminusutc: tcs gettaiminusutc failed."
-      return
+  proc parseleapsecondlines {lines} {
+    # The data lines have an NTP timestamp followed the value of TAI-UTC that is
+    # valid from that point. NTP timestamos are second since 1900-01-01
+    # 00:00:00, ignoring leap seconds and other adjustments. 
+    log::debug "creating the TAI-UTC list."
+    variable taiminusutclist
+    set posixoffset [expr {(70 * 365 + 70/4) * 24 * 60 * 60}]
+    set taiminusutclist {}
+    foreach line $lines {
+      if {[::scan $line "%d %d" ntpseconds taiminusutc] == 2} {
+        set posixseconds [expr {$ntpseconds - $posixoffset}]
+        set utcseconds   [expr {$posixseconds + $taiminusutc - 10}]
+        lappend taiminusutclist $taiminusutc
+        lappend taiminusutclist $utcseconds
+        lappend taiminusutclist $posixseconds
+      }
     }
-
-    global taiminusutc
-    if {[::scan $line "%d" taiminusutc] != 1} {
-      log::error "unable to update taiminusutc: tcs gettaiminusutc produced \"$line\"."
-      return
+    set taiminusutclist [lreverse $taiminusutclist]  
+    foreach {posixseconds utcseconds taiminusutc} $taiminusutclist {
+      log::debug "from [format $utcseconds] UTC the value of TAI-UTC is $taiminusutc seconds."
     }
-    
-    log::debug [::format "updated taiminusutc to %d." $taiminusutc]
-    
-    variable utcminusposix
-    set utcminusposix [expr {$taiminusutc - 10}]
-  
+    log::debug "finished creating the TAI-UTC list."
   }
   
+  proc updatetaiminusutclist {} {
+    set path "[directories::var]/ietf/leapseconds"
+    log::debug "updating the TAI-UTC list from  \"$path\"."
+    if {[file exists $path]} {
+      set lines {}
+      if {[catch {
+        set channel [open $path "r"]
+        while {![eof $channel]} {
+          set line [gets $channel]
+          lappend lines $line
+        }
+        catch {close $channel}
+      } message]} {
+        catch {log::error "while reading TAI-UTC: $message"}
+        return
+      }
+      parseleapsecondlines $lines
+    }    
+    log::debug "finished updating the TAI-UTC list."
+  }
+  
+  proc posixtoutcseconds {seconds} {
+    variable taiminusutclist
+    foreach {posixseconds utcseconds taiminusutc} $taiminusutclist {
+      if {$seconds >= $posixseconds} {
+        return [expr {$seconds + $taiminusutc - 10}]
+      }
+    }
+    return $seconds
+  }
+  
+  proc utctoposixseconds {seconds} {
+    variable taiminusutclist
+    foreach {posixseconds utcseconds taiminusutc} $taiminusutclist {
+      if {$seconds >= $utcseconds} {
+        return [expr {$seconds - $taiminusutc + 10}]
+      }
+    }
+    return $seconds
+  }
+  
+  proc gettaiminusutc {{seconds "now"}} {
+    if {[string equal $seconds now]} {
+      set seconds [seconds]
+    }
+    variable taiminusutclist
+    foreach {posixseconds utcseconds taiminusutc} $taiminusutclist {
+      if {$seconds >= $utcseconds} {
+        return $taiminusutc
+      }
+    }
+    return 10
+  }
+    
   ######################################################################
 
   variable resolution
@@ -112,8 +143,8 @@ namespace eval "utcclock" {
   ######################################################################
 
   # The posixseconds and posixmilliseconds procedures return the number of POSIX
-  # seconds since 19700101T000000. There are 86400 POSIX seconds in each UTC
-  # day.
+  # seconds since 1970-01-01 00:00:00 UTC. There are 86400 POSIX seconds in each
+  # UTC day.
 
   proc posixseconds {} {
     variable resolution
@@ -138,16 +169,17 @@ namespace eval "utcclock" {
   ######################################################################
   
   # The seconds and milliseconds procedures return the number of UTC seconds and
-  # milliseconds since 19700101T000000 UTC, including leap seconds.
+  # milliseconds since 1970-01-01 00:00:00 UTC, including leap seconds.
   
   proc seconds {} {
-    variable utcminusposix
-    return [expr {[posixseconds] + $utcminusposix}]
+    return [posixtoutcseconds [posixseconds]]
   }
   
   proc milliseconds {} {
-    variable utcminusposix
-    return [expr {[posixmilliseconds] + $utcminusposix * 1000}]
+    set posixmilliseconds [posixmilliseconds]
+    set posixseconds [expr {floor($posixmilliseconds / 1000)}]
+    set utcseconds [posixtoutcseconds $posixseconds]
+    return [expr {$utcseconds * 1000 + ($posixmilliseconds - $posixseconds * 1000)}]
   }
 
   ######################################################################
@@ -156,8 +188,7 @@ namespace eval "utcclock" {
     if {[string equal $seconds now]} {
       set seconds [seconds]
     }
-    variable utcminusposix
-    set seconds [expr {$seconds - $utcminusposix}]
+    set seconds [utctoposixseconds $seconds]
     set epochmjd 40587.0
     expr {$seconds / (24.0 * 60.0 * 60.0) + $epochmjd}
   }
@@ -166,8 +197,7 @@ namespace eval "utcclock" {
     if {[string equal $seconds now]} {
       set seconds [seconds]
     }
-    variable utcminusposix
-    set seconds [expr {$seconds - $utcminusposix}]
+    set seconds [utctoposixseconds $seconds]
     set epochjd 2440587.5
     expr {$seconds / (24.0 * 60.0 * 60.0) + $epochjd}
   }
@@ -189,8 +219,7 @@ namespace eval "utcclock" {
     } elseif {![string is double -strict $seconds]} {
       set seconds [scan $seconds]
     }    
-    variable utcminusposix
-    set seconds [expr {$seconds - $utcminusposix}]
+    set seconds [utctoposixseconds $seconds]
     set iseconds [expr {int(floor($seconds))}]
     set fseconds [expr {$seconds - $iseconds}]
     set fscale   [expr {pow(10,$precision)}]
@@ -266,8 +295,7 @@ namespace eval "utcclock" {
       set itext [::format "%04d-%02d-%02d %02d:%02d:%02d" $years $months $days $hours $minutes $iseconds]
       set iseconds [clock scan $itext -gmt true]
       set seconds [expr {$iseconds + $fseconds}]
-      variable utcminusposix
-      set seconds [expr {$seconds + $utcminusposix}]
+      set seconds [posixtoutcseconds $seconds]
       return $seconds
     } else {
       error "invalid ISO 8601 time format: \"$text\"."
@@ -342,7 +370,42 @@ namespace eval "utcclock" {
 
   ######################################################################
 
-  updatetaiminusutcs
+  # Extract from https://www.ietf.org/timezones/data/leap-seconds.list on 2023 July 22.
+  parseleapsecondlines {
+    "2272060800	10	# 1 Jan 1972"
+    "2287785600	11	# 1 Jul 1972"
+    "2303683200	12	# 1 Jan 1973"
+    "2335219200	13	# 1 Jan 1974"
+    "2366755200	14	# 1 Jan 1975"
+    "2398291200	15	# 1 Jan 1976"
+    "2429913600	16	# 1 Jan 1977"
+    "2461449600	17	# 1 Jan 1978"
+    "2492985600	18	# 1 Jan 1979"
+    "2524521600	19	# 1 Jan 1980"
+    "2571782400	20	# 1 Jul 1981"
+    "2603318400	21	# 1 Jul 1982"
+    "2634854400	22	# 1 Jul 1983"
+    "2698012800	23	# 1 Jul 1985"
+    "2776982400	24	# 1 Jan 1988"
+    "2840140800	25	# 1 Jan 1990"
+    "2871676800	26	# 1 Jan 1991"
+    "2918937600	27	# 1 Jul 1992"
+    "2950473600	28	# 1 Jul 1993"
+    "2982009600	29	# 1 Jul 1994"
+    "3029443200	30	# 1 Jan 1996"
+    "3076704000	31	# 1 Jul 1997"
+    "3124137600	32	# 1 Jan 1999"
+    "3345062400	33	# 1 Jan 2006"
+    "3439756800	34	# 1 Jan 2009"
+    "3550089600	35	# 1 Jul 2012"
+    "3644697600	36	# 1 Jul 2015"
+    "3692217600	37	# 1 Jan 2017"
+  }
+  
+  updatetaiminusutclist
+  after idle {
+    coroutine::afterandevery 3600000 catch utcclock::updatetaiminusutclist
+  }  
 
   ######################################################################
 

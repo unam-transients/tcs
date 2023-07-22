@@ -90,6 +90,7 @@ installbins         :=            \
 	targetserver                  \
 	telescopeserver               \
     updateiersfiles               \
+	updateleapsecondsfile         \
 	updatelocalsensorsfiles       \
 	updateowsensorsfiles          \
 	updatesensorsfiles            \
