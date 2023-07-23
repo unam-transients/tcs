@@ -61,10 +61,11 @@ cd "$tcsprefix"/var/tcs/iers
 
 for bulletin in A B C D
 do
-  if sudo curl -q -s -o bulletin$bulletin.txt.tmp https://datacenter.iers.org/data/latestVersion/bulletin$bulletin.txt 
+  # curl -k is necessary because Ubuntu 16.04 has out-of-date certificates.
+  if sudo curl -k -q -s -o bulletin$bulletin.txt.tmp https://datacenter.iers.org/data/latestVersion/bulletin$bulletin.txt 
   then
     sudo mv bulletin$bulletin.txt.tmp bulletin$bulletin.txt
   else
-    tcs log "tcs $program" warning "unable to update bulletin $bulletin."
+    tcs log "$program" warning "unable to update bulletin $bulletin."
   fi
 done

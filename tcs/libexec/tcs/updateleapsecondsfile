@@ -59,9 +59,10 @@ fi
 sudo mkdir -p "$tcsprefix"/var/tcs/ietf
 cd "$tcsprefix"/var/tcs/ietf
 
-if sudo curl -q -s -o leapseconds.tmp https://www.ietf.org/timezones/data/leap-seconds.list 
+# curl -k is necessary because Ubuntu 16.04 has out-of-date certificates.
+if sudo curl -k -q -s -o leapseconds.tmp https://www.ietf.org/timezones/data/leap-seconds.list 
 then
   sudo mv leapseconds.tmp leapseconds
 else
-  tcs log "tcs $program" warning "unable to update leap seconds files."
+  tcs log "$program" warning "unable to update leap seconds files."
 fi
