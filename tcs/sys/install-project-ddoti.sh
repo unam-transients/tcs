@@ -51,6 +51,7 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 10.0.1.31       airport1                ddoti-airport1
 
 132.248.4.26    webcam-c                ddoti-webcam-c
+132.248.4.22                            oan-rsync
 EOF
 ) | 
 sudo cp /dev/stdin /etc/hosts.tmp
@@ -74,9 +75,9 @@ sudo mv /etc/hosts.tmp /etc/hosts
 *  *  *  *  *  tcs checkhalt
 00 18 *  *  *  tcs updateiersfiles
 00 18 *  *  *  tcs updateleapsecondsfile
-00     *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="*.jpg" --exclude="*.fits" --exclude="*.fits.*" /usr/local/var/tcs/ rsync://oan-nas/ddoti-raw/
-01-59  *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="debug*.txt" --include="*.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://oan-nas/ddoti-raw/
-*      *  *  *  *  rsync -aH --remove-source-files --exclude="*.tmp" --include="*.fits.*" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://oan-nas/ddoti-raw/
+00     *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="*.jpg" --exclude="*.fits" --exclude="*.fits.*" /usr/local/var/tcs/ rsync://oan-rsync/ddoti-raw/
+01-59  *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="debug*.txt" --include="*.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://oan-rsync/ddoti-raw/
+*      *  *  *  *  rsync -aH --remove-source-files --exclude="*.tmp" --include="*.fits.*" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://oan-rsync/ddoti-raw/
 EOF
   
   case $host in
@@ -139,12 +140,12 @@ EOF
 
   case $host in
   detectors0)
-    echo "tcs instrumentdataserver -f -d rsync://oan-nas/ddoti-raw/ &"
+    echo "tcs instrumentdataserver -f -d rsync://oan-rsync/ddoti-raw/ &"
     echo "tcs instrumentimageserver C2 control &"
     echo "tcs instrumentimageserver C4 control &"
     ;;
   detectors1)
-    echo "tcs instrumentdataserver -f -d rsync://oan-nas/ddoti-raw/ &"
+    echo "tcs instrumentdataserver -f -d rsync://oan-rsync/ddoti-raw/ &"
     echo "tcs instrumentimageserver C1 control &"
     echo "tcs instrumentimageserver C3 control &"
     ;;
