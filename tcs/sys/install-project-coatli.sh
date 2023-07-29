@@ -53,6 +53,7 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 10.0.1.31       airport1                coatli-airport1
 
 132.248.4.16    webcam-c                coatli-webcam-c
+132.248.4.22                            oan-rsync
 EOF
 ) | 
 sudo cp /dev/stdin /etc/hosts.tmp
@@ -76,9 +77,9 @@ sudo mv /etc/hosts.tmp /etc/hosts
 *      *  *  *  *  tcs checkhalt
 00     18 *  *  *  tcs updateiersfiles
 00     18 *  *  *  tcs updateleapsecondsfile
-00     *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="*.jpg" --exclude="*.fits" --exclude="*.fits.*" /usr/local/var/tcs/ rsync://oan-nas/coatli-raw/
-01-59  *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="debug*.txt" --include="*.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://oan-nas/coatli-raw/
-*      *  *  *  *  rsync -aH --remove-source-files --exclude="*.tmp" --include="*.fits.*" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://oan-nas/coatli-raw/
+00     *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="*.jpg" --exclude="*.fits" --exclude="*.fits.*" /usr/local/var/tcs/ rsync://oan-rsync/coatli-raw/
+01-59  *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="debug*.txt" --include="*.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://oan-rsync/coatli-raw/
+*      *  *  *  *  rsync -aH --remove-source-files --exclude="*.tmp" --include="*.fits.*" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://oan-rsync/coatli-raw/
 EOF
 
   case $host in
@@ -148,7 +149,7 @@ EOF
 
   case $host in
   instrument)
-    echo "tcs instrumentdataserver -f -d rsync://oan-nas/coatli-raw/ &"
+    echo "tcs instrumentdataserver -f -d rsync://oan-rsync/coatli-raw/ &"
     echo "tcs instrumentimageserver C0 control &"
     ;;
   control)
