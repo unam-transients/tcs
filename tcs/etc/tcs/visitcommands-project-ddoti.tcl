@@ -579,6 +579,8 @@ proc initialfocusvisit {} {
       log::warning "initialfocusvisit: refocusing as worst witness FWHM is $worstfwhmpixels pixels."
       continue
     }
+    
+    break
 
     log::summary "initialfocusvisit: focusing with binning 1."
     executor::setwindow "1kx1k"
@@ -599,6 +601,10 @@ proc initialfocusvisit {} {
   }
   
   executor::setfocused
+
+  log::summary "initialfocusvisit: full focus witness with binning 1."
+  executor::setwindow "default"
+  executor::expose focuswitness 4
 
   log::summary "initialfocusvisit: finished."
 
@@ -665,6 +671,10 @@ proc focusvisit {} {
   }
 
   executor::setfocused
+
+  log::summary "focusvisit: full focus witness with binning 1."
+  executor::setwindow "default"
+  executor::expose focuswitness 4
 
   log::summary "focusvisit: finished."
 
