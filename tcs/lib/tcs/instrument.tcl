@@ -539,25 +539,31 @@ namespace eval "instrument" {
     }
     foreach detector $detectors filename $filenamelist zmin $zminlist {
       if {![string equal $exposuretime "none"] && [isactivedetector $detector]} {
-        set channel [::open $filename "r"]
-        set zlist {}
-        set wlist {}
-        while {[gets $channel line] > 0} {
-          scan $line "%d %f" z w
-          lappend zlist $z
-          lappend wlist $w
-        }
-        ::close $channel
-        set zmax [expr {$zmin + $range}]
         if {[catch {
-          set z [fitfocus::findmin $zlist $wlist $detector]
-        } message]} {
-          log::warning "fitting failed: $message"
-          set z [expr {$zmin + $range / 2}]
-        } elseif {$z < $zmin} {
-          set z $zmin
-        } elseif {$z > $zmax} {
-          set z $zmax
+          set channel [::open $filename "r"]
+        }]} {
+          log::warning "no focus data for $detector."
+            set z [expr {$zmin + $range / 2}]
+        } else {
+          set zlist {}
+          set wlist {}
+          while {[gets $channel line] > 0} {
+            scan $line "%d %f" z w
+            lappend zlist $z
+            lappend wlist $w
+          }
+          ::close $channel
+          set zmax [expr {$zmin + $range}]
+          if {[catch {
+            set z [fitfocus::findmin $zlist $wlist $detector]
+          } message]} {
+            log::warning "fitting failed for $detector: $message"
+            set z [expr {$zmin + $range / 2}]
+          } elseif {$z < $zmin} {
+            set z $zmin
+          } elseif {$z > $zmax} {
+            set z $zmax
+          }
         }
         client::request $detector "movefocuser $z"
       }
