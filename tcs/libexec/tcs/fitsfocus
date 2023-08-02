@@ -32,7 +32,7 @@ usageerror () {
   exit 1
 }
 
-optstring=s:S:mAw:z:
+optstring=s:S:m:Aw:z:
 fitsfwhmopts=""
 zkeyword="SRQZ0"
 if ! getopt -qQ -- "$optstring" "$@"
@@ -52,8 +52,8 @@ do
     shift 2
     ;;
   -m)
-    fitsfwhmopts="$fitsfwhmopts -m"
-    shift 1
+    fitsfwhmopts="$fitsfwhmopts -m $2"
+    shift 2
     ;;
   -A)
     fitsfwhmopts="$fitsfwhmopts -A"
