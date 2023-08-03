@@ -48,8 +48,8 @@ namespace eval "enclosureserver" {
     enclosure::open $position
   }
 
-  proc slaveopentocool {} {
-    enclosure::opentocool
+  proc slaveopentoventilate {} {
+    enclosure::opentoventilate
   }
 
   proc slaveclose {} {
@@ -65,7 +65,7 @@ namespace eval "enclosureserver" {
     interp alias $slave stop           {} enclosureserver::slavestop
     interp alias $slave reset          {} enclosureserver::slavereset
     interp alias $slave open           {} enclosureserver::slaveopen
-    interp alias $slave opentocool     {} enclosureserver::slaveopentocool
+    interp alias $slave opentoventilate     {} enclosureserver::slaveopentoventilate
     interp alias $slave close          {} enclosureserver::slaveclose
     interp alias $slave emergencyclose {} enclosureserver::slaveemergencyclose
   }

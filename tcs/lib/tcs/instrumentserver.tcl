@@ -41,8 +41,8 @@ namespace eval "instrumentserver" {
     return
   }
 
-  proc slaveopentocool {} {
-    instrument::opentocool
+  proc slaveopentoventilate {} {
+    instrument::opentoventilate
     return
   }
 
@@ -131,7 +131,7 @@ namespace eval "instrumentserver" {
   proc configureslave {slave} {
     interp alias $slave initialize           {} instrumentserver::slaveinitialize
     interp alias $slave open                 {} instrumentserver::slaveopen
-    interp alias $slave opentocool           {} instrumentserver::slaveopentocool
+    interp alias $slave opentoventilate           {} instrumentserver::slaveopentoventilate
     interp alias $slave close                {} instrumentserver::slaveclose
     interp alias $slave emergencyclose       {} instrumentserver::slaveemergencyclose
     interp alias $slave stop                 {} instrumentserver::slavestop

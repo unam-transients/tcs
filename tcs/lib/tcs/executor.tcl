@@ -859,15 +859,15 @@ namespace eval "executor" {
     log::summary [format "finished opening after %.1f seconds." [utcclock::diff now $start]]
   }
 
-  proc opentocoolactivitycommand {} {
+  proc opentoventilateactivitycommand {} {
     set start [utcclock::seconds]
-    log::summary "opening to cool."
+    log::summary "opening to ventilate."
     foreach server {instrument telescope} {
       catch {client::waituntilstarted $server}
-      client::request $server "opentocool"
+      client::request $server "opentoventilate"
       client::wait $server
     }
-    log::summary [format "finished opening to cool after %.1f seconds." [utcclock::diff now $start]]
+    log::summary [format "finished opening to ventilate after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc closeactivitycommand {} {
@@ -962,11 +962,11 @@ namespace eval "executor" {
       "executor::openactivitycommand" 900e3
   }
   
-  proc opentocool {} {
+  proc opentoventilate {} {
     server::checkstatus
     server::checkactivityformove
     server::newactivitycommand "opening" "idle" \
-      "executor::opentocoolactivitycommand" 900e3
+      "executor::opentoventilateactivitycommand" 900e3
   }
   
   proc close {} {

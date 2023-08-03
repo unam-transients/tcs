@@ -1236,7 +1236,7 @@
     "withplc": "false",
     "internalhumiditysensor": "instrument-external-humidity",
     "openoffsetseconds": "0",
-    "opentocooloffsetseconds": "1800"
+    "opentoventilateoffsetseconds": "1800"
   },
   "swift": {
     "pointingsource": "none"

@@ -32,7 +32,7 @@ namespace eval "enclosure" {
   ######################################################################
 
   variable closeexplicitly    [config::getvalue "telescope" "closeexplicitly"]
-  variable opentocoolposition [config::getvalue "enclosure" "opentocoolposition"]
+  variable opentoventilateposition [config::getvalue "enclosure" "opentoventilateposition"]
   variable openposition       [config::getvalue "enclosure" "openposition"]
 
   ######################################################################
@@ -193,9 +193,9 @@ namespace eval "enclosure" {
     server::newactivitycommand "opening" "idle" "enclosure::openactivitycommand $position"
   }
 
-  proc opentocool {} {
-    variable opentocoolposition
-    open $opentocoolposition
+  proc opentoventilate {} {
+    variable opentoventilateposition
+    open $opentoventilateposition
   }
 
   proc close {} {

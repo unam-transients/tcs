@@ -490,7 +490,7 @@
     "controllerport": "10003",
     "closeexplicitly": "true",
     "openposition": "180",
-    "opentocoolposition": "60"
+    "opentoventilateposition": "60"
   },
   "executor": {
     "type": "ddoti"
@@ -1452,7 +1452,7 @@
     "withplc": "false",
     "internalhumiditysensor": "enclosure-humidity",
     "openoffsetseconds": "0",
-    "opentocooloffsetseconds": "1800"
+    "opentoventilateoffsetseconds": "1800"
   },
   "target": {
     "maxzenithdistancelimit": "75d",

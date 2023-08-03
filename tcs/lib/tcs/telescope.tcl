@@ -308,9 +308,9 @@ namespace eval "telescope" {
     }
   }
 
-  proc opentocoolactivitycommand {} {
+  proc opentoventilateactivitycommand {} {
     set start [utcclock::seconds]    
-    log::info "opening to cool."
+    log::info "opening to ventilate."
     variable withlights
     variable withheater
     variable withtelescopecontroller
@@ -354,8 +354,8 @@ namespace eval "telescope" {
         client::wait "dome"
       }
       if {$withenclosure} {
-        log::info "opening enclosure to cool."
-        client::request "enclosure" "opentocool"
+        log::info "opening enclosure to ventilate."
+        client::request "enclosure" "opentoventilate"
         client::wait "enclosure"
       }
       if {$withcovers} {
@@ -368,11 +368,11 @@ namespace eval "telescope" {
         switchlights "off"
       }
       server::setdata "timestamp" [utcclock::combinedformat now]    
-      log::info [format "finished opening to cool after %.1f seconds." [utcclock::diff now $start]]
+      log::info [format "finished opening to ventilate after %.1f seconds." [utcclock::diff now $start]]
     } message]} {
-      log::error "unable to open to cool: $message"
+      log::error "unable to open to ventilate: $message"
       emergencyclose
-      error "unable to open to cool"
+      error "unable to open to ventilate"
     }
   }
 
@@ -846,12 +846,12 @@ namespace eval "telescope" {
       "telescope::openactivitycommand" 1200e3
   }
   
-  proc opentocool {} {
+  proc opentoventilate {} {
     server::checkstatus
     server::checkactivity "idle"
     safetyswitch::checksafetyswitch
     server::newactivitycommand "opening" "idle" \
-      "telescope::opentocoolactivitycommand" 1200e3
+      "telescope::opentoventilateactivitycommand" 1200e3
   }
   
   proc close {} {
