@@ -35,20 +35,20 @@ namespace eval "supervisor" {
 
   ######################################################################
 
-  variable withplc                 [config::getvalue "supervisor" "withplc"                ]
-  variable internalhumiditysensor  [config::getvalue "supervisor" "internalhumiditysensor" ]
+  variable withplc                      [config::getvalue "supervisor" "withplc"                ]
+  variable internalhumiditysensor       [config::getvalue "supervisor" "internalhumiditysensor" ]
   variable opentoventilateoffsetseconds [config::getvalue "supervisor" "opentoventilateoffsetseconds"]
-  variable openoffsetseconds       [config::getvalue "supervisor" "openoffsetseconds"      ]
+  variable openoffsetseconds            [config::getvalue "supervisor" "openoffsetseconds"      ]
 
   ######################################################################
 
-  variable mode            "disabled"
-  variable maybeopen       false
+  variable mode                 "disabled"
+  variable maybeopen            false
   variable maybeopentoventilate false
-  variable why             "starting"
-  variable open            false
+  variable why                  "starting"
+  variable open                 false
   variable opentoventilate      false
-  variable closed          false
+  variable closed               false
 
   ######################################################################
   
@@ -217,8 +217,7 @@ namespace eval "supervisor" {
             set why "weather"
 
           } elseif {
-            [client::getdata "weather" "humidity"] > 0.75 &&
-            $open &&
+            ($open || $opentoventilate) &&
             ![string equal $internalhumiditysensor ""] &&
             [client::getdata "sensors" "$internalhumiditysensor"] > 0.85
           } {
@@ -229,11 +228,14 @@ namespace eval "supervisor" {
             # external air will rapidly reduce the internal humidity.
 
             set maybeopen false
-            set maybeopentoventilate false
+            if {[client::getdata "weather" "humidity"] <= 0.75} {
+              set maybeopentoventilate true
+            } else {
+              set maybeopentoventilate false
+            }
             set why "internal humidity"
 
           } elseif {
-            [client::getdata "weather" "humidity"] > 0.75 &&
             $closed &&
             ![string equal $internalhumiditysensor ""] &&
             [client::getdata "sensors" "$internalhumiditysensor"] > 0.80
@@ -243,9 +245,13 @@ namespace eval "supervisor" {
             # external humidity.
 
             set maybeopen false
-            set maybeopentoventilate false
+            if {[client::getdata "weather" "humidity"] <= 0.75} {
+              set maybeopentoventilate true
+            } else {
+              set maybeopentoventilate false
+            }
             set why "internal humidity"
-
+            
           } elseif {
             $withplc &&
             [client::getdata "plc" "mustbeclosed"]
@@ -391,12 +397,12 @@ namespace eval "supervisor" {
       } elseif {$maybeopentoventilate} {
       
         if {$opentoventilate} {
-          log::debug "loop: continue: already open to cool."
+          log::debug "loop: continue: already open to ventilate."
           set delay 1000
           continue
         }
         set start [utcclock::seconds]
-        log::summary "opening to cool ($why)."
+        log::summary "opening to ventilate ($why)."
         server::setrequestedactivity "idle"
         server::setactivity "opening"
         set open        false
@@ -413,15 +419,15 @@ namespace eval "supervisor" {
         } message]} {
           set opentoventilate true
           updatedata
-          log::summary [format "finished opening to cool after %.1f seconds." [utcclock::diff now $start]]
-          log::debug "loop: continue: finished opening to cool."
+          log::summary [format "finished opening to ventilate after %.1f seconds." [utcclock::diff now $start]]
+          log::debug "loop: continue: finished opening to ventilate."
           set delay 1000
           continue
         }
-        log::error "unable to open to cool: $message"
+        log::error "unable to open to ventilate: $message"
         set mode "error"
         updatedata
-        log::debug "loop: continue: unable to open to cool."
+        log::debug "loop: continue: unable to open to ventilate."
         set delay 60000
         continue
 
