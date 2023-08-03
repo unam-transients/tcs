@@ -127,9 +127,9 @@
       "closed" : "dark"
     },
     "focusertype": "null",
-    "focuseridentifier": "null",
-//    "focusertype": "gemini",
-//    "focuseridentifier": "/dev/ttyOPTEC",
+//    "focuseridentifier": "null",
+    "focusertype": "gemini",
+    "focuseridentifier": "/dev/ttyOPTEC",
     "focuserinitialposition": "57600",
     "focuserbacklashoffset": "500",
     "focuserdzmodel": {
@@ -174,7 +174,7 @@
     "controllerport": "10003",
     "closeexplicitly": "true",
     "openposition": "180",
-    "opentocoolposition": "60"
+    "opentoventilateposition": "60"
   },
   "executor": {
     "type": "coatli"
@@ -654,7 +654,7 @@
     "withplc": "false",
     "internalhumiditysensor": "enclosure-humidity",
     "openoffsetseconds": "600",
-    "opentocooloffsetseconds": "1800"
+    "opentoventilateoffsetseconds": "1800"
   },
   "target": {
     "maxzenithdistancelimit": "75d",
