@@ -72,6 +72,48 @@ namespace eval "supervisor" {
   
   ######################################################################
   
+  proc loopreport {} {
+
+    variable reportsun
+    variable reportweather
+    variable reportsensors
+    variable reportplc
+    variable internalhumiditysensor
+
+    if {$reportsun} {
+      set skystate [client::getdata "sun" "skystate"]
+      set observedha [client::getdata "sun" "observedha"]
+      if {[string equal "$skystate" "daylight"] || [string equal "$skystate" "night"]} {
+        log::summary "sky state is $skystate."
+      } elseif {$observedha < 0} {
+        log::summary "sky state is morning $skystate."
+      } else {
+        log::summary "sky state is evening $skystate."
+      }      
+    }
+    if {$reportweather} {
+      if {[client::getdata "weather" "mustbeclosed"]} {
+        log::summary "weather state is must be closed."
+      } else {
+        log::summary "weather state is may be open."
+      }
+    }
+    if {$reportplc} {
+      if {[client::getdata "plc" "mustbeclosed"]} {
+        log::summary "plc state is must be closed."
+      } else {
+        log::summary "plc state is may be open."
+      }
+    }
+    if {$reportweather} {
+      log::summary [format "external humidity is %.0f%%." [expr {[client::getdata "weather" "humidity"] * 100}]]
+    }
+    if {$reportsensors} {
+      log::summary [format "internal humidity is %.0f%%." [expr {[client::getdata "sensors" "$internalhumiditysensor"] * 100}]]
+    }
+    
+  }
+  
   proc loop {} {
   
     variable withplc
@@ -84,6 +126,11 @@ namespace eval "supervisor" {
     variable maybeopen
     variable maybeopentoventilate
     variable why
+    
+    variable reportsun
+    variable reportweather
+    variable reportsensors
+    variable reportplc
 
     variable opentoventilateoffsetseconds
     variable openoffsetseconds
@@ -103,6 +150,11 @@ namespace eval "supervisor" {
       log::debug "loop: mode is $mode."
 
       set mustdisable false
+      
+      set reportsun     false
+      set reportweather false
+      set reportplc     false
+      set reportsensors false
 
       if {[string equal $mode "closed"]} {
 
@@ -121,6 +173,7 @@ namespace eval "supervisor" {
         set why "no weather data"
 
       } elseif {
+        ![string equal $mode "open"] &&
         [catch {client::update "sensors"} message]
       } {
 
@@ -148,6 +201,13 @@ namespace eval "supervisor" {
         set why "no sun data"
 
       } else {
+      
+        set reportsun true
+        if {![string equal $mode "open"]} {
+          set reportweather true
+          set reportsensors true
+          set reportplc     $withplc
+        }
       
         set skystate [client::getdata "sun" "skystate"]
         set observedha [client::getdata "sun" "observedha"]
@@ -222,10 +282,10 @@ namespace eval "supervisor" {
             [client::getdata "sensors" "$internalhumiditysensor"] > 0.85
           } {
 
-            # In this and the next clause, we only pay attention to the internal
-            # humidity sensor if the external humidity is above 75%, on the basis
-            # that if the external humidity is less than 75% then interchange with
-            # external air will rapidly reduce the internal humidity.
+            # In this and the next clause, if the internal humidity is high, we
+            # nevertheless allow the enclosure to open to ventilate if the
+            # external humidity is 75% or less, on the basis that interchange
+            # with external air will rapidly reduce the internal humidity.
 
             set maybeopen false
             if {[client::getdata "weather" "humidity"] <= 0.75} {
@@ -268,6 +328,8 @@ namespace eval "supervisor" {
       }
 
       updatedata
+      log::debug "loop: external humidity is [client::getdata "weather" "humidity"]."
+      log::debug "loop: internal humidity is [client::getdata "sensors" "$internalhumiditysensor"]."
       log::debug "loop: open is $open."
       log::debug "loop: opentoventilate is $opentoventilate."
       log::debug "loop: closed is $closed."
@@ -318,9 +380,9 @@ namespace eval "supervisor" {
         log::summary "initializing ($why)."
         server::setrequestedactivity "idle"
         server::setactivity "initializing"
-        set open       false
+        set open            false
         set opentoventilate false
-        set closed     false
+        set closed          false
         updatedata
         if {![catch {
           client::request "executor" "reset"
@@ -363,13 +425,14 @@ namespace eval "supervisor" {
           log::debug "loop: continue: already open."
           continue
         }
+        loopreport
         set start [utcclock::seconds]
         log::summary "opening ($why)."
         server::setrequestedactivity "idle"
         server::setactivity "opening"
-        set open        false
-        set opentoclose false
-        set closed      false
+        set open            false
+        set opentoventilate false
+        set closed          false
         updatedata
         if {![catch {
           client::request "selector" "disable"
@@ -401,13 +464,14 @@ namespace eval "supervisor" {
           set delay 1000
           continue
         }
+        loopreport
         set start [utcclock::seconds]
         log::summary "opening to ventilate ($why)."
         server::setrequestedactivity "idle"
         server::setactivity "opening"
-        set open        false
-        set opentoclose false
-        set closed      false
+        set open            false
+        set opentoventilate false
+        set closed          false
         updatedata
         if {![catch {
           client::request "selector" "disable"
@@ -438,13 +502,14 @@ namespace eval "supervisor" {
           set delay 1000
           continue
         }
+        loopreport
         set start [utcclock::seconds]
         log::summary "closing ($why)."
         server::setrequestedactivity "idle"
         server::setactivity "closing"
-        set open       false
+        set open            false
         set opentoventilate false
-        set closed     false
+        set closed          false
         updatedata
         if {![catch {
           client::request "selector" "disable"
