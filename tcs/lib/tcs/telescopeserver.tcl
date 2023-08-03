@@ -61,8 +61,8 @@ namespace eval "telescopeserver" {
     telescope::open
   }
 
-  proc slaveopentocool {} {
-    telescope::opentocool
+  proc slaveopentoventilate {} {
+    telescope::opentoventilate
   }
 
   proc slaveclose {} {
@@ -136,7 +136,7 @@ namespace eval "telescopeserver" {
     interp alias $slave stop                        {} telescopeserver::slavestop
     interp alias $slave initialize                  {} telescopeserver::slaveinitialize
     interp alias $slave open                        {} telescopeserver::slaveopen
-    interp alias $slave opentocool                  {} telescopeserver::slaveopentocool
+    interp alias $slave opentoventilate                  {} telescopeserver::slaveopentoventilate
     interp alias $slave close                       {} telescopeserver::slaveclose
     interp alias $slave emergencyclose              {} telescopeserver::slaveemergencyclose
     interp alias $slave move                        {} telescopeserver::slavemove

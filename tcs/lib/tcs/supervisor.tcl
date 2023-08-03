@@ -28,7 +28,7 @@ package require "utcclock"
 
 package provide "supervisor" 0.0
 
-config::setdefaultvalue "supervisor" "opentocooloffsetseconds" 1800
+config::setdefaultvalue "supervisor" "opentoventilateoffsetseconds" 1800
 config::setdefaultvalue "supervisor" "openoffsetseconds"       0
 
 namespace eval "supervisor" {
@@ -37,17 +37,17 @@ namespace eval "supervisor" {
 
   variable withplc                 [config::getvalue "supervisor" "withplc"                ]
   variable internalhumiditysensor  [config::getvalue "supervisor" "internalhumiditysensor" ]
-  variable opentocooloffsetseconds [config::getvalue "supervisor" "opentocooloffsetseconds"]
+  variable opentoventilateoffsetseconds [config::getvalue "supervisor" "opentoventilateoffsetseconds"]
   variable openoffsetseconds       [config::getvalue "supervisor" "openoffsetseconds"      ]
 
   ######################################################################
 
   variable mode            "disabled"
   variable maybeopen       false
-  variable maybeopentocool false
+  variable maybeopentoventilate false
   variable why             "starting"
   variable open            false
-  variable opentocool      false
+  variable opentoventilate      false
   variable closed          false
 
   ######################################################################
@@ -55,16 +55,16 @@ namespace eval "supervisor" {
   proc updatedata {} {
     variable mode
     variable maybeopen
-    variable maybeopentocool
+    variable maybeopentoventilate
     variable open
-    variable opentocool
+    variable opentoventilate
     variable closed
     variable why
     server::setdata "mode"            $mode
     server::setdata "maybeopen"       $maybeopen
-    server::setdata "maybeopentocool" $maybeopentocool
+    server::setdata "maybeopentoventilate" $maybeopentoventilate
     server::setdata "open"            $open
-    server::setdata "opentocool"      $opentocool
+    server::setdata "opentoventilate"      $opentoventilate
     server::setdata "closed"          $closed
     server::setdata "timestamp"       [utcclock::combinedformat now]
     server::setdata "why"             $why
@@ -79,13 +79,13 @@ namespace eval "supervisor" {
  
     variable mode
     variable open
-    variable opentocool
+    variable opentoventilate
     variable closed
     variable maybeopen
-    variable maybeopentocool
+    variable maybeopentoventilate
     variable why
 
-    variable opentocooloffsetseconds
+    variable opentoventilateoffsetseconds
     variable openoffsetseconds
 
     log::debug "loop: starting."
@@ -107,7 +107,7 @@ namespace eval "supervisor" {
       if {[string equal $mode "closed"]} {
 
         set maybeopen false
-        set maybeopentocool false
+        set maybeopentoventilate false
         set why "mode is closed"
         
       } elseif {
@@ -117,7 +117,7 @@ namespace eval "supervisor" {
 
         log::debug "loop: unable to update weather data: $message"
         set maybeopen false
-        set maybeopentocool false
+        set maybeopentoventilate false
         set why "no weather data"
 
       } elseif {
@@ -126,7 +126,7 @@ namespace eval "supervisor" {
 
         log::debug "loop: unable to update sensors data: $message"
         set maybeopen false
-        set maybeopentocool false
+        set maybeopentoventilate false
         set why "no sensors data"
 
       } elseif {
@@ -137,14 +137,14 @@ namespace eval "supervisor" {
 
         log::debug "loop: unable to update plc data: $message"
         set maybeopen false
-        set maybeopentocool false
+        set maybeopentoventilate false
         set why "no plc data"
 
       } elseif {[catch {client::update "sun"} message]} {
 
         log::debug "loop: unable to update sun data: $message"
         set maybeopen false
-        set maybeopentocool false
+        set maybeopentoventilate false
         set why "no sun data"
 
       } else {
@@ -168,52 +168,52 @@ namespace eval "supervisor" {
         if {[string equal $skystate "night"] || [string equal $skystate "astronomicaltwilight"]} {
 
           set maybeopen true
-          set maybeopentocool true
+          set maybeopentoventilate true
           set why "$skystate"
 
         } elseif {$seconds > $endofdayseconds - $openoffsetseconds} {
 
           set maybeopen true
-          set maybeopentocool true
+          set maybeopentoventilate true
           set why "end of day"
 
-        } elseif {$seconds > $endofdayseconds - $opentocooloffsetseconds} {
+        } elseif {$seconds > $endofdayseconds - $opentoventilateoffsetseconds} {
 
           set maybeopen false
-          set maybeopentocool true
+          set maybeopentoventilate true
           set why "end of day"
 
         } elseif {[string equal $skystate "daylight"]} {
 
           set maybeopen false
-          set maybeopentocool false
+          set maybeopentoventilate false
           set why "$skystate"
           set mustdisable $morning
 
         } elseif {$morning} {
  
           set maybeopen false
-          set maybeopentocool false
+          set maybeopentoventilate false
           set why "morning $skystate"
             
         } else {
 
           set maybeopen true
-          set maybeopentocool true
+          set maybeopentoventilate true
           set why "evening $skystate"
 
         }
         
         # Now determine if the weather/sensors override the Sun.
         
-        if {![string equal $mode "open"] && ($maybeopen || $maybeopentocool)} {
+        if {![string equal $mode "open"] && ($maybeopen || $maybeopentoventilate)} {
 
           if {
             [client::getdata "weather" "mustbeclosed"]
           } {
 
             set maybeopen false
-            set maybeopentocool false
+            set maybeopentoventilate false
             set why "weather"
 
           } elseif {
@@ -229,7 +229,7 @@ namespace eval "supervisor" {
             # external air will rapidly reduce the internal humidity.
 
             set maybeopen false
-            set maybeopentocool false
+            set maybeopentoventilate false
             set why "internal humidity"
 
           } elseif {
@@ -243,7 +243,7 @@ namespace eval "supervisor" {
             # external humidity.
 
             set maybeopen false
-            set maybeopentocool false
+            set maybeopentoventilate false
             set why "internal humidity"
 
           } elseif {
@@ -252,7 +252,7 @@ namespace eval "supervisor" {
           } {
 
             set maybeopen false
-            set maybeopentocool false
+            set maybeopentoventilate false
             set why "plc"
 
           }
@@ -263,10 +263,10 @@ namespace eval "supervisor" {
 
       updatedata
       log::debug "loop: open is $open."
-      log::debug "loop: opentocool is $opentocool."
+      log::debug "loop: opentoventilate is $opentoventilate."
       log::debug "loop: closed is $closed."
       log::debug "loop: maybeopen is $maybeopen."
-      log::debug "loop: maybeopentocool is $maybeopentocool."
+      log::debug "loop: maybeopentoventilate is $maybeopentoventilate."
       log::debug "loop: why is $why."
 
       if {[string equal $mode "disabled"]} {
@@ -313,7 +313,7 @@ namespace eval "supervisor" {
         server::setrequestedactivity "idle"
         server::setactivity "initializing"
         set open       false
-        set opentocool false
+        set opentoventilate false
         set closed     false
         updatedata
         if {![catch {
@@ -388,9 +388,9 @@ namespace eval "supervisor" {
         set delay 60000
         continue
 
-      } elseif {$maybeopentocool} {
+      } elseif {$maybeopentoventilate} {
       
-        if {$opentocool} {
+        if {$opentoventilate} {
           log::debug "loop: continue: already open to cool."
           set delay 1000
           continue
@@ -408,10 +408,10 @@ namespace eval "supervisor" {
           client::wait "selector"
           client::request "executor" "recover"
           client::wait "executor"
-          client::request "executor" "opentocool"
+          client::request "executor" "opentoventilate"
           client::wait "executor"
         } message]} {
-          set opentocool true
+          set opentoventilate true
           updatedata
           log::summary [format "finished opening to cool after %.1f seconds." [utcclock::diff now $start]]
           log::debug "loop: continue: finished opening to cool."
@@ -437,7 +437,7 @@ namespace eval "supervisor" {
         server::setrequestedactivity "idle"
         server::setactivity "closing"
         set open       false
-        set opentocool false
+        set opentoventilate false
         set closed     false
         updatedata
         if {![catch {

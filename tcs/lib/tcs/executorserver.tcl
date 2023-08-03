@@ -56,8 +56,8 @@ namespace eval "executorserver" {
     return
   }
   
-  proc slaveopentocool {} {
-    executor::opentocool
+  proc slaveopentoventilate {} {
+    executor::opentoventilate
     return
   }
   
@@ -87,7 +87,7 @@ namespace eval "executorserver" {
     interp alias $slave recover         {} executorserver::slaverecover
     interp alias $slave initialize      {} executorserver::slaveinitialize
     interp alias $slave open            {} executorserver::slaveopen
-    interp alias $slave opentocool      {} executorserver::slaveopentocool
+    interp alias $slave opentoventilate      {} executorserver::slaveopentoventilate
     interp alias $slave close           {} executorserver::slaveclose
     interp alias $slave emergencyclose  {} executorserver::slaveemergencyclose
     interp alias $slave execute         {} executorserver::slaveexecute

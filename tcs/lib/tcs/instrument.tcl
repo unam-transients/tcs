@@ -98,9 +98,9 @@ namespace eval "instrument" {
     log::info [format "finished opening after %.1f seconds." [utcclock::diff now $start]]
   }
 
-  proc opentocoolactivitycommand {} {
+  proc opentoventilateactivitycommand {} {
     set start [utcclock::seconds]
-    log::info "opening to cool."
+    log::info "opening to ventilate."
     variable outletgroups
     foreach outletgroup $outletgroups {
       client::resetifnecessary "power"
@@ -115,7 +115,7 @@ namespace eval "instrument" {
     foreach detector $activedetectors {
       client::wait $detector
     }
-    log::info [format "finished opening to cool after %.1f seconds." [utcclock::diff now $start]]
+    log::info [format "finished opening to ventilate after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc stopactivitycommand {} {
@@ -664,12 +664,12 @@ namespace eval "instrument" {
       "instrument::openactivitycommand"
   }
   
-  proc opentocool {} {
+  proc opentoventilate {} {
     server::checkstatus
     server::checkactivity "idle"
     safetyswitch::checksafetyswitch
     server::newactivitycommand "opening" "idle" \
-      "instrument::opentocoolactivitycommand"
+      "instrument::opentoventilateactivitycommand"
   }
   
   proc close {} {

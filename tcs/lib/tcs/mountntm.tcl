@@ -841,6 +841,8 @@ namespace eval "mount" {
   }
 
   ######################################################################
+  
+  variable initalized false
 
   proc startactivitycommand {} {
     set start [utcclock::seconds]
@@ -877,12 +879,23 @@ namespace eval "mount" {
     sendcommandandwait "SET HA.OFFSET=0"
     parkhardware
     set end [utcclock::seconds]
+    variable initialized
+    set initialize true
     log::info [format "finished initializing after %.1f seconds." [utcclock::diff $end $start]]
   }
 
   proc openactivitycommand {} {
+    set start [utcclock::seconds]
+    maybeendtracking
+    log::info "opening."
     updaterequestedpositiondata false
-    initializeactivitycommand
+    server::setdata "mounttracking" false
+    stophardware
+    sendcommandandwait "SET DEC.OFFSET=0"
+    sendcommandandwait "SET HA.OFFSET=0"
+    parkhardware
+    set end [utcclock::seconds]
+    log::info [format "finished opening after %.1f seconds." [utcclock::diff $end $start]]
   }
 
   proc stopactivitycommand {} {
@@ -903,7 +916,8 @@ namespace eval "mount" {
     updaterequestedpositiondata false
     server::setdata "mounttracking" false
     stophardware
-    if {![isoperational]} {
+    variable initialized
+    if {![isoperational] && $initialized} {
       log::info "switching off cabinet."
       sendcommandandwait "SET CABINET.POWER=0"
       coroutine::after 1000

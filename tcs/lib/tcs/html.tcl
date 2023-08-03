@@ -805,9 +805,9 @@ namespace eval "html" {
     if {[string equal [client::getstatus "supervisor"] "ok"]} {
       writehtmlrow "Mode"                [client::getdata "supervisor" "mode"]
       writehtmlrow "May be open"         [client::getdata "supervisor" "maybeopen"]
-      writehtmlrow "May be open to cool" [client::getdata "supervisor" "maybeopentocool"]
+      writehtmlrow "May be open to ventilate" [client::getdata "supervisor" "maybeopentoventilate"]
       writehtmlrow "Open"                [client::getdata "supervisor" "open"]
-      writehtmlrow "Open to cool"        [client::getdata "supervisor" "opentocool"]
+      writehtmlrow "Open to ventilate"        [client::getdata "supervisor" "opentoventilate"]
       writehtmlrow "Closed"              [client::getdata "supervisor" "closed"]
       writehtmlfullrow "Why"             [client::getdata "supervisor" "why"]
     }
@@ -1374,8 +1374,8 @@ namespace eval "html" {
       } else {
         if {[client::getdata "supervisor" "maybeopen"]} {
           set status "may be open"
-        } elseif {[client::getdata "supervisor" "maybeopentocool"]} {
-          set status "may be open to cool"
+        } elseif {[client::getdata "supervisor" "maybeopentoventilate"]} {
+          set status "may be open to ventilate"
         } else {
           set status "must be closed"
         }
