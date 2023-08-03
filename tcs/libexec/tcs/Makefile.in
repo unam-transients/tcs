@@ -40,7 +40,6 @@ installbins         :=            \
 	fitschpix                     \
 	fitsdatawindow                \
 	fitsfocus                     \
-	fitsfocustilt                 \
 	fitsfwhm                      \
 	fitssoftgain                  \
 	fitssolvewcs                  \
