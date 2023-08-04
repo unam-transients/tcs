@@ -842,7 +842,7 @@ namespace eval "mount" {
 
   ######################################################################
   
-  variable initalized false
+  variable initialized false
 
   proc startactivitycommand {} {
     set start [utcclock::seconds]
