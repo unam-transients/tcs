@@ -1046,7 +1046,7 @@ namespace eval "mount" {
       stop
       error "move cancelled because $message"
     }
-    server::newactivitycommand "moving" "tracking" mount::trackactivitycommand
+    server::newactivitycommand "moving" "tracking" mount::trackactivitycommand 120e3
   }
 
   proc offset {} {
@@ -1058,7 +1058,7 @@ namespace eval "mount" {
       stop
       error "move cancelled because $message"
     }
-    server::newactivitycommand "offsetting" "tracking" mount::offsetactivitycommand
+    server::newactivitycommand "offsetting" "tracking" mount::offsetactivitycommand 120e3
   }
 
   proc correct {truealpha truedelta equinox} {
