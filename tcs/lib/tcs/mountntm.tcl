@@ -866,8 +866,8 @@ namespace eval "mount" {
     if {![isoperational]} {
       log::info "attempting to change the controller state from [server::getdata "state"] to operational."
       coroutine::after 1000
-      #sendcommandandwait "SET CABINET.POWER=0"
-      #coroutine::after 1000
+      sendcommandandwait "SET CABINET.POWER=0"
+      coroutine::after 1000
       sendcommandandwait "SET CABINET.STATUS.CLEAR=1"
       coroutine::after 1000
       sendcommandandwait "SET CABINET.POWER=1"
@@ -918,10 +918,9 @@ namespace eval "mount" {
     stophardware
     variable initialized
     if {![isoperational] && $initialized} {
-      log::info "switching off cabinet."
+      log::info "attempting to change the controller state from [server::getdata "state"] to operational."
       sendcommandandwait "SET CABINET.POWER=0"
       coroutine::after 1000
-      log::info "attempting to change the controller state from [server::getdata "state"] to operational."
       sendcommandandwait "SET CABINET.STATUS.CLEAR=1"
       coroutine::after 1000
       sendcommandandwait "SET CABINET.POWER=1"
