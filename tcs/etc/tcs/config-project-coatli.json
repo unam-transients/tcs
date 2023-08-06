@@ -244,6 +244,7 @@
   },
   "mount": {
     "type": "ntm",
+    "trackingpositionerrorlimit": "5as",
     "trackingsettlingdelayseconds": 1,
     "hapark": "6h",
     "deltapark": "85d",
