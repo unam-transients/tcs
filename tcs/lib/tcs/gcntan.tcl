@@ -774,7 +774,7 @@ namespace eval "gcntan" {
       "fermigbmfltpos" {
         set sigma [fermigbmtriggersigma $log $packet]
         $log [format "%s: %.1f sigma." $type $sigma]
-        if {[string equal $class "grb"]} {
+        if {[string equal $class "GRB"]} {
           return true
         } else {
           return false
