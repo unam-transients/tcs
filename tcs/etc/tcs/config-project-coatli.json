@@ -674,8 +674,6 @@
   },
   "telescope": {
     "type": "coatli",
-    "idleha": "0h",
-    "idledelta": "75d",
     "closeexplicitly": "true"
   },
   "weather": {
