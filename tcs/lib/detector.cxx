@@ -303,16 +303,16 @@ fputs16(short s, FILE *fp)
 
 const char *
 detectorrawappendfitsdata(
-  const char *tmpfitsfilename, const char *finalfitsfilename, const char *latestfilename, const char *currentfilename,
+  const char *partialfitsfilename, const char *finalfitsfilename, const char *latestfilename, const char *currentfilename,
   int dofork, double bscale, double bzero
 )
 {
   // Open the temporary file before potentially forking in order to be
   // able to report an error to the parent.
   
-  FILE *fp = fopen(tmpfitsfilename, "ab");
+  FILE *fp = fopen(partialfitsfilename, "ab");
   if (fp == NULL) {
-    DETECTOR_ERROR("unable to open the temporary FITS file.");
+    DETECTOR_ERROR("unable to open the partial FITS file.");
   }
   
   // Wait for any children, to prevent defunct processes.
@@ -338,7 +338,7 @@ detectorrawappendfitsdata(
     fputc(0, fp);
 
   if (fclose(fp) != 0)
-    APPENDFITSDATA_ERROR("error writing the temporary FITS file.");
+    APPENDFITSDATA_ERROR("error writing the partial FITS file.");
     
   // Create the latest link, if requested.
 
@@ -347,7 +347,7 @@ detectorrawappendfitsdata(
     strcpy(tmplatestfilename, latestfilename);
     strcat(tmplatestfilename, ".tmp");
     unlink(tmplatestfilename);
-    if (link(tmpfitsfilename, tmplatestfilename) == -1) {
+    if (link(partialfitsfilename, tmplatestfilename) == -1) {
       unlink(tmplatestfilename);
       static char s[1024];
       sprintf(s, "unable to create a link to the latest file: %s.", strerror(errno));
@@ -368,7 +368,7 @@ detectorrawappendfitsdata(
     strcpy(tmpcurrentfilename, currentfilename);
     strcat(tmpcurrentfilename, ".tmp");
     unlink(tmpcurrentfilename);
-    if (link(tmpfitsfilename, tmpcurrentfilename) == -1) {
+    if (link(partialfitsfilename, tmpcurrentfilename) == -1) {
       unlink(tmpcurrentfilename);
       static char s[1024];
       sprintf(s, "unable to create a link to the current file: %s.", strerror(errno));
@@ -387,9 +387,9 @@ detectorrawappendfitsdata(
   // Therefore, it is vital that we create it after we have created the
   // latest and current links.
 
-  if (link(tmpfitsfilename, finalfitsfilename) == -1)
+  if (link(partialfitsfilename, finalfitsfilename) == -1)
     APPENDFITSDATA_ERROR("unable to create a link to the final FITS file.");
-  if (unlink(tmpfitsfilename) == -1)
+  if (unlink(partialfitsfilename) == -1)
     APPENDFITSDATA_ERROR("unable to unlink the temporary FITS file.");
     
   if (dofork)
