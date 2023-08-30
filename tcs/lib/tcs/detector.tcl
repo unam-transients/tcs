@@ -413,17 +413,17 @@ namespace eval "detector" {
     return [fitsheader::close $channel]
   }
   
-  proc writeexposure {tmpfilename finalfilename {latestfilename ""} {currentfilename ""} {tmpcubehdrfilename ""}  {finalcubehdrfilename ""}  {tmpcubepixfilename ""}  {finalcubepixfilename ""} {fork false}} {
+  proc writeexposure {partialfitsfilename finalfilename {latestfilename ""} {currentfilename ""} {partialfitscubehdrfilename ""}  {finalcubehdrfilename ""}  {partialfitscubepixfilename ""}  {finalcubepixfilename ""} {fork false}} {
     log::debug "writing the exposure."
     checkisopen
-    if {[string equal $tmpfilename ""]} {
-      error "the temporary file name is \"\"."
+    if {[string equal $partialfitsfilename ""]} {
+      error "the partial FITS file name is \"\"."
     }
-    if {![file exists $tmpfilename]} {
-      error "the temporary file \"$tmpfilename\" does not exist."
+    if {![file exists $partialfitsfilename]} {
+      error "the partial FITS file \"$partialfitsfilename\" does not exist."
     }
     if {[string equal $finalfilename ""]} {
-      error "the final file name is \"\"."
+      error "the final FITS file name is \"\"."
     }
     if {[catch {file mkdir [file dirname $finalfilename]}]} {
       error "unable to write the exposure data: cannot create the directory \"[file dirname $finalfilename]\"."
@@ -438,11 +438,11 @@ namespace eval "detector" {
         error "unable to write the exposure data: cannot create the directory \"[file dirname $currentfilename]\"."
       }
     }
-    if {![string equal $tmpcubehdrfilename ""] && ![file exists $tmpcubehdrfilename]} {
-      error "the temporary cube hdr file \"$tmpcubehdrfilename\" does not exist."
+    if {![string equal $partialfitscubehdrfilename ""] && ![file exists $partialfitscubehdrfilename]} {
+      error "the partial FITS cube hdr file \"$partialfitscubehdrfilename\" does not exist."
     }
-    if {![string equal $tmpcubepixfilename ""] && ![file exists $tmpcubepixfilename]} {
-      error "the temporary cube pix file \"$tmpcubepixfilename\" does not exist."
+    if {![string equal $partialfitscubepixfilename ""] && ![file exists $partialfitscubepixfilename]} {
+      error "the partial FITS cube pix file \"$partialfitscubepixfilename\" does not exist."
     }
     if {![string equal $finalcubehdrfilename ""]} {
       if {[catch {file mkdir [file dirname $finalcubehdrfilename]}]} {
@@ -462,14 +462,14 @@ namespace eval "detector" {
       set dofork 0
     }
     detectorrawpixend
-    if {![string equal $tmpcubehdrfilename ""]} {
-      file rename -force $tmpcubehdrfilename $finalcubehdrfilename
+    if {![string equal $partialfitscubehdrfilename ""]} {
+      file rename -force $partialfitscubehdrfilename $finalcubehdrfilename
     }
-    if {![string equal $tmpcubepixfilename ""]} {
+    if {![string equal $partialfitscubepixfilename ""]} {
       detectorrawcubepixend
-      file rename -force $tmpcubepixfilename $finalcubepixfilename
+      file rename -force $partialfitscubepixfilename $finalcubepixfilename
     }
-    set result [detectorrawappendfitsdata $tmpfilename $finalfilename $latestfilename $currentfilename $dofork $bscale $bzero]
+    set result [detectorrawappendfitsdata $partialfitsfilename $finalfilename $latestfilename $currentfilename $dofork $bscale $bzero]
     if {![string equal $result "ok"]} {
       error "unable to write the exposure data: $result"
     }    

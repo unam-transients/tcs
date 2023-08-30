@@ -80,11 +80,11 @@ dst="$1"
 cd "$tcsprefix"/var/tcs
 while true
 do
-  find . -name "*C[0-9]?c.fits.hdr" |
+  find . -name "*C[0-9]?c.fits.hdr.tmp" |
   while read hdr
   do
-    fits=$(echo $hdr | sed 's/.hdr$//')
-    pix=$(echo $hdr | sed 's/.hdr$/.pix/') 
+    fits=$(echo $hdr | sed 's/.hdr.tmp$//')
+    pix=$(echo $hdr | sed 's/.hdr.tmp$/.pix.tmp/') 
     if test -f $pix
     then
       cat $hdr $pix >$fits
