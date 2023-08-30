@@ -569,7 +569,7 @@ proc initialfocusvisit {} {
     executor::setbinning 8
     executor::waituntiltracking
     executor::focus 1 8000 1000 false true
-
+    
     log::summary "initialfocusvisit: focus witness with binning 4."
     executor::setbinning 4
     executor::expose focuswitness 1
@@ -580,8 +580,6 @@ proc initialfocusvisit {} {
       continue
     }
     
-    break
-
     log::summary "initialfocusvisit: focusing with binning 1."
     executor::setwindow "1kx1k"
     executor::setbinning 1
@@ -707,17 +705,17 @@ proc finefocusvisit {} {
 
 ########################################################################
 
-proc fullfocusvisit {range binning exposuretime} {
+proc fullfocusvisit {range exposuretime} {
 
   log::summary "fullfocusvisit: starting."
 
   executor::track
   executor::setreadmode 16MHz
   executor::setwindow "default"
-  executor::setbinning $binning
+  executor::setbinning 1
   executor::waituntiltracking
   
-  log::summary "fullfocusvisit: focusing with binning $binning."
+  log::summary "fullfocusvisit: focusing with binning 1."
   executor::focus $exposuretime $range [expr {$range / 10}] false true
   
   log::summary "fullfocusvisit: finished."
