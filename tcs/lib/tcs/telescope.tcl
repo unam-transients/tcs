@@ -363,6 +363,17 @@ namespace eval "telescope" {
         client::request "covers" "open"
         client::wait "covers"
       }
+      if {$withmount} {
+        log::info "unparking mount."
+        client::request "mount" "preparetomove"
+        client::wait "mount"
+      }
+      client::request "target" "move $idleha $idledelta"
+      client::wait "target"
+      if {$withmount} {      
+        client::request "mount" "unpark"
+        client::wait "mount"
+      }
       openepilog
       if {$withlights} {
         switchlights "off"
