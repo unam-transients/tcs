@@ -1456,8 +1456,8 @@
   },
   "target": {
     "maxzenithdistancelimit": "75d",
-    "idleha": "0h",
-    "idledelta": "85d",
+    "idleha": "5d",
+    "idledelta": "0d",
     "pointingapertures": {
       "default": [
         "+0.00d",
@@ -1491,8 +1491,6 @@
   },
   "telescope": {
     "type": "ddoti",
-    "idleha": "0h",
-    "idledelta": "30d",
     "closeexplicitly": "true"
   },
   "weather": {
