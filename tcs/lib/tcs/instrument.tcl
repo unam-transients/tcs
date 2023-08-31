@@ -222,7 +222,8 @@ namespace eval "instrument" {
   proc emergencycloseactivitycommand {} {
     set start [utcclock::seconds]
     log::info "emergency closing."
-    closeactivitycommand
+    catch {recoveractivitycommand}
+    catch {closeactivitycommand}
     log::info [format "finished emergency closing after %.1f seconds." [utcclock::diff now $start]]
   }
   
