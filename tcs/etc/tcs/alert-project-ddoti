@@ -41,5 +41,9 @@
   "maxskybrightness": "nauticaltwilight",
   "minmoondistance": "15d",
   "maxzenithdistance": "72d",
-  "maxfocusdelay": "3600"
+  "maxfocusdelay": "3600",
+
+  // For the time being, ignore GBM alerts.
+  "maxalertuncertainty": "15am"
+
 }
