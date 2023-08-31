@@ -159,10 +159,10 @@
     "isstandalone": false,
     "fitsfwhmargs": {
       "1": "",
-      "2": "-A",
-      "4": "-A",
-      "8": "-A",
-      "16": "-A"
+      "2": "-A -S 0",
+      "4": "-A -S 0",
+      "8": "-A -S 0",
+      "16": "-A -S 0"
     },
     "startoutletgroups": [
       "detector"

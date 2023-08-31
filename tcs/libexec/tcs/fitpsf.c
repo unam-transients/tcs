@@ -51,6 +51,24 @@ static fftw_complex *cz = NULL;
 static fftw_plan r2cp = NULL;
 static fftw_plan c2rp = NULL;
 
+int 
+imin(int i, int j)
+{
+  if (i < j)
+    return i;
+  else
+    return j;
+}
+
+int 
+imax(int i, int j)
+{
+  if (i > j)
+    return i;
+  else
+    return j;
+}
+
 double
 model_z(int m, double p[m], double y, double x)
 {
@@ -256,13 +274,34 @@ destripey(long ny, long nx, double z[ny][nx])
   }
 }
 
+void
+desaturate(long ny, long nx, double zold[ny][nx], double znew[ny][nx], double saturationlevel, int w)
+{
+
+  for (int iy = 0; iy < ny; ++iy)
+    for (int ix = 0; ix < nx; ++ix)
+      znew[iy][ix] = zold[iy][ix];
+      
+  if (saturationlevel == 0)
+    return;
+      
+  for (int iy = 0; iy < ny; ++iy)
+    for (int ix = 0; ix < nx; ++ix)
+      if (zold[iy][ix] >= saturationlevel) {
+        for (int jy = imax(0, iy - w); jy < imin(ny, iy + w + 1); ++jy)
+          for (int jx = imax(0, ix - w); jx < imin(nx, ix + w + 1); ++jx)
+            znew[jy][jx] = 0;
+      }
+
+}
+
 int
 main(int argc, char *argv[])
 {
   double pi = 4.0 * atan(1.0);
 
-  if (argc != 9) {
-    fprintf(stderr, "usage: %s fits_name wsx wnx wsy wny wm wn wisdom_file.\n", argv[0]);
+  if (argc != 11) {
+    fprintf(stderr, "usage: %s fits_name wsx wnx wsy wny wm wn saturationlevel wsaturation wisdom_file.\n", argv[0]);
     exit(1);
   }
 
@@ -273,7 +312,9 @@ main(int argc, char *argv[])
   long wny = atol(argv[5]);
   long wm = atol(argv[6]);
   long wn = atol(argv[7]);
-  const char *wisdom_file = argv[8];
+  double saturationlevel = atof(argv[8]);
+  long wsaturation = atol(argv[9]);
+  const char *wisdom_file = argv[10];
 
   import_wisdom(wisdom_file);
 
@@ -299,6 +340,12 @@ main(int argc, char *argv[])
   }
   
   destripey(ny, nx, (void *) z);
+
+  double *zold = z;
+  z = malloc(nx * ny * sizeof(*z));
+  if (z == NULL)
+    abort();
+  desaturate(ny, nx, (void *) zold, (void *) z, saturationlevel, wsaturation);
 
   fit_t fit[wn];
   for (int i = 0; i < wn; ++i) {
