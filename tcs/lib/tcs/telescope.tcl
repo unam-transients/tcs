@@ -485,7 +485,8 @@ namespace eval "telescope" {
           client::wait "enclosure"
         }
       }
-      closeactivitycommand
+      catch {recoveractivitycommand}
+      catch {closeactivitycommand}
     }
     server::setdata "timestamp" [utcclock::combinedformat now]
     log::info [format "finished emergency closing after %.1f seconds." [utcclock::diff now $start]]
