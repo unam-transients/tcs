@@ -149,7 +149,7 @@ namespace  eval log {
     }
     
     set line "$timestamp $who: $type: $payload"
-
+    
     switch -- $type {
       "debug" {
         puttologfile $logdir "debug"        $line
@@ -195,8 +195,9 @@ namespace  eval log {
   variable currentdebuglogfile ""
   variable currentdebuglogchannel ""
   
-  proc puttologfile {logdir type line} {
-    set logfile [file join $logdir "${type}.txt"]
+  proc puttologfile {logdir basename line} {
+    set basename [string map {" " "-"} $basename]
+    set logfile [file join $logdir "${basename}.txt"]
     set channel [open $logfile a 0666]
     chan configure $channel -blocking false -encoding "utf-8"
     puts $channel $line
