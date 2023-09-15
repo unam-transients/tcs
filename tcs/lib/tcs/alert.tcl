@@ -39,13 +39,36 @@ namespace eval "alert" {
       error "invalid default alert file: $message"
     }
 
-    # Read the alert file and iteratively merge the alerts.
+    # Read the alerts from the alert file.
     if {[catch {set newalerts [fromjson::readfile $alertfile true]} message]} {
       error "invalid alert file: $message."
     }
+
+    # Merge the alerts.
     foreach newalert $newalerts {
-      set alert       [dict merge $oldalert $newalert]
+      set alert    [dict merge $oldalert $newalert]
       set oldalert $alert
+    }
+    
+    # Determine the minimum and maximum event timestamps.
+    set mineventtimestamp ""
+    set maxeventtimestamp ""
+    foreach newalert $newalerts {
+      if {[dict exists $newalert "eventtimestamp"]} {
+        set neweventtimestamp [utcclock::scan [dict get $newalert "eventtimestamp"]]
+        if {[string equal $mineventtimestamp ""] || $neweventtimestamp < $mineventtimestamp} {
+          set mineventtimestamp $neweventtimestamp
+        }
+        if {[string equal $maxeventtimestamp ""] || $neweventtimestamp > $maxeventtimestamp} {
+          set maxeventtimestamp $neweventtimestamp
+        }
+      }
+    }   
+    if {![string equal $mineventtimestamp ""]} {
+      set alert [dict merge $alert [dict create "mineventtimestamp" [utcclock::combinedformat $mineventtimestamp]]]
+    }
+    if {![string equal $maxeventtimestamp ""]} {
+      set alert [dict merge $alert [dict create "maxeventtimestamp" [utcclock::combinedformat $maxeventtimestamp]]]
     }
 
     return $alert  
