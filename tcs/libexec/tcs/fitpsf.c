@@ -92,20 +92,19 @@ model_z(int m, double p[m], double y, double x)
 double
 calc_rms(int m, double p[m])
 {
-  double rms = 0;
-  long n = 0;
+  double d = 0;
+  double w = 0;
   for (long iy = -nfit; iy <= nfit; ++iy) {
     for (long ix = -nfit; ix <= nfit; ++ix) {
       if ((ix != 0 && iy != 0) && sqrt(ix * ix + iy * iy) <= nfit) {
         double z = RZ((iy + rny) % rny, (ix + rnx) % rnx);
         double dz = z - model_z(m, p, iy, ix);
-        rms += (dz * dz);
-        ++n;
+        d += (dz * dz) / (ix * ix + iy * iy);
+        w += 1.0 / (ix * ix + iy * iy);
       }
     }
   }
-  rms /= n;
-  rms = sqrt(rms);
+  double rms = sqrt(d / w);
   return rms;
 }
 
