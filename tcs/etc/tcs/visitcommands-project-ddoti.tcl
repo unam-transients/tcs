@@ -735,44 +735,41 @@ proc focusmapvisit {} {
    
   executor::setreadmode 16MHz
 
-  while {true}   {
+  executor::tracktopocentric
 
-    executor::tracktopocentric
+  log::summary "focusmapvisit: focusing with binning 8."
+  executor::setwindow "2kx2k"
+  executor::setbinning 8
+  executor::waituntiltracking
+  executor::focus 1 8000 1000 false true
 
-    log::summary "focusmapvisit: focusing with binning 8."
-    executor::setwindow "2kx2k"
-    executor::setbinning 8
-    executor::waituntiltracking
-    executor::focus 1 8000 1000 false true
-
-    log::summary "focusmapvisit: focus witness with binning 4."
-    executor::setbinning 4
-    executor::expose focuswitness 1
+  log::summary "focusmapvisit: focus witness with binning 4."
+  executor::setbinning 4
+  executor::expose focuswitness 1
     
-    set worstfwhmpixels [client::getdata "instrument" "worstfwhmpixels"]
-    if {[string equal $worstfwhmpixels "unknown"] || $worstfwhmpixels > 6} {
-      log::warning "focusmapvisit: refocusing as worst witness FWHM is $worstfwhmpixels pixels."
-      continue
-    }
-
-    log::summary "focusmapvisit: focusing with binning 1."
-    executor::setwindow "1kx1k"
-    executor::setbinning 1
-    executor::focus 4 2000 250 false false
-
-    log::summary "focusmapvisit: focus witness with binning 1."
-    executor::expose focuswitness 4
-
-    set worstfwhmpixels [client::getdata "instrument" "worstfwhmpixels"]
-    if {[string equal $worstfwhmpixels "unknown"] || $worstfwhmpixels > 6} {
-      log::warning "focusmapvisit: refocusing as worst witness FWHM is $worstfwhmpixels pixels."
-      continue
-    }
-    
-    break
-
+  set worstfwhmpixels [client::getdata "instrument" "worstfwhmpixels"]
+  if {[string equal $worstfwhmpixels "unknown"] || $worstfwhmpixels > 6} {
+    log::summary "focusmapvisit: aborting with worst witness FWHM of $worstfwhmpixels pixels."
+    log::summary "focusmapvisit: finished."
+    return true
   }
 
+  log::summary "focusmapvisit: focusing with binning 1."
+  executor::setwindow "1kx1k"
+  executor::setbinning 1
+  executor::focus 4 2000 250 false false
+
+  log::summary "focusmapvisit: focus witness with binning 1."
+  executor::expose focuswitness 4
+
+  set worstfwhmpixels [client::getdata "instrument" "worstfwhmpixels"]
+  if {[string equal $worstfwhmpixels "unknown"] || $worstfwhmpixels > 6} {
+    log::summary "focusmapvisit: aborting with worst witness FWHM of $worstfwhmpixels pixels."
+    log::summary "focusmapvisit: finished."
+    return true
+  }
+    
+  log::summary "focusmapvisit: succeeded with worst witness FWHM is $worstfwhmpixels pixels."
   log::summary "focusmapvisit: finished."
 
   return true
