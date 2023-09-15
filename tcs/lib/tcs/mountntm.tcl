@@ -107,10 +107,10 @@ namespace eval "mount" {
     DEC.REFERENCED
     DEC.ERROR_STATE
     LOCAL.REFERENCED
-    CABINET.ERROR_STATE
     CABINET.POWER_STATE
     CABINET.REFERENCED
     CABINET.STATUS.LIST
+    CABINET.STATUS.GLOBAL
     } ";"]\n"
   set controller::timeoutmilliseconds         10000
   set controller::intervalmilliseconds        50
@@ -150,7 +150,7 @@ namespace eval "mount" {
   variable waitmoving          true
   variable cabinetstatuslist   ""
   variable cabinetpowerstate   ""
-  variable cabineterrorstate   ""
+  variable cabinetstatusglobal ""
   variable cabinetreferenced   ""
   variable haaxisreferenced    ""
   variable deltaaxisreferenced ""
@@ -176,7 +176,7 @@ namespace eval "mount" {
   variable pendinghamotionstate
   variable pendingdeltamotionstate
   variable pendingcabinetstatuslist
-  variable pendingcabineterrorstate
+  variable pendingcabinetstatusglobal
   variable pendingcabinetpowerstate
   variable pendingcabinetreferenced
   variable pendinghafreepoints
@@ -192,7 +192,7 @@ namespace eval "mount" {
     variable pendinghamotionstate
     variable pendingdeltamotionstate
     variable pendingcabinetstatuslist
-    variable pendingcabineterrorstate
+    variable pendingcabinetstatusglobal
     variable pendingcabinetpowerstate
     variable pendingcabinetreferenced
     variable pendinghafreepoints
@@ -204,7 +204,7 @@ namespace eval "mount" {
     variable waitmoving
     variable cabinetstatuslist
     variable cabinetpowerstate
-    variable cabineterrorstate
+    variable cabinetstatusglobal
     variable cabinetreferenced
     variable state
     variable freepoints
@@ -256,8 +256,8 @@ namespace eval "mount" {
     }
 
     #log::debug "status: controller response \"$controllerresponse\"."
-    if {[scan $controllerresponse "%*d DATA INLINE CABINET.ERROR_STATE=%d" value] == 1} {
-      set pendingcabineterrorstate $value
+    if {[scan $controllerresponse "%*d DATA INLINE CABINET.STATUS.GLOBAL=%d" value] == 1} {
+      set pendingcabinetstatusglobal $value
       return false
     }
     if {[scan $controllerresponse "%*d DATA INLINE CABINET.POWER_STATE=%f" value] == 1} {
@@ -368,10 +368,10 @@ namespace eval "mount" {
       }
     }
 
-    set cabinetstatuslist $pendingcabinetstatuslist
-    set cabineterrorstate $pendingcabineterrorstate
-    set cabinetpowerstate $pendingcabinetpowerstate
-    set cabinetreferenced $pendingcabinetreferenced
+    set cabinetstatuslist   $pendingcabinetstatuslist
+    set cabinetstatusglobal $pendingcabinetstatusglobal
+    set cabinetpowerstate   $pendingcabinetpowerstate
+    set cabinetreferenced   $pendingcabinetreferenced
     
     if {$pendinghafreepoints < $pendingdeltafreepoints} {
       set freepoints $pendinghafreepoints
@@ -379,13 +379,13 @@ namespace eval "mount" {
       set freepoints $pendingdeltafreepoints
     }
 
-    log::debug "state: cabineterrorstate = $cabineterrorstate."
-    log::debug "state: cabinetpowerstate = $cabinetpowerstate."
-    log::debug "state: cabinetreferenced = $cabinetreferenced."
+    log::debug "state: cabinetstatusglobal = $cabinetstatusglobal."
+    log::debug "state: cabinetpowerstate   = $cabinetpowerstate."
+    log::debug "state: cabinetreferenced   = $cabinetreferenced."
 
     variable laststate
     set laststate $state
-    if {$cabineterrorstate != 0} {
+    if {$cabinetstatusglobal != 0} {
       set state "error"
     } elseif {$cabinetpowerstate == 0} {
       set state "off"
