@@ -150,6 +150,14 @@ namespace eval "alert" {
     }
   }
   
+  proc originidentifier {alert origin} {
+    if {[dict exists $alert "${origin}identifier"]} {
+      return [dict get $alert "${origin}identifier"]
+    } else {
+      return ""
+    }
+  }
+  
   proc type {alert} {
     if {[dict exists $alert "type"]} {
       return [dict get $alert "type"]
@@ -193,6 +201,22 @@ namespace eval "alert" {
   proc eventtimestamp {alert} {
     if {[dict exists $alert "eventtimestamp"]} {
       return [dict get $alert "eventtimestamp"]
+    } else {
+      return ""
+    }
+  }
+  
+  proc mineventtimestamp {alert} {
+    if {[dict exists $alert "mineventtimestamp"]} {
+      return [dict get $alert "mineventtimestamp"]
+    } else {
+      return ""
+    }
+  }
+  
+  proc maxeventtimestamp {alert} {
+    if {[dict exists $alert "maxeventtimestamp"]} {
+      return [dict get $alert "maxeventtimestamp"]
     } else {
       return ""
     }
