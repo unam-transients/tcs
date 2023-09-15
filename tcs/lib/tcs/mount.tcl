@@ -964,7 +964,7 @@ namespace eval "mount" {
     server::checkstatus
     server::checkactivityforinitialize
     checkhardware "initialize"
-    server::newactivitycommand "initializing" "idle" mount::initializeactivitycommand 1200000
+    server::newactivitycommand "initializing" "idle" mount::initializeactivitycommand 120000
   }
 
   proc open {} {
@@ -985,7 +985,7 @@ namespace eval "mount" {
     server::checkstatus
     server::checkactivityforreset
     checkhardware "reset"
-    server::newactivitycommand "resetting" [server::getstoppedactivity] mount::resetactivitycommand
+    server::newactivitycommand "resetting" [server::getstoppedactivity] mount::resetactivitycommand 120000
   }
 
   proc preparetomove {} {
