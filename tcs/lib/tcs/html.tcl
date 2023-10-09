@@ -1181,6 +1181,7 @@ namespace eval "html" {
       writehtmlfullrow "Mode"              [client::getdata "selector" "mode"]
       writehtmlfullrow "File type"         [client::getdata "selector" "filetype"]
       writehtmlfullrow "File name"         [client::getdata "selector" "filename"]
+      writehtmlfullrow "Priority"          [client::getdata "selector" "priority"]
       writehtmlfullrow "Focused"           [formattimestamp [client::getdata "selector" "focustimestamp"]]
     }
     putshtml "</table>"
@@ -1244,7 +1245,8 @@ namespace eval "html" {
         [formatifok "%.2f" [client::getdata "executor" "alertequinox"]]
       writehtmlfullrow "Alert uncertainty" \
         [formatarcsecifdouble "%.2fas" [client::getdata "executor" "alertuncertainty"]]
-      writehtmlfullrow "Completed"     [client::getdata "executor" "completed"]
+      writehtmlfullrow "Completed"             [client::getdata "executor" "completed"]
+      writehtmlfullrow "Alert priority"        [client::getdata "executor" "alertpriority"]
     }
     putshtml "</table>"
 

@@ -41,7 +41,7 @@ namespace eval "alert" {
 
     # Read the alerts from the alert file.
     if {[catch {set newalerts [fromjson::readfile $alertfile true]} message]} {
-      error "invalid alert file: $message."
+      error "invalid alert file: $message"
     }
 
     # Merge the alerts.
@@ -298,10 +298,18 @@ namespace eval "alert" {
     }
     return $delay
   }
+  
+  proc priority {alert} {
+    if {[dict exists $alert "priority"]} {
+      return [dict get $alert "priority"]
+    } else {
+      return "0"
+    }
+  }
     
   ######################################################################
 
-  proc makealert {name origin identifier type alpha delta equinox uncertainty eventtimestamp alerttimestamp command enabled} {
+  proc makealert {name origin identifier type alpha delta equinox uncertainty eventtimestamp alerttimestamp command enabled priority} {
     return [dict create                    \
       "name"            $name              \
       "origin"          $origin            \
@@ -315,8 +323,37 @@ namespace eval "alert" {
       "alerttimestamp"  $alerttimestamp    \
       "command"         $command           \
       "enabled"         $enabled           \
+      "priority"        $priority          \
     ]
   } 
+  
+  ######################################################################
+  
+  variable why
+
+  proc setwhy {whyarg} {
+    variable why
+    set why $whyarg
+  }
+  
+  proc why {} {
+    variable why
+    return $why
+  }
+
+  ######################################################################  
+  
+  proc checkpriority {alert priority} {
+  
+    setwhy ""
+    
+    if {$priority != [priority $alert]} {
+      setwhy "priority is [priority $alert]."
+      return false
+    }
+    
+    return true
+  }
   
   ######################################################################
 
