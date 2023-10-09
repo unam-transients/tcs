@@ -34,13 +34,22 @@ package require "visit"
 
 package provide "selector" 0.0
 
+config::setdefaultvalue "selector" "alertprojectidentifier" "2000"
+config::setdefaultvalue "selector" "eventtimestamptoleranceseconds" "60"
+
 namespace eval "selector" {
+
+  ######################################################################
+
+  variable alertprojectidentifier         [config::getvalue "selector" "alertprojectidentifier"]
+  variable eventtimestamptoleranceseconds [config::getvalue "selector" "eventtimestamptoleranceseconds"]
 
   ######################################################################
 
   variable mode           "disabled"
   variable filetype       ""
   variable filename       ""
+  variable priority       ""
   variable alertindex     0
 
   ######################################################################
@@ -49,9 +58,11 @@ namespace eval "selector" {
     variable mode
     variable filetype
     variable filename
+    variable priority
     server::setdata "mode"             $mode
     server::setdata "filetype"         $filetype
     server::setdata "filename"         $filename
+    server::setdata "priority"         $priority
     server::setdata "focustimestamp"   [constraints::focustimestamp]
     server::setdata "timestamp"        [utcclock::combinedformat now]
   }
@@ -115,24 +126,26 @@ namespace eval "selector" {
   
   ######################################################################
 
-  proc isselectablealertfile {alertfile seconds} {
+  proc isselectablealertfile {alertfile seconds priority} {
     if {[catch {
       set block [alert::alerttoblock [alert::readalertfile $alertfile]]
     } message]} {
       log::warning "error while reading alert file \"[file tail $alertfile]\": $message"
       return "invalid alert file."
     } 
-    if {[constraints::check $block $seconds]} {
-      return ""
-    } else {
+    if {![alert::checkpriority [block::alert $block] $priority]} {
+      return [alert::why]
+    } elseif {![constraints::check $block $seconds]} {
       return [constraints::why]
+    } else {
+      return ""
     }
   }
   
-  proc selectalertfile {seconds} {
+  proc selectalertfile {seconds priority} {
     foreach alertfile [getalertfiles true] {
       log::info "considering alert file \"[file tail $alertfile]\"."
-      set why [isselectablealertfile $alertfile $seconds]
+      set why [isselectablealertfile $alertfile $seconds $priority]
       if {[string equal $why ""]} {
         log::summary "selected alert file \"[file tail $alertfile]\"."
         return $alertfile
@@ -176,11 +189,60 @@ namespace eval "selector" {
   
   ######################################################################
 
+  proc getallalertfiles {} {
+    set names    [glob -nocomplain -directory [file join [directories::var] "alerts"   ] "*"]
+    set oldnames [glob -nocomplain -directory [file join [directories::var] "oldalerts"] "*"]
+    return [concat $names $oldnames]
+  }
+  
+  proc matchalert {origin identifier eventtimestamp alerttimestamp} {
+    foreach alertfile [getallalertfiles] {
+      if {[catch {
+        set alert [alert::readalertfile $alertfile]
+      } message]} {
+        log::warning "error while reading alert file \"[file tail $alertfile]\": $message"
+        continue
+      }
+      if {[string equal [alert::originidentifier $alert $origin] $identifier]} {
+        log::info "alert file \"[file tail $alertfile]\" matches by origin and identifier."
+        return [file tail $alertfile]
+      }
+      set mineventtimestamp [alert::mineventtimestamp $alert]
+      set maxeventtimestamp [alert::maxeventtimestamp $alert]
+      if {
+        ![string equal $eventtimestamp    ""] &&
+        ![string equal $mineventtimestamp ""] &&
+        ![string equal $maxeventtimestamp ""]
+      } {
+        variable eventtimestamptoleranceseconds
+        if {
+          [utcclock::diff $mineventtimestamp $eventtimestamp] <= $eventtimestamptoleranceseconds && 
+          [utcclock::diff $eventtimestamp $maxeventtimestamp] <= $eventtimestamptoleranceseconds
+        } {
+          log::info "alert file \"[file tail $alertfile]\" matches by event timestamp."
+          return [file tail $alertfile]
+        }
+      }
+      log::info "alert file \"[file tail $alertfile]\" is not a match."
+    }
+    log::info "no existing alert file matches."
+    if {[string equal $eventtimestamp ""]} {
+      set alertfile [utcclock::combinedformat $alerttimestamp 0 false]
+    } else {
+      set alertfile [utcclock::combinedformat $eventtimestamp 0 false]
+    }
+    set alertfile [file join [file join [directories::var] "alerts"] $alertfile]
+    return $alertfile
+  }
+
+  ######################################################################
+
   proc blockloop {} {
   
     variable mode
     variable filetype
     variable filename
+    variable priority
 
     log::debug "blockloop: starting."
 
@@ -194,6 +256,7 @@ namespace eval "selector" {
     
       set filetype ""
       set filename ""
+      set priority ""
       updatedata
       server::setrequestedactivity "idle"      
 
@@ -225,8 +288,8 @@ namespace eval "selector" {
           client::wait "executor"
         } message]} {
           log::error "unable to recover: $message"
-          set delay 60000
-          set recover true
+          client::request "executor" "emergencyclose"
+          disable
           continue
         }
         set recover false
@@ -264,12 +327,19 @@ namespace eval "selector" {
         continue
       }
 
-      set filename [selectalertfile $seconds]
+      foreach priority {0 1 2 3 4 5 6 7 8 9} {
+        log::info "checking alert queue for priority $priority alerts."
+        set filename [selectalertfile $seconds $priority]
+        if {![string equal $filename ""]} {
+          break
+        }
+      }
       if {![string equal $filename ""]} {
         set filetype "alert"
       } else {
         set filetype "block"
         set filename [selectblockfile $seconds]
+        set priority ""
       }
       updatedata
       
@@ -366,7 +436,7 @@ namespace eval "selector" {
   
   proc respondtoalert {projectidentifier blockidentifier name origin identifier type alerttimestamp eventtimestamp enabled alpha delta equinox uncertainty} {
     variable mode
-
+    
     log::summary "responding to alert for $name."
 
     if {![string equal $alerttimestamp ""]} {
@@ -402,11 +472,12 @@ namespace eval "selector" {
       }
     }
     
-    set alertfile [getalertfile "$projectidentifier-$blockidentifier"]
+    set alertfile [matchalert $origin $identifier $eventtimestamp $alerttimestamp]
+    set fullalertfile [getalertfile $alertfile]
     
-    file mkdir [file dirname $alertfile]
+    file mkdir [file dirname $fullalertfile]
     log::info [format "alert file is \"%s\"." $alertfile]
-    set alertfileexists [file exists $alertfile]
+    set alertfileexists [file exists $fullalertfile]
 
     if {$alertfileexists} {
       set interrupt false
@@ -415,7 +486,7 @@ namespace eval "selector" {
     } else {
       set interrupt false
     }
-    set channel [open $alertfile "a"]
+    set channel [open $fullalertfile "a"]
     if {!$alertfileexists} {
       puts $channel [format "// Alert file \"%s\"." $alertfile]
       puts $channel [format "// Created at %s." [utcclock::format now]]
@@ -427,9 +498,11 @@ namespace eval "selector" {
       puts $channel [format "  \"name\": \"%s\"," $name]
     }
     puts $channel [format "  \"origin\": \"%s\"," $origin]
-    puts $channel [format "  \"identifier\": \"%s\"," $identifier]
+    puts $channel [format "  \"%sidentifier\": \"%s\"," $origin $identifier]
     puts $channel [format "  \"type\": \"%s\"," $type]
-    puts $channel [format "  \"projectidentifier\": \"%s\"," $projectidentifier]
+    variable alertprojectidentifier
+    puts $channel [format "  \"projectidentifier\": \"%s\"," $alertprojectidentifier]
+    puts $channel [format "  \"identifier\": \"%s\"," [string map {"T" ""} $alertfile]]
     if {
       ![string equal "" $alpha] && 
       ![string equal "" $delta] &&
@@ -452,23 +525,23 @@ namespace eval "selector" {
 
     close $channel
     
-    if {!$interrupt} {
-      log::summary "not interrupting the executor: interrupt is false."
-    } elseif {[string equal $mode "disabled"]} {
-      log::summary "not interrupting the executor: selector is disabled."
-    } else {
-      set why [isselectablealertfile $alertfile [utcclock::seconds]]
-      if {![string equal "" $why]} {
-        log::summary "not interrupting the executor: alert is not selectable: $why"
-      } else {
-        log::summary "interrupting the executor."
-        if {[catch {client::request "executor" "stop"} message]} {
-          log::error "unable to interrupt the executor: $message"
-        }
-        variable alertindex
-        set alertindex 0
-      }
-    }
+#    if {!$interrupt} {
+#      log::summary "not interrupting the executor: interrupt is false."
+#    } elseif {[string equal $mode "disabled"]} {
+#      log::summary "not interrupting the executor: selector is disabled."
+#    } else {
+#      set why [isselectablealertfile $alertfile [utcclock::seconds]]
+#      if {![string equal "" $why]} {
+#        log::summary "not interrupting the executor: alert is not selectable: $why"
+#      } else {
+#        log::summary "interrupting the executor."
+#        if {[catch {client::request "executor" "stop"} message]} {
+#          log::error "unable to interrupt the executor: $message"
+#        }
+#        variable alertindex
+#        set alertindex 0
+#      }
+#    }
     
     if {!$alertfileexists && ([string equal "" $enabled] || $enabled)} {
       log::info "running alertscript."

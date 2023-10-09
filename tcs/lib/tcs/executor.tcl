@@ -601,6 +601,7 @@ namespace eval "executor" {
       server::setdata "alertdelta"          ""
       server::setdata "alertequinox"        ""
       server::setdata "alertuncertainty"    ""
+      server::setdata "alertpriority"       ""
     } else {    
       server::setdata "alertname"           [alert::name [executor::alert]]
       server::setdata "alertorigin"         [alert::origin [executor::alert]]
@@ -612,6 +613,7 @@ namespace eval "executor" {
       server::setdata "alertdelta"          [astrometry::parsedelta   [alert::delta [executor::alert]]]
       server::setdata "alertequinox"        [astrometry::parseequinox [alert::equinox [executor::alert]]]
       server::setdata "alertuncertainty"    [astrometry::parseoffset  [alert::uncertainty [executor::alert]]]
+      server::setdata "alertpriority"       [alert::priority [executor::alert]]
     }
     server::setdata "timestamp" [utcclock::combinedformat]
   }

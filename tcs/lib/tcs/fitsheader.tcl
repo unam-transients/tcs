@@ -206,6 +206,7 @@ namespace eval "fitsheader" {
       alertdelta             ALDE  angle
       alertequinox           ALEQ  double
       alertuncertainty       ALUN  angle
+      alertpriority          ALPR  string
     } {
       set comment "executor $key"
       if {![catch {client::getdata "executor" $key} value]} {

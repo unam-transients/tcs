@@ -106,7 +106,9 @@ namespace eval "supervisor" {
       }
     }
     if {$reportweather} {
-      log::summary [format "external humidity is %.0f%%." [expr {[client::getdata "weather" "humidity"] * 100}]]
+      catch {
+        log::summary [format "external humidity is %.0f%%." [expr {[client::getdata "weather" "humidity"] * 100}]]
+      }
     }
     if {$reportsensors} {
       log::summary [format "internal humidity is %.0f%%." [expr {[client::getdata "sensors" "$internalhumiditysensor"] * 100}]]
@@ -266,7 +268,7 @@ namespace eval "supervisor" {
         
         # Now determine if the weather/sensors override the Sun.
         
-        if {![string equal $mode "open"] && ($maybeopen || $maybeopentoventilate)} {
+        if {![string equal $mode "disabled"] && ![string equal $mode "open"] && ($maybeopen || $maybeopentoventilate)} {
 
           if {
             [client::getdata "weather" "mustbeclosed"]
@@ -328,8 +330,12 @@ namespace eval "supervisor" {
       }
 
       updatedata
-      log::debug "loop: external humidity is [client::getdata "weather" "humidity"]."
-      log::debug "loop: internal humidity is [client::getdata "sensors" "$internalhumiditysensor"]."
+      catch {
+        log::debug "loop: external humidity is [client::getdata "weather" "humidity"]."
+      }
+      catch {
+        log::debug "loop: internal humidity is [client::getdata "sensors" "$internalhumiditysensor"]."
+      }
       log::debug "loop: open is $open."
       log::debug "loop: opentoventilate is $opentoventilate."
       log::debug "loop: closed is $closed."
