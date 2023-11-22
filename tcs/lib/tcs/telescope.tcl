@@ -723,7 +723,9 @@ namespace eval "telescope" {
     if {$withsecondary} {
       client::request "secondary" "move z0"
     }
-    client::wait "mount"
+    if {$withmount} {
+      client::wait "mount"
+    }
     if {$withsecondary} {
       client::wait "secondary"
     }
