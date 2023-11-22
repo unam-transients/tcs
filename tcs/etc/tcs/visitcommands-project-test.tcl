@@ -21,6 +21,88 @@
 
 ########################################################################
 
+proc starsgridvisit {
+  gridpoints 
+  eastfullsize 
+  northfullsize 
+  exposuretimes 
+  filters 
+  {binning 1}
+  {windows "default"}
+  {adapttime false}
+} {
+
+  log::summary "starsgridvisit: starting."
+
+  executor::setsecondaryoffset 0
+  executor::track
+
+  executor::setwindow $windows
+  executor::setbinning $binning
+
+  executor::waituntiltracking
+
+  set eastfullsize  [astrometry::parseoffset $eastfullsize ]
+  set northfullsize [astrometry::parseoffset $northfullsize]
+  log::info "grid size is $eastfullsize by $northfullsize."
+
+  if {[string equal $gridpoints 1]} {
+    set offsets { 
+      0.0 0.0
+    }
+  } elseif {[string equal $gridpoints 4]} {
+    set offsets { 
+      -0.5 -0.5
+      -0.5 +0.5
+      +0.5 +0.5
+      +0.5 -0.5
+    }
+  } elseif {[string equal $gridpoints 9]} {
+    set offsets { 
+      +0.0 +0.0
+      -0.5 -0.5
+      +0.0 +0.5
+      +0.5 -0.5
+      -0.5 +0.0
+      +0.5 +0.5
+      +0.0 -0.5
+      -0.5 +0.5
+      +0.5 +0.0
+    }
+  } else {
+    error "starsgridvisit: invalid gridpoints argument \"$gridpoints\"."
+  }
+  
+  set exposuretimes0 [lindex $exposuretimes 0]
+  set filters0       [lindex $filters       0]
+    
+  foreach {eastoffset northoffset} $offsets {
+
+    log::info "offsets are $eastoffset $northoffset"
+
+    set eastoffset  [format "%+.1fas" [astrometry::radtoarcsec [expr {$eastoffset  * $eastfullsize }]]]
+    set northoffset [format "%+.1fas" [astrometry::radtoarcsec [expr {$northoffset * $northfullsize}]]]
+
+    executor::offset $eastoffset $northoffset "default"
+    executor::waituntiltracking
+    
+    set i 0
+    while {$i < [llength $exposuretimes0]} {
+      set exposuretime0 [lindex $exposuretimes0 $i]
+      set filter0       [lindex $filters0       $i]
+      executor::movefilterwheel $filter0 "z"
+      executor::expose object $exposuretime0 $exposuretime0
+      incr i
+    }
+
+  }
+
+  log::summary "starsgridvisit: finished."
+  return true
+}
+
+########################################################################
+
 proc alertcommand {filters} {
   log::summary "alertcommand: starting."
   executor::move
