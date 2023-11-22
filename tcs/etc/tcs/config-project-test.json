@@ -28,6 +28,7 @@
     "altitude": "2280.0",
     "civiltimezone": "America/Mexico_City"
   },
+
   "html": {
     "servers": [
       "executor",
@@ -42,6 +43,7 @@
       "weather"
     ]
   },
+
   "fitsheader": {
     "servers": [
       "target",
@@ -50,14 +52,18 @@
       "weather"
     ]
   },
+
   "power": {
     "hosts": {},
     "outletgroupaddresses": {}
   },
+
   "supervisor": {
     "internalhumiditysensor": ""
   },
+
   "selector": {},
+
   "gcntan": {
     "serverpacketport": "5351",
     "swiftalertprojectidentifier"   : "1001",
@@ -66,102 +72,59 @@
     "hawcalertprojectidentifier"    : "1004",
     "icecubealertprojectidentifier" : "1005"
   },
+
   "swift": {
     "pointingsource": "none"
   },
+
   "executor": {},
+
   "telescope": {
     "type": "dummy",
     "idleha": "0h",
     "idledelta": "0d"
   },
+
   "safetyswitch": {
     "type": "none"
   },
+
   "heater": {
     "type": "gpio",
     "gpiopath": "/sys/class/gpio/gpio476/value"
   },
+
   "lights": {
     "type": "gpio",
     "gpiopath": "/sys/class/gpio/gpio481/value"
   },
+
   "instrument": {
     "detectors": [
-      "C1"
+      "C0", "C1"
     ],
     "activedetectors": [
-      "C1"
+      "C0", "C1"
     ],
     "idlefilterwheelpositions": [
-      "w"
+      "gri", "zy"
     ],
     "pointingdetectors": [
-      "C1"
+      "C0"
     ],
     "outletgroups": []
   },
-  "C1": {
+
+  "C0": {
     "telescopedescription": "TEST",
 
-//    "detectortype": "dummy",
-//    "detectoridentifier": "",
-//    "detectorunbinnedpixelscale": "0.381as",
-//    "detectorreadmodes": {
-//      "initial": "default",
-//      "closed" : "default",
-//      "default": ""
-//    },
-//    "detectorinitialsoftwaregain": 1,
-//    "detectorinitialbinning": 1,
-//    "detectorwindows": {
-//      "initial": "default",
-//      "default": "4kx4k",
-//      "center": "1kx1k",
-//      "1kx1k": {
-//        "sx": 0,
-//        "sy": 0,
-//        "nx": 1024,
-//        "ny": 1024
-//      },
-//      "2kx2k": {
-//        "sx": 1024,
-//        "sy": 1024,
-//        "nx": 2048,
-//        "ny": 2048
-//      },
-//      "4kx4k": {
-//        "sx": 1536,
-//        "sy": 1536,
-//        "nx": 4096,
-//        "ny": 4096
-//      }
-//    },
-//    "detectorfullunbinneddatawindow": {
-//      "sx": 0,
-//      "sy": 0,
-//      "nx": 4096,
-//      "ny": 4096
-//    },
-//    "detectorfullunbinnedbiaswindow": {
-//      "sx": 0,
-//      "sy": 0,
-//      "nx": 0,
-//      "ny": 0
-//    },
-//    "coolerstartsetting": "off",
-//    "cooleropensetting": "-80",
-//    "coolerclosedsetting": "following",
-//    "temperaturelimit": 40,
-//    "temperaturelimitoutletgroup": "",
-
-    "detectortype": "si",
-    "detectoridentifier": "10.0.3.197:2055",
+    "detectortype": "dummy",
+    "detectoridentifier": "",
     "detectorunbinnedpixelscale": "0.381as",
     "detectorreadmodes": {
       "initial": "default",
       "closed" : "default",
-      "default": "0"
+      "default": ""
     },
     "detectorinitialsoftwaregain": 1,
     "detectorinitialbinning": 1,
@@ -170,86 +133,55 @@
       "default": "4kx4k",
       "center": "1kx1k",
       "1kx1k": {
-        "sx": 1586,
-        "sy": 1544,
+        "sx": 1536,
+        "sy": 1536,
+
         "nx": 1024,
         "ny": 1024
       },
       "2kx2k": {
-        "sx": 1074,
-        "sy": 1032,
+        "sx": 1024,
+        "sy": 1024,
         "nx": 2048,
         "ny": 2048
       },
-      // For the default "4kx4k" window, we skip the first and last 8 rows for
-      // two reasons. First, the first and last row show odd behavior both in
-      // the underscan (high values) and the active (low value) regions. Second,
-      // it makes the data section square. If we really want the full CCD, we
-      // can use the implicit "full" window.
       "4kx4k": {
-        "sx": 2,
-        "sy": 8,
-        "nx": 4192,
+        "sx": 0,
+        "sy": 0,
+        "nx": 4096,
         "ny": 4096
       }
     },
     "detectorfullunbinneddatawindow": {
-      "sx": 50,
+      "sx": 0,
       "sy": 0,
       "nx": 4096,
-      "ny": 4112
+      "ny": 4096
     },
     "detectorfullunbinnedbiaswindow": {
       "sx": 0,
       "sy": 0,
-      "nx": 50,
-      "ny": 4112
+      "nx": 0,
+      "ny": 0
     },
-    "coolerstartsetting": "last",
-    "cooleropensetting": "last",
-    "coolerclosedsetting": "last",
+    "coolerstartsetting": "off",
+    "cooleropensetting": "-80",
+    "coolerclosedsetting": "following",
     "temperaturelimit": 40,
-    "temperaturelimitoutletgroup": "blue-service-cabinet",
-
-//    "filterwheeltype": "null",
-//    "filterwheelidentifier": "null",
-//    "filters": {
-//      "w"      : "0",
-//      "initial": "w",
-//      "idle"   : "w",
-//      "closed" : "w"
-//    },
+    "temperaturelimitoutletgroup": "",
+    "detectorunbinnedpixelscale": "0.381as",
 
     "filterwheeltype": "dummy",
-    "filterwheelidentifier": [
-      "5",
-      "8",
-      "8"
-    ],
+    "filterwheelidentifier": [ "5" ],
     "filters": {
-      // dark is the combination of B, z, and 656/8.
-      "dark"   : "1:3:6",
-      "open"   : "0:0:0",
-      "g"      : "0:0:1",
-      "r"      : "0:0:2",
-      "i"      : "0:0:3",
-      "z"      : "0:3:0",
-      "y"      : "0:5:4",
-      "w"      : "4:0:4",
-      "B"      : "1:0:0",
-      "V"      : "2:0:0",
-      "R"      : "3:0:0",
-      "I"      : "0:4:0",
-      "Is"     : "0:4:6",
-      "470/10" : "0:2:0",
-      "501/8"  : "0:0:7",
-      "515/10" : "0:6:0",
-      "640/10" : "0:7:0",
-      "656/3"  : "0:1:0",
-      "656/8"  : "0:0:6",
-      "initial": "dark",
-      "idle"   : "dark",
-      "closed" : "dark"
+      "initial": "r",
+      "idle"   : "r",
+      "closed" : "r",
+      "g"      : "0",
+      "r"      : "1",
+      "i"      : "2",
+      "gri"    : "3",
+      "B"      : "4"
     },
 
     "focusertype": "null",
@@ -257,28 +189,103 @@
     "focuserinitialposition": 0,
     "focuserbacklashoffset": 0,
     "focuserdzmodel": {},
-    
-//    "focusertype": "ddoti",
-//    "focuseridentifier": "/dev/ttyUSB0",
-//    "focuserinitialposition": 40000,
-//    "focuserbacklashoffset": "-450",
-//    "focuserdzmodel": {},
-    
 
     "pointingmodelparameters": {},
     "isstandalone": false,
     "fitsfwhmargs": {
       "1": "-m",
       "2": "-A",
-      "4": "-A",
-      "8": "-A",
-      "16": "-A"
+      "4": "-A"
     }
-
+    
   },
+
+  "C1": {
+    "telescopedescription": "TEST",
+
+    "detectortype": "dummy",
+    "detectoridentifier": "",
+    "detectorunbinnedpixelscale": "0.381as",
+    "detectorreadmodes": {
+      "initial": "default",
+      "closed" : "default",
+      "default": ""
+    },
+    "detectorinitialsoftwaregain": 1,
+    "detectorinitialbinning": 1,
+    "detectorwindows": {
+      "initial": "default",
+      "default": "4kx4k",
+      "center": "1kx1k",
+      "1kx1k": {
+        "sx": 1536,
+        "sy": 1536,
+        "nx": 1024,
+        "ny": 1024
+      },
+      "2kx2k": {
+        "sx": 1024,
+        "sy": 1024,
+        "nx": 2048,
+        "ny": 2048
+      },
+      "4kx4k": {
+        "sx": 0,
+        "sy": 0,
+        "nx": 4096,
+        "ny": 4096
+      }
+    },
+    "detectorfullunbinneddatawindow": {
+      "sx": 0,
+      "sy": 0,
+      "nx": 4096,
+      "ny": 4096
+    },
+    "detectorfullunbinnedbiaswindow": {
+      "sx": 0,
+      "sy": 0,
+      "nx": 0,
+      "ny": 0
+    },
+    "coolerstartsetting": "off",
+    "cooleropensetting": "-80",
+    "coolerclosedsetting": "following",
+    "temperaturelimit": 40,
+    "temperaturelimitoutletgroup": "",
+    "detectorunbinnedpixelscale": "0.381as",
+
+    "filterwheeltype": "dummy",
+    "filterwheelidentifier": [ "5" ],
+    "filters": {
+      "initial": "z",
+      "idle"   : "z",
+      "closed" : "z",
+      "z"      : "0",
+      "y"      : "1",
+      "zy"     : "2"
+    },
+
+    "focusertype": "null",
+    "focuseridentifier": "null",
+    "focuserinitialposition": 0,
+    "focuserbacklashoffset": 0,
+    "focuserdzmodel": {},
+
+    "pointingmodelparameters": {},
+    "isstandalone": false,
+    "fitsfwhmargs": {
+      "1": "-m",
+      "2": "-A",
+      "4": "-A"
+    }
+    
+  },
+
   "weather": {
     "windaveragespeedlimit": "30"
   },
+
   "sensors": {
     "lognames": [
       "host-control-load",
@@ -383,4 +390,5 @@
       }
     }
   }
+
 }
