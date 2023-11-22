@@ -927,6 +927,7 @@ namespace eval "mount" {
       coroutine::after 1000
       waituntiloperational
     }
+    log::info "the controller state is [server::getdata "state"]."    
     set end [utcclock::seconds]
     log::info [format "finished resetting after %.1f seconds." [utcclock::diff $end $start]]
   }
