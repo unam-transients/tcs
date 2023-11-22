@@ -325,7 +325,6 @@ namespace eval "gcntan" {
        
       "lvccounterpart" {
         log::info [format "received %s packet." $type]
-        return "echo"
         set log [logprocedure $packet]
         $log [format "received %s packet." $type]
         return "echo"
