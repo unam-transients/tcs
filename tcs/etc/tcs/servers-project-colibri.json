@@ -55,9 +55,13 @@
     "host": "detectors",
     "port": 5007
   },
+  "C1": {
+    "host": "detectors",
+    "port": 5008
+  },
   "plc": {
     "host": "control",
-    "port": 5008
+    "port": 5009
   },
   "selector": {
     "host": "control",

@@ -125,6 +125,7 @@ installbins_project_ddoti :=      \
 installbins_project_colibri :=    \
     coversserver                  \
 	C0server                      \
+	C1server                      \
 	telescopecontrollerserver     \
 	plcserver                     \
 	secondaryserver               \
