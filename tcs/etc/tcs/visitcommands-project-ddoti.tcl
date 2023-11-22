@@ -638,7 +638,7 @@ proc focusvisit {} {
     executor::setwindow "2kx2k"
     executor::setbinning 8
     executor::waituntiltracking
-    executor::focus 1 8000 1000 false true
+    executor::focus 1 5000 500 false true
 
     log::summary "focusvisit: focus witness with binning 4."
     executor::setbinning 4
@@ -741,7 +741,7 @@ proc focusmapvisit {} {
   executor::setwindow "2kx2k"
   executor::setbinning 8
   executor::waituntiltracking
-  executor::focus 1 8000 1000 false true
+  executor::focus 1 5000 500 false true
 
   log::summary "focusmapvisit: focus witness with binning 4."
   executor::setbinning 4
