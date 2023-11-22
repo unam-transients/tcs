@@ -72,6 +72,11 @@ EOF
 
   (
     cd /usr/local/var/tcs
+    cat $(ls [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/log/C1-data.txt | sed -n "1,/$whendate/p" | tail -$(expr $days + 1)) | awk "NR % $lines == 0 { print; }"
+  ) >C1.dat
+
+  (
+    cd /usr/local/var/tcs
     cat $(ls [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/log/sensors-data.txt | sed -n "1,/$whendate/p" | tail -$(expr $days + 1)) | awk "NR % $lines == 0 { print; }"
   ) >sensors.dat
 
@@ -123,7 +128,10 @@ EOF
     set key on
     plot \
       "C0.dat" using 1:2  title "C0 Detector"     with points linestyle 1, \
-      "C0.dat" using 1:7  title "C0 Cold End"     with points linestyle 2
+      "C0.dat" using 1:7  title "C0 Cold End"     with points linestyle 2, \
+      "C1.dat" using 1:2  title "C1 Detector"     with points linestyle 3, \
+      "C1.dat" using 1:7  title "C1 Cold End"     with points linestyle 4
+      
 
     set yrange [-111:-109]
     set ytics -111,0.5,-109
@@ -131,7 +139,8 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "C0.dat" using 1:2  title "C0 Detector" with points linestyle 1
+      "C0.dat" using 1:2  title "C0 Detector" with points linestyle 1, \
+      "C1.dat" using 1:2  title "C1 Detector" with points linestyle 3
 
 #    set yrange [1e-3:1000]
 #    set ylabel "Pressure (Torr)"
@@ -149,7 +158,9 @@ EOF
     set ytics 1e-8,10,1000 logscale
     set format y "10^{%L}"
     set key on
-    plot "C0.dat" using 1:8 title "C0 Chamber" with points linestyle 1
+    plot \
+      "C0.dat" using 1:8 title "C0 Chamber" with points linestyle 1, \
+      "C1.dat" using 1:8 title "C1 Chamber" with points linestyle 2
     set nologscale
     set format y "%+g"
 
@@ -163,9 +174,11 @@ EOF
     set ylabel "Pressure (psi)"
     set key on
     plot \
-      "C0.dat" using 1:9  title "C0 Supply" with points linestyle 2, \
-      "C0.dat" using 1:10 title "C0 Return" with points linestyle 1
-
+      "C0.dat" using 1:9  title "C0 Supply" with points linestyle 1, \
+      "C0.dat" using 1:10 title "C0 Return" with points linestyle 2, \
+      "C1.dat" using 1:9  title "C1 Supply" with points linestyle 3, \
+      "C1.dat" using 1:10 title "C1 Return" with points linestyle 4
+      
     unset multiplot
 
     set terminal pngcairo enhanced size 1200,1800
@@ -239,7 +252,8 @@ EOF
       "sensors.dat" using 62:63 title "C0 Service Cabinet Internal" with points linestyle 3, \
       "sensors.dat" using 66:67 title "C0 Service Cabinet External" with points linestyle 4, \
       "C0.dat"      using 1:11  title "C0 Power Supply"             with points linestyle 5, \
-      "sensors.dat" using 70:71 title "Telescope Cabinet"           with points linestyle 6
+      "C1.dat"      using 1:11  title "C1 Power Supply"             with points linestyle 6, \
+      "sensors.dat" using 70:71 title "Telescope Cabinet"           with points linestyle 7
       
     set format x "%Y%m%dT%H"
     set xtics rotate by 90 right

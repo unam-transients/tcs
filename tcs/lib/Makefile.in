@@ -71,6 +71,7 @@ ifeq ($(UNAME_M),x86_64)
 installs_project_colibri	    :=	\
 	detectorsi.so			        \
 	detectorfli.so                  \
+	filterwheelnull.so              \
 	filterwheelfli.so
 else
 installs_project_colibri	    :=

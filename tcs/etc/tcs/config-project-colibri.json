@@ -131,25 +131,135 @@
     "coolerstartsetting": "last",
     "cooleropensetting": "last",
     "coolerclosedsetting": "last",
-    "temperaturelimit": 40,
+    "temperaturelimit": 45,
     "temperaturelimitoutletgroup": "blue-service-cabinet",
-    "filterwheeltype": "fli",
-    // The DDRAGO CFW-14-5 filter wheels are:
-    // FW0011318 -- firmware serial number "CFW-14-5"
-    // FW0021318 -- firmware serial number "FW0021318"
-    // FW0031318 -- firmware serial number "FW0031318"
-    "filterwheelidentifier": "first",
+
+    "filterwheeltype": "null",
+    "filterwheelidentifier": "null",
     "filters": {
-      // 2021-09-13: r and g were accidentally installed in the wrong slots at OHP.
-      "r"      : "0",
-      "g"      : "1",
-      "i"      : "2",
-      "z"      : "3",
-      "y"      : "4",
-      "initial": "r",
-      "idle"   : "r",
-      "closed" : "r"
+      "w"      : "0",
+      "initial": "w",
+      "idle"   : "w",
+      "closed" : "w"
     },
+
+//    "filterwheeltype": "fli",
+//    // The DDRAGO CFW-14-5 filter wheels are:
+//    // FW0011318 -- firmware serial number "CFW-14-5"
+//    // FW0021318 -- firmware serial number "FW0021318"
+//    // FW0031318 -- firmware serial number "FW0031318"
+//    "filterwheelidentifier": "first",
+//    "filters": {
+//      // 2021-09-13: r and g were accidentally installed in the wrong slots at OHP.
+//      "r"      : "0",
+//      "g"      : "1",
+//      "i"      : "2",
+//      "z"      : "3",
+//      "y"      : "4",
+//      "initial": "r",
+//      "idle"   : "r",
+//      "closed" : "r"
+//    },
+    "focusertype": "null",
+    "focuseridentifier": "null",
+    "focuserinitialposition": 0,
+    "focuserbacklashoffset": 0,
+    "focuserdzmodel": {},
+    "pointingmodelparameters": {},
+    "isstandalone": false,
+    "fitsfwhmargs": {
+      "1": "-m",
+      "2": "-A",
+      "4": "-A",
+      "8": "-A",
+      "16": "-A"
+    }
+  },
+
+  "C1": {
+    "telescopedescription": "OHP COLIBRI 1.3-m",
+    "detectortype": "si",
+    "detectoridentifier": "red:2055",
+    "detectorunbinnedpixelscale": "0.381as",
+    "detectorreadmodes": {
+      "initial": "default",
+      "closed" : "default",
+      "default": "0"
+    },
+    "detectorinitialsoftwaregain": 1,
+    "detectorinitialbinning": 1,
+    "detectorwindows": {
+      "initial": "default",
+      "default": "4kx4k",
+      "center": "1kx1k",
+      "1kx1k": {
+        "sx": 1586,
+        "sy": 1544,
+        "nx": 1024,
+        "ny": 1024
+      },
+      "2kx2k": {
+        "sx": 1074,
+        "sy": 1032,
+        "nx": 2048,
+        "ny": 2048
+      },
+      // For the default "4kx4k" window, we skip the first and last 8 rows for
+      // two reasons. First, the first and last row show odd behavior both in
+      // the underscan (high values) and the active (low value) regions. Second,
+      // it makes the data section square. If we really want the full CCD, we
+      // can use the implicit "full" window.
+      "4kx4k": {
+        "sx": 2,
+        "sy": 8,
+        "nx": 4192,
+        "ny": 4096
+      }
+    },
+    "detectorfullunbinneddatawindow": {
+      "sx": 50,
+      "sy": 0,
+      "nx": 4096,
+      "ny": 4112
+    },
+    "detectorfullunbinnedbiaswindow": {
+      "sx": 0,
+      "sy": 0,
+      "nx": 50,
+      "ny": 4112
+    },
+    "coolerstartsetting": "last",
+    "cooleropensetting": "last",
+    "coolerclosedsetting": "last",
+    "temperaturelimit": 45,
+    "temperaturelimitoutletgroup": "red-service-cabinet",
+
+    "filterwheeltype": "null",
+    "filterwheelidentifier": "null",
+    "filters": {
+      "w"      : "0",
+      "initial": "w",
+      "idle"   : "w",
+      "closed" : "w"
+    },
+
+//    "filterwheeltype": "fli",
+//    // The DDRAGO CFW-14-5 filter wheels are:
+//    // FW0011318 -- firmware serial number "CFW-14-5"
+//    // FW0021318 -- firmware serial number "FW0021318"
+//    // FW0031318 -- firmware serial number "FW0031318"
+//    "filterwheelidentifier": "first",
+//    "filters": {
+//      // 2021-09-13: r and g were accidentally installed in the wrong slots at OHP.
+//      "r"      : "0",
+//      "g"      : "1",
+//      "i"      : "2",
+//      "z"      : "3",
+//      "y"      : "4",
+//      "initial": "r",
+//      "idle"   : "r",
+//      "closed" : "r"
+//    },
     "focusertype": "null",
     "focuseridentifier": "null",
     "focuserinitialposition": 0,
@@ -178,41 +288,33 @@
       "target",
       "moon",
       "sun",
-      "secondary",
-      "mount",
       "sensors",
       "weather"
     ]
   },
   "html": {
     "servers": [
-      "covers",
       "executor",
       "instrument",
       "moon",
-      "mount",
-      "plc",
       "power",
-      "secondary",
       "selector",
       "sensors",
       "sun",
       "supervisor",
       "target",
-      "telescope",
-      "telescopecontroller",
       "weather"
     ]
   },
   "instrument": {
     "activedetectors": [
-      "C0"
+      "C0", "C1"
     ],
     "detectors": [
-      "C0"
+      "C0", "C1"
     ],
     "idlefilterwheelpositions": [
-      "g"
+      "0", "0"
     ],
     "pointingdetectors": [
       "C0"
@@ -269,7 +371,10 @@
       "sparelinux"          : [[ "pdu1", "a", "7"]],
       "sparewindows"        : [[ "pdu1", "a", "8"]],
       "close-electronics"   : [[ "pdu2", "a", "1"]],
-      "blue-service-cabinet": [[ "pdu2", "a", "2"]]
+      "blue-service-cabinet": [[ "pdu2", "a", "1"]],
+      "red-service-cabinet" : [[ "pdu2", "a", "2"]],
+      "blue-compressor"     : [[ "pdu2", "a", "3"]],
+      "red-compressor"      : [[ "pdu2", "a", "4"]]
     }
   },
   "safetyswitch": {
@@ -1252,6 +1357,11 @@
     "idledelta": "75d"
   },
   "telescope": {
+    "type": "dummy",
+    "idleha": "0h",
+    "idledelta": "0d"
+  },
+  "real-telescope": {
     "type": "colibri",
     "idleha": "0h",
     "idledelta": "0d"
