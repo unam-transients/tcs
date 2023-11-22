@@ -566,12 +566,15 @@ namespace eval "selector" {
       chan configure $channel -encoding "ascii"
       set line [coroutine::gets $channel 0 100]
       catch {close $channel}
-      if {[scan $line "%f %f %s" alpha delta equinox] != 3} {
-        log::error "tcs lvcskymapfindpeak failed: $line."
-        error "tcs lvcskymapfindpeak failed: $line."
-      }
-      set alpha [astrometry::formatalpha [astrometry::degtorad $alpha]]
-      set delta [astrometry::formatdelta [astrometry::degtorad $delta]]
+      #if {[scan $line "%f %f %s" alpha delta equinox] != 3} {
+      #  log::error "tcs lvcskymapfindpeak failed: $line."
+      #  error "tcs lvcskymapfindpeak failed: $line."
+      #}
+      #set alpha [astrometry::formatalpha [astrometry::degtorad $alpha]]
+      #set delta [astrometry::formatdelta [astrometry::degtorad $delta]]
+      set alpha 00:00:00
+      set delta -90:00:00
+      set equinox 2000
       set uncertainty "10d"
       log::info [format "peak position is %s %s %s." [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox]
     } else {
