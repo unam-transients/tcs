@@ -409,9 +409,13 @@ namespace eval "executor" {
     set positions $args
     log::info "moving filter wheel to [join $positions /]."
     client::request "instrument" "movefilterwheel $positions"
-    client::request "secondary"  "moveforfilter [lindex $positions 0]"
+    if {[server::withserver "secondary"]} {
+      client::request "secondary"  "moveforfilter [lindex $positions 0]"
+    }
     client::wait "instrument"
-    client::wait "secondary"
+    if {[server::withserver "secondary"]} {
+      client::wait "secondary"
+    }
     log::info [format "finished moving filter wheel after %.1f seconds." [utcclock::diff now $start]]
   }
 
@@ -581,10 +585,12 @@ namespace eval "executor" {
       server::setdata "visitidentifier"   ""
       server::setdata "visitname"         ""
       server::setdata "visitcommand"      ""
+      server::setdata "visittasks"        ""
     } else {
       server::setdata "visitidentifier"   [visit::identifier [visit]]
       server::setdata "visitname"         [visit::name [visit]]
       server::setdata "visitcommand"      [visit::command [visit]]
+      server::setdata "visittasks"        [visit::tasks [visit]]
     }
     server::setdata "timestamp" [utcclock::combinedformat]
   }
