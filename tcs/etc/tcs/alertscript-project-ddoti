@@ -29,7 +29,7 @@ timestamp="$(date +"%Y-%m-%d %H:%M.%S")"
 priority=""
 case $type in
 lvc*)
-  priority="emergency"
+  priority="normal"
   url="https://gracedb.ligo.org/superevents/$identifier"
   group="gw-group"
   ;;

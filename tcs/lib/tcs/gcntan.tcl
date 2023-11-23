@@ -1139,7 +1139,7 @@ namespace eval "gcntan" {
     set date [field0 $packet 4]            
 
     set prefixcode [expr {([field0 $packet 19] >> 20) & 0xf}]
-    switch [directories::prefix]code {
+    switch $prefixcode {
       1  { set prefix "G" }
       2  { set prefix "T" }
       3  { set prefix "M" }
@@ -1154,7 +1154,7 @@ namespace eval "gcntan" {
       12 { set prefix "MS"  }
       13 { set prefix "MGW" }
       default {
-        log::warning "unknown lvc prefix code [directories::prefix]code."
+        log::warning "unknown lvc prefix code $prefixcode."
         set prefix ""
       }
     }

@@ -73,11 +73,12 @@ proc alertvisit {{filter "w"}} {
   executor::setbinning $binning
   executor::setwindow "default"
 
+  # For the time being, we just use one field.
   # The decisions below aim to choose the smallest grid that includes
   # the 90% region, assuming each field is 6.6d x 9.8d.
   set uncertainty [astrometry::parsedistance [alert::uncertainty [executor::alert]]]
   log::summary [format "alertvisit: uncertainty is %s." [astrometry::formatdistance $uncertainty 2]]
-  if {$uncertainty <= [astrometry::parsedistance "1.65d"]} {
+  if {true || $uncertainty <= [astrometry::parsedistance "1.65d"]} {
     log::summary "alertvisit: grid is 1 × 1 fields."
     set visits {
       0 0.0d 0.0d
@@ -217,7 +218,6 @@ proc alertprologvisit {} {
   # First refocus.
 
   executor::track
-
 
   log::summary "alertprologvisit: focusing with binning 8."
   executor::setwindow "2kx2k"
