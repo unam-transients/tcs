@@ -104,6 +104,16 @@ proc starsgridvisit {
 
 ########################################################################
 
+proc starswaitvisit {endtime} {
+  log::info "starswait: waiting until [utcclock::format $endtime]."
+  set endseconds [utcclock::scan $endtime]
+  while {[utcclock::seconds] <= $endseconds} {
+    coroutine::after 100
+  }
+}
+
+########################################################################
+
 proc alertcommand {filters} {
   log::summary "alertcommand: starting."
   executor::move
