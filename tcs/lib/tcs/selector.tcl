@@ -575,8 +575,8 @@ namespace eval "selector" {
       set alpha 00:00:00
       set delta -90:00:00
       set equinox 2000
-      set uncertainty "10d"
-      log::info [format "peak position is %s %s %s." [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox]
+      set uncertainty "20d"
+      #log::info [format "peak position is %s %s %s." [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox]
     } else {
       set alpha       ""
       set delta       ""
