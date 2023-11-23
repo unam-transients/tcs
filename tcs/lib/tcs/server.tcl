@@ -445,6 +445,14 @@ namespace eval "server" {
     log::debug "listening on $host:$port."
     socket -server server::accept -myaddr $host $port
   }
+  
+  proc withserver {servername} {
+    if {[catch {jsonrpc::getserverhost $servername}]} {
+      return false
+    } else {
+      return true
+    }
+  }
 
   proc start {script} {
     if {[catch {
