@@ -30,6 +30,7 @@ proc starsgridvisit {
   {binning 1}
   {windows "default"}
   {adapttime false}
+  {defocus false}
 } {
 
   log::summary "starsgridvisit: starting."
