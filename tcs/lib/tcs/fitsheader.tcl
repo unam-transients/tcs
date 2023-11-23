@@ -215,6 +215,14 @@ namespace eval "fitsheader" {
         writemissing $channel $fitskey $comment
       }
     }
+    #catch {
+      set i 0
+     foreach task [client::getdata "executor" "visittasks"] {
+        set key [format "VSTTSK%02d" $i]
+        writekeyandvalue $channel $key "string" $task "executor visit task $i"
+        incr i
+      }
+    #}
   }
 
 
