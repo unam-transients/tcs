@@ -295,6 +295,14 @@ namespace eval "visit" {
     }
     return [dict get $visit "command"]
   }
+  
+  proc tasks {visit} {
+    if {![dict exists $visit "tasks"]} {
+      return ""
+    } else {
+      return [dict get $visit "tasks"]
+    }
+  }
 
   ######################################################################
   
