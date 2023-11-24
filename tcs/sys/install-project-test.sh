@@ -47,29 +47,22 @@ sudo mv /etc/hosts.tmp /etc/hosts
   echo 'MAILTO=""'
 
   cat <<"EOF"
-00 21 *  *  *  tcs cleanfiles
-*  *  *  *  *  tcs updatevarlatestlink
-*  *  *  *  *  tcs updatelocalsensorsfiles
-*  *  *  *  *  tcs checkreboot
-*  *  *  *  *  tcs checkrestart
-*  *  *  *  *  tcs checkhalt
-00 18 *  *  *  tcs updateiersfiles
-00 18 *  *  *  tcs updateleapsecondsfile
-EOF
-
-  case $host in
-  test-control)
-    cat <<"EOF"
+00  21 *  *  *  tcs cleanfiles
+*   *  *  *  *  tcs updatevarlatestlink
+*   *  *  *  *  tcs updatelocalsensorsfiles
+*   *  *  *  *  tcs checkreboot
+*   *  *  *  *  tcs checkrestart
+*   *  *  *  *  tcs checkhalt
+00  18 *  *  *  tcs updateiersfiles
+00  18 *  *  *  tcs updateleapsecondsfile
 *   *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles control
-*   *  *  *  *  /usr/local/bin/tcs updateweatherfiles-oan
-00  18 *  *  *  /usr/local/bin/tcs updateweatherfiles-oan -a
+*   *  *  *  *  tcs updateweatherfiles-oan
+00  18 *  *  *  tcs updateweatherfiles-oan -a
 *   *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
-00  00 *  *  *  /usr/local/bin/tcs updatevarlatestlink; rsync -aH /usr/local/etc/tcs/blocks /usr/local/var/tcs/latest/
-*/5 *  *  *  * /usr/local/bin/tcs logsensors
-*   *  *  *  * cd /usr/local/var/www/tcs/; sh plots.sh >plots.txt 2>&1
+00  00 *  *  *  tcs updatevarlatestlink; rsync -aH /usr/local/etc/tcs/blocks /usr/local/var/tcs/latest/
+*/5 *  *  *  *  tcs logsensors
+*   *  *  *  *  cd /usr/local/var/www/tcs/; sh plots.sh >plots.txt 2>&1
 EOF
-    ;;
-  esac
   
 ) | sudo crontab
 
@@ -96,12 +89,6 @@ EOF
   fi
 
   echo "owserver -c /etc/owfs.conf"
-  
-  case $host in
-  test-control)
-    echo "tcs instrumentdataserver -f -d rsync://test-control/tcs/ &"
-    ;;
-  esac
   
   echo "mkdir -p /usr/local/var/tcs/reboot"
   echo "mkdir -p /usr/local/var/tcs/restart"
@@ -216,12 +203,8 @@ fi
 sudo rm -f /tmp/sudoers-tcs
 (
   echo 'test ALL=(ALL) ALL'
-  case $host in
-  test-control)
-    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs reboot'
-    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs restart'
-    ;;
-  esac
+  echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs reboot'
+  echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs restart'
 ) >/tmp/sudoers-tcs
 chmod 400 /tmp/sudoers-tcs
 if visudo -cf /tmp/sudoers-tcs
