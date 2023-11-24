@@ -27,9 +27,9 @@ proc starsgridvisit {
   northfullsize 
   exposuretimes 
   filters 
-  {binning 1}
+  {binnings 1}
   {windows "default"}
-  {adapttime false}
+  {adapttimes false}
   {defocus false}
 } {
 
@@ -37,15 +37,9 @@ proc starsgridvisit {
 
   executor::setsecondaryoffset 0
   executor::track
-
-  executor::setwindow $windows
-  executor::setbinning $binning
-
   executor::waituntiltracking
-
-  set eastfullsize  [astrometry::parseoffset $eastfullsize ]
-  set northfullsize [astrometry::parseoffset $northfullsize]
-  log::info "grid size is $eastfullsize by $northfullsize."
+  
+  # For the moment, we ignore binnings, windows, adapttimes, and defocus.
 
   if {[string equal $gridpoints 1]} {
     set offsets { 
@@ -73,20 +67,32 @@ proc starsgridvisit {
   } else {
     error "starsgridvisit: invalid gridpoints argument \"$gridpoints\"."
   }
+  log::info [format "starsgridvisit: %d grid points." $gridpoints]
+  
+  set eastfullsize  [astrometry::parseoffset $eastfullsize ]
+  set northfullsize [astrometry::parseoffset $northfullsize]
+  log::info [format "starsgridvisit: grid size is %s east and %s north." \
+    [astrometry::formatoffset $eastfullsize ] \
+    [astrometry::formatoffset $northfullsize] \
+  ]
   
   set exposuretimes0 [lindex $exposuretimes 0]
   set filters0       [lindex $filters       0]
     
   foreach {eastoffset northoffset} $offsets {
 
-    log::info "offsets are $eastoffset $northoffset"
-
     set eastoffset  [format "%+.1fas" [astrometry::radtoarcsec [expr {$eastoffset  * $eastfullsize }]]]
     set northoffset [format "%+.1fas" [astrometry::radtoarcsec [expr {$northoffset * $northfullsize}]]]
+    
+    log::info [format "starsgridvisit: offset is %s east and %s north." \
+      [astrometry::formatoffset $eastoffset ] \
+      [astrometry::formatoffset $northoffset] \
+    ]
 
     executor::offset $eastoffset $northoffset "default"
     executor::waituntiltracking
     
+    log::info "starsgridvisit: exposing."
     set i 0
     while {$i < [llength $exposuretimes0]} {
       set exposuretime0 [lindex $exposuretimes0 $i]
