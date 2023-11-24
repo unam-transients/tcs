@@ -706,12 +706,6 @@ namespace eval "executor" {
     }
   }
 
-  proc isunparked {} {
-    client::update "mount"
-    set unparked [client::getdata "mount" "unparked"]
-    return $unparked
-  }
-
   ######################################################################
 
   proc executeactivitycommand {filetype filename} {
@@ -923,9 +917,7 @@ namespace eval "executor" {
     foreach server {telescope instrument} {
       client::wait $server
     }
-    if {[isunparked]} {
-      client::request "telescope" "movetoidle"
-    }
+    client::request "telescope" "movetoidle"
     client::request "instrument" "idle"
     foreach server {telescope instrument} {
       client::wait $server
