@@ -362,19 +362,15 @@
       }
     },
     "outletgroupaddresses": {
-      "firewall"            : [[ "pdu1", "a", "1"]],
-      "access"              : [[ "pdu1", "a", "2"]],
-      "control"             : [[ "pdu1", "a", "3"]],
-      "oldcontrol"          : [[ "pdu1", "a", "4"]],
-      "detectors"           : [[ "pdu1", "a", "5"]],
-      "blue"                : [[ "pdu1", "a", "6"]],
-      "sparelinux"          : [[ "pdu1", "a", "7"]],
-      "sparewindows"        : [[ "pdu1", "a", "8"]],
-      "close-electronics"   : [[ "pdu2", "a", "1"]],
+      "access"              : [[ "pdu1", "a", "1"]],
+      "firewall"            : [[ "pdu1", "a", "2"]],
+      "blue"                : [[ "pdu1", "a", "3"]],
+      "detectors"           : [[ "pdu1", "a", "4"]],
+      "close-electronics"   : [[ "pdu1", "a", "5"]],
+      "red"                 : [[ "pdu1", "a", "6"]],
+      "control"             : [[ "pdu1", "a", "8"]],
       "blue-service-cabinet": [[ "pdu2", "a", "1"]],
-      "red-service-cabinet" : [[ "pdu2", "a", "2"]],
-      "blue-compressor"     : [[ "pdu2", "a", "3"]],
-      "red-compressor"      : [[ "pdu2", "a", "4"]]
+      "red-service-cabinet" : [[ "pdu2", "a", "2"]]
     }
   },
   "safetyswitch": {
