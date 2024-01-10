@@ -1,10 +1,10 @@
 {
   "proposal": {
-    "identifier":"1100"
+    "identifier":"2000"
   },
   "block": {
     "identifier": "0",
-    "name": "MAXI J1807+132 (Magui Pereyra)"
+    "name": "Block Zero"
   },
   "visits": [{
     "identifier": "0",

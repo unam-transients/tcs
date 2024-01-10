@@ -1,0 +1,31 @@
+{
+  "project": {
+    "identifier": "2000",
+    "name": "project 2000"
+  },
+  "identifier": "0",
+  "name": "block",
+  "visits": [
+    {
+      "identifier": "0",
+      "name": "visit 0",
+      "targetcoordinates": {
+        "type"   : "equatorial",
+        "alpha"  : "02:00:00",
+        "delta"  : "+30:00:00",
+        "equinox": "2000"
+      },
+      "command": "starsgridvisit 4 0.1d 0.1d {{5 5} {5 5}} {{g r i} {z z z}}",
+      "estimatedduration": "3m",
+      "tasks": [
+        "taska", "taskb", "taskc"
+      ]
+    }
+  ],
+  "constraints": {
+    "maxskybrightness": "nauticaltwilight",
+    "maxairmass": "1.5",
+    "minmoondistance": "15d"
+  },
+  "persistent": "true"
+}
