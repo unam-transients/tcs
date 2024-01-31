@@ -127,9 +127,9 @@ installs	:=			           \
 	target.tcl		        	   \
 	targetserver.tcl    		   \
 	telescope.tcl		    	   \
-	telescopecoatli.tcl		   \
+	telescopecoatli.tcl		       \
 	telescopecolibri.tcl	       \
-	telescopeddoti.tcl		   \
+	telescopeddoti.tcl		       \
 	telescopedummy.tcl		       \
 	telescopeserver.tcl		       \
 	telescopecontrolleropentsi.tcl \
@@ -137,6 +137,7 @@ installs	:=			           \
 	tojson.tcl			           \
 	utcclock.tcl		    	   \
 	visit.tcl 		        	   \
+	version.tcl                    \
 	weather.tcl		        	   \
 	weatherserver.tcl
 

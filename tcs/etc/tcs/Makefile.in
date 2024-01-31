@@ -24,6 +24,7 @@
 include ../../Makefile.prolog
 
 installs	:=				                \
+    version.json                            \
 	config-defaults.json			        \
 	fitsfwhm.param 				            \
 	fitsfwhm.sex 				            \
@@ -32,7 +33,7 @@ installs	:=				                \
 	fitssolvewcs.conv			            \
 	fitssolvewcs.param 			            \
 	fitssolvewcs.sex
-
+	
 installs_project_test		:=		        \
 	alert-project-test			            \
 	config-project-test.json		        \
