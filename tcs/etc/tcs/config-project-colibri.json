@@ -252,7 +252,7 @@
     // FW0011318 -- firmware serial number "CFW-14-5"
     // FW0021318 -- firmware serial number "FW0021318"
     // FW0031318 -- firmware serial number "FW0031318"
-    "filterwheelidentifier": "CFW-14-5",
+    "filterwheelidentifier": "FW0021318",
     "filters": {
       "z"      : "0",
       "y"      : "1",
@@ -452,6 +452,8 @@
       // close-electronics-internal     = 26.E9AE1A020000
       // blue-service-cabinet-external  = 26.FE7D1A020000
       // blue-service-cabinet-internal  = 26.F3961A020000
+      // red-service-cabinet-external   = 26.C7961A020000
+      // red-service-cabinet-internal   = 26.15971A020000
       // rack-external                  = 26.659DE1010000
       // rack-internal                  = 26.FAAE1A020000
       "instrument-external-temperature": {
@@ -536,6 +538,34 @@
         "correctionmodel": "MS-T:1.0:-0.51",
         "model": "iButtonLink MS-TH",
         "identifier": "26.F3961A020000",
+        "firmware": ""
+      },
+      "red-service-cabinet-external-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.FE7D1A020000/temperature",
+        "keyword": "CR5TM",
+        "prettyname": "red service cabinet external temperature",
+        "subsystem": "ddraguito",
+        "component": "red-service-cabinet",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.C7961A020000",
+        "firmware": ""
+      },
+      "red-service-cabinet-internal-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.F3961A020000/temperature",
+        "keyword": "CR6TM",
+        "prettyname": "red service cabinet internal temperature",
+        "subsystem": "ddraguito",
+        "component": "red-service-cabinet",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.15971A020000",
         "firmware": ""
       },
       "rack-external-temperature": {
@@ -648,6 +678,34 @@
         "unit": "",
         "model": "iButtonLink MS-TH",
         "identifier": "26.F3961A020000",
+        "firmware": ""
+      },
+      "red-service-cabinet-external-humidity": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.FE7D1A020000/HIH4000/humidity",
+        "keyword": "CR5HM",
+        "prettyname": "red service cabinet external humidity",
+        "subsystem": "ddraguito",
+        "component": "red-service-cabinet",
+        "group": "environmental-sensors",
+        "type": "float",
+        "correctionmodel": "MS-H:1.0:0:0:0:0",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.C7961A020000",
+        "firmware": ""
+      },
+      "red-service-cabinet-internal-humidity": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.F3961A020000/HIH4000/humidity",
+        "keyword": "CR6HM",
+        "prettyname": "red service cabinet internal humidity",
+        "subsystem": "ddraguito",
+        "component": "red-service-cabinet",
+        "group": "environmental-sensors",
+        "type": "float",
+        "correctionmodel": "MS-H:1.0:0:0:0:0",
+        "unit": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.15971A020000",
         "firmware": ""
       },
       "rack-external-humidity": {
