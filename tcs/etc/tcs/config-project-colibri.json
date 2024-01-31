@@ -313,7 +313,6 @@
   },
   "instrument": {
     "activedetectors": [
-      "C0", "C1"
     ],
     "detectors": [
       "C0", "C1"

@@ -24,6 +24,7 @@
 package require "config"
 package require "client"
 package require "utcclock"
+package require "version"
 
 package provide "fitsheader" 0.0
 
@@ -52,8 +53,9 @@ namespace eval "fitsheader" {
     writekeyandvalue $channel BZERO  double  $bzero
     
     set seconds [utcclock::seconds]
-    writekeyandvalue $channel "DATE" date   $seconds
-    writekeyandvalue $channel "MJD"  double [format "%.8f" [utcclock::mjd $seconds]]
+    writekeyandvalue $channel "DATE"    date   $seconds
+    writekeyandvalue $channel "MJD"     double [format "%.8f" [utcclock::mjd $seconds]]
+    writekeyandvalue $channel "TCSVRSN" string [version::version]
     
     return $channel
   }  
@@ -155,11 +157,11 @@ namespace eval "fitsheader" {
 
   proc writekeysandvaluesforcomponent {channel component prefix componentprefix keylist} {
   
-   if {[catch {client::update $component} message]} {
-     log::debug "unable to update data for \"$component\": $message"
-   }
+    if {[catch {client::update $component} message]} {
+      log::debug "unable to update data for \"$component\": $message"
+    }
     
-   set standardkeylist {
+    set standardkeylist {
       status                      ST    string
       statustimestamp             STT   date
       requestedactivity           RQAC  string
@@ -167,16 +169,17 @@ namespace eval "fitsheader" {
       activity                    AC    string
       activitytimestamp           ACT   date
       timestamp                   T     date
-   }
+      version                     VRSN  string
+    }
 
-   foreach {key fitskey fitstype} [concat $standardkeylist $keylist] {
-     set comment "$component $key"
-     if {![catch {client::getdata $component $key} value]} {
-       writekeyandvalue $channel "$prefix$componentprefix$fitskey" $fitstype $value $comment
-     } else {
-       writemissing $channel "$prefix$componentprefix$fitskey" $comment
-     }
-   }
+    foreach {key fitskey fitstype} [concat $standardkeylist $keylist] {
+      set comment "$component $key"
+      if {![catch {client::getdata $component $key} value]} {
+        writekeyandvalue $channel "$prefix$componentprefix$fitskey" $fitstype $value $comment
+      } else {
+        writemissing $channel "$prefix$componentprefix$fitskey" $comment
+      }
+    }
 
   }
 

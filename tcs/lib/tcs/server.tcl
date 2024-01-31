@@ -27,6 +27,7 @@ package require "log"
 package require "coroutine"
 package require "stack"
 package require "utcclock"
+package require "version"
 
 package require "jsonrpc"
 
@@ -457,6 +458,8 @@ namespace eval "server" {
   proc start {script} {
     if {[catch {
       log::info "starting server."
+      log::info "version is \"[version::version]\"."
+      server::setdata "version" [version::version]
       log::debug "executable is \"[info nameofexecutable]\"."
       log::debug "patch level is \"[info patchlevel]\"."
       log::debug "prefix is \"[directories::prefix]\"."

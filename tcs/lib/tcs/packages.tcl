@@ -234,6 +234,8 @@ package ifneeded tojson                0.0 \
   [list source [file join [file dirname [info script]] tojson.tcl]]
 package ifneeded utcclock              0.0 \
   [list source [file join [file dirname [info script]] utcclock.tcl]]
+package ifneeded version               0.0 \
+  [list source [file join [file dirname [info script]] version.tcl]]
 package ifneeded visit                 0.0 \
   [list source [file join [file dirname [info script]] visit.tcl]]
 package ifneeded weather               0.0 \
