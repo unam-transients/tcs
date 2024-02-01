@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -e
+sudo -v
+
+cd $HOME/src/tcs
+
+CC="ccache gcc -std=c99" CXX="ccache g++" F77="ccache gfortran" sh configure.sh
+
+make install
+
+case $(uname -n) in
+*-control)
+  cd ../www; sh configure.sh; make install
+esac
+
+sudo tcs restartserver -a

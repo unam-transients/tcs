@@ -1,0 +1,33 @@
+#!/bin/sh
+
+project=$(uname -n | sed 's/-.*//')
+
+case $project in
+coatli)
+  hosts="control instrument platform"
+  ;;
+colibri)
+  hosts="control detectors"
+  ;;
+ddoti)
+  hosts="control detectors0 detectors1 platform"
+  ;;
+test-ubuntu-2004)
+  hosts="test-ubuntu-2004"
+  ;;
+test-ubuntu-2204)
+  hosts="test-ubuntu-2204"
+  ;;
+*)
+  echo "ERROR: unknown project \"$project\"."
+  exit 1
+esac
+
+for host in $hosts
+do
+  echo "### $host:"
+  ssh -q -t $host ./src/build/install
+  echo "###"
+done
+
+exit 0
