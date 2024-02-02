@@ -1151,22 +1151,25 @@ namespace eval "detector" {
     
     if {$rawacquiring} {
 
-      # There is a bug in the firmware of the PCIe card that causes the blue PC
+      # There was a bug in the firmware of the PCIe card that caused the blue PC
       # to hang if an exposure is aborted. See email with
       # <dgilmore@specinst.com> in 2020/2021. The best thing we can do in this
       # circumstance is simply wait for the exposure to end and then read it
       # out.
 
-      #rawputsiimagecommandpacket "terminateacquisition"
-      #rawgetsiimagedatapacket "terminateacquisition"
-      #set rawacquiring false
+      #if {![detectorrawgetreadytoberead]} {
+      #  return "wait"
+      #} else {
+      #  detectorrawread
+      #  return "ok"
+      #}
       
-      if {![detectorrawgetreadytoberead]} {
-        return "wait"
-      } else {
-        detectorrawread
-        return "ok"
-      }
+      # The bug appears to be fixed in the PCIe card of the red CCD.
+      
+      rawputsiimagecommandpacket "terminateacquisition"
+      rawgetsiimagedatapacket "terminateacquisition"
+      set rawacquiring false
+      
 
     }
 
