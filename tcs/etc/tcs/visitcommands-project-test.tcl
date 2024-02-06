@@ -120,7 +120,7 @@ proc starswaitvisit {endtime} {
 
 ########################################################################
 
-proc alertcommand {filters} {
+proc alertvisit {{filters ""}} {
   log::summary "alertcommand: starting."
   executor::move
   executor::setwindow "default"
@@ -132,6 +132,28 @@ proc alertcommand {filters} {
     coroutine::after 10000
   }
   log::summary "alertcommand: finished."
+  return true
+}
+
+########################################################################
+
+proc coarsefocusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefault"}} {
+
+  log::summary "coarsefocusvisit: starting."
+  executor::setfocused
+  log::summary "coarsefocusvisit: finished."
+
+  return true
+}
+
+########################################################################
+
+proc focusvisit {{exposuretime 5} {filter "i"}} {
+
+  log::summary "focusvisit: starting."
+  executor::setfocused
+  log::summary "focusvisit: finished."
+
   return true
 }
 
