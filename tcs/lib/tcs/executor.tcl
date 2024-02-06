@@ -597,29 +597,41 @@ namespace eval "executor" {
   
   proc updatealertdata {} {
     if {[string equal "" [executor::alert]]} {
-      server::setdata "alertname"           ""
-      server::setdata "alertorigin"         ""
-      server::setdata "alertidentifier"     ""
-      server::setdata "alerttype"           ""
-      server::setdata "alerteventtimestamp" ""
-      server::setdata "alertalerttimestamp" ""
-      server::setdata "alertalpha"          ""
-      server::setdata "alertdelta"          ""
-      server::setdata "alertequinox"        ""
-      server::setdata "alertuncertainty"    ""
-      server::setdata "alertpriority"       ""
+      server::setdata "alertname"            ""
+      server::setdata "alertorigin"          ""
+      server::setdata "alertidentifier"      ""
+      server::setdata "alertswiftidentifier" ""
+      server::setdata "alertfermiidentifier" ""
+      server::setdata "alertlvcidentifier"   ""
+      server::setdata "alertsvomidentifier"  ""
+      server::setdata "alerttype"            ""
+      server::setdata "alerteventtimestamp"  ""
+      server::setdata "alertalerttimestamp"  ""
+      server::setdata "alertalpha"           ""
+      server::setdata "alertdelta"           ""
+      server::setdata "alertequinox"         ""
+      server::setdata "alertuncertainty"     ""
+      server::setdata "alertpriority"        ""
     } else {    
-      server::setdata "alertname"           [alert::name [executor::alert]]
-      server::setdata "alertorigin"         [alert::origin [executor::alert]]
-      server::setdata "alertidentifier"     [alert::identifier [executor::alert]]
-      server::setdata "alerttype"           [alert::type [executor::alert]]
-      server::setdata "alerteventtimestamp" [alert::eventtimestamp [executor::alert]]
-      server::setdata "alertalerttimestamp" [alert::alerttimestamp [executor::alert]]
-      server::setdata "alertalpha"          [astrometry::parsealpha   [alert::alpha [executor::alert]]]
-      server::setdata "alertdelta"          [astrometry::parsedelta   [alert::delta [executor::alert]]]
-      server::setdata "alertequinox"        [astrometry::parseequinox [alert::equinox [executor::alert]]]
-      server::setdata "alertuncertainty"    [astrometry::parseoffset  [alert::uncertainty [executor::alert]]]
-      server::setdata "alertpriority"       [alert::priority [executor::alert]]
+      set alert [executor::alert]
+      foreach key [dict keys $alert] {
+        log::info "alert $key: [dict get $alert $key]"
+      }
+      server::setdata "alertname"            [alert::name [executor::alert]]
+      server::setdata "alertorigin"          [alert::origin [executor::alert]]
+      server::setdata "alertidentifier"      [alert::identifier [executor::alert]]
+      server::setdata "alertswiftidentifier" [alert::originidentifier [executor::alert] "swift"]
+      server::setdata "alertfermiidentifier" [alert::originidentifier [executor::alert] "fermi"]
+      server::setdata "alertlvcidentifier"   [alert::originidentifier [executor::alert] "lvc"  ]
+      server::setdata "alertsvomidentifier"  [alert::originidentifier [executor::alert] "svom" ]
+      server::setdata "alerttype"            [alert::type [executor::alert]]
+      server::setdata "alerteventtimestamp"  [alert::eventtimestamp [executor::alert]]
+      server::setdata "alertalerttimestamp"  [alert::alerttimestamp [executor::alert]]
+      server::setdata "alertalpha"           [astrometry::parsealpha   [alert::alpha [executor::alert]]]
+      server::setdata "alertdelta"           [astrometry::parsedelta   [alert::delta [executor::alert]]]
+      server::setdata "alertequinox"         [astrometry::parseequinox [alert::equinox [executor::alert]]]
+      server::setdata "alertuncertainty"     [astrometry::parseoffset  [alert::uncertainty [executor::alert]]]
+      server::setdata "alertpriority"        [alert::priority [executor::alert]]
     }
     server::setdata "timestamp" [utcclock::combinedformat]
   }
