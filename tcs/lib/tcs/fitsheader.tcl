@@ -198,7 +198,6 @@ namespace eval "fitsheader" {
       projectname            PRKNM  string
       blockname              BLKNM  string
       visitname              VSTNM  string
-      alertfile              ALFL   string
       alertname              ALNM   string
       alertorigin            ALOR   string
       alertidentifier        ALID   string
