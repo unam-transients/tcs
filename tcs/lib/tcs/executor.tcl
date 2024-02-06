@@ -612,11 +612,7 @@ namespace eval "executor" {
       server::setdata "alertequinox"         ""
       server::setdata "alertuncertainty"     ""
       server::setdata "alertpriority"        ""
-    } else {    
-      set alert [executor::alert]
-      foreach key [dict keys $alert] {
-        log::info "alert $key: [dict get $alert $key]"
-      }
+    } else {
       server::setdata "alertname"            [alert::name [executor::alert]]
       server::setdata "alertorigin"          [alert::origin [executor::alert]]
       server::setdata "alertidentifier"      [alert::identifier [executor::alert]]
