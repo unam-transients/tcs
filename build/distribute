@@ -13,13 +13,13 @@ echo "\"$version\"" >tcs/etc/tcs/version.json
 
 case $project in
 coatli)
-  hosts="control instrument platform"
+  hosts="coatli-control coatli-instrument coatli-platform"
   ;;
 colibri)
-  hosts="control detectors"
+  hosts="colibri-control colibri-detectors"
   ;;
 ddoti)
-  hosts="control detectors0 detectors1 platform"
+  hosts="ddoti-control ddoti-detectors0 ddoti-detectors1 ddoti-platform"
   ;;
 test-ubuntu-2004)
   hosts="test-ubuntu-2004"
@@ -35,7 +35,7 @@ esac
 for host in $hosts
 do
   printf "distribute: rsyncing to \"$host\" ... "
-  rsync --exclude=.git/ -ah --delete . ${project}-${host}:src
+  rsync --exclude=.git/ -ah --delete . ${host}:src
   printf "done.\n"
 done
   
