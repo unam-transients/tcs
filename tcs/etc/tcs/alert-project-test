@@ -26,13 +26,20 @@
 // from the alert file.
 
 {
-  "alert": {
-    "command": "alertcommand \"\""
-  },
-  "constraints": {
-    "maxskybrightness": "astronomicaltwilight",
-    "minmoondistance": "15d",
-    "maxzenithdistance": "72d",
-    "maxfocusdelay": "1200"
-  }
+  "name": "",
+  "enabled": "true",
+
+  "command": "alertvisit",
+  "estimatedduration": "10m",
+  "visitidentifier": "0",
+  
+  "prologcommand": "",
+  "prologestimatedduration": "",
+  "prologvisitidentifier": "",
+      
+  "maxskybrightness": "astronomicaltwilight",
+  "minmoondistance": "15d",
+  "maxzenithdistance": "72d",
+  "maxfocusdelay": "1200"
+
 }
