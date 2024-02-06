@@ -190,26 +190,30 @@ namespace eval "fitsheader" {
      }
 
     foreach {key fitskey fitstype} {
-      filetype               FLTP  string
-      filename               FLNM  string
-      projectidentifier      PRPID string
-      blockidentifier        BLKID integer
-      visitidentifier        VSTID integer
-      projectname            PRKNM string
-      blockname              BLKNM string
-      visitname              VSTNM string
-      alertfile              ALFL  string
-      alertname              ALNM  string
-      alertorigin            ALOR  string
-      alertidentifier        ALID  string
-      alerttype              ALTY  string
-      alertalerttimestamp    ALALT date
-      alerteventtimestamp    ALEVT date
-      alertalpha             ALRA  angle
-      alertdelta             ALDE  angle
-      alertequinox           ALEQ  double
-      alertuncertainty       ALUN  angle
-      alertpriority          ALPR  string
+      filetype               FLTP   string
+      filename               FLNM   string
+      projectidentifier      PRPID  string
+      blockidentifier        BLKID  integer
+      visitidentifier        VSTID  integer
+      projectname            PRKNM  string
+      blockname              BLKNM  string
+      visitname              VSTNM  string
+      alertfile              ALFL   string
+      alertname              ALNM   string
+      alertorigin            ALOR   string
+      alertidentifier        ALID   string
+      alertswiftidentifier   ALSWID string
+      alertfermiidentifier   ALFRID string
+      alertlvcidentifier     ALLVID string
+      alertsvomidentifier    ALSVID string
+      alerttype              ALTY   string
+      alertalerttimestamp    ALALT  date
+      alerteventtimestamp    ALEVT  date
+      alertalpha             ALRA   angle
+      alertdelta             ALDE   angle
+      alertequinox           ALEQ   double
+      alertuncertainty       ALUN   angle
+      alertpriority          ALPR   string
     } {
       set comment "executor $key"
       if {![catch {client::getdata "executor" $key} value]} {
@@ -218,14 +222,12 @@ namespace eval "fitsheader" {
         writemissing $channel $fitskey $comment
       }
     }
-    #catch {
-      set i 0
-     foreach task [client::getdata "executor" "visittasks"] {
-        set key [format "VSTTSK%02d" $i]
-        writekeyandvalue $channel $key "string" $task "executor visit task $i"
-        incr i
-      }
-    #}
+    set i 0
+    foreach task [client::getdata "executor" "visittasks"] {
+      set key [format "VSTTSK%02d" $i]
+      writekeyandvalue $channel $key "string" $task "executor visit task $i"
+      incr i
+    }
   }
 
 
