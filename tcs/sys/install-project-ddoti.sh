@@ -141,6 +141,7 @@ EOF
   case $host in
   detectors0)
     echo "tcs instrumentdataserver -f -d rsync://oan-rsync/ddoti-raw/ &"
+    echo "tcs instrumentimageserver C0 control &"
     echo "tcs instrumentimageserver C2 control &"
     echo "tcs instrumentimageserver C4 control &"
     ;;
@@ -148,12 +149,15 @@ EOF
     echo "tcs instrumentdataserver -f -d rsync://oan-rsync/ddoti-raw/ &"
     echo "tcs instrumentimageserver C1 control &"
     echo "tcs instrumentimageserver C3 control &"
+    echo "tcs instrumentimageserver C5 control &"
     ;;
   control)
+    echo "tcs instrumentimageserver C0 &"
     echo "tcs instrumentimageserver C1 &"
     echo "tcs instrumentimageserver C2 &"
     echo "tcs instrumentimageserver C3 &"
     echo "tcs instrumentimageserver C4 &"
+    echo "tcs instrumentimageserver C5 &"
     echo "tcs webcamimageserver a http://ddoti:ddoti@webcam-a/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver b http://ddoti:ddoti@webcam-b/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver c http://ddoti:ddoti@webcam-c/cgi-bin/viewer/video.jpg &"
