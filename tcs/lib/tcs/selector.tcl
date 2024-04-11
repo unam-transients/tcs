@@ -34,7 +34,7 @@ package require "visit"
 
 package provide "selector" 0.0
 
-config::setdefaultvalue "selector" "alertprojectidentifier" "2000"
+config::setdefaultvalue "selector" "alertprojectidentifier" "1000"
 config::setdefaultvalue "selector" "eventtimestamptoleranceseconds" "60"
 
 namespace eval "selector" {
@@ -434,7 +434,10 @@ namespace eval "selector" {
     return
   }
   
-  proc respondtoalert {projectidentifier blockidentifier name origin identifier type alerttimestamp eventtimestamp enabled alpha delta equinox uncertainty} {
+  proc respondtoalert {projectidentifier blockidentifier name origin
+    identifier type alerttimestamp eventtimestamp enabled alpha delta equinox
+    uncertainty priority
+  } {
     variable mode
     
     log::summary "responding to alert for $name."
@@ -464,6 +467,7 @@ namespace eval "selector" {
       log::info [format "position is %s %s %s." [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox]
       log::info [format "uncertainty is %s." [astrometry::formatdistance $uncertainty]]
     }
+    log::info [format "priority is %d." $priority]
     if {![string equal $enabled ""]} {
       if {$enabled} {
         log::info "this alert is enabled."
@@ -503,6 +507,7 @@ namespace eval "selector" {
     variable alertprojectidentifier
     puts $channel [format "  \"projectidentifier\": \"%s\"," $alertprojectidentifier]
     puts $channel [format "  \"identifier\": \"%s\"," [string map {"T" ""} $alertfile]]
+    puts $channel [format "  \"priority\": %d," $priority]
     if {
       ![string equal "" $alpha] && 
       ![string equal "" $delta] &&
@@ -557,7 +562,9 @@ namespace eval "selector" {
     return
   }
   
-  proc respondtolvcalert {projectidentifier blockidentifier name origin identifier type alerttimestamp eventtimestamp enabled skymapurl} {
+  proc respondtolvcalert {projectidentifier blockidentifier name origin
+    identifier type alerttimestamp eventtimestamp enabled skymapurl priority
+  } {
     log::summary "responding to lvc alert."    
     if {![string equal $skymapurl ""]} {
       log::info [format "skymap url is %s." $skymapurl]
@@ -583,7 +590,9 @@ namespace eval "selector" {
       set equinox     ""
       set uncertainty ""
     }
-    respondtoalert $projectidentifier $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty
+    respondtoalert $projectidentifier $blockidentifier $name $origin \
+      $identifier $type $alerttimestamp $eventtimestamp $enabled \
+      $alpha $delta $equinox $uncertainty $priority
     log::summary "finished responding to lvc alert."
     return
   }

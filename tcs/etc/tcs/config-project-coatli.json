@@ -197,7 +197,14 @@
     "fermialertprojectidentifier"  : "1002",
     "lvcalertprojectidentifier"    : "1003",
     "hawcalertprojectidentifier"   : "1004",
-    "icecubealertprojectidentifier": "1005"
+    "icecubealertprojectidentifier": "1005",
+    "swiftbasepriority"            : "5",
+    "fermilatpriority"             : "5",
+    "fermisgrbpriority"            : "6",
+    "fermibasepriority"            : "9",
+    "lvcbasepriority"              : "9",
+    "hawcbasepriority"             : "8",
+    "icecubebasepriority"          : "8"
   },
   "heater": {
     "type": "gpio",
