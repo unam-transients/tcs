@@ -40,7 +40,7 @@
   "C0": {
     "telescopedescription": "DDOTI 28-cm f/2.2",
     "detectortype": "fli",
-    "detectoridentifier": "ML2351018",
+    "detectoridentifier": "ML6104016",
     "detectorunbinnedpixelscale": "2.0as",
     "detectorreadmodes": {
       "initial": "default",
@@ -413,7 +413,7 @@
   "C5": {
     "telescopedescription": "DDOTI 28-cm f/2.2",
     "detectortype": "fli",
-    "detectoridentifier": "ML2341018",
+    "detectoridentifier": "ML2351018",
     "detectorunbinnedpixelscale": "2.0as",
     "detectorreadmodes": {
       "initial": "default",
@@ -511,7 +511,14 @@
     "fermialertprojectidentifier"  : "1002",
     "lvcalertprojectidentifier"    : "1003",
     "hawcalertprojectidentifier"   : "1004",
-    "icecubealertprojectidentifier": "1005"
+    "icecubealertprojectidentifier": "1005",
+    "swiftbasepriority"            : "6",
+    "fermilatpriority"             : "5",
+    "fermisgrbpriority"            : "5",
+    "fermibasepriority"            : "9",
+    "lvcbasepriority"              : "9",
+    "hawcbasepriority"             : "8",
+    "icecubebasepriority"          : "8"
   },
   "heater": {
     "type": "gpio",
@@ -539,13 +546,16 @@
   },
   "instrument": {
     "detectors": [
-      "C1", "C2", "C3", "C4"
+      "C0", "C1", "C2", "C3", "C4", "C5"
     ],
     "activedetectors": [
+      "C0", "C1", "C2", "C3", "C4", "C5"
+    ],
+    "activefocusers": [
       "C1", "C2", "C3", "C4"
     ],
     "pointingdetectors": [
-      "C1", "C2", "C3", "C4"
+      "C0", "C1", "C2", "C3", "C4", "C5"
     ],
     "outletgroups": []
   },

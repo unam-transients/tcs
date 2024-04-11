@@ -44,10 +44,12 @@ $(function () {
     "webcam-b-small" : "webcam/b/latest-small.jpg",
     "webcam-cz-small": "webcam/cz/latest-small.jpg",
     "webcam-c-small" : "webcam/c/latest-small.jpg",
+    "C0-small"       : "instrument/C0/latest-small.jpg",
     "C1-small"       : "instrument/C1/latest-small.jpg",
     "C2-small"       : "instrument/C2/latest-small.jpg",
     "C3-small"       : "instrument/C3/latest-small.jpg",
     "C4-small"       : "instrument/C4/latest-small.jpg",
+    "C5-small"       : "instrument/C5/latest-small.jpg",
     "allsky-small"   : "webcam/allsky/latest-small.jpg",
   });
   newcomponent("summary", "Summary");
@@ -64,10 +66,12 @@ $(function () {
 <a href="webcam-c.html"><img src="blank.png"  alt="Webcam C"  id="webcam-c-small"  class="webcam-small"/></a>
 </div>
 <div id="images">
+<a href="C0.html"><img src="blank.png" alt="C0" id="C0-small" class="instrument-small"/></a>
 <a href="C1.html"><img src="blank.png" alt="C1" id="C1-small" class="instrument-small"/></a>
 <a href="C2.html"><img src="blank.png" alt="C2" id="C2-small" class="instrument-small"/></a>
 <a href="C3.html"><img src="blank.png" alt="C3" id="C3-small" class="instrument-small"/></a>
 <a href="C4.html"><img src="blank.png" alt="C4" id="C4-small" class="instrument-small"/></a>
+<a href="C5.html"><img src="blank.png" alt="C5" id="C5-small" class="instrument-small"/></a>
 </div>
 
 <div id="navigation">
@@ -79,10 +83,12 @@ $(function () {
 <a href="" onclick='newcomponent("error"        , "Error"        ); return false;'>Error</a> |
 <a href="plots.html">Plots</a>
 </br>
+<a href="" onclick='newcomponent("C0"           , "C0"           ); return false;'>C0</a> | 
 <a href="" onclick='newcomponent("C1"           , "C1"           ); return false;'>C1</a> | 
 <a href="" onclick='newcomponent("C2"           , "C2"           ); return false;'>C2</a> | 
 <a href="" onclick='newcomponent("C3"           , "C3"           ); return false;'>C3</a> | 
 <a href="" onclick='newcomponent("C4"           , "C4"           ); return false;'>C4</a> | 
+<a href="" onclick='newcomponent("C5"           , "C5"           ); return false;'>C5</a> | 
 <a href="" onclick='newcomponent("enclosure"    , "Enclosure"    ); return false;'>Enclosure</a> | 
 <a href="" onclick='newcomponent("executor"     , "Executor"     ); return false;'>Executor</a> | 
 <a href="" onclick='newcomponent("gcntan"       , "GCN/TAN"      ); return false;'>GCN/TAN</a> | 
