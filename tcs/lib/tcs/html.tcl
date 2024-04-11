@@ -1286,7 +1286,7 @@ namespace eval "html" {
         [formatalphaifdouble [client::getdata "gcntan" "swiftalpha"]] \
         [formatdeltaifdouble [client::getdata "gcntan" "swiftdelta"] 1] \
         [formatifok "%.2f" [client::getdata "gcntan" "swiftequinox"]]
-     } else {
+    } else {
       writehtmlrow "Swift pointing (α,δ)"
     }
   
