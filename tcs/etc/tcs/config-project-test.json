@@ -22,11 +22,18 @@
 ////////////////////////////////////////////////////////////////////////
 
 {
+  //"site": {
+  //  "longitude": "-99:10:40",
+  //  "latitude": "+19:19:33.0",
+  //  "altitude": "2280.0",
+  //  "civiltimezone": "America/Mexico_City"
+  //},
+  
   "site": {
-    "longitude": "-99:10:40",
-    "latitude": "+19:19:33.0",
-    "altitude": "2280.0",
-    "civiltimezone": "America/Mexico_City"
+    "longitude": "+5.712393d",
+    "latitude": "+43.932081d",
+    "altitude": "650.0",
+    "civiltimezone": "Europe/Paris"
   },
 
   "html": {
@@ -70,7 +77,14 @@
     "fermialertprojectidentifier"   : "1002",
     "lvcalertprojectidentifier"     : "1003",
     "hawcalertprojectidentifier"    : "1004",
-    "icecubealertprojectidentifier" : "1005"
+    "icecubealertprojectidentifier" : "1005",
+    "swiftbasepriority"             : "5",
+    "fermilatpriority"              : "5",
+    "fermisgrbpriority"             : "6",
+    "fermibasepriority"             : "10",
+    "lvcbasepriority"               : "10",
+    "hawcbasepriority"              : "10",
+    "icecubebasepriority"           : "10"
   },
 
   "swift": {

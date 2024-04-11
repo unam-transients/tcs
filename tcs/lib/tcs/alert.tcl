@@ -70,7 +70,20 @@ namespace eval "alert" {
     if {![string equal $maxeventtimestamp ""]} {
       set alert [dict merge $alert [dict create "maxeventtimestamp" [utcclock::combinedformat $maxeventtimestamp]]]
     }
-
+    
+    # Determine the minimum priority.
+    set priority ""
+    foreach newalert $newalerts {
+      if {[dict exists $newalert "priority"]} {
+        set newpriority [dict get $newalert "priority"]
+        if {[string equal $priority ""] || $newpriority < $priority} {
+          set priority $newpriority
+        }
+      }
+    }
+    if {![string equal $priority ""]} {
+      set alert [dict merge $alert [dict create "priority" $priority]]
+    }    
     return $alert  
   }
   
