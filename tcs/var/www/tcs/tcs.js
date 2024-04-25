@@ -192,6 +192,9 @@ $(function () {
   $("form#system-rebootplatform").submit(function () {
     return submitrequest("rebootplatform");
   });
+  $("form#system-loadblocks").submit(function () {
+    return submitrequest("loadblocks");
+  });
   $("form#emergencystop").submit(function () {
     return submitrequest("emergencystop");
   });

@@ -40,6 +40,9 @@ proc request {request} {
   } elseif {[string equal $request "rebootplatform"]} {
     exec -ignorestderr "sudo" "-n" "$prefix/bin/tcs" "rebootplatform"
     return ""
+  } elseif {[string equal $request "loadblocks"]} {
+    exec -ignorestderr "sudo" "-n" "$prefix/bin/tcs" "loadblocks"
+    return ""
   } elseif {[string equal $request "emergencystop"]} {
     exec -ignorestderr "sudo" "-n" "$prefix/bin/tcs" "emergencystop"
     set server supervisor
