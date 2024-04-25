@@ -26,6 +26,9 @@ package provide "focuserddoti" 0.0
 namespace eval "focuser" {
 
   variable settledelayseconds 0.5
+  
+  # Conversion factor so that steps correspond to those of the Celestron focus motor.
+  variable positionfactor 3.6
 
   variable channel
   
@@ -40,6 +43,7 @@ namespace eval "focuser" {
     variable rawdescription
     variable rawminposition
     variable rawmaxposition
+    variable positionfactor
     
     log::debug "openspecific: starting."
 
@@ -52,8 +56,12 @@ namespace eval "focuser" {
       error "unable to configure $identifier."
     }
     
+    flushinput
+
     set rawminposition 0
-    set rawmaxposition 80000
+    # The actual maximum is 80000/3.6, but we use 20000 to keep the numbers rounded.
+    #set rawmaxposition [expr {int(80000 / $positionfactor)}]
+    set rawmaxposition 20000
     
     log::debug "openspecific: sending AB."
     sendcommand "AB"
@@ -75,6 +83,13 @@ namespace eval "focuser" {
     ::close $channel
   }
   
+  proc flushinput {} {
+    variable channel
+    chan configure $channel -blocking false
+    read $channel
+    chan configure $channel -blocking true
+  }
+  
   proc getreply {} {
     variable channel
     while {true} {
@@ -91,6 +106,7 @@ namespace eval "focuser" {
     variable channel
     variable rawposition
     variable rawdescription
+    variable positionfactor
     log::debug "sendcommand: sending \"$command\"."
     flush $channel
     puts $channel $command
@@ -101,6 +117,7 @@ namespace eval "focuser" {
         if {[scan $reply "POSITION: %d" rawposition] != 1} {
           error "unexpected reply \"$reply\" from controller."
         }
+        set rawposition [expr {int($rawposition / $positionfactor)}]
         log::debug "sendcommand: PO: rawposition = $rawposition."
       }
       "ID" {
@@ -144,11 +161,13 @@ namespace eval "focuser" {
   }
   
   proc focuserrawsetposition {newposition} {
+    variable positionfactor
     log::debug "focuserrawsetposition: starting."
     if {$newposition < [focuserrawgetminposition] || $newposition > [focuserrawgetmaxposition]} {
       return "invalid position"
     }
     sendcommand "AB"
+    set newposition [expr {int($newposition * $positionfactor)}]
     sendcommand [format "ST %d" $newposition]
     sendcommand "PO"
     log::debug "focuserrawsetposition: done."
@@ -171,11 +190,13 @@ namespace eval "focuser" {
   }
   
   proc focuserrawmove {newposition} {
+    variable positionfactor
     log::debug "focuserrawmove: starting."
     if {$newposition < [focuserrawgetminposition] || $newposition > [focuserrawgetmaxposition]} {
       return "invalid position"
     }
     sendcommand "AB"
+    set newposition [expr {int($newposition * $positionfactor)}]
     sendcommand [format "MA %d" $newposition]
     log::debug "focuserrawmove: done."
     return "ok"

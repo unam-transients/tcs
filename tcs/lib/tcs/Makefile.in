@@ -64,6 +64,7 @@ installs	:=			           \
 	fitfocus.tcl	    		   \
 	fitsheader.tcl	    		   \
 	focuser.tcl			           \
+	focusercelestron.tcl           \
 	focuserddoti.tcl               \
 	focuserfli.tcl		    	   \
 	focusergemini.tcl              \
