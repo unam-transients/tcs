@@ -59,6 +59,13 @@ else
   usageerror
 fi
 
+################################################################################
+
+$tcsprefix/bin/tcs fetchblocks
+
+################################################################################
+
+
 if test ! -r "$blockfile"
 then
   log info "cannot read \"$blockfile\"."
@@ -97,65 +104,100 @@ done
 
 log summary "loading blocks."
 
-expand "$blockfile" |
 awk \
- -v queuedir="$queuedir" \
- -v targetdate="$targetdate" \
- -v targetdayofyear="$targetdayofyear" \
+  -v queuedir="$queuedir" \
+  -v targetdate="$targetdate" \
+  -v targetdayofyear="$targetdayofyear" \
 '
-/^ *#/ {
-  # Skip comment lines.
-  next;
-}
-/^ *$/ {
-  # Skip empty lines.
-  next;
-}
-NF >= 4 {
-  action     = $1 
-  priority   = $2
-  duplicates = $3
-  blockfile  = $4
-}
-NF == 7 && $5 == "day" {
-  phase = $6
-  period = $7
-  if (phase != targetdayofyear % period)
-    next;
-}
-NF == 6 && $5 == "date" {
-  date = $6
-  if (date != targetdate)
-    next;
-}
+
+function readfile(filename)
 {
+  ++filestackindex;
+  printf("reading file %s.\n", filename);
+  filenamestack[filestackindex] = filename;
+  while ((getline < filenamestack[filestackindex]) > 0) {
+    processline();
+  }
+  --filestackindex;
+}
+
+function processline() {
+
+  if (NF == 0)
+    return;
+    
+  if (substr($1, 0, 1) == "#")
+    return;
+    
+  if ($1 == "include") {
+    if (NF != 2) {
+      printf("echo error \"invalid include directive: $0\"\n")
+    } else {
+      readfile($2)
+    }
+    return;
+  }
+
+  if (NF < 4) {
+    printf("echo error \"invalid directive: %s\"\n", $0)
+  }
+
+  action     = $1;
+  priority   = $2;
+  duplicates = $3;
+  blockfile  = $4;
+
+  if (NF == 7 && $5 == "day") {
+    phase = $6
+    period = $7
+    if (phase != targetdayofyear % period)
+      return;
+  }
+  if (NF == 6 && $5 == "date") {
+    date = $6
+    if (date != targetdate)
+      return;
+  }
+
   if (duplicates > 999) {
     duplicates = 999
   }
-}
-action == "load" {
-  for (i = 0; i < duplicates; ++i)
-    printf("for blockfile in %s.json; do echo load $blockfile %s-%03d-$blockfile; done\n", blockfile, priority, i)
-}
-action == "unload" {
-  if (duplicates == "*") {
-    printf("echo unload - \"%s-*-%s.json\"\n", priority, blockfile)
-  } else {
+
+  if (action == "load") {
     for (i = 0; i < duplicates; ++i)
-      printf("unload - \"%s-%03d-%s.json\"\n", priority, i, blockfile)
+      printf("for blockfile in %s.json; do echo load $blockfile %s-%03d-$blockfile; done\n", blockfile, priority, i)
+  } else if (action == "unload") {
+    if (duplicates == "*") {
+      printf("echo unload - \"%s-*-%s.json\"\n", priority, blockfile)
+    } else {
+      for (i = 0; i < duplicates; ++i)
+        printf("echo unload - \"%s-%03d-%s.json\"\n", priority, i, blockfile)
+    }
   }
+
 }
-' |
+
+BEGIN {
+  filestackindex = 0
+  readfile(ARGV[1])
+  exit(0)
+}
+' "$blockfile" |
 sh |
-while read action src dst
+tee /dev/tty |
+while read action arg1 arg2
 do
   if test "$action" = "load"
   then
-    log info "loading $dst."
-    sudo cp "$src" "$queuedir"/$dst
-  else
-    log info "unloading $dst."
-    sudo rm -f "$queuedir"/$dst
+    log info "loading $arg2."
+    sudo cp "$arg1" "$queuedir"/$arg2
+  elif test "$action" = "unload"
+  then
+    log info "unloading $arg2."
+    sudo rm -f "$queuedir"/$arg2
+  elif test "$action" = "error"
+  then
+    log error "$arg1 $arg2"
   fi
 done
 
