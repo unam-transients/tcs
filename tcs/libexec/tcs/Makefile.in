@@ -36,7 +36,6 @@ installbins         :=            \
 	emergencystop                 \
 	executorserver                \
 	fansserver                    \
-	fetchblocks                   \
 	fitschpix                     \
 	fitsdatawindow                \
 	fitsfocus                     \
