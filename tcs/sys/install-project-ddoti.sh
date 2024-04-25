@@ -88,8 +88,8 @@ EOF
 *  *  *  *  *  tcs updateweatherfiles-oan
 00 18 *  *  *  tcs updateweatherfiles-oan -a
 *  *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
-00 00 *  *  *  tcs fetchblocks
-01 00 *  *  *  tcs loadblocks
+00 00 *  *  *  tcs loadblocks -F
+01 00 *  *  *  tcs loadblocks -L
 */5 *  *  *  *  sh /usr/local/var/www/tcs/plots.sh
 */5 *  *  *  *  tcs logsensors
 EOF

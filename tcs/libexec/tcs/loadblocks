@@ -21,7 +21,9 @@ log () {
   echo 1>&2 "$(date -u '+%F %T'): $program: $level: $*"
 }
 
-optstring=
+optstring=LF
+loadlocalonly=false
+fetchonly=false
 if ! getopt -qQ -- "$optstring" "$@"
 then
   usageerror
@@ -30,6 +32,14 @@ eval set -- "$(getopt -q -- "$optstring" "$@")"
 while test "$1" != "--"
 do
   case "$1" in
+  -L)
+    loadlocalonly=true
+    shift
+    ;;
+  -F)
+    fetchonly=true
+    shift
+    ;;
   *)
     usageerror
     ;;
@@ -61,7 +71,53 @@ fi
 
 ################################################################################
 
-$tcsprefix/bin/tcs fetchblocks
+if ! $loadlocalonly
+then
+
+  cwd="$(pwd)"
+
+  log summary "fetching blocks."
+
+  case $(hostname) in
+  coatli-*)
+    url="https://github.com/alanwatsonforster/coatli-blocks.git"
+    ;;
+  ddoti-*)
+    url="https://github.com/alanwatsonforster/ddoti-blocks.git"
+    ;;
+  *)
+    error "unable to determing URL."
+    ;;
+  esac
+
+  etcdir="$tcsprefix"/etc/tcs/
+  cd "$etcdir"
+
+  log info "cloning from $url to blocks.new/."
+  sudo rm -rf blocks.new
+  sudo mkdir blocks.new
+  if ! sudo git clone -q $url blocks.new/
+  then
+    error "clone failed."
+  fi
+
+  log info "moving blocks/ to blocks.old/."
+  sudo rm -rf blocks.old
+  sudo mv blocks blocks.old
+
+  log info "moving blocks.new/ to blocks/."
+  sudo mv blocks.new blocks
+
+  log summary "finished fetching blocks."
+  
+  cd "$cwd"
+  
+  if $fetchonly
+  then
+    exit 0
+  fi
+
+fi
 
 ################################################################################
 
@@ -113,11 +169,12 @@ awk \
 function readfile(filename)
 {
   ++filestackindex;
-  printf("reading file %s.\n", filename);
+  printf("echo reading %s\n", filename);
   filenamestack[filestackindex] = filename;
   while ((getline < filenamestack[filestackindex]) > 0) {
     processline();
   }
+  printf("echo finishedreading %s\n", filename);
   --filestackindex;
 }
 
@@ -184,10 +241,15 @@ BEGIN {
 }
 ' "$blockfile" |
 sh |
-tee /dev/tty |
 while read action arg1 arg2
 do
-  if test "$action" = "load"
+    if test "$action" = "reading"
+  then
+    log info "reading $arg1."
+  elif test "$action" = "finishedreading"
+  then
+    log info "finished reading $arg1."
+  elif test "$action" = "load"
   then
     log info "loading $arg2."
     sudo cp "$arg1" "$queuedir"/$arg2
