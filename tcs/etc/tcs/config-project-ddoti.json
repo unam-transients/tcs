@@ -96,10 +96,10 @@
       "idle"   : "w",
       "closed" : "w"
     },
-    "focusertype": "null",
+    "focusertype": "celestron",
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:5:1.0",
-    "focuserinitialposition": 40000,
-    "focuserbacklashoffset": "-450",
+    "focuserinitialposition": 30000,
+    "focuserbacklashoffset": "-100",
     "focuserdzmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": "false",
@@ -172,9 +172,9 @@
     },
     // Controller A (red)
     "focusertype": "ddoti",
-    "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:5:1.0",
-    "focuserinitialposition": 40000,
-    "focuserbacklashoffset": "-450",
+    "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:7:1.0",
+    "focuserinitialposition": 10000,
+    "focuserbacklashoffset": "-100",
     "focuserdzmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": "false",
@@ -248,8 +248,8 @@
     // Controller E (yellow)
     "focusertype": "ddoti",
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:7:1.0",
-    "focuserinitialposition": 40000,
-    "focuserbacklashoffset": "-450",
+    "focuserinitialposition": 10000,
+    "focuserbacklashoffset": "-100",
     "focuserdzmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": "false",
@@ -323,8 +323,8 @@
     // Controller B (yellow)
     "focusertype": "ddoti",
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:8:1.0",
-    "focuserinitialposition": 40000,
-    "focuserbacklashoffset": "-450",
+    "focuserinitialposition": 10000,
+    "focuserbacklashoffset": "-100",
     "focuserdzmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": "false",
@@ -397,8 +397,8 @@
     },
     "focusertype": "ddoti",
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:8:1.0",
-    "focuserinitialposition": 40000,
-    "focuserbacklashoffset": "-450",
+    "focuserinitialposition": 10000,
+    "focuserbacklashoffset": "-100",
     "focuserdzmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": "false",
@@ -469,10 +469,10 @@
       "idle"   : "w",
       "closed" : "w"
     },
-    "focusertype": "null",
-    "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:7:1.0",
-    "focuserinitialposition": 40000,
-    "focuserbacklashoffset": "-450",
+    "focusertype": "celestron",
+    "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:5:1.0",
+    "focuserinitialposition": 30000,
+    "focuserbacklashoffset": "-100",
     "focuserdzmodel": {},
     "pointingmodelparameters": {},
     "isstandalone": "false",
@@ -546,16 +546,16 @@
   },
   "instrument": {
     "detectors": [
-      "C0", "C1", "C2", "C3", "C4", "C5"
+      "C0", "C1", "C2", "C3", "C4"
     ],
     "activedetectors": [
-      "C0", "C1", "C2", "C3", "C4", "C5"
+      "C0", "C1", "C2", "C3", "C4"
     ],
     "activefocusers": [
-      "C1", "C2", "C3", "C4"
+      "C0", "C1", "C2", "C3", "C4"
     ],
     "pointingdetectors": [
-      "C0", "C1", "C2", "C3", "C4", "C5"
+      "C0", "C1", "C2", "C3"
     ],
     "outletgroups": []
   },

@@ -98,6 +98,8 @@ package ifneeded fitfocus              0.0 \
   [list source [file join [file dirname [info script]] fitfocus.tcl]]
 package ifneeded fitsheader            0.0 \
   [list source [file join [file dirname [info script]] fitsheader.tcl]]
+package ifneeded focusercelestron      0.0 \
+  [list source [file join [file dirname [info script]] focusercelestron.tcl]]
 package ifneeded focuserddoti          0.0 \
   [list source [file join [file dirname [info script]] focuserddoti.tcl]]
 package ifneeded focuserfli            0.0 \
