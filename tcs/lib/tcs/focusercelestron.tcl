@@ -48,6 +48,8 @@ namespace eval "focuser" {
   variable iscalibrated
   variable iscalibrating
   
+  variable softoffset 21000
+  
   proc openspecific {identifier} {
 
     variable channel
@@ -211,9 +213,11 @@ namespace eval "focuser" {
       "rawmove" {
         set commandbyte 0x17
         set position $args
-        set byte0 [expr {($position >> 16) & 0xff}]
-        set byte1 [expr {($position >>  8) & 0xff}]
-        set byte2 [expr {($position >>  0) & 0xff}]
+        variable softoffset
+        set rawposition [expr {$position + $softoffset}]
+        set byte0 [expr {($rawposition >> 16) & 0xff}]
+        set byte1 [expr {($rawposition >>  8) & 0xff}]
+        set byte2 [expr {($rawposition >>  0) & 0xff}]
         set databytes [list $byte0 $byte1 $byte2]
       }
       "ismoving" {
@@ -255,6 +259,9 @@ namespace eval "focuser" {
         set byte2 [lindex $databytes 2]
         variable rawposition
         set rawposition [expr {($byte0 << 16) + ($byte1 << 8) + $byte2}]
+        variable softoffset
+        variable position
+        set position [expr {$rawposition - $softoffset}]
       }
       "ismoving" {
         if {[llength $databytes] != 1} {
@@ -331,12 +338,16 @@ namespace eval "focuser" {
   }
   
   proc focuserrawgetposition {} {
-    variable rawposition
-    return $rawposition
+    variable position
+    return $position
   }
   
   proc focuserrawsetposition {newposition} {
-    return "not possible with this hardware"
+    variable softoffset
+    variable position
+    set rawposition [expr {$position + $softoffset}]
+    set softoffset [expr {$rawposition - $newposition}]
+    return "ok"
   }
   
   proc focuserrawgetdescription {} {
