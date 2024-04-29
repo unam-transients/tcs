@@ -574,10 +574,6 @@ proc domeflatsvisit {} {
 
   executor::setsecondaryoffset 0
 
-  if {[executor::isunparked]} {
-    executor::move
-  }
-
   executor::movefocuser "center"
   executor::setreadmode "conventionaldefault"
   executor::setwindow "default"
@@ -648,10 +644,6 @@ proc biasesvisit {} {
   log::summary "biasesvisit: starting."
 
   executor::setsecondaryoffset 0
-
-  if {[executor::isunparked]} {
-    executor::move
-  }
 
   executor::movefocuser "center"
   executor::movefilterwheel "dark"
