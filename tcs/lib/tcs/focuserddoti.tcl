@@ -56,6 +56,7 @@ namespace eval "focuser" {
       error "unable to configure $identifier."
     }
     
+    coroutine::after 5000
     flushinput
 
     set rawminposition 0
