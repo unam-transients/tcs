@@ -1209,8 +1209,8 @@ namespace eval "html" {
         writehtmlrow "Rain sensor flag" [client::getdata "enclosure" "rainsensorflag"]
         writehtmlrow "Safety rail flag" [client::getdata "enclosure" "safetyrailflag"]
         writehtmlrow "Emergency stop flag" [client::getdata "enclosure" "emergencystopflag"]
-        writehtmlrow "Input channels" [client::getdata "enclosure" "inputchannels"]
-        writehtmlrow "Output channels" [client::getdata "enclosure" "outputchannels"]
+        writehtmlfullrow "Input channels" [client::getdata "enclosure" "inputchannels"]
+        writehtmlfullrow "Output channels" [client::getdata "enclosure" "outputchannels"]
       }
     }
   
