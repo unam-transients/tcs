@@ -48,8 +48,9 @@ namespace eval "focuser" {
   variable iscalibrated
   variable iscalibrating
   
-  variable softoffset 21000
-  
+  variable ccdidentifier [config::getvalue "ccd" "identifier"]
+  variable softoffset [config::getvalue $ccdidentifier "focusersoftoffset"]
+      
   proc openspecific {identifier} {
 
     variable channel
@@ -83,13 +84,15 @@ namespace eval "focuser" {
       log::info "focuser is calibrated."
     } else {
       log::info "calibrating focuser."
+      set start [utcclock::seconds]
       sendcommand "calibrate"
       sendcommand "calibrationstatus"
       while {$iscalibrating} {
         coroutine::after 2000
         sendcommand "calibrationstatus"
       }
-      log::info "finished calibrating focuser."
+      set end [utcclock::seconds]
+      log::info [format "finished calibrating focuser after %.1f seconds." [expr {$end - $start}]]
     }
 
     variable rawminposition
@@ -136,7 +139,6 @@ namespace eval "focuser" {
     set checksum [expr {(-$checksum) & 0xff}]
     set packet [binary format "ccc*c" $preamble $n $payload $checksum]
 
-    flush $channel
     puts -nonewline $channel $packet
     flush $channel
 
@@ -144,7 +146,7 @@ namespace eval "focuser" {
   
   proc readbyte {} {
     variable channel
-    set c [read $channel 1]
+    set c [coroutine::read $channel 1 100]
     binary scan $c "cu" byte
     return $byte
   }
@@ -154,29 +156,36 @@ namespace eval "focuser" {
     variable preamble
     variable remoteidentifier 
     variable focuseridentifier
+    
+    log::debug "recvpacket: reading preamble."
 
     set byte [readbyte]
     if {$byte != $preamble} {
       error [format "unexpected preamble %02x in reply packet." $byte]
     }
 
+    log::debug "recvpacket: reading length."
     set n [readbyte]
 
+    log::debug "recvpacket: reading source."
     set sourcebyte [readbyte]
     if {$sourcebyte != $focuseridentifier} {
       error [format "unexpected source %02x in reply packet." $sourcebyte]
     }
 
+    log::debug "recvpacket: reading destination."
     set destinationbyte [readbyte]
     if {$destinationbyte != $remoteidentifier} {
       error [format "unexpected destination %02x in reply packet." $destinationbyte]
     }
 
+    log::debug "recvpacket: reading command."
     set commandbyte [readbyte]
     if {$commandbyte != $expectedcommandbyte} {
       error [format "unexpected command %02x in reply packet." $commandbyte]
     }
   
+    log::debug "recvpacket: reading data."
     set i 0
     set ndatabytes [expr {$n - 3}]
     set databytes {}
@@ -185,6 +194,7 @@ namespace eval "focuser" {
       incr i
     }
   
+    log::debug "recvpacket: reading checksum."
     set expectedchecksum $n
     set expectedchecksum [expr {$expectedchecksum + $sourcebyte}]
     set expectedchecksum [expr {$expectedchecksum + $destinationbyte}]
@@ -198,12 +208,17 @@ namespace eval "focuser" {
     if {$checksum != $expectedchecksum} {
       error [format "checksum error in reply packet."]
     }  
+    
+    log::debug "recvpacket: done."
+
   
     return $databytes
   
   }
   
   proc sendcommand {command args} {
+  
+    log::debug "sendcommand: $command $args"
   
     case $command {
       "rawupdateposition" {
@@ -245,10 +260,22 @@ namespace eval "focuser" {
       }
     }
 
-    flushinput
-    sendpacket $commandbyte $databytes
-    set databytes [recvpacket $commandbyte]
+    #log::debug "sendcommand: flushing input."
+    #flushinput
 
+    set start [utcclock::seconds]
+    log::debug "sendcommand: sending packet."
+    sendpacket $commandbyte $databytes
+    set end [utcclock::seconds]
+    log::debug [format "sendcommand: finished sending packet after %.3f seconds." [expr {$end - $start}]]
+
+    set start [utcclock::seconds]
+    log::debug "sendcommand: receiving packet."
+    set databytes [recvpacket $commandbyte]
+    set end [utcclock::seconds]
+    log::debug [format "sendcommand: finished receiving packet after %.3f seconds." [expr {$end - $start}]]
+
+    log::debug "parsing received packet."
     case $command {
       "rawupdateposition" {
         if {[llength $databytes] != 3} {
@@ -262,6 +289,7 @@ namespace eval "focuser" {
         variable softoffset
         variable position
         set position [expr {$rawposition - $softoffset}]
+        log::debug "position = $position rawposition = $rawposition."
       }
       "ismoving" {
         if {[llength $databytes] != 1} {
@@ -296,7 +324,7 @@ namespace eval "focuser" {
         }
         set byte0 [lindex $databytes 0]
         set byte1 [lindex $databytes 1]
-        log::info "focuser calibration state is $byte1."
+        log::debug "focuser calibration state is $byte1."
         variable iscalibrated
         variable iscalibrating
         if {$byte0 > 0} {
@@ -330,6 +358,8 @@ namespace eval "focuser" {
       }
     }
     
+    log::debug "sendcommand: done."
+    
   }
   
   proc focuserrawupdateposition {} {
@@ -343,10 +373,12 @@ namespace eval "focuser" {
   }
   
   proc focuserrawsetposition {newposition} {
+    variable ccdidentifier
     variable softoffset
     variable position
     set rawposition [expr {$position + $softoffset}]
     set softoffset [expr {$rawposition - $newposition}]
+    config::setvarvalue $ccdidentifier "focusersoftoffset" $softoffset
     return "ok"
   }
   
