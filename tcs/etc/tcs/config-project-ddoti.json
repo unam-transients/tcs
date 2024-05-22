@@ -98,9 +98,10 @@
     },
     "focusertype": "celestron",
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:5:1.0",
-    "focuserinitialposition": 30000,
+    "focuserinitialposition": 10000,
     "focuserbacklashoffset": "-100",
     "focuserdzmodel": {},
+    "focusersoftoffset": 21000,
     "pointingmodelparameters": {},
     "isstandalone": "false",
     "fitsfwhmargs": {
@@ -413,7 +414,7 @@
   "C5": {
     "telescopedescription": "DDOTI 28-cm f/2.2",
     "detectortype": "fli",
-    "detectoridentifier": "ML2351018",
+    "detectoridentifier": "ML2331018",
     "detectorunbinnedpixelscale": "2.0as",
     "detectorreadmodes": {
       "initial": "default",
@@ -546,16 +547,16 @@
   },
   "instrument": {
     "detectors": [
-      "C0", "C1", "C2", "C3", "C4"
+      "C0", "C1", "C2", "C3", "C4", "C5"
     ],
     "activedetectors": [
-      "C0", "C1", "C2", "C3", "C4"
+      "C0", "C1", "C2", "C3", "C4", "C5"
     ],
     "activefocusers": [
-      "C0", "C1", "C2", "C3", "C4"
+      "C0", "C1", "C2", "C3", "C4", "C5"
     ],
     "pointingdetectors": [
-      "C0", "C1", "C2", "C3"
+      "C1", "C2"
     ],
     "outletgroups": []
   },
