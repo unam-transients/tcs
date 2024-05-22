@@ -49,14 +49,17 @@ namespace eval "enclosure" {
 
   ######################################################################
 
-  server::setdata "inputchannels"     ""
-  server::setdata "outputchannels"    ""
+  server::setdata "inputchannels"     0
+  server::setdata "outputchannels"    0
   server::setdata "mode"              ""
   server::setdata "errorflag"         ""
   server::setdata "motorcurrentflag"  ""
   server::setdata "rainsensorflag"    ""
   server::setdata "safetyrailflag"    ""
   server::setdata "emergencystopflag" ""
+  
+  variable inputchannels 0
+  variable outputchannels 0
 
   proc isignoredcontrollerresponseresponse {response} {
     switch -- $response {
@@ -78,11 +81,22 @@ namespace eval "enclosure" {
       return false
     }
 
+    variable inputchannels
+    variable outputchannels
+
+    set lastinputchannels  $inputchannels
+    set lastoutputchannels $outputchannels
+    
     if {[scan $controllerresponse "!%2x%2x00" outputchannels inputchannels] != 2} {
       error "invalid response: \"$controllerresponse\"."
     }
     
-    log::debug [format "input channels = %02x output channels = %02x" $inputchannels $outputchannels] 
+    if {$lastoutputchannels != $outputchannels} {
+      log::info [format "output channels changed from %s to %s." [outputbits $lastoutputchannels] [outputbits $outputchannels]]
+    }
+    if {$lastinputchannels != $inputchannels} {
+      log::info [format "input channels changed from %s to %s." [inputbits $lastinputchannels] [inputbits $inputchannels]]
+    }
 
     switch -- [expr {($inputchannels >> 0) & 3}] {
       0 { set enclosure "intermediate" }
@@ -187,12 +201,12 @@ namespace eval "enclosure" {
     server::setstatus "ok"
     server::setdata "timestamp"         $timestamp
     server::setdata "lasttimestamp"     $lasttimestamp
-    server::setdata "inputchannels"     [format "%02X: %08b" $inputchannels $inputchannels]
-    server::setdata "outputchannels"    [format "%02X: %08b" $outputchannels $outputchannels]
+    server::setdata "inputchannels"     [inputbits  $inputchannels ]
+    server::setdata "outputchannels"    [outputbits $outputchannels]
     server::setdata "enclosure"         $enclosure
     server::setdata "lastenclosure"     $lastenclosure
     server::setdata "mode"              $mode
-    server::setdata "errorflag"       $errorflag
+    server::setdata "errorflag"         $errorflag
     server::setdata "motorcurrentflag"  $motorcurrentflag
     server::setdata "rainsensorflag"    $rainsensorflag
     server::setdata "safetyrailflag"    $safetyrailflag
@@ -204,6 +218,8 @@ namespace eval "enclosure" {
       [string equal $errorflag "error"] &&
       ![string equal [server::getdata "activity"] "starting"] &&
       ![string equal [server::getdata "activity"] "resetting"] &&
+      ![string equal [server::getdata "activity"] "opening"] &&
+      ![string equal [server::getdata "activity"] "closing"] &&
       ![string equal [server::getdata "activity"] "error"]
     } {
       log::error "the controller error flag is set."
@@ -213,6 +229,34 @@ namespace eval "enclosure" {
     return true
   }
 
+  ######################################################################
+  
+  proc inputbits {inputchannels} {
+    set names {}
+    if {($inputchannels >> 0) & 1} { lappend names "open" }
+    if {($inputchannels >> 1) & 1} { lappend names "closed" }
+    if {($inputchannels >> 2) & 1} { lappend names "error" }
+    if {($inputchannels >> 3) & 1} { lappend names "remote" }
+    if {($inputchannels >> 4) & 1} { lappend names "overcurrent" }
+    if {($inputchannels >> 5) & 1} { lappend names "rainsensor" }
+    if {($inputchannels >> 6) & 1} { lappend names "safetystrip" }
+    if {($inputchannels >> 7) & 1} { lappend names "emergencystop" }
+    return [format "%08b (%s)" $inputchannels [join $names "/"]]
+  }
+  
+  proc outputbits {outputchannels} {
+    set names {}
+    if {($outputchannels >> 0) & 1} { lappend names "open" }
+    if {($outputchannels >> 1) & 1} { lappend names "close" }
+    if {($outputchannels >> 2) & 1} { lappend names "reset" }
+    if {($outputchannels >> 3) & 1} { lappend names "60" }
+    if {($outputchannels >> 4) & 1} { lappend names "90" }
+    if {($outputchannels >> 5) & 1} { lappend names "120" }
+    if {($outputchannels >> 6) & 1} { lappend names "unusedbit6" }
+    if {($outputchannels >> 7) & 1} { lappend names "unusedbit7" }
+    return [format "%08b (%s)" $outputchannels [join $names "/"]]
+  }
+  
   ######################################################################
   
   proc dostart {} {
@@ -227,12 +271,14 @@ namespace eval "enclosure" {
   }
   
   proc doopen {position} {
-    if {$position == 60 || $position == 120} {
-      # We can't move directly from a larger to a smaller position. So, we
-      # close first. Strictly speaking, this is not necessary if we move
-      # from 60 to 120, but it doesn't seem worthwhile to optimize this case.
-      controller::sendcommand "#010002\r"
-      settle
+    if {![string equal [server::getdata "enclosure"] "closed"]} {
+        if {$position == 60 || $position == 120} {
+          # We can't move directly from a larger to a smaller position. So, we
+          # close first. Strictly speaking, this is not necessary if we move
+          # from 60 to 120, but it doesn't seem worthwhile to optimize this case.
+          controller::sendcommand "#010002\r"
+          settle
+        }
     }
     if {$position == 60} {
       set selector [expr 0x08]
