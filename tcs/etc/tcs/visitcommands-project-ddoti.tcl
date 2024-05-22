@@ -29,7 +29,7 @@ proc alertvisit {{filter "w"}} {
   set delta   [visit::delta   [executor::visit]]
   set equinox [visit::equinox [executor::visit]]
 
-  log::info "alertvisit: the coordinates are $alpha $delta $equinox."
+  log::summary [format "alertvisit: alert coordinates are %s %s %s." [astrometry::formatalpha $alpha]  [astrometry::formatdelta $delta] $equinox]
 
   log::info "alertvisit: reading alert."
 
@@ -150,7 +150,7 @@ proc alertvisit {{filter "w"}} {
     set delta   [alert::delta [executor::alert]]
     set equinox [alert::equinox [executor::alert]]
     
-    log::info "alertvisit: the coordinates are $alpha $delta $equinox."
+    log::summary [format "alertvisit: alert coordinates are %s %s %s." [astrometry::formatalpha $alpha]  [astrometry::formatdelta $delta] $equinox]
 
     if {$alpha != $lastalpha || $delta != $lastdelta || $equinox != $lastequinox} {
       log::summary "alertvisit: the coordinates have been updated."
@@ -223,12 +223,12 @@ proc alertprologvisit {} {
   executor::setwindow "2kx2k"
   executor::setbinning 8
   executor::waituntiltracking
-  executor::focus 1 8000 1000 false true
+  executor::focus 1 2000 250 false true
 
   log::summary "alertprologvisit: focusing with binning 1."
   executor::setwindow "1kx1k"
   executor::setbinning 1
-  executor::focus 4 2000 250 false false
+  executor::focus 4 600 75 false false
 
   # Then correct pointing
 
@@ -498,22 +498,22 @@ proc allskyprologvisit {} {
   client::update "target"
   set zenithdistance [client::getdata "target" "observedzenithdistance"]
   if {$zenithdistance > [astrometry::parsedistance "45d"]} {
-    log::summary "allskyprologvisit: focusing with binning 4."
+    log::summary "allskyprologvisit: focusing with binning 8."
     executor::setwindow "2kx2k"
-    executor::setbinning 4
-    executor::focus 1 12000 1200 false true
+    executor::setbinning 8
+    executor::focus 1 3000 400 false true
   }
 
-  log::summary "allskyprologvisit: focusing with binning 2."
+  log::summary "allskyprologvisit: focusing with binning 4."
   executor::setwindow "2kx2k"
-  executor::setbinning 2
-  executor::focus 2 4000 400 false false
+  executor::setbinning 4
+  executor::focus 2 1000 100 false false
   executor::setfocused
 
   log::summary "allskyprologvisit: focusing with binning 1."
   executor::setwindow "1kx1k"
   executor::setbinning 1
-  executor::focus 4 4000 400 true false
+  executor::focus 4 1000 100 true false
   executor::setfocused
 
   # Then correct pointing
@@ -568,31 +568,31 @@ proc initialfocusvisit {} {
     executor::setwindow "2kx2k"
     executor::setbinning 8
     executor::waituntiltracking
-    executor::focus 1 8000 1000 false true
+    executor::focus 1 2000 250 false true
     
     log::summary "initialfocusvisit: focus witness with binning 4."
     executor::setbinning 4
     executor::expose focuswitness 1
     
-    set worstfwhmpixels [client::getdata "instrument" "worstfwhmpixels"]
-    if {[string equal $worstfwhmpixels "unknown"] || $worstfwhmpixels > 6} {
-      log::warning "initialfocusvisit: refocusing as worst witness FWHM is $worstfwhmpixels pixels."
-      continue
-    }
+    #set worstfwhmpixels [client::getdata "instrument" "worstfwhmpixels"]
+    #if {[string equal $worstfwhmpixels "unknown"] || $worstfwhmpixels > 6} {
+    #  log::warning "initialfocusvisit: refocusing as worst witness FWHM is $worstfwhmpixels pixels."
+    #  continue
+    #}
     
     log::summary "initialfocusvisit: focusing with binning 1."
     executor::setwindow "1kx1k"
     executor::setbinning 1
-    executor::focus 4 2000 250 false false
+    executor::focus 4 600 75 false false
 
     log::summary "initialfocusvisit: focus witness with binning 1."
     executor::expose focuswitness 4
 
-    set worstfwhmpixels [client::getdata "instrument" "worstfwhmpixels"]
-    if {[string equal $worstfwhmpixels "unknown"] || $worstfwhmpixels > 6} {
-      log::warning "initialfocusvisit: refocusing as worst witness FWHM is $worstfwhmpixels pixels."
-      continue
-    }
+    #set worstfwhmpixels [client::getdata "instrument" "worstfwhmpixels"]
+    #if {[string equal $worstfwhmpixels "unknown"] || $worstfwhmpixels > 6} {
+    #  log::warning "initialfocusvisit: refocusing as worst witness FWHM is $worstfwhmpixels pixels."
+    #  continue
+    #}
     
     break
 
@@ -638,31 +638,31 @@ proc focusvisit {} {
     executor::setwindow "2kx2k"
     executor::setbinning 8
     executor::waituntiltracking
-    executor::focus 1 5000 500 false true
+    executor::focus 1 2000 250 false true
 
     log::summary "focusvisit: focus witness with binning 4."
     executor::setbinning 4
     executor::expose focuswitness 1
     
-    set worstfwhmpixels [client::getdata "instrument" "worstfwhmpixels"]
-    if {[string equal $worstfwhmpixels "unknown"] || $worstfwhmpixels > 6} {
-      log::warning "focusvisit: refocusing as worst witness FWHM is $worstfwhmpixels pixels."
-      continue
-    }
+    #set worstfwhmpixels [client::getdata "instrument" "worstfwhmpixels"]
+    #if {[string equal $worstfwhmpixels "unknown"] || $worstfwhmpixels > 6} {
+    #  log::warning "focusvisit: refocusing as worst witness FWHM is $worstfwhmpixels pixels."
+    #  continue
+    #}
 
     log::summary "focusvisit: focusing with binning 1."
     executor::setwindow "1kx1k"
     executor::setbinning 1
-    executor::focus 4 2000 250 false false
+    executor::focus 4 400 50 false false
 
     log::summary "focusvisit: focus witness with binning 1."
     executor::expose focuswitness 4
 
-    set worstfwhmpixels [client::getdata "instrument" "worstfwhmpixels"]
-    if {[string equal $worstfwhmpixels "unknown"] || $worstfwhmpixels > 6} {
-      log::warning "focusvisit: refocusing as worst witness FWHM is $worstfwhmpixels pixels."
-      continue
-    }
+    #set worstfwhmpixels [client::getdata "instrument" "worstfwhmpixels"]
+    #if {[string equal $worstfwhmpixels "unknown"] || $worstfwhmpixels > 6} {
+    #  log::warning "focusvisit: refocusing as worst witness FWHM is $worstfwhmpixels pixels."
+    #  continue
+    #}
     
     break
 
@@ -670,9 +670,9 @@ proc focusvisit {} {
 
   executor::setfocused
 
-  log::summary "focusvisit: full focus witness with binning 1."
-  executor::setwindow "default"
-  executor::expose focuswitness 4
+  #log::summary "focusvisit: full focus witness with binning 1."
+  #executor::setwindow "default"
+  #executor::expose focuswitness 4
 
   log::summary "focusvisit: finished."
 
@@ -692,7 +692,7 @@ proc finefocusvisit {} {
   executor::setwindow "1kx1k"
   executor::setbinning 1
   executor::waituntiltracking
-  executor::focus 4 2000 250 false false
+  executor::focus 4 600 75 false false
 
   executor::setfocused
 
@@ -741,10 +741,10 @@ proc focusmapvisit {} {
   executor::setwindow "2kx2k"
   executor::setbinning 8
   executor::waituntiltracking
-  executor::focus 1 5000 500 false true
+  executor::focus 1 1000 125 false true
 
-  log::summary "focusmapvisit: focus witness with binning 4."
-  executor::setbinning 4
+  log::summary "focusmapvisit: focus witness with binning 8."
+  executor::setbinning 8
   executor::expose focuswitness 1
     
   set worstfwhmpixels [client::getdata "instrument" "worstfwhmpixels"]
@@ -757,7 +757,7 @@ proc focusmapvisit {} {
   log::summary "focusmapvisit: focusing with binning 1."
   executor::setwindow "1kx1k"
   executor::setbinning 1
-  executor::focus 4 2000 250 false false
+  executor::focus 4 600 75 false false
 
   log::summary "focusmapvisit: focus witness with binning 1."
   executor::expose focuswitness 4
@@ -884,9 +884,6 @@ proc twilightflatsvisit {} {
 
 proc domeflatsvisit {} {
   log::summary "domeflatsvisit: starting."
-  if {[executor::isunparked]} {
-    executor::move
-  }
   executor::setbinning 1
   executor::setwindow "default"
   set detectors [client::getdata instrument detectors]
@@ -937,9 +934,6 @@ proc domeflatsvisit {} {
 
 proc biasesvisit {{exposures 10}} {
   log::summary "biasesvisit: starting."
-  if {[executor::isunparked]} {
-    executor::move
-  }
   executor::setwindow "default"
   executor::setreadmode "16MHz"
   executor::setbinning 1
@@ -958,9 +952,6 @@ proc biasesvisit {{exposures 10}} {
 
 proc darksvisit {{exposures 10} {exposuretime 60}} {
   log::summary "darksvisit: starting."
-  if {[executor::isunparked]} {
-    executor::move
-  }
   executor::setwindow "default"
   executor::setreadmode "16MHz"
   executor::setbinning 1
@@ -979,7 +970,7 @@ proc darksvisit {{exposures 10} {exposuretime 60}} {
 
 proc aperturesvisit {} {
   log::summary "aperturesvisit: starting."
-  executor::setbinning 4
+  executor::setbinning 8
   executor::setwindow "default"
   executor::track
   executor::waituntiltracking
