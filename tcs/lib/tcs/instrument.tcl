@@ -24,7 +24,6 @@
 package require "astrometry"
 package require "client"
 package require "fitfocus"
-package require "safetyswitch"
 package require "server"
 
 package provide "instrument" 0.0
@@ -664,7 +663,6 @@ namespace eval "instrument" {
   proc initialize {} {
     server::checkstatus
     server::checkactivityforinitialize
-    safetyswitch::checksafetyswitch
     server::newactivitycommand "initializing" "idle" \
       "instrument::initializeactivitycommand"
   }
@@ -672,7 +670,6 @@ namespace eval "instrument" {
   proc open {} {
     server::checkstatus
     server::checkactivity "idle"
-    safetyswitch::checksafetyswitch
     server::newactivitycommand "opening" "idle" \
       "instrument::openactivitycommand"
   }
@@ -680,7 +677,6 @@ namespace eval "instrument" {
   proc opentoventilate {} {
     server::checkstatus
     server::checkactivity "idle"
-    safetyswitch::checksafetyswitch
     server::newactivitycommand "opening" "idle" \
       "instrument::opentoventilateactivitycommand"
   }
@@ -688,14 +684,12 @@ namespace eval "instrument" {
   proc close {} {
     server::checkstatus
     server::checkactivity "idle"
-    safetyswitch::checksafetyswitch
     server::newactivitycommand "closing" "idle" \
       "instrument::closeactivitycommand"
   }
   
   proc emergencyclose {} {
     # Do not check status or activity.
-    safetyswitch::checksafetyswitch
     server::newactivitycommand "closing" "idle" \
       "instrument::emergencycloseactivitycommand"
   }
@@ -710,7 +704,6 @@ namespace eval "instrument" {
   proc reset {} {
     server::checkstatus
     server::checkactivityforreset
-    safetyswitch::checksafetyswitch
     server::newactivitycommand "resetting" [server::getstoppedactivity] \
       "instrument::resetactivitycommand"
   }
@@ -718,7 +711,6 @@ namespace eval "instrument" {
   proc recover {} {
     server::checkstatus
     server::checkactivityforreset
-    safetyswitch::checksafetyswitch
     server::newactivitycommand "recovering" "idle" \
       "instrument::recoveractivitycommand"
   }
@@ -726,7 +718,6 @@ namespace eval "instrument" {
   proc idle {} {
     server::checkstatus
     server::checkactivityforreset
-    safetyswitch::checksafetyswitch
     server::newactivitycommand "idling" "idle" \
       "instrument::idleactivitycommand"
   }
@@ -734,7 +725,6 @@ namespace eval "instrument" {
   proc setreadmode {args} {
     server::checkstatus
     server::checkactivity "idle"
-    safetyswitch::checksafetyswitch
     variable detectors
     if {[llength $args] == 1} {
       set args [lrepeat [llength $detectors] $args]
@@ -750,7 +740,6 @@ namespace eval "instrument" {
   proc setwindow {args} {
     server::checkstatus
     server::checkactivity "idle"
-    safetyswitch::checksafetyswitch
     variable detectors
     if {[llength $args] == 1} {
       set args [lrepeat [llength $detectors] $args]
@@ -766,7 +755,6 @@ namespace eval "instrument" {
   proc setbinning {args} {
     server::checkstatus
     server::checkactivity "idle"
-    safetyswitch::checksafetyswitch
     variable detectors
     if {[llength $args] == 1} {
       set args [lrepeat [llength $detectors] $args]
@@ -782,7 +770,6 @@ namespace eval "instrument" {
   proc movefocuser {args} {
     server::checkstatus
     server::checkactivity "idle"
-    safetyswitch::checksafetyswitch
     variable detectors
     if {[llength $args] == 1} {
       set args [lrepeat [llength $detectors] $args]
@@ -798,7 +785,6 @@ namespace eval "instrument" {
   proc setfocuser {args} {
     server::checkstatus
     server::checkactivity "idle"
-    safetyswitch::checksafetyswitch
     variable detectors
     if {[llength $args] == 1} {
       set args [lrepeat [llength $detectors] $args]
@@ -814,7 +800,6 @@ namespace eval "instrument" {
   proc movefilterwheel {args} {
     server::checkstatus
     server::checkactivity "idle"
-    safetyswitch::checksafetyswitch
     variable detectors
     if {[llength $args] == 1} {
       set args [lrepeat [llength $detectors] $args]
@@ -835,7 +820,6 @@ namespace eval "instrument" {
   proc exposefull {type fitsfiledir starttime args} {
     server::checkstatus
     server::checkactivity "idle"
-    safetyswitch::checksafetyswitch
     variable detectors
     if {[llength $args] == 1} {
       set args [lrepeat [llength $detectors] $args]
@@ -884,7 +868,6 @@ namespace eval "instrument" {
   proc analyze {args} {
     server::checkstatus
     server::checkactivity "idle"
-    safetyswitch::checksafetyswitch
     variable detectors
     if {[llength $args] == 1} {
       set args [lrepeat [llength $detectors] $args]
@@ -911,7 +894,6 @@ namespace eval "instrument" {
   proc focus {fitsfiledir range step witness initial args} {
     server::checkstatus
     server::checkactivity "idle"
-    safetyswitch::checksafetyswitch
     variable detectors
     if {[llength $args] == 1} {
       set args [lrepeat [llength $detectors] $args]
@@ -927,7 +909,6 @@ namespace eval "instrument" {
   proc mapfocus {fitsfileprefix range step args} {
     server::checkstatus
     server::checkactivity "idle"
-    safetyswitch::checksafetyswitch
     variable detectors
     if {[llength $args] == 1} {
       set args [lrepeat [llength $detectors] $args]
