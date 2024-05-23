@@ -263,17 +263,26 @@ namespace eval "focuser" {
     #log::debug "sendcommand: flushing input."
     #flushinput
 
-    set start [utcclock::seconds]
-    log::debug "sendcommand: sending packet."
-    sendpacket $commandbyte $databytes
-    set end [utcclock::seconds]
-    log::debug [format "sendcommand: finished sending packet after %.3f seconds." [expr {$end - $start}]]
+    while {[catch {
+        set start [utcclock::seconds]
+        log::debug "sendcommand: sending packet."
+        sendpacket $commandbyte $databytes
+        set end [utcclock::seconds]
+        log::debug [format "sendcommand: finished sending packet after %.3f seconds." [expr {$end - $start}]]
 
-    set start [utcclock::seconds]
-    log::debug "sendcommand: receiving packet."
-    set databytes [recvpacket $commandbyte]
-    set end [utcclock::seconds]
-    log::debug [format "sendcommand: finished receiving packet after %.3f seconds." [expr {$end - $start}]]
+        set start [utcclock::seconds]
+        log::debug "sendcommand: receiving packet."
+        set databytes [recvpacket $commandbyte]
+        set end [utcclock::seconds]
+        log::debug [format "sendcommand: finished receiving packet after %.3f seconds." [expr {$end - $start}]]
+    } message]} {
+        log::warning "$message"
+        coroutine::after 1000
+        log::debug "sendcommand: flushing input."
+        flushinput        
+        log::info "sending command again."
+    }
+
 
     log::debug "parsing received packet."
     case $command {
