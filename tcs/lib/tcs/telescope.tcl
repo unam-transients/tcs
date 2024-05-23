@@ -925,6 +925,19 @@ namespace eval "telescope" {
     move 0h [astrometry::formatdelta [astrometry::latitude]] "equatorial"
   }
   
+  proc moveawayfromsun {} {
+    log::info "moving away from Sun."
+
+    client::update "sun"
+    set sunazimuth [client::getdata "sun" "observedazimuth"]
+    set azimuth [astrometry::foldradpositive [expr {$sunazimuth + $astrometry::pi}]]
+
+    set zenithdistancelimit [astrometry::parseangle [config::getvalue "target" "maxzenithdistancelimit"]]
+    set zenithdistance [expr {$zenithdistancelimit - [astrometry::parseangle "1d"]}]
+
+    move [astrometry::formatazimuth $azimuth] [astrometry::formatzenithdistance $zenithdistance] "horizontal"
+  }
+  
   proc park {} {
     server::checkstatus
     server::checkactivity "moving" "tracking" "idle"
