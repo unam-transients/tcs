@@ -85,6 +85,10 @@ namespace eval "telescopeserver" {
     telescope::movetozenith
   }
   
+  proc slavemoveawayfromsun {} {
+    telescope::moveawayfromsun
+  }
+  
   proc slavepark {} {
     telescope::park
   }
@@ -142,6 +146,7 @@ namespace eval "telescopeserver" {
     interp alias $slave move                        {} telescopeserver::slavemove
     interp alias $slave movetoidle                  {} telescopeserver::slavemovetoidle
     interp alias $slave movetozenith                {} telescopeserver::slavemovetozenith
+    interp alias $slave moveawayfromsun             {} telescopeserver::slavemoveawayfromsun
     interp alias $slave park                        {} telescopeserver::slavepark
     interp alias $slave unpark                      {} telescopeserver::slaveunpark
     interp alias $slave track                       {} telescopeserver::slavetrack
