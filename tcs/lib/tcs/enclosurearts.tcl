@@ -265,8 +265,10 @@ namespace eval "enclosure" {
   
   proc doinitialize {} {
     controller::sendcommand "#010004\r"
-    controller::sendcommand "#010002\r"
-    settle
+    if {![string equal [server::getdata "enclosure"] "closed"]} {
+        controller::sendcommand "#010002\r"
+    }
+    settle    
     controller::sendcommand "#010000\r"
   }
   
@@ -293,7 +295,9 @@ namespace eval "enclosure" {
   }
   
   proc doclose {} {
-    controller::sendcommand "#010002\r"
+    if {![string equal [server::getdata "enclosure"] "closed"]} {
+        controller::sendcommand "#010002\r"
+    }
     settle
     controller::sendcommand "#010000\r"
   }
@@ -334,15 +338,6 @@ namespace eval "enclosure" {
   
   proc checkformove {type} {
     checkremote
-    if {![string equal $type "open"] && ![string equal [server::getdata "safetyrailflag"] "ok"]} {
-      error "the enclosure safety rail is not ok."
-    }
-    if {![string equal [server::getdata "emergencystopflag"] "ok"]} {
-      error "the enclosure emergency stop is not ok."
-    }
-    if {![string equal [server::getdata "motorcurrentflag"] "ok"]} {
-      error "the enclosure motor current is not ok."
-    }
     if {![string equal [server::getdata "errorflag"] "ok"]} {
       error "the enclosure controller has an error."
     }
