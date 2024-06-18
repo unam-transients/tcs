@@ -52,11 +52,11 @@
     "port": 5006
   },
   "C0": {
-    "host": "control",
+    "host": "detectors",
     "port": 5007
   },
   "C1": {
-    "host": "control",
+    "host": "detectors",
     "port": 5008
   },
   "plc": {

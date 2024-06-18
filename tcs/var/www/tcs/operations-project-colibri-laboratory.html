@@ -27,7 +27,7 @@ PERFORMANCE OF THIS SOFTWARE.
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <link rel="stylesheet" href="style.css" type="text/css"/>
-<title>COLIBRI Engineering</title>
+<title>COLIBRI Operations</title>
 </head>
 
 <body>
@@ -37,12 +37,13 @@ PERFORMANCE OF THIS SOFTWARE.
 <script type="text/javascript" src="tcs.js"></script>
 <script language="javascript">
 $(function () {
-  interfacetype = "Engineering"
+  interfacetype = "Operations";
   confirmrequest = true;
   refreshimage({
     "allsky-small"   : "webcam/allsky/latest-small.jpg",
     "webcam-a-small" : "webcam/a/latest-small.jpg",
-    "C0-small"       : "instrument/C0/latest-small.jpg"
+    "C0-small"       : "instrument/C0/latest-small.jpg",
+    "C1-small"       : "instrument/C1/latest-small.jpg",
   });
   newcomponent("summary", "Summary");
 });
@@ -54,11 +55,12 @@ $(function () {
 <a href="allsky.html"  ><img src="blank.png" alt="All-Sky Camera" id="allsky-small"   class="allsky-small"    /></a>
 <a href="webcam-a.html"><img src="blank.png" alt="Webcam A"       id="webcam-a-small" class="webcam-small"    /></a>
 <a href="C0.html"      ><img src="blank.png" alt="C0"             id="C0-small"       class="instrument-small"/></a>
+<a href="C1.html"      ><img src="blank.png" alt="C1"             id="C1-small"       class="instrument-small"/></a>
 </div>
 
 <div id="navigation">
 <a href="/">Home</a> |
-<a href="operations.html">Operations</a> |
+<a href="engineering.html">Engineering</a> |
 <a href="" onclick='newcomponent("info"               , "Info"                ); return false;'>Info</a> | 
 <a href="" onclick='newcomponent("summary"            , "Summary"             ); return false;'>Summary</a> | 
 <a href="" onclick='newcomponent("warning"            , "Warning"             ); return false;'>Warning</a> |
@@ -66,6 +68,7 @@ $(function () {
 <a href="plots.html">Plots</a>
 </br>
 <a href="" onclick='newcomponent("C0"                 , "C0"                  ); return false;'>C0</a> | 
+<a href="" onclick='newcomponent("C1"                 , "C1"                  ); return false;'>C1</a> | 
 <a href="" onclick='newcomponent("covers"             , "Covers"              ); return false;'>Covers</a> | 
 <a href="" onclick='newcomponent("executor"           , "Executor"            ); return false;'>Executor</a> |
 <a href="" onclick='newcomponent("html"               , "HTML"                ); return false;'>HTML</a> |
@@ -87,7 +90,7 @@ $(function () {
 </div>
 
 <div id="title">
-<h1>COLIBRI Engineering</h1>
+<h1>COLIBRI Operations</h1>
 </div>
 
 </div>
@@ -102,13 +105,6 @@ $(function () {
 <td class="control">
 <form id="supervisor-enable">
 <input type="submit" value="Enable"/>
-</form>
-</td>
-</tr>
-<tr>
-<td class="control">
-<form id="supervisor-disable">
-<input type="submit" value="Disable"/>
 </form>
 </td>
 </tr>
@@ -159,40 +155,6 @@ $(function () {
 <td class="control">
 <form id="system-restart">
 <input type="submit" value="Restart"/>
-</form>
-</td>
-</tr>
-<tr>
-<tr>
-<td class="control">
-<form id="executor-initialize">
-<input type="submit" value="Initialize"/>
-</form>
-</td>
-</tr>
-<tr>
-<tr>
-<td class="control">
-<form id="executor-recover">
-<input type="submit" value="Recover"/>
-</form>
-</td>
-</tr>
-<tr>
-<td class="control">
-<form id="selector-refocus">
-<input type="submit" value="Refocus"/>
-</form>
-</td>
-</tr>
-</table>
-
-<table class="control">
-<tr><th class="control full" align="center">Hardware</th></tr>
-<tr>
-<td class="control">
-<form id="system-rebootcomputers">
-<input type="submit" value="Reboot Computers"/>
 </form>
 </td>
 </tr>
