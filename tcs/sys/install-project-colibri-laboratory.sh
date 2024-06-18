@@ -33,7 +33,16 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 # Start of tcs epilog.
 
 192.168.100.1     firewall                colibri-firewall
-192.168.100.26    control                 colibri-control
+192.168.100.23    opentsi                 colibri-opentsi
+192.168.100.50    access                  colibri-access
+192.168.100.51    pdu1                    colibri-pdu1
+192.168.100.52    pdu2                    colibri-pdu2
+192.168.100.53    sparepdu                colibri-sparepdu
+192.168.100.54    control                 colibri-control
+192.168.100.55    oldcontrol              colibri-oldcontrol
+192.168.100.56    detectors               colibri-detectors
+192.168.100.57    blue                    colibri-blue
+192.168.100.59    red                     colibri-red
 EOF
 ) | 
 sudo cp /dev/stdin /etc/hosts.tmp
@@ -65,7 +74,7 @@ EOF
   case $host in
   control)
     cat <<"EOF"
-*      *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles control
+*      *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles control detectors
 *      *  *  *  *  /usr/local/bin/tcs updateweatherfiles-oan
 *      *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
 */5    *  *  *  *  /usr/local/bin/tcs logsensors
@@ -116,8 +125,9 @@ EOF
     ;;
   control)
     echo "tcs instrumentimageserver C0 &"
+    echo "tcs instrumentimageserver C1 &"
     #echo "tcs webcamimageserver a https://www.colibri-obs.org/wp-content/uploads/2021/01/cam-colibri1.jpeg &"
-    echo "tcs allskyimageserver http://132.248.4.140/imagenes/ultima_RED.jpg &"
+    #echo "tcs allskyimageserver http://iris.lam.fr/wp-includes/images/ftp_iris/allskyISM.jpg &"
     echo "mkdir -p /usr/local/var/tcs/reboot"
     echo "mkdir -p /usr/local/var/tcs/restart"
     echo "mkdir -p /usr/local/var/tcs/halt"

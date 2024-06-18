@@ -124,6 +124,14 @@ installbins_project_ddoti :=      \
 installbins_project_colibri :=    \
     coversserver                  \
 	C0server                      \
+	telescopecontrollerserver     \
+	plcserver                     \
+	secondaryserver               \
+	updateweatherfiles-oan
+		
+installbins_project_colibri_laboratory :=    \
+    coversserver                  \
+	C0server                      \
 	C1server                      \
 	telescopecontrollerserver     \
 	plcserver                     \

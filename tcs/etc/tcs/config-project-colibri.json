@@ -23,10 +23,10 @@
 
 
 {
-  "C0-fli": {
-    "telescopedescription": "OHP COLIBRI 1.3-m",
+  "C0": {
+    "telescopedescription": "OAN COLIBRI 1.3-m",
     "detectortype": "fli",
-    "detectoridentifier": "PL1344016",
+    "detectoridentifier": "ML0032515",
     "detectorunbinnedpixelscale": "0.381as",
     "detectorreadmodes": {
       "initial": "default",
@@ -50,10 +50,12 @@
       "nx": 4096,
       "ny": 11      
     },
+    "coolerstartsetting": "following",
     "cooleropensetting": "0",
     "coolerclosedsetting": "following",
     "temperaturelimit": 50,
     "temperaturelimitoutletgroup": "",
+    "filterwheelidentifier": "null",
     "filterwheeltype": "null",
     "filters": {
       "w"      : "0",
@@ -76,210 +78,6 @@
       "16": "-A"
     }
   },
-  "C0": {
-
-    "detectortype": "si",
-    "detectoridentifier": "blue:2055",
-    "detectorunbinnedpixelscale": "0.381as",
-    "detectorreadmodes": {
-      "initial": "default",
-      "closed" : "default",
-      "default": "0"
-    },
-    "detectorinitialsoftwaregain": 1,
-    "detectorinitialbinning": 1,
-    "detectorwindows": {
-      "initial": "default",
-      "default": "4kx4k",
-      "center": "1kx1k",
-      "1kx1k": {
-        "sx": 1586,
-        "sy": 1544,
-        "nx": 1024,
-        "ny": 1024
-      },
-      "2kx2k": {
-        "sx": 1074,
-        "sy": 1032,
-        "nx": 2048,
-        "ny": 2048
-      },
-      // For the default "4kx4k" window, we skip the first and last 8 rows for
-      // two reasons. First, the first and last row show odd behavior both in
-      // the underscan (high values) and the active (low value) regions. Second,
-      // it makes the data section square. If we really want the full CCD, we
-      // can use the implicit "full" window.
-      "4kx4k": {
-        "sx": 2,
-        "sy": 8,
-        "nx": 4192,
-        "ny": 4096
-      }
-    },
-    "detectorfullunbinneddatawindow": {
-      "sx": 50,
-      "sy": 0,
-      "nx": 4096,
-      "ny": 4112
-    },
-    "detectorfullunbinnedbiaswindow": {
-      "sx": 0,
-      "sy": 0,
-      "nx": 50,
-      "ny": 4112
-    },
-    "coolerstartsetting": "last",
-    "cooleropensetting": "last",
-    "coolerclosedsetting": "last",
-    "temperaturelimit": 45,
-    "temperaturelimitoutletgroup": "blue-service-cabinet",
-
-    //"filterwheeltype": "null",
-    //"filterwheelidentifier": "null",
-    //"filters": {
-    //  "w"      : "0",
-    //  "initial": "w",
-    //  "idle"   : "w",
-    //  "closed" : "w"
-    //},
-
-    "filterwheeltype": "fli",
-    // The DDRAGO CFW-14-5 filter wheels are:
-    // FW0011318 -- firmware serial number "CFW-14-5"
-    // FW0021318 -- firmware serial number "FW0021318"
-    // FW0031318 -- firmware serial number "FW0031318"
-    "filterwheelidentifier": "FW0031318",
-    "filters": {
-      // 2021-09-13: r and g were accidentally installed in the wrong slots at OHP.
-      "g"      : "0",
-      "r"      : "1",
-      "i"      : "2",
-      "gri"    : "3",
-      "B"      : "4",
-      "initial": "r",
-      "idle"   : "r",
-      "closed" : "r"
-    },
-
-    "focusertype": "null",
-    "focuseridentifier": "null",
-    "focuserinitialposition": 0,
-    "focuserbacklashoffset": 0,
-    "focuserdzmodel": {},
-
-    "telescopedescription": "OHP COLIBRI 1.3-m",
-    "pointingmodelparameters": {},
-    "isstandalone": false,
-    "fitsfwhmargs": {
-      "1": "-m",
-      "2": "-A",
-      "4": "-A",
-      "8": "-A",
-      "16": "-A"
-    }
-
-  },
-
-  "C1": {
-
-    "detectortype": "si",
-    "detectoridentifier": "red:2055",
-    "detectorunbinnedpixelscale": "0.381as",
-    "detectorreadmodes": {
-      "initial": "default",
-      "closed" : "default",
-      "default": "0"
-    },
-    "detectorinitialsoftwaregain": 1,
-    "detectorinitialbinning": 1,
-    "detectorwindows": {
-      "initial": "default",
-      "default": "4kx4k",
-      "center": "1kx1k",
-      "1kx1k": {
-        "sx": 1586,
-        "sy": 1544,
-        "nx": 1024,
-        "ny": 1024
-      },
-      "2kx2k": {
-        "sx": 1074,
-        "sy": 1032,
-        "nx": 2048,
-        "ny": 2048
-      },
-      // For the default "4kx4k" window, we skip the first and last 8 rows for
-      // two reasons. First, the first and last row show odd behavior both in
-      // the underscan (high values) and the active (low value) regions. Second,
-      // it makes the data section square. If we really want the full CCD, we
-      // can use the implicit "full" window.
-      "4kx4k": {
-        "sx": 2,
-        "sy": 8,
-        "nx": 4192,
-        "ny": 4096
-      }
-    },
-    "detectorfullunbinneddatawindow": {
-      "sx": 50,
-      "sy": 0,
-      "nx": 4096,
-      "ny": 4112
-    },
-    "detectorfullunbinnedbiaswindow": {
-      "sx": 0,
-      "sy": 0,
-      "nx": 50,
-      "ny": 4112
-    },
-    "coolerstartsetting": "last",
-    "cooleropensetting": "last",
-    "coolerclosedsetting": "last",
-    "temperaturelimit": 45,
-    "temperaturelimitoutletgroup": "red-service-cabinet",
-
-    "filterwheeltype": "null",
-    "filterwheelidentifier": "null",
-    "filters": {
-      "w"      : "0",
-      "initial": "w",
-      "idle"   : "w",
-      "closed" : "w"
-    },
-
-    //"filterwheeltype": "fli",
-    // The DDRAGO CFW-14-5 filter wheels are:
-    // FW0011318 -- firmware serial number "CFW-14-5"
-    // FW0021318 -- firmware serial number "FW0021318"
-    // FW0031318 -- firmware serial number "FW0031318"
-    //"filterwheelidentifier": "FW0021318",
-    //"filters": {
-    //  "z"      : "0",
-    //  "y"      : "1",
-    //  "zy"     : "2",
-    //  "initial": "z",
-    //  "idle"   : "z",
-    //  "closed" : "z"
-    //},
-
-    "focusertype": "null",
-    "focuseridentifier": "null",
-    "focuserinitialposition": 0,
-    "focuserbacklashoffset": 0,
-    "focuserdzmodel": {},
-
-    "telescopedescription": "OHP COLIBRI 1.3-m",
-    "pointingmodelparameters": {},
-    "isstandalone": false,
-    "fitsfwhmargs": {
-      "1": "-m",
-      "2": "-A",
-      "4": "-A",
-      "8": "-A",
-      "16": "-A"
-    }
-
-  },
 
   "covers": {
     "type": "opentsi",
@@ -300,27 +98,28 @@
   },
   "html": {
     "servers": [
-      "executor",
       "instrument",
       "moon",
-      "power",
       "selector",
       "sensors",
-      "sun",
       "supervisor",
+      "sun",
       "target",
+      "telescope",
       "weather"
     ]
   },
   "instrument": {
-    "activedetectors": [
-      "C1"
-    ],
     "detectors": [
-      "C0", "C1"
+      "C0"
+    ],
+    "activedetectors": [
+      "C0"
+    ],
+    "activefocusers": [
     ],
     "idlefilterwheelpositions": [
-      "0", "0"
+      "0"
     ],
     "pointingdetectors": [
       "C0"
@@ -398,373 +197,14 @@
   "selector": {},
   "sensors": {
     "lognames": [
-      "instrument-external-temperature",
-      "instrument-external-humidity",
-      "instrument-external-pressure",
-      "instrument-external-light-level",
-      "instrument-internal-temperature",
-      "instrument-internal-humidity",
-      "instrument-tunnel-temperature",
-      "instrument-tunnel-humidity",
-      "close-electronics-temperature",
-      "close-electronics-humidity",
-      "rack-internal-temperature",
-      "rack-internal-humidity",
-      "rack-external-temperature",
-      "rack-external-humidity",
       "host-control-load",
       "host-control-disk-space-used",
-      "host-detectors-load",
-      "host-detectors-disk-space-used",
-      "pdu1-current",
-      "pdu2-current",
       "C0-detector-detector-temperature",
-      "C0-detector-cold-end-temperature",
-      "C0-detector-chamber-pressure",
-      "C0-detector-compressor-supply-pressure",
-      "C0-detector-compressor-return-pressure",
       "C0-detector-cooler-set-temperature",
       "C0-detector-cooler-state",
-      "C0-filter-wheel-position",
-      "C0-service-cabinet-internal-temperature",
-      "C0-service-cabinet-internal-humidity",
-      "C0-service-cabinet-external-temperature",
-      "C0-service-cabinet-external-humidity",
-      "telescope-cabinet-temperature",
-      "telescope-manual-control-speed",
-      "telescope-pneumatics-pressure",
-      "telescope-M1-temperature",
-      "telescope-M1-cell-temperature",
-      "telescope-M2-temperature",
-      "telescope-M3-temperature",
-      "telescope-spider-1-temperature",
-      "telescope-spider-2-temperature",
-      "telescope-pivot-box-1-temperature",
-      "telescope-pivot-box-2-temperature",
-      "telescope-front-ring-1-temperature",
-      "telescope-front-ring-2-temperature",
-      "telescope-fork-arm-1-temperature",
-      "telescope-fork-arm-2-temperature"
+      "C0-filter-wheel-position"
     ],
     "sensors": {
-      // instrument-external            = 7E.983100001000
-      // instrument-internal            = 26.BCB01A020000
-      // instrument-tunnel              = 26.477E1A020000
-      // close-electronics-internal     = 26.E9AE1A020000
-      // blue-service-cabinet-external  = 26.FE7D1A020000
-      // blue-service-cabinet-internal  = 26.F3961A020000
-      // red-service-cabinet-external   = 26.C7961A020000
-      // red-service-cabinet-internal   = 26.15971A020000
-      // rack-external                  = 26.659DE1010000
-      // rack-internal                  = 26.FAAE1A020000
-      "instrument-external-temperature": {
-        "file": "/usr/local/var/tcs/sensors/detectors/ow/7E.983100001000/EDS0068/temperature",
-        "keyword": "CE2TM",
-        "prettyname": "instrument external temperature",
-        "subsystem": "ddraguito",
-        "component": "main-structure",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "C",
-        "correctionmodel": "ENV-T:1.0:+0.48",
-        "model": "EDS OW-ENV-THPL",
-        "identifier": "7E.983100001000",
-        "firmware": ""
-      },
-      "instrument-internal-temperature": {
-        "file": "/usr/local/var/tcs/sensors/detectors/ow/26.BCB01A020000/temperature",
-        "keyword": "CE3TM",
-        "prettyname": "instrument internal temperature",
-        "subsystem": "ddraguito",
-        "component": "main-structure",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "C",
-        "correctionmodel": "MS-T:1.0:-0.58",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.BCB01A020000",
-        "firmware": ""
-      },
-      "instrument-tunnel-temperature": {
-        "file": "/usr/local/var/tcs/sensors/detectors/ow/26.477E1A020000/temperature",
-        "keyword": "CE4TM",
-        "prettyname": "instrument tunnel temperature",
-        "subsystem": "ddraguito",
-        "component": "main-structure",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "C",
-        "correctionmodel": "MS-T:1.0:-0.20",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.477E1A020000",
-        "firmware": ""
-      },
-      "close-electronics-temperature": {
-        "file": "/usr/local/var/tcs/sensors/detectors/ow/26.E9AE1A020000/temperature",
-        "keyword": "CE1TM",
-        "prettyname": "close electronics temperature",
-        "subsystem": "ddraguito",
-        "component": "close-electronics",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "C",
-        "correctionmodel": "MS-T:1.0:-0.26",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.E9AE1A020000",
-        "firmware": ""
-      },
-      "blue-service-cabinet-external-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.FE7D1A020000/temperature",
-        "keyword": "CR3TM",
-        "prettyname": "blue service cabinet external temperature",
-        "subsystem": "ddraguito",
-        "component": "blue-service-cabinet",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "C",
-        "correctionmodel": "MS-T:1.0:-1.02",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.FE7D1A020000",
-        "firmware": ""
-      },
-      "blue-service-cabinet-internal-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.F3961A020000/temperature",
-        "keyword": "CR4TM",
-        "prettyname": "blue service cabinet internal temperature",
-        "subsystem": "ddraguito",
-        "component": "blue-service-cabinet",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "C",
-        "correctionmodel": "MS-T:1.0:-0.51",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.F3961A020000",
-        "firmware": ""
-      },
-      "red-service-cabinet-external-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.FE7D1A020000/temperature",
-        "keyword": "CR5TM",
-        "prettyname": "red service cabinet external temperature",
-        "subsystem": "ddraguito",
-        "component": "red-service-cabinet",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "C",
-        "correctionmodel": "",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.C7961A020000",
-        "firmware": ""
-      },
-      "red-service-cabinet-internal-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.F3961A020000/temperature",
-        "keyword": "CR6TM",
-        "prettyname": "red service cabinet internal temperature",
-        "subsystem": "ddraguito",
-        "component": "red-service-cabinet",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "C",
-        "correctionmodel": "",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.15971A020000",
-        "firmware": ""
-      },
-      "rack-external-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.659DE1010000/temperature",
-        "keyword": "CR2TM",
-        "prettyname": "rack external temperature",
-        "subsystem": "control-system",
-        "component": "rack",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "C",
-        "correctionmodel": "MS-T:1.0:+0.13",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.659DE1010000",
-        "firmware": ""
-      },
-      "rack-internal-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.FAAE1A020000/temperature",
-        "keyword": "CR1TM",
-        "prettyname": "rack internal temperature",
-        "subsystem": "control-system",
-        "component": "rack",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "C",
-        "correctionmodel": "MS-T:1.0:+0.22",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.FAAE1A020000",
-        "firmware": ""
-      },
-      "instrument-external-humidity": {
-        "file": "/usr/local/var/tcs/sensors/detectors/ow/7E.983100001000/EDS0068/humidity",
-        "keyword": "CE2HM",
-        "prettyname": "instrument external humidity",
-        "subsystem": "ddraguito",
-        "component": "close-electronics",
-        "group": "environmental-sensors",
-        "type": "float",
-        "correctionmodel": "MS-H:1.0:-0.010:-0.023:+0.008:-0.028",
-        "unit": "",
-        "model": "EDS OW-ENV-THPL",
-        "identifier": "7E.983100001000",
-        "firmware": ""
-      },
-      "instrument-internal-humidity": {
-        "file": "/usr/local/var/tcs/sensors/detectors/ow/26.BCB01A020000/HIH4000/humidity",
-        "keyword": "CE3HM",
-        "prettyname": "instrument internal humidity",
-        "subsystem": "ddraguito",
-        "component": "main-structure",
-        "group": "environmental-sensors",
-        "type": "float",
-        "correctionmodel": "MS-H:1.0:+0.074:-0.080:-0.013:+0.104",
-        "unit": "",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.BCB01A020000",
-        "firmware": ""
-      },
-      "instrument-tunnel-humidity": {
-        "file": "/usr/local/var/tcs/sensors/detectors/ow/26.477E1A020000/HIH4000/humidity",
-        "keyword": "CE4HM",
-        "prettyname": "instrument tunnel humidity",
-        "subsystem": "ddraguito",
-        "component": "main-structure",
-        "group": "environmental-sensors",
-        "type": "float",
-        "correctionmodel": "MS-H:1.0:+0.063:-0.176:-0.052:+0.128",
-        "unit": "",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.477E1A020000",
-        "firmware": ""
-      },
-      "close-electronics-humidity": {
-        "file": "/usr/local/var/tcs/sensors/detectors/ow/26.E9AE1A020000/HIH4000/humidity",
-        "keyword": "CE1HM",
-        "prettyname": "close electronics humidity",
-        "subsystem": "ddraguito",
-        "component": "main-structure",
-        "group": "environmental-sensors",
-        "type": "float",
-        "correctionmodel": "MS-H:1.0:+0.070:-0.179:-0.033:+0.099",
-        "unit": "",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.E9AE1A020000",
-        "firmware": ""
-      },
-      "blue-service-cabinet-external-humidity": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.FE7D1A020000/HIH4000/humidity",
-        "keyword": "CR3HM",
-        "prettyname": "blue service cabinet external humidity",
-        "subsystem": "ddraguito",
-        "component": "blue-service-cabinet",
-        "group": "environmental-sensors",
-        "type": "float",
-        "correctionmodel": "MS-H:1.0:+0.068:-0.089:-0.021:+0.112",
-        "unit": "",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.FE7D1A020000",
-        "firmware": ""
-      },
-      "blue-service-cabinet-internal-humidity": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.F3961A020000/HIH4000/humidity",
-        "keyword": "CR4HM",
-        "prettyname": "blue service cabinet internal humidity",
-        "subsystem": "ddraguito",
-        "component": "blue-service-cabinet",
-        "group": "environmental-sensors",
-        "type": "float",
-        "correctionmodel": "MS-H:1.0:+0.077:-0.147:-0.042:+0.145",
-        "unit": "",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.F3961A020000",
-        "firmware": ""
-      },
-      "red-service-cabinet-external-humidity": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.FE7D1A020000/HIH4000/humidity",
-        "keyword": "CR5HM",
-        "prettyname": "red service cabinet external humidity",
-        "subsystem": "ddraguito",
-        "component": "red-service-cabinet",
-        "group": "environmental-sensors",
-        "type": "float",
-        "correctionmodel": "MS-H:1.0:0:0:0:0",
-        "unit": "",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.C7961A020000",
-        "firmware": ""
-      },
-      "red-service-cabinet-internal-humidity": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.F3961A020000/HIH4000/humidity",
-        "keyword": "CR6HM",
-        "prettyname": "red service cabinet internal humidity",
-        "subsystem": "ddraguito",
-        "component": "red-service-cabinet",
-        "group": "environmental-sensors",
-        "type": "float",
-        "correctionmodel": "MS-H:1.0:0:0:0:0",
-        "unit": "",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.15971A020000",
-        "firmware": ""
-      },
-      "rack-external-humidity": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.659DE1010000/HIH4000/humidity",
-        "keyword": "CR2HM",
-        "prettyname": "rack external humidity",
-        "subsystem": "control-system",
-        "component": "rack",
-        "group": "environmental-sensors",
-        "type": "float",
-        "correctionmodel": "MS-H:1.0:+0.062:-0.161:-0.038:+0.101",
-        "unit": "",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.659DE1010000",
-        "firmware": ""
-      },
-      "rack-internal-humidity": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.FAAE1A020000/HIH4000/humidity",
-        "keyword": "CR1HM",
-        "prettyname": "rack internal humidity",
-        "subsystem": "control-system",
-        "component": "rack",
-        "group": "environmental-sensors",
-        "type": "float",
-        "correctionmodel": "MS-H:1.0:+0.071:-0.191:-0.040:+0.111",
-        "unit": "",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.FAAE1A020000",
-        "firmware": ""
-      },
-      "instrument-external-light-level": {
-        "file": "/usr/local/var/tcs/sensors/detectors/ow/7E.983100001000/EDS0068/light",
-        "keyword": "CE2LL",
-        "prettyname": "instrument external light level",
-        "subsystem": "ddraguito",
-        "component": "close-electronics",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "mbar",
-        "unit": "lx",
-        "model": "EDS OW-ENV-THPL",
-        "identifier": "7E.983100001000",
-        "firmware": ""
-      },
-      "instrument-external-pressure": {
-        "file": "/usr/local/var/tcs/sensors/detectors/ow/7E.983100001000/EDS0068/pressure",
-        "keyword": "DXPR",
-        "prettyname": "instrument external pressure",
-        "subsystem": "ddraguito",
-        "component": "close-electronics",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "mbar",
-        "correctionmodel": "ENV-P:1.0:+1.709",
-        "model": "EDS OW-ENV-THPL",
-        "identifier": "7E.983100001000",
-        "firmware": ""
-      },
       "host-control-load": {
         "file": "/usr/local/var/tcs/sensors/control/load",
         "keyword": "",
@@ -772,32 +212,6 @@
         "subsystem": "control-system",
         "component": "host-control",
         "group": "host-control",
-        "type": "float",
-        "unit": "processes",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
-      "host-control-load": {
-        "file": "/usr/local/var/tcs/sensors/control/load",
-        "keyword": "",
-        "prettyname": "load on host control",
-        "subsystem": "control-system",
-        "component": "host-control",
-        "group": "host-control",
-        "type": "float",
-        "unit": "processes",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
-      "host-detectors-load": {
-        "file": "/usr/local/var/tcs/sensors/detectors/load",
-        "keyword": "",
-        "prettyname": "load on host detectors",
-        "subsystem": "control-system",
-        "component": "host-detectors",
-        "group": "host-detectors",
         "type": "float",
         "unit": "processes",
         "model": "",
@@ -817,47 +231,8 @@
         "identifier": "",
         "firmware": ""
       },
-      "host-detectors-disk-space-used": {
-        "file": "/usr/local/var/tcs/sensors/detectors/disk-space-used",
-        "keyword": "",
-        "prettyname": "relative disk space used on host detectors",
-        "subsystem": "control-system",
-        "component": "host-detectors",
-        "group": "host-detectors",
-        "type": "float",
-        "unit": "",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
-      "pdu1-current": {
-        "file": "/usr/local/var/tcs/sensors/control/pdu1-current",
-        "keyword": "",
-        "prettyname": "inlet current for PDU1",
-        "subsystem": "control-system",
-        "component": "pdu1",
-        "group": "power",
-        "type": "float",
-        "unit": "A",
-        "model": "iBoot-PDU8-C20",
-        "identifier": "38:d2:69:92:82:8d",
-        "firmware": "1.03.12212017"
-      },      
-      "pdu2-current": {
-        "file": "/usr/local/var/tcs/sensors/control/pdu2-current",
-        "keyword": "",
-        "prettyname": "inlet current for PDU2",
-        "subsystem": "control-system",
-        "component": "pdu2",
-        "group": "power",
-        "type": "float",
-        "unit": "A",
-        "model": "iBoot-PDU8-C20",
-        "identifier": "38:d2:69:9a:aa:0c",
-        "firmware": "1.03.12212017"
-      },      
       "C0-detector-detector-temperature": {
-        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-detector-temperature",
+        "file": "/usr/local/var/tcs/sensors/control/C0-detector-detector-temperature",
         "keyword": "",
         "prettyname": "C0 detector temperature",
         "subsystem": "ddraguito",
@@ -869,47 +244,8 @@
         "identifier": "167",
         "firmware": ""
       },
-      "C0-detector-cold-end-temperature": {
-        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-cold-end-temperature",
-        "keyword": "",
-        "prettyname": "C0 cold end temperature",
-        "subsystem": "ddraguito",
-        "component": "C0-detector",
-        "group": "detector-C0",
-        "type": "float",
-        "unit": "C",
-        "model": "SI 1100",
-        "identifier": "167",
-        "firmware": ""
-      },
-      "C0-detector-power-supply-temperature": {
-        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-power-supply-temperature",
-        "keyword": "",
-        "prettyname": "C0 power supply temperature",
-        "subsystem": "ddraguito",
-        "component": "C0-detector",
-        "group": "detector-C0",
-        "type": "float",
-        "unit": "C",
-        "model": "SI 1100",
-        "identifier": "167",
-        "firmware": ""
-      },
-      "C0-detector-chamber-pressure": {
-        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-chamber-pressure",
-        "keyword": "",
-        "prettyname": "C0 chamber pressure",
-        "subsystem": "ddraguito",
-        "component": "C0-detector",
-        "group": "detector-C0",
-        "type": "float",
-        "unit": "mbar",
-        "model": "SI 1100",
-        "identifier": "167",
-        "firmware": ""
-      },
       "C0-detector-cooler-set-temperature": {
-        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-cooler-set-temperature",
+        "file": "/usr/local/var/tcs/sensors/control/C0-detector-cooler-set-temperature",
         "keyword": "",
         "prettyname": "C0 cooler set temperature",
         "subsystem": "ddraguito",
@@ -922,7 +258,7 @@
         "firmware": ""
       },
       "C0-detector-cooler-state": {
-        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-cooler-state",
+        "file": "/usr/local/var/tcs/sensors/control/C0-detector-cooler-state",
         "keyword": "",
         "prettyname": "C0 cooler state",
         "subsystem": "ddraguito",
@@ -934,34 +270,8 @@
         "identifier": "167",
         "firmware": ""
       },
-      "C0-detector-compressor-supply-pressure": {
-        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-compressor-supply-pressure",
-        "keyword": "",
-        "prettyname": "C0 compressor supply pressure",
-        "subsystem": "ddraguito",
-        "component": "C0-detector",
-        "group": "detector-C0",
-        "type": "string",
-        "unit": "psi",
-        "model": "SI 1100",
-        "identifier": "167",
-        "firmware": ""
-      },
-      "C0-detector-compressor-return-pressure": {
-        "file": "/usr/local/var/tcs/sensors/detectors/C0-detector-compressor-return-pressure",
-        "keyword": "",
-        "prettyname": "C0 compressor return pressure",
-        "subsystem": "ddraguito",
-        "component": "C0-detector",
-        "group": "detector-C0",
-        "type": "string",
-        "unit": "psi",
-        "model": "SI 1100",
-        "identifier": "167",
-        "firmware": ""
-      },
       "C0-filter-wheel-position": {
-        "file": "/usr/local/var/tcs/sensors/detectors/C0-filter-wheel-position",
+        "file": "/usr/local/var/tcs/sensors/control/C0-filter-wheel-position",
         "keyword": "",
         "prettyname": "C0 filter wheel position",
         "subsystem": "ddraguito",
@@ -971,314 +281,6 @@
         "unit": "",
         "model": "FLI CFW-14-5",
         "identifier": "FW0021318",
-        "firmware": ""
-      },
-      "C0-service-cabinet-external-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.FE7D1A020000/temperature",
-        "keyword": "CR3TM",
-        "prettyname": "blue service cabinet external temperature",
-        "subsystem": "ddraguito",
-        "component": "detector-C0",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "C",
-        "correctionmodel": "MS-T:1.0:-1.26",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.FE7D1A020000",
-        "firmware": ""
-      },
-      "C0-service-cabinet-internal-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.F3961A020000/temperature",
-        "keyword": "CR4TM",
-        "prettyname": "blue service cabinet internal temperature",
-        "subsystem": "ddraguito",
-        "component": "detector-C0",
-        "group": "environmental-sensors",
-        "type": "float",
-        "correctionmodel": "MS-T:1.0:-0.74",
-        "unit": "C",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.F3961A020000",
-        "firmware": ""
-      },
-      "C0-service-cabinet-external-humidity": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.FE7D1A020000/HIH4000/humidity",
-        "keyword": "CR3HM",
-        "prettyname": "blue service cabinet external humidity",
-        "subsystem": "ddraguito",
-        "component": "detector-C0",
-        "group": "environmental-sensors",
-        "type": "float",
-        "correctionmodel": "MS-H:1.0:+0.066:-0.058:-0.014:+0.092",
-        "unit": "",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.FE7D1A020000",
-        "firmware": ""
-      },
-      "C0-service-cabinet-internal-humidity": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.F3961A020000/HIH4000/humidity",
-        "keyword": "CR4HM",
-        "prettyname": "blue service cabinet internal humidity",
-        "subsystem": "ddraguito",
-        "component": "detector-C0",
-        "group": "environmental-sensors",
-        "type": "float",
-        "correctionmodel": "MS-H:1.0:+0.074:-0.113:-0.035:+0.126",
-        "unit": "",
-        "model": "iButtonLink MS-TH",
-        "identifier": "26.F3961A020000",
-        "firmware": ""
-      },
-      "telescope-cabinet-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/opentsi-0",
-        "prettyname": "telescope cabinet temperature",
-        "subsystem": "telescope",
-        "component": "cabinet",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "C",
-        "model": "",
-        "identifier": "opentsi-sensor-0",
-        "firmware": ""
-      },
-      "telescope-manual-control-speed": {
-        "file": "/usr/local/var/tcs/sensors/control/opentsi-1",
-        "prettyname": "telescope manual control speed",
-        "subsystem": "telescope",
-        "component": "hand-paddle",
-        "group": "telescope-sensors",
-        "type": "float",
-        "unit": "",
-        "model": "",
-        "identifier": "opentsi-sensor-1",
-        "firmware": ""
-      },
-      "telescope-pneumatics-pressure": {
-        "file": "/usr/local/var/tcs/sensors/control/opentsi-2",
-        "prettyname": "telescope pneumatics pressure",
-        "subsystem": "telescope",
-        "component": "cabinet",
-        "group": "telescope-sensors",
-        "type": "float",
-        "unit": "",
-        "model": "",
-        "identifier": "opentsi-sensor-2",
-        "firmware": ""
-      },
-      "telescope-M1-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/opentsi-3",
-        "prettyname": "telescope M1 temperature",
-        "group": "environmental-sensors",
-        "subsystem": "telescope",
-        "component": "M1",
-        "type": "float",
-        "unit": "C",
-        "model": "",
-        "identifier": "opentsi-sensor-3",
-        "firmware": ""
-      },
-      "telescope-M1-cell-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/opentsi-4",
-        "prettyname": "telescope M1 cell temperature",
-        "group": "environmental-sensors",
-        "subsystem": "telescope",
-        "component": "structure",
-        "type": "float",
-        "unit": "C",
-        "model": "",
-        "identifier": "opentsi-sensor-4",
-        "firmware": ""
-      },
-      "telescope-M2-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/opentsi-5",
-        "prettyname": "telescope M2 temperature",
-        "subsystem": "telescope",
-        "component": "M2",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "C",
-        "model": "",
-        "identifier": "opentsi-sensor-5",
-        "firmware": ""
-      },
-      "telescope-M3-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/opentsi-6",
-        "prettyname": "telescope M3 temperature",
-        "group": "environmental-sensors",
-        "subsystem": "telescope",
-        "component": "M3",
-        "type": "float",
-        "unit": "C",
-        "model": "",
-        "identifier": "opentsi-sensor-6",
-        "firmware": ""
-      },
-      "telescope-spider-1-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/opentsi-7",
-        "prettyname": "telescope spider 1 temperature",
-        "group": "environmental-sensors",
-        "subsystem": "telescope",
-        "component": "structure",
-        "type": "float",
-        "unit": "C",
-        "model": "",
-        "identifier": "opentsi-sensor-7",
-        "firmware": ""
-      },
-      "telescope-spider-2-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/opentsi-8",
-        "prettyname": "telescope spider 2 temperature",
-        "group": "environmental-sensors",
-        "subsystem": "telescope",
-        "component": "structure",
-        "type": "float",
-        "unit": "C",
-        "model": "",
-        "identifier": "opentsi-sensor-8",
-        "firmware": ""
-      },
-      "telescope-pivot-box-1-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/opentsi-9",
-        "prettyname": "telescope pivot box 1 temperature",
-        "group": "environmental-sensors",
-        "subsystem": "telescope",
-        "component": "structure",
-        "type": "float",
-        "unit": "C",
-        "model": "",
-        "identifier": "opentsi-sensor-9",
-        "firmware": ""
-      },
-      "telescope-pivot-box-2-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/opentsi-10",
-        "prettyname": "telescope pivot box 2 temperature",
-        "group": "environmental-sensors",
-        "subsystem": "telescope",
-        "component": "structure",
-        "type": "float",
-        "unit": "C",
-        "model": "",
-        "identifier": "opentsi-sensor-10",
-        "firmware": ""
-      },
-      "telescope-front-ring-1-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/opentsi-11",
-        "prettyname": "telescope front ring 1 temperature",
-        "group": "environmental-sensors",
-        "subsystem": "telescope",
-        "component": "structure",
-        "type": "float",
-        "unit": "C",
-        "model": "",
-        "identifier": "opentsi-sensor-11",
-        "firmware": ""
-      },
-      "telescope-front-ring-2-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/opentsi-12",
-        "prettyname": "telescope front ring 2 temperature",
-        "group": "environmental-sensors",
-        "subsystem": "telescope",
-        "component": "structure",
-        "type": "float",
-        "unit": "C",
-        "model": "",
-        "identifier": "opentsi-sensor-12",
-        "firmware": ""
-      },
-      "telescope-fork-arm-1-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/opentsi-13",
-        "prettyname": "telescope cabinet temperature",
-        "group": "environmental-sensors",
-        "subsystem": "telescope",
-        "component": "structure",
-        "type": "float",
-        "unit": "C",
-        "model": "",
-        "identifier": "opentsi-sensor-13",
-        "firmware": ""
-      },
-      "telescope-fork-arm-2-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/opentsi-14",
-        "prettyname": "telescope cabinet temperature",
-        "group": "environmental-sensors",
-        "subsystem": "telescope",
-        "component": "structure",
-        "type": "float",
-        "unit": "C",
-        "model": "",
-        "identifier": "opentsi-sensor-14",
-        "firmware": ""
-      },
-      "plc-plc-cabinet-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/plc-plc-cabinet-temperature",
-        "prettyname": "PLC cabinet temperature",
-        "group": "environmental-sensors",
-        "subsystem": "plc",
-        "component": "plc-cabinet",
-        "type": "float",
-        "unit": "C",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
-      "plc-rio-cabinet-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/plc-rio-cabinet-temperature",
-        "prettyname": "RIO cabinet temperature",
-        "group": "environmental-sensors",
-        "subsystem": "plc",
-        "component": "rio-cabinet",
-        "type": "float",
-        "unit": "C",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
-      "plc-comet1-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/plc-comet1-temperature",
-        "prettyname": "Comet 1 temperature",
-        "group": "environmental-sensors",
-        "subsystem": "plc",
-        "component": "Comet 1",
-        "type": "float",
-        "unit": "C",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
-      "plc-comet2-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/plc-comet2-temperature",
-        "prettyname": "Comet 2 temperature",
-        "group": "environmental-sensors",
-        "subsystem": "plc",
-        "component": "Comet 2",
-        "type": "float",
-        "unit": "C",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
-      "plc-comet1-humidity": {
-        "file": "/usr/local/var/tcs/sensors/control/plc-comet1-humidity",
-        "prettyname": "Comet 1 humidity",
-        "group": "environmental-sensors",
-        "subsystem": "plc",
-        "component": "Comet 1",
-        "type": "float",
-        "unit": "",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
-      "plc-comet2-humidity": {
-        "file": "/usr/local/var/tcs/sensors/control/plc-comet2-humidity",
-        "prettyname": "Comet 2 humidity",
-        "group": "environmental-sensors",
-        "subsystem": "plc",
-        "component": "Comet 2",
-        "type": "float",
-        "unit": "",
-        "model": "",
-        "identifier": "",
         "firmware": ""
       },
       "weather-temperature": {
@@ -1388,18 +390,56 @@
         "model": "",
         "identifier": "",
         "firmware": ""
+      },
+      "dome-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.A493A0000000/temperature",
+        "prettyname": "dome temperature",
+        "subsystem": "telescope",
+        "component": "dome",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.A493A0000000",
+        "firmware": ""
+      },      
+      "dome-humidity": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.A493A0000000/HIH4000/humidity",
+        "prettyname": "dome humidity",
+        "subsystem": "telescope",
+        "component": "dome",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "correctionmodel": "MS-H:1.0:0.0:0:0.0:0.0",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.A493A0000000",
+        "firmware": ""
+      },
+      "dome-light-level": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.B5A940010000/VAD",
+        "prettyname": "dome light level",
+        "subsystem": "telescope",
+        "component": "dome",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.B5A940010000",
+        "firmware": ""
       }
     }
   },
   "site": {
-    "longitude": "+5.712393d",
-    "latitude": "+43.932081d",
-    "altitude": "650.0",
-    "civiltimezone": "Europe/Paris"
+    "longitude": "+115.46472d",
+    "latitude": "+31.044722d",
+    "altitude": "2800.0",
+    "civiltimezone": "America/Tijuana"
   },
   "supervisor": {
     "withplc": "false",
-    "internalhumiditysensor": "instrument-external-humidity",
+    "internalhumiditysensor": "dome-humidity",
     "openoffsetseconds": "0",
     "opentoventilateoffsetseconds": "1800"
   },
