@@ -181,7 +181,7 @@ namespace eval "covers" {
   proc waitwhilemoving {} {
     log::info "waiting while moving."
     variable moving
-    set startingdelay 5
+    set startingdelay 10
     set settlingdelay 5
     set start [utcclock::seconds]
     while {[utcclock::diff now $start] < $startingdelay} {
