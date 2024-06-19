@@ -27,7 +27,7 @@
     "telescopedescription": "OAN COLIBRI 1.3-m",
     "detectortype": "fli",
     "detectoridentifier": "ML0032515",
-    "detectorunbinnedpixelscale": "0.381as",
+    "detectorunbinnedpixelscale": "0.198as",
     "detectorreadmodes": {
       "initial": "default",
       "closed" : "default",
@@ -36,7 +36,13 @@
     "detectorinitialsoftwaregain": 1,
     "detectorinitialbinning": 1,
     "detectorwindows": {
-      "initial": "full"
+      "initial": "full",
+      "1kx1k": {
+        "sx": 1586,
+        "sy": 1544,
+        "nx": 1024,
+        "ny": 1024
+      }
     },
     "detectorfullunbinneddatawindow": {
       "sx": 36,

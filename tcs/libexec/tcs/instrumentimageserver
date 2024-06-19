@@ -123,7 +123,7 @@ do
 
     convert \
       -fill none -stroke red -strokewidth $cw -draw "circle $cx,$cy $cx,$(expr $cy + $cr)" \
-      -scale x1024 \
+      -scale x768 \
       -gravity southeast -fill white -undercolor black $fontargs -stroke none -annotate +1+0 "$camera $date $time" \
       -quality 85 \
       latest.png latest-new.jpg
