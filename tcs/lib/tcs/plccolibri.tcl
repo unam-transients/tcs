@@ -127,7 +127,7 @@ namespace eval "plc" {
     }
 
     log::debug "length is [string length $response]."
-    if {[string length $response] != 86} {
+    if {[string length $response] != 94} {
       set weatherresponse $response
       return false
     }
