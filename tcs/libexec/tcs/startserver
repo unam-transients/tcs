@@ -69,7 +69,7 @@ ddoti-detectors1)
   ALLARGS=""
   ;;
 colibri-control)
-  allargs="html 1 weather sensors 1 target 1 moon sun 1 C0 1 instrument telescope 1 executor selector supervisor"
+  allargs="html 1 weather sensors plc 1 target 1 moon sun 1 C0 1 instrument telescope 1 executor selector supervisor"
   #allargs="html 1 sensors power weather 1 target 1 moon sun 1 telescope instrument 1 executor selector supervisor"
   ALLARGS=""
   ;;
