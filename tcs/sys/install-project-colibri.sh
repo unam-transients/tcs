@@ -33,6 +33,7 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 # Start of tcs epilog.
 
 192.168.100.1     firewall                colibri-firewall
+192.168.100.23    opentsi                 colibri-opentsi
 192.168.100.54    control                 colibri-control
 EOF
 ) | 

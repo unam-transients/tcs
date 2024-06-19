@@ -102,5 +102,5 @@
   "supervisor": {
     "host": "control",
     "port": 5020
-  }
+  }  
 }

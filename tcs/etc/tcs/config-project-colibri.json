@@ -104,15 +104,19 @@
   },
   "html": {
     "servers": [
+      "covers",
+      "executor",
       "instrument",
       "moon",
       "plc",
+      "secondary",
       "selector",
       "sensors",
       "supervisor",
       "sun",
       "target",
       "telescope",
+      "telescopecontroller",
       "weather"
     ]
   },
