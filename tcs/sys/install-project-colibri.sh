@@ -33,7 +33,7 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 # Start of tcs epilog.
 
 192.168.100.1     firewall                colibri-firewall
-192.168.100.26    control                 colibri-control
+192.168.100.54    control                 colibri-control
 EOF
 ) | 
 sudo cp /dev/stdin /etc/hosts.tmp
@@ -116,7 +116,8 @@ EOF
     ;;
   control)
     echo "tcs instrumentimageserver C0 &"
-    #echo "tcs webcamimageserver a https://www.colibri-obs.org/wp-content/uploads/2021/01/cam-colibri1.jpeg &"
+    echo "tcs instrumentimageserver C0 control &"
+    echo "tcs webcamimageserver a http://192.168.100.31/cgi-bin/viewer/video.jpg &"
     echo "tcs allskyimageserver http://132.248.4.140/imagenes/ultima_RED.jpg &"
     echo "mkdir -p /usr/local/var/tcs/reboot"
     echo "mkdir -p /usr/local/var/tcs/restart"
