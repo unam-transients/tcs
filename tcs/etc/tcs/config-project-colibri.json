@@ -108,6 +108,7 @@
       "executor",
       "instrument",
       "moon",
+      "mount",
       "plc",
       "secondary",
       "selector",
@@ -467,12 +468,12 @@
     "idleha": "0h",
     "idledelta": "75d"
   },
-  "telescope": {
+  "dummy-telescope": {
     "type": "dummy",
     "idleha": "0h",
     "idledelta": "0d"
   },
-  "real-telescope": {
+  "telescope": {
     "type": "colibri",
     "idleha": "0h",
     "idledelta": "0d"
