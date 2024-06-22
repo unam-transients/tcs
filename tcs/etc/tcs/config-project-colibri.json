@@ -42,6 +42,26 @@
         "sy": 1544,
         "nx": 1024,
         "ny": 1024
+      },
+      "512x512": {
+        "sx": 1828,
+        "sy": 1814,
+        "nx": 512,
+        "ny": 512
+      },
+      // The center of rotation of the derotator was calculated to be
+      // (1996.5, 2029.2) in the full window on 2024-06-21.
+      "derotator-512x512": { 
+        sx = 1741,
+        sy = 1773,
+        nx = 512,
+        ny = 512
+      },
+      "derotator-256x256": { 
+        sx = 1869,
+        sy = 1901,
+        nx = 256,
+        ny = 256
       }
     },
     "detectorfullunbinneddatawindow": {
@@ -64,10 +84,10 @@
     "filterwheelidentifier": "null",
     "filterwheeltype": "null",
     "filters": {
-      "w"      : "0",
-      "initial": "w",
-      "idle"   : "w",
-      "closed" : "w"
+      "r"      : "0",
+      "initial": "r",
+      "idle"   : "r",
+      "closed" : "r"
     },
     "focusertype": "null",
     "focuseridentifier": "null",
@@ -150,13 +170,13 @@
     // "azimuthpark": "-0.0025d",
     // "zenithdistancepark": "0.0036d",
     // "derotatoranglepark": "0d",
-    // François recommends this position to place DDRAGUITO further from the enclosure entrance.
-    "azimuthpark": "165d",
-    "zenithdistancepark": "0.25d",
+    // Park to the north
+    "azimuthpark": "0d",
+    "zenithdistancepark": "60d",
     "derotatoranglepark": "0d",
-    // Unpark to the north.
+    // Unpark to the south.
     "haunpark": "0h",
-    "deltaunpark": "75d",
+    "deltaunpark": "30d",
     "minzenithdistancelimit": "0.5d",
     "maxzenithdistancelimit": "80d"
   },
@@ -293,6 +313,186 @@
         "unit": "",
         "model": "FLI CFW-14-5",
         "identifier": "FW0021318",
+        "firmware": ""
+      },
+      "telescope-cabinet-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-0",
+        "prettyname": "telescope cabinet temperature",
+        "subsystem": "telescope",
+        "component": "cabinet",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "",
+        "identifier": "opentsi-sensor-0",
+        "firmware": ""
+      },
+      "telescope-manual-control-speed": {
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-1",
+        "prettyname": "telescope manual control speed",
+        "subsystem": "telescope",
+        "component": "hand-paddle",
+        "group": "telescope-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "opentsi-sensor-1",
+        "firmware": ""
+      },
+      "telescope-pneumatics-pressure": {
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-2",
+        "prettyname": "telescope pneumatics pressure",
+        "subsystem": "telescope",
+        "component": "cabinet",
+        "group": "telescope-sensors",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "opentsi-sensor-2",
+        "firmware": ""
+      },
+      "telescope-M1-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-3",
+        "prettyname": "telescope M1 temperature",
+        "group": "environmental-sensors",
+        "subsystem": "telescope",
+        "component": "M1",
+        "type": "float",
+        "unit": "C",
+        "model": "",
+        "identifier": "opentsi-sensor-3",
+        "firmware": ""
+      },
+      "telescope-M1-cell-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-4",
+        "prettyname": "telescope M1 cell temperature",
+        "group": "environmental-sensors",
+        "subsystem": "telescope",
+        "component": "structure",
+        "type": "float",
+        "unit": "C",
+        "model": "",
+        "identifier": "opentsi-sensor-4",
+        "firmware": ""
+      },
+      "telescope-M2-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-5",
+        "prettyname": "telescope M2 temperature",
+        "subsystem": "telescope",
+        "component": "M2",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "",
+        "identifier": "opentsi-sensor-5",
+        "firmware": ""
+      },
+      "telescope-M3-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-6",
+        "prettyname": "telescope M3 temperature",
+        "group": "environmental-sensors",
+        "subsystem": "telescope",
+        "component": "M3",
+        "type": "float",
+        "unit": "C",
+        "model": "",
+        "identifier": "opentsi-sensor-6",
+        "firmware": ""
+      },
+      "telescope-spider-1-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-7",
+        "prettyname": "telescope spider 1 temperature",
+        "group": "environmental-sensors",
+        "subsystem": "telescope",
+        "component": "structure",
+        "type": "float",
+        "unit": "C",
+        "model": "",
+        "identifier": "opentsi-sensor-7",
+        "firmware": ""
+      },
+      "telescope-spider-2-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-8",
+        "prettyname": "telescope spider 2 temperature",
+        "group": "environmental-sensors",
+        "subsystem": "telescope",
+        "component": "structure",
+        "type": "float",
+        "unit": "C",
+        "model": "",
+        "identifier": "opentsi-sensor-8",
+        "firmware": ""
+      },
+      "telescope-pivot-box-1-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-9",
+        "prettyname": "telescope pivot box 1 temperature",
+        "group": "environmental-sensors",
+        "subsystem": "telescope",
+        "component": "structure",
+        "type": "float",
+        "unit": "C",
+        "model": "",
+        "identifier": "opentsi-sensor-9",
+        "firmware": ""
+      },
+      "telescope-pivot-box-2-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-10",
+        "prettyname": "telescope pivot box 2 temperature",
+        "group": "environmental-sensors",
+        "subsystem": "telescope",
+        "component": "structure",
+        "type": "float",
+        "unit": "C",
+        "model": "",
+        "identifier": "opentsi-sensor-10",
+        "firmware": ""
+      },
+      "telescope-front-ring-1-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-11",
+        "prettyname": "telescope front ring 1 temperature",
+        "group": "environmental-sensors",
+        "subsystem": "telescope",
+        "component": "structure",
+        "type": "float",
+        "unit": "C",
+        "model": "",
+        "identifier": "opentsi-sensor-11",
+        "firmware": ""
+      },
+      "telescope-front-ring-2-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-12",
+        "prettyname": "telescope front ring 2 temperature",
+        "group": "environmental-sensors",
+        "subsystem": "telescope",
+        "component": "structure",
+        "type": "float",
+        "unit": "C",
+        "model": "",
+        "identifier": "opentsi-sensor-12",
+        "firmware": ""
+      },
+      "telescope-fork-arm-1-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-13",
+        "prettyname": "telescope cabinet temperature",
+        "group": "environmental-sensors",
+        "subsystem": "telescope",
+        "component": "structure",
+        "type": "float",
+        "unit": "C",
+        "model": "",
+        "identifier": "opentsi-sensor-13",
+        "firmware": ""
+      },
+      "telescope-fork-arm-2-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/opentsi-14",
+        "prettyname": "telescope cabinet temperature",
+        "group": "environmental-sensors",
+        "subsystem": "telescope",
+        "component": "structure",
+        "type": "float",
+        "unit": "C",
+        "model": "",
+        "identifier": "opentsi-sensor-14",
         "firmware": ""
       },
       "weather-temperature": {
