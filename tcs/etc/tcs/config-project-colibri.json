@@ -644,9 +644,9 @@
     }
   },
   "site": {
-    "longitude": "+115.46472d",
-    "latitude": "+31.044722d",
-    "altitude": "2800.0",
+    "longitude": "-115.4646d",
+    "latitude": "+31.0449d",
+    "altitude": "2792.0",
     "civiltimezone": "America/Tijuana"
   },
   "supervisor": {
