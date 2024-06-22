@@ -52,16 +52,16 @@
       // The center of rotation of the derotator was calculated to be
       // (1996.5, 2029.2) in the full window on 2024-06-21.
       "derotator-512x512": { 
-        sx = 1741,
-        sy = 1773,
-        nx = 512,
-        ny = 512
+        "sx": 1741,
+        "sy": 1773,
+        "nx": 512,
+        "ny": 512
       },
       "derotator-256x256": { 
-        sx = 1869,
-        sy = 1901,
-        nx = 256,
-        ny = 256
+        "sx": 1869,
+        "sy": 1901,
+        "nx": 256,
+        "ny": 256
       }
     },
     "detectorfullunbinneddatawindow": {
