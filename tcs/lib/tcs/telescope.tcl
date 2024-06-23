@@ -253,11 +253,6 @@ namespace eval "telescope" {
         switchheater "off"
       }
       openprolog
-      if {$withtelescopecontroller} {
-        log::info "switching on telescope controller."
-        client::request "telescopecontroller" "switchon"
-        client::wait "telescopecontroller"
-      }
       if {$withmount} {
         log::info "parking mount."
         client::request "mount" "preparetomove"
@@ -265,6 +260,11 @@ namespace eval "telescope" {
       }
       client::request "target" "move $idleha $idledelta"
       client::wait "target"
+      if {$withtelescopecontroller} {
+        log::info "switching on telescope controller."
+        client::request "telescopecontroller" "switchon"
+        client::wait "telescopecontroller"
+      }
       if {$withmount} {
         client::request "mount" "park"
         client::wait "mount"
@@ -328,11 +328,6 @@ namespace eval "telescope" {
         switchheater "off"
       }
       openprolog
-      if {$withtelescopecontroller} {
-        log::info "switching on telescope controller."
-        client::request "telescopecontroller" "switchon"
-        client::wait "telescopecontroller"
-      }
       if {$withmount} {
         log::info "parking mount."
         client::request "mount" "preparetomove"
@@ -340,6 +335,11 @@ namespace eval "telescope" {
       }
       client::request "target" "move $idleha $idledelta"
       client::wait "target"
+      if {$withtelescopecontroller} {
+        log::info "switching on telescope controller."
+        client::request "telescopecontroller" "switchon"
+        client::wait "telescopecontroller"
+      }
       if {$withmount} {
         client::request "mount" "park"
         client::wait "mount"
@@ -404,11 +404,6 @@ namespace eval "telescope" {
         switchlights "on"
       }
       closeprolog
-      if {$withtelescopecontroller} {
-        log::info "switching on telescope controller."
-        client::request "telescopecontroller" "switchon"
-        client::wait "telescopecontroller"
-      }
       if {$withmount} {
         log::info "parking mount."
         client::request "mount" "preparetomove"
@@ -416,6 +411,11 @@ namespace eval "telescope" {
       }
       client::request "target" "move $idleha $idledelta"
       client::wait "target"
+      if {$withtelescopecontroller} {
+        log::info "switching on telescope controller."
+        client::request "telescopecontroller" "switchon"
+        client::wait "telescopecontroller"
+      }
       if {$withmount} {
         client::request "mount" "park"
         client::wait "mount"
@@ -555,11 +555,6 @@ namespace eval "telescope" {
     variable withdome
     variable idleha
     variable idledelta
-    if {$withtelescopecontroller} {
-      log::info "switching on telescope controller."
-      client::request "telescopecontroller" "switchon"
-      client::wait "telescopecontroller"
-    }
     if {$withmount} {
       client::request "mount" "preparetomove"
       client::wait "mount"
@@ -570,6 +565,11 @@ namespace eval "telescope" {
     }
     client::request "target" "move $idleha $idledelta"
     client::wait "target"
+    if {$withtelescopecontroller} {
+      log::info "switching on telescope controller."
+      client::request "telescopecontroller" "switchon"
+      client::wait "telescopecontroller"
+    }
     if {$withmount} {
       log::info "parking mount."
       client::request "mount" "park"
