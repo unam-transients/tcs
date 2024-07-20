@@ -50,7 +50,6 @@ namespace eval "plc" {
   ######################################################################
 
   server::setdata "lights"            ""
-  server::setdata "lastlights"        ""
   server::setdata "timestamp"         ""
   server::setdata "stoppedtimestamp"  ""
 
@@ -67,6 +66,7 @@ namespace eval "plc" {
     }
   }
   
+  variable lights ""
   variable mode ""
   variable keyswitch ""
   variable localconfirmation ""
@@ -95,6 +95,7 @@ namespace eval "plc" {
 
   proc updatedata {response} {
 
+    variable lights
     variable mode
     variable keyswitch
     variable localconfirmation
@@ -143,6 +144,18 @@ namespace eval "plc" {
     set weatherfield [lrange $weatherfield 1 end]
     log::debug "weatherfield = $weatherfield"
 
+    set lastlights $lights
+    if {[string index $generalresponse 74] == "0"} {
+      set lights "off"
+    } else {
+      set lights "on"
+    }
+    if {[string equal $lastlights ""]} {
+      log::info "the lights are $lights."
+    } elseif {![string equal $lights $lastlights]} {
+      log::info "the lights have changed from $lastlights to $lights."
+    }
+    
     set lastkeyswitch $keyswitch
     switch -- "[string index $generalresponse 21][string index $generalresponse 20]" {
       "00" { set keyswitch "off"    }
@@ -200,7 +213,7 @@ namespace eval "plc" {
         log::warning "the intrusion sensor has been deactivated."
       }
     }
-
+    
     set lastmode $mode
     set rawmode [lindex $weatherfield 50]
     switch $rawmode {
@@ -221,7 +234,7 @@ namespace eval "plc" {
     } elseif {![string equal $mode $lastmode]} {
       log::warning "the mode has changed from \"$lastmode\" to \"$mode\" ($rawmode)."
     }
-    
+
     set lastweatheralarmdisabled $weatheralarmdisabled
     set weatheralarmdisabled [boolean [string index $generalresponse 45]]
     logalarm $weatheralarmdisabled $lastweatheralarmdisabled "weather alarm disabled"    
@@ -291,6 +304,7 @@ namespace eval "plc" {
     server::setdata "comet1humidity"        [expr {[lindex $weatherfield 33] * 0.01}]
     server::setdata "comet2humidity"        [expr {[lindex $weatherfield 35] * 0.01}]
     
+    server::setdata "lights"               $lights
     server::setdata "mode"                 $mode
     server::setdata "keyswitch"            $keyswitch
     server::setdata "localconfirmation"    $localconfirmation
