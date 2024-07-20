@@ -547,6 +547,28 @@ namespace eval "html" {
 
   }
 
+  proc writedome {} {
+
+    putshtml "<table class=\"status\">"
+
+    writehtmlstatusblock "dome"
+
+    putshtml "</table>"
+
+    putshtml "<table class=\"status\">"
+
+    if {[string equal [client::getstatus "dome"] "ok"]} {
+      writehtmlrow "Controller initialized"         [client::getdata "dome" "controllerinitialized"]
+      writehtmlrow "Requested azimuth"              [formatradtodegifdouble "%.1f°" [client::getdata "dome" "requestedazimuth"]]
+      writehtmlrow "Current azimuth"                [formatradtodegifdouble "%.1f°" [client::getdata "dome" "azimuth"]]
+      writehtmlrow "Current azimuth error"          [formatradtodegifdouble "%+.1f°" [client::getdata "dome" "azimutherror"]]
+      writehtmlrow "Maximum absolute azimuth error" [formatradtodegifdouble "%+.1f°" [client::getdata "dome" "maxabsazimutherror"]]
+    }
+  
+    putshtml "</table>"
+
+  }
+  
   proc writetarget {} {
 
     putshtml "<table class=\"status\">"
