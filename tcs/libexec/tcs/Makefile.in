@@ -123,6 +123,7 @@ installbins_project_ddoti :=      \
 	
 installbins_project_colibri :=    \
     coversserver                  \
+    domeserver                    \
 	C0server                      \
 	telescopecontrollerserver     \
 	plcserver                     \

@@ -106,5 +106,9 @@
   "lights": {
     "host": "control",
     "port": 5021
+  },
+  "dome": {
+    "host": "control",
+    "port": 5022
   }  
 }

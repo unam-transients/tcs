@@ -119,8 +119,10 @@
   "html": {
     "servers": [
       "covers",
+      "dome",
       "executor",
       "instrument",
+      "lights",
       "moon",
       "mount",
       "plc",
@@ -151,6 +153,9 @@
       "C0"
     ],
     "outletgroups": []
+  },
+  "lights": {
+    "type": "plc"
   },
   "mount": {
     "type": "opentsi",
@@ -663,11 +668,6 @@
     "idleha": "0h",
     "idledelta": "75d"
   },
-  "dummy-telescope": {
-    "type": "dummy",
-    "idleha": "0h",
-    "idledelta": "0d"
-  },
   "telescope": {
     "type": "colibri",
     "idleha": "0h",
@@ -678,5 +678,29 @@
   },
   "weather": {
     "windaveragespeedlimit": "30"
+  },
+
+  // To use the dummy telescope, remove the "dummy-" prefixes below.
+  "dummy-telescope": {
+    "type": "dummy",
+    "idleha": "0h",
+    "idledelta": "0d"
+  },
+  "dummy-html": {
+    "servers": [
+      "executor",
+      "instrument",
+      "lights",
+      "moon",
+      "selector",
+      "sensors",
+      "supervisor",
+      "sun",
+      "target",
+      "telescope",
+      "weather"
+    ]
   }
+
+
 }
