@@ -35,6 +35,7 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 192.168.100.1     firewall                colibri-firewall
 192.168.100.23    opentsi                 colibri-opentsi
 192.168.100.54    control                 colibri-control
+192.168.100.56    detectors               colibri-detectors
 
 # Tailscale DNS is not working as of 2024-06-22.
 100.81.69.29      oan-nas
@@ -61,9 +62,9 @@ sudo mv /etc/hosts.tmp /etc/hosts
 *  *  *  *  *  tcs checkhalt
 00 18 *  *  *  tcs updateiersfiles
 00 18 *  *  *  tcs updateleapsecondsfile
-00     *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="*.jpg" --exclude="*.fits" --exclude="*.fits.*" /usr/local/var/tcs/ rsync://oan-nas/colibri-raw/
-01-59  *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="debug*.txt" --include="*.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://oan-nas/colibri-raw/
-*      *  *  *  *  rsync -aH --remove-source-files --exclude="*.tmp" --include="*.fits.*" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://oan-nas/colibri-raw/
+#00     *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="*.jpg" --exclude="*.fits" --exclude="*.fits.*" /usr/local/var/tcs/ rsync://oan-nas/colibri-raw/
+#01-59  *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="debug*.txt" --include="*.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://oan-nas/colibri-raw/
+#*      *  *  *  *  rsync -aH --remove-source-files --exclude="*.tmp" --include="*.fits.*" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://oan-nas/colibri-raw/
 EOF
   
   case $host in
@@ -114,14 +115,11 @@ EOF
   
   case $host in
   detectors)
-    #echo "tcs instrumentdataserver -f -d /nas/tcs/ &"
     echo "tcs instrumentimageserver C0 control &"
-    echo "tcs instrumentimageserver C1 control &"
+    echo "tcs instrumentdataserver -f -d rsync://oan-nas/colibri-raw/ &"
     ;;
   control)
     echo "tcs instrumentimageserver C0 &"
-    echo "tcs instrumentimageserver C0 control &"
-    echo "tcs instrumentdataserver -f -d rsync://oan-nas/colibri-raw/ &"
     echo "tcs webcamimageserver a http://192.168.100.31/cgi-bin/viewer/video.jpg &"
     echo "tcs allskyimageserver http://132.248.4.140/imagenes/ultima_RED.jpg &"
     echo "mkdir -p /usr/local/var/tcs/reboot"
