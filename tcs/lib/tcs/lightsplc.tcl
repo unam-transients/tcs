@@ -55,7 +55,7 @@ namespace eval "lights" {
   ######################################################################
 
   proc switchrequested {} {
-    log::info "switchrequested: start"
+    log::debug "switchrequested: start"
     set requestedlights [server::getdata "requestedlights"]
     switch $requestedlights {
       "on" {
@@ -72,7 +72,7 @@ namespace eval "lights" {
         error "invalid requested state: $requestedlights"
       }
     }
-    log::info "switchrequested: end"
+    log::debug "switchrequested: end"
   }
 
   ######################################################################
