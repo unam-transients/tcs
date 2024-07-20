@@ -270,9 +270,9 @@ namespace eval "telescope" {
         client::wait "mount"
       }
       if {$withdome} {
-        log::info "opening shutters."
-        client::request "shutters" "open"
-        client::wait "shutters"  
+        log::info "opening dome."
+        client::request "dome" "open"
+        client::wait "dome"  
       }
       if {$withenclosure} {
         log::info "opening enclosure."
@@ -345,9 +345,9 @@ namespace eval "telescope" {
         client::wait "mount"
       }
       if {$withdome} {
-        log::info "opening shutters."
-        client::request "shutters" "open"
-        client::wait "shutters"
+        log::info "opening dome."
+        client::request "dome" "open"
+        client::wait "dome"
         log::info "parking dome."
         client::request "dome" "preparetomove"
         client::request "dome" "park"
@@ -428,9 +428,9 @@ namespace eval "telescope" {
       variable closeexplicitly
       if {$closeexplicitly} {
         if {$withdome} {
-          log::info "closing shutters."
-          client::request "shutters" "close"
-          client::wait "shutters"
+          log::info "closing dome."
+          client::request "dome" "close"
+          client::wait "dome"
           log::info "parking dome."
           client::request "dome" "preparetomove"
           client::request "dome" "park"
@@ -473,10 +473,10 @@ namespace eval "telescope" {
       if {$closeexplicitly} {
         if {$withdome} {
           catch {client::request "dome" "reset"}
-          log::info "closing shutters."
-          catch {client::request "shutters" "reset"}
-          client::request "shutters" "emergencyclose"
-          client::wait "shutters"  
+          log::info "closing dome."
+          catch {client::request "dome" "reset"}
+          client::request "dome" "emergencyclose"
+          client::wait "dome"  
         }
         if {$withenclosure} {
           log::info "closing enclosure."

@@ -22,9 +22,10 @@
 ########################################################################
 
 package require "config"
-package require "dome"
 package require "log"
 package require "server"
+
+package require "dome[config::getvalue "dome" "type"]"
 
 package provide "domeserver" 0.0
 
@@ -45,6 +46,14 @@ namespace eval "domeserver" {
   proc slavereset {} {
     dome::reset
     return
+  }
+
+  proc slaveopen {} {
+    dome::open
+  }
+
+  proc slaveclose {} {
+    dome::close
   }
 
   proc slavepreparetomove {} {
@@ -72,21 +81,18 @@ namespace eval "domeserver" {
     return
   }
 
-  proc slaveforceerror {} {
-    dome::forceerror
-    return
-  }
-
   proc configureslave {slave} {
     interp alias $slave initialize     {} domeserver::slaveinitialize
     interp alias $slave stop           {} domeserver::slavestop
     interp alias $slave reset          {} domeserver::slavereset
+    interp alias $slave open           {} domeserver::slaveopen
+    interp alias $slave close          {} domeserver::slaveclose
     interp alias $slave preparetomove  {} domeserver::slavepreparetomove
     interp alias $slave move           {} domeserver::slavemove
     interp alias $slave park           {} domeserver::slavepark
     interp alias $slave preparetotrack {} domeserver::slavepreparetotrack
     interp alias $slave track          {} domeserver::slavetrack
-    interp alias $slave forceerror     {} domeserver::slaveforceerror
+
   }
 
   ######################################################################

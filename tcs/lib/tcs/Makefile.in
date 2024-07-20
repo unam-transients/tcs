@@ -45,6 +45,7 @@ installs	:=			           \
 	detectorsi.tcl			       \
 	directories.tcl			       \
 	dome.tcl                       \
+	domeopentsi.tcl                \
 	domeserver.tcl                 \
 	enclosure.tcl 		    	   \
 	enclosurearts.tcl 	    	   \
