@@ -142,18 +142,18 @@ namespace eval "mount" {
 
   server::setdata "unparked"                    false
 
-  variable pendingmountazimuth
-  variable pendingmountzenithdistance
-  variable pendingmountderotatorangle
-  variable pendingmountrotation
-  variable pendingmountalpha
-  variable pendingmountdelta
-  variable pendingmountst
-  variable pendingtelescopemotionstate
-  variable pendingtargetdistance
+  variable pendingmountazimuth         ""
+  variable pendingmountzenithdistance  ""
+  variable pendingmountderotatorangle  ""
+  variable pendingmountrotation        ""
+  variable pendingmountalpha           ""
+  variable pendingmountdelta           ""
+  variable pendingmountst              ""
+  variable pendingtelescopemotionstate ""
+  variable pendingtargetdistance       ""
   
-  variable telescopemotionstate         ""
-  variable targetdistance               ""
+  variable telescopemotionstate        ""
+  variable targetdistance              ""
 
   proc updatedata {response} {
 
@@ -382,6 +382,7 @@ namespace eval "mount" {
     opentsi::sendcommand [format "SET [join {
         "OBJECT.INSTRUMENTAL.AZ=%.6f"
         "OBJECT.INSTRUMENTAL.ZD=%.6f"
+        "pointing.setup.dome.syncmode=2"        
         "POINTING.TRACK=2"
       } ";"]" \
       [astrometry::radtodeg $azimuthunpark       ] \
