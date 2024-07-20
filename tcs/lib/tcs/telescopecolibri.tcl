@@ -34,7 +34,7 @@ namespace eval "telescope" {
   ######################################################################
 
   variable mechanisms { telescopecontroller covers secondary mount }
-  variable withlights false
+  variable withlights true
   variable withheater false
 
   ######################################################################
