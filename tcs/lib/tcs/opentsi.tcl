@@ -53,7 +53,8 @@ namespace eval "opentsi" {
       [regexp {AUTH OK .*} $response] == 1 ||
       [regexp {^[0-9]+ COMMAND OK}  $response] == 1 ||
       [regexp {^[0-9]+ DATA OK}     $response] == 1 ||
-      [regexp {^[0-9]+ EVENT INFO } $response] == 1
+      [regexp {^[0-9]+ EVENT INFO } $response] == 1 ||
+      [regexp {^[0-9]+ EVENT ERROR [^:]+:[0-9]+ No data available\.$} $response] == 1
     }
   }
   
@@ -92,7 +93,7 @@ namespace eval "opentsi" {
     } else {
       set nextcommandidentifier [expr {$nextcommandidentifier + 1}]
     }
-    log::debug "sending controller command: \"$currentcommandidentifier $command\"."
+    log::info "sending controller command: \"$currentcommandidentifier $command\"."
     controller::pushcommand "$currentcommandidentifier $command\n"
   }
 
