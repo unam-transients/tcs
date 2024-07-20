@@ -66,7 +66,9 @@ package ifneeded directories           0.0 \
   [list source [file join [file dirname [info script]] directories.tcl]]
 package ifneeded dome                  0.0 \
   [list source [file join [file dirname [info script]] dome.tcl]]
-package ifneeded domeserver                  0.0 \
+package ifneeded domeopentsi           0.0 \
+  [list source [file join [file dirname [info script]] domeopentsi.tcl]]
+package ifneeded domeserver            0.0 \
   [list source [file join [file dirname [info script]] domeserver.tcl]]
 package ifneeded enclosurearts         0.0 \
   [list source [file join [file dirname [info script]] enclosurearts.tcl]]

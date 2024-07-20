@@ -104,6 +104,9 @@
     "port2name": "right",
     "port3name": "left"
   },
+  "dome": {
+    "type": "opentsi"
+  },
   "executor": {
     "type": "colibri"
   },

@@ -558,7 +558,8 @@ namespace eval "html" {
     putshtml "<table class=\"status\">"
 
     if {[string equal [client::getstatus "dome"] "ok"]} {
-      writehtmlrow "Controller initialized"         [client::getdata "dome" "controllerinitialized"]
+      writehtmlrow "Requested shutters"             [client::getdata "dome" "requestedshutters"]
+      writehtmlrow "Current shutters"               [client::getdata "dome" "shutters"]
       writehtmlrow "Requested azimuth"              [formatradtodegifdouble "%.1f°" [client::getdata "dome" "requestedazimuth"]]
       writehtmlrow "Current azimuth"                [formatradtodegifdouble "%.1f°" [client::getdata "dome" "azimuth"]]
       writehtmlrow "Current azimuth error"          [formatradtodegifdouble "%+.1f°" [client::getdata "dome" "azimutherror"]]

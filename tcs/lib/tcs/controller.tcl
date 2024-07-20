@@ -185,7 +185,7 @@ namespace eval "controller" {
           handlecommand $initialcommand
         }
       } message]} {
-        log::warning "error while communicating with the controller."
+        log::warning "controller error: $message."
         coroutine::after 1000
       }
       break
@@ -197,7 +197,7 @@ namespace eval "controller" {
           set commandqueue [queue::pop $commandqueue]
           server::resumeactivitycommand
         } elseif {[catch {handlecommand $command} message]} {
-          log::warning "error while communicating with the controller."
+          log::warning "controller error: $message"
           catch {drainchannel}
           catch {closechannel}
           while {true} {
@@ -207,7 +207,7 @@ namespace eval "controller" {
                 handlecommand $initialcommand
               }
             } message]} {
-              log::warning "error while communicating with the controller."
+              log::warning "controller error: $message"
               coroutine::after 1000
             }
             break
