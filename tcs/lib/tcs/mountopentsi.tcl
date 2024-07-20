@@ -279,7 +279,6 @@ namespace eval "mount" {
     while {[utcclock::diff now $settle] < $settlingdelay} {
       coroutine::yield
     }
-    log::info [format "finished with targetdistance = %.1fas." [astrometry::radtoarcsec $targetdistance]]
     log::info "finished waiting while moving."
   }
 
