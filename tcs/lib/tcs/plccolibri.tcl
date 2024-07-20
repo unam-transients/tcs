@@ -554,6 +554,22 @@ namespace eval "plc" {
 
   ######################################################################
 
+  proc switchlightson {} {
+    server::checkstatus
+    log::info "switching lights on."
+    controller::pushcommand "ObsRoomLight{ON}\n"
+    return
+  }
+
+  proc switchlightsoff {} {
+    server::checkstatus
+    log::info "switching lights off."
+    controller::pushcommand "ObsRoomLight{OFF}\n"
+    return
+  }
+
+  ######################################################################
+
   proc start {} {
     set controller::connectiontype "persistent"
     controller::startcommandloop
