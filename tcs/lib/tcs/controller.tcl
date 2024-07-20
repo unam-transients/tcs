@@ -116,7 +116,9 @@ namespace eval "controller" {
     set startmilliseconds [clock milliseconds]
     while {true} {
       coroutine::after $pollmilliseconds
-      set response [$getresponse $channel]
+      if {[catch {set response [$getresponse $channel]}]} {
+        error "unable to communicate with the controller."
+      }
       set delaymilliseconds [expr {[clock milliseconds] - $startmilliseconds}]
       if {[chan eof $channel]} {
         log::debug "controller: eof on channel."
@@ -176,10 +178,17 @@ namespace eval "controller" {
     variable commandqueue
     variable intervalmilliseconds
     variable initialcommand
-    if {[catch {openchannel} message]} {
-      log::debug "controller: unable to open channel: $message"
-    } elseif {![string equal $initialcommand ""]} {
-      handlecommand $initialcommand
+    while {true} {
+      if {[catch {
+        openchannel
+        if {![string equal $initialcommand ""]} {
+          handlecommand $initialcommand
+        }
+      } message]} {
+        log::warning "error while communicating with the controller."
+        coroutine::after 1000
+      }
+      break
     }
     while {true} {
       if {[queue::length $commandqueue] != 0} {
@@ -188,13 +197,20 @@ namespace eval "controller" {
           set commandqueue [queue::pop $commandqueue]
           server::resumeactivitycommand
         } elseif {[catch {handlecommand $command} message]} {
-          log::debug "controller: unable to send command: $message"
+          log::warning "error while communicating with the controller."
           catch {drainchannel}
           catch {closechannel}
-          if {[catch {openchannel} message]} {
-            log::debug "controller: unable to open channel: $message"
-          } elseif {![string equal $initialcommand ""]} {
-            handlecommand $initialcommand
+          while {true} {
+            if {[catch {
+              openchannel
+              if {![string equal $initialcommand ""]} {
+                handlecommand $initialcommand
+              }
+            } message]} {
+              log::warning "error while communicating with the controller."
+              coroutine::after 1000
+            }
+            break
           }
         } else {
           if {
