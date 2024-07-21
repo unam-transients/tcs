@@ -23,6 +23,8 @@
 
 namespace eval "dome" {
 
+  variable parkazimuth [astrometry::formatazimuth [config::getvalue "dome" "parkazimuth"]]
+
   proc initialize {} {
     server::checkstatus
     server::checkactivityforinitialize
@@ -64,6 +66,13 @@ namespace eval "dome" {
     server::newactivitycommand "preparingtomove" "preparedtomove" dome::preparetomoveactivitycommand
   }
 
+  proc move {azimuth} {
+    server::checkstatus
+    server::checkactivity "preparedtomove"
+    set azimuth [astrometry::parseazimuth $azimuth]    
+    server::newactivitycommand "moving" "idle" "dome::moveactivitycommand $azimuth"
+  }
+  
   proc park {} {
     server::checkstatus
     server::checkactivity "preparedtomove"

@@ -350,7 +350,7 @@ namespace eval "telescope" {
         client::wait "dome"
         log::info "parking dome."
         client::request "dome" "preparetomove"
-        client::request "dome" "park"
+        client::request "dome" "move ventilate"
         client::wait "dome"
       }
       if {$withenclosure} {

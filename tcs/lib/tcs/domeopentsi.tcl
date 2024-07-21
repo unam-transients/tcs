@@ -146,6 +146,7 @@ namespace eval "dome" {
   
   proc opendome {} {
     server::setdata "requestedshutters" "open"
+    movedome "0d"
     opentsi::sendcommand "SET AUXILIARY.DOME.TARGETPOS=1"
     waitwhilemoving
     if {![string equal [server::getdata "shutters"] "open"]} {
@@ -155,11 +156,22 @@ namespace eval "dome" {
   
   proc closedome {} {
     server::setdata "requestedshutters" "closed"
+    movedome "0d"
     opentsi::sendcommand "SET AUXILIARY.DOME.TARGETPOS=0"
     waitwhilemoving
     if {![string equal [server::getdata "shutters"] "closed"]} {
       error "the shutters did not close."
     }
+  }
+  
+  proc movedome {azimuth} {
+    if {[string equal $azimuth "ventilate"]} {
+      set azimuth "90d"
+    }
+    set azimuth [astrometry::parseazimuth $azimuth]
+    server::setdata "requestedazimuth" $azimuth
+    opentsi::sendcommand [format "SET POSITION.INSTRUMENTAL.DOME\[0\].TARGETPOS=%f" [astrometry::radtodeg $azimuth]]
+    waitwhilemoving
   }
   
   ######################################################################
@@ -202,6 +214,27 @@ namespace eval "dome" {
     log::info [format "finished closing after %.1f seconds." [utcclock::diff $end $start]]
   }
 
+  proc preparetomoveactivitycommand {} {
+    server::setdata requestedazimuth ""
+  }
+  
+  proc moveactivitycommand {azimuth} {
+    set start [utcclock::seconds]
+    log::info "moving."
+    movedome $azimuth
+    set end [utcclock::seconds]
+    log::info [format "finished moving after %.1f seconds." [utcclock::diff $end $start]]
+  }
+  
+  proc parkactivitycommand {} {
+    set start [utcclock::seconds]
+    variable parkazimuth
+    log::info "parking."
+    movedome $parkazimuth
+    set end [utcclock::seconds]
+    log::info [format "finished parking after %.1f seconds." [utcclock::diff $end $start]]
+  }
+  
   proc stopactivitycommand {previousactivity} {
     set start [utcclock::seconds]
     log::info "stopping."
