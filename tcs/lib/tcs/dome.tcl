@@ -26,6 +26,8 @@ namespace eval "dome" {
   variable openazimuth      [astrometry::formatazimuth [config::getvalue "dome" "openazimuth"     ]]
   variable closeazimuth     [astrometry::formatazimuth [config::getvalue "dome" "closeazimuth"    ]]
   variable parkazimuth      [astrometry::formatazimuth [config::getvalue "dome" "parkazimuth"     ]]
+  
+  variable daytimetesting   [config::getvalue "telescope" "daytimetesting"]
 
   ########################################################################
 
@@ -64,8 +66,15 @@ namespace eval "dome" {
   proc open {} {
     server::checkstatus
     server::checkactivityformove
-    server::newactivitycommand "opening" "idle" \
-      dome::openactivitycommand
+    variable daytimetesting
+    if {$daytimetesting} {
+      server::newactivitycommand "closing" "idle" \
+        dome::closeactivitycommand
+
+    } else {
+      server::newactivitycommand "opening" "idle" \
+        dome::openactivitycommand
+    }
   }
 
   proc close {} {
