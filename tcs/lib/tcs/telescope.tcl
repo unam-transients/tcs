@@ -36,9 +36,11 @@ namespace eval "telescope" {
   ######################################################################
   
   variable closeexplicitly [config::getvalue "telescope" "closeexplicitly"]
-  variable idleha          [astrometry::formatha    [config::getvalue "target" "idleha"   ]]
-  variable idledelta       [astrometry::formatdelta [config::getvalue "target" "idledelta"]]
-  
+  variable idleha          [astrometry::formatha    [config::getvalue "target" "idleha"        ]]
+  variable idledelta       [astrometry::formatdelta [config::getvalue "target" "idledelta"     ]]
+  variable ventilateha     [astrometry::formatha    [config::getvalue "target" "ventilateha"   ]]
+  variable ventilatedelta  [astrometry::formatdelta [config::getvalue "target" "ventilatedelta"]]
+    
   ######################################################################
 
   variable catalogdirectory [file join [directories::share] "catalogs"]
@@ -270,7 +272,10 @@ namespace eval "telescope" {
         client::wait "mount"
       }
       if {$withdome} {
-        log::info "opening dome."
+        log::info "moving dome to open."
+        client::request "dome" "preparetomove"
+        client::request "dome" "move open"
+        log::info "opening shutters."
         client::request "dome" "open"
         client::wait "dome"  
       }
@@ -318,8 +323,8 @@ namespace eval "telescope" {
     variable withdome
     variable withenclosure
     variable withcovers
-    variable idleha
-    variable idledelta
+    variable ventilateha
+    variable ventilatedelta
     if {[catch {
       if {$withlights} {
         switchlights "on"
@@ -333,7 +338,7 @@ namespace eval "telescope" {
         client::request "mount" "preparetomove"
         client::wait "mount"
       }
-      client::request "target" "move $idleha $idledelta"
+      client::request "target" "move $ventilateha $ventilatedelta"
       client::wait "target"
       if {$withtelescopecontroller} {
         log::info "switching on telescope controller."
@@ -345,12 +350,11 @@ namespace eval "telescope" {
         client::wait "mount"
       }
       if {$withdome} {
-        log::info "opening dome."
-        client::request "dome" "open"
-        client::wait "dome"
-        log::info "parking dome."
+        log::info "moving dome to open."
         client::request "dome" "preparetomove"
-        client::request "dome" "move ventilate"
+        client::request "dome" "move open"
+        log::info "opening shutters."
+        client::request "dome" "open"
         client::wait "dome"
       }
       if {$withenclosure} {
@@ -368,7 +372,7 @@ namespace eval "telescope" {
         client::request "mount" "preparetomove"
         client::wait "mount"
       }
-      client::request "target" "move $idleha $idledelta"
+      client::request "target" "move $ventilateha $ventilatedelta"
       client::wait "target"
       if {$withmount} {      
         client::request "mount" "unpark"
@@ -428,7 +432,10 @@ namespace eval "telescope" {
       variable closeexplicitly
       if {$closeexplicitly} {
         if {$withdome} {
-          log::info "closing dome."
+          log::info "moving dome to close."
+          client::request "dome" "preparetomove"
+          client::request "dome" "move close"
+          log::info "closing shutters."
           client::request "dome" "close"
           client::wait "dome"
           log::info "parking dome."

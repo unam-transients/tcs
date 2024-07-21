@@ -4,7 +4,7 @@
 
 ########################################################################
 
-# Copyright © 2009, 2010, 2011, 2012, 2013, 2014, 2017, 2019, 2021 Alan M. Watson <alan@astro.unam.mx>
+# Copyright © 2009, 2010, 2011, 2012, 2013, 2014, 2017, 2019, 2021, 2024 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -23,8 +23,23 @@
 
 namespace eval "dome" {
 
-  variable parkazimuth [astrometry::formatazimuth [config::getvalue "dome" "parkazimuth"]]
+  variable openazimuth      [astrometry::formatazimuth [config::getvalue "dome" "openazimuth"     ]]
+  variable closeazimuth     [astrometry::formatazimuth [config::getvalue "dome" "closeazimuth"    ]]
+  variable parkazimuth      [astrometry::formatazimuth [config::getvalue "dome" "parkazimuth"     ]]
 
+  ########################################################################
+
+  proc gettargetdomeazimuth {} {
+    while {[catch {client::update "target"}]} {
+      log::warning "unable to determine the target position."
+      coroutine::yield
+    }
+    set targetobservedazimuth [client::getdata "target" "observedazimuth"]
+    return $targetobservedazimuth
+  }
+  
+  ########################################################################
+  
   proc initialize {} {
     server::checkstatus
     server::checkactivityforinitialize
@@ -69,6 +84,18 @@ namespace eval "dome" {
   proc move {azimuth} {
     server::checkstatus
     server::checkactivity "preparedtomove"
+    if {[string equal $azimuth "open"]} {
+      variable openazimuth
+      set azimuth $openazimuth
+    } elseif {[string equal $azimuth "close"]} {
+      variable closeazimuth
+      set azimuth $closeazimuth
+    } elseif {[string equal $azimuth "park"]} {
+      variable parkazimuth
+      set azimuth $parkazimuth
+    } elseif {[string equal $azimuth "target"]} {
+      set azimuth [gettargetdomeazimuth]
+    }
     set azimuth [astrometry::parseazimuth $azimuth]    
     server::newactivitycommand "moving" "idle" "dome::moveactivitycommand $azimuth"
   }
