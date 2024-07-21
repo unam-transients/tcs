@@ -479,11 +479,10 @@ namespace eval "telescope" {
     catch {
       if {$closeexplicitly} {
         if {$withdome} {
-          catch {client::request "dome" "reset"}
-          log::info "closing dome."
+          log::info "closing shutters."
           catch {client::request "dome" "reset"}
           client::request "dome" "emergencyclose"
-          client::wait "dome"  
+          client::wait "dome" 
         }
         if {$withenclosure} {
           log::info "closing enclosure."

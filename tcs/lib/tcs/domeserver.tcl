@@ -56,6 +56,10 @@ namespace eval "domeserver" {
     dome::close
   }
 
+  proc slaveemergencyclose {} {
+    dome::emergencyclose
+  }
+
   proc slavepreparetomove {} {
     dome::preparetomove
     return
@@ -87,6 +91,7 @@ namespace eval "domeserver" {
     interp alias $slave reset          {} domeserver::slavereset
     interp alias $slave open           {} domeserver::slaveopen
     interp alias $slave close          {} domeserver::slaveclose
+    interp alias $slave emergencyclose {} domeserver::slaveemergencyclose
     interp alias $slave preparetomove  {} domeserver::slavepreparetomove
     interp alias $slave move           {} domeserver::slavemove
     interp alias $slave park           {} domeserver::slavepark
