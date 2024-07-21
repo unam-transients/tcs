@@ -5,7 +5,7 @@ export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bi
 program="tcs $(basename "$0")"
 
 usageerror () {
-  echo 1>&2 "usage: $program [blockfile]"
+  echo 1>&2 "usage: $program [-L] [-F] [blockfile]"
   exit 1
 }
 
@@ -84,6 +84,9 @@ then
     ;;
   ddoti-*)
     url="https://github.com/alanwatsonforster/ddoti-blocks.git"
+    ;;
+  colibri-*)
+    url="https://github.com/alanwatsonforster/colibri-blocks.git"
     ;;
   *)
     error "unable to determing URL."
