@@ -632,6 +632,9 @@ namespace eval "html" {
         [formatradtodegifdouble "%.2f°" [client::getdata "target" "observedazimuth"]] \
         [formatradtodegifdouble "%.2f°" [client::getdata "target" "observedzenithdistance"]] \
         [formatifok "%.3f" [client::getdata "target" "observedairmass"]]
+      writehtmlrow "Observed rate (A,z)" \
+        [formatrateifdouble [client::getdata "target" "observedazimuthrate"]] \
+        [formatrateifdouble [client::getdata "target" "observedzenithdistancerate"]]
       writehtmlrow "Within limits" \
         [client::getdata "target" "withinlimits"]
     }

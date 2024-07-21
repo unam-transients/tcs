@@ -164,11 +164,17 @@ namespace eval "target" {
       set observeddelta [astrometry::foldradsymmetric [expr {$observeddelta + $aperturedeltaoffset}]]      
       set observedha    [astrometry::ha $observedalpha $seconds]
 
+      set observedazimuth        [astrometry::equatorialtoazimuth $observedha $observeddelta]
+      set observedzenithdistance [astrometry::equatorialtozenithdistance $observedha $observeddelta]
+    
       set futureobservedalpha [astrometry::observedalpha $futurecurrentalpha $futurecurrentdelta $currentequinox $futureseconds]
       set futureobserveddelta [astrometry::observeddelta $futurecurrentalpha $futurecurrentdelta $currentequinox $futureseconds]
       set futureobservedalpha [astrometry::foldradpositive [expr {$futureobservedalpha + $aperturealphaoffset / cos($futureobserveddelta)}]]
       set futureobserveddelta [astrometry::foldradsymmetric [expr {$futureobserveddelta + $aperturedeltaoffset}]]      
       set futureobservedha    [astrometry::ha $futureobservedalpha $futureseconds]
+      
+      set futureobservedazimuth        [astrometry::equatorialtoazimuth $futureobservedha $futureobserveddelta]
+      set futureobservedzenithdistance [astrometry::equatorialtozenithdistance $futureobservedha $futureobserveddelta]
 
       set observedalpharate [astrometry::foldradsymmetric [expr {
         ($futureobservedalpha - $observedalpha) / $dseconds * cos($currentdelta)
@@ -178,6 +184,12 @@ namespace eval "target" {
       }]
       set observedharate [astrometry::foldradsymmetric [expr {
         ($futureobservedha - $observedha) / $dseconds
+      }]]
+      set observedazimuthrate [astrometry::foldradsymmetric [expr {
+        ($futureobservedazimuth - $observedazimuth) / $dseconds
+      }]]
+      set observedzenithdistancerate [astrometry::foldradsymmetric [expr {
+        ($futureobservedzenithdistance - $observedzenithdistance) / $dseconds
       }]]
 
     } else {
@@ -200,14 +212,16 @@ namespace eval "target" {
       set observedalpha  [astrometry::foldradpositive [expr {[astrometry::last $seconds] - $observedha}]]
       set observeddelta  $currentdelta
 
-      set observedalpharate ""
-      set observeddeltarate ""
-      set observedharate    ""
-
+      set observedazimuth        [astrometry::equatorialtoazimuth $observedha $observeddelta]
+      set observedzenithdistance [astrometry::equatorialtozenithdistance $observedha $observeddelta]
+    
+      set observedalpharate          ""
+      set observeddeltarate          ""
+      set observedharate             ""
+      set observedazimuthrate        ""
+      set observedzenithdistancerate ""
     }
     
-    set observedazimuth        [astrometry::equatorialtoazimuth $observedha $observeddelta]
-    set observedzenithdistance [astrometry::equatorialtozenithdistance $observedha $observeddelta]
     set observedairmass        [astrometry::airmass $observedzenithdistance]
 
     set lastwithinlimits [server::getdata "withinlimits"]
@@ -235,29 +249,31 @@ namespace eval "target" {
 
     server::setstatus "ok"
 
-    server::setdata "last"                   [astrometry::last $seconds]
-    server::setdata "currentalpha"           $currentalpha
-    server::setdata "currentdelta"           $currentdelta
-    server::setdata "currentha"              $currentha
-    server::setdata "currentequinox"         $currentequinox
-    server::setdata "standardalpha"          $standardalpha
-    server::setdata "standarddelta"          $standarddelta
-    server::setdata "standardalpharate"      $standardalpharate
-    server::setdata "standarddeltarate"      $standarddeltarate
-    server::setdata "standardequinox"        $standardequinox
-    server::setdata "aperturealphaoffset"    $aperturealphaoffset
-    server::setdata "aperturedeltaoffset"    $aperturedeltaoffset
-    server::setdata "observedalpha"          $observedalpha
-    server::setdata "observeddelta"          $observeddelta
-    server::setdata "observedha"             $observedha
-    server::setdata "observedazimuth"        $observedazimuth
-    server::setdata "observedzenithdistance" $observedzenithdistance
-    server::setdata "observedairmass"        $observedairmass
-    server::setdata "observedalpharate"      $observedalpharate
-    server::setdata "observeddeltarate"      $observeddeltarate
-    server::setdata "observedharate"         $observedharate
-    server::setdata "withinlimits"           $withinlimits
-    server::setdata "timestamp"              [utcclock::combinedformat $seconds]
+    server::setdata "last"                       [astrometry::last $seconds]
+    server::setdata "currentalpha"               $currentalpha
+    server::setdata "currentdelta"               $currentdelta
+    server::setdata "currentha"                  $currentha
+    server::setdata "currentequinox"             $currentequinox
+    server::setdata "standardalpha"              $standardalpha
+    server::setdata "standarddelta"              $standarddelta
+    server::setdata "standardalpharate"          $standardalpharate
+    server::setdata "standarddeltarate"          $standarddeltarate
+    server::setdata "standardequinox"            $standardequinox
+    server::setdata "aperturealphaoffset"        $aperturealphaoffset
+    server::setdata "aperturedeltaoffset"        $aperturedeltaoffset
+    server::setdata "observedalpha"              $observedalpha
+    server::setdata "observeddelta"              $observeddelta
+    server::setdata "observedha"                 $observedha
+    server::setdata "observedazimuth"            $observedazimuth
+    server::setdata "observedzenithdistance"     $observedzenithdistance
+    server::setdata "observedairmass"            $observedairmass
+    server::setdata "observedalpharate"          $observedalpharate
+    server::setdata "observeddeltarate"          $observeddeltarate
+    server::setdata "observedharate"             $observedharate
+    server::setdata "observedazimuthrate"        $observedazimuthrate
+    server::setdata "observedzenithdistancerate" $observedzenithdistancerate
+    server::setdata "withinlimits"               $withinlimits
+    server::setdata "timestamp"                  [utcclock::combinedformat $seconds]
   }
 
   ######################################################################
