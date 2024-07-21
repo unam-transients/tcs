@@ -110,7 +110,7 @@ namespace eval "supervisor" {
         log::summary [format "external humidity is %.0f%%." [expr {[client::getdata "weather" "humidity"] * 100}]]
       }
     }
-    if {$reportsensors} {
+    if {$reportsensors && ![string equal $internalhumiditysensor ""]} {
       log::summary [format "internal humidity is %.0f%%." [expr {[client::getdata "sensors" "$internalhumiditysensor"] * 100}]]
     }
     
@@ -558,6 +558,7 @@ namespace eval "supervisor" {
     variable mode
     set mode "error"
     updatedata
+    catch { client::request "selector" "disable" }
     if {![catch {
       client::waituntilstarted "executor"
       client::request "executor" "emergencyclose"
