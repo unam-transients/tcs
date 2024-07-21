@@ -75,6 +75,11 @@ namespace eval "dome" {
       dome::closeactivitycommand
   }
   
+  proc emergencyclose {} {
+    server::newactivitycommand "closing" [server::getstoppedactivity] \
+      dome::emergencycloseactivitycommand
+  }
+  
   proc preparetomove {} {
     server::checkstatus
     server::checkactivityformove

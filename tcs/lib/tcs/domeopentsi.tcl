@@ -146,7 +146,6 @@ namespace eval "dome" {
   
   proc opendome {} {
     server::setdata "requestedshutters" "open"
-    movedome "0d"
     opentsi::sendcommand "SET AUXILIARY.DOME.TARGETPOS=1"
     waitwhilemoving
     if {![string equal [server::getdata "shutters"] "open"]} {
@@ -156,7 +155,27 @@ namespace eval "dome" {
   
   proc closedome {} {
     server::setdata "requestedshutters" "closed"
-    movedome "0d"
+    opentsi::sendcommand "SET AUXILIARY.DOME.TARGETPOS=0"
+    waitwhilemoving
+    if {![string equal [server::getdata "shutters"] "closed"]} {
+      error "the shutters did not close."
+    }
+  }
+  
+  proc emergencyclosedome {} {
+    server::setdata "requestedshutters" "closed"
+    # Switch the telescope on. We shouldn't have to do this here, but this
+    # is an emergency.
+    opentsi::sendcommand "SET TELESCOPE.POWER=1"
+    while {$opentsi::readystate != 1.0} {
+      coroutine::yield
+    }
+    set settlingdelay 5
+    set settle [utcclock::seconds]
+    while {[utcclock::diff now $settle] < $settlingdelay} {
+      coroutine::yield
+    }
+    # Now close the dome.
     opentsi::sendcommand "SET AUXILIARY.DOME.TARGETPOS=0"
     waitwhilemoving
     if {![string equal [server::getdata "shutters"] "closed"]} {
@@ -206,6 +225,14 @@ namespace eval "dome" {
     closedome
     set end [utcclock::seconds]
     log::info [format "finished closing after %.1f seconds." [utcclock::diff $end $start]]
+  }
+
+  proc emergencycloseactivitycommand {} {
+    set start [utcclock::seconds]
+    log::warning "emergency closing."
+    emergencyclosedome
+    set end [utcclock::seconds]
+    log::info [format "finished emergency closing after %.1f seconds." [utcclock::diff $end $start]]
   }
 
   proc preparetomoveactivitycommand {} {
