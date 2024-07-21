@@ -1,0 +1,58 @@
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+########################################################################
+
+# Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+# pdu0
+# iBootBar 2N15
+
+set ipaddress 192.168.100.51
+set subnet 255.255.255.0
+set gateway 192.168.100.1
+set ipmode static
+get network
+
+set time server 129.6.15.29
+set time zone 0
+set time usents yes
+get time
+
+add user colibri
+set user colibri password colibri colibri
+set user colibri role admin
+set user colibri device #1 outlet all yes
+get user colibri
+
+set snmp 1 enable yes
+
+set device 1
+set device #1 name pdu0
+get devices
+
+set device #1 outlet 1 name instrument
+set device #1 outlet 2 name -
+set device #1 outlet 3 name -
+set device #1 outlet 4 name -
+set device #1 outlet 5 name -
+set device #1 outlet 6 name -
+set device #1 outlet 7 name -
+set device #1 outlet 8 name -
+get device #1
