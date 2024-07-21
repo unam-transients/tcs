@@ -110,5 +110,9 @@
   "dome": {
     "host": "control",
     "port": 5022
-  }  
+  },
+  "power": {
+    "host": "control",
+    "port": 5023
+  }
 }

@@ -108,7 +108,9 @@
     "type": "opentsi",
     "openazimuth": "0d",
     "closeazimuth": "0d",
-    "parkazimuth": "180d"
+    "parkazimuth": "180d",
+    "trackingtolerance": "1d",
+    "trackinganticipation": "0.5d"
   },
   "executor": {
     "type": "colibri"
@@ -132,6 +134,7 @@
       "moon",
       "mount",
       "plc",
+      "power",
       "secondary",
       "selector",
       "sensors",
@@ -193,27 +196,14 @@
   },
   "power": {
     "hosts": {
-      "pdu1": {
-        "type": "ibootpdu",
-        "outlets": "8",
-        "inlets": "1"
-      },
-      "pdu2": {
-        "type": "ibootpdu",
+      "pdu0": {
+        "type": "ibootbar",
         "outlets": "8",
         "inlets": "1"
       }
     },
     "outletgroupaddresses": {
-      "access"              : [[ "pdu1", "a", "1"]],
-      "firewall"            : [[ "pdu1", "a", "2"]],
-      "blue"                : [[ "pdu1", "a", "3"]],
-      "detectors"           : [[ "pdu1", "a", "4"]],
-      "close-electronics"   : [[ "pdu1", "a", "5"]],
-      "red"                 : [[ "pdu1", "a", "6"]],
-      "control"             : [[ "pdu1", "a", "8"]],
-      "blue-service-cabinet": [[ "pdu2", "a", "1"]],
-      "red-service-cabinet" : [[ "pdu2", "a", "2"]]
+      "instrument": [[ "pdu0", "a", "1"]]
     }
   },
   "safetyswitch": {
@@ -701,6 +691,7 @@
       "instrument",
       "lights",
       "moon",
+      "power",
       "selector",
       "sensors",
       "supervisor",
