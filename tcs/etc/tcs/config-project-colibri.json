@@ -679,7 +679,8 @@
   "telescope": {
     "type": "colibri",
     "idleha": "0h",
-    "idledelta": "0d"
+    "idledelta": "0d",
+    "daytimetesting": "true"
   },
   "telescopecontroller": {
     "type": "opentsi"
