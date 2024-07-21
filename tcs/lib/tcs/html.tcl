@@ -1490,29 +1490,21 @@ if {false} {
       }
     }
 
-    if {[lsearch -exact $servers "shutters"] != -1} {
+    if {[lsearch -exact $servers "dome"] != -1} {
       set internalhumiditysensor [config::getvalue "supervisor" "internalhumiditysensor"]
       if {[string equal $internalhumiditysensor ""]} {
         set internalhumidity ""
       } else {
         set internalhumidity [formatpercentifok "%.0f%%" [client::getdata "sensors" $internalhumiditysensor]]
       }
-      if {![string equal [client::getstatus "shutters"] "ok"]} {
-        writehtmlfullrow "Shutters" 
+      if {![string equal [client::getstatus "dome"] "ok"]} {
+        writehtmlfullrow "Dome" 
       } else {
-        set uppershutter [client::getdata "shutters" "uppershutter"]
-        set lowershutter [client::getdata "shutters" "lowershutter"]
-        if {[string equal "open" $lowershutter] && [string equal "open" $uppershutter]} {
-          set shutters "open"
-        } elseif {[string equal "closed" $lowershutter] && [string equal "closed" $uppershutter]} {
-          set shutters "closed"
-        } else {
-          set shutters "intermediate"
-        }
+        set shutters [client::getdata "dome" "shutters"]
         if {[string equal "$internalhumidity" ""]} {
-          writehtmlfullrow "Shutters" "$shutters"
+          writehtmlfullrow "Dome" "$shutters"
         } else {
-          writehtmlfullrow "Shutters" "$shutters ($internalhumidity)"
+          writehtmlfullrow "Dome" "$shutters ($internalhumidity)"
         }
       }
     }

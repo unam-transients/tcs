@@ -165,9 +165,6 @@ namespace eval "dome" {
   }
   
   proc movedome {azimuth} {
-    if {[string equal $azimuth "ventilate"]} {
-      set azimuth "90d"
-    }
     set azimuth [astrometry::parseazimuth $azimuth]
     server::setdata "requestedazimuth" $azimuth
     opentsi::sendcommand [format "SET POSITION.INSTRUMENTAL.DOME\[0\].TARGETPOS=%f" [astrometry::radtodeg $azimuth]]
@@ -182,9 +179,6 @@ namespace eval "dome" {
     while {[string equal [server::getstatus] "starting"]} {
       coroutine::yield
     }
-    opentsi::sendcommand [format "SET TELESCOPE.CONFIG.COVER.PARK_POS=0"]
-    opentsi::sendcommand [format "SET TELESCOPE.CONFIG.PORT\[2\].PORT_COVER.PARK_POS=0"]
-    opentsi::sendcommand [format "SET TELESCOPE.CONFIG.PORT\[3\].PORT_COVER.PARK_POS=0"]
     set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
   }

@@ -106,6 +106,8 @@
   },
   "dome": {
     "type": "opentsi",
+    "openazimuth": "0d",
+    "closeazimuth": "0d",
     "parkazimuth": "180d"
   },
   "executor": {
@@ -607,11 +609,11 @@
         "identifier": "",
         "firmware": ""
       },
-      "dome-temperature": {
+      "control-room-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/ow/26.A493A0000000/temperature",
-        "prettyname": "dome temperature",
-        "subsystem": "telescope",
-        "component": "dome",
+        "prettyname": "control room temperature",
+        "subsystem": "building",
+        "component": "control room",
         "group": "environmental-sensors",
         "type": "float",
         "unit": "C",
@@ -620,11 +622,11 @@
         "identifier": "26.A493A0000000",
         "firmware": ""
       },      
-      "dome-humidity": {
+      "control-room-humidity": {
         "file": "/usr/local/var/tcs/sensors/control/ow/26.A493A0000000/HIH4000/humidity",
-        "prettyname": "dome humidity",
-        "subsystem": "telescope",
-        "component": "dome",
+        "prettyname": "control room humidity",
+        "subsystem": "building",
+        "component": "control room",
         "group": "environmental-sensors",
         "type": "float",
         "unit": "",
@@ -633,11 +635,11 @@
         "identifier": "26.A493A0000000",
         "firmware": ""
       },
-      "dome-light-level": {
+      "control-room-light-level": {
         "file": "/usr/local/var/tcs/sensors/control/ow/26.B5A940010000/VAD",
-        "prettyname": "dome light level",
-        "subsystem": "telescope",
-        "component": "dome",
+        "prettyname": "control room light level",
+        "subsystem": "building",
+        "component": "control room",
         "group": "environmental-sensors",
         "type": "float",
         "unit": "",
@@ -655,7 +657,7 @@
   },
   "supervisor": {
     "withplc": "false",
-    "internalhumiditysensor": "dome-humidity",
+    "internalhumiditysensor": "",
     "openoffsetseconds": "0",
     "opentoventilateoffsetseconds": "1800"
   },
@@ -670,7 +672,9 @@
     "minzenithdistancelimit": "1d",
     "maxzenithdistancelimit": "75d",
     "idleha": "0h",
-    "idledelta": "75d"
+    "idledelta": "75d",
+    "ventilateha": "-4h",
+    "ventilatedelta": "30d"
   },
   "telescope": {
     "type": "colibri",
