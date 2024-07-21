@@ -9,12 +9,13 @@ set time zone 0
 set time usents yes
 get time
 
+set snmp 1 enable yes
+
 set device 1
 set device #1 name ibb0-a
 set unit 1CC9 device 2
 set device #2 name ibb0-b
 get devices
-
 
 add user transients
 set user transients password transients transients
