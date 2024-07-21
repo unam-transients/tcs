@@ -105,7 +105,8 @@
     "port3name": "left"
   },
   "dome": {
-    "type": "opentsi"
+    "type": "opentsi",
+    "parkazimuth": "180d"
   },
   "executor": {
     "type": "colibri"
