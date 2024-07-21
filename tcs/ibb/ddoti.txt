@@ -40,6 +40,8 @@ set user ddoti role admin
 set user ddoti device #1 outlet all yes
 get user ddoti
 
+set snmp 1 enable yes
+
 set device 1
 set device #1 name ibb-127-a
 get devices
@@ -72,6 +74,8 @@ set user ddoti password ddoti ddoti
 set user ddoti role admin
 set user ddoti device #1 outlet all yes
 get user ddoti
+
+set snmp 1 enable yes
 
 set device 1
 set device #1 name ibb-220-a
