@@ -181,8 +181,8 @@ namespace eval "covers" {
   proc waitwhilemoving {} {
     log::info "waiting while moving."
     variable moving
-    set startingdelay 10
-    set settlingdelay 5
+    set startingdelay 5
+    set settlingdelay 1
     set start [utcclock::seconds]
     while {[utcclock::diff now $start] < $startingdelay} {
       coroutine::yield
@@ -206,9 +206,9 @@ namespace eval "covers" {
   
   proc opencovers {} {
     server::setdata "requestedcovers" "open"
-    opentsi::sendcommand "SET AUXILIARY.COVER.TARGETPOS=1"
-    opentsi::sendcommand "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=1"
-    opentsi::sendcommand "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=1"
+    opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=1"]
+    opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=1"]
+    opentsi::sendcommand [format "SET AUXILIARY.COVER.TARGETPOS=1"]
     waitwhilemoving
     if {![string equal [server::getdata "covers"] "open"]} {
       error "the covers did not open."
@@ -217,9 +217,9 @@ namespace eval "covers" {
   
   proc closecovers {} {
     server::setdata "requestedcovers" "closed"
-    opentsi::sendcommand "SET AUXILIARY.COVER.TARGETPOS=0"
-    opentsi::sendcommand "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=0"
-    opentsi::sendcommand "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=0"
+    opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=0"]
+    opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=0"]
+    opentsi::sendcommand [format "SET AUXILIARY.COVER.TARGETPOS=0"]
     waitwhilemoving
     if {![string equal [server::getdata "covers"] "closed"]} {
       error "the covers did not close."
@@ -234,9 +234,6 @@ namespace eval "covers" {
     while {[string equal [server::getstatus] "starting"]} {
       coroutine::yield
     }
-    opentsi::sendcommand [format "SET TELESCOPE.CONFIG.COVER.PARK_POS=0"]
-    opentsi::sendcommand [format "SET TELESCOPE.CONFIG.PORT\[2\].PORT_COVER.PARK_POS=0"]
-    opentsi::sendcommand [format "SET TELESCOPE.CONFIG.PORT\[3\].PORT_COVER.PARK_POS=0"]
     set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
   }
