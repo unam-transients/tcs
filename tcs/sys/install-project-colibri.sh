@@ -34,6 +34,7 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 
 192.168.100.1     firewall                colibri-firewall
 192.168.100.23    opentsi                 colibri-opentsi
+192.168.100.28    plc                     colibri-plc
 192.168.100.54    control                 colibri-control
 192.168.100.56    detectors               colibri-detectors
 
