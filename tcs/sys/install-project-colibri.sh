@@ -34,10 +34,21 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 
 192.168.100.1     firewall                colibri-firewall
 192.168.100.23    opentsi                 colibri-opentsi
+192.168.100.23    gft-tsc                 colibri-gft-tsc
+192.168.100.24    telescope-cabinet       colibri-telescope-cabinet
+192.168.100.26    tcs2                    colibri-tcs2
 192.168.100.28    plc                     colibri-plc
+192.168.100.29    european-ups            colibri-european-ups
+192.168.100.30    american-ups            colibri-american-ups
+192.168.100.31    dome-webcam-a           colibri-dome-webcam-a
 192.168.100.51    pdu0                    colibri-pdu0
 192.168.100.54    control                 colibri-control
 192.168.100.56    detectors               colibri-detectors
+192.168.100.57    host0                   colibri-host0
+192.168.100.58    host1                   colibri-host1
+192.168.100.59    host2                   colibri-host2
+192.168.100.61    marmex                  colibri-marmex
+192.168.100.61    marsvom2                colibri-marsvom2
 
 # Tailscale DNS is not working as of 2024-06-22.
 100.81.69.29      oan-nas
