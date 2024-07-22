@@ -253,6 +253,7 @@ namespace eval "telescopecontroller" {
     while {[utcclock::diff now $settle] < $settlingdelay} {
       coroutine::yield
     }
+    opentsi::sendcommand "SET AUXILIARY.PADDLE.BRIGHTNESS=0"
   }
   
   proc switchoffhardware {} {
