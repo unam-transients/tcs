@@ -86,7 +86,7 @@ then
     url="https://github.com/alanwatsonforster/ddoti-blocks.git"
     ;;
   colibri-*)
-    url="https://github.com/alanwatsonforster/colibri-blocks.git"
+    url="https://github.com/unam-transients/colibri-blocks.git"
     ;;
   *)
     error "unable to determing URL."
