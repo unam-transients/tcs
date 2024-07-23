@@ -31,6 +31,10 @@ namespace eval "lights" {
 
   ######################################################################
 
+  variable daytimetesting   [config::getvalue "telescope" "daytimetesting"]
+
+  ######################################################################
+
   set server::datalifeseconds 30
 
   ######################################################################
@@ -76,14 +80,24 @@ namespace eval "lights" {
   proc switchoff {} {
     server::checkstatus
     server::checkactivityformove
-    server::setdata "requestedlights" "off"
+    variable daytimetesting
+    if {$daytimetesting} {
+      server::setdata "requestedlights" "on"
+    } else {
+      server::setdata "requestedlights" "off"
+    }
     server::newactivitycommand "switching" "idle" lights::switchactivitycommand
   }
   
   proc initialize {} {
     server::checkstatus
     server::checkactivityforinitialize
-    server::setdata "requestedlights" "off"
+    variable daytimetesting
+    if {$daytimetesting} {
+      server::setdata "requestedlights" "on"
+    } else {
+      server::setdata "requestedlights" "off"
+    }
     server::newactivitycommand "initializing" "idle" lights::initializeactivitycommand
   }
   
