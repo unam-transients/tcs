@@ -33,8 +33,8 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 # Start of tcs epilog.
 
 192.168.100.1     firewall                colibri-firewall
-192.168.100.15    spare-nas               colibri-spare-nas
-192.168.100.17    nas                     colibri-nas
+192.168.100.15    qnap-spare              colibri-qnap-spare
+192.168.100.17    qnap-prod               colibri-qnap-prod
 192.168.100.23    opentsi                 colibri-opentsi
 192.168.100.23    gft-tsc                 colibri-gft-tsc
 192.168.100.24    telescope-cabinet       colibri-telescope-cabinet
@@ -45,9 +45,10 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 192.168.100.31    dome-webcam-a           colibri-dome-webcam-a
 192.168.100.51    pdu0                    colibri-pdu0
 192.168.100.54    control                 colibri-control
+192.168.100.55    nas                     colibri-nas
 192.168.100.56    detectors               colibri-detectors
 192.168.100.57    host0                   colibri-host0
-192.168.100.58    host1                   colibri-host1
+192.168.100.58    host1                   colibxri-host1
 192.168.100.59    host2                   colibri-host2
 192.168.100.61    marmex                  colibri-marmex
 192.168.100.61    marsvom2                colibri-marsvom2
@@ -77,9 +78,9 @@ sudo mv /etc/hosts.tmp /etc/hosts
 *  *  *  *  *  tcs checkhalt
 00 18 *  *  *  tcs updateiersfiles
 00 18 *  *  *  tcs updateleapsecondsfile
-#00     *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="*.jpg" --exclude="*.fits" --exclude="*.fits.*" /usr/local/var/tcs/ rsync://oan-nas/colibri-raw/
-#01-59  *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="debug*.txt" --include="*.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://oan-nas/colibri-raw/
-#*      *  *  *  *  rsync -aH --remove-source-files --exclude="*.tmp" --include="*.fits.*" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://oan-nas/colibri-raw/
+00     *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="*.jpg" --exclude="*.fits" --exclude="*.fits.*" /usr/local/var/tcs/ rsync://colibri-nas/colibri-raw/
+01-59  *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="debug*.txt" --include="*.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://colibri-nas/colibri-raw/
+*      *  *  *  *  rsync -aH --remove-source-files --exclude="*.tmp" --include="*.fits.*" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://colibri-nas/colibri-raw/
 EOF
   
   case $host in
@@ -131,7 +132,7 @@ EOF
   case $host in
   detectors)
     echo "tcs instrumentimageserver C0 control &"
-    echo "tcs instrumentdataserver -f -d rsync://oan-nas/colibri-raw/ &"
+    echo "tcs instrumentdataserver -f -d rsync://colibri-nas/colibri-raw/ &"
     ;;
   control)
     echo "tcs instrumentimageserver C0 &"
