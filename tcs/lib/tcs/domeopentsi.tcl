@@ -139,12 +139,15 @@ namespace eval "dome" {
 
   ######################################################################
   
-  proc stopdome {} {
-    server::setdata "requestedshutters" ""
+  proc initializehardware {} {
+    opentsi::sendcommand "SET POINTING.SETUP.DOME.SYNCMODE=0"
+  }
+      
+  proc stophardware {} {
     opentsi::sendcommand "SET TELESCOPE.STOP=1"
   }
   
-  proc opendome {} {
+  proc openhardware {} {
     server::setdata "requestedshutters" "open"
     opentsi::sendcommand "SET AUXILIARY.DOME.TARGETPOS=1"
     waitwhilemoving
@@ -153,7 +156,7 @@ namespace eval "dome" {
     }
   }
   
-  proc closedome {} {
+  proc closehardware {} {
     server::setdata "requestedshutters" "closed"
     opentsi::sendcommand "SET AUXILIARY.DOME.TARGETPOS=0"
     waitwhilemoving
@@ -162,7 +165,7 @@ namespace eval "dome" {
     }
   }
   
-  proc emergencyclosedome {} {
+  proc emergencyclosehardware {} {
     server::setdata "requestedshutters" "closed"
     # Switch the telescope on. We shouldn't have to do this here, but this
     # is an emergency.
@@ -183,87 +186,13 @@ namespace eval "dome" {
     }
   }
   
-  proc movedome {azimuth} {
+  proc movehardware {azimuth} {
     set azimuth [astrometry::parseazimuth $azimuth]
     server::setdata "requestedazimuth" $azimuth
     opentsi::sendcommand [format "SET POSITION.INSTRUMENTAL.DOME\[0\].TARGETPOS=%f" [astrometry::radtodeg $azimuth]]
     waitwhilemoving
   }
   
-  ######################################################################
-  
-  proc startactivitycommand {} {
-    set start [utcclock::seconds]
-    log::info "starting."
-    while {[string equal [server::getstatus] "starting"]} {
-      coroutine::yield
-    }
-    set end [utcclock::seconds]
-    log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
-  }
-  
-  proc initializeactivitycommand {} {
-    set start [utcclock::seconds]
-    log::info "initializing."
-    log::info "closing."
-    closedome
-    set end [utcclock::seconds]
-    log::info [format "finished initializing after %.1f seconds." [utcclock::diff $end $start]]
-  }
-
-  proc openactivitycommand {} {
-    set start [utcclock::seconds]
-    log::info "opening."
-    opendome
-    set end [utcclock::seconds]
-    log::info [format "finished opening after %.1f seconds." [utcclock::diff $end $start]]
-  }
-
-  proc closeactivitycommand {} {
-    set start [utcclock::seconds]
-    log::info "closing."
-    closedome
-    set end [utcclock::seconds]
-    log::info [format "finished closing after %.1f seconds." [utcclock::diff $end $start]]
-  }
-
-  proc emergencycloseactivitycommand {} {
-    set start [utcclock::seconds]
-    log::warning "emergency closing."
-    emergencyclosedome
-    set end [utcclock::seconds]
-    log::info [format "finished emergency closing after %.1f seconds." [utcclock::diff $end $start]]
-  }
-
-  proc preparetomoveactivitycommand {} {
-    server::setdata requestedazimuth ""
-  }
-  
-  proc moveactivitycommand {azimuth} {
-    set start [utcclock::seconds]
-    log::info "moving."
-    movedome $azimuth
-    set end [utcclock::seconds]
-    log::info [format "finished moving after %.1f seconds." [utcclock::diff $end $start]]
-  }
-  
-  proc parkactivitycommand {} {
-    set start [utcclock::seconds]
-    variable parkazimuth
-    log::info "parking."
-    movedome $parkazimuth
-    set end [utcclock::seconds]
-    log::info [format "finished parking after %.1f seconds." [utcclock::diff $end $start]]
-  }
-  
-  proc stopactivitycommand {previousactivity} {
-    set start [utcclock::seconds]
-    log::info "stopping."
-    stopdome
-    set end [utcclock::seconds]
-    log::info [format "finished stopping after %.1f seconds." [utcclock::diff $end $start]]
-  }
-
   ######################################################################
 
   proc start {} {
