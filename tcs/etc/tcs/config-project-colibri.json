@@ -109,8 +109,11 @@
     "openazimuth": "0d",
     "closeazimuth": "0d",
     "parkazimuth": "180d",
-    "trackingtolerance": "1d",
-    "trackinganticipation": "0.5d"
+    // The COLIBRI dome aperture is 2.30 meters wide. The dome is 7.50
+    // meters in diameter. Thus, if the dome were perfectly aligned, it
+    // could accept 7.66 degrees of tolerance. We will reduce this to
+    // account for imperfections in the dome azimuth calibration.
+    "trackingtolerance": "5d"
   },
   "executor": {
     "type": "colibri"
@@ -662,15 +665,13 @@
     "minzenithdistancelimit": "1d",
     "maxzenithdistancelimit": "75d",
     "idleha": "0h",
-    "idledelta": "75d",
+    "idledelta": "0d",
     "ventilateha": "-4h",
     "ventilatedelta": "30d"
   },
   "telescope": {
     "type": "colibri",
-    "idleha": "0h",
-    "idledelta": "0d",
-    "daytimetesting": "true"
+    "daytimetesting": "false"
   },
   "telescopecontroller": {
     "type": "opentsi"

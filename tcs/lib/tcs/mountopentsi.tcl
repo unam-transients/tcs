@@ -381,7 +381,6 @@ namespace eval "mount" {
     opentsi::sendcommand [format "SET [join {
         "OBJECT.INSTRUMENTAL.AZ=%.6f"
         "OBJECT.INSTRUMENTAL.ZD=%.6f"
-        "pointing.setup.dome.syncmode=2"        
         "POINTING.TRACK=2"
       } ";"]" \
       [astrometry::radtodeg $azimuthunpark       ] \
