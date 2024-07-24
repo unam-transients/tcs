@@ -84,6 +84,10 @@ installs_project_colibri	:=		     \
 	engineering-project-colibri.html     \
 	interface.html                       \
 	webcam-a-project-colibri.html	     \
+	webcam-b-project-colibri.html	     \
+	webcam-c-project-colibri.html	     \
+	webcam-d-project-colibri.html	     \
+	webcam-e-project-colibri.html	     \
 	plots-project-colibri.html           \
 	plots-project-colibri.sh
 
