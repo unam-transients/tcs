@@ -38,11 +38,10 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 192.168.100.23    opentsi                 colibri-opentsi
 192.168.100.23    gft-tsc                 colibri-gft-tsc
 192.168.100.24    telescope-cabinet       colibri-telescope-cabinet
-192.168.100.26    tcs2                    colibri-tcs2
+192.168.100.26    switch-prod
 192.168.100.28    plc                     colibri-plc
 192.168.100.29    european-ups            colibri-european-ups
 192.168.100.30    american-ups            colibri-american-ups
-192.168.100.31    dome-webcam-a           colibri-dome-webcam-a
 192.168.100.51    pdu0                    colibri-pdu0
 192.168.100.54    control                 colibri-control
 192.168.100.55    nas                     colibri-nas
@@ -51,7 +50,16 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 192.168.100.58    host1                   colibxri-host1
 192.168.100.59    host2                   colibri-host2
 192.168.100.61    marmex                  colibri-marmex
-192.168.100.61    marsvom2                colibri-marsvom2
+192.168.100.62    marsvom2                colibri-marsvom2
+192.168.100.70    webcam-a                colibri-webcam-a
+192.168.100.71    webcam-b                colibri-webcam-b
+192.168.100.72    webcam-spare-a          colibri-webcam-spare-a
+192.168.100.73    webcam-c                colibri-webcam-c
+192.168.100.74    webcam-d                colibri-webcam-d
+192.168.100.75    webcam-e                colibri-webcam-e
+192.168.100.76    webcam-spare-b          colibri-webcam-spare-b
+192.168.100.77    webcam-spare-c          colibri-webcam-spare-c
+
 
 # Tailscale DNS is not working as of 2024-06-22.
 100.81.69.29      oan-nas
@@ -136,14 +144,18 @@ EOF
     ;;
   control)
     echo "tcs instrumentimageserver C0 &"
-    echo "tcs webcamimageserver a http://192.168.100.31/cgi-bin/viewer/video.jpg &"
+    echo "tcs webcamimageserver a http://colibri:matpud-juxHe7-wiksym@192.168.100.70/cgi-bin/viewer/video.jpg &"
+    echo "tcs webcamimageserver b http://colibri:matpud-juxHe7-wiksym@192.168.100.71/cgi-bin/viewer/video.jpg &"
+    echo "tcs webcamimageserver c http://colibri:matpud-juxHe7-wiksym@192.168.100.73/cgi-bin/viewer/video.jpg &"
+    echo "tcs webcamimageserver d http://colibri:matpud-juxHe7-wiksym@192.168.100.74/cgi-bin/viewer/video.jpg &"
+    echo "tcs webcamimageserver e http://colibri:matpud-juxHe7-wiksym@192.168.100.75/cgi-bin/viewer/video.jpg &"
     echo "tcs allskyimageserver http://132.248.4.140/imagenes/ultima_RED.jpg &"
     echo "mkdir -p /usr/local/var/tcs/reboot"
     echo "mkdir -p /usr/local/var/tcs/restart"
     echo "mkdir -p /usr/local/var/tcs/halt"
     ;;
   esac
-
+  
   echo "service rsync start"
 
   echo "tcs startserver -A &"
