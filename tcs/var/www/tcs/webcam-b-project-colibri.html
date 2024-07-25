@@ -38,6 +38,14 @@ PERFORMANCE OF THIS SOFTWARE.
 
 <div id="header">
 
+<div id="images">
+<a href="webcam-a.html"><img src="blank.png" alt="Webcam A"       id="webcam-a-small" class="webcam-small"    /></a>
+<a href="webcam-b.html"><img src="blank.png" alt="Webcam B"       id="webcam-b-small" class="webcam-small"    /></a>
+<a href="webcam-c.html"><img src="blank.png" alt="Webcam C"       id="webcam-c-small" class="webcam-small"    /></a>
+<a href="webcam-d.html"><img src="blank.png" alt="Webcam D"       id="webcam-d-small" class="webcam-small"    /></a>
+<a href="webcam-e.html"><img src="blank.png" alt="Webcam E"       id="webcam-e-small" class="webcam-small"    /></a>
+</div>
+
 <div id="navigation">
 <a href="/">Home</a> | <a href="operations.html">Operations</a>
 </div>
@@ -48,12 +56,17 @@ PERFORMANCE OF THIS SOFTWARE.
 </div>
 
 <div id="contents">
-<div id="webcam"><img src="blank.png" alt="Webcam A" id="webcam" class="webcam"/></div>
+<div id="webcam"><img src="blank.png" alt="Webcam B" id="webcam" class="webcam"/></div>
 </div>
 
 <script language="javascript">
 $(function () {
   refreshimage({
+    "webcam-a-small" : "webcam/a/latest-small.jpg",
+    "webcam-b-small" : "webcam/b/latest-small.jpg",
+    "webcam-c-small" : "webcam/c/latest-small.jpg",
+    "webcam-d-small" : "webcam/d/latest-small.jpg",
+    "webcam-e-small" : "webcam/e/latest-small.jpg",
     "webcam"         : "webcam/b/latest.jpg"
   });
 });
