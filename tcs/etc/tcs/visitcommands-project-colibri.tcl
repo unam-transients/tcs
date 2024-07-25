@@ -87,6 +87,82 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
   return true
 }
 
+########################################################################
+
+proc fullgridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {offsetfastest true}} {
+
+  log::summary "gridvisit: starting."
+
+  executor::setsecondaryoffset 0
+  executor::track
+
+  executor::setwindow "default"
+  executor::setbinning 2
+
+  executor::waituntiltracking
+  
+  if {[llength $exposuretimes] == 1} {
+    set exposuretimes [lrepeat [llength $filters] $exposuretimes]
+  } elseif {[llength $exposuretimes] != [llength $filters]} {
+    error "the exposuretimes and filters arguments have different lengths."
+  }
+  
+  set dithers [lrange {
+          0as   0as
+        +30as +30as
+        -30as -30as
+        +30as -30as
+        -30as +30as
+        +30as   0as
+        -30as   0as
+          0as +30as
+          0as -30as
+      } 0 [expr {$gridpoints * 2 - 1}]]
+
+  set gridrepeat 0
+  while {$gridrepeat < $gridrepeats} {
+    if {$offsetfastest} {
+      foreach filter $filters exposuretime $exposuretimes {
+        executor::movefilterwheel $filter
+        foreach {eastdither northdither} $dithers {
+          foreach {eaststep northstep} { 
+            "-6am" "-6am"
+            "+6am" "-6am"
+            "-6am" "+6am"
+            "+6am" "+6am"
+          } {
+            set eastoffset  [expr {[astrometry::parseoffset $eaststep ] + [astrometry::parseoffset $eastdither ]}]
+            set northoffset [expr {[astrometry::parseoffset $northstep] + [astrometry::parseoffset $northdither]}]
+            executor::offset $eastoffset $northoffset "default"
+            executor::waituntiltracking
+            set exposure 0
+            while {$exposure < $exposurerepeats} {
+              executor::expose object $exposuretime
+              incr exposure
+            }
+          }
+        }
+      }
+    } else {
+      foreach {eastoffset northoffset} $dithers {
+        executor::offset $eastoffset $northoffset "default"
+        executor::waituntiltracking
+        foreach filter $filters exposuretime $exposuretimes {
+          executor::movefilterwheel $filter
+          set exposure 0
+          while {$exposure < $exposurerepeats} {
+            executor::expose object $exposuretime
+            incr exposure
+          }
+        }
+      }
+    }
+    incr gridrepeat
+  }
+
+  log::summary "gridvisit: finished."
+  return true
+}
 
 ########################################################################
 
