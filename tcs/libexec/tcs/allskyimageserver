@@ -118,7 +118,7 @@ do
   convert \
     $rotateargs \
     -gravity northwest $cropargs +repage \
-    -scale x384 +repage \
+    -scale x512 +repage \
     -gravity southeast -fill white -undercolor $undercolor $fontargs -annotate +1+0 "$(cat label)" \
     -quality 75 \
     raw.jpg $compactdateandtime.jpg
@@ -131,6 +131,7 @@ do
     -quality 75 \
     raw.jpg $compactdateandtime-small.jpg
     
+  ln -sf raw.jpg                       latest-raw.jpg
   ln -sf $compactdateandtime.jpg       latest.jpg
   ln -sf $compactdateandtime-small.jpg latest-small.jpg
 

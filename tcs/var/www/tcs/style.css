@@ -81,7 +81,7 @@ img.webcam-small, img.allsky-small, img.instrument-small {
 }
 
 img.webcam, img.allsky {
-  height:             384px;
+  height:             512px;
   margin:             1px;
 }
 
