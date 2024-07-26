@@ -70,6 +70,7 @@
       "nx": 4096,
       "ny": 11      
     },
+    "detectorboresight": { "x": 1995.5, "y": 2028.2 },
     "coolerstartsetting": "following",
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",

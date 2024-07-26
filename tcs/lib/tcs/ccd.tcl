@@ -55,6 +55,7 @@ namespace eval "ccd" {
   variable detectorfullunbinnedbiaswindow  [config::getvalue $identifier "detectorfullunbinnedbiaswindow" ]
   variable detectorwindows                 [config::getvalue $identifier "detectorwindows"                ]
   variable detectorreadmodes               [config::getvalue $identifier "detectorreadmodes"              ]
+  variable detectorboresight               [config::getvalue $identifier "detectorboresight"              ]
   variable coolerstartsetting              [config::getvalue $identifier "coolerstartsetting"             ]
   variable cooleropensetting               [config::getvalue $identifier "cooleropensetting"              ]
   variable coolerclosedsetting             [config::getvalue $identifier "coolerclosedsetting"            ]
@@ -83,7 +84,8 @@ namespace eval "ccd" {
   server::setdata "telescopedescription"              $telescopedescription
   server::setdata "detectortype"                      $detectortype
   server::setdata "detectoridentifier"                $detectoridentifier
-  server::setdata "detectorwidth"                     ""
+  server::setdata "detectorwidth"                     ""  
+  server::setdata "detectorboresight"                 $detectorboresight
   server::setdata "filterwheeltype"                   $filterwheeltype
   server::setdata "filterwheelidentifier"             $filterwheelidentifier
   server::setdata "focusertype"                       $focusertype
@@ -558,6 +560,15 @@ namespace eval "ccd" {
     if {![string equal "" [server::getdata "detectorbiaswindow"]]} {
       fitsheader::writekeyandvalue $channel "BIASSEC"  string [formatirafsection [server::getdata "detectorbiaswindow"]]
     }
+
+    # TODO: This calculation corrects for binning, but not for a subwindow.
+    variable detectorboresight
+    set x [dict get $detectorboresight "x"]
+    set y [dict get $detectorboresight "y"]
+    set binning [server::getdata "detectorbinning"]
+    fitsheader::writekeyandvalue $channel "BSPIX1"   double [expr {$x / $binning + 1}] "boresight"
+    fitsheader::writekeyandvalue $channel "BSPIX2"   double [expr {$y / $binning + 1}] "boresight"
+
     fitsheader::writekeyandvalue $channel "FILTER"   string [server::getdata "filter"]
     fitsheader::writekeyandvalue $channel "FWPS"     string [server::getdata "filterwheelposition"]
     fitsheader::writekeyandvalue $channel "DTDS"     string  [server::getdata "detectordescription"]
