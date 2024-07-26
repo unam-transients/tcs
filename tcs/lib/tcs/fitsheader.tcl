@@ -36,7 +36,7 @@ namespace eval "fitsheader" {
 
   ######################################################################
 
-  proc open {filename bitpix naxis {bscale 1} {bzero 0} {nframe 1} {frametime 0.0}} {
+  proc open {filename bitpix naxis {bscale 1} {bzero 0} {nframe 1} {frametime 0.0} {boresight {}}} {
   
     if {[catch {set channel [::open $filename "w"]} message]} {
       error "unable to open FITS file \"$filename\": $message"
@@ -249,6 +249,8 @@ namespace eval "fitsheader" {
       detectorcoolerpower            CLPW  double
       detectorsaasigmax              SAAX  angle
       detectorsaasigmay              SAAY  angle
+      detectorboresightpix1          BSP1  double 
+      detectorboresightpix2          BSP2  double 
       filterwheelposition            FWPS  string
       filterwheelmaxposition         FWMX  string
       filter                         FL    string
