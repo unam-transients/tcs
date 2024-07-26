@@ -27,7 +27,7 @@ PERFORMANCE OF THIS SOFTWARE.
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <link rel="stylesheet" href="style.css" type="text/css"/>
-<title>COLIBRI/CU: IRiS All-Sky Camera</title>
+<title>COLIBRI: OAN All-Sky Camera</title>
 </head>
 
 <body>
@@ -38,22 +38,29 @@ PERFORMANCE OF THIS SOFTWARE.
 
 <div id="header">
 
+<div id="images">
+<a href="allsky.html"  ><img src="blank.png" alt="All-Sky Camera" id="allsky-small"   class="allsky-small"    /></a>
+<a href="C0.html"      ><img src="blank.png" alt="C0"             id="C0-small"       class="instrument-small"/></a>
+</div>
+
 <div id="navigation">
 <a href="/">Home</a> | <a href="operations.html">Operations</a>
 </div>
 
 <div id="title">
-<h1>COLIBRI: IRiS All-Sky Camera</h1>
+<h1>COLIBRI: OAN All-Sky Camera</h1>
 </div>
 </div>
 
 <div id="contents">
-<div id="allsky"><img src="blank.png" alt="All-Sky Camera" id="allsky" class="allsky"/></div>
+<div id="allsky"><a href="webcam/allsky/latest-raw.jpg"><img src="blank.png" alt="All-Sky Camera" id="allsky" class="allsky"/></a></div>
 </div>
 
 <script language="javascript">
 $(function () {
   refreshimage({
+    "allsky-small"   : "webcam/allsky/latest-small.jpg",
+    "C0-small"       : "instrument/C0/latest-small.jpg",
     "allsky"         : "webcam/allsky/latest.jpg",
   });
 });
