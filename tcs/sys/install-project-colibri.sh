@@ -54,11 +54,11 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 192.168.100.70    webcam-a                colibri-webcam-a
 192.168.100.71    webcam-b                colibri-webcam-b
 192.168.100.72    webcam-spare-a          colibri-webcam-spare-a
-192.168.100.73    webcam-c                colibri-webcam-c
-192.168.100.74    webcam-d                colibri-webcam-d
+192.168.100.73    webcam-d                colibri-webcam-d
+192.168.100.74    webcam-c                colibri-webcam-c
 192.168.100.75    webcam-e                colibri-webcam-e
 192.168.100.76    webcam-spare-b          colibri-webcam-spare-b
-192.168.100.77    webcam-spare-c          colibri-webcam-spare-c
+192.168.100.77    webcam-f                colibri-webcam-f
 
 
 # Tailscale DNS is not working as of 2024-06-22.
@@ -144,11 +144,12 @@ EOF
     ;;
   control)
     echo "tcs instrumentimageserver C0 &"
-    echo "tcs webcamimageserver a http://colibri:matpud-juxHe7-wiksym@192.168.100.70/cgi-bin/viewer/video.jpg &"
-    echo "tcs webcamimageserver b http://colibri:matpud-juxHe7-wiksym@192.168.100.71/cgi-bin/viewer/video.jpg &"
-    echo "tcs webcamimageserver c http://colibri:matpud-juxHe7-wiksym@192.168.100.73/cgi-bin/viewer/video.jpg &"
-    echo "tcs webcamimageserver d http://colibri:matpud-juxHe7-wiksym@192.168.100.74/cgi-bin/viewer/video.jpg &"
-    echo "tcs webcamimageserver e http://colibri:matpud-juxHe7-wiksym@192.168.100.75/cgi-bin/viewer/video.jpg &"
+    echo "tcs webcamimageserver a http://colibri:matpud-juxHe7-wiksym@webcam-a/cgi-bin/viewer/video.jpg &"
+    echo "tcs webcamimageserver b http://colibri:matpud-juxHe7-wiksym@webcam-b/cgi-bin/viewer/video.jpg &"
+    echo "tcs webcamimageserver c http://colibri:matpud-juxHe7-wiksym@webcam-c/cgi-bin/viewer/video.jpg &"
+    echo "tcs webcamimageserver d http://colibri:matpud-juxHe7-wiksym@webcam-d/cgi-bin/viewer/video.jpg &"
+    echo "tcs webcamimageserver e http://colibri:matpud-juxHe7-wiksym@webcam-e/cgi-bin/viewer/video.jpg &"
+    echo "tcs webcamimageserver f http://colibri:matpud-juxHe7-wiksym@webcam-f/cgi-bin/viewer/video.jpg &"
     echo "tcs allskyimageserver http://132.248.4.140/imagenes/ultima_RED.jpg &"
     echo "mkdir -p /usr/local/var/tcs/reboot"
     echo "mkdir -p /usr/local/var/tcs/restart"
