@@ -38,25 +38,21 @@
     "detectorwindows": {
       "initial": "full",
       "default": "full",
-      "1kx1k": {
-        "sx": 1586,
-        "sy": 1544,
-        "nx": 1024,
-        "ny": 1024
-      },
-      "512x512": {
-        "sx": 1828,
-        "sy": 1814,
-        "nx": 512,
-        "ny": 512
-      },
-      // The center of rotation of the derotator was calculated to be
-      // (1996.5, 2029.2) in the full window on 2024-06-21.
-      "derotator-256x256": { "sx": 1869, "sy": 1901, "nx":  256, "ny":  256 },
-      "derotator-512x512": { "sx": 1741, "sy": 1773, "nx":  512, "ny":  512 },
-      "derotator-1kx1k"  : { "sx": 1485, "sy": 1517, "nx": 1024, "ny": 1024 },
-      "derotator-2kx2k"  : { "sx":  973, "sy": 1005, "nx": 2048, "ny": 2048 },
-      "derotator-3kx3k"  : { "sx":  461, "sy":  493, "nx": 3072, "ny": 3072 }
+      "4kx4k": "full",
+      // These windows are centered on the data window.
+      "3kx3k": { "sx":  548, "sy":  534, "nx": 3072, "ny": 3072 },
+      "2kx2k": { "sx": 1060, "sy": 1046, "nx": 2048, "ny": 2048 },
+      "1kx1k": { "sx": 1572, "sy": 1558, "nx": 1024, "ny": 1024 },
+      // These windows are centered on the boresight.
+      "3kx3k-boresight"  : { "sx":  461, "sy":  492, "nx": 3072, "ny": 3072 },
+      "2kx2k-boresight"  : { "sx":  973, "sy": 1004, "nx": 2048, "ny": 2048 },
+      "1kx1k-boresight"  : { "sx": 1485, "sy": 1516, "nx": 1024, "ny": 1024 },
+      // These windows are just for testing the boresight position in windowed
+      // images.
+      "3kx3k-ll": { "sx":   36, "sy":   22, "nx": 3072, "ny": 3072 },
+      "3kx3k-lr": { "sx": 1060, "sy":   22, "nx": 3072, "ny": 3072 },
+      "3kx3k-ul": { "sx":   36, "sy": 1046, "nx": 3072, "ny": 3072 },
+      "3kx3k-ur": { "sx": 1060, "sy": 1046, "nx": 3072, "ny": 3072 }
     },
     "detectorfullunbinneddatawindow": {
       "sx": 36,
@@ -67,9 +63,12 @@
     "detectorfullunbinnedbiaswindow": {
       "sx": 0,
       "sy": 22,
-      "nx": 4096,
-      "ny": 11      
+      "nx": 11,   
+      "ny": 4096
     },
+    // The center of rotation of the derotator was calculated to be
+    // (1996.5, 2029.2) in 1-based coordinates in the full window on 2024-06-21.
+    // We need to give the corresponding 0-based coordinates here.
     "detectorboresight": { "x": 1995.5, "y": 2028.2 },
     "coolerstartsetting": "following",
     "cooleropensetting": "-20",
@@ -137,7 +136,6 @@
       "lights",
       "moon",
       "mount",
-      "plc",
       "power",
       "secondary",
       "selector",
