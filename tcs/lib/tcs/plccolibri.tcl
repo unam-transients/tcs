@@ -72,6 +72,7 @@ namespace eval "plc" {
   variable localconfirmation ""
   variable emergencystopbuttons ""
   variable intrusionsensor ""
+  variable louvers ""
   variable weatheralarmdisabled ""
   variable daylightalarmdisabled ""
   variable alarm ""
@@ -101,6 +102,7 @@ namespace eval "plc" {
     variable localconfirmation
     variable emergencystopbuttons
     variable intrusionsensor
+    variable louvers
     variable weatheralarmdisabled
     variable daylightalarmdisabled
     variable alarm
@@ -116,7 +118,7 @@ namespace eval "plc" {
     variable boltwoodalarm
     variable vaisalaalarm
     variable weatherresponse
-    variable generalresponce
+    variable generalresponse
     variable lastweatherresponse
     variable lastgeneralresponse
 
@@ -127,17 +129,21 @@ namespace eval "plc" {
       return false
     }
 
-    log::debug "length is [string length $response]."
-    if {[string length $response] != 94} {
+    log::info "response is \"$response\"."
+    log::info "length is [string length $response]."
+    if {[string length $response] == 94} {
+      log::info "got general response."
+      set generalresponse $response
+      return false
+    } elseif {[string length $response] > 0} {
+      log::info "got weather response."
       set weatherresponse $response
+    } else {
+      log::warning "unexpected response \"$response\"."
       return false
     }
 
-    if {[string equal $weatherresponse ""]} {
-      return false
-    }
-
-    set generalresponse $response
+    log::info "processing responses."
 
     set weatherfield [string map {" " ""} $weatherresponse]
     set weatherfield [split $weatherfield ";"]
@@ -214,6 +220,33 @@ namespace eval "plc" {
       }
     }
     
+    set lastlouvers    $louvers
+    set louversopen    true
+    set louversclosed  true
+    set louverserror   false 
+    foreach i { 58 59 60 61 62 63 64 65 66 67 68 69 } {
+      switch [string index $generalresponse $i] {
+        0 { set louversopen     false }
+        1 { set louversclosed   false }
+        2 { set louversanyerror true  }
+      }
+    }
+    if {$louverserror} {
+      set louvers "error"
+    } elseif {$louversclosed} {
+      set louvers "closed"
+    } elseif {$louversopen} {
+      set louvers "open"
+    } else {
+      set louvers "intermediate"
+    }
+    log::info "louvers are \"$louvers\"."
+    if {[string equal $lastlouvers ""]} {
+      log::info "the louvers are $louvers."
+    } elseif {![string equal $louvers $lastlouvers]} {
+      log::info "the louvers have changed from $lastlouvers to $louvers."
+    }
+ 
     set lastmode $mode
     set rawmode [lindex $weatherfield 50]
     switch $rawmode {
@@ -310,6 +343,7 @@ namespace eval "plc" {
     server::setdata "localconfirmation"    $localconfirmation
     server::setdata "emergencystopbuttons" $emergencystopbuttons
     server::setdata "intrusionsensor"      $intrusionsensor
+    server::setdata "louvers"              $louvers
     
     server::setdata "weatheralarmdisabled"  $weatheralarmdisabled
     server::setdata "daylightalarmdisabled" $daylightalarmdisabled
@@ -357,6 +391,8 @@ namespace eval "plc" {
     set lastgeneralresponse $generalresponse
     set weatherresponse ""
     set generalresponse ""
+    
+    log::info "finished processing responses."
     
     return true
   }
