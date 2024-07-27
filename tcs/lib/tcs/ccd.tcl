@@ -555,19 +555,22 @@ namespace eval "ccd" {
     fitsheader::writekeyandvalue $channel "READMODE" string [server::getdata "detectorreadmode"]
     fitsheader::writekeyandvalue $channel "SOFTGAIN" double [server::getdata "detectorsoftwaregain"]
     fitsheader::writekeyandvalue $channel "DATASAT"  double [server::getdata "detectorsaturationlevel"]
+    fitsheader::writekeyandvalue $channel "WINSEC"   string [formatirafsection [server::getdata "detectorunbinnedwindow"]]
     fitsheader::writekeyandvalue $channel "CCDSEC"   string [formatirafsection [server::getdata "detectordatawindow"]]
     fitsheader::writekeyandvalue $channel "DATASEC"  string [formatirafsection [server::getdata "detectordatawindow"]]
     if {![string equal "" [server::getdata "detectorbiaswindow"]]} {
       fitsheader::writekeyandvalue $channel "BIASSEC"  string [formatirafsection [server::getdata "detectorbiaswindow"]]
     }
 
-    # TODO: This calculation corrects for binning, but not for a subwindow.
-    variable detectorboresight
-    set x [dict get $detectorboresight "x"]
-    set y [dict get $detectorboresight "y"]
-    set binning [server::getdata "detectorbinning"]
-    fitsheader::writekeyandvalue $channel "BSPIX1"   double [expr {$x / $binning + 1}] "boresight"
-    fitsheader::writekeyandvalue $channel "BSPIX2"   double [expr {$y / $binning + 1}] "boresight"
+    set boresight      [server::getdata "detectorboresight"     ]
+    set unbinnedwindow [server::getdata "detectorunbinnedwindow"]
+    set binning        [server::getdata "detectorbinning"       ]
+    set x [dict get $boresight "x"]
+    set y [dict get $boresight "y"]
+    set sx [dict get $unbinnedwindow "sx"]
+    set sy [dict get $unbinnedwindow "sy"]
+    fitsheader::writekeyandvalue $channel "BSPIX1"   double [expr {($x - $sx) / $binning + 1}] "boresight"
+    fitsheader::writekeyandvalue $channel "BSPIX2"   double [expr {($y - $sy) / $binning + 1}] "boresight"
 
     fitsheader::writekeyandvalue $channel "FILTER"   string [server::getdata "filter"]
     fitsheader::writekeyandvalue $channel "FWPS"     string [server::getdata "filterwheelposition"]
