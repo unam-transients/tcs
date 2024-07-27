@@ -748,18 +748,21 @@ namespace eval "html" {
             writehtmlrow "Intrusion sensor" "deactivated"
           }
           writehtmlrow "Lights"                   [client::getdata "plc" "lights"]
+          writehtmlrow "Louvers"                  [client::getdata "plc" "louvers"]
 
           writealarm   "Weather alarm disabled"   [client::getdata "plc" "weatheralarmdisabled"      ]
           writealarm   "Daylight alarm disabled"  [client::getdata "plc" "daylightalarmdisabled"      ]
 
-
-          writealarm   "Alarm"                    [client::getdata "plc" "alarm"]
-          writehtmlrow "Alarm timer"              [format "%d seconds" [client::getdata "plc" "alarmtimer"]]
-          writealarm   "Rain alarm"               [client::getdata "plc" "rainalarm"      ]
+          #writealarm   "Alarm"                    [client::getdata "plc" "alarm"]
+          #writehtmlrow "Alarm timer"              [format "%d seconds" [client::getdata "plc" "alarmtimer"]]
+          #writealarm   "Rain alarm"               [client::getdata "plc" "rainalarm"      ]
+          
           writealarm   "Wind alarm"               [client::getdata "plc" "windalarm"      ]
           writealarm   "Cloud alarm"              [client::getdata "plc" "cloudalarm"     ]
           writealarm   "Light-level alarm"        [client::getdata "plc" "lightlevelalarm"]
           writealarm   "Humidty alarm"            [client::getdata "plc" "humidityalarm"  ]
+
+
           writealarm   "TCS alarm"                [client::getdata "plc" "tcsalarm"       ]
           writealarm   "UPS alarm"                [client::getdata "plc" "upsalarm"       ]
           writealarm   "RIO alarm"                [client::getdata "plc" "rioalarm"       ]
