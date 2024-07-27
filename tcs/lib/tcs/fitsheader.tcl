@@ -237,9 +237,10 @@ namespace eval "fitsheader" {
       detectorframetime              DTFT  double
       detectorreadmode               DTRM  string
       detectorsoftwaregain           DTSG  double
-      detectorbinning                DTBN  integer
       detectorfullunbinneddatawindow DTFDW string
       detectorfullunbinnedbiaswindow DTFBW string
+      detectorunbinnedwindow         DTUW  string
+      detectorbinning                DTBN  integer
       detectordatawindow             DTDW  string
       detectorbiaswindow             DTBW  string
       detectordetectortemperature    DTTM  double
@@ -249,8 +250,6 @@ namespace eval "fitsheader" {
       detectorcoolerpower            CLPW  double
       detectorsaasigmax              SAAX  angle
       detectorsaasigmay              SAAY  angle
-      detectorboresightpix1          BSP1  double 
-      detectorboresightpix2          BSP2  double 
       filterwheelposition            FWPS  string
       filterwheelmaxposition         FWMX  string
       filter                         FL    string
