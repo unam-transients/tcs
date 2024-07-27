@@ -506,7 +506,7 @@ namespace eval "selector" {
     puts $channel [format "  \"type\": \"%s\"," $type]
     variable alertprojectidentifier
     puts $channel [format "  \"projectidentifier\": \"%s\"," $alertprojectidentifier]
-    puts $channel [format "  \"identifier\": \"%s\"," [string map {"T" ""} $alertfile]]
+    puts $channel [format "  \"identifier\": \"%s\"," [string map {"T" ""} [file basename $alertfile]]]
     puts $channel [format "  \"priority\": %d," $priority]
     if {
       ![string equal "" $alpha] && 
