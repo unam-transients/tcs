@@ -32,9 +32,10 @@ usageerror () {
   exit 1
 }
 
-optstring=r:c:
+optstring=r:c:d:
 crop=""
 angle=""
+distort="0 0 0"
 if ! getopt -qQ -- "$optstring" "$@"
 then
   usageerror
@@ -49,6 +50,10 @@ do
     ;;
   -c)
     crop="$2"
+    shift 2
+    ;;
+  -d)
+    distort="$2"
     shift 2
     ;;
   *)
@@ -119,7 +124,7 @@ do
     
   convert \
     $rotateargs \
-    -gravity northwest $cropargs +repage \
+    -gravity northwest $cropargs -distort barrel "$distort" +repage \
     -scale x512 +repage \
     -gravity southeast -fill white -undercolor $undercolor $fontargs -annotate +1+0 "$(cat label)" \
     -quality 75 \
@@ -127,7 +132,7 @@ do
 
   convert \
     $rotateargs \
-    -gravity northwest $cropargs +repage \
+    -gravity northwest $cropargs -distort barrel "$distort" +repage \
     -scale x90 +repage \
     -gravity southeast -fill white -undercolor $undercolor $fontargs -annotate +1+0 "$(cat label-small)" \
     -quality 75 \

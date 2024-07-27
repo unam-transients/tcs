@@ -144,7 +144,7 @@ EOF
     ;;
   control)
     echo "tcs instrumentimageserver C0 &"
-    echo "tcs webcamimageserver a http://colibri:matpud-juxHe7-wiksym@webcam-a/cgi-bin/viewer/video.jpg &"
+    echo "tcs webcamimageserver -d '0 -0.1 0' a http://colibri:matpud-juxHe7-wiksym@webcam-a/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver b http://colibri:matpud-juxHe7-wiksym@webcam-b/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver c http://colibri:matpud-juxHe7-wiksym@webcam-c/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver d http://colibri:matpud-juxHe7-wiksym@webcam-d/cgi-bin/viewer/video.jpg &"
