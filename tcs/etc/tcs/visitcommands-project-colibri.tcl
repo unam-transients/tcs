@@ -21,6 +21,12 @@
 
 ########################################################################
 
+proc alertvisit {filters} {
+  gridvisit 1 9 1 30 r
+}
+
+########################################################################
+
 proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {offsetfastest true}} {
 
   log::summary "gridvisit: starting."
@@ -29,7 +35,7 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
   executor::track
 
   executor::setwindow "default"
-  executor::setbinning 2
+  executor::setflat 2
 
   executor::waituntiltracking
   
@@ -286,7 +292,7 @@ proc pointingcorrectionvisit {{exposuretime 5} {filter "r"}} {
 
 ########################################################################
 
-proc biasesvisit {{exposures 10} {binning 1}} {
+proc biasesvisit {{exposures 10} {binning 2}} {
   log::summary "biasesvisit: starting."
   executor::move
   executor::setwindow "default"
@@ -302,7 +308,7 @@ proc biasesvisit {{exposures 10} {binning 1}} {
 
 ########################################################################
 
-proc darksvisit {{exposuretime 60} {exposures 10} {binning 1}} {
+proc darksvisit {{exposuretime 60} {exposures 10} {binning 2}} {
   log::summary "darksvisit: starting."
 #  executor::move
   executor::setwindow "default"
