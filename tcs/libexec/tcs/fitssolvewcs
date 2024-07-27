@@ -176,7 +176,6 @@ then
 fi
 
 
-
 if test ! -f "$wcsfile"
 then
   echo ""
@@ -185,17 +184,15 @@ fi
 
 bspix1=$(tcs fitsheadervalue BSPIX1 "$fitsfile")
 bspix2=$(tcs fitsheadervalue BSPIX2 "$fitsfile")
-echo $bspix1 $bspix2
-tcs fitswcsvalue -- $bspix1 $bspix1 "$wcsfile" || exit 1
 
-#if test -z "$bspix1" || test -z "$bspix2"
-#then
+# If the boresight is not explicitly given, assume the center of the data window.
+if test -z "$bspix1" || test -z "$bspix2"
+then
   IFS=" " set -- $(tcs fitsdatawindow "$fitsfile")
   bspix1=$(echo $* | awk '{ print $1 + $3 / 2 + 1; }')
   bspix2=$(echo $* | awk '{ print $2 + $4 / 2 + 1; }')
-#fi
+fi
 
-echo $bspix1 $bspix2
 tcs fitswcsvalue -- $bspix1 $bspix1 "$wcsfile" || exit 1
 
 exit 0
