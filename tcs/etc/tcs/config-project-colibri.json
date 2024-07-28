@@ -653,6 +653,58 @@
         "identifier": "26.7539F5000000",
         "firmware": ""
       },
+      "observing-room-comet1-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/plc-comet1-temperature",
+        "prettyname": "observing room temperature (comet 1)",
+        "subsystem": "building",
+        "component": "observing-room",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },      
+      "observing-room-comet2-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/plc-comet2-temperature",
+        "prettyname": "observing room temperature (comet 2)",
+        "subsystem": "building",
+        "component": "observing-room",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },      
+      "observing-room-comet1-humidity": {
+        "file": "/usr/local/var/tcs/sensors/control/plc-comet1-humidity",
+        "prettyname": "observing room humidity (comet 1)",
+        "subsystem": "building",
+        "component": "observing-room",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "correctionmodel": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },      
+      "observing-room-comet2-humidity": {
+        "file": "/usr/local/var/tcs/sensors/control/plc-comet2-humidity",
+        "prettyname": "observing room humidity (comet 2)",
+        "subsystem": "building",
+        "component": "observing-room",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "",
+        "correctionmodel": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },      
       "ogse-external-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.A493A0000000/temperature",
         "prettyname": "ogse external temperature",
@@ -690,6 +742,32 @@
         "unit": "",
         "model": "iButtonLink MS-TL",
         "identifier": "26.B5A940010000",
+        "firmware": ""
+      },
+      "plc-cabinet-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/plc-plc-cabinet-temperature",
+        "prettyname": "plc cabinet temperature)",
+        "subsystem": "plc",
+        "component": "cabinet",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },      
+      "weather-station-cabinet-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/plc-rio-cabinet-temperature",
+        "prettyname": "weather station cabinet temperature)",
+        "subsystem": "weather station",
+        "component": "cabinet",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "",
+        "identifier": "",
         "firmware": ""
       }
     }
