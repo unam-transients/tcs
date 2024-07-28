@@ -221,7 +221,6 @@ namespace eval "weather" {
 
     }
 
-
     if {[string equal $previoustemperature "unknown"]} {
       error "no valid data."
     }
