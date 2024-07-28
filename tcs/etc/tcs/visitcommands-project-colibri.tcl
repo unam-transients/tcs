@@ -35,7 +35,7 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
   executor::track
 
   executor::setwindow "default"
-  executor::setflat 2
+  executor::setbinning 2
 
   executor::waituntiltracking
   
@@ -178,7 +178,7 @@ proc coarsefocusvisit {{exposuretime 5} {filter "r"}} {
   
   executor::setsecondaryoffset 0
   executor::track
-  executor::setwindow "1kx1k"
+  executor::setwindow "1kx1k-boresight"
   executor::setbinning 8
   executor::movefilterwheel "$filter"
   executor::waituntiltracking
@@ -199,7 +199,7 @@ proc focusvisit {{exposuretime 5} {filter "r"}} {
   
   executor::setsecondaryoffset 0
   executor::track
-  executor::setwindow "1kx1k"
+  executor::setwindow "1kx1k-boresight"
   executor::setbinning 2
   executor::movefilterwheel "$filter"
   executor::waituntiltracking
