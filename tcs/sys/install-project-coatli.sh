@@ -85,6 +85,7 @@ EOF
   case $host in
   control)
     cat <<"EOF"
+*  *  *  *  *  rsync -ah rsync://coatli-control/tcs/alerts/. /usr/local/var/tcs/alerts/.    
 *  *  *  *  *  sleep 10; tcs updatesensorsfiles control platform instrument
 *  *  *  *  *  tcs updateseeingfiles-oan
 *  *  *  *  *  tcs updateweatherfiles-oan
