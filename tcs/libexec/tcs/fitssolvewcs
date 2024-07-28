@@ -193,6 +193,6 @@ then
   bspix2=$(echo $* | awk '{ print $2 + $4 / 2 + 1; }')
 fi
 
-tcs fitswcsvalue -- $bspix1 $bspix1 "$wcsfile" || exit 1
+tcs fitswcsvalue -- $bspix1 $bspix2 "$wcsfile" || exit 1
 
 exit 0
