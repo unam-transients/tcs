@@ -94,10 +94,10 @@ EOF
   case $host in
   control)
     cat <<"EOF"
-*      *  *  *  *  sleep 10; /usr/local/bin/tcs updatesensorsfiles control
-*      *  *  *  *  /usr/local/bin/tcs updateweatherfiles-oan
+*      *  *  *  *  sleep 10; tcs updatesensorsfiles control instrument
+*      *  *  *  *  tcs updateweatherfiles-oan
 *      *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
-*/5    *  *  *  *  /usr/local/bin/tcs logsensors
+*/5    *  *  *  *  tcs logsensors
 *      *  *  *  *  cd /usr/local/var/www/tcs/; sh plots.sh >plots.txt 2>&1
 EOF
     ;;
