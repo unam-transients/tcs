@@ -52,7 +52,7 @@
     "port": 5006
   },
   "C0": {
-    "host": "detectors",
+    "host": "instrument",
     "port": 5007
   },
   "C1": {
@@ -76,7 +76,7 @@
     "port": 5013
   },
   "instrument": {
-    "host": "control",
+    "host": "instrument",
     "port": 5014
   },
   "power": {

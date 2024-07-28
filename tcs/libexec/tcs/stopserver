@@ -68,11 +68,11 @@ ddoti-detectors1)
   ALLARGS=""
   ;;
 colibri-control)
-  allargs="supervisor selector executor instrument telescope lights mount secondary covers dome telescopecontroller sun moon target weather plc power sensors html"
+  allargs="supervisor selector executor telescope lights mount secondary covers dome telescopecontroller sun moon target weather plc power sensors html"
   ALLARGS=""
   ;;
-colibri-detectors)
-  allargs="C0"
+colibri-instrument)
+  allargs="instrument C0"
   ALLARGS=""
   ;;
 colibri-laboratory-control)

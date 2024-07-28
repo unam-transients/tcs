@@ -44,8 +44,8 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 192.168.100.30    american-ups            colibri-american-ups
 192.168.100.51    pdu0                    colibri-pdu0
 192.168.100.54    control                 colibri-control
-192.168.100.55    nas                     colibri-nas
-192.168.100.56    detectors               colibri-detectors
+192.168.100.55    rsync                   colibri-rsync
+192.168.100.56    instrument              colibri-instrument
 192.168.100.57    host0                   colibri-host0
 192.168.100.58    host1                   colibxri-host1
 192.168.100.59    host2                   colibri-host2
@@ -86,9 +86,9 @@ sudo mv /etc/hosts.tmp /etc/hosts
 *  *  *  *  *  tcs checkhalt
 00 18 *  *  *  tcs updateiersfiles
 00 18 *  *  *  tcs updateleapsecondsfile
-00     *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="*.jpg" --exclude="*.fits" --exclude="*.fits.*" /usr/local/var/tcs/ rsync://colibri-nas/colibri-raw/
-01-59  *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="debug*.txt" --include="*.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://colibri-nas/colibri-raw/
-*      *  *  *  *  rsync -aH --remove-source-files --exclude="*.tmp" --include="*.fits.*" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://colibri-nas/colibri-raw/
+00     *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="*.jpg" --exclude="*.fits" --exclude="*.fits.*" /usr/local/var/tcs/ rsync://colibri-rsync/colibri-raw/
+01-59  *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="debug*.txt" --include="*.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://colibri-rsync/colibri-raw/
+*      *  *  *  *  rsync -aH --remove-source-files --exclude="*.tmp" --include="*.fits.*" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://colibri-rsync/colibri-raw/
 EOF
   
   case $host in
@@ -140,7 +140,7 @@ EOF
   case $host in
   detectors)
     echo "tcs instrumentimageserver C0 control &"
-    echo "tcs instrumentdataserver -f -d rsync://colibri-nas/colibri-raw/ &"
+    echo "tcs instrumentdataserver -f -d rsync://colibri-rsync/colibri-raw/ &"
     ;;
   control)
     echo "tcs instrumentimageserver C0 &"
