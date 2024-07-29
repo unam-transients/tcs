@@ -30,7 +30,7 @@ package provide "louversplc" 0.0
 namespace eval "louvers" {
 
   ######################################################################
-
+  
   proc updatedata {} {
 
     log::debug "updating data."
@@ -42,9 +42,29 @@ namespace eval "louvers" {
       return
     }
     
-    foreach i { 1 2 3 4 5 6 7 8 9 10 11 12 } {
+    set activelouvers { 1 2 7 8 }
+
+    foreach i $activelouvers {
       server::setdata "louver$i" [client::getdata "plc" "louver$i"]
+      logchange "louver$i" "louver $i"
     }
+    
+    set louvers ""
+    foreach i $activelouvers {
+      if {[string equal [server::getdata "louver$i"] "error"]} {
+        set louvers "error"
+        break
+      }
+      if {[string equal $louvers ""]} {
+        set louvers [server::getdata "louver$i"]
+      } elseif {![string equal $louvers [server::getdata "louver$i"]]} {
+        set louvers "intermediate"
+        break
+      }
+    }
+    server::setdata "louvers" $louvers
+    logchange "louvers" "louvers"
+    
     server::setstatus "ok"
     server::setdata "timestamp" $timestamp
 
@@ -53,16 +73,47 @@ namespace eval "louvers" {
 
   ######################################################################
 
+  variable lastvalue {}
+  
+  proc logchange {name prettyname} {
+    variable lastvalue
+    set value [server::getdata $name]
+    if {![dict exists $lastvalue $name]} {
+      log::info [format "%s is %s." $prettyname $value]
+    } elseif {![string equal [dict get $lastvalue $name] $value]} {
+      log::info [format "%s has changed from %s to %s." $prettyname [dict get $lastvalue $name] $value]
+    }
+    dict set lastvalue $name $value
+  }
+
+  ######################################################################
+
+  proc waitwhilemoving {} {
+    log::info "waiting until [server::getdata "requestedlouvers"]."
+    set startingdelay 5000
+    set settlingdelay 1000
+    coroutine::after $startingdelay
+    while {![string equal [server::getdata "louvers"] [server::getdata "requestedlouvers"]]} {
+      coroutine::after 1000
+    }
+    coroutine::after $settlingdelay
+    log::info "finished waiting until [server::getdata "requestedlouvers"]."
+  }
+
+  ######################################################################
+
   proc openhardware {} {
     if {[catch {client::request "plc" "openlouvers"}]} {
       log::warning "unable to open louvers."
     }
+    waitwhilemoving
   }
 
   proc closehardware {} {
     if {[catch {client::request "plc" "closelouvers"}]} {
       log::warning "unable to close louvers."
     }
+    waitwhilemoving
   }
 
   ######################################################################
