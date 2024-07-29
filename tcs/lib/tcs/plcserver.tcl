@@ -52,6 +52,14 @@ namespace eval "plcserver" {
     plc::switchlightsoff
   }
   
+  proc slaveopenlouvers {} {
+    plc::openlouvers
+  }
+
+  proc slavecloselouvers {} {
+    plc::closelouvers
+  }
+  
   proc slaveopen {} {
     plc::open
   }
@@ -86,6 +94,8 @@ namespace eval "plcserver" {
     interp alias $slave reset                {} plcserver::slavereset
     interp alias $slave switchlightson       {} plcserver::slaveswitchlightson
     interp alias $slave switchlightsoff      {} plcserver::slaveswitchlightsoff
+    interp alias $slave openlouvers          {} plcserver::slaveopenlouvers
+    interp alias $slave closelouvers         {} plcserver::slavecloselouvers
     interp alias $slave open                 {} plcserver::slaveopen
     interp alias $slave close                {} plcserver::slaveclose
     interp alias $slave updateweather        {} plcserver::slaveupdateweather
