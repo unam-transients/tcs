@@ -146,6 +146,10 @@ package ifneeded lightspower          0.0 \
   [list source [file join [file dirname [info script]] lightspower.tcl]]
 package ifneeded lightsserver          0.0 \
   [list source [file join [file dirname [info script]] lightsserver.tcl]]
+package ifneeded louversplc             0.0 \
+  [list source [file join [file dirname [info script]] louversplc.tcl]]
+package ifneeded louversserver          0.0 \
+  [list source [file join [file dirname [info script]] louversserver.tcl]]
 package ifneeded moon                  0.0 \
   [list source [file join [file dirname [info script]] moon.tcl]]
 package ifneeded moonserver            0.0 \
