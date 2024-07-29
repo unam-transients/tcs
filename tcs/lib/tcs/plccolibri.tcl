@@ -192,16 +192,33 @@ namespace eval "plc" {
     
     set rawmode [lindex $field 50]
     switch $rawmode {
+    
+      # Master is PLC and telescope normally left in remote.
+      
       "MANU"           { set mode "local" }
       "OFF"            { set mode "off"   }
-      "WAIT_ACK"       { set mode "remote but waiting for local confirmation"}
+      "WAIT_ACK"       { set mode "remote and waiting for local confirmation to open"}
       "AUTO"           { set mode "remote and may be open" }
       "AUTO_PARK"      { set mode "remote but must be closed" }
       "AUTO_INTRUSION" { set mode "remote but intrusion detected"}
       "ESTOP"          { set mode "emergency stop activated"}
-      "WAIT_MANU"      { set mode "local but waiting for telescope to be switched" }
-      "WAIT_OFF"       { set mode "off but waiting for telescope to be switched"}
-      "WAIT_AUTO"      { set mode "remote but waiting for telescope to be switched" }
+      "WAIT_MANU"      { set mode "local but waiting for telescope to be switched to remote" }
+      "WAIT_OFF"       { set mode "off but waiting for telescope to be switched to remote" }
+      "WAIT_AUTO"      { set mode "remote but waiting for telescope to be switched to remote" }
+
+      # Master is telescope and PLC normally left in remote.
+
+      #"MANU"           { set mode "plc not in remote" }
+      #"OFF"            { set mode "plc not in remote"   }
+      #"WAIT_ACK"       { set mode "waiting for local confirmation to change to remote"}
+      #"AUTO"           { set mode "remote and may be open" }
+      #"AUTO_PARK"      { set mode "remote but must be closed" }
+      #"AUTO_INTRUSION" { set mode "remote but intrusion detected"}
+      #"ESTOP"          { set mode "emergency stop activated"}
+      #"WAIT_MANU"      { set mode "plc not in remote" }
+      #"WAIT_OFF"       { set mode "plc not in remote" }
+      #"WAIT_AUTO"      { set mode "mode determined by telescope key switch" }
+
       default          { 
         log::warning "unable to read mode data."
         set mode ""
@@ -242,7 +259,7 @@ namespace eval "plc" {
     }
 
     if {[catch {
-      server::setdata "alarm"                         [boolean [string index $responseb 31]]
+      server::setdata "needtopark"                    [boolean [string index $responseb 31]]
       server::setdata "rainalarm"                     [boolean [string index $responseb 32]]
       server::setdata "windalarm"                     [boolean [string index $responseb 33]]
       server::setdata "cloudalarm"                    [boolean [string index $responseb 34]]
@@ -265,15 +282,15 @@ namespace eval "plc" {
     server::setdata "localconfirmation"               $localconfirmation
 
     if {[catch {
-      server::setdata "emergencystopbuttons"          [boolean [expr {![string index $responseb 40]}]]
-      server::setdata "emergencystoplogic"            [boolean [expr {![string index $responseb 41]}]]
-      server::setdata "emergencystoppower"            [boolean [expr {![string index $responseb 42]}]]
+      server::setdata "emergencystopalarm"            [boolean [string index $responseb 40]]
+      server::setdata "emergencystopbuttonsactive"    [boolean [expr {![string index $responseb 41]}]]
+      server::setdata "motorpoweron"                  [boolean [string index $responseb 42]]
     }]} {
       log::warning "unable to read emergency stop data."
     }
 
     if {[catch {
-      server::setdata "intrusionalarm"                [boolean [expr {![string index $responseb 43]}]]
+      server::setdata "intrusionalarm"                [boolean [string index $responseb 43]]
     }]} {
       log::warning "unable to read intrusion alarm data."
     }
@@ -288,7 +305,7 @@ namespace eval "plc" {
     }
 
     if {[catch {
-      server::setdata "riocommnuicationalarm"          [boolean [string index $responseb 48]]
+      server::setdata "riocommunicationalarm"          [boolean [string index $responseb 48]]
       server::setdata "riovaisalapowersupply"          [boolean [string index $responseb 49]]
       server::setdata "rioboltwoodpowersupply"         [boolean [string index $responseb 50]]
       server::setdata "rioboltwoodcommunicationalarm"  [boolean [string index $responseb 51]]
@@ -359,8 +376,8 @@ namespace eval "plc" {
     
     switch -- "[string index $responseb 80][string index $responseb 81]" {
       "00" { set shutters "error"         }
-      "01" { set shutters "closed"        }
-      "10" { set shutters "open"          }
+      "01" { set shutters "open"          }
+      "10" { set shutters "closed"        }
       "11" { set shutters "intermediate"  }
       "default" {
         log::warning "unable to read shutters data."
@@ -380,11 +397,11 @@ namespace eval "plc" {
         }
       }
       server::setdata "requestedtelescopemode"         $telescopemode
-      server::setdata "requestedpark"                  [boolean [string index $responseb 84]]
-      server::setdata "requestedcloseshutters"         [boolean [string index $responseb 85]]
+      server::setdata "requestedpark"                  [boolean [expr {![string index $responseb 84]}]]
+      server::setdata "requestedcloseshutters"         [boolean [expr {![string index $responseb 85]}]]
       switch -- "[string index $responseb 86]" {
-        "0" { set domemode "local"    }
-        "1" { set domemode "remote"  }
+        "0" { set domemode "remote" }
+        "1" { set domemode "local"  }
         "default" {
           log::warning "unable to read plc data."
           set domemode ""
@@ -448,7 +465,7 @@ namespace eval "plc" {
       server::setdata "americanupsbatteryvoltage"     [format "%.1f" [lindex $field 12]]
       server::setdata "americanupsbatterycurrent"     [format "%.1f" [lindex $field 13]]
       set statusword [lindex $field 14]
-      server::setdata "americanupsusingbattery"       [boolean [expr {$statusword & (1 <<  0)}]]
+      server::setdata "americanupsusingbattery"       [boolean [expr {$statusword & 1}]]
       set status ""
       if {$statusword & (1 <<  2)} { set status "$status/on bypass"          }
       if {$statusword & (1 <<  9)} { set status "$status/inoperable battery" }
@@ -468,8 +485,10 @@ namespace eval "plc" {
     }]} {
       log::warning "unable to read cabinet temperature data."
     }
-
     
+    set mustbeclosed [boolean [expr {![string equal $mode "remote and may be open"]}]]
+    server::setdata "mustbeclosed"                    $mustbeclosed
+
     foreach {name prettyname} {
 
       "lights"                        "lights"
@@ -498,6 +517,9 @@ namespace eval "plc" {
       "bypassupsalarm"                "ups alarm bypass"
       "bypasstcsalarm"                "tcs alarm bypass"
       "bypassdaylightalarm"           "daylight alarm bypass"
+      
+      "emergencystopbuttonsactive"    "emergency stop buttons active"
+      "motorpoweron"                  "motor power on"
 
       "europeanupsstatus"             "european ups status"
       "europeanupsusingbattery"       "european ups using battery"
@@ -517,10 +539,12 @@ namespace eval "plc" {
       "tcsalarm"                      "tcs alarm"
       "upsalarm"                      "ups alarm"
       "intrusionalarm"                "intrusion alarm"
-      "riocommnuicationalarm"         "rio communication alarm"
+      "riocommunicationalarm"         "rio communication alarm"
       "riovaisalacommunicationalarm"  "rio vaisala communication alarm"
       "rioboltwoodcommunicationalarm" "rio boltwoodcommunication alarm"
-      "alarm"                         "alarm"
+      "emergencystopalarm"            "emergency stop alarm"
+
+      "needtopark"                    "needtopark"
 
       "keyswitch"                     "key switch"
       "mode"                          "mode"
@@ -532,7 +556,8 @@ namespace eval "plc" {
 
       "requestedpark"                 "requested park"
       "requestedcloseshutters"        "requested close shutters"
-
+      
+      "mustbeclosed"                  "must be closed"
 
     } {
       logchange $name $prettyname

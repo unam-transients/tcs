@@ -747,6 +747,7 @@ namespace eval "html" {
       switch $type {
         "colibri" {
 
+          writealarm       "Must be closed"           [client::getdata "plc" "mustbeclosed"]
           writehtmlrow     "Key switch"           [client::getdata "plc" "keyswitch"]
           writehtmlrow     "Local confirmation"   [client::getdata "plc" "localconfirmation"]
 
@@ -760,17 +761,18 @@ namespace eval "html" {
           writehtmlfullrow "Requested park"            [client::getdata "plc" "requestedpark"]
           writehtmlfullrow "Requested close shutters"  [client::getdata "plc" "requestedcloseshutters"]
 
-          writealarm   "Alarm"                    [client::getdata "plc" "alarm"               ]
-          writealarm   "Rain alarm"               [client::getdata "plc" "rainalarm"           ]
-          writealarm   "Wind alarm"               [client::getdata "plc" "windalarm"           ]
-          writealarm   "Cloud alarm"              [client::getdata "plc" "cloudalarm"          ]
-          writealarm   "Dewpoint alarm"           [client::getdata "plc" "humidityalarm"       ]
-          writealarm   "Daylight alarm"           [client::getdata "plc" "daylightalarm"       ]
-          writealarm   "UPS alarm"                [client::getdata "plc" "upsalarm"            ]
-          writealarm   "TCS alarm"                [client::getdata "plc" "tcsalarm"            ]
-          writealarm   "Emergency stop alarm"     [client::getdata "plc" "emergencystopbuttons"]
-          writealarm   "Intrusion alarm"          [client::getdata "plc" "intrusionalarm"      ]
-
+          writealarm   "Rain alarm"                       [client::getdata "plc" "rainalarm"                 ]
+          writealarm   "Wind alarm"                       [client::getdata "plc" "windalarm"                 ]
+          writealarm   "Cloud alarm"                      [client::getdata "plc" "cloudalarm"                ]
+          writealarm   "Humidity alarm"                   [client::getdata "plc" "humidityalarm"             ]
+          writealarm   "Daylight alarm"                   [client::getdata "plc" "daylightalarm"             ]
+          writealarm   "UPS alarm"                        [client::getdata "plc" "upsalarm"                  ]
+          writealarm   "TCS alarm"                        [client::getdata "plc" "tcsalarm"                  ]
+          writealarm   "Emergency stop alarm"             [client::getdata "plc" "emergencystopalarm"        ]
+          writealarm   "Intrusion alarm"                  [client::getdata "plc" "intrusionalarm"            ]
+          writealarm   "RIO communication alarm"          [client::getdata "plc" "riocommunicationalarm"     ]
+          writealarm   "Vaisala communication alarm"      [client::getdata "plc" "riovaisalacommunicationalarm" ]
+          writealarm   "Boltwood communication alarm"     [client::getdata "plc" "rioboltwoodcommunicationalarm"]
 
           writebypass "Bypass key switch"              [client::getdata "plc" "bypasskeyswitch"]
           writebypass "Bypass weather alarms"          [client::getdata "plc" "bypassweatheralarms"]
