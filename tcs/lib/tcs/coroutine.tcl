@@ -62,7 +62,7 @@ namespace eval "coroutine" {
         }
         set remaining [expr {$start + $milliseconds - $now}]
         ::after $remaining [info coroutine]
-        yield
+        ::yield
       }
     }
   }
