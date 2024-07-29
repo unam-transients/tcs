@@ -171,7 +171,8 @@
     "type": "plc"
   },
   "louvers": {
-    "type": "plc"
+    "type": "plc",
+    "activelouvers": [ 1, 2, 7, 8 ]
   },
   "mount": {
     "type": "opentsi",
