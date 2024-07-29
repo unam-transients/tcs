@@ -773,6 +773,7 @@ namespace eval "html" {
           writehtmlfullrow "Mode"                 [client::getdata "plc" "mode"]
           writehtmlrow     "Unsafe seconds"       [format "%d s" [client::getdata "plc" "unsafeseconds"]]
 
+          writehtmlfullrow "Telescope cabinet power"   [client::getdata "plc" "telescopecabinetpower"]
           writehtmlfullrow "Requested telescope mode"  [client::getdata "plc" "requestedtelescopemode"]
           writehtmlfullrow "Telescope mode"            [client::getdata "plc" "telescopemode"]
           writehtmlfullrow "Dome mode"                 [client::getdata "plc" "domemode"]
@@ -799,6 +800,7 @@ namespace eval "html" {
           writebypass "Bypass wind alarm"              [client::getdata "plc" "bypasswindalarm"]
           writebypass "Bypass cloud alarm"             [client::getdata "plc" "bypasscloudalarm"]
           writebypass "Bypass humidity alarm"          [client::getdata "plc" "bypasshumidityalarm"]
+          writebypass "Bypass daylight alarm"          [client::getdata "plc" "bypassdaylightalarm"]
           writebypass "Bypass UPS alarm"               [client::getdata "plc" "bypassupsalarm"]
           writebypass "Bypass TCS alarm"               [client::getdata "plc" "bypasstcsalarm"]
 
