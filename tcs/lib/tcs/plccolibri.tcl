@@ -496,10 +496,26 @@ namespace eval "plc" {
     }]} {
       log::warning "unable to read cabinet temperature data."
     }
+
+    server::setdata "rainalarmdisabled"                     [boolean [expr {[server::getdata "bypassrainalarm"]     || [server::getdata "bypassweatheralarms"]}]]
+    server::setdata "windalarmdisabled"                     [boolean [expr {[server::getdata "bypasswindalarm"]     || [server::getdata "bypassweatheralarms"]}]]
+    server::setdata "humidityalarmdisabled"                 [boolean [expr {[server::getdata "bypasshumidityalarm"] || [server::getdata "bypassweatheralarms"]}]]
+    server::setdata "cloudalarmdisabled"                    [boolean [expr {[server::getdata "bypasscloudalarm"]    || [server::getdata "bypassweatheralarms"]}]]
+    server::setdata "daylightalarmdisabled"                 [boolean [expr {[server::getdata "bypassdaylightalarm"] || [server::getdata "bypassweatheralarms"]}]]
+    
+    server::setdata "tcsalarmdisabled"                      [server::getdata "bypasstcsalarm"]
+    server::setdata "upsalarmdisabled"                      [server::getdata "bypassupsalarm"]
+
+    server::setdata "emergencystopalarmdisabled"            false
+    server::setdata "intrusionalarmdisabled"                false
+
+    server::setdata "riocommunicationalarmdisabled"         [server::getdata "bypassweatheralarms"]
+    server::setdata "riovaisalacommunicationalarmdisabled"  [server::getdata "bypassweatheralarms"]
+    server::setdata "rioboltwoodcommunicationalarmdisabled" [server::getdata "bypassweatheralarms"]
     
     set mustbeclosed [boolean [expr {![string equal $mode "remote and may be open"]}]]
     server::setdata "mustbeclosed"                    $mustbeclosed
-
+    
     foreach {name prettyname} {
 
       "fans"                          "fans"             
@@ -514,9 +530,17 @@ namespace eval "plc" {
       "bypasshumidityalarm"           "dewpoint alarm bypass"
       "bypasscloudalarm"              "cloud alarm bypass"
       "bypassrainalarm"               "rain alarm bypass"
+      "bypassdaylightalarm"           "daylight alarm bypass"
       "bypassupsalarm"                "ups alarm bypass"
       "bypasstcsalarm"                "tcs alarm bypass"
-      "bypassdaylightalarm"           "daylight alarm bypass"
+      
+      "rainalarmdisabled"             "rain alarm disabled"
+      "windalarmdisabled"             "wind alarm disabled"
+      "humidityalarmdisabled"         "humidity alarm disabled"
+      "cloudalarmdisabled"            "cloud alarm disabled"
+      "daylightalarmdisabled"         "daylight alarm disabled"
+      "tcsalarmdisabled"              "tcs alarm disabled"
+      "upsalarmdisabled"              "ups alarm disabled"
       
       "motorpoweron"                  "motor power on"
 
@@ -775,6 +799,7 @@ namespace eval "plc" {
     log::info "enabling the $alarm alarm."
     switch $alarm { 
       "weather"  { set command "ByPassWeather\{OFF\}\n" }
+      "rain"     { set command "RainAlarm\{ON\}\n" }
       "wind"     { set command "WindThreshold\{ON\}\n" }
       "cloud"    { set command "CloudThreshold\{ON\}\n" }
       "humidity" { set command "HumidityThreshold\{ON\}\n" }
@@ -795,6 +820,7 @@ namespace eval "plc" {
     log::info "disabling the $alarm alarm."
     switch $alarm { 
       "weather"  { set command "ByPassWeather\{ON\}\n" }
+      "rain"     { set command "RainAlarm\{ON\}\n" }
       "wind"     { set command "WindThreshold\{OFF\}\n" }
       "cloud"    { set command "CloudThreshold\{OFF\}\n" }
       "humidity" { set command "HumidityThreshold\{OFF\}\n" }
@@ -815,6 +841,7 @@ namespace eval "plc" {
   proc checkalarm {alarm} {
     switch $alarm {
       "weather"  { return }
+      "rain"     { return }
       "wind"     { return }
       "cloud"    { return }
       "humidity" { return }
