@@ -29,6 +29,8 @@ package provide "louversplc" 0.0
 
 namespace eval "louvers" {
 
+  variable activelouvers [config::getvalue "louvers" "activelouvers"]
+
   ######################################################################
   
   proc updatedata {} {
@@ -42,7 +44,7 @@ namespace eval "louvers" {
       return
     }
     
-    set activelouvers { 1 2 7 8 }
+    variable activelouvers
 
     foreach i $activelouvers {
       server::setdata "louver$i" [client::getdata "plc" "louver$i"]
