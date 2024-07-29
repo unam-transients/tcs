@@ -674,6 +674,25 @@ namespace eval "html" {
 
   }
 
+  proc writelouvers {} {
+
+    putshtml "<table class=\"status\">"
+
+    writehtmlstatusblock "louvers"
+
+    putshtml "</table>"
+
+    putshtml "<table class=\"status\">"
+
+    if {[string equal [client::getstatus "louvers"] "ok"]} {
+      writehtmlrow "Requested louvers" [client::getdata "louvers" "requestedlouvers"]
+      writehtmlrow "Current louvers" [client::getdata "louvers" "louvers"]
+    }
+  
+    putshtml "</table>"
+
+  }
+
   proc writemoon {} {
 
     putshtml "<table class=\"status\">"
@@ -1573,6 +1592,7 @@ if {false} {
       power               {Power}
       instrument          {Instrument}
       lights              {Lights}
+      louvers             {Louvers}
       moon                {Moon}
       mount               {Mount}
       plc                 {PLC}
