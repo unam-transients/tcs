@@ -402,11 +402,12 @@ namespace eval "plc" {
       server::setdata "bypassrainalarm"                [boolean [string index $responseb 92]]
       server::setdata "bypassupsalarm"                 [boolean [string index $responseb 93]]
       server::setdata "bypasstcsalarm"                 [boolean [string index $responseb 94]]
+      server::setdata "bypassdaylightalarm"            [boolean [string index $responseb 95]]
     }]} {
       log::warning "unable to read bypass data."
     }
     
-    switch -- "[string index $responseb 95]" {
+    switch -- "[string index $responseb 96]" {
       "0" { set status "unknown" }
       "2" { set status "ok"  }
       "4" { set status "warning alarm"  }
@@ -417,6 +418,16 @@ namespace eval "plc" {
       }
     }
     server::setdata "europeanupsstatus"                $status
+
+    switch -- "[string index $responseb 97]" {
+      "0" { set fans "off" }
+      "1" { set fans "on"  }
+      "default" {
+         log::warning "unable to read fans data."
+         set fans ""
+      }
+    }
+    server::setdata "fans"                             $fans
 
     # Process responsec.
 
@@ -460,8 +471,9 @@ namespace eval "plc" {
 
     
     foreach {name prettyname} {
+
       "lights"                        "lights"
-             
+      "fans"                          "fans"             
       "louver1"                       "louver 1"
       "louver2"                       "louver 2"
       "louver3"                       "louver 3"
@@ -485,6 +497,7 @@ namespace eval "plc" {
       "bypassrainalarm"               "rain alarm bypass"
       "bypassupsalarm"                "ups alarm bypass"
       "bypasstcsalarm"                "tcs alarm bypass"
+      "bypassdaylightalarm"           "daylight alarm bypass"
 
       "europeanupsstatus"             "european ups status"
       "europeanupsusingbattery"       "european ups using battery"
