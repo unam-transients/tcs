@@ -72,22 +72,15 @@ namespace eval "plcserver" {
     plc::updateweather
   }
   
-  proc slaveenableweatheralarm {} {
-    plc::enableweatheralarm
+  proc slaveenablealarm {alarm} {
+    plc::enablealarm $alarm
   }
   
-  proc slavedisableweatheralarm {} {
-    plc::disableweatheralarm
+  proc slavedisablealarm {alarm} {
+    plc::disablealarm $alarm
   }
   
-  proc slaveenabledaylightalarm {} {
-    plc::enabledaylightalarm
-  }
-  
-  proc slavedisabledaylightalarm {} {
-    plc::disabledaylightalarm
-  }
-  
+
   proc configureslave {slave} {
     interp alias $slave initialize           {} plcserver::slaveinitialize
     interp alias $slave stop                 {} plcserver::slavestop
@@ -99,10 +92,8 @@ namespace eval "plcserver" {
     interp alias $slave open                 {} plcserver::slaveopen
     interp alias $slave close                {} plcserver::slaveclose
     interp alias $slave updateweather        {} plcserver::slaveupdateweather
-    interp alias $slave enableweatheralarm   {} plcserver::slaveenableweatheralarm
-    interp alias $slave disableweatheralarm  {} plcserver::slavedisableweatheralarm
-    interp alias $slave enabledaylightalarm  {} plcserver::slaveenabledaylightalarm
-    interp alias $slave disabledaylightalarm {} plcserver::slavedisabledaylightalarm
+    interp alias $slave enablealarm          {} plcserver::slaveenablealarm
+    interp alias $slave disablealarm         {} plcserver::slavedisablealarm
   }
 
   ######################################################################
