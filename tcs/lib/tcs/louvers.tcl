@@ -96,7 +96,7 @@ namespace eval "louvers" {
 
   proc start {} {
     coroutine::every 1000 louvers::updatedata
-    server::newactivitycommand "starting" "idle" louvers::startactivitycommand
+    server::newactivitycommand "starting" "started" louvers::startactivitycommand
   }
 
 }
