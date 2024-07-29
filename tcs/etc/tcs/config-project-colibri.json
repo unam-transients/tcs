@@ -169,6 +169,9 @@
   "lights": {
     "type": "plc"
   },
+  "louvers": {
+    "type": "plc"
+  },
   "mount": {
     "type": "opentsi",
     "configuration": "azimuth-zenithdistance",
@@ -779,7 +782,7 @@
     "civiltimezone": "America/Tijuana"
   },
   "supervisor": {
-    "withplc": "false",
+    "withplc": "true",
     "internalhumiditysensor": "",
     "openoffsetseconds": "0",
     "opentoventilateoffsetseconds": "1800"

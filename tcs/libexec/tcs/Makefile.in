@@ -125,9 +125,10 @@ installbins_project_colibri :=    \
     coversserver                  \
     domeserver                    \
 	C0server                      \
-	telescopecontrollerserver     \
+	louversserver                 \
 	plcserver                     \
 	secondaryserver               \
+	telescopecontrollerserver     \
 	updateweatherfiles-oan
 		
 installbins_project_colibri_laboratory :=    \

@@ -89,6 +89,9 @@ installs	:=			           \
 	lightsplc.tcl		    	   \
 	lightspower.tcl		    	   \
 	lightsserver.tcl	       	   \
+	louvers.tcl		        	   \
+	louversplc.tcl		    	   \
+	louversserver.tcl	       	   \
 	log.tcl			        	   \
 	moon.tcl		        	   \
 	moonserver.tcl	       		   \
