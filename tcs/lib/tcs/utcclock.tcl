@@ -41,7 +41,7 @@ namespace eval "utcclock" {
   
   proc parseleapsecondlines {lines} {
     # The data lines have an NTP timestamp followed the value of TAI-UTC that is
-    # valid from that point. NTP timestamos are second since 1900-01-01
+    # valid from that point. NTP timestamps are second since 1900-01-01
     # 00:00:00, ignoring leap seconds and other adjustments. 
     log::debug "creating the TAI-UTC list."
     variable taiminusutclist
@@ -65,7 +65,7 @@ namespace eval "utcclock" {
   
   proc updatetaiminusutclist {} {
     set path "[directories::var]/ietf/leapseconds"
-    log::debug "updating the TAI-UTC list from  \"$path\"."
+    log::debug "updating the TAI-UTC list from \"$path\"."
     if {[file exists $path]} {
       set lines {}
       if {[catch {
