@@ -44,12 +44,17 @@ namespace eval "louversserver" {
     louvers::close
   }
 
+  proc slaveemergencyclose {} {
+    louvers::emergencyclose
+  }
+
   proc configureslave {slave} {
-    interp alias $slave reset      {} server::handlereset
-    interp alias $slave stop       {} server::handlestop
-    interp alias $slave initialize {} louversserver::slaveinitialize
-    interp alias $slave open       {} louversserver::slaveopen
-    interp alias $slave close      {} louversserver::slaveclose
+    interp alias $slave reset          {} server::handlereset
+    interp alias $slave stop           {} server::handlestop
+    interp alias $slave initialize     {} louversserver::slaveinitialize
+    interp alias $slave open           {} louversserver::slaveopen
+    interp alias $slave close          {} louversserver::slaveclose
+    interp alias $slave emergencyclose {} louversserver::slaveemergencyclose
   }
 
   ######################################################################

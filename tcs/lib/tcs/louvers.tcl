@@ -72,6 +72,14 @@ namespace eval "louvers" {
     log::info [format "finished closing after %.1f seconds." [utcclock::diff now $start]]
   }
 
+  proc emergencycloseactivitycommand {} {
+    set start [utcclock::seconds]
+    server::setdata "requestedlouvers" "closed"
+    log::info "emergency closing louvers."
+    closehardware
+    log::info [format "finished emergency closing after %.1f seconds." [utcclock::diff now $start]]
+  }
+
   ######################################################################
 
   proc open {} {
@@ -84,6 +92,10 @@ namespace eval "louvers" {
     server::checkstatus
     server::checkactivityformove
     server::newactivitycommand "closing" "idle" louvers::closeactivitycommand
+  }
+  
+  proc emergencyclose {} {
+    server::newactivitycommand "closing" [server::getstoppedactivity] louvers::emergencycloseactivitycommand
   }
   
   proc initialize {} {
