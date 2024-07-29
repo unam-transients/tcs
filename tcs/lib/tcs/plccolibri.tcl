@@ -247,7 +247,7 @@ namespace eval "plc" {
       server::setdata "windalarm"                     [boolean [string index $responseb 33]]
       server::setdata "cloudalarm"                    [boolean [string index $responseb 34]]
       server::setdata "daylightalarm"                 [boolean [string index $responseb 35]]
-      server::setdata "dewpointalarm"                 [boolean [string index $responseb 36]]
+      server::setdata "humidityalarm"                 [boolean [string index $responseb 36]]
       server::setdata "tcsalarm"                      [boolean [string index $responseb 37]]
       server::setdata "upsalarm"                      [boolean [string index $responseb 38]]
     }]} {
@@ -282,7 +282,7 @@ namespace eval "plc" {
 
     if {[catch {
       server::setdata "bypasskeyswitch"                [boolean [string index $responseb 46]]
-      server::setdata "bypassweatheralarm"             [boolean [string index $responseb 47]]
+      server::setdata "bypassweatheralarms"            [boolean [string index $responseb 47]]
     }]} {
       log::warning "unable to read bypass data."
     }
@@ -397,7 +397,7 @@ namespace eval "plc" {
 
     if {[catch {
       server::setdata "bypasswindalarm"                [boolean [string index $responseb 89]]
-      server::setdata "bypassdewpointalarm"            [boolean [string index $responseb 90]]
+      server::setdata "bypasshumidityalarm"            [boolean [string index $responseb 90]]
       server::setdata "bypasscloudalarm"               [boolean [string index $responseb 91]]
       server::setdata "bypassrainalarm"                [boolean [string index $responseb 92]]
       server::setdata "bypassupsalarm"                 [boolean [string index $responseb 93]]
@@ -478,9 +478,9 @@ namespace eval "plc" {
       "shutters"                      "shutters"
 
       "bypasskeyswitch"               "key switch bypass"
-      "bypassweatheralarm"            "weather alarm bypass"
+      "bypassweatheralarms"           "weather alarms bypass"
       "bypasswindalarm"               "wind alarm bypass"
-      "bypassdewpointalarm"           "dewpoint alarm bypass"
+      "bypasshumidityalarm"           "dewpoint alarm bypass"
       "bypasscloudalarm"              "cloud alarm bypass"
       "bypassrainalarm"               "rain alarm bypass"
       "bypassupsalarm"                "ups alarm bypass"
@@ -500,7 +500,7 @@ namespace eval "plc" {
       "windalarm"                     "wind alarm"
       "cloudalarm"                    "cloud alarm"
       "daylightalarm"                 "daylight alarm"
-      "dewpointalarm"                 "dewpoint alarm"
+      "humidityalarm"                 "dewpoint alarm"
       "tcsalarm"                      "tcs alarm"
       "upsalarm"                      "ups alarm"
       "intrusionalarm"                "intrusion alarm"

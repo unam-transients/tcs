@@ -292,6 +292,18 @@ namespace eval "html" {
     writehtmlrowwithemph $name  [alarmemph $value] $value
   }
 
+  proc bypassemph {alarm} {
+    if {$alarm} {
+      return "warning"
+    } else {
+      return ""
+    } 
+  }
+
+  proc writebypass {name value} {
+    writehtmlrowwithemph $name  [bypassemph $value] $value
+  }
+
   ######################################################################
 
   proc writehtmlstatusblock {server} {
@@ -734,47 +746,44 @@ namespace eval "html" {
     if {[string equal [client::getstatus "plc"] "ok"]} {
       switch $type {
         "colibri" {
+
+          writehtmlrow     "Key switch"           [client::getdata "plc" "keyswitch"]
+          writehtmlrow     "Local confirmation"   [client::getdata "plc" "localconfirmation"]
+
           writehtmlfullrow "Mode"                 [client::getdata "plc" "mode"]
-          writehtmlrow "Key switch"               [client::getdata "plc" "keyswitch"]
-          writehtmlrow "Local confirmation"       [client::getdata "plc" "localconfirmation"]
-          if {[client::getdata "plc" "emergencystopbuttons"]} {
-            writehtmlrowwithemph "Emergency stop buttons"  "error" "activated"
-          } else {
-            writehtmlrow "Emergency stop buttons" "deactivated"
-          }
-          if {[client::getdata "plc" "intrusionsensor"]} {
-            writehtmlrowwithemph "Intrusion sensor"  "error" "activated"
-          } else {
-            writehtmlrow "Intrusion sensor" "deactivated"
-          }
-          writehtmlrow "Lights"                   [client::getdata "plc" "lights"]
-          writehtmlrow "Louvers"                  [client::getdata "plc" "louvers"]
+          writehtmlrow     "Unsafe seconds"       [format "%d s" [client::getdata "plc" "unsafeseconds"]]
 
-          writealarm   "Weather alarm disabled"   [client::getdata "plc" "weatheralarmdisabled"      ]
-          writealarm   "Daylight alarm disabled"  [client::getdata "plc" "daylightalarmdisabled"      ]
+          writehtmlfullrow "Requested telescope mode"  [client::getdata "plc" "requestedtelescopemode"]
+          writehtmlfullrow "Telescope mode"            [client::getdata "plc" "telescopemode"]
+          writehtmlfullrow "Dome mode"                 [client::getdata "plc" "domemode"]
 
-          #writealarm   "Alarm"                    [client::getdata "plc" "alarm"]
-          #writehtmlrow "Alarm timer"              [format "%d seconds" [client::getdata "plc" "alarmtimer"]]
-          #writealarm   "Rain alarm"               [client::getdata "plc" "rainalarm"      ]
-          
-          writealarm   "Wind alarm"               [client::getdata "plc" "windalarm"      ]
-          writealarm   "Cloud alarm"              [client::getdata "plc" "cloudalarm"     ]
-          writealarm   "Light-level alarm"        [client::getdata "plc" "lightlevelalarm"]
-          writealarm   "Humidty alarm"            [client::getdata "plc" "humidityalarm"  ]
+          writehtmlfullrow "Requested park"            [client::getdata "plc" "requestedpark"]
+          writehtmlfullrow "Requested close shutters"  [client::getdata "plc" "requestedcloseshutters"]
+
+          writealarm   "Alarm"                    [client::getdata "plc" "alarm"               ]
+          writealarm   "Rain alarm"               [client::getdata "plc" "rainalarm"           ]
+          writealarm   "Wind alarm"               [client::getdata "plc" "windalarm"           ]
+          writealarm   "Cloud alarm"              [client::getdata "plc" "cloudalarm"          ]
+          writealarm   "Dewpoint alarm"           [client::getdata "plc" "humidityalarm"       ]
+          writealarm   "Daylight alarm"           [client::getdata "plc" "daylightalarm"       ]
+          writealarm   "UPS alarm"                [client::getdata "plc" "upsalarm"            ]
+          writealarm   "TCS alarm"                [client::getdata "plc" "tcsalarm"            ]
+          writealarm   "Emergency stop alarm"     [client::getdata "plc" "emergencystopbuttons"]
+          writealarm   "Intrusion alarm"          [client::getdata "plc" "intrusionalarm"      ]
 
 
-          writealarm   "TCS alarm"                [client::getdata "plc" "tcsalarm"       ]
-          writealarm   "UPS alarm"                [client::getdata "plc" "upsalarm"       ]
-          writealarm   "RIO alarm"                [client::getdata "plc" "rioalarm"       ]
-          writealarm   "Boltwood alarm"           [client::getdata "plc" "boltwoodalarm"  ]
-          writealarm   "Vaisala alarm"            [client::getdata "plc" "vaisalaalarm"   ]
-          writehtmlrow "Alarm bits"               [client::getdata "plc" "alarmbits"      ]
-          writehtmlrow "PLC cabinet temperature"  [format "%.1f C" [client::getdata "plc" "plccabinettemperature"]]
-          writehtmlrow "RIO cabinet temperature"  [format "%.1f C" [client::getdata "plc" "riocabinettemperature"]]
-          writehtmlrow "Comet 1 temperature"      [format "%.1f C" [client::getdata "plc" "comet1temperature"    ]]
-          writehtmlrow "Comet 2 temperature"      [format "%.1f C" [client::getdata "plc" "comet2temperature"    ]]
-          writehtmlrow "Comet 1 humidity"         [format "%.0f%%" [expr {[client::getdata "plc" "comet1humidity"] * 100.0}]]
-          writehtmlrow "Comet 2 humidity"         [format "%.0f%%" [expr {[client::getdata "plc" "comet2humidity"] * 100.0}]]
+          writebypass "Bypass key switch"              [client::getdata "plc" "bypasskeyswitch"]
+          writebypass "Bypass weather alarms"          [client::getdata "plc" "bypassweatheralarms"]
+          writebypass "Bypass rain alarm"              [client::getdata "plc" "bypassrainalarm"]
+          writebypass "Bypass wind alarm"              [client::getdata "plc" "bypasswindalarm"]
+          writebypass "Bypass cloud alarm"             [client::getdata "plc" "bypasscloudalarm"]
+          writebypass "Bypass humidity alarm"          [client::getdata "plc" "bypasshumidityalarm"]
+          writebypass "Bypass UPS alarm"               [client::getdata "plc" "bypassupsalarm"]
+          writebypass "Bypass TCS alarm"               [client::getdata "plc" "bypasstcsalarm"]
+
+          writehtmlrow "PLC cabinet temperature"       [format "%+.1f C" [client::getdata "plc" "plccabinettemperature"]]
+          writehtmlrow "RIO cabinet temperature"       [format "%+.1f C" [client::getdata "plc" "riocabinettemperature"]]
+
         }
       }
     }
