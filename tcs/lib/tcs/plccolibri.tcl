@@ -307,8 +307,8 @@ namespace eval "plc" {
     if {[catch {
       foreach i { 1 2 3 4 5 6 7 8 9 10 11 12 } {
         switch [string index $responseb [expr {59 + $i}]] {
-          "0" { set louver "open"   }
-          "1" { set louver "closed" }
+          "0" { set louver "closed" }
+          "1" { set louver "open"   }
           "2" { set louver "error"  }
           default {
             log::warning "unable to read louver data."
@@ -860,6 +860,22 @@ if {false} {
     server::checkstatus
     log::info "switching lights off."
     controller::pushcommand "ObsRoomLight{OFF}\n"
+    return
+  }
+
+  ######################################################################
+
+  proc openlouvers {} {
+    server::checkstatus
+    log::info "opening louvers."
+    controller::pushcommand "Louver{ALL,OPEN}\n"
+    return
+  }
+
+  proc closelouvers {} {
+    server::checkstatus
+    log::info "closing louvers."
+    controller::pushcommand "Louver{ALL,CLOSE}\n"
     return
   }
 
