@@ -190,10 +190,10 @@ namespace eval "plc" {
       log::warning "unable to read european ups data."
     }
     
+    # Master is PLC and telescope normally left in remote.
     set rawmode [lindex $field 50]
     switch $rawmode {
     
-      # Master is PLC and telescope normally left in remote.
       
       "MANU"           { set mode "local" }
       "OFF"            { set mode "off"   }
@@ -205,6 +205,13 @@ namespace eval "plc" {
       "WAIT_MANU"      { set mode "local but waiting for telescope to be switched to remote" }
       "WAIT_OFF"       { set mode "off but waiting for telescope to be switched to remote" }
       "WAIT_AUTO"      { set mode "remote but waiting for telescope to be switched to remote" }
+
+       default          { 
+        log::warning "unable to read mode data."
+        set mode ""
+      }
+    }
+    server::setdata "mode"                          $mode
 
       # Master is telescope and PLC normally left in remote.
 
@@ -219,12 +226,6 @@ namespace eval "plc" {
       #"WAIT_OFF"       { set mode "plc not in remote" }
       #"WAIT_AUTO"      { set mode "mode determined by telescope key switch" }
 
-      default          { 
-        log::warning "unable to read mode data."
-        set mode ""
-      }
-    }
-    server::setdata "mode"                          $mode
 
     if {[catch {
       server::setdata "unsafeseconds"                 [format "%d" [parseinteger [lindex $field 51]]]
@@ -283,7 +284,7 @@ namespace eval "plc" {
 
     if {[catch {
       server::setdata "emergencystopalarm"            [boolean [string index $responseb 40]]
-      server::setdata "emergencystopbuttonsactive"    [boolean [expr {![string index $responseb 41]}]]
+      server::setdata "emergencystoplogiclevel"       [boolean [string index $responseb 41]]
       server::setdata "motorpoweron"                  [boolean [string index $responseb 42]]
     }]} {
       log::warning "unable to read emergency stop data."
@@ -446,6 +447,16 @@ namespace eval "plc" {
     }
     server::setdata "fans"                             $fans
 
+    switch -- "[string index $responseb 98]" {
+      "0" { set telescopecabinetpower "off" }
+      "1" { set telescopecabinetpower "on"  }
+      "default" {
+         log::warning "unable to read telescope cabinet data."
+         set fans ""
+      }
+    }
+    server::setdata "telescopecabinetpower"            $telescopecabinetpower
+
     # Process responsec.
 
     set field [string map {" " ""} $responsec]
@@ -491,23 +502,12 @@ namespace eval "plc" {
 
     foreach {name prettyname} {
 
-      "lights"                        "lights"
       "fans"                          "fans"             
-      "louver1"                       "louver 1"
-      "louver2"                       "louver 2"
-      "louver3"                       "louver 3"
-      "louver4"                       "louver 4"
-      "louver5"                       "louver 5"
-      "louver6"                       "louver 6"
-      "louver7"                       "louver 7"
-      "louver8"                       "louver 8"
-      "louver9"                       "louver 9"
-      "louver10"                      "louver 10"
-      "louver11"                      "louver 11"
-      "louver12"                      "louver 12"
 
       "shutters"                      "shutters"
 
+      "telescopecabinetpower"         "telescope cabinet power"
+      
       "bypasskeyswitch"               "key switch bypass"
       "bypassweatheralarms"           "weather alarms bypass"
       "bypasswindalarm"               "wind alarm bypass"
@@ -518,7 +518,6 @@ namespace eval "plc" {
       "bypasstcsalarm"                "tcs alarm bypass"
       "bypassdaylightalarm"           "daylight alarm bypass"
       
-      "emergencystopbuttonsactive"    "emergency stop buttons active"
       "motorpoweron"                  "motor power on"
 
       "europeanupsstatus"             "european ups status"
@@ -563,74 +562,6 @@ namespace eval "plc" {
       logchange $name $prettyname
     }
     
-if {false} {
-
-
-    if {[string equal $lastlocalconfirmation ""]} {
-      log::info "the local confirmation is \"$localconfirmation\"."
-    } elseif {![string equal $localconfirmation $lastlocalconfirmation]} {
-      log::warning "the local confirmation has changed from \"$lastlocalconfirmation\" to \"$localconfirmation\"."
-    }
-    set lastlocalconfirmation $localconfirmation
-
-    if {[string equal $lastemergencystopbuttons ""]} {
-      if {$emergencystopbuttons} {
-        log::error "the emergency stop buttons are activated."
-      } else {
-        log::info "the emergency stop buttons are deactivated."
-      }
-    } elseif {![string equal $lastemergencystopbuttons $emergencystopbuttons]} {
-      if {$emergencystopbuttons} {
-        log::error "the emergency stop buttons have been activated."
-        log::error "deactivate the buttons and clear the error on the telescope cabinet."
-      } else {
-        log::warning "the emergency stop buttons have been deactivated."
-        log::warning "clear the error on the telescope cabinet."
-      }
-    }
-    set lastemergencystopbuttons $emergencystopbuttons
-    server::setdata "emergencystopbuttons"           $emergencystopbuttons
-
-
-    
-
-    set lastintrusionsensor $intrusionsensor
-    set intrusionsensor [boolean [expr {[string index $generalresponse 41]}]]
-    if {[string equal $lastintrusionsensor ""]} {
-      if {$intrusionsensor} {
-        log::error "the intrusion sensor is activated."
-      } else {
-        log::info "the intrusion sensor is not activated."
-      }
-    } elseif {![string equal $lastintrusionsensor $intrusionsensor]} {
-      if {$intrusionsensor} {
-        log::error "the intrusion sensor has been activated."
-      } else {
-        log::warning "the intrusion sensor has been deactivated."
-      }
-    }
-    
-    set lastweatheralarmdisabled $weatheralarmdisabled
-    set weatheralarmdisabled [boolean [string index $generalresponse 45]]
-    logalarm $weatheralarmdisabled $lastweatheralarmdisabled "weather alarm disabled"    
-
-    set lastdaylightalarmdisabled $daylightalarmdisabled
-    set daylightalarmdisabled [boolean [string index $generalresponse 85]]
-    logalarm $daylightalarmdisabled $lastdaylightalarmdisabled "daylight alarm disabled"    
-
-    set alarmtimer [lindex $weatherfield 51]
-
-    log::writedatalog "plc" {
-      timestamp
-      plccabinettemperature
-      riocabinettemperature
-      comet1temperature
-      comet2temperature
-      comet1humidity
-      comet2humidity
-    }
-}
-
     server::setdata "timestamp"           $timestamp
     server::setstatus "ok"
 
@@ -839,50 +770,75 @@ if {false} {
   
   ######################################################################
 
-  proc enableweatheralarmactivitycommand {} {
+  proc enablealarmactivitycommand {alarm} {
     set start [utcclock::seconds]
-    log::info "enabling the weather alarm."
-    controller::sendcommand "ByPassWeather\{OFF\}\n"
-    log::info [format "finished enabling the weather alarm after %.1f seconds." [utcclock::diff now $start]]
+    log::info "enabling the $alarm alarm."
+    switch $alarm { 
+      "weather"  { set command "ByPassWeather\{OFF\}\n" }
+      "wind"     { set command "WindThreshold\{ON\}\n" }
+      "cloud"    { set command "CloudThreshold\{ON\}\n" }
+      "humidity" { set command "HumidityThreshold\{ON\}\n" }
+      "daylight" { set command "DayLightThreshold\{ON\}\n" }
+      "ups"      { set command "UpsThreshold\{ON\}\n" }
+      "tcs"      { set command "ComThreshold\{ON\}\n" }
+      default {
+        error "unknown alarm \"$alarm\"."
+      }
+    }
+    log::info "enabling the $alarm alarm."
+    controller::sendcommand $command
+    log::info [format "finished enabling the $alarm alarm after %.1f seconds." [utcclock::diff now $start]]
   }
 
-  proc disableweatheralarmactivitycommand {} {
+  proc disablealarmactivitycommand {alarm} {
     set start [utcclock::seconds]
-    log::info "disabling the weather alarm."
-    controller::sendcommand "ByPassWeather\{ON\}\n"
-    log::info [format "finished disabling the weather alarm after %.1f seconds." [utcclock::diff now $start]]
-  }
-
-  proc enabledaylightalarmactivitycommand {} {
-    set start [utcclock::seconds]
-    log::info "enabling the daylight alarm."
-    controller::sendcommand "DayLightThreshold\{ON\}\n"
-    log::info [format "finished enabling the daylight alarm after %.1f seconds." [utcclock::diff now $start]]
-  }
-
-  proc disabledaylightalarmactivitycommand {} {
-    set start [utcclock::seconds]
-    log::info "disabling the daylight alarm."
-    controller::sendcommand "DayLightThreshold\{OFF\}\n"
-    log::info [format "finished disabling the daylight alarm after %.1f seconds." [utcclock::diff now $start]]
+    log::info "disabling the $alarm alarm."
+    switch $alarm { 
+      "weather"  { set command "ByPassWeather\{ON\}\n" }
+      "wind"     { set command "WindThreshold\{OFF\}\n" }
+      "cloud"    { set command "CloudThreshold\{OFF\}\n" }
+      "humidity" { set command "HumidityThreshold\{OFF\}\n" }
+      "daylight" { set command "DayLightThreshold\{OFF\}\n" }
+      "ups"      { set command "UpsThreshold\{OFF\}\n" }
+      "tcs"      { set command "ComThreshold\{OFF\}\n" }
+      default {
+        error "unknown alarm \"$alarm\"."
+      }
+    }
+    log::info "disabling the $alarm alarm."
+    controller::sendcommand $command
+    log::info [format "finished disabling the $alarm alarm after %.1f seconds." [utcclock::diff now $start]]
   }
 
   ######################################################################
   
-  proc enableweatheralarm {} {
-    server::newactivitycommand "enablingalarm" "idle" plc::enableweatheralarmactivitycommand
+  proc checkalarm {alarm} {
+    switch $alarm {
+      "weather"  { return }
+      "wind"     { return }
+      "cloud"    { return }
+      "humidity" { return }
+      "daylight" { return }
+      "ups"      { return }
+      "tcs"      { return }
+      default { 
+        error "unknown alarm \"$alarm\"."      
+      }
+    }
+  }
+  
+  proc enablealarm {alarm} {
+    set start [utcclock::seconds]
+    server::checkstatus
+    checkalarm $alarm
+    server::newactivitycommand "enabling" "idle" "plc::enablealarmactivitycommand $alarm"
   }
 
-  proc disableweatheralarm {} {
-    server::newactivitycommand "disablingalarm" "idle" plc::disableweatheralarmactivitycommand
-  }
-
-  proc enabledaylightalarm {} {
-    server::newactivitycommand "enablingalarm" "idle" plc::enabledaylightalarmactivitycommand
-  }
-
-  proc disabledaylightalarm {} {
-    server::newactivitycommand "disablingalarm" "idle" plc::disabledaylightalarmactivitycommand
+  proc disablealarm {alarm} {
+    set start [utcclock::seconds]
+    server::checkstatus
+    checkalarm $alarm
+    server::newactivitycommand "disabling" "idle" "plc::disablealarmactivitycommand $alarm"
   }
 
   ######################################################################
