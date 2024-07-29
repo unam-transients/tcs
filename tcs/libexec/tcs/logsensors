@@ -28,10 +28,10 @@ umask 0; PATH=/usr/local/opt/tcl-tk/bin:$PATH exec tclsh8.6 -encoding "utf-8" "$
 
 source [file join $::env(tcsprefix) "lib" "tcs" "packages.tcl"]
 
-package require "directories"
 package require "client"
 package require "config"
 package require "utcclock"
+package require "directories"
 
 if {[catch {client::update "sensors"} message]} {
   puts stderr "tcs logsensors: error: unable to update sensors data: $message"
