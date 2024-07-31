@@ -202,6 +202,7 @@ namespace eval "covers" {
   proc stopcovers {} {
     server::setdata "requestedcovers" ""
     opentsi::sendcommand "SET TELESCOPE.STOP=1"
+    waitwhilemoving
   }
   
   proc opencovers {} {
