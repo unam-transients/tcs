@@ -98,10 +98,7 @@ namespace eval "dome" {
     }
 
     set lastazimuth [server::getdata "azimuth"]
-    if {
-      ![string equal $shutters $shutterstarget] ||
-      (![string equal $lastazimuth ""] && $azimuth != $lastazimuth)
-    } {
+    if {![string equal $lastazimuth ""] && $azimuth != $lastazimuth} {
       set moving true
     } else {
       set moving false
@@ -121,8 +118,8 @@ namespace eval "dome" {
   proc waitwhilemoving {} {
     log::info "waiting while moving."
     variable moving
-    set startingdelay 10
-    set settlingdelay 5
+    set startingdelay 2
+    set settlingdelay 1
     set start [utcclock::seconds]
     while {[utcclock::diff now $start] < $startingdelay} {
       coroutine::yield
@@ -145,23 +142,22 @@ namespace eval "dome" {
       
   proc stophardware {} {
     opentsi::sendcommand "SET TELESCOPE.STOP=1"
+    waitwhilemoving
   }
   
   proc openhardware {} {
     server::setdata "requestedshutters" "open"
     opentsi::sendcommand "SET AUXILIARY.DOME.TARGETPOS=1"
-    waitwhilemoving
-    if {![string equal [server::getdata "shutters"] "open"]} {
-      error "the shutters did not open."
+    while {![string equal [server::getdata "shutters"] "open"]} {
+      coroutine::yield
     }
   }
   
   proc closehardware {} {
     server::setdata "requestedshutters" "closed"
     opentsi::sendcommand "SET AUXILIARY.DOME.TARGETPOS=0"
-    waitwhilemoving
-    if {![string equal [server::getdata "shutters"] "closed"]} {
-      error "the shutters did not close."
+    while {![string equal [server::getdata "shutters"] "closed"]} {
+      coroutine::yield
     }
   }
   
