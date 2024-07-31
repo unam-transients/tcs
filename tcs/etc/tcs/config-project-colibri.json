@@ -191,9 +191,9 @@
     "azimuthpark": "0d",
     "zenithdistancepark": "60d",
     "derotatoranglepark": "0d",
-    // Unpark to the south.
+    // Unpark to the north too.
     "haunpark": "0h",
-    "deltaunpark": "30d",
+    "deltaunpark": "60d",
     "minzenithdistancelimit": "0.5d",
     "maxzenithdistancelimit": "80d"
   },
