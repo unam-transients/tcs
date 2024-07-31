@@ -33,9 +33,10 @@ namespace eval "telescope" {
 
   ######################################################################
 
-  variable mechanisms {}
-  variable withlights false
-  variable withheater false
+  variable mechanisms  {}
+  variable withlights  false
+  variable withheater  false
+  variable withlouvers false
     
   ######################################################################
 
