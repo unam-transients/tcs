@@ -151,11 +151,11 @@ namespace eval "plc" {
       server::setdata "boltwooddewpoint"              [format "%.1f" [lindex $field 22]]
       server::setdata "boltwoodheatersetting"         [format "%.1f" [lindex $field 23]]
       server::setdata "boltwoodrainindex"             [format "%d"   [parseinteger [lindex $field 24]]]
-      server::setdata "boltwoodwetnessindex"          [format "%d"   [parseinteger [lindex $field 24]]]
-      server::setdata "boltwoodcloudindex"            [format "%d"   [parseinteger [lindex $field 24]]]
-      server::setdata "boltwoodwindindex"             [format "%d"   [parseinteger [lindex $field 24]]]
-      server::setdata "boltwooddaylightindex"         [format "%d"   [parseinteger [lindex $field 24]]]
-      server::setdata "boltwoodroofindex"             [format "%d"   [parseinteger [lindex $field 25]]]
+      server::setdata "boltwoodwetnessindex"          [format "%d"   [parseinteger [lindex $field 25]]]
+      server::setdata "boltwoodcloudindex"            [format "%d"   [parseinteger [lindex $field 26]]]
+      server::setdata "boltwoodwindindex"             [format "%d"   [parseinteger [lindex $field 27]]]
+      server::setdata "boltwooddaylightindex"         [format "%d"   [parseinteger [lindex $field 28]]]
+      server::setdata "boltwoodroofindex"             [format "%d"   [parseinteger [lindex $field 29]]]
     }]} {
       log::warning "unable to read boltwood data."
     }
@@ -237,8 +237,8 @@ namespace eval "plc" {
 
     switch -- "[string index $responseb 22][string index $responseb 23]" {
       "00" { set keyswitch "off"    }
-      "01" { set keyswitch "local"  }
-      "10" { set keyswitch "remote" }
+      "01" { set keyswitch "remote" }
+      "10" { set keyswitch "local"  }
       "11" { set keyswitch "error"  }
       "default" {
         log::warning "unable to read key switch data."
@@ -414,18 +414,18 @@ namespace eval "plc" {
     }
 
     if {[catch {
+      server::setdata "bypassdaylightalarm"            [boolean [string index $responseb 87]]
       server::setdata "bypasswindalarm"                [boolean [string index $responseb 89]]
       server::setdata "bypasshumidityalarm"            [boolean [string index $responseb 90]]
       server::setdata "bypasscloudalarm"               [boolean [string index $responseb 91]]
       server::setdata "bypassrainalarm"                [boolean [string index $responseb 92]]
       server::setdata "bypassupsalarm"                 [boolean [string index $responseb 93]]
       server::setdata "bypasstcsalarm"                 [boolean [string index $responseb 94]]
-      server::setdata "bypassdaylightalarm"            [boolean [string index $responseb 95]]
     }]} {
       log::warning "unable to read bypass data."
     }
     
-    switch -- "[string index $responseb 96]" {
+    switch -- "[string index $responseb 95]" {
       "0" { set status "unknown" }
       "2" { set status "ok"  }
       "4" { set status "warning alarm"  }
@@ -437,7 +437,7 @@ namespace eval "plc" {
     }
     server::setdata "europeanupsstatus"                $status
 
-    switch -- "[string index $responseb 97]" {
+    switch -- "[string index $responseb 96]" {
       "0" { set fans "off" }
       "1" { set fans "on"  }
       "default" {
@@ -447,7 +447,7 @@ namespace eval "plc" {
     }
     server::setdata "fans"                             $fans
 
-    switch -- "[string index $responseb 98]" {
+    switch -- "[string index $responseb 97]" {
       "0" { set telescopecabinetpower "off" }
       "1" { set telescopecabinetpower "on"  }
       "default" {
@@ -820,7 +820,7 @@ namespace eval "plc" {
     log::info "disabling the $alarm alarm."
     switch $alarm { 
       "weather"  { set command "ByPassWeather\{ON\}\n" }
-      "rain"     { set command "RainAlarm\{ON\}\n" }
+      "rain"     { set command "RainAlarm\{OFF\}\n" }
       "wind"     { set command "WindThreshold\{OFF\}\n" }
       "cloud"    { set command "CloudThreshold\{OFF\}\n" }
       "humidity" { set command "HumidityThreshold\{OFF\}\n" }
