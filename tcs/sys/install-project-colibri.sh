@@ -138,7 +138,7 @@ EOF
   echo "owserver -c /etc/owfs.conf"
   
   case $host in
-  detectors)
+  instrument)
     echo "tcs instrumentimageserver C0 control &"
     echo "tcs instrumentdataserver -f -d rsync://colibri-rsync/colibri-raw/ &"
     ;;
