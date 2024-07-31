@@ -245,6 +245,7 @@ namespace eval "telescope" {
     variable withdome
     variable withenclosure
     variable withcovers
+    variable withlouvers
     variable idleha
     variable idledelta
     if {[catch {
@@ -255,6 +256,20 @@ namespace eval "telescope" {
         switchheater "off"
       }
       openprolog
+      if {$withtelescopecontroller} {
+        log::info "switching on telescope controller."
+        client::request "telescopecontroller" "switchon"
+        client::wait "telescopecontroller"
+      }
+      if {$withdome} {
+        log::info "stopping dome."
+        client::request "dome" "stop"
+        client::wait "dome"  
+        log::info "moving dome to open."
+        client::request "dome" "preparetomove"
+        client::wait "dome"  
+        client::request "dome" "move open"
+      }
       if {$withmount} {
         log::info "parking mount."
         client::request "mount" "preparetomove"
@@ -262,19 +277,16 @@ namespace eval "telescope" {
       }
       client::request "target" "move $idleha $idledelta"
       client::wait "target"
-      if {$withtelescopecontroller} {
-        log::info "switching on telescope controller."
-        client::request "telescopecontroller" "switchon"
-        client::wait "telescopecontroller"
-      }
       if {$withmount} {
         client::request "mount" "park"
         client::wait "mount"
       }
+      if {$withlouvers} {
+        log::info "opening louvers."
+        client::request "louvers" "open"
+      }
       if {$withdome} {
-        log::info "moving dome to open."
-        client::request "dome" "preparetomove"
-        client::request "dome" "move open"
+        client::wait "dome"  
         log::info "opening shutters."
         client::request "dome" "open"
         client::wait "dome"  
@@ -289,14 +301,13 @@ namespace eval "telescope" {
         client::request "covers" "open"
         client::wait "covers"
       }
+      if {$withlouvers} {
+        client::wait "louvers"
+      }
       if {$withmount} {
         log::info "unparking mount."
         client::request "mount" "preparetomove"
         client::wait "mount"
-      }
-      client::request "target" "move $idleha $idledelta"
-      client::wait "target"
-      if {$withmount} {      
         client::request "mount" "unpark"
         client::wait "mount"
       }
@@ -323,6 +334,9 @@ namespace eval "telescope" {
     variable withdome
     variable withenclosure
     variable withcovers
+    variable withlouvers
+    variable idleha
+    variable idledelta
     variable ventilateha
     variable ventilatedelta
     if {[catch {
@@ -333,29 +347,39 @@ namespace eval "telescope" {
         switchheater "off"
       }
       openprolog
-      if {$withmount} {
-        log::info "parking mount."
-        client::request "mount" "preparetomove"
-        client::wait "mount"
-      }
-      client::request "target" "move $ventilateha $ventilatedelta"
-      client::wait "target"
       if {$withtelescopecontroller} {
         log::info "switching on telescope controller."
         client::request "telescopecontroller" "switchon"
         client::wait "telescopecontroller"
       }
+      if {$withdome} {
+        client::request "dome" "stop"
+        client::wait "dome"
+      }
+      if {$withmount} {
+        log::info "parking mount."
+        client::request "mount" "preparetomove"
+        client::wait "mount"
+      }
+      client::request "target" "move $idleha $idledelta"
+      client::wait "target"
       if {$withmount} {
         client::request "mount" "park"
         client::wait "mount"
       }
+      if {$withlouvers} {
+        log::info "opening louvers."
+        client::request "louvers" "open"
+      }
       if {$withdome} {
         log::info "moving dome to open."
         client::request "dome" "preparetomove"
+        client::wait "dome"
         client::request "dome" "move open"
+        client::wait "dome"
         log::info "opening shutters."
         client::request "dome" "open"
-        client::wait "dome"
+        client::wait "dome"  
       }
       if {$withenclosure} {
         log::info "opening enclosure to ventilate."
@@ -367,15 +391,32 @@ namespace eval "telescope" {
         client::request "covers" "open"
         client::wait "covers"
       }
+      if {$withlouvers} {
+        client::wait "louvers"
+      }
       if {$withmount} {
         log::info "unparking mount."
+        client::request "mount" "preparetomove"
+        client::wait "mount"
+        client::request "mount" "unpark"
+        client::wait "mount"
+      }
+      if {$withdome} {
+        client::request "dome" "preparetomove"
+        client::wait "dome"
+      }
+      if {$withmount} {
         client::request "mount" "preparetomove"
         client::wait "mount"
       }
       client::request "target" "move $ventilateha $ventilatedelta"
       client::wait "target"
+      if {$withdome} {      
+        client::request "dome" "move"
+        client::wait "dome"
+      }
       if {$withmount} {      
-        client::request "mount" "unpark"
+        client::request "mount" "move"
         client::wait "mount"
       }
       openepilog
@@ -401,6 +442,8 @@ namespace eval "telescope" {
     variable withdome
     variable withenclosure
     variable withcovers
+    variable withlouvers
+    variable closeexplicitly
     variable idleha
     variable idledelta
     if {[catch {
@@ -408,6 +451,26 @@ namespace eval "telescope" {
         switchlights "on"
       }
       closeprolog
+      if {$withtelescopecontroller} {
+        log::info "switching on telescope controller."
+        client::request "telescopecontroller" "switchon"
+        client::wait "telescopecontroller"
+      }
+      if {$withcovers} {
+        log::info "closing covers."
+        client::request "covers" "close"
+      }
+      if {$closeexplicitly} {
+        if {$withdome} {
+          log::info "moving dome to close."
+          client::request "dome" "preparetomove"
+          client::request "dome" "move close"
+        }
+        if {$withenclosure} {
+          log::info "closing enclosure."
+          client::request "enclosure" "close"
+        }
+      }
       if {$withmount} {
         log::info "parking mount."
         client::request "mount" "preparetomove"
@@ -415,39 +478,38 @@ namespace eval "telescope" {
       }
       client::request "target" "move $idleha $idledelta"
       client::wait "target"
-      if {$withtelescopecontroller} {
-        log::info "switching on telescope controller."
-        client::request "telescopecontroller" "switchon"
-        client::wait "telescopecontroller"
-      }
       if {$withmount} {
         client::request "mount" "park"
         client::wait "mount"
       }
+      if {$withlouvers} {
+        log::info "closing louvers."
+        client::request "louvers" "close"
+      }
       if {$withcovers} {
-        log::info "closing covers."
-        client::request "covers" "close"
         client::wait "covers" 
       }
-      variable closeexplicitly
       if {$closeexplicitly} {
         if {$withdome} {
-          log::info "moving dome to close."
-          client::request "dome" "preparetomove"
-          client::request "dome" "move close"
+          client::wait "dome"
           log::info "closing shutters."
           client::request "dome" "close"
           client::wait "dome"
+          log::info [format "dome closed after %.1f seconds." [utcclock::diff now $start]]
           log::info "parking dome."
           client::request "dome" "preparetomove"
           client::request "dome" "park"
           client::wait "dome"
         }
         if {$withenclosure} {
-          log::info "closing enclosure."
-          client::request "enclosure" "close"
           client::wait "enclosure"
         }
+      }
+      if {$withmount} {
+        client::wait "mount"
+      }
+      if {$withlouvers} {
+        client::wait "louvers"
       }
       if {$withtelescopecontroller} {
         log::info "switching off telescope controller."
@@ -475,6 +537,7 @@ namespace eval "telescope" {
     log::info "emergency closing."
     variable withdome
     variable withenclosure
+    variable withlouvers
     variable closeexplicitly
     catch {
       if {$closeexplicitly} {
@@ -483,12 +546,19 @@ namespace eval "telescope" {
           catch {client::request "dome" "reset"}
           client::request "dome" "emergencyclose"
           client::wait "dome" 
+          log::info [format "dome closed after %.1f seconds." [utcclock::diff now $start]]
         }
         if {$withenclosure} {
           log::info "closing enclosure."
           catch {client::request "enclosure" "reset"}
           client::request "enclosure" "emergencyclose"
           client::wait "enclosure"
+        }
+        if {$withlouvers} {
+          log::info "closing louvers."
+          catch {client::request "louvers" "reset"}
+          client::request "louvers" "emergencyclose"
+          client::wait "louvers"
         }
       }
       catch {recoveractivitycommand}
