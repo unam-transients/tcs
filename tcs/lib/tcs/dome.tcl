@@ -79,7 +79,9 @@ namespace eval "dome" {
   proc initializeactivitycommand {} {
     set start [utcclock::seconds]
     log::info "initializing."
-    initializehardware       
+    initializehardware     
+    variable openazimuth
+    movehardware [astrometry::parseazimuth $openazimuth]    
     log::info "closing."
     closehardware
     set end [utcclock::seconds]
