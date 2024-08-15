@@ -201,7 +201,7 @@
     "type": "colibri",
     "controllerhost": "192.168.100.28",
     "controllerport": "200",
-    "boltwoodenabled": false,
+    "boltwoodenabled": true,
     "vaisalaenabled": true
   },
   "power": {
@@ -660,6 +660,19 @@
         "identifier": "26.7539F5000000",
         "firmware": ""
       },
+      "column-internal-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.09FCD6010000/temperature",
+        "prettyname": "control room temperature",
+        "subsystem": "building",
+        "component": "column",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "iButtonLink MS-T",
+        "identifier": "26.09FCD6010000",
+        "firmware": ""
+      },      
       "observing-room-comet1-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/plc-comet1-temperature",
         "prettyname": "observing room temperature (comet 1)",
