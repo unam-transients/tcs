@@ -102,6 +102,11 @@ namespace eval "plc" {
       return false
     }
     
+    if {[string match "* Clarity II Software has been restarted *" $response]} {
+      log::info "finished restarting boltwood software."
+      return false
+    }
+    
     set letter [string index $response 0]    
     if {[string equal $letter "a"]} {
       set responsea $response
@@ -713,6 +718,10 @@ namespace eval "plc" {
     if {!$vaisalaenabled} {
       log::warning "the vaisala is not enabled."
     }
+    if {$boltwoodenabled} {
+      log::info "restarting boltwood software."
+      controller::sendcommand "CX5140{BoltwoodRestart}\n"
+    }
     controller::sendcommand "UnsafeTimer\{1\}\n"
     set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
@@ -740,6 +749,11 @@ namespace eval "plc" {
     set start [utcclock::seconds]
     log::info "resetting."
     controller::flushcommandqueue
+    variable boltwoodenabled
+    if {$boltwoodenabled} {
+      log::info "restarting boltwood software."
+      controller::sendcommand "CX5140{BoltwoodRestart}\n"
+    }
     log::info [format "finished resetting after %.1f seconds." [utcclock::diff now $start]]
   }
 
