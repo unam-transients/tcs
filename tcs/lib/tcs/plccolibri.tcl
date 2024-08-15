@@ -117,6 +117,10 @@ namespace eval "plc" {
       return false
     }
     
+    server::setdata "responsea" $responsea
+    server::setdata "responseb" $responseb
+    server::setdata "responsec" $responsec
+    
     # Process responsea.
     
     set field [string map {" " ""} $responsea]
@@ -140,7 +144,7 @@ namespace eval "plc" {
       server::setdata "vaisalahsupplyvoltage"        [format "%.1f" [lindex $field 16]]
       server::setdata "vaisalareferencevoltage"      [format "%.1f" [lindex $field 17]]
     }]} {
-      log::info "unable to read vaisala data."
+      log::warning "unable to read vaisala data."
     }
     
     if {[catch {
@@ -664,6 +668,7 @@ namespace eval "plc" {
     set start [utcclock::seconds]
     log::info "starting."
     set end [utcclock::seconds]
+    controller::sendcommand "UnsafeTimer\{1\}\n"
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
   }
 
