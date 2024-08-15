@@ -48,6 +48,11 @@ namespace eval "plc" {
   set server::datalifeseconds                 30
 
   ######################################################################
+  
+  variable boltwoodenabled [config::getvalue "plc" "boltwoodenabled"]
+  variable vaisalaenabled  [config::getvalue "plc" "vaisalaenabled"]
+  
+  ######################################################################
 
   server::setdata "timestamp"         ""
 
@@ -81,6 +86,9 @@ namespace eval "plc" {
     variable lastresponsea
     variable lastresponseb
     variable lastresponsec
+
+    variable boltwoodenabled
+    variable vaisalaenabled
 
     set timestamp [utcclock::combinedformat now]
 
@@ -126,7 +134,24 @@ namespace eval "plc" {
     set field [string map {" " ""} $responsea]
     set field [split $field ";"]
     
-    if {[catch {
+    if {!$vaisalaenabled} {
+      server::setdata "vaisalawindminazimuth"        ""
+      server::setdata "vaisalawindaverageazimuth"    ""
+      server::setdata "vaisalawindmaxzimuth"         ""
+      server::setdata "vaisalawindminspeed"          ""
+      server::setdata "vaisalawindaveragespeed"      ""
+      server::setdata "vaisalawindmaxspeed"          ""
+      server::setdata "vaisalatemperature"           ""
+      server::setdata "vaisalahumidity"              ""
+      server::setdata "vaisalapressure"              ""
+      server::setdata "vaisalarainaccumulation"      ""
+      server::setdata "vaisalarainseconds"           ""
+      server::setdata "vaisalarainrate"              ""
+      server::setdata "vaisalaheatingtemperature"    ""
+      server::setdata "vaisalaheatingcoltage"        ""
+      server::setdata "vaisalahsupplyvoltage"        ""
+      server::setdata "vaisalareferencevoltage"      ""
+    } elseif {[catch {
       server::setdata "vaisalawindminazimuth"        [format "%d"   [parseinteger [lindex $field 2]]]
       server::setdata "vaisalawindaverageazimuth"    [format "%d"   [parseinteger [lindex $field 3]]]
       server::setdata "vaisalawindmaxzimuth"         [format "%d"   [parseinteger [lindex $field 4]]]
@@ -147,7 +172,20 @@ namespace eval "plc" {
       log::warning "unable to read vaisala data."
     }
     
-    if {[catch {
+    if {!$boltwoodenabled} {
+      server::setdata "boltwoodskytemperature"        ""
+      server::setdata "boltwoodairtemperature"        ""
+      server::setdata "boltwoodwindspeed"             ""
+      server::setdata "boltwoodhumidity"              ""
+      server::setdata "boltwooddewpoint"              ""
+      server::setdata "boltwoodheatersetting"         ""
+      server::setdata "boltwoodrainindex"             ""
+      server::setdata "boltwoodwetnessindex"          ""
+      server::setdata "boltwoodcloudindex"            ""
+      server::setdata "boltwoodwindindex"             ""
+      server::setdata "boltwooddaylightindex"         ""
+      server::setdata "boltwoodroofindex"             ""
+    } elseif {[catch {
       server::setdata "boltwoodskytemperature"        [format "%.1f" [lindex $field 18]]
       server::setdata "boltwoodairtemperature"        [format "%.1f" [lindex $field 19]]
       server::setdata "boltwoodwindspeed"             [format "%.1f" [lindex $field 20]]
@@ -667,8 +705,16 @@ namespace eval "plc" {
   proc startactivitycommand {} {
     set start [utcclock::seconds]
     log::info "starting."
-    set end [utcclock::seconds]
+    variable boltwoodenabled
+    variable vaisalaenabled
+    if {!$boltwoodenabled} {
+      log::warning "the boltwood is not enabled."
+    }
+    if {!$vaisalaenabled} {
+      log::warning "the vaisala is not enabled."
+    }
     controller::sendcommand "UnsafeTimer\{1\}\n"
+    set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
   }
 

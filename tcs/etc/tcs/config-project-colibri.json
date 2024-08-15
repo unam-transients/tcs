@@ -200,7 +200,9 @@
   "plc": {
     "type": "colibri",
     "controllerhost": "192.168.100.28",
-    "controllerport": "200"
+    "controllerport": "200",
+    "boltwoodenabled": false,
+    "vaisalaenabled": true
   },
   "power": {
     "hosts": {
