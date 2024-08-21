@@ -66,7 +66,7 @@ namespace eval "covers" {
   variable coverstarget ""
   variable port2covertarget ""
   variable port3covertarget ""
-  variable moving
+  variable intermediate
 
   proc updatedata {response} {
 
@@ -76,7 +76,7 @@ namespace eval "covers" {
     variable coverstarget
     variable port2covertarget
     variable port3covertarget
-    variable moving
+    variable intermediate
 
     if {[scan $response "%*d DATA INLINE AUXILIARY.COVER.REALPOS=%f" value] == 1} {
       if {$value == 0} {
@@ -159,13 +159,13 @@ namespace eval "covers" {
     }
 
     if {
-      ![string equal $covers     $coverstarget    ] ||
-      ![string equal $port2cover $port2covertarget] ||
-      ![string equal $port3cover $port3covertarget]
+      [string equal $covers     "intermediate"] ||
+      [string equal $port2cover "intermediate"] ||
+      [string equal $port3cover "intermediate"]
     } {
-      set moving true
+      set intermediate true
     } else {
-      set moving false
+      set intermediate false
     }
     
     server::setdata "timestamp"        $timestamp
@@ -180,14 +180,14 @@ namespace eval "covers" {
 
   proc waitwhilemoving {} {
     log::info "waiting while moving."
-    variable moving
-    set startingdelay 5
+    variable intermediate
+    set startingdelay 10
     set settlingdelay 1
     set start [utcclock::seconds]
     while {[utcclock::diff now $start] < $startingdelay} {
-      coroutine::yield
+      coroutine::after 1000
     }
-    while {$moving} {
+    while {$intermediate} {
       coroutine::yield
     }
     set settle [utcclock::seconds]
