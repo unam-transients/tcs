@@ -167,7 +167,7 @@ namespace eval "executor" {
     astrometry::parseoffset $alphaoffset
     astrometry::parseoffset $deltaoffset
     log::info [format \
-      "offsetting to %s %s at aperture %s." \
+      "offsetting %s E and %s N at aperture %s." \
       [astrometry::formatoffset $alphaoffset] \
       [astrometry::formatoffset $deltaoffset] \
       $aperture \
