@@ -172,6 +172,69 @@ proc fullgridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters
 
 ########################################################################
 
+proc dithervisitoffset {diameter} {
+  set diameter [astrometry::parseoffset $diameter]
+  while {true} {
+    set eastoffset  [expr {(rand() - 0.5) * $diameter}]
+    set northoffset [expr {(rand() - 0.5) * $diameter}]
+    if {$eastoffset * $eastoffset + $northoffset * $northoffset < 0.25 * $diameter * $diameter} {
+      break
+    }
+  }
+  executor::offset $eastoffset $northoffset "default"
+}
+
+proc dithervisit {exposurerepeats exposuretimes filters {offsetfastest true} {diameter "1am"}} {
+
+  log::summary "dithervisit: starting."
+
+  log::summary "dithervisit: dithering in a circle of diameter $diameter."
+
+
+  executor::setsecondaryoffset 0
+  executor::track
+
+  executor::setwindow "default"
+  executor::setbinning 2
+
+  executor::waituntiltracking
+  
+  if {[llength $exposuretimes] == 1} {
+    set exposuretimes [lrepeat [llength $filters] $exposuretimes]
+  } elseif {[llength $exposuretimes] != [llength $filters]} {
+    error "the exposuretimes and filters arguments have different lengths."
+  }
+    
+  if {$offsetfastest} {
+      foreach filter $filters exposuretime $exposuretimes {
+        executor::movefilterwheel $filter
+        set exposure 0
+        while {$exposure < $exposurerepeats} {
+          dithervisitoffset $diameter
+          executor::waituntiltracking
+          executor::expose object $exposuretime
+          incr exposure
+        }
+      }
+  } else {
+    set exposure 0
+    while {$exposure < $exposurerepeats} {    
+      dithervisitoffset $diameter
+      executor::waituntiltracking
+      foreach filter $filters exposuretime $exposuretimes {
+        executor::movefilterwheel $filter
+        executor::expose object $exposuretime
+        incr exposure
+      }
+    }
+  }
+
+  log::summary "dithervisit: finished."
+  return true
+}
+
+########################################################################
+
 proc coarsefocusvisit {{exposuretime 5} {filter "r"}} {
 
   log::summary "coarsefocusvisit: starting."
