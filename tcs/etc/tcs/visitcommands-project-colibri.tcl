@@ -308,7 +308,7 @@ proc biasesvisit {{exposures 10} {binning 2}} {
 
 ########################################################################
 
-proc darksvisit {{exposuretime 60} {exposures 10} {binning 2}} {
+proc darksvisit {{exposuretime 30} {exposures 10} {binning 2}} {
   log::summary "darksvisit: starting."
 #  executor::move
   executor::setwindow "default"
