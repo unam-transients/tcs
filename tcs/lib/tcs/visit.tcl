@@ -116,7 +116,7 @@ namespace eval "visit" {
             set zenithdistance [dict get $visit "targetcoordinates" "zenithdistance"]
             set ha    [astrometry::horizontaltoha    $azimuth $zenithdistance]
             set delta [astrometry::horizontaltodelta $azimuth $zenithdistance]
-           }
+          }
 
           set alpha     ""
           set equinox   "now"
@@ -179,6 +179,27 @@ namespace eval "visit" {
           set deltarate [lindex $args 4]
           set tracking  true
           
+        }
+
+        "wind" {
+        
+          while {[catch {client::update "weather"}]} {
+            log::warning "unable to determine the wind azimuth."
+            coroutine::yield
+          }
+          set azimuth [client::getdata "weather" "windaverageazimuth"]
+
+          set zenithdistance "30d"
+          set ha    [astrometry::horizontaltoha    $azimuth $zenithdistance]
+          set delta [astrometry::horizontaltodelta $azimuth $zenithdistance]
+
+          set alpha     ""
+          set equinox   "now"
+          set epoch     "now"
+          set alpharate 0
+          set deltarate 0
+          set tracking  false
+
         }
 
         default {
