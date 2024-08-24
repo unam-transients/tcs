@@ -593,4 +593,24 @@ proc pointingmapvisit {{exposuretime 15} {filter "r"} {readmode "conventionaldef
 
 ########################################################################
 
+proc idle {} {
+
+  log::summary "idle: starting."
+
+  executor::setsecondaryoffset 0
+  executor::tracktopocentric
+
+  executor::move
+  coroutine::after 60000
+
+  log::summary "idleintowind: finished."
+  return true
+
+}
+
+
+########################################################################
+
+
+
 
