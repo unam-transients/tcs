@@ -825,24 +825,17 @@ namespace eval "plc" {
   
   proc updateweather {} {
     server::checkstatus
-    variable responsea
-    variable responseb
-    variable responsec
-    if {
-      [string equal "" $responsea] ||
-      [string equal "" $responseb]
-    } {
+    variable lastresponsea
+    log::info "$lastresponsea"
+    if {[string equal "" $lastresponsea]} {
       log::warning "unable to update weather: no data."
       return
     }
-    set timestamp  [server::getdata "timestamp"]
+    set timestamp   [server::getdata "timestamp"]
     set date        [utcclock::formatdate $timestamp]
     set time        [utcclock::formattime $timestamp]
     set compactdate [utcclock::formatdate $timestamp false]
-    set weather [join [split $lastweatherresponse ";"] " "]
-    set generaldate [lindex [split $lastgeneralresponse ";"] 0]
-    set generaldata [join [split [lindex [split $lastgeneralresponse ";"] 1] ""] " "]
-    set line "b.0 $date $time $weather $generaldate $generaldata"
+    set line "b.1 $date $time $lastresponsea"
     set line [string map {";" " "} $line]
     set directorypath [file join [directories::var] "weather"]
     if {[catch {
