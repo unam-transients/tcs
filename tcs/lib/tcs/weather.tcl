@@ -60,6 +60,9 @@ namespace eval "weather" {
       if {
         [scan $dataline \
           "b.0 %s %s %*s %*f %f %*f %*f %f %f %f %f %f %*f %*f %f %*f %*f %*f %*f %*f %*f %*f %*f %*f %f %*d %d %d %*d %*d %*d %d"\
+          date time windaverageazimuth windaveragespeed windgustspeed temperature humidity pressure rainrate dewpoint rainindex cloudindex lightindex] == 13 ||
+        [scan $dataline \
+          "b.1 %s %s %*s %*s %*f %f %*f %*f %f %f %f %f %f %*f %*f %f %*f %*f %*f %*f %*f %*f %*f %*f %*f %f %*d %d %d %*d %*d %*d %d"\
           date time windaverageazimuth windaveragespeed windgustspeed temperature humidity pressure rainrate dewpoint rainindex cloudindex lightindex] == 13
       } {
       

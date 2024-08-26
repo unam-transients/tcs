@@ -95,7 +95,8 @@ EOF
   control)
     cat <<"EOF"
 *      *  *  *  *  sleep 10; tcs updatesensorsfiles control instrument
-*      *  *  *  *  tcs updateweatherfiles-oan
+#*      *  *  *  *  tcs updateweatherfiles-oan
+*      *  *  *  *  tcs request plc updateweather
 *      *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
 */5    *  *  *  *  tcs logsensors
 *      *  *  *  *  cd /usr/local/var/www/tcs/; sh plots.sh >plots.txt 2>&1
