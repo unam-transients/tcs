@@ -826,7 +826,6 @@ namespace eval "plc" {
   proc updateweather {} {
     server::checkstatus
     variable lastresponsea
-    log::info "$lastresponsea"
     if {[string equal "" $lastresponsea]} {
       log::warning "unable to update weather: no data."
       return
