@@ -216,6 +216,12 @@ $(function () {
   $("form#lights-switchoff").submit(function () {
     return submitrequest("lights switchoff");
   });
+  $("form#louvers-open").submit(function () {
+    return submitrequest("louvers open");
+  });
+  $("form#louvers-close").submit(function () {
+    return submitrequest("louvers close");
+  });
   $("form#supervisor-enable").submit(function () {
     return submitrequest("supervisor enable");
   });
