@@ -39,7 +39,6 @@ namespace eval "dome" {
       coroutine::yield
     }
     set observedazimuth [client::getdata "target" "observedazimuth"]
-    log::info [format "target observed azimuth is %s." [astrometry::formatazimuth $observedazimuth]]   
     return $observedazimuth
   }
   
