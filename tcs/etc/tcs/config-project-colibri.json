@@ -251,7 +251,7 @@
       "telescope-front-ring-2-temperature",
       "telescope-fork-arm-1-temperature",
       "telescope-fork-arm-2-temperature",
-      "column-internal-temperature",
+      "column-temperature",
       "control-room-temperature",
       "telescope-cabinet-temperature",
       "weather-humidity",
@@ -462,7 +462,7 @@
         "identifier": "opentsi-sensor-14",
         "firmware": ""
       },
-      "column-internal-temperature": {
+      "column-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/ow/26.09FCD6010000/temperature",
         "prettyname": "control room temperature",
         "subsystem": "building",
