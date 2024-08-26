@@ -94,17 +94,17 @@ EOF
     set grid back
     set grid xtics
 
-    set style line  1 linewidth 1 linecolor  1 pointtype 7 pointsize 0.5
-    set style line  2 linewidth 1 linecolor  2 pointtype 7 pointsize 0.5
-    set style line  3 linewidth 1 linecolor  3 pointtype 7 pointsize 0.5
-    set style line  4 linewidth 1 linecolor  4 pointtype 7 pointsize 0.5
-    set style line  5 linewidth 1 linecolor  5 pointtype 7 pointsize 0.5
-    set style line  6 linewidth 1 linecolor  7 pointtype 7 pointsize 0.5
-    set style line  7 linewidth 1 linecolor  8 pointtype 7 pointsize 0.5
-    set style line  8 linewidth 1 linecolor  9 pointtype 7 pointsize 0.5
-    set style line  9 linewidth 1 linecolor 10 pointtype 7 pointsize 0.5
-    set style line 10 linewidth 1 linecolor 11 pointtype 7 pointsize 0.5
-    set style line 11 linewidth 1 linecolor 12 pointtype 7 pointsize 0.5
+    set style line  1 linewidth 1 linecolor  1 pointtype 7 pointsize 0.3
+    set style line  2 linewidth 1 linecolor  2 pointtype 7 pointsize 0.3
+    set style line  3 linewidth 1 linecolor  3 pointtype 7 pointsize 0.3
+    set style line  4 linewidth 1 linecolor  4 pointtype 7 pointsize 0.3
+    set style line  5 linewidth 1 linecolor  5 pointtype 7 pointsize 0.3
+    set style line  6 linewidth 1 linecolor  7 pointtype 7 pointsize 0.3
+    set style line  7 linewidth 1 linecolor  8 pointtype 7 pointsize 0.3
+    set style line  8 linewidth 1 linecolor  9 pointtype 7 pointsize 0.3
+    set style line  9 linewidth 1 linecolor 10 pointtype 7 pointsize 0.3
+    set style line 10 linewidth 1 linecolor 11 pointtype 7 pointsize 0.3
+    set style line 11 linewidth 1 linecolor 12 pointtype 7 pointsize 0.3
 
     set key outside
     
@@ -242,10 +242,10 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "sensors.dat" using 2:3   title "External"         with points linestyle 1, \
-      "sensors.dat" using 4:5   title "Observing Room"  with points linestyle 2, \
-      "sensors.dat" using 34:35 title "Column Internal" with points linestyle 3, \
-      "sensors.dat" using 36:37 title "Control Room"    with points linestyle 4
+      "sensors.dat" using 2:3   title "External"       with points linestyle 1, \
+      "sensors.dat" using 4:5   title "Observing Room" with points linestyle 2, \
+      "sensors.dat" using 34:35 title "Column"         with points linestyle 3, \
+      "sensors.dat" using 36:37 title "Control Room"   with points linestyle 4
       
     set yrange [-10:+10]
     set ytics -10,5,10
@@ -253,8 +253,8 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "sensors.dat" using 34:(\$35-\$5)  title "Column Internal - Observing Room" with points linestyle 2, \
-      "sensors.dat" using 34:(\$35-\$37) title "Column Internal - Control Room"   with points linestyle 4
+      "sensors.dat" using 4:(\$3-\$5)  title "External - Observing Room"    with points linestyle 1, \
+      "sensors.dat" using 4:(\$35-\$5) title "Column - Observing Room"      with points linestyle 3
 
     set yrange [-15:+50]
     set ytics -15,10,50
@@ -262,12 +262,12 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "sensors.dat" using 2:3   title "External"                 with points linestyle 1, \
+      "sensors.dat" using 2:3   title "External"                with points linestyle 1, \
       "sensors.dat" using 4:5   title "Observing Room"          with points linestyle 2, \
       "sensors.dat" using 36:37 title "Control Room"            with points linestyle 4, \
       "sensors.dat" using 38:39 title "Telescope Cabinet"       with points linestyle 5, \
       "sensors.dat" using 58:59 title "PLC Cabinet"             with points linestyle 6, \
-      "sensors.dat" using 60:61 title "External Station Cabinet" with points linestyle 7
+      "sensors.dat" using 60:61 title "Weather Station Cabinet" with points linestyle 7
       
     set yrange [0:100]
     set ytics 0,10,100
