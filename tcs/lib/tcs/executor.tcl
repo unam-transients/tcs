@@ -508,6 +508,69 @@ namespace eval "executor" {
 
   proc center {exposuretime {detector "C0"}} {
     set start [utcclock::seconds]
+    variable pointingdetectors
+    log::info "attempting to correct the pointing model using $pointingdetectors."
+    variable detectors
+    set exposuretimes [lrepeat [llength $detectors] "none"]
+    set analyzetypes  [lrepeat [llength $detectors] "none"]
+    foreach detector $pointingdetectors {
+      lset exposuretimes [lsearch -exact $detectors $detector] $exposuretime
+      lset analyzetypes  [lsearch -exact $detectors $detector] "astrometry"
+    } 
+    if {$exposuretime != 0} {
+      eval expose "astrometry" $exposuretimes
+    }
+    eval analyze $analyzetypes
+    set alphalist {}
+    set deltalist {}
+    foreach detector $pointingdetectors {
+      client::update $detector
+      set alpha   [client::getdata $detector "solvedalpha"]
+      set delta   [client::getdata $detector "solveddelta"]
+      set equinox [client::getdata $detector "solvedequinox"]
+      if {[string equal $alpha ""]} {
+        log::warning "$detector pointing did not solve: unable to correct pointing."
+        client::resetifnecessary "telescope"
+        client::resetifnecessary "instrument"
+        client::wait "telescope"
+        client::wait "instrument"
+        log::info [format "finished attempting to correct the pointing model after %.1f seconds." [utcclock::diff now $start]]
+        return
+      }
+      log::info "solved $detector position is [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox."
+      lappend alphalist $alpha
+      lappend deltalist $delta
+    }
+    set truealpha [astrometry::meanalpha $alphalist $deltalist]
+    set truedelta [astrometry::meandelta $alphalist $deltalist]
+    log::info "solved mean position is [astrometry::formatalpha $truealpha] [astrometry::formatdelta $truedelta] $equinox."
+    
+    client::update "target"
+    set requestedalpha [client::getdata "target" requestedalpha]
+    set requesteddelta [client::getdata "target" requesteddelta]
+    
+    set dalpha [astrometry::foldradsymmetric [expr {$requestedalpha - $truealpha}]]
+    set ddelta [astrometry::foldradsymmetric [expr {$requesteddelta - $truedelta}]]
+    set alphaoffset [expr {$dalpha * cos($truedelta)}]
+    set deltaoffset $ddelta
+    log::info [format "correction is %s E and %s N." [astrometry::formatoffset $alphaoffset] [astrometry::formatoffset $deltaoffset]]
+
+    variable trackstart
+    set trackstart [utcclock::seconds]
+    client::update "target"
+    set aperture [client::getdata "target" "requestedaperture"]
+    log::info [format \
+      "offsetting %s E and %s N at aperture %s." \
+      [astrometry::formatoffset $alphaoffset] \
+      [astrometry::formatoffset $deltaoffset] \
+      $aperture \
+    ]
+    client::request "telescope" "offset $alphaoffset $deltaoffset $aperture"
+  }
+  
+
+  proc centerstar {exposuretime {detector "C0"}} {
+    set start [utcclock::seconds]
     log::info "attempting to center the brightest source in the field of $detector."
     variable detectors
     set exposuretimes [lrepeat [llength $detectors] "none"]
