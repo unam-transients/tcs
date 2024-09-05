@@ -235,14 +235,14 @@ namespace eval "weather" {
     }
 
     server::setdata "timestamp"               [utcclock::combinedformat $timestampseconds]
-    server::setdata "temperature"             $temperature
+    server::setdata "temperature"             [format "%+.1f" $temperature]
     server::setdata "temperaturetrend"        $temperaturetrend
     server::setdata "humidity"                $humidity
     server::setdata "humiditytrend"           $humiditytrend
     server::setdata "humiditylimit"           $humiditylimit
-    server::setdata "dewpoint"                $dewpoint
+    server::setdata "dewpoint"                [format "%+.1f" $dewpoint]
     server::setdata "dewpointtrend"           $dewpointtrend
-    server::setdata "dewpointdepression"      $dewpointdepression
+    server::setdata "dewpointdepression"      [format "%+.1f" $dewpointdepression]
     server::setdata "dewpointdepressiontrend" $dewpointdepressiontrend
     server::setdata "windaveragespeed"        $windaveragespeed
     server::setdata "windgustspeed"           $windgustspeed
