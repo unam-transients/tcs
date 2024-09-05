@@ -37,13 +37,13 @@ PERFORMANCE OF THIS SOFTWARE.
   + [120 days](plots/instrument-120.png)
   + [360 days](plots/instrument-360.png)
   + [1600 days](plots/instrument-1600.png)
-* Control Room: 
-  + [1 day](plots/control-room-1.png)
-  + [4 days](plots/control-room-4.png)
-  + [30 days](plots/control-room-30.png)
-  + [120 days](plots/control-room-120.png)
-  + [360 days](plots/control-room-360.png)
-  + [1600 days](plots/control-room-1600.png)
+* Building: 
+  + [1 day](plots/building-1.png)
+  + [4 days](plots/building-4.png)
+  + [30 days](plots/building-30.png)
+  + [120 days](plots/building-120.png)
+  + [360 days](plots/building-360.png)
+  + [1600 days](plots/building-1600.png)
 * Telescope: 
   + [1 day](plots/telescope-1.png)
   + [4 days](plots/telescope-4.png)
