@@ -143,9 +143,9 @@ function refreshimage(imagemap)
   refreshimagehandler = function () {
     var start = milliseconds();
     $.each(imagemap, function (id, src) {
-      if ($("img#" + id).attr("complete")) {
+      if ($("img#" + id).prop("complete")) {
         var srcisquery = src.indexOf("?") != -1;
-        $("img#" + id).attr("src", src + (srcisquery ? "&" : "?") + start);
+        $("img#" + id).prop("src", src + (srcisquery ? "&" : "?") + start);
       }
     });
     var end = milliseconds();
