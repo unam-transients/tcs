@@ -37,7 +37,8 @@ namespace eval "louvers" {
 
   server::setdata "requestedlouvers"  ""
   server::setdata "louvers"           ""
-  server::setdata "timestamp"        ""
+  server::setdata "mode"              ""
+  server::setdata "timestamp"         ""
 
   ######################################################################
   
@@ -82,25 +83,119 @@ namespace eval "louvers" {
 
   ######################################################################
 
+  variable coolloopseconds 10
+
+  proc coolloop {} {
+
+    variable coolloopseconds
+    log::debug "coolloop: starting."
+
+    while {true} {
+
+      set coolloopmilliseconds [expr {$coolloopseconds * 1000}]
+      coroutine::after $coolloopmilliseconds
+
+      log::debug [format "coolloop: mode = %s." [server::getdata "mode"]]
+      if {![string equal [server::getdata "mode"] "cool"]} {
+        continue
+      }
+      
+      if {[catch {
+
+        log::debug "coolloop: updating sensors data."
+        if {[catch {client::update "sensors"} message]} {
+          log::debug "while updating sensors data: $message"
+          continue
+        }
+
+        log::debug "coolloop: updating weather data."
+        if {[catch {client::update "weather"} message]} {
+          log::debug "while updating weather data: $message"
+          continue
+        }
+
+        if {[client::getdata "weather" "mustbeclosed"]} {
+          if {![string equal [server::getdata "louvers"] "closed"]} {
+            log::info "automatically closing because of weather."
+            server::setdata "requestedlouvers" "closed"
+            closehardware
+          }
+          continue
+        }
+        
+        set externaltemperature [client::getdata "weather" "temperature"]
+        set internaltemperature [client::getdata "sensors" "observing-room-comet1-temperature"]
+        
+        log::debug "coolloop: external temperature = $externaltemperature."
+        log::debug "coolloop: internal temperature = $internaltemperature."
+
+        if {
+          $externaltemperature > $internaltemperature + 0.1
+        } {
+          if {![string equal [server::getdata "louvers"] "closed"]} {
+            log::info "automatically closing to avoid heating."
+            server::setdata "requestedlouvers" "closed"
+            closehardware
+          }
+          continue
+        }
+
+        if {
+          $externaltemperature < $internaltemperature - 0.1
+        } {
+            if {![string equal [server::getdata "louvers"] "open"]} {
+           log::info "automatically opening to allow cooling."
+           server::setdata "requestedlouvers" "open"
+           openhardware
+          }
+        }
+
+      } message]} {
+      
+        log::error "in cool loop: $message"
+        log::warning "closing louvers."
+        server::setdata "mode" "closed"
+        server::setdata "requestedlouvers" "closed"
+        closehardware
+      
+      }
+
+
+    }
+  }
+
+  ######################################################################
+
+  proc cool {} {
+    server::checkstatus
+    server::checkactivityformove
+    server::setdata "mode" "cool"
+    return
+  }
+
   proc open {} {
     server::checkstatus
     server::checkactivityformove
+    server::setdata "mode" "open"
     server::newactivitycommand "opening" "idle" louvers::openactivitycommand
   }
 
   proc close {} {
     server::checkstatus
     server::checkactivityformove
+    server::setdata "mode" "closed"
     server::newactivitycommand "closing" "idle" louvers::closeactivitycommand
   }
   
   proc emergencyclose {} {
+    server::setdata "mode" "closed"
     server::newactivitycommand "closing" [server::getstoppedactivity] louvers::emergencycloseactivitycommand
   }
   
   proc initialize {} {
     server::checkstatus
     server::checkactivityforinitialize
+    server::setdata "mode" "closed"
     server::newactivitycommand "initializing" "idle" louvers::initializeactivitycommand
   }
   
@@ -109,6 +204,10 @@ namespace eval "louvers" {
   proc start {} {
     coroutine::every 1000 louvers::updatedata
     server::newactivitycommand "starting" "started" louvers::startactivitycommand
+    server::setdata "mode" "started"
+    after idle {
+      coroutine::create louvers::coolloop
+    }
   }
 
 }

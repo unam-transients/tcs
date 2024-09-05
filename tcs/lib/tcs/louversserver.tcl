@@ -44,8 +44,8 @@ namespace eval "louversserver" {
     louvers::close
   }
 
-  proc slaveemergencyclose {} {
-    louvers::emergencyclose
+  proc slavecool {} {
+    louvers::cool
   }
 
   proc configureslave {slave} {
@@ -54,6 +54,7 @@ namespace eval "louversserver" {
     interp alias $slave initialize     {} louversserver::slaveinitialize
     interp alias $slave open           {} louversserver::slaveopen
     interp alias $slave close          {} louversserver::slaveclose
+    interp alias $slave cool           {} louversserver::slavecool
     interp alias $slave emergencyclose {} louversserver::slaveemergencyclose
   }
 

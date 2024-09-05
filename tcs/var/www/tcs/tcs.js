@@ -222,6 +222,9 @@ $(function () {
   $("form#louvers-close").submit(function () {
     return submitrequest("louvers close");
   });
+  $("form#louvers-cool").submit(function () {
+    return submitrequest("louvers cool");
+  });
   $("form#supervisor-enable").submit(function () {
     return submitrequest("supervisor enable");
   });
