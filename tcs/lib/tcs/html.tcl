@@ -693,6 +693,7 @@ namespace eval "html" {
     if {[string equal [client::getstatus "louvers"] "ok"]} {
       writehtmlrow "Requested louvers" [client::getdata "louvers" "requestedlouvers"]
       writehtmlrow "Current louvers" [client::getdata "louvers" "louvers"]
+      writehtmlrow "Mode" [client::getdata "louvers" "mode"]
     }
   
     putshtml "</table>"
