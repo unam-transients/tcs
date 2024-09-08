@@ -422,7 +422,9 @@ namespace eval "mount" {
     opentsi::sendcommand [format "SET TELESCOPE.CONFIG.AZ.PARK_POS=%.6f" [astrometry::radtodeg $azimuthpark]]
     opentsi::sendcommand [format "SET TELESCOPE.CONFIG.ZD.PARK_POS=%.6f" [astrometry::radtodeg $zenithdistancepark]]
     opentsi::sendcommand [format "SET TELESCOPE.CONFIG.PORT\[3\].DEROTATOR.PARK_POS=%.6f" [astrometry::radtodeg $derotatoranglepark]]
-    log::warning "check TELESCOPE.CONFIG.LOCAL.TAI-UTC."
+    set taiminusutc [utcclock::gettaiminusutc]
+    log::info [format "setting TAI-UTC to %+d seconds." $taiminusutc]
+    opentsi::sendcommand [format "SET TELESCOPE.CONFIG.LOCAL.TAI-UTC=%d" $taiminusutc]
     set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
   }
