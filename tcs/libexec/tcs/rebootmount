@@ -47,6 +47,9 @@ esac
 
 tcs log "tcs rebootmount" summary "rebooting mount."
 
+# We wait to give the log message a chance to appear.
+sleep 5
+
 tcs log "tcs rebootmount" summary "stopping mount server."
 tcs stopserver mount
 
@@ -55,8 +58,7 @@ tcs request power switchoff mount
 tcs wait power
 
 # We wait to give the capacitors a chance to discharge.
-tcs log "tcs rebootmount" summary "waiting for 10 seconds."
-sleep 10
+sleep 5
 
 tcs log "tcs rebootmount" summary "switching on mount."
 tcs request power switchon mount
