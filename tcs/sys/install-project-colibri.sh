@@ -32,22 +32,22 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
   cat <<"EOF"
 # Start of tcs epilog.
 
-192.168.100.1     firewall                colibri-firewall
+192.168.100.1     gateway                 colibri-gateway
 192.168.100.15    qnap-spare              colibri-qnap-spare
 192.168.100.17    qnap-prod               colibri-qnap-prod
-192.168.100.23    opentsi                 colibri-opentsi
-192.168.100.23    gft-tsc                 colibri-gft-tsc
-192.168.100.24    telescope-cabinet       colibri-telescope-cabinet
-192.168.100.26    switch-prod
+192.168.100.23    astelco-pc              colibri-astelco-pc opentsi
 192.168.100.28    plc                     colibri-plc
 192.168.100.29    european-ups            colibri-european-ups
 192.168.100.30    american-ups            colibri-american-ups
-192.168.100.51    pdu0                    colibri-pdu0
+192.168.100.50    pdu0                    colibri-pdu0
+192.168.100.51    pdu1                    colibri-pdu0
+192.168.100.52    pdu2                    colibri-pdu0
+192.168.100.53    sparepdu                colibri-sparepdu
 192.168.100.54    control                 colibri-control
 192.168.100.55    rsync                   colibri-rsync
 192.168.100.56    instrument              colibri-instrument
 192.168.100.57    host0                   colibri-host0
-192.168.100.58    host1                   colibxri-host1
+192.168.100.58    host1                   colibri-host1
 192.168.100.59    host2                   colibri-host2
 192.168.100.61    marmex                  colibri-marmex
 192.168.100.62    marsvom2                colibri-marsvom2
@@ -59,10 +59,6 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 192.168.100.75    webcam-e                colibri-webcam-e
 192.168.100.76    webcam-spare-b          colibri-webcam-spare-b
 192.168.100.77    webcam-f                colibri-webcam-f
-
-
-# Tailscale DNS is not working as of 2024-06-22.
-100.81.69.29      oan-nas
 EOF
 ) | 
 sudo cp /dev/stdin /etc/hosts.tmp
