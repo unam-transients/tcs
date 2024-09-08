@@ -106,6 +106,7 @@ installbins_project_test :=       \
 installbins_project_coatli :=     \
 	C0server                      \
 	enclosureserver               \
+	rebootmount                   \
 	secondaryserver               \
 	updateseeingfiles-oan         \
 	updateweatherfiles-oan
@@ -118,6 +119,7 @@ installbins_project_ddoti :=      \
 	C4server                      \
 	C5server                      \
 	enclosureserver               \
+	rebootmount                   \
 	updateseeingfiles-oan         \
 	updateweatherfiles-oan
 	
