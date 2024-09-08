@@ -118,6 +118,14 @@ namespace eval "html" {
     }
   }
 
+  proc formatifdouble {formatstring value} {
+    if {[string is double -strict $value]} {
+      return [format $formatstring $value]
+    } else {
+      return $value
+    }
+  }
+
   proc formathaifdouble {ha {precision 2}} {
     if {[string is double -strict $ha]} {
       return [astrometry::radtohms $ha $precision true]
@@ -689,11 +697,22 @@ namespace eval "html" {
     putshtml "</table>"
 
     putshtml "<table class=\"status\">"
-
+    
     if {[string equal [client::getstatus "louvers"] "ok"]} {
+    
+      set mustbeclosed [client::getdata "louvers" "mustbeclosed"]
+
+      if {![string equal "" $mustbeclosed] && $mustbeclosed} {
+        set emph "warning"
+      } else {
+        set emph ""
+      }
       writehtmlrow "Requested louvers" [client::getdata "louvers" "requestedlouvers"]
       writehtmlrow "Current louvers" [client::getdata "louvers" "louvers"]
       writehtmlrow "Mode" [client::getdata "louvers" "mode"]
+      writehtmlfullrowwithemph "Must be closed" $emph [client::getdata "louvers" "mustbeclosed"]   
+      writehtmlrow "External temperature" [formatifdouble "%+.1f C" [client::getdata "louvers" "externaltemperature"]]
+      writehtmlrow "Internal temperature" [formatifdouble "%+.1f C" [client::getdata "louvers" "internaltemperature"]]
     }
   
     putshtml "</table>"
