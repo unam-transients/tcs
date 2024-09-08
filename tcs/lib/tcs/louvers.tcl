@@ -29,6 +29,8 @@ package provide "louvers" 0.0
 
 namespace eval "louvers" {
 
+  variable internaltemperaturesensor [config::getvalue "louvers" "internaltemperaturesensor"]
+
   ######################################################################
 
   set server::datalifeseconds 30
@@ -85,9 +87,15 @@ namespace eval "louvers" {
 
   variable coolloopseconds 10
 
+  server::setdata "mustbeclosed"        ""
+  server::setdata "externaltemperature" ""
+  server::setdata "internaltemperature" ""
+
   proc coolloop {} {
 
+    variable internaltemperaturesensor
     variable coolloopseconds
+
     log::debug "coolloop: starting."
 
     while {true} {
@@ -95,71 +103,78 @@ namespace eval "louvers" {
       set coolloopmilliseconds [expr {$coolloopseconds * 1000}]
       coroutine::after $coolloopmilliseconds
 
-      log::debug [format "coolloop: mode = %s." [server::getdata "mode"]]
+      log::debug "coolloop: updating sensors data."
+      if {[catch {client::update "sensors"} message]} {
+        log::debug "while updating sensors data: $message"
+        set mustbeclosedsensors true
+        set internaltemperature ""
+      } else {
+        set mustbeclosedsensors false
+        set internaltemperature [client::getdata "sensors" $internaltemperaturesensor]
+      }
+
+      log::debug "coolloop: updating weather data."
+      if {[catch {client::update "weather"} message]} {
+        log::debug "while updating weather data: $message"
+        set mustbeclosedweather true
+        set externaltemperature ""
+      } else {
+        set mustbeclosedweather [client::getdata "weather" "mustbeclosed"]
+        set externaltemperature [client::getdata "weather" "temperature"]
+      }
+        
+      if {$mustbeclosedsensors || $mustbeclosedweather} {
+        set mustbeclosed true
+      } else {
+        set mustbeclosed false
+      }
+
+      server::setdata "mustbeclosed"        $mustbeclosed
+      server::setdata "externaltemperature" $externaltemperature
+      server::setdata "internaltemperature" $internaltemperature
+
+      log::debug [format "coolloop: mode is %s." [server::getdata "mode"]]
       if {![string equal [server::getdata "mode"] "cool"]} {
         continue
       }
       
-      if {[catch {
+      set louvers [server::getdata "louvers"]
 
-        log::debug "coolloop: updating sensors data."
-        if {[catch {client::update "sensors"} message]} {
-          log::debug "while updating sensors data: $message"
-          continue
+      if {$mustbeclosed} {
+        if {![string equal $louvers "closed"]} {
+          log::info "louvers must be closed."
+          set requestedlouvers "closed"
         }
-
-        log::debug "coolloop: updating weather data."
-        if {[catch {client::update "weather"} message]} {
-          log::debug "while updating weather data: $message"
-          continue
+      } elseif {
+        $externaltemperature > $internaltemperature + 0.1
+      } {
+        if {![string equal $louvers "closed"]} {
+          log::info "automatically closing to avoid heating."
+          set requestedlouvers "closed"
         }
-
-        if {[client::getdata "weather" "mustbeclosed"]} {
-          if {![string equal [server::getdata "louvers"] "closed"]} {
-            log::info "automatically closing because of weather."
-            server::setdata "requestedlouvers" "closed"
-            closehardware
-          }
-          continue
+      } elseif {
+        $externaltemperature < $internaltemperature - 0.1
+      } {
+        if {![string equal $louvers "open"]} {
+          log::info "automatically opening to allow cooling."
+          set requestedlouvers "open"
         }
-        
-        set externaltemperature [client::getdata "weather" "temperature"]
-        set internaltemperature [client::getdata "sensors" "observing-room-comet1-temperature"]
-        
-        log::debug "coolloop: external temperature = $externaltemperature."
-        log::debug "coolloop: internal temperature = $internaltemperature."
-
-        if {
-          $externaltemperature > $internaltemperature + 0.1
-        } {
-          if {![string equal [server::getdata "louvers"] "closed"]} {
-            log::info "automatically closing to avoid heating."
-            server::setdata "requestedlouvers" "closed"
-            closehardware
-          }
-          continue
-        }
-
-        if {
-          $externaltemperature < $internaltemperature - 0.1
-        } {
-            if {![string equal [server::getdata "louvers"] "open"]} {
-           log::info "automatically opening to allow cooling."
-           server::setdata "requestedlouvers" "open"
-           openhardware
-          }
-        }
-
-      } message]} {
-      
-        log::error "in cool loop: $message"
-        log::warning "closing louvers."
-        server::setdata "mode" "closed"
-        server::setdata "requestedlouvers" "closed"
-        closehardware
-      
+      } else {
+        set requestedlouvers $louvers
       }
-
+      
+      if {![string equal $requestedlouvers $louvers]} {
+        server::setdata "requestedlouvers" $requestedlouvers
+        if {[catch {
+          if {[string equal $requestedlouvers "open"]} {
+            openhardware
+          } else {
+            closehardware
+          }
+        } message]} {
+          log::error $message
+        }
+      }
 
     }
   }
