@@ -64,7 +64,7 @@ namespace eval "utcclock" {
   }
   
   proc updatetaiminusutclist {} {
-    set path "[directories::var]/ietf/leapseconds"
+    set path "[directories::var]/iers/leapseconds"
     log::debug "updating the TAI-UTC list from \"$path\"."
     if {[file exists $path]} {
       set lines {}

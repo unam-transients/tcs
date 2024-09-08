@@ -56,11 +56,11 @@ then
   usageerror
 fi
 
-sudo mkdir -p "$tcsprefix"/var/tcs/ietf
-cd "$tcsprefix"/var/tcs/ietf
+sudo mkdir -p "$tcsprefix"/var/tcs/iers
+cd "$tcsprefix"/var/tcs/iers
 
 # curl -k is necessary because Ubuntu 16.04 has out-of-date certificates.
-if sudo curl -k -q -s -o leapseconds.tmp https://www.ietf.org/timezones/data/leap-seconds.list 
+if sudo curl -k -q -s -o leapseconds.tmp https://data.iers.org/time-zones/data/leap-seconds.list
 then
   sudo mv leapseconds.tmp leapseconds
 else
