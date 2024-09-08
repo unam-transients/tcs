@@ -116,7 +116,7 @@ namespace eval "power" {
   
   proc setoutletgroup {outletgroup state} {
   
-    log::info "switching $outletgroup $state."
+    log::info "switching $state $outletgroup."
 
     switch $state {
       "off" {
@@ -217,7 +217,7 @@ namespace eval "power" {
       coroutine::after 1000
     }
     
-    log::info "finished switching $outletgroup $state."
+    log::info "finished switching $state $outletgroup."
   }
 
   ######################################################################
