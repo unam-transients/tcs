@@ -24,7 +24,7 @@
 # pdu0
 # iBootBar 2N15
 
-set ipaddress 192.168.100.51
+set ipaddress 192.168.100.50
 set subnet 255.255.255.0
 set gateway 192.168.100.1
 set ipmode static
