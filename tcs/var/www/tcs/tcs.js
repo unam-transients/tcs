@@ -192,6 +192,9 @@ $(function () {
   $("form#system-rebootplatform").submit(function () {
     return submitrequest("rebootplatform");
   });
+  $("form#system-rebootmount").submit(function () {
+    return submitrequest("rebootmount");
+  });
   $("form#system-loadblocks").submit(function () {
     return submitrequest("loadblocks");
   });

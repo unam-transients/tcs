@@ -310,6 +310,7 @@ sudo rm -f /tmp/sudoers-tcs
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs restart'
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs rebootinstrument'
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs rebootplatform'
+    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs rebootmount'
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs loadblocks'
     ;;
   esac

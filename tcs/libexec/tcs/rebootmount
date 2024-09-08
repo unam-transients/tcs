@@ -1,0 +1,76 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the RATTEL telescope control system.
+
+########################################################################
+
+# Copyright © 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+export PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin
+
+sudo -v
+
+program="tcs $(basename "$0")"
+
+export TCSLOGTOSTDERR=true
+
+host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
+case $host in
+coatli-control|ddoti-control)
+  ;;
+*-control)
+  echo 1>&2 "$program: error: rebootmount is not configured for this project." 
+  exit 1
+  ;;
+*)
+  echo 1>&2 "$program: error: must run on the control host." 
+  exit 1
+  ;;
+esac
+
+tcs log "tcs rebootmount" summary "rebooting mount."
+
+tcs log "tcs rebootmount" summary "stopping mount server."
+tcs stopserver mount
+
+tcs log "tcs rebootmount" summary "switching off mount."
+tcs request power switchoff mount
+tcs wait power
+
+# We wait to give the capacitors a chance to discharge.
+tcs log "tcs rebootmount" summary "waiting for 10 seconds."
+sleep 10
+
+tcs log "tcs rebootmount" summary "switching on mount."
+tcs request power switchon mount
+tcs wait power
+
+tcs log "tcs rebootmount" summary "waiting for mount to boot."
+while ! nc mount 65432 -w 1 >/dev/null 2>&1
+do
+  sleep 1
+done
+
+tcs log "tcs rebootmount" summary "starting mount server."
+tcs startserver mount
+
+tcs log "tcs rebootmount" summary "finished rebooting mount."
+
+exit 0
