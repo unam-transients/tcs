@@ -456,9 +456,13 @@ namespace eval "mount" {
     if {![string equal $lastdeltamotionstate ""] && $deltamotionstate != $lastdeltamotionstate} {
       log::debug [format "status: the δ motion state changed from %05b to %05b." $lastdeltamotionstate $deltamotionstate]
     }
-
-    checkmotionstate "HA" $lasthamotionstate    $hamotionstate
-    checkmotionstate "δ"  $lastdeltamotionstate $deltamotionstate
+    
+    if {![string equal $lasthamotionstate ""]} {
+      checkmotionstate "HA" $lasthamotionstate $hamotionstate
+    }
+    if {![string equal $lastdeltamotionstate ""]} {
+      checkmotionstate "δ"  $lastdeltamotionstate $deltamotionstate
+    }
 
     if {[bit $hamotionstate 0] || [bit $deltamotionstate 0]} {
       set mountmoving true
