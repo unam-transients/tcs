@@ -851,7 +851,16 @@ namespace eval "mount" {
       coroutine::yield
     }
     stophardware
-    sendcommandandwait [format "SET LOCAL.TAI-UTC=%d" [utcclock::gettaiminusutc]]
+    variable gpsreferenced
+    if {!$gpsreferenced} {
+      log::info "waiting until GPS referenced."
+      while {!$gpsreferenced} {
+        coroutine::yield
+      }
+    }
+    set taiminusutc [utcclock::gettaiminusutc]
+    log::info [format "setting TAI-UTC to %+d seconds." $taiminusutc]
+    sendcommandandwait [format "SET LOCAL.TAI-UTC=%d" $taiminusutc]
     set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
   }
