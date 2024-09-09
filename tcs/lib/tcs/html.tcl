@@ -1239,6 +1239,7 @@ namespace eval "html" {
 
       if {$diff > 600} {
         set emphasis "warning"
+        set seeing "stale"
       } else {
         set emphasis ""
       }
@@ -1513,6 +1514,7 @@ namespace eval "html" {
 
         if {$diff > 600} {
           set emphasis "warning"
+          set seeing "stale"
         } else {
           set emphasis ""
         }
