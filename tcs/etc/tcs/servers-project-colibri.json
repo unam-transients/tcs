@@ -118,5 +118,9 @@
   "louvers": {
     "host": "control",
     "port": 5024
+  },
+  "seeing": {
+    "host": "control",
+    "port": 5025
   }
 }
