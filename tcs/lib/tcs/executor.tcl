@@ -272,6 +272,8 @@ namespace eval "executor" {
               "$fitsfilename: $detector witness FWHM is %.2fas (%.2f pixels with binning $binning) in filter $filter at secondary position $z0 in $exposuretime seconds." \
               [astrometry::radtoarcsec $fwhm] $fwhmpixels \
             ]
+            log::putmessage [timestamp] "focus-$detector" "keys" "timestamp\tfwhm\tfilter\tbinning"
+            log::putmessage [timestamp] "focus-$detector" "data" "[timestamp]\t[astrometry::radtoarcsec $fwhm]\t$filter\t$binning"
             if {[catch {
               client::update "secondary"
               set T [client::getdata "secondary" "T"]
