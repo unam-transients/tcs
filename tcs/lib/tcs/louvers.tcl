@@ -139,6 +139,7 @@ namespace eval "louvers" {
       }
       
       set louvers [server::getdata "louvers"]
+      set requestedlouvers $louvers
 
       if {$mustbeclosed} {
         if {![string equal $louvers "closed"]} {
@@ -159,8 +160,6 @@ namespace eval "louvers" {
           log::info "automatically opening to allow cooling."
           set requestedlouvers "open"
         }
-      } else {
-        set requestedlouvers $louvers
       }
       
       if {![string equal $requestedlouvers $louvers]} {
