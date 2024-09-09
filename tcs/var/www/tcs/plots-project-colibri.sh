@@ -80,6 +80,11 @@ EOF
     cat $(ls [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/log/weather-data.txt | sed -n "1,/$whendate/p" | tail -$(expr $days + 1)) | awk "NR % $lines == 0 { print; }"
   ) >weather.dat
 
+  (
+    cd /usr/local/var/tcs
+    cat $(ls [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/log/seeing-data.txt | sed -n "1,/$whendate/p" | tail -$(expr $days + 1)) | awk "NR % $lines == 0 { print; }"
+  ) >seeing.dat
+
   gnuplot <<EOF
 
     set rmargin 40
@@ -301,6 +306,14 @@ EOF
     set format x ""
     set xlabel ""
 
+    set yrange [0:2]
+    set ytics 0,0.2,3
+    set format y "%.1f"
+    set ylabel "FWHM (arcsec)"
+    set key on
+    plot \
+      "seeing.dat"  using 1:2 title "Seeing" with points linestyle 1
+
     set yrange [-15:30]
     set ytics -15,5,30
     set format y "%+.0f"
@@ -354,6 +367,14 @@ EOF
 
     set format x ""
     set xlabel ""
+
+    set yrange [0:2]
+    set ytics 0,0.2,3
+    set format y "%.1f"
+    set ylabel "FWHM (arcsec)"
+    set key on
+    plot \
+      "seeing.dat"  using 1:2 title "Seeing" with points linestyle 1
 
     set yrange [-10:40]
     set ytics -10,5,40
