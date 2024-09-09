@@ -34,6 +34,10 @@ namespace eval "seeing" {
   set server::datalifeseconds 0
 
   ######################################################################
+  
+  variable lasttimestamp ""
+
+  ######################################################################
 
   proc parsedata {datalines letter} {
 
@@ -89,11 +93,7 @@ namespace eval "seeing" {
     server::setdata "seeing$letter"    [astrometry::arcsectorad $seeing]
     server::setdata "timestamp$letter" [utcclock::combinedformat $timestampseconds]
 
-    log::debug "writing seeing data log."
-    log::writedatalog "seeing" {
-    }
-    log::debug "finished writing seeing data log."
-    
+
     foreach {sensorname dataname} {
     } {
       log::writesensorsfile "seeing$sensorname" [server::getdata $dataname] [server::getdata "timestamp$letter"]
@@ -135,7 +135,19 @@ namespace eval "seeing" {
     parsedata $datalines "c"
     server::setdata "timestamp" [server::getdata "timestampc"]
     server::setdata "seeing"    [server::getdata "seeingc"]
+    server::setdata "seeingas"  [astrometry::radtoarcsec [server::getdata "seeing"]]
       
+    variable lasttimestamp
+    set timestamp [server::getdata "timestampc"]
+    if {[string equal $lasttimestamp ""] || ![string equal $timestamp $lasttimestamp]} {
+      log::debug "writing seeing data log."
+      log::writedatalog "seeing" {
+        timestamp seeingas
+      }
+      log::debug "finished writing seeing data log."
+      set lasttimestamp $timestamp
+    }
+    
   }
 
   ######################################################################
