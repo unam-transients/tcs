@@ -1232,14 +1232,18 @@ namespace eval "html" {
     putshtml "<table class=\"status\">"
 
     if {[string equal [client::getstatus "seeing"] "ok"]} {
-      writehtmlrow "Seeing" \
-        [formatarcsecifdouble "%.2fas" [client::getdata "seeing" "seeing"]]
-      writehtmlrow "Seeing A" \
-        [formatarcsecifdouble "%.2fas" [client::getdata "seeing" "seeinga"]]
-      set timestamp [client::getdata "seeing" "timestampa"]
-      set diff      [format "%.0f" [utcclock::diff $timestamp]]
-      writehtmlfullrow "Seeing A Timestamp" \
-        "$timestamp ($diff seconds)"
+
+      set seeing    [client::getdata "seeing" "seeing"]
+      set timestamp [client::getdata "seeing" "timestamp"]
+      set diff      [format "%.0f" [utcclock::diff now $timestamp]]
+
+      if {$diff > 600} {
+        set emphasis "warning"
+      } else {
+        set emphasis ""
+      }
+      writehtmlfullrowwithemph "Seeing" $emphasis "[utcclock::format $timestamp] [formatarcsecifdouble "%.2fas" $seeing]"
+
     }
 
     putshtml "</table>"
@@ -1497,6 +1501,25 @@ namespace eval "html" {
         }
       }
       writehtmlfullrowwithemph "Weather" $emph $text
+    }
+
+    if {[lsearch -exact $servers "seeing"] != -1} {
+
+      if {[string equal [client::getstatus "seeing"] "ok"]} {
+
+        set seeing    [client::getdata "seeing" "seeing"]
+        set timestamp [client::getdata "seeing" "timestamp"]
+        set diff      [format "%.0f" [utcclock::diff now $timestamp]]
+
+        if {$diff > 600} {
+          set emphasis "warning"
+        } else {
+          set emphasis ""
+        }
+        writehtmlfullrowwithemph "Seeing" $emphasis "[formatarcsecifdouble "%.2fas" $seeing]"
+
+      }
+    
     }
 
 if {false} {

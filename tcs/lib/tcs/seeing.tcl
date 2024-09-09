@@ -54,6 +54,20 @@ namespace eval "seeing" {
         set timestamp [lindex $fields 12]
         set timestamp [string range $timestamp 0 end-2]
         
+      } elseif {[string equal $letter "c"]} {
+    
+        # This is the Colibrí monitor
+
+        if {[ \
+          scan $dataline \
+            "c %d/%d/%d %d:%d:%d | %*d/%*d/%*d %*d:%*d:%*d | %*f | %*f | %f | %*f" \
+            day month year hour minute second seeing \
+        ] != 7} {
+          continue
+        }
+        
+        set timestamp [format "%4d-%02d-%02dT%02d:%02d:%02d" $year $month $day $hour $minute $second]
+        
       }
       
       log::debug "seeing is \"$seeing\"."
@@ -88,8 +102,12 @@ namespace eval "seeing" {
   }
 
   proc getdatafiles {letter} {
+    switch $letter {
+    "a" { set pattern "*.csv" }
+    "c" { set pattern "*.txt" }
+    }
     return [lrange \
-             [lsort -increasing [glob -nocomplain -directory "[directories::var]/seeing-$letter" "*.csv"]] \
+             [lsort -increasing [glob -nocomplain -directory "[directories::var]/seeing-$letter" $pattern]] \
              end-2 \
              end]
   }
@@ -109,14 +127,14 @@ namespace eval "seeing" {
 
   proc updatedata {} {
     set datalines {}
-    log::debug "getting data for monitor \”a\”."
-    foreach file [getdatafiles "a"] {
+    log::debug "getting data for monitor \”c\”."
+    foreach file [getdatafiles "c"] {
       log::debug "file is \"$file\"."
       set datalines [concat $datalines [getdatalines $file]]
     }
-    parsedata $datalines "a"
-    server::setdata "timestamp" [server::getdata "timestampa"]
-    server::setdata "seeing"    [server::getdata "seeinga"]
+    parsedata $datalines "c"
+    server::setdata "timestamp" [server::getdata "timestampc"]
+    server::setdata "seeing"    [server::getdata "seeingc"]
       
   }
 
