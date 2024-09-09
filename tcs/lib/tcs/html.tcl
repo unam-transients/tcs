@@ -1604,6 +1604,14 @@ if {false} {
       }
     }
 
+    if {[lsearch -exact $servers "louvers"] != -1} {
+      if {[string equal [client::getstatus "louvers"] "ok"]} {
+        writehtmlfullrow "Louvers" [client::getdata "louvers" "louvers"]
+      } else {
+        writehtmlfullrow "Louvers" 
+      }
+    }
+
     if {[lsearch -exact $servers "covers"] != -1} {
       if {[string equal [client::getstatus "covers"] "ok"]} {
         writehtmlfullrow "Covers" [client::getdata "covers" "covers"]
