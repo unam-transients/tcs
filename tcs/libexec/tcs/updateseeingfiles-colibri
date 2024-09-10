@@ -63,7 +63,7 @@ do
   date=$(date +"%Y%m%d" -d $day)
   datekey=$(date +"%d/%m/%Y" -d $day)
   grep "^$datekey" "$tcsprefix"/var/seeing/Seeing_Data.txt | sed 's/^/c /' >$tmp
-  if test ! -e $date.txt || cmp $tmp $date.txt
+  if test ! -e $date.txt || ! cmp -s $tmp $date.txt
   then
     mv $tmp $date.txt
   else
