@@ -320,7 +320,6 @@ namespace eval "mount" {
     log::info "stopping the mount."
     controller::flushcommandqueue
     opentsi::sendcommand "SET TELESCOPE.STOP=1"
-    waitwhilemoving
   }
 
   proc parkhardware {} {
@@ -397,9 +396,7 @@ namespace eval "mount" {
       "reset" {
       }
       default {
-        if {$opentsi::readystate != 1.0} {
-          error "state is \"$opentsi::readystatetext\"."
-        }
+        opentsi::checkreadystate "operational"
       }
     }
   }
