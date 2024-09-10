@@ -199,13 +199,20 @@ namespace eval "covers" {
 
   ######################################################################
   
-  proc stopcovers {} {
-    server::setdata "requestedcovers" ""
-    opentsi::sendcommand "SET TELESCOPE.STOP=1"
-    waitwhilemoving
+  proc checkhardware {} {
+    opentsi::checkreadystate "operational"
   }
   
-  proc opencovers {} {
+  proc initializehardware {} {
+    closehardware
+  }
+  
+  proc stophardware {} {
+    server::setdata "requestedcovers" ""
+    opentsi::sendcommand "SET TELESCOPE.STOP=1"
+  }
+  
+  proc openhardware {} {
     server::setdata "requestedcovers" "open"
     opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=1"]
     opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=1"]
@@ -216,7 +223,7 @@ namespace eval "covers" {
     }
   }
   
-  proc closecovers {} {
+  proc closehardware {} {
     server::setdata "requestedcovers" "closed"
     opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=0"]
     opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=0"]
@@ -229,51 +236,6 @@ namespace eval "covers" {
   
   ######################################################################
   
-  proc startactivitycommand {} {
-    set start [utcclock::seconds]
-    log::info "starting."
-    while {[string equal [server::getstatus] "starting"]} {
-      coroutine::yield
-    }
-    set end [utcclock::seconds]
-    log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
-  }
-  
-  proc initializeactivitycommand {} {
-    set start [utcclock::seconds]
-    log::info "initializing."
-    log::info "closing."
-    closecovers
-    set end [utcclock::seconds]
-    log::info [format "finished initializing after %.1f seconds." [utcclock::diff $end $start]]
-  }
-
-  proc openactivitycommand {} {
-    set start [utcclock::seconds]
-    log::info "opening."
-    opencovers
-    set end [utcclock::seconds]
-    log::info [format "finished opening after %.1f seconds." [utcclock::diff $end $start]]
-  }
-
-  proc closeactivitycommand {} {
-    set start [utcclock::seconds]
-    log::info "closing."
-    closecovers
-    set end [utcclock::seconds]
-    log::info [format "finished closing after %.1f seconds." [utcclock::diff $end $start]]
-  }
-
-  proc stopactivitycommand {previousactivity} {
-    set start [utcclock::seconds]
-    log::info "stopping."
-    stopcovers
-    set end [utcclock::seconds]
-    log::info [format "finished stopping after %.1f seconds." [utcclock::diff $end $start]]
-  }
-
-  ######################################################################
-
   proc start {} {
     opentsi::start $covers::statuscommand covers::updatedata
     server::newactivitycommand "starting" "started" covers::startactivitycommand

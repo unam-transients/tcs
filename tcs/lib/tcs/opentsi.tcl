@@ -218,6 +218,15 @@ namespace eval "opentsi" {
   }
   
   ######################################################################
+  
+  proc checkreadystate {requiredreadystatetext} {
+    variable readystatetext
+    if {![string equal $readystatetext $requiredreadystatetext]} {
+      error "the telescope controller state is not $requiredreadystatetext."
+    }
+  }
+  
+  ######################################################################
 
   proc start {statuscommand updatedata} {
     variable statuscommandidentifier

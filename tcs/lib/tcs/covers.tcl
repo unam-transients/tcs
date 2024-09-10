@@ -29,9 +29,55 @@ namespace eval "covers" {
 
   ######################################################################
 
+  proc startactivitycommand {} {
+    set start [utcclock::seconds]
+    log::info "starting."
+    while {[string equal [server::getstatus] "starting"]} {
+      coroutine::yield
+    }
+    set end [utcclock::seconds]
+    log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
+  }
+  
+  proc initializeactivitycommand {} {
+    set start [utcclock::seconds]
+    log::info "initializing."
+    log::info "closing."
+    initializehardware
+    set end [utcclock::seconds]
+    log::info [format "finished initializing after %.1f seconds." [utcclock::diff $end $start]]
+  }
+
+  proc openactivitycommand {} {
+    set start [utcclock::seconds]
+    log::info "opening."
+    openhardware
+    set end [utcclock::seconds]
+    log::info [format "finished opening after %.1f seconds." [utcclock::diff $end $start]]
+  }
+
+  proc closeactivitycommand {} {
+    set start [utcclock::seconds]
+    log::info "closing."
+    closehardware
+    set end [utcclock::seconds]
+    log::info [format "finished closing after %.1f seconds." [utcclock::diff $end $start]]
+  }
+
+  proc stopactivitycommand {previousactivity} {
+    set start [utcclock::seconds]
+    log::info "stopping."
+    stophardware
+    set end [utcclock::seconds]
+    log::info [format "finished stopping after %.1f seconds." [utcclock::diff $end $start]]
+  }
+
+  ######################################################################
+
   proc initialize {} {
     server::checkstatus
     server::checkactivityforinitialize
+    checkhardware
     server::newactivitycommand "initializing" "idle" \
       covers::initializeactivitycommand
   }
@@ -39,6 +85,7 @@ namespace eval "covers" {
   proc stop {} {
     server::checkstatus
     server::checkactivityforstop
+    checkhardware
     server::newactivitycommand "stopping" [server::getstoppedactivity] \
       "covers::stopactivitycommand [server::getactivity]"
   }
@@ -53,6 +100,7 @@ namespace eval "covers" {
   proc open {} {
     server::checkstatus
     server::checkactivityformove
+    checkhardware
     variable daytimetesting
     if {$daytimetesting} {
       server::newactivitycommand "closing" "idle" \
@@ -66,6 +114,7 @@ namespace eval "covers" {
   proc close {} {
     server::checkstatus
     server::checkactivityformove
+    checkhardware
     server::newactivitycommand "closing" "idle" \
       covers::closeactivitycommand
   }
