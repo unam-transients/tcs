@@ -392,7 +392,6 @@ namespace eval "mount" {
   proc checkhardware {action} {
     switch $action {
       "preparetomove" -
-      "stop" -
       "reset" {
       }
       default {
