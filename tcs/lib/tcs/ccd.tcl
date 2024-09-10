@@ -470,6 +470,14 @@ namespace eval "ccd" {
       coroutine::after 5000
     }
     focuser::waitwhilemoving
+    variable detectorwindows
+    foreach windowname [dict keys $detectorwindows] {
+      set window $windowname
+      while {[dict exists $detectorwindows $window]} {
+        set window [dict get $detectorwindows $window]
+      }
+      log::info [format "detector window \"%s\" is %s." $windowname $window]
+    }    
     log::info [format "finished starting after %.1f seconds." [utcclock::diff now $start]]
   }
   
