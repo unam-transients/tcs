@@ -136,13 +136,16 @@ namespace eval "dome" {
 
   ######################################################################
   
+  proc checkhardwareready {} {
+    opentsi::checkreadystate "operational"
+  }
+  
   proc initializehardware {} {
     opentsi::sendcommand "SET POINTING.SETUP.DOME.SYNCMODE=0"
   }
       
   proc stophardware {} {
     opentsi::sendcommand "SET TELESCOPE.STOP=1"
-    waitwhilemoving
   }
   
   proc openhardware {} {
@@ -188,6 +191,7 @@ namespace eval "dome" {
     opentsi::sendcommand [format "SET POSITION.INSTRUMENTAL.DOME\[0\].TARGETPOS=%f" [astrometry::radtodeg $azimuth]]
     waitwhilemoving
   }
+  
   
   ######################################################################
 
