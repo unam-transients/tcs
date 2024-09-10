@@ -96,6 +96,7 @@ EOF
 *      *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
 */5    *  *  *  *  tcs logsensors
 *      *  *  *  *  cd /usr/local/var/www/tcs/; sh plots.sh >plots.txt 2>&1
+*      *  *  *  *  tcs updateseeingfiles-colibri
 EOF
     ;;
   esac
