@@ -247,10 +247,10 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "sensors.dat" using 2:3   title "External"       with points linestyle 1, \
-      "sensors.dat" using 4:5   title "Observing Room" with points linestyle 2, \
-      "sensors.dat" using 34:35 title "Column"         with points linestyle 3, \
-      "sensors.dat" using 36:37 title "Control Room"   with points linestyle 4
+      "sensors.dat" using 2:3   title "External"       with lines linestyle 1, \
+      "sensors.dat" using 4:5   title "Observing Room" with lines linestyle 2, \
+      "sensors.dat" using 34:35 title "Column"         with lines linestyle 3, \
+      "sensors.dat" using 36:37 title "Control Room"   with lines linestyle 4
       
     set yrange [-10:+10]
     set ytics -10,5,10
@@ -258,8 +258,8 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "sensors.dat" using 4:(\$3-\$5)  title "External - Observing Room"    with points linestyle 1, \
-      "sensors.dat" using 4:(\$35-\$5) title "Column - Observing Room"      with points linestyle 3
+      "sensors.dat" using 4:(\$3-\$5)  title "External - Observing Room" with lines linestyle 1, \
+      "sensors.dat" using 4:(\$35-\$5) title "Column - Observing Room"   with lines linestyle 3
 
     set yrange [-15:+50]
     set ytics -15,10,50
@@ -267,12 +267,12 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "sensors.dat" using 2:3   title "External"                with points linestyle 1, \
-      "sensors.dat" using 4:5   title "Observing Room"          with points linestyle 2, \
-      "sensors.dat" using 36:37 title "Control Room"            with points linestyle 4, \
-      "sensors.dat" using 38:39 title "Telescope Cabinet"       with points linestyle 5, \
-      "sensors.dat" using 58:59 title "PLC Cabinet"             with points linestyle 6, \
-      "sensors.dat" using 60:61 title "Weather Station Cabinet" with points linestyle 7
+      "sensors.dat" using 2:3   title "External"                with lines linestyle 1, \
+      "sensors.dat" using 4:5   title "Observing Room"          with lines linestyle 2, \
+      "sensors.dat" using 36:37 title "Control Room"            with lines linestyle 4, \
+      "sensors.dat" using 38:39 title "Telescope Cabinet"       with lines linestyle 5, \
+      "sensors.dat" using 58:59 title "PLC Cabinet"             with lines linestyle 6, \
+      "sensors.dat" using 60:61 title "Weather Station Cabinet" with lines linestyle 7
       
     set yrange [0:100]
     set ytics 0,10,100
@@ -280,8 +280,8 @@ EOF
     set ylabel "RH (%)"
     set key on
     plot \
-      "sensors.dat" using 40:(\$41*100) title "External"                     with points linestyle 1, \
-      "sensors.dat" using 42:(\$43*100) title "Observing Room"              with points linestyle 2
+      "sensors.dat" using 40:(\$41*100) title "External"       with lines linestyle 1, \
+      "sensors.dat" using 42:(\$43*100) title "Observing Room" with lines linestyle 2
 
     set format x "%Y%m%dT%H"
     set xtics rotate by 90 right
@@ -293,8 +293,8 @@ EOF
     set ylabel "Light Level"
     set key on
     plot \
-      "sensors.dat" using 54:55 title "Observing Room"              with points linestyle 2, \
-      "sensors.dat" using 56:57 title "Control Room"                with points linestyle 4
+      "sensors.dat" using 54:55 title "Observing Room" with lines linestyle 2, \
+      "sensors.dat" using 56:57 title "Control Room"   with lines linestyle 4
 
     unset multiplot
 
@@ -320,11 +320,11 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "sensors.dat" using 2:3   title "External"       with points linestyle 1, \
-      "sensors.dat" using 4:5   title "Observing Room" with points linestyle 2, \
-      "sensors.dat" using 10:11 title "M1"             with points linestyle 3, \
-      "sensors.dat" using 14:15 title "M2"             with points linestyle 4, \
-      "sensors.dat" using 16:17 title "M3"             with points linestyle 5, \
+      "sensors.dat" using 2:3   title "External"       with lines linestyle 1, \
+      "sensors.dat" using 4:5   title "Observing Room" with lines linestyle 2, \
+      "sensors.dat" using 10:11 title "M1"             with lines linestyle 3, \
+      "sensors.dat" using 14:15 title "M2"             with lines linestyle 4, \
+      "sensors.dat" using 16:17 title "M3"             with lines linestyle 5, \
 
     set yrange [-10:+10]
     set ytics -10,5,10
@@ -332,9 +332,9 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "sensors.dat" using 10:(\$11-\$5) title "M1 - Observing Room" with points linestyle 3, \
-      "sensors.dat" using 14:(\$15-\$5) title "M2 - Observing Room" with points linestyle 4, \
-      "sensors.dat" using 16:(\$17-\$5) title "M3 - Observing Room" with points linestyle 5
+      "sensors.dat" using 10:(\$11-\$5) title "M1 - Observing Room" with lines linestyle 3, \
+      "sensors.dat" using 14:(\$15-\$5) title "M2 - Observing Room" with lines linestyle 4, \
+      "sensors.dat" using 16:(\$17-\$5) title "M3 - Observing Room" with lines linestyle 5
       
     set format x "%Y%m%dT%H"
     set xtics rotate by 90 right
@@ -346,17 +346,17 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "sensors.dat" using 2:3   title "External"       with points linestyle 1, \
-      "sensors.dat" using 4:5   title "Observing Room" with points linestyle 2, \
-      "sensors.dat" using 12:13 title "M1 Cell"        with points linestyle 3, \
-      "sensors.dat" using 18:19 title "Spider 1"       with points linestyle 4, \
-      "sensors.dat" using 20:21 title "Spider 2"       with points linestyle 5, \
-      "sensors.dat" using 22:23 title "Pivot Box 1"    with points linestyle 6, \
-      "sensors.dat" using 24:25 title "Pivot Box 2"    with points linestyle 7, \
-      "sensors.dat" using 26:27 title "Front Ring 1"   with points linestyle 8, \
-      "sensors.dat" using 28:29 title "Front Ring 2"   with points linestyle 9, \
-      "sensors.dat" using 30:31 title "Fork Arm 1"     with points linestyle 10, \
-      "sensors.dat" using 32:33 title "Fork Arm 2"     with points linestyle 11
+      "sensors.dat" using 2:3   title "External"       with lines linestyle 1, \
+      "sensors.dat" using 4:5   title "Observing Room" with lines linestyle 2, \
+      "sensors.dat" using 12:13 title "M1 Cell"        with lines linestyle 3, \
+      "sensors.dat" using 18:19 title "Spider 1"       with lines linestyle 4, \
+      "sensors.dat" using 20:21 title "Spider 2"       with lines linestyle 5, \
+      "sensors.dat" using 22:23 title "Pivot Box 1"    with lines linestyle 6, \
+      "sensors.dat" using 24:25 title "Pivot Box 2"    with lines linestyle 7, \
+      "sensors.dat" using 26:27 title "Front Ring 1"   with lines linestyle 8, \
+      "sensors.dat" using 28:29 title "Front Ring 2"   with lines linestyle 9, \
+      "sensors.dat" using 30:31 title "Fork Arm 1"     with lines linestyle 10, \
+      "sensors.dat" using 32:33 title "Fork Arm 2"     with lines linestyle 11
 
     unset multiplot
 
@@ -404,7 +404,7 @@ EOF
     set key on
     plot \
       "weather.dat" using 1:10 title "Wind Average Speed"  with lines linestyle 1, \
-      ""            using 1:11 title "Wind Gust Speed" with lines linestyle 2
+      ""            using 1:11 title "Wind Gust Speed"     with lines linestyle 2
 
     unset multiplot
 
