@@ -165,7 +165,6 @@ namespace eval "secondary" {
     # about the best we can do.
     set z [server::getdata "z"]
     opentsi::sendcommand "SET POSITION.INSTRUMENTAL.FOCUS.TARGETPOS=[expr {$z / 1000.0}]"
-    waitwhilemoving
   }
   
   proc movehardwaresimple {requestedz} {
@@ -215,14 +214,11 @@ namespace eval "secondary" {
   
   proc checkhardware {action} {
     switch $action {
-      "stop" -
       "reset" -
       "setoffset" {
       }
       default {
-        if {$opentsi::readystate != 1.0} {
-          error "state is \"$opentsi::readystatetext\"."
-        }
+        opentsi::checkreadystate "operational"
       }
     }
   }
