@@ -193,7 +193,7 @@ namespace eval "secondary" {
     }
   }
   
-  proc checkhardware {action} {
+  proc checkhardwarefor {action} {
     # Always available.
     return
   }

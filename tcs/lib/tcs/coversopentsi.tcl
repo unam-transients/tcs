@@ -199,8 +199,14 @@ namespace eval "covers" {
 
   ######################################################################
   
-  proc checkhardware {} {
-    opentsi::checkreadystate "operational"
+  proc checkhardwarefor {action} {
+    switch $action {
+      "reset" {
+      }
+      default {
+        opentsi::checkreadystate "operational"
+      }
+    }
   }
   
   proc initializehardware {} {

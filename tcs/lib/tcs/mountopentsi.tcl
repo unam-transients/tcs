@@ -389,7 +389,7 @@ namespace eval "mount" {
     server::setdata "unparked" true
   }
   
-  proc checkhardware {action} {
+  proc checkhardwarefor {action} {
     switch $action {
       "preparetomove" -
       "reset" {

@@ -77,7 +77,7 @@ namespace eval "covers" {
   proc initialize {} {
     server::checkstatus
     server::checkactivityforinitialize
-    checkhardware
+    checkhardwarefor "initialize"
     server::newactivitycommand "initializing" "idle" \
       covers::initializeactivitycommand
   }
@@ -85,7 +85,7 @@ namespace eval "covers" {
   proc stop {} {
     server::checkstatus
     server::checkactivityforstop
-    checkhardware
+    checkhardwarefor "stop"
     server::newactivitycommand "stopping" [server::getstoppedactivity] \
       "covers::stopactivitycommand [server::getactivity]"
   }
@@ -93,6 +93,7 @@ namespace eval "covers" {
   proc reset {} {
     server::checkstatus
     server::checkactivityforreset
+    checkhardwarefor "reset"
     server::newactivitycommand "resetting" [server::getstoppedactivity] \
       "covers::stopactivitycommand [server::getactivity]"
   }
@@ -100,7 +101,7 @@ namespace eval "covers" {
   proc open {} {
     server::checkstatus
     server::checkactivityformove
-    checkhardware
+    checkhardwarefor "opem"
     variable daytimetesting
     if {$daytimetesting} {
       server::newactivitycommand "closing" "idle" \
@@ -114,7 +115,7 @@ namespace eval "covers" {
   proc close {} {
     server::checkstatus
     server::checkactivityformove
-    checkhardware
+    checkhardwarefor "close"
     server::newactivitycommand "closing" "idle" \
       covers::closeactivitycommand
   }

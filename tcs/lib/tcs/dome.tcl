@@ -188,7 +188,7 @@ namespace eval "dome" {
   proc initialize {} {
     server::checkstatus
     server::checkactivityforinitialize
-    checkhardwareready
+    checkhardwarefor "initialize"
     server::newactivitycommand "initializing" "idle" \
       dome::initializeactivitycommand
   }
@@ -196,7 +196,7 @@ namespace eval "dome" {
   proc stop {} {
     server::checkstatus
     server::checkactivityforstop
-    checkhardwareready
+    checkhardwarefor "stop"
     server::newactivitycommand "stopping" [server::getstoppedactivity] \
       "dome::stopactivitycommand [server::getactivity]"
   }
@@ -204,7 +204,7 @@ namespace eval "dome" {
   proc reset {} {
     server::checkstatus
     server::checkactivityforreset
-    checkhardwareready
+    checkhardwarefor "reset"
     server::newactivitycommand "resetting" [server::getstoppedactivity] \
       "dome::stopactivitycommand [server::getactivity]"
   }
@@ -212,7 +212,7 @@ namespace eval "dome" {
   proc open {} {
     server::checkstatus
     server::checkactivityformove
-    checkhardwareready
+    checkhardwarefor "close"
     variable daytimetesting
     if {$daytimetesting} {
       server::newactivitycommand "closing" "idle" \
@@ -227,7 +227,7 @@ namespace eval "dome" {
   proc close {} {
     server::checkstatus
     server::checkactivityformove
-    checkhardwareready
+    checkhardwarefor "close"
     server::newactivitycommand "closing" "idle" \
       dome::closeactivitycommand
   }
@@ -240,7 +240,7 @@ namespace eval "dome" {
   proc preparetomove {} {
     server::checkstatus
     server::checkactivityformove
-    checkhardwareready
+    checkhardwarefor "preparetomove"
     server::newactivitycommand "preparingtomove" "preparedtomove" \
       dome::preparetomoveactivitycommand
   }
@@ -248,7 +248,7 @@ namespace eval "dome" {
   proc move {azimuth} {
     server::checkstatus
     server::checkactivity "preparedtomove"
-    checkhardwareready
+    checkhardwarefor "move"
     if {[string equal $azimuth "open"]} {
       variable openazimuth
       set azimuth $openazimuth
@@ -269,7 +269,7 @@ namespace eval "dome" {
   proc park {} {
     server::checkstatus
     server::checkactivity "preparedtomove"
-    checkhardwareready
+    checkhardwarefor "park"
     server::newactivitycommand "parking" "idle" \
       dome::parkactivitycommand
   }
@@ -277,7 +277,7 @@ namespace eval "dome" {
   proc preparetotrack {} {
     server::checkstatus
     server::checkactivityformove
-    checkhardwareready
+    checkhardwarefor "preparetotrack"
     server::newactivitycommand "preparingtotrack" "preparedtotrack" \
       dome::preparetotrackactivitycommand
   }
@@ -285,7 +285,7 @@ namespace eval "dome" {
   proc track {} {
     server::checkstatus
     server::checkactivity "preparedtotrack"
-    checkhardwareready
+    checkhardwarefor "track"
     server::newactivitycommand "moving" "tracking" \
       dome::trackactivitycommand
   }

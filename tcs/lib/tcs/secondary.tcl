@@ -190,14 +190,14 @@ namespace eval "secondary" {
   proc initialize {} {
     server::checkstatus
     server::checkactivityforinitialize
-    checkhardware "initialize"
+    checkhardwarefor "initialize"
     server::newactivitycommand "initializing" "idle" secondary::initializeactivitycommand 600000
   }
 
   proc stop {} {
     server::checkstatus
     server::checkactivityforstop
-    checkhardware "stop"
+    checkhardwarefor "stop"
     set previousactivity [server::getdata "activity"]
     server::newactivitycommand "stopping" [server::getstoppedactivity] "secondary::stopactivitycommand $previousactivity"
   }
@@ -205,14 +205,14 @@ namespace eval "secondary" {
   proc reset {} {
     server::checkstatus
     server::checkactivityforreset
-    checkhardware "reset"
+    checkhardwarefor "reset"
     server::newactivitycommand "resetting" [server::getstoppedactivity] secondary::resetactivitycommand
   }
 
   proc movewithoutcheck {z0} {
     server::checkstatus
     server::checkactivityformove
-    checkhardware "movewithoutcheck"
+    checkhardwarefor "movewithoutcheck"
     set z0 [normalizez0 $z0]
     setrequestedz0 $z0
     server::newactivitycommand "moving" "idle" "secondary::moveactivitycommand false"
@@ -221,7 +221,7 @@ namespace eval "secondary" {
   proc move {z0 setasinitial} {
     server::checkstatus
     server::checkactivityformove
-    checkhardware "move"
+    checkhardwarefor "move"
     set z0 [normalizez0 $z0]
     if {$setasinitial} {
       variable initialz0
@@ -235,7 +235,7 @@ namespace eval "secondary" {
   proc moveforfilter {filter} {
     server::checkstatus
     server::checkactivityformove
-    checkhardware "moveforfilter"
+    checkhardwarefor "moveforfilter"
     variable dzfilter
     variable dzmodel
     if {[dict exists $dzmodel "filter" $filter]} {
@@ -253,7 +253,7 @@ namespace eval "secondary" {
 
   proc setoffset {dzoffset} {
     server::checkstatus
-    checkhardware "setoffset"
+    checkhardwarefor "setoffset"
     if {![string is integer -strict $dzoffset]} {
       error "invalid offset \"$dzoffset\"."
     }
