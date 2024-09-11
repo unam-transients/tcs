@@ -136,8 +136,14 @@ namespace eval "dome" {
 
   ######################################################################
   
-  proc checkhardwareready {} {
-    opentsi::checkreadystate "operational"
+  proc checkhardwarefor {action} {
+    switch $action {
+      "reset" {
+      }
+      default {
+        opentsi::checkreadystate "operational"
+      }
+    }
   }
   
   proc initializehardware {} {

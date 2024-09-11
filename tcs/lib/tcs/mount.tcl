@@ -963,35 +963,35 @@ namespace eval "mount" {
   proc initialize {} {
     server::checkstatus
     server::checkactivityforinitialize
-    checkhardware "initialize"
+    checkhardwarefor "initialize"
     server::newactivitycommand "initializing" "idle" mount::initializeactivitycommand 120000
   }
 
   proc open {} {
     server::checkstatus
     server::checkactivityformove
-    checkhardware "open"
+    checkhardwarefor "open"
     server::newactivitycommand "opening" "idle" mount::openactivitycommand 1200000
   }
 
   proc stop {} {
     server::checkstatus
     server::checkactivityforstop
-    checkhardware "stop"
+    checkhardwarefor "stop"
     server::newactivitycommand "stopping" [server::getstoppedactivity] mount::stopactivitycommand
   }
 
   proc reset {} {
     server::checkstatus
     server::checkactivityforreset
-    checkhardware "reset"
+    checkhardwarefor "reset"
     server::newactivitycommand "resetting" [server::getstoppedactivity] mount::resetactivitycommand 120000
   }
 
   proc preparetomove {} {
     server::checkstatus
     server::checkactivityformove
-    checkhardware "preparetomove"
+    checkhardwarefor "preparetomove"
     server::newactivitycommand "preparingtomove" "preparedtomove" mount::preparetomoveactivitycommand
   }
 
@@ -999,7 +999,7 @@ namespace eval "mount" {
     server::checkstatus
     server::checkactivity "preparedtomove"
     checkunparked
-    checkhardware "move"
+    checkhardwarefor "move"
     if {[catch {client::checkactivity "target" "idle"} message]} {
       stop
       error "move cancelled because $message"
@@ -1010,7 +1010,7 @@ namespace eval "mount" {
   proc park {} {
     server::checkstatus
     server::checkactivity "preparedtomove"
-    checkhardware "park"
+    checkhardwarefor "park"
     if {[catch {client::checkactivity "target" "idle"} message]} {
       stop
       error "parking cancelled because $message"
@@ -1021,7 +1021,7 @@ namespace eval "mount" {
   proc unpark {} {
     server::checkstatus
     server::checkactivity "preparedtomove"
-    checkhardware "unpark"
+    checkhardwarefor "unpark"
     if {[catch {client::checkactivity "target" "idle"} message]} {
       stop
       error "unparking cancelled because $message"
@@ -1033,7 +1033,7 @@ namespace eval "mount" {
     server::checkstatus
     server::checkactivityformove
     checkunparked
-    checkhardware "preparetotrack"
+    checkhardwarefor "preparetotrack"
     server::newactivitycommand "preparingtotrack" "preparedtotrack" mount::preparetotrackactivitycommand
   }
 
@@ -1041,7 +1041,7 @@ namespace eval "mount" {
     server::checkstatus
     server::checkactivity "preparedtotrack"
     checkunparked
-    checkhardware "track"
+    checkhardwarefor "track"
     if {[catch {client::checkactivity "target" "tracking"} message]} {
       stop
       error "move cancelled because $message"
@@ -1053,7 +1053,7 @@ namespace eval "mount" {
     server::checkstatus
     server::checkactivity "preparedtotrack"
     checkunparked
-    checkhardware "offset"
+    checkhardwarefor "offset"
     if {[catch {client::checkactivity "target" "tracking"} message]} {
       stop
       error "move cancelled because $message"
@@ -1068,7 +1068,7 @@ namespace eval "mount" {
     server::checkstatus
     server::checkactivity "tracking"
     checkunparked
-    checkhardware "correct"
+    checkhardwarefor "correct"
 
     set truealpha [astrometry::parsealpha $truealpha]
     set truedelta [astrometry::parsedelta $truedelta]

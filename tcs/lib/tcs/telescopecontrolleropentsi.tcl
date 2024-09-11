@@ -267,9 +267,17 @@ namespace eval "telescopecontroller" {
     opentsi::sendcommand "SET TELESCOPE.STOP=1"
   }
   
-  proc checkhardware {} {
-    if {$opentsi::readystate < 0.0} {
-      error "state is \"$opentsi::readystatetext\"."
+  proc checkhardwarefor {action} {
+    switch $action {
+      "initialize" -
+      "switchon" -
+      "switchoff" -
+      "reset" -
+      "stop" {
+      }
+      default {
+        opentsi::checkreadystate "operational"
+      }
     }
   }
   
@@ -348,14 +356,14 @@ namespace eval "telescopecontroller" {
   proc initialize {} {
     server::checkstatus
     server::checkactivityforinitialize
-    checkhardware
+    checkhardwarefor "initialize"
     server::newactivitycommand "initializing" "idle" telescopecontroller::initializeactivitycommand
   }
 
   proc stop {} {
     server::checkstatus
     server::checkactivityforstop
-    checkhardware
+    checkhardwarefor "stop"
     server::newactivitycommand "stopping" [server::getstoppedactivity] "telescopecontroller::stopactivitycommand [server::getactivity]"
   }
   
@@ -368,14 +376,14 @@ namespace eval "telescopecontroller" {
   proc switchon {} {
     server::checkstatus
     server::checkactivityformove
-    checkhardware
+    checkhardwarefor "switchon"
     server::newactivitycommand "switchingon" "idle" telescopecontroller::switchonactivitycommand
   }
 
   proc switchoff {} {
     server::checkstatus
     server::checkactivityformove
-    checkhardware
+    checkhardwarefor "switchoff"
     server::newactivitycommand "switchingoff" "idle" telescopecontroller::switchoffactivitycommand
   }
 
