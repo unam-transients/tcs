@@ -64,9 +64,9 @@ namespace eval "seeing" {
 
         if {[ \
           scan $dataline \
-            "c %d/%d/%d %d:%d:%d | %*d/%*d/%*d %*d:%*d:%*d | %*f | %*f | %f | %*f" \
-            day month year hour minute second seeing \
-        ] != 7} {
+            "c %d/%d/%d %d:%d:%d | %*d/%*d/%*d %*d:%*d:%*d | %*f | %f | %f | %*f" \
+            day month year hour minute second flux seeing \
+        ] != 8} {
           continue
         }
         
@@ -91,6 +91,7 @@ namespace eval "seeing" {
     }
     
     server::setdata "seeing$letter"    [astrometry::arcsectorad $seeing]
+    server::setdata "flux$letter"      $flux
     server::setdata "timestamp$letter" [utcclock::combinedformat $timestampseconds]
 
 
@@ -136,13 +137,14 @@ namespace eval "seeing" {
     server::setdata "timestamp" [server::getdata "timestampc"]
     server::setdata "seeing"    [server::getdata "seeingc"]
     server::setdata "seeingas"  [astrometry::radtoarcsec [server::getdata "seeing"]]
+    server::setdata "flux"      [server::getdata "fluxc"]
       
     variable lasttimestamp
     set timestamp [server::getdata "timestampc"]
     if {[string equal $lasttimestamp ""] || ![string equal $timestamp $lasttimestamp]} {
       log::debug "writing seeing data log."
       log::writedatalog "seeing" {
-        timestamp seeingas
+        timestamp seeingas flux
       }
       log::debug "finished writing seeing data log."
       set lasttimestamp $timestamp

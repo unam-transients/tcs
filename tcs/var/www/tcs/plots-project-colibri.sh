@@ -376,6 +376,14 @@ EOF
     plot \
       "seeing.dat"  using 1:2 title "Seeing" with points linestyle 1
 
+    set yrange [0:5000]
+    set ytics 0,1000,5000
+    set format y "%.0f"
+    set ylabel "Flux (arbitraty units)"
+    set key on
+    plot \
+      "seeing.dat"  using 1:3 title "Polaris Flux" with points linestyle 1
+
     set yrange [-10:40]
     set ytics -10,5,40
     set format y "%+g"
