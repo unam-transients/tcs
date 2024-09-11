@@ -1193,6 +1193,13 @@ namespace eval "html" {
       } else {
         writehtmlrow "Rain rate"
       }
+      if {![string equal [client::getdata "weather" "skytemperature"] "unknown"]} {
+        writehtmlrow "Sky temperature" \
+          [format "%+.1f C" [client::getdata "weather" "skytemperature"]] \
+        [client::getdata "weather" "skytemperaturetrend"]
+      } else {
+        writehtmlrow "Sky temperature"
+      }
       if {![string equal [client::getdata "weather" "pressure"] "unknown"]} {
         writehtmlrow "Pressure" \
           [format "%.1f mbar" [client::getdata "weather" "pressure"]] \
