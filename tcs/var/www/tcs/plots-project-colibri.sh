@@ -393,6 +393,14 @@ EOF
     plot \
       "weather.dat" using 1:(\$4*100) title "Humidity" with lines linestyle 1
 
+    set yrange [-60:40]
+    set ytics -60,10,40
+    set format y "%+.0f"
+    set ylabel "Temperature (C)"
+    set key on
+    plot \
+      "weather.dat" using 1:21 title "Sky Temperature" with lines linestyle 1
+
     set format x "%Y%m%dT%H"
     set xtics rotate by 90 right
     set xlabel "UTC"

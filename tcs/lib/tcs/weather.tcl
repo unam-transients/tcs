@@ -38,22 +38,24 @@ namespace eval "weather" {
   ######################################################################
 
   server::setdata "windaveragespeedlimit" $windaveragespeedlimit
-  server::setdata "humidityalarm" "unknown"
-  server::setdata "windalarm"     "unknown"
-  server::setdata "rainalarm"     "unknown"
-  server::setdata "lightlevel"    "unknown"
-  server::setdata "cloudiness"    "unknown"
-  server::setdata "mustbeclosed"  "unknown"
+  server::setdata "humidityalarm"  "unknown"
+  server::setdata "windalarm"      "unknown"
+  server::setdata "rainalarm"      "unknown"
+  server::setdata "lightlevel"     "unknown"
+  server::setdata "cloudiness"     "unknown"
+  server::setdata "skytemperature" "unknown"
+  server::setdata "mustbeclosed"   "unknown"
 
   proc parsedata {datalines} {
 
     set previoustemperature        "unknown"
+    set previousskytemperature     "unknown"
     set previoushumidity           "unknown"
     set previousdewpoint           "unknown"
     set previousdewpointdepression "unknown"
     set previouspressure           "unknown"
-    set previoushumidityalarm       "unknown"
-    set lastwindalarmseconds        "unknown"
+    set previoushumidityalarm      "unknown"
+    set lastwindalarmseconds       "unknown"
 
     foreach dataline $datalines {
     
@@ -62,8 +64,8 @@ namespace eval "weather" {
           "b.0 %s %s %*s %*f %f %*f %*f %f %f %f %f %f %*f %*f %f %*f %*f %*f %*f %*f %*f %*f %*f %f %*f %*d %d %d %*d %*d %*d %d"\
           date time windaverageazimuth windaveragespeed windgustspeed temperature humidity pressure rainrate dewpoint rainindex cloudindex lightindex] == 13 ||
         [scan $dataline \
-          "b.1 %s %s %*s %*s %*f %f %*f %*f %f %f %f %f %f %*f %*f %f %*f %*f %*f %*f %*f %*f %*f %*f %f %*f %*d %d %d %*d %*d %*d %d"\
-          date time windaverageazimuth windaveragespeed windgustspeed temperature humidity pressure rainrate dewpoint rainindex cloudindex lightindex] == 13
+          "b.1 %s %s %*s %*s %*f %f %*f %*f %f %f %f %f %f %*f %*f %f %*f %*f %*f %*f %f %*f %*f %*f %f %*f %*d %d %d %*d %*d %*d %d"\
+          date time windaverageazimuth windaveragespeed windgustspeed temperature humidity pressure rainrate skytemperature dewpoint rainindex cloudindex lightindex] == 14
       } {
       
         # This is the COLIBRI PLC
@@ -113,8 +115,9 @@ namespace eval "weather" {
         } else {
           set rainalarm false
         }
-        set cloudiness "unknown"
-        set lightlevel "unknown"
+        set cloudiness     "unknown"
+        set lightlevel     "unknown"
+        set skytemperature "unknown"
       
       } else {
             
@@ -163,6 +166,15 @@ namespace eval "weather" {
         set temperaturetrend "falling"
       }
       set previoustemperature $temperature
+
+      if {[string equal $previousskytemperature "unknown"]} {
+        set skytemperaturetrend "unknown"
+      } elseif {$previousskytemperature < $skytemperature} {
+        set skytemperaturetrend "rising"
+      } elseif {$previousskytemperature > $skytemperature} {
+        set skytemperaturetrend "falling"
+      }
+      set previousskytemperature $skytemperature
 
       if {[string equal $previoushumidity "unknown"]} {
         set humiditytrend "unknown"
@@ -237,6 +249,8 @@ namespace eval "weather" {
     server::setdata "timestamp"               [utcclock::combinedformat $timestampseconds]
     server::setdata "temperature"             [format "%+.1f" $temperature]
     server::setdata "temperaturetrend"        $temperaturetrend
+    server::setdata "skytemperature"          [format "%+.1f" $skytemperature]
+    server::setdata "skytemperaturetrend"     $skytemperaturetrend
     server::setdata "humidity"                $humidity
     server::setdata "humiditytrend"           $humiditytrend
     server::setdata "humiditylimit"           $humiditylimit
@@ -329,6 +343,7 @@ namespace eval "weather" {
       rainrate
       pressure pressuretrend
       humidityalarm windalarm rainalarm mustbeclosed
+      skytemperature
     }
     log::debug "finished writing weather data log."
     
@@ -341,6 +356,7 @@ namespace eval "weather" {
       wind-gust-speed      windgustspeed
       rain-rate            rainrate
       pressure             pressure
+      sky-temperature      skytemperature
     } {
       log::writesensorsfile "weather-$sensorname" [server::getdata $dataname] [server::getdata "timestamp"]
     }
