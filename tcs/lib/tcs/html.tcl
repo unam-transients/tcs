@@ -1241,16 +1241,19 @@ namespace eval "html" {
     if {[string equal [client::getstatus "seeing"] "ok"]} {
 
       set seeing    [client::getdata "seeing" "seeing"]
+      set flux      [client::getdata "seeing" "flux"]
       set timestamp [client::getdata "seeing" "timestamp"]
       set diff      [format "%.0f" [utcclock::diff now $timestamp]]
 
       if {$diff > 600} {
         set emphasis "warning"
         set seeing "stale"
+        set flux   "stale"
       } else {
         set emphasis ""
       }
       writehtmlfullrowwithemph "Seeing" $emphasis "[utcclock::format $timestamp] [formatarcsecifdouble "%.2fas" $seeing]"
+      writehtmlfullrowwithemph "Flux"   $emphasis "[utcclock::format $timestamp] [formatifdouble "%.0f" $flux]"
 
     }
 
