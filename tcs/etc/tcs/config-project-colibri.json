@@ -266,7 +266,8 @@
       "ogse-external-light-level",
       "control-room-light-level",
       "plc-cabinet-temperature",
-      "weather-station-cabinet-temperature"
+      "weather-cabinet-temperature",
+      "seeing-cabinet-temperature"
     ],
     "sensors": {
       "weather-temperature": {
@@ -319,7 +320,7 @@
         "model": "iButtonLink MS-TL",
         "identifier": "26.A493A0000000",
         "firmware": ""
-      },      
+      },
       "telescope-M1-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/opentsi-3",
         "prettyname": "telescope M1 temperature",
@@ -515,10 +516,23 @@
         "identifier": "",
         "firmware": ""
       },      
-      "weather-station-cabinet-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/plc-rio-cabinet-temperature",
+      "weather-cabinet-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/plc-weather-cabinet-temperature",
         "prettyname": "weather station cabinet temperature)",
         "subsystem": "weather station",
+        "component": "cabinet",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "seeing-cabinet-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/plc-seeing-cabinet-temperature",
+        "prettyname": "seeing cabinet temperature)",
+        "subsystem": "seeing cabinet",
         "component": "cabinet",
         "group": "environmental-sensors",
         "type": "float",
@@ -840,7 +854,7 @@
     // this configured to be 85d as of 2022-11-22
     // (TELESCOPE.CONFIG.POINTING.HORIZON_LIMIT).
     "minzenithdistancelimit": "1d",
-    "maxzenithdistancelimit": "75d",
+    "maxzenithdistancelimit": "83d",
     "idleha": "0h",
     "idledelta": "0d",
     "ventilateha": "-4h",

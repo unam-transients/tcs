@@ -821,7 +821,8 @@ namespace eval "html" {
           writealarm   "Boltwood communication alarm"  [client::getdata "plc" "rioboltwoodcommunicationalarm"] [client::getdata "plc" "rioboltwoodcommunicationalarmdisabled"]
 
           writehtmlrow "PLC cabinet temperature"       [format "%+.1f C" [client::getdata "plc" "plccabinettemperature"]]
-          writehtmlrow "RIO cabinet temperature"       [format "%+.1f C" [client::getdata "plc" "riocabinettemperature"]]
+          writehtmlrow "Weather cabinet temperature"   [format "%+.1f C" [client::getdata "plc" "weathercabinettemperature"]]
+          writehtmlrow "Seeing cabinet temperature"    [format "%+.1f C" [client::getdata "plc" "seeingcabinettemperature"]]
 
         }
       }

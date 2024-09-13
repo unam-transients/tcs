@@ -538,8 +538,9 @@ namespace eval "plc" {
     }
 
     if {[catch {
-      server::setdata "plccabinettemperature"         [format "%.1f" [lindex $field 16]]
-      server::setdata "riocabinettemperature"         [format "%.1f" [lindex $field 17]]
+      server::setdata "plccabinettemperature"            [format "%.1f" [lindex $field 16]]
+      server::setdata "weathercabinettemperature" [format "%.1f" [lindex $field 17]]
+      server::setdata "seeingcabinettemperature"         [format "%.1f" [lindex $field 18]]
     }]} {
       log::warning "unable to read cabinet temperature data."
     }
@@ -637,12 +638,13 @@ namespace eval "plc" {
     server::setstatus "ok"
 
     foreach {sensorname dataname} {
-      plc-cabinet-temperature       plccabinettemperature 
-      rio-cabinet-temperature       riocabinettemperature 
-      comet1-temperature            comet1temperature
-      comet2-temperature            comet2temperature
-      comet1-humidity               comet1humidity
-      comet2-humidity               comet2humidity
+      plc-cabinet-temperature             plccabinettemperature 
+      weather-cabinet-temperature weathercabinettemperature 
+      seeing-cabinet-temperature          seeingcabinettemperature 
+      comet1-temperature                  comet1temperature
+      comet2-temperature                  comet2temperature
+      comet1-humidity                     comet1humidity
+      comet2-humidity                     comet2humidity
     } {
       log::writesensorsfile "plc-$sensorname" [server::getdata $dataname] [server::getdata "timestamp"]
     }

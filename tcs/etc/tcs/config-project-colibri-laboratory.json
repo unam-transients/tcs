@@ -1221,12 +1221,24 @@
         "identifier": "",
         "firmware": ""
       },
-      "plc-rio-cabinet-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/plc-rio-cabinet-temperature",
-        "prettyname": "RIO cabinet temperature",
+      "plc-weather-cabinet-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/plc-weather-cabinet-temperature",
+        "prettyname": "Weather station cabinet temperature",
         "group": "environmental-sensors",
         "subsystem": "plc",
-        "component": "rio-cabinet",
+        "component": "weather-cabinet",
+        "type": "float",
+        "unit": "C",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "plc-seeing-cabinet-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/plc-seeing-cabinet-temperature",
+        "prettyname": "Seeing cabinet temperature",
+        "group": "environmental-sensors",
+        "subsystem": "plc",
+        "component": "seeing-cabinet",
         "type": "float",
         "unit": "C",
         "model": "",
