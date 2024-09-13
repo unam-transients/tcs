@@ -249,8 +249,9 @@ EOF
     plot \
       "sensors.dat" using 2:3   title "External"       with lines linestyle 1, \
       "sensors.dat" using 4:5   title "Observing Room" with lines linestyle 2, \
-      "sensors.dat" using 34:35 title "Column"         with lines linestyle 3, \
-      "sensors.dat" using 36:37 title "Control Room"   with lines linestyle 4
+      "sensors.dat" using 8:9   title "OGSE"           with lines linestyle 3, \
+      "sensors.dat" using 34:35 title "Column"         with lines linestyle 4, \
+      "sensors.dat" using 36:37 title "Control Room"   with lines linestyle 5
       
     set yrange [-10:+10]
     set ytics -10,5,10
@@ -259,7 +260,8 @@ EOF
     set key on
     plot \
       "sensors.dat" using 4:(\$3-\$5)  title "External - Observing Room" with lines linestyle 1, \
-      "sensors.dat" using 4:(\$35-\$5) title "Column - Observing Room"   with lines linestyle 3
+      "sensors.dat" using 4:(\$9-\$5)  title "OGSE - Observing Room"     with lines linestyle 3, \
+      "sensors.dat" using 4:(\$35-\$5) title "Column - Observing Room"   with lines linestyle 4
 
     set yrange [-15:+50]
     set ytics -15,10,50
@@ -272,7 +274,8 @@ EOF
       "sensors.dat" using 36:37 title "Control Room"            with lines linestyle 4, \
       "sensors.dat" using 38:39 title "Telescope Cabinet"       with lines linestyle 5, \
       "sensors.dat" using 58:59 title "PLC Cabinet"             with lines linestyle 6, \
-      "sensors.dat" using 60:61 title "Weather Station Cabinet" with lines linestyle 7
+      "sensors.dat" using 60:61 title "Weather Cabinet"         with lines linestyle 7, \
+      "sensors.dat" using 62:63 title "Seeing Cabinet"          with lines linestyle 8
       
     set yrange [0:100]
     set ytics 0,10,100
@@ -322,9 +325,10 @@ EOF
     plot \
       "sensors.dat" using 2:3   title "External"       with lines linestyle 1, \
       "sensors.dat" using 4:5   title "Observing Room" with lines linestyle 2, \
-      "sensors.dat" using 10:11 title "M1"             with lines linestyle 3, \
-      "sensors.dat" using 14:15 title "M2"             with lines linestyle 4, \
-      "sensors.dat" using 16:17 title "M3"             with lines linestyle 5, \
+      "sensors.dat" using 8:9   title "OGSE"           with lines linestyle 3, \
+      "sensors.dat" using 10:11 title "M1"             with lines linestyle 4, \
+      "sensors.dat" using 14:15 title "M2"             with lines linestyle 5, \
+      "sensors.dat" using 16:17 title "M3"             with lines linestyle 6
 
     set yrange [-10:+10]
     set ytics -10,5,10
@@ -332,9 +336,10 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "sensors.dat" using 10:(\$11-\$5) title "M1 - Observing Room" with lines linestyle 3, \
-      "sensors.dat" using 14:(\$15-\$5) title "M2 - Observing Room" with lines linestyle 4, \
-      "sensors.dat" using 16:(\$17-\$5) title "M3 - Observing Room" with lines linestyle 5
+      "sensors.dat" using  8:(\$9-\$5)  title "OGSE - Observing Room" with lines linestyle 3, \
+      "sensors.dat" using 10:(\$11-\$5) title "M1 - Observing Room"   with lines linestyle 4, \
+      "sensors.dat" using 14:(\$15-\$5) title "M2 - Observing Room"   with lines linestyle 5, \
+      "sensors.dat" using 16:(\$17-\$5) title "M3 - Observing Room"   with lines linestyle 6
       
     set format x "%Y%m%dT%H"
     set xtics rotate by 90 right
