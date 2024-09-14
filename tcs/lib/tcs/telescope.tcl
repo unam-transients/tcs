@@ -483,8 +483,8 @@ namespace eval "telescope" {
         client::wait "mount"
       }
       if {$withlouvers} {
-        log::info "closing louvers."
-        client::request "louvers" "close"
+        log::info "configuring louvers to cool."
+        client::request "louvers" "cool"
       }
       if {$withcovers} {
         client::wait "covers" 
