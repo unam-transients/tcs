@@ -183,6 +183,7 @@ namespace eval "louvers" {
   proc cool {} {
     server::checkstatus
     server::checkactivityformove
+    log::info "opening and closing louvers automatically to cool."
     server::setdata "mode" "cool"
     return
   }
