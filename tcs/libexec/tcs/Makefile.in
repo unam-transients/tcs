@@ -131,6 +131,7 @@ installbins_project_colibri :=    \
 	plcserver                     \
 	secondaryserver               \
 	telescopecontrollerserver     \
+	tertiaryserver                \
 	updateweatherfiles-oan        \
 	updateseeingfiles-colibri
 		

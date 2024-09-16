@@ -1153,6 +1153,44 @@ namespace eval "html" {
 
   }
 
+  proc writetertiary {} {
+
+    putshtml "<table class=\"status\">"
+
+    writehtmlstatusblock "tertiary"
+
+    putshtml "</table>"
+
+    putshtml "<table class=\"status\">"
+
+    if {[string equal [client::getstatus "tertiary"] "ok"]} {
+      writehtmlrow "Requested tertiary" [client::getdata "tertiary" "requestedtertiary"]
+      writehtmlrow "Current tertiary" [client::getdata "tertiary" "tertiary"]
+      if {![catch {client::getdata "tertiary" "port2cover"}]} {
+        set name [client::getdata "tertiary" "port2name"]
+        set cover [client::getdata "tertiary" "port2cover"]
+        writehtmlrow "Current port 2 cover ($name)" $cover
+      }
+      if {![catch {client::getdata "tertiary" "port3cover"}]} {
+        set name [client::getdata "tertiary" "port3name"]
+        set cover [client::getdata "tertiary" "port3cover"]
+        writehtmlrow "Current port 3 cover ($name)" $cover
+      }
+      if {![catch {client::getdata "tertiary" "mode"}]} {
+        writehtmlrow "Mode" [client::getdata "tertiary" "mode"]
+      }
+      if {![catch {client::getdata "tertiary" "inputchannels"}]} {
+        writehtmlrow "Input channels" [client::getdata "tertiary" "inputchannels"]
+      }
+      if {![catch {client::getdata "tertiary" "outputchannels"}]} {
+        writehtmlrow "Output channels" [client::getdata "tertiary" "outputchannels"]
+      }
+    }
+  
+    putshtml "</table>"
+
+  }
+
   proc writeweather {} {
 
     putshtml "<table class=\"status\">"
@@ -1680,6 +1718,7 @@ if {false} {
       supervisor          {Supervisor}
       target              {Target}
       telescope           {Telescope}
+      tertiary            {Tertiary}
       weather             {Weather}
     }
     variable servers
