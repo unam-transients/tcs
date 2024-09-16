@@ -1085,6 +1085,10 @@ namespace eval "html" {
     putshtml "<table class=\"status\">"
 
     if {[string equal [client::getstatus "sensors"] "ok"]} {
+    
+      set referencetemperaturename [config::getvalue "sensors" "environmental-sensor-reference"]
+      set referencetemperature [client::getdata "sensors" $referencetemperaturename]
+    
       foreach name [dict keys $sensors] {
         set value [join [client::getdata "sensors" "$name"] " "]
         set timestamp [client::getdata "sensors" "${name}-timestamp"]
@@ -1098,17 +1102,26 @@ namespace eval "html" {
             set emphasis ""
           }
           set unit [dict get $sensors $name "unit"]
-          switch -glob "$name:$unit" {
-            *-temperature:C {
-              writehtmlfullrowwithemph $name $emphasis "$timestamp [format "%+.1f C" $value]"
+          set group [dict get $sensors $name "group"]
+          switch -glob "$name:$unit:$group" {
+            *-temperature:C:environmental-sensors {
+                set difference [expr {$value - $referencetemperature}]
+              if {[string equal $name $referencetemperaturename]} {
+                writehtmlfullrowwithemph $name $emphasis "$timestamp [format "%+4.1f C" $value] reference"
+              } else {
+                writehtmlfullrowwithemph $name $emphasis "$timestamp [format "%+5.1f C" $value] [format "%+5.1f C" $difference]"
+              }
             }
-            *-detector-cooler-power: -
-            *-humidity: -
-            *-light-level: -
-            *-disk-space-used: {      
+            *-temperature:C:* {
+              writehtmlfullrowwithemph $name $emphasis "$timestamp [format "%+5.1f C" $value]"
+            }
+            *-detector-cooler-power::* -
+            *-humidity::* -
+            *-light-level::* -
+            *-disk-space-used::* {      
               writehtmlfullrowwithemph $name $emphasis "$timestamp [format "%.0f%%" [expr {$value * 100}]]"
             }
-            *: {
+            *::* {
               writehtmlfullrowwithemph $name $emphasis "$timestamp $value"
             }
             default {
