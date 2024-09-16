@@ -37,28 +37,17 @@ namespace eval "tertiaryserver" {
     tertiary::initialize
   }
 
-  proc slavestop {} {
-    tertiary::stop
-  }
-
   proc slavereset {} {
     tertiary::reset
   }
 
-  proc slaveopen {} {
-    tertiary::open
-  }
-
-  proc slaveclose {} {
-    tertiary::close
+  proc slavesetport {port} {
+    tertiary::setport $port
   }
 
   proc configureslave {slave} {
     interp alias $slave initialize {} tertiaryserver::slaveinitialize
-    interp alias $slave stop       {} tertiaryserver::slavestop
-    interp alias $slave reset      {} tertiaryserver::slavereset
-    interp alias $slave open       {} tertiaryserver::slaveopen
-    interp alias $slave close      {} tertiaryserver::slaveclose
+    interp alias $slave setport    {} tertiaryserver::slavesetport
   }
 
   ######################################################################

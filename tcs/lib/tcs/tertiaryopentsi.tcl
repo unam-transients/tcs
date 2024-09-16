@@ -37,102 +37,34 @@ namespace eval "tertiary" {
 
   set server::datalifeseconds        30
 
-  server::setdata "state"            ""
-  server::setdata "requestedtertiary"  ""
-  server::setdata "tertiary"           ""
-  server::setdata "port2cover"       ""
-  server::setdata "port3cover"       ""
-  server::setdata "port2name"        [config::getvalue "tertiary" "port2name"]
-  server::setdata "port3name"        [config::getvalue "tertiary" "port3name"]
+  server::setdata "requestedport" ""
+  server::setdata "port"   ""
   server::setdata "timestamp"        [utcclock::combinedformat now]
 
   ######################################################################
 
   set statuscommand "GET [join {
-    AUXILIARY.COVER.REALPOS
-    AUXILIARY.PORT_COVER[2].REALPOS
-    AUXILIARY.PORT_COVER[3].REALPOS
-    AUXILIARY.COVER.TARGETPOS
-    AUXILIARY.PORT_COVER[2].TARGETPOS
-    AUXILIARY.PORT_COVER[3].TARGETPOS
+    POINTING.SETUP.USE_PORT
+    POSITION.INSTRUMENTAL.PORT_SELECT.CURRPOS
   } ";"]"
 
 
   ######################################################################
 
-  variable tertiary ""
-  variable port2cover ""
-  variable port3cover ""
-  variable tertiarytarget ""
-  variable port2covertarget ""
-  variable port3covertarget ""
-  variable intermediate
+  variable currentposition ""
+  variable port     ""
+  variable requestedport   ""
 
   proc updatedata {response} {
 
-    variable tertiary
-    variable port2cover
-    variable port3cover
-    variable tertiarytarget
-    variable port2covertarget
-    variable port3covertarget
-    variable intermediate
+    variable currentposition
+    variable port
+    variable requestedport
 
-    if {[scan $response "%*d DATA INLINE AUXILIARY.COVER.REALPOS=%f" value] == 1} {
-      if {$value == 0} {
-        set tertiary "closed"
-      } elseif {$value == 1.0} {
-        set tertiary "open"
-      } else {
-        set tertiary "intermediate"
-      }
+    if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.PORT_SELECT.CURRPOS=%f" value] == 1} {
+      set currentposition $value
       return false
     }
-    if {[scan $response "%*d DATA INLINE AUXILIARY.PORT_COVER\[2\].REALPOS=%f" value] == 1} {
-      if {$value == 0} {
-        set port2cover "closed"
-      } elseif {$value == 1.0} {
-        set port2cover "open"
-      } else {
-        set port2cover "intermediate"
-      }
-      return false
-    }
-    if {[scan $response "%*d DATA INLINE AUXILIARY.PORT_COVER\[3\].REALPOS=%f" value] == 1} {
-      if {$value == 0} {
-        set port3cover "closed"
-      } elseif {$value == 1.0} {
-        set port3cover "open"
-      } else {
-        set port3cover "intermediate"
-      }
-      return false
-    }
-    if {[scan $response "%*d DATA INLINE AUXILIARY.COVER.TARGETPOS=%f" value] == 1} {
-      if {$value == 0} {
-        set tertiarytarget "closed"
-      } else {
-        set tertiarytarget "open"
-      }
-      return false
-    }
-    if {[scan $response "%*d DATA INLINE AUXILIARY.PORT_COVER\[2\].TARGETPOS=%f" value] == 1} {
-      if {$value == 0} {
-        set port2covertarget "closed"
-      } else {
-        set port2covertarget "open"
-      }
-      return false
-    }
-    if {[scan $response "%*d DATA INLINE AUXILIARY.PORT_COVER\[3\].TARGETPOS=%f" value] == 1} {
-      if {$value == 0} {
-        set port3covertarget "closed"
-      } elseif {$value == 1.0} {
-        set port3covertarget "open"
-      }
-      return false
-    }
-
     if {[regexp {[0-9]+ DATA INLINE } $response] == 1} {
       log::debug "status: ignoring DATA INLINE response."
       return false
@@ -141,60 +73,36 @@ namespace eval "tertiary" {
       log::warning "unexpected controller response \"$response\"."
       return true
     }
+    
+    if {$currentposition == 2.0} {
+      set port "port2"
+    } elseif {$currentposition == 4.0} {
+      set port "intermediate"
+    } elseif {$currentposition == 2.0} {
+      set port "port3"
+    } else {
+      log::warning "unexpected value of current position \"$currentposition\"."
+      set port "unknown"
+    }
+
+    log::info [format "currentposition is %.0f." $currentposition]
+    log::info [format "port is %s." $port]
+    log::info [format "requestedport is %s." $requestedport]
 
     set timestamp [utcclock::combinedformat "now"]
 
-    set lasttertiary         [server::getdata "tertiary"]
-    set lastport2cover     [server::getdata "port2cover"]
-    set lastport3cover     [server::getdata "port3cover"]
-    
-    if {![string equal $lasttertiary ""] && ![string equal $tertiary $lasttertiary]} {
-      log::info "tertiary changed from \"$lasttertiary\" to \"$tertiary\"."
-    }
-    if {![string equal $lastport2cover ""] && ![string equal $port2cover $lastport2cover]} {
-      log::info "port 2 cover changed from \"$lastport2cover\" to \"$port2cover\"."
-    }
-    if {![string equal $lastport3cover ""] && ![string equal $port3cover $lastport3cover]} {
-      log::info "port 3 cover changed from \"$lastport3cover\" to \"$port3cover\"."
-    }
-
-    if {
-      [string equal $tertiary     "intermediate"] ||
-      [string equal $port2cover "intermediate"] ||
-      [string equal $port3cover "intermediate"]
-    } {
-      set intermediate true
-    } else {
-      set intermediate false
+    set lastport [server::getdata "port"]
+    if {![string equal $lastport ""] && ![string equal $port $lastport]} {
+      log::info "tertiary changed from \"$lastport\" to \"$port\"."
     }
     
-    server::setdata "timestamp"        $timestamp
-    server::setdata "tertiary"           $tertiary
-    server::setdata "port2cover"       $port2cover
-    server::setdata "port3cover"       $port3cover
-
+    server::setdata "timestamp"     $timestamp
+    server::setdata "port"          $port
+    server::setdata "requestedport" $requestedport
+    
     server::setstatus "ok"
 
     return true
-  }
-
-  proc waitwhilemoving {} {
-    log::info "waiting while moving."
-    variable intermediate
-    set startingdelay 10
-    set settlingdelay 1
-    set start [utcclock::seconds]
-    while {[utcclock::diff now $start] < $startingdelay} {
-      coroutine::after 1000
-    }
-    while {$intermediate} {
-      coroutine::yield
-    }
-    set settle [utcclock::seconds]
-    while {[utcclock::diff now $settle] < $settlingdelay} {
-      coroutine::yield
-    }
-    log::info "finished waiting while moving."
   }
 
   ######################################################################
@@ -210,36 +118,27 @@ namespace eval "tertiary" {
   }
   
   proc initializehardware {} {
-    closehardware
+    setporthardware "port3"
   }
   
-  proc stophardware {} {
-    server::setdata "requestedtertiary" ""
-    opentsi::sendcommand "SET TELESCOPE.STOP=1"
-  }
-  
-  proc openhardware {} {
-    server::setdata "requestedtertiary" "open"
-    opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=1"]
-    opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=1"]
-    opentsi::sendcommand [format "SET AUXILIARY.COVER.TARGETPOS=1"]
-    waitwhilemoving
-    if {![string equal [server::getdata "tertiary"] "open"]} {
-      error "the tertiary did not open."
+
+  proc setporthardware {newrequestedport} {
+    variable requestedport
+    switch $newrequestedport {
+      "port2" {
+        set i 2
+      }
+      "port3" {
+        set i 3
+      }
+      default {
+        error "unknown port \"$newrequestedport\"."
+      }
     }
+    opentsi::sendcommand [format "SET POINTING.SETUP.USE_PORT=%d" $i]
+    set requestedport $newrequestedport
   }
-  
-  proc closehardware {} {
-    server::setdata "requestedtertiary" "closed"
-    opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=0"]
-    opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=0"]
-    opentsi::sendcommand [format "SET AUXILIARY.COVER.TARGETPOS=0"]
-    waitwhilemoving
-    if {![string equal [server::getdata "tertiary"] "closed"]} {
-      error "the tertiary did not close."
-    }
-  }
-  
+    
   ######################################################################
   
   proc start {} {

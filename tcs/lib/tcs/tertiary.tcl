@@ -42,34 +42,9 @@ namespace eval "tertiary" {
   proc initializeactivitycommand {} {
     set start [utcclock::seconds]
     log::info "initializing."
-    log::info "closing."
     initializehardware
     set end [utcclock::seconds]
     log::info [format "finished initializing after %.1f seconds." [utcclock::diff $end $start]]
-  }
-
-  proc openactivitycommand {} {
-    set start [utcclock::seconds]
-    log::info "opening."
-    openhardware
-    set end [utcclock::seconds]
-    log::info [format "finished opening after %.1f seconds." [utcclock::diff $end $start]]
-  }
-
-  proc closeactivitycommand {} {
-    set start [utcclock::seconds]
-    log::info "closing."
-    closehardware
-    set end [utcclock::seconds]
-    log::info [format "finished closing after %.1f seconds." [utcclock::diff $end $start]]
-  }
-
-  proc stopactivitycommand {previousactivity} {
-    set start [utcclock::seconds]
-    log::info "stopping."
-    stophardware
-    set end [utcclock::seconds]
-    log::info [format "finished stopping after %.1f seconds." [utcclock::diff $end $start]]
   }
 
   ######################################################################
@@ -81,14 +56,6 @@ namespace eval "tertiary" {
     server::newactivitycommand "initializing" "idle" \
       tertiary::initializeactivitycommand
   }
-
-  proc stop {} {
-    server::checkstatus
-    server::checkactivityforstop
-    checkhardwarefor "stop"
-    server::newactivitycommand "stopping" [server::getstoppedactivity] \
-      "tertiary::stopactivitycommand [server::getactivity]"
-  }
   
   proc reset {} {
     server::checkstatus
@@ -98,27 +65,13 @@ namespace eval "tertiary" {
       "tertiary::stopactivitycommand [server::getactivity]"
   }
 
-  proc open {} {
+  proc setport {requestedport} {
     server::checkstatus
     server::checkactivityformove
-    checkhardwarefor "opem"
-    checkhardwarefor "opem"
+    checkhardwarefor "setport"
     variable daytimetesting
-    if {$daytimetesting} {
-      server::newactivitycommand "closing" "idle" \
-        tertiary::closeactivitycommand
-    } else {
-      server::newactivitycommand "opening" "idle" \
-        tertiary::openactivitycommand
-    }
-  }
-
-  proc close {} {
-    server::checkstatus
-    server::checkactivityformove
-    checkhardwarefor "close"
-    server::newactivitycommand "closing" "idle" \
-      tertiary::closeactivitycommand
+    setporthardware $requestedport
+    return
   }
 
 }
