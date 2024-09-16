@@ -122,5 +122,9 @@
   "seeing": {
     "host": "control",
     "port": 5025
+  },
+  "tertiary": {
+    "host": "control",
+    "port": 5026
   }
 }

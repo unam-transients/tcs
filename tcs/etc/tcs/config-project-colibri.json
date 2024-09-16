@@ -148,6 +148,7 @@
       "target",
       "telescope",
       "telescopecontroller",
+      "tertiary",
       "weather"
     ]
   },
@@ -880,6 +881,11 @@
   },
   "telescopecontroller": {
     "type": "opentsi"
+  },
+  "tertiary": {
+    "type": "opentsi",
+    "port2name": "right",
+    "port3name": "left"
   },
   "weather": {
     "windaveragespeedlimit": "45"

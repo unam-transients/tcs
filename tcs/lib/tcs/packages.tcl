@@ -242,6 +242,10 @@ package ifneeded telescopecontrolleropentsi  0.0 \
   [list source [file join [file dirname [info script]] telescopecontrolleropentsi.tcl]]
 package ifneeded telescopecontrollerserver   0.0 \
   [list source [file join [file dirname [info script]] telescopecontrollerserver.tcl]]
+package ifneeded tertiaryopentsi       0.0 \
+  [list source [file join [file dirname [info script]] tertiaryopentsi.tcl]]
+package ifneeded tertiaryserver        0.0 \
+  [list source [file join [file dirname [info script]] tertiaryserver.tcl]]
 package ifneeded tojson                0.0 \
   [list source [file join [file dirname [info script]] tojson.tcl]]
 package ifneeded utcclock              0.0 \

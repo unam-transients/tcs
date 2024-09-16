@@ -141,6 +141,9 @@ installs	:=			           \
 	telescopeserver.tcl		       \
 	telescopecontrolleropentsi.tcl \
 	telescopecontrollerserver.tcl  \
+	tertiary.tcl			       \
+	tertiaryopentsi.tcl            \
+	tertiaryserver.tcl		       \
 	tojson.tcl			           \
 	utcclock.tcl		    	   \
 	visit.tcl 		        	   \
