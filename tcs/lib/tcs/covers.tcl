@@ -101,7 +101,7 @@ namespace eval "covers" {
   proc open {} {
     server::checkstatus
     server::checkactivityformove
-    checkhardwarefor "opem"
+    checkhardwarefor "open"
     variable daytimetesting
     if {$daytimetesting} {
       server::newactivitycommand "closing" "idle" \
