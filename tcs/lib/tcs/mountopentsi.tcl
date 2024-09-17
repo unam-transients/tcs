@@ -356,7 +356,9 @@ namespace eval "mount" {
   proc stophardware {} {
     log::info "stopping the mount."
     controller::flushcommandqueue
-    opentsi::sendcommand "SET TELESCOPE.STOP=1"
+    if {[opentsi::isoperational]} {
+      opentsi::sendcommand "SET TELESCOPE.STOP=1"
+    }
   }
   
   proc setportpositionhardware {portposition} {
@@ -434,7 +436,8 @@ namespace eval "mount" {
   proc checkhardwarefor {action} {
     switch $action {
       "preparetomove" -
-      "reset" {
+      "reset" - 
+      "stop" {
       }
       default {
         opentsi::checkreadystate "operational"

@@ -138,7 +138,8 @@ namespace eval "dome" {
   
   proc checkhardwarefor {action} {
     switch $action {
-      "reset" {
+      "reset" -
+      "stop" {
       }
       default {
         opentsi::checkreadystate "operational"
@@ -151,7 +152,9 @@ namespace eval "dome" {
   }
       
   proc stophardware {} {
-    opentsi::sendcommand "SET TELESCOPE.STOP=1"
+    if {[opentsi::isoperational]} {
+      opentsi::sendcommand "SET TELESCOPE.STOP=1"
+    }
   }
   
   proc openhardware {} {
