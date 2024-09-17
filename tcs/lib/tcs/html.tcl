@@ -1160,25 +1160,6 @@ namespace eval "html" {
 
   }
 
-  proc writetertiary {} {
-
-    putshtml "<table class=\"status\">"
-
-    writehtmlstatusblock "tertiary"
-
-    putshtml "</table>"
-
-    putshtml "<table class=\"status\">"
-
-    if {[string equal [client::getstatus "tertiary"] "ok"]} {
-      writehtmlrow "Requested port" [client::getdata "tertiary" "requestedport"]
-      writehtmlrow "Current port" [client::getdata "tertiary" "port"]
-    }
-  
-    putshtml "</table>"
-
-  }
-
   proc writeweather {} {
 
     putshtml "<table class=\"status\">"
@@ -1706,7 +1687,6 @@ if {false} {
       supervisor          {Supervisor}
       target              {Target}
       telescope           {Telescope}
-      tertiary            {Tertiary}
       weather             {Weather}
     }
     variable servers
