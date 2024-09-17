@@ -933,7 +933,7 @@ namespace eval "html" {
           [formatradtodegifdouble "%.2f°" [client::getdata "mount" "requestedobservedazimuth"]] \
           [formatradtodegifdouble "%.2f°" [client::getdata "mount" "requestedobservedzenithdistance"]]
 
-      if {![string equal "" [client::getdata "mount" "requestedport"]]} {
+      if {![string equal "" [client::getdata "mount" "port"]]} {
         writehtmlrow "Requested port" [client::getdata "mount" "requestedport"]
       }
       writehtmlrow "Requested mount rotation" \

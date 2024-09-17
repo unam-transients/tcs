@@ -50,6 +50,8 @@ namespace eval "mount" {
   variable trackingsettlingdelayseconds [config::getvalue "mount" "trackingsettlingdelayseconds"]
   variable movingsettlingdelayseconds   [config::getvalue "mount" "movingsettlingdelayseconds"]
   variable maxcorrection                [astrometry::parseangle [config::getvalue "mount" "maxcorrection"]]
+  variable ports                        [config::getvalue "mount" "ports"]
+  variable initialport                  [config::getvalue "mount" "initialport"]
   
   ######################################################################
 
@@ -990,9 +992,16 @@ namespace eval "mount" {
   
   proc setport {port} {
     server::checkstatus
-    server::checkactivityformove
+    variable ports
+    if {![dict exists $ports $port]} {
+      error "invalid port \"$port\"."
+    }
     server::setdata "requestedport" $port
-    setporthardware $port
+    while {[dict exists $ports $port]} {
+      set port [dict get $ports $port]
+    }
+    server::setdata "requestedportposition" $port
+    setportpositionhardware $port
   }
 
   proc preparetomove {} {
