@@ -264,7 +264,9 @@ namespace eval "telescopecontroller" {
   }
   
   proc stophardware {} {
-    opentsi::sendcommand "SET TELESCOPE.STOP=1"
+    if {[opentsi::isoperational]} {
+      opentsi::sendcommand "SET TELESCOPE.STOP=1"
+    }
   }
   
   proc checkhardwarefor {action} {

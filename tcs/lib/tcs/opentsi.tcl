@@ -217,6 +217,15 @@ namespace eval "opentsi" {
     return $readystatetext
   }
   
+  proc isoperational {} {
+    variable readystatetext
+    if {[string equal $readystatetext "operational"]} {
+      return true
+    } else {
+      return false
+    }
+  }
+  
   ######################################################################
   
   proc checkreadystate {requiredreadystatetext} {

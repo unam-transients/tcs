@@ -201,7 +201,8 @@ namespace eval "covers" {
   
   proc checkhardwarefor {action} {
     switch $action {
-      "reset" {
+      "reset" -
+      "stop" {
       }
       default {
         opentsi::checkreadystate "operational"
@@ -215,7 +216,9 @@ namespace eval "covers" {
   
   proc stophardware {} {
     server::setdata "requestedcovers" ""
-    opentsi::sendcommand "SET TELESCOPE.STOP=1"
+    if {[opentsi::isoperational]} {
+      opentsi::sendcommand "SET TELESCOPE.STOP=1"
+    }
   }
   
   proc openhardware {} {
