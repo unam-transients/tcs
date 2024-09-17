@@ -908,6 +908,7 @@ namespace eval "html" {
     if {[string equal [client::getstatus "mount"] "ok"]} {
       writehtmlrow "LAST" [formatalphaifdouble [astrometry::last [utcclock::scan [client::getdata "mount" "timestamp"]]]]
       writehtmlrow "State" [client::getdata "mount" "state"]
+      
 
       writehtmlrow "Requested standard position (α,HA,δ)" \
         [formatalphaifdouble [client::getdata "mount" "requestedstandardalpha"]] \
@@ -932,6 +933,9 @@ namespace eval "html" {
           [formatradtodegifdouble "%.2f°" [client::getdata "mount" "requestedobservedazimuth"]] \
           [formatradtodegifdouble "%.2f°" [client::getdata "mount" "requestedobservedzenithdistance"]]
 
+      if {![string equal "" [client::getdata "mount" "requestedport"]]} {
+        writehtmlrow "Requested port" [client::getdata "mount" "requestedport"]
+      }
       writehtmlrow "Requested mount rotation" \
         [formatradtodegifdouble "%.2f°"  [client::getdata "mount" "requestedmountrotation"]]
       writehtmlrow "Requested mount position (α,HA,δ)" \
@@ -943,6 +947,9 @@ namespace eval "html" {
         "" \
         [formatrateifdouble [client::getdata "mount" "requestedmountdeltarate"]]
 
+      if {![string equal "" [client::getdata "mount" "port"]]} {
+        writehtmlrow "Current port" [client::getdata "mount" "port"]
+      }
       writehtmlrow "Current mount rotation" \
         [formatradtodegifdouble "%.2f°"  [client::getdata "mount" "mountrotation"]]
       writehtmlrow "Current mount position (α,HA,δ)" \

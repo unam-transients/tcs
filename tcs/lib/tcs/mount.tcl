@@ -987,6 +987,13 @@ namespace eval "mount" {
     checkhardwarefor "reset"
     server::newactivitycommand "resetting" [server::getstoppedactivity] mount::resetactivitycommand 120000
   }
+  
+  proc setport {port} {
+    server::checkstatus
+    server::checkactivityformove
+    server::setdata "requestedport" $port
+    setporthardware $port
+  }
 
   proc preparetomove {} {
     server::checkstatus
@@ -997,7 +1004,7 @@ namespace eval "mount" {
 
   proc move {} {
     server::checkstatus
-    server::checkactivity "preparedtomove"
+    server::checkactivityformove
     checkunparked
     checkhardwarefor "move"
     if {[catch {client::checkactivity "target" "idle"} message]} {
@@ -1039,7 +1046,7 @@ namespace eval "mount" {
 
   proc track {} {
     server::checkstatus
-    server::checkactivity "preparedtotrack"
+    server::checkactivityformove
     checkunparked
     checkhardwarefor "track"
     if {[catch {client::checkactivity "target" "tracking"} message]} {
@@ -1051,7 +1058,7 @@ namespace eval "mount" {
 
   proc offset {} {
     server::checkstatus
-    server::checkactivity "preparedtotrack"
+    server::checkactivityformove
     checkunparked
     checkhardwarefor "offset"
     if {[catch {client::checkactivity "target" "tracking"} message]} {

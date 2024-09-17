@@ -100,6 +100,11 @@ namespace eval "mountserver" {
     mount::setMEtozero
     return
   }
+  
+  proc slavesetport {port} {
+    mount::setport $port
+    return
+  }
 
   proc configureslave {slave} {
     interp alias $slave initialize          {} mountserver::slaveinitialize
@@ -116,6 +121,7 @@ namespace eval "mountserver" {
     interp alias $slave correct             {} mountserver::slavecorrect
     interp alias $slave setMAtozero         {} mountserver::slavesetMAtozero
     interp alias $slave setMEtozero         {} mountserver::slavesetMEtozero
+    interp alias $slave setport             {} mountserver::slavesetport
   }
 
   ######################################################################

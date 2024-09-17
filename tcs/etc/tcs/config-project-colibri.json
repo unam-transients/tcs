@@ -199,7 +199,8 @@
     "haunpark": "0h",
     "deltaunpark": "1d",
     "minzenithdistancelimit": "0.5d",
-    "maxzenithdistancelimit": "80d"
+    "maxzenithdistancelimit": "80d",
+    "initialport": "port3"
   },
   "plc": {
     "type": "colibri",

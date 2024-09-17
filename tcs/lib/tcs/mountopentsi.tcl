@@ -95,6 +95,7 @@ namespace eval "mount" {
     CURRENT.TRACK
     CURRENT.TARGETDISTANCE
     CURRENT.DEROTATOR_OFFSET
+    POSITION.INSTRUMENTAL.PORT_SELECT.CURRPOS
   } ";"]"
 
   ######################################################################
@@ -139,6 +140,10 @@ namespace eval "mount" {
   server::setdata "mountalphaerror"             ""
   server::setdata "mountdeltaerror"             ""
   server::setdata "mounthaerror"                ""
+  
+  server::setdata "requestedport"               [config::getvalue "mount" "initialport"]
+  server::setdata "portposition"                ""
+  server::setdata "port"                        ""
 
   server::setdata "unparked"                    false
 
@@ -151,6 +156,7 @@ namespace eval "mount" {
   variable pendingmountst              ""
   variable pendingtelescopemotionstate ""
   variable pendingtargetdistance       ""
+  variable pendingportposition         ""
   
   variable telescopemotionstate        ""
   variable targetdistance              ""
@@ -166,6 +172,7 @@ namespace eval "mount" {
     variable pendingmountst
     variable pendingtelescopemotionstate
     variable pendingtargetdistance
+    variable pendingportposition
 
     variable telescopemotionstate
     variable targetdistance
@@ -218,6 +225,10 @@ namespace eval "mount" {
       set pendingmountrotation [astrometry::degtorad $value]
       return false
     }
+    if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.PORT_SELECT.CURRPOS=%f" value] == 1} {
+      set pendingportposition $value
+      return false
+    }
     if {[regexp {[0-9]+ DATA INLINE } $response] == 1} {
       log::debug "status: ignoring DATA INLINE response."
       return false
@@ -239,6 +250,25 @@ namespace eval "mount" {
     set telescopemotionstate         $pendingtelescopemotionstate
     set targetdistance               $pendingtargetdistance
     
+    set portposition                 $pendingportposition
+
+    if {$portposition == 2.0} {
+      set port "port2"
+    } elseif {$portposition == 3.0} {
+      set port "port3"
+    } else {
+      set port "intermediate"
+    }
+
+    set lastportposition [server::getdata "portposition"]
+    set lastport         [server::getdata "port"]
+    if {![string equal $lastportposition ""] && $lastportposition != $portposition} {
+      log::info "port position changed from $lastportposition to $portposition."
+    }
+    if {![string equal $lastport ""] && ![string equal $lastport $port]} {
+      log::info "port changed from \"$lastport\" to \"$port\"."
+    }
+
     set timestamp [utcclock::combinedformat "now"]
 
     server::setdata "timestamp"           $timestamp
@@ -250,6 +280,8 @@ namespace eval "mount" {
     server::setdata "mountalpha"          $mountalpha
     server::setdata "mountha"             $mountha
     server::setdata "mountdelta"          $mountdelta
+    server::setdata "portposition"        $portposition
+    server::setdata "port"                $port
 
     updaterequestedpositiondata false
 
@@ -320,6 +352,21 @@ namespace eval "mount" {
     log::info "stopping the mount."
     controller::flushcommandqueue
     opentsi::sendcommand "SET TELESCOPE.STOP=1"
+  }
+  
+  proc setporthardware {port} {
+    switch $port {
+      "port2" {
+        set i 2
+      }
+      "port3" {
+        set i 3
+      }
+      default {
+        error "unknown port \"$port\"."
+      }
+    }
+    opentsi::sendcommand [format "SET POINTING.SETUP.USE_PORT=%d" $i]
   }
 
   proc parkhardware {} {
@@ -428,7 +475,7 @@ namespace eval "mount" {
   proc initializeactivitycommand {} {
     set start [utcclock::seconds]
     log::info "initializing."
-    opentsi::sendcommand "SET POINTING.SETUP.USE_PORT=3"
+    setporthardware [server::getdata "requestedport"]
     parkhardware
     set end [utcclock::seconds]
     log::info [format "finished initializing after %.1f seconds." [utcclock::diff $end $start]]
