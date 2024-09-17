@@ -199,7 +199,12 @@
     "deltaunpark": "1d",
     "minzenithdistancelimit": "0.5d",
     "maxzenithdistancelimit": "80d",
-    "initialport": "port3"
+    "initialport": "ogse",
+    "ports": {
+      "ogse":    "port3",
+      "port2":   "2",
+      "port3":   "3"
+    }
   },
   "plc": {
     "type": "colibri",

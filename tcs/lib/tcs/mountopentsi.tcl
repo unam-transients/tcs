@@ -141,7 +141,8 @@ namespace eval "mount" {
   server::setdata "mountdeltaerror"             ""
   server::setdata "mounthaerror"                ""
   
-  server::setdata "requestedport"               [config::getvalue "mount" "initialport"]
+  server::setdata "requestedport"               ""
+  server::setdata "requestedportposition"       ""
   server::setdata "portposition"                ""
   server::setdata "port"                        ""
 
@@ -251,10 +252,14 @@ namespace eval "mount" {
     set targetdistance               $pendingtargetdistance
     
     set portposition                 $pendingportposition
-
-    if {$portposition == 2.0} {
+    
+    set requestedportposition [server::getdata "requestedportposition"]
+    set requestedport         [server::getdata "requestedport"        ]
+    if {$portposition == $requestedportposition} {
+      set port $requestedport
+    } elseif {$portposition == 2} {
       set port "port2"
-    } elseif {$portposition == 3.0} {
+    } elseif {$portposition == 3} {
       set port "port3"
     } else {
       set port "intermediate"
@@ -263,10 +268,10 @@ namespace eval "mount" {
     set lastportposition [server::getdata "portposition"]
     set lastport         [server::getdata "port"]
     if {![string equal $lastportposition ""] && $lastportposition != $portposition} {
-      log::info "port position changed from $lastportposition to $portposition."
-    }
-    if {![string equal $lastport ""] && ![string equal $lastport $port]} {
-      log::info "port changed from \"$lastport\" to \"$port\"."
+      log::debug "port position changed from $lastportposition to $portposition."
+      if {![string equal $lastport ""] && ![string equal $lastport $port]} {
+        log::info "port changed from \"$lastport\" to \"$port\"."
+      }
     }
 
     set timestamp [utcclock::combinedformat "now"]
@@ -354,19 +359,9 @@ namespace eval "mount" {
     opentsi::sendcommand "SET TELESCOPE.STOP=1"
   }
   
-  proc setporthardware {port} {
-    switch $port {
-      "port2" {
-        set i 2
-      }
-      "port3" {
-        set i 3
-      }
-      default {
-        error "unknown port \"$port\"."
-      }
-    }
-    opentsi::sendcommand [format "SET POINTING.SETUP.USE_PORT=%d" $i]
+  proc setportpositionhardware {portposition} {
+    server::setdata "requestedportposition" $portposition
+    opentsi::sendcommand [format "SET POINTING.SETUP.USE_PORT=%d" $portposition]
   }
 
   proc parkhardware {} {
@@ -475,7 +470,8 @@ namespace eval "mount" {
   proc initializeactivitycommand {} {
     set start [utcclock::seconds]
     log::info "initializing."
-    setporthardware [server::getdata "requestedport"]
+    variable initialport
+    setport $initialport
     parkhardware
     set end [utcclock::seconds]
     log::info [format "finished initializing after %.1f seconds." [utcclock::diff $end $start]]
