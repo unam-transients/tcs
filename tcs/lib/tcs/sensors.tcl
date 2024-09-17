@@ -183,6 +183,12 @@ namespace eval "sensors" {
         [scan $correctionmodel "ENV-P:1.0:%f" a] == 1
     } {
       set value [expr {$rawvalue - $a}]
+    } elseif {
+        [scan $correctionmodel "PT-100:1.0:%f:%f" a b] == 2
+    } {
+      set value [expr {$rawvalue - ($a + $b * $rawvalue)}]
+      set value [expr {$rawvalue - ($a + $b * $value)}]
+      set value [expr {$rawvalue - ($a + $b * $value)}]
     } else {
       error "invalid correction model \"$correctionmodel\" for sensor \"$name\"."
     }
