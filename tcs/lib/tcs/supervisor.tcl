@@ -49,6 +49,7 @@ namespace eval "supervisor" {
   variable open                 false
   variable opentoventilate      false
   variable closed               false
+  variable accessrequested      false
 
   ######################################################################
   
@@ -157,6 +158,8 @@ namespace eval "supervisor" {
       set reportweather false
       set reportplc     false
       set reportsensors false
+      
+      set loopstartmode $mode
 
       if {[string equal $mode "closed"]} {
 
@@ -329,6 +332,11 @@ namespace eval "supervisor" {
 
       }
 
+      if {![string equal $loopstartmode $mode]} {
+        set delay 0
+        continue
+      }
+
       updatedata
       catch {
         log::debug "loop: external humidity is [client::getdata "weather" "humidity"]."
@@ -381,6 +389,11 @@ namespace eval "supervisor" {
         continue
       } 
       
+      if {![string equal $loopstartmode $mode]} {
+        set delay 0
+        continue
+      }
+
       if {[string equal [client::getdata "executor" "activity"] "started"]} {
         set start [utcclock::seconds]
         log::summary "initializing ($why)."
@@ -391,6 +404,8 @@ namespace eval "supervisor" {
         set closed          false
         updatedata
         if {![catch {
+          client::request "executor" "reset"
+          client::wait "executor"
           client::request "executor" "reset"
           client::wait "executor"
           client::request "executor" "initialize"
@@ -411,6 +426,11 @@ namespace eval "supervisor" {
         continue
       } 
       
+      if {![string equal $loopstartmode $mode]} {
+        set delay 0
+        continue
+      }
+
       if {$mustdisable} {
 
         set start [utcclock::seconds]
@@ -424,6 +444,11 @@ namespace eval "supervisor" {
         continue
       } 
       
+      if {![string equal $loopstartmode $mode]} {
+        set delay 0
+        continue
+      }
+
       if {$maybeopen} {
 
         if {$open} {
@@ -551,6 +576,90 @@ namespace eval "supervisor" {
   }
   
   ######################################################################
+  
+  proc plcaccessloop {} {
+  
+    while {true} {
+    
+      if {[catch {
+
+        while {true} {
+    
+          coroutine::after 1000
+      
+          log::debug "plcaccessloop: updating plc data."
+          client::update "plc"
+        
+          log::debug "plcaccessloop: checking if access has been requested."
+          variable accessrequested
+          if {
+            ![client::getdata "plc" "accessrequested"] && 
+            !$accessrequested
+          } {
+            log::debug "plcaccessloop: access has not been requested."
+            continue
+          }
+
+          if {[client::getdata "plc" "accessrequested"]} {
+            log::summary "access requested by the plc."
+          }
+
+          if {$accessrequested} {
+            log::summary "access requested by the supervisor."
+              set accessrequested false
+          }
+
+          set start [utcclock::seconds]
+          log::summary "responding for request to access."
+
+          log::summary "disabling supervisor."
+          variable mode
+          set mode "disabled"
+          updatedata
+
+          log::summary "disabling selector."
+          if {[catch {
+            client::request "selector" "disable" 
+            client::wait "selector"
+          } message]} {
+            log::error "unable to disable selector: $message"
+            log::error "unable to grant access."
+            continue
+          }
+
+          log::summary "stopping executor."
+          if {[catch {
+            client::request "executor" "stop" 
+            client::wait "executor"
+          } message]} {
+            log::error "unable to stop executor: $message"
+            log::error "unable to grant access."
+            continue
+          }
+
+          if {[client::getdata "plc" "accessrequested"]} {
+            log::summary "granting access."
+            if {[catch {
+              client::request "plc" "grantaccess"
+              client::wait "plc"
+            } message]} {
+              log::error "unable to grant access: $message"
+              continue
+            }
+          }
+
+          log::summary [format "finished responding for request to access after %.1f seconds." [utcclock::diff now $start]]
+          
+        }
+      
+      } message]} {
+        log::warning "plcaccessloop: error: $message"
+      }
+    }
+  
+  }
+  
+  ######################################################################
 
   proc emergencycloseactivitycommand {} {
     set start [utcclock::seconds]
@@ -613,6 +722,15 @@ namespace eval "supervisor" {
     log::summary [format "finished setting mode to \"closed\" after %.1f seconds." [utcclock::diff now $start]]
     return
   }
+  
+  proc requestaccess {} {
+    set start [utcclock::seconds]
+    log::summary "requesting access."
+    variable accessrequested
+    set accessrequested true
+    log::summary [format "finished requesting access after %.1f seconds." [utcclock::diff now $start]]
+    return
+  }
 
   proc emergencyclose {} {
     server::newactivitycommand "closing" "idle" \
@@ -628,6 +746,12 @@ namespace eval "supervisor" {
     server::setrequestedactivity "idle"
     updatedata
     server::setstatus "ok"
+    variable withplc
+    if {$withplc} {
+      after idle {
+        coroutine ::supervisor::plcaccesscoroutine supervisor::plcaccessloop
+      }
+    }
     after idle {
       coroutine ::supervisor::loopcoroutine supervisor::loop
     }

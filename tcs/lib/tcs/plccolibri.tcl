@@ -505,10 +505,10 @@ namespace eval "plc" {
     server::setdata "telescopecabinetpower"            $telescopecabinetpower
     
     switch -- "[string index $responseb 100]" {
-      "0" { set requestforaccess false }
-      "1" { set requestforaccess true  }
+      "0" { set accessrequested false }
+      "1" { set accessrequested true  }
     }
-    server::setdata "requestforaccess"                 $requestforaccess
+    server::setdata "accessrequested"                  $accessrequested
 
     # Process responsec.
 
@@ -570,76 +570,76 @@ namespace eval "plc" {
     set mustbeclosed [boolean [expr {![string equal $mode "remote and may be open"]}]]
     server::setdata "mustbeclosed"                    $mustbeclosed
     
-    foreach {name prettyname} {
+    foreach {level name prettyname} {
 
-      "fans"                          "fans"             
+      "info"    "fans"                          "fans"             
 
-      "shutters"                      "shutters"
+      "info"    "shutters"                      "shutters"
 
-      "telescopecabinetpower"         "telescope cabinet power"
+      "summary" "telescopecabinetpower"         "telescope cabinet power"
       
-      "bypasskeyswitch"               "key switch bypass"
-      "bypassweatheralarms"           "weather alarms bypass"
-      "bypasswindalarm"               "wind alarm bypass"
-      "bypasshumidityalarm"           "dewpoint alarm bypass"
-      "bypasscloudalarm"              "cloud alarm bypass"
-      "bypassrainalarm"               "rain alarm bypass"
-      "bypassdaylightalarm"           "daylight alarm bypass"
-      "bypassupsalarm"                "ups alarm bypass"
-      "bypasstcsalarm"                "tcs alarm bypass"
+      "info"    "bypasskeyswitch"               "key switch bypass"
+      "info"    "bypassweatheralarms"           "weather alarms bypass"
+      "info"    "bypasswindalarm"               "wind alarm bypass"
+      "info"    "bypasshumidityalarm"           "dewpoint alarm bypass"
+      "info"    "bypasscloudalarm"              "cloud alarm bypass"
+      "info"    "bypassrainalarm"               "rain alarm bypass"
+      "info"    "bypassdaylightalarm"           "daylight alarm bypass"
+      "info"    "bypassupsalarm"                "ups alarm bypass"
+      "info"    "bypasstcsalarm"                "tcs alarm bypass"
       
-      "rainalarmdisabled"             "rain alarm disabled"
-      "windalarmdisabled"             "wind alarm disabled"
-      "humidityalarmdisabled"         "humidity alarm disabled"
-      "cloudalarmdisabled"            "cloud alarm disabled"
-      "daylightalarmdisabled"         "daylight alarm disabled"
-      "tcsalarmdisabled"              "tcs alarm disabled"
-      "upsalarmdisabled"              "ups alarm disabled"
+      "info"    "rainalarmdisabled"             "rain alarm disabled"
+      "info"    "windalarmdisabled"             "wind alarm disabled"
+      "info"    "humidityalarmdisabled"         "humidity alarm disabled"
+      "info"    "cloudalarmdisabled"            "cloud alarm disabled"
+      "info"    "daylightalarmdisabled"         "daylight alarm disabled"
+      "info"    "tcsalarmdisabled"              "tcs alarm disabled"
+      "info"    "upsalarmdisabled"              "ups alarm disabled"
       
-      "motorpoweron"                  "motor power on"
+      "info"    "motorpoweron"                  "motor power on"
 
-      "europeanupsstatus"             "european ups status"
-      "europeanupsusingbattery"       "european ups using battery"
-      "europeanupscommunicationalarm" "european ups communication alarm"
-      "americanupsstatus"             "american ups status"
-      "americanupsusingbattery"       "american ups using battery"
-      "americanupscommunicationalarm" "american ups communication alarm"
+      "info"    "europeanupsstatus"             "european ups status"
+      "info"    "europeanupsusingbattery"       "european ups using battery"
+      "info"    "europeanupscommunicationalarm" "european ups communication alarm"
+      "info"    "americanupsstatus"             "american ups status"
+      "info"    "americanupsusingbattery"       "american ups using battery"
+      "info"    "americanupscommunicationalarm" "american ups communication alarm"
 
-      "riousingbattery"               "rio using battery"
+      "info"    "riousingbattery"               "rio using battery"
 
-      "riobatteryalarm"               "rio battery alarm"
-      "rainalarm"                     "rain alarm"
-      "windalarm"                     "wind alarm"
-      "cloudalarm"                    "cloud alarm"
-      "daylightalarm"                 "daylight alarm"
-      "humidityalarm"                 "dewpoint alarm"
-      "tcsalarm"                      "tcs alarm"
-      "upsalarm"                      "ups alarm"
-      "intrusionalarm"                "intrusion alarm"
-      "riocommunicationalarm"         "rio communication alarm"
-      "riovaisalacommunicationalarm"  "rio vaisala communication alarm"
-      "rioboltwoodcommunicationalarm" "rio boltwoodcommunication alarm"
-      "emergencystopalarm"            "emergency stop alarm"
+      "info"    "riobatteryalarm"               "rio battery alarm"
+      "info"    "rainalarm"                     "rain alarm"
+      "info"    "windalarm"                     "wind alarm"
+      "info"    "cloudalarm"                    "cloud alarm"
+      "info"    "daylightalarm"                 "daylight alarm"
+      "info"    "humidityalarm"                 "dewpoint alarm"
+      "info"    "tcsalarm"                      "tcs alarm"
+      "info"    "upsalarm"                      "ups alarm"
+      "info"    "intrusionalarm"                "intrusion alarm"
+      "info"    "riocommunicationalarm"         "rio communication alarm"
+      "info"    "riovaisalacommunicationalarm"  "rio vaisala communication alarm"
+      "info"    "rioboltwoodcommunicationalarm" "rio boltwoodcommunication alarm"
+      "info"    "emergencystopalarm"            "emergency stop alarm"
 
-      "needtopark"                    "needtopark"
+      "info"    "needtopark"                    "needtopark"
 
-      "keyswitch"                     "key switch"
-      "mode"                          "mode"
+      "summary" "keyswitch"                     "key switch"
+      "summary" "mode"                          "mode"
 
-      "requestedtelescopemode"        "requested telescope mode"
-      "telescopemode"                 "telescope mode"
-      "requesteddomemode"             "requested dome mode"
-      "domemode"                      "dome mode"
+      "info"    "requestedtelescopemode"        "requested telescope mode"
+      "info"    "telescopemode"                 "telescope mode"
+      "info"    "requesteddomemode"             "requested dome mode"
+      "info"    "domemode"                      "dome mode"
 
-      "requestedpark"                 "requested park"
-      "requestedcloseshutters"        "requested close shutters"
+      "summary" "requestedpark"                 "requested park"
+      "summary" "requestedcloseshutters"        "requested close shutters"
       
-      "mustbeclosed"                  "must be closed"
+      "summary" "mustbeclosed"                  "must be closed"
       
-      "requestforaccess"              "request for access"
+      "summary" "accessrequested"               "accessrequested"
 
     } {
-      logchange $name $prettyname
+      logchange $level $name $prettyname
     }
     
     server::setdata "timestamp"           $timestamp
@@ -695,13 +695,13 @@ namespace eval "plc" {
   
   variable lastvalue {}
   
-  proc logchange {name prettyname} {
+  proc logchange {level name prettyname} {
     variable lastvalue
     set value [server::getdata $name]
     if {![dict exists $lastvalue $name]} {
-      log::info [format "%s is %s." $prettyname $value]
+      log::$level [format "%s is %s." $prettyname $value]
     } elseif {![string equal [dict get $lastvalue $name] $value]} {
-      log::info [format "%s has changed from %s to %s." $prettyname [dict get $lastvalue $name] $value]
+      log::$level [format "%s has changed from %s to %s." $prettyname [dict get $lastvalue $name] $value]
     }
     dict set lastvalue $name $value
   }
@@ -903,6 +903,13 @@ namespace eval "plc" {
     log::info [format "finished disabling the $alarm alarm after %.1f seconds." [utcclock::diff now $start]]
   }
 
+  proc grantaccessactivitycommand {} {
+    set start [utcclock::seconds]
+    log::info "granting access."
+    controller::sendcommand "Telescope\{STOP\}\n"
+    log::info [format "finished granting access after %.1f seconds." [utcclock::diff now $start]]
+  }
+
   ######################################################################
   
   proc checkalarm {alarm} {
@@ -933,6 +940,12 @@ namespace eval "plc" {
     server::checkstatus
     checkalarm $alarm
     server::newactivitycommand "disabling" "idle" "plc::disablealarmactivitycommand $alarm"
+  }
+
+  proc grantaccess {} {
+    set start [utcclock::seconds]
+    server::checkstatus
+    server::newactivitycommand "granting" "idle" "plc::grantaccessactivitycommand"
   }
 
   ######################################################################
