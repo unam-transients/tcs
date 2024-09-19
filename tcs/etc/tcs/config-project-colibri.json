@@ -91,7 +91,7 @@
     "pointingmodelparameters": {},
     "isstandalone": false,
     "fitsfwhmargs": {
-      "1": "",
+      "1": "-A",
       "2": "-A",
       "4": "-A",
       "8": "-A",
@@ -201,6 +201,8 @@
     "maxzenithdistancelimit": "80d",
     "initialport": "ogse",
     "ports": {
+      "new":     "port2",
+      "old":     "port3",
       "ogse":    "port3",
       "port2":   "2",
       "port3":   "3"
