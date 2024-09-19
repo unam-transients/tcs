@@ -792,7 +792,7 @@ namespace eval "html" {
       switch $type {
         "colibri" {
 
-          writealarm       "Must be closed"            [client::getdata "plc" "mustbeclosed"]
+          writealarm       "Must not operate"          [client::getdata "plc" "mustnotoperate"]
           writehtmlrow     "Key switch"                [client::getdata "plc" "keyswitch"]
           writehtmlrow     "Local confirmation"        [client::getdata "plc" "localconfirmation"]
           writehtmlrow     "Access requested"          [client::getdata "plc" "accessrequested"]
