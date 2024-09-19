@@ -241,12 +241,16 @@ proc coarsefocusvisit {{exposuretime 5} {filter "r"}} {
   
   executor::setsecondaryoffset 0
   executor::track
-  executor::setwindow "1kx1k-boresight"
+  executor::setwindow "full"
   executor::setbinning 8
   executor::movefilterwheel "$filter"
   executor::waituntiltracking
 
-  log::summary "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning 4."
+  log::summary "coarsefocusvisit: centering."
+  executor::center $exposuretime
+  executor::waituntiltracking
+
+  log::summary "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning 8."
   executor::focus $exposuretime 500 50 false true
   
   log::summary "coarsefocusvisit: finished."
@@ -262,12 +266,18 @@ proc focusvisit {{exposuretime 5} {filter "r"}} {
   
   executor::setsecondaryoffset 0
   executor::track
-  executor::setwindow "1kx1k-boresight"
+  executor::setwindow "full"
   executor::setbinning 2
   executor::movefilterwheel "$filter"
   executor::waituntiltracking
 
-  log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
+  log::summary "focusvisit: centering."
+  executor::center $exposuretime
+  executor::waituntiltracking
+
+  log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 2."
+  executor::setwindow "1kx1k-boresight"
+  executor::setbinning 2
   executor::focus $exposuretime 100 10 true false
   
   log::summary "focusvisit: finished."
@@ -288,7 +298,7 @@ proc focustiltvisit {{exposuretime 5} {filter "r"}} {
   executor::movefilterwheel "$filter"
   executor::waituntiltracking
 
-  log::summary "focustiltvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
+  log::summary "focustiltvisit: focusing in filter $filter with $exposuretime second exposures and binning 2."
   executor::focus $exposuretime 300 15 false false
   executor::setunfocused
   
@@ -533,7 +543,7 @@ proc hartmanntestvisit {secondaryoffset {eastoffset 0am} {northoffset 0am} {expo
 
 ########################################################################
 
-proc tokovinintestvisit {{eastoffset 0am} {northoffset 0am} {exposuretime 10} {filter "g"} {exposures 10}} {
+proc tokovinintestvisit {{eastoffset 0am} {northoffset 0am} {exposuretime 10} {filter "r"} {exposures 10}} {
 
   log::summary "tokovinintestvisit: starting."
 
@@ -545,6 +555,10 @@ proc tokovinintestvisit {{eastoffset 0am} {northoffset 0am} {exposuretime 10} {f
 
   executor::track $eastoffset $northoffset
   executor::waituntiltracking
+
+  #log::summary "tokovinintestvisit: correcting pointing."
+  #executor::correctpointing $exposuretime
+  #executor::waituntiltracking
 
   foreach secondaryoffset {-1000 +1000} {
 
@@ -572,6 +586,47 @@ proc tokovinintestvisit {{eastoffset 0am} {northoffset 0am} {exposuretime 10} {f
 
 ########################################################################
 
+proc nearfocustestvisit {{exposuretime 10} {filter "r"} {exposures 3}} {
+
+  log::summary "nearfocustestvisit: starting."
+
+  executor::setwindow "default"
+  executor::setbinning 2
+  executor::movefilterwheel $filter
+
+  executor::track 0 0
+  executor::waituntiltracking
+
+  #log::summary "tokovinintestvisit: correcting pointing."
+  #executor::correctpointing $exposuretime
+  #executor::waituntiltracking
+
+  foreach secondaryoffset {-90 -60 -30 -15 -10 -5 0 +5 +10 +15 +30 +60 +90} {
+
+    log::summary "nearfocustestvisit: images with secondary offset of $secondaryoffset."
+
+    executor::setsecondaryoffset $secondaryoffset
+    executor::offset 0 0
+    executor::waituntiltracking
+      
+    set exposure 0
+    while {$exposure < $exposures} {
+      executor::expose object $exposuretime
+      incr exposure
+    }
+  
+  }
+
+  executor::setsecondaryoffset 0
+
+  log::summary "nearfocustestvisit: finished."
+  
+
+  return true
+}
+
+########################################################################
+
 proc pointingmapvisit {{exposuretime 15} {filter "r"}} {
 
   log::summary "pointingmapvisit: starting."
@@ -588,7 +643,9 @@ proc pointingmapvisit {{exposuretime 15} {filter "r"}} {
 
   executor::center $exposuretime
   executor::center $exposuretime
-  executor::center $exposuretime
+
+  log::summary "pointingmapvisit: taking long exposures."
+  executor::expose object 300
 
   log::summary "pointingmapvisit: finished."
   return true
