@@ -1024,7 +1024,6 @@ namespace eval "telescope" {
   
   proc unpark {} {
     server::checkstatus
-    server::checkactivity "moving" "tracking" "idle"
     safetyswitch::checksafetyswitch
     server::newactivitycommand "unparking" "idle" \
       "telescope::unparkactivitycommand"
