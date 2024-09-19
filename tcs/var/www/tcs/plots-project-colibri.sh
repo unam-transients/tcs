@@ -343,6 +343,17 @@ EOF
       "sensors.dat" using 14:(\$15-\$5) title "M2 - Observing Room"      with lines linestyle 6, \
       "sensors.dat" using 16:(\$17-\$5) title "M3 - Observing Room"      with lines linestyle 7
       
+    set yrange [-5:+5]
+    set ytics -5,1,5
+    set format y "%+.0f"
+    set ylabel "Temperature (C)"
+    set key on
+    plot \
+      "sensors.dat" using  8:(\$9-\$5)  title "OGSE - Observing Room"     with lines linestyle 3, \
+      "sensors.dat" using 10:(\$19-\$5) title "Spider 1 - Observing Room" with lines linestyle 4, \
+      "sensors.dat" using 10:(\$21-\$5) title "Spider 2 - Observing Room" with lines linestyle 5, \
+      "sensors.dat" using 14:(\$15-\$5) title "M2 - Observing Room"       with lines linestyle 6, \
+
     set format x "%Y%m%dT%H"
     set xtics rotate by 90 right
     set xlabel "UTC"
