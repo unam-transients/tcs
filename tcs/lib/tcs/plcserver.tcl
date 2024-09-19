@@ -79,6 +79,10 @@ namespace eval "plcserver" {
   proc slavedisablealarm {alarm} {
     plc::disablealarm $alarm
   }
+
+  proc slavegrantaccess {} {
+    plc::grantaccess
+  }
   
 
   proc configureslave {slave} {
@@ -94,6 +98,7 @@ namespace eval "plcserver" {
     interp alias $slave updateweather        {} plcserver::slaveupdateweather
     interp alias $slave enablealarm          {} plcserver::slaveenablealarm
     interp alias $slave disablealarm         {} plcserver::slavedisablealarm
+    interp alias $slave grantaccess          {} plcserver::slavegrantaccess
   }
 
   ######################################################################
