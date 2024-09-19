@@ -503,6 +503,12 @@ namespace eval "plc" {
       }
     }
     server::setdata "telescopecabinetpower"            $telescopecabinetpower
+    
+    switch -- "[string index $responseb 100]" {
+      "0" { set requestforaccess false }
+      "1" { set requestforaccess true  }
+    }
+    server::setdata "requestforaccess"                 $requestforaccess
 
     # Process responsec.
 
@@ -629,6 +635,8 @@ namespace eval "plc" {
       "requestedcloseshutters"        "requested close shutters"
       
       "mustbeclosed"                  "must be closed"
+      
+      "requestforaccess"              "request for access"
 
     } {
       logchange $name $prettyname

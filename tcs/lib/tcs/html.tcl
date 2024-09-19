@@ -795,6 +795,7 @@ namespace eval "html" {
           writealarm       "Must be closed"            [client::getdata "plc" "mustbeclosed"]
           writehtmlrow     "Key switch"                [client::getdata "plc" "keyswitch"]
           writehtmlrow     "Local confirmation"        [client::getdata "plc" "localconfirmation"]
+          writehtmlrow     "Request for access"        [client::getdata "plc" "requestforaccess"]
 
           writehtmlfullrow "Mode"                      [client::getdata "plc" "mode"]
           writehtmlrow     "Safety delay"              [format "%d s" [client::getdata "plc" "unsafeseconds"]]
