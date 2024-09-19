@@ -966,6 +966,7 @@ namespace eval "mount" {
 
   proc moveactivitycommand {} {
     set start [utcclock::seconds]
+    updaterequestedpositiondata false
     maybeendtracking
     log::info "moving."
     if {[catch {checktarget "move" "idle"} message]} {
@@ -1080,6 +1081,7 @@ namespace eval "mount" {
   
   proc trackoroffsetactivitycommand {move} {
     set start [utcclock::seconds]
+    updaterequestedpositiondata false
     maybeendtracking
     stophardware
     if {$move} {
