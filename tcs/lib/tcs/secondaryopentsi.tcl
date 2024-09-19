@@ -181,7 +181,7 @@ namespace eval "secondary" {
     set z [server::getdata "z"]
     if {$z != $requestedz} {
       log::debug "movehardwaresimple: sending commands."
-      opentsi::sendcommand "SET POSITION.INSTRUMENTAL.FOCUS.TARGETPOS=[expr {$requestedz / 1000.0}]"
+      opentsi::sendcommand "SET POSITION.INSTRUMENTAL.FOCUS.OFFSET=0;POSITION.INSTRUMENTAL.FOCUS.TARGETPOS=[expr {$requestedz / 1000.0}]"
       coroutine::after 1000
       waitwhilemoving
     }
