@@ -244,9 +244,9 @@ namespace eval "plc" {
       
       "MANU"           { set mode "local" }
       "OFF"            { set mode "off"   }
-      "WAIT_ACK"       { set mode "remote and waiting for local confirmation to open"}
-      "AUTO"           { set mode "remote and may be open" }
-      "AUTO_PARK"      { set mode "remote but must be closed" }
+      "WAIT_ACK"       { set mode "remote and waiting for local confirmation to operate"}
+      "AUTO"           { set mode "remote and may operate" }
+      "AUTO_PARK"      { set mode "remote but must not operate" }
       "AUTO_INTRUSION" { set mode "remote but intrusion detected"}
       "ESTOP"          { set mode "emergency stop activated"}
       "WAIT_MANU"      { set mode "local but waiting for telescope to be switched to remote" }
@@ -259,20 +259,6 @@ namespace eval "plc" {
       }
     }
     server::setdata "mode"                          $mode
-
-      # Master is telescope and PLC normally left in remote.
-
-      #"MANU"           { set mode "plc not in remote" }
-      #"OFF"            { set mode "plc not in remote"   }
-      #"WAIT_ACK"       { set mode "waiting for local confirmation to change to remote"}
-      #"AUTO"           { set mode "remote and may be open" }
-      #"AUTO_PARK"      { set mode "remote but must be closed" }
-      #"AUTO_INTRUSION" { set mode "remote but intrusion detected"}
-      #"ESTOP"          { set mode "emergency stop activated"}
-      #"WAIT_MANU"      { set mode "plc not in remote" }
-      #"WAIT_OFF"       { set mode "plc not in remote" }
-      #"WAIT_AUTO"      { set mode "mode determined by telescope key switch" }
-
 
     if {[catch {
       server::setdata "unsafeseconds"                 [format "%d" [parseinteger [lindex $field 51]]]
@@ -567,8 +553,8 @@ namespace eval "plc" {
     server::setdata "riovaisalacommunicationalarmdisabled"  [server::getdata "bypassweatheralarms"]
     server::setdata "rioboltwoodcommunicationalarmdisabled" [server::getdata "bypassweatheralarms"]
     
-    set mustbeclosed [boolean [expr {![string equal $mode "remote and may be open"]}]]
-    server::setdata "mustbeclosed"                    $mustbeclosed
+    set mustnotoperate [boolean [expr {![string equal $mode "remote and may operate"]}]]
+    server::setdata "mustnotoperate"                        $mustnotoperate
     
     foreach {level name prettyname} {
 
@@ -634,7 +620,7 @@ namespace eval "plc" {
       "summary" "requestedpark"                 "requested park"
       "summary" "requestedcloseshutters"        "requested close shutters"
       
-      "summary" "mustbeclosed"                  "must be closed"
+      "summary" "mustnotoperate"                "mustnotoperate"
       
       "summary" "accessrequested"               "accessrequested"
 

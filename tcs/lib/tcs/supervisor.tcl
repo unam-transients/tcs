@@ -100,10 +100,10 @@ namespace eval "supervisor" {
       }
     }
     if {$reportplc} {
-      if {[client::getdata "plc" "mustbeclosed"]} {
-        log::summary "plc state is must be closed."
+      if {[client::getdata "plc" "mustnotoperate"]} {
+        log::summary "plc state is must not operate."
       } else {
-        log::summary "plc state is may be open."
+        log::summary "plc state is may operate."
       }
     }
     if {$reportweather} {
@@ -319,7 +319,7 @@ namespace eval "supervisor" {
             
           } elseif {
             $withplc &&
-            [client::getdata "plc" "mustbeclosed"]
+            [client::getdata "plc" "mustnotoperate"]
           } {
 
             set maybeopen false
