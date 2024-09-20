@@ -24,6 +24,7 @@
 package require "config"
 package require "opentsi"
 package require "log"
+package require "client"
 package require "server"
 
 package provide "telescopecontrolleropentsi" 0.0
@@ -37,6 +38,10 @@ namespace eval "telescopecontroller" {
   server::setdata "ambientpressure"    ""
 
   set server::datalifeseconds          30
+
+  ######################################################################
+
+  variable withplc [config::getvalue "supervisor" "withplc"]
 
   ######################################################################
 
@@ -283,6 +288,22 @@ namespace eval "telescopecontroller" {
     }
   }
   
+  proc checkplcfor {action} {
+    variable withplc
+    if {$withplc} {
+      switch $action {
+        "reset" {
+        }
+        default {
+          client::update "plc"
+          if {[client::getdata "plc" "mustnotoperate"]} {
+            error "the plc is preventing operation."
+          }
+        }
+      }
+    }
+  }
+  
   ######################################################################
   
   proc startactivitycommand {} {
@@ -359,6 +380,7 @@ namespace eval "telescopecontroller" {
     server::checkstatus
     server::checkactivityforinitialize
     checkhardwarefor "initialize"
+    checkplcfor "initialize"
     server::newactivitycommand "initializing" "idle" telescopecontroller::initializeactivitycommand
   }
 
@@ -366,12 +388,14 @@ namespace eval "telescopecontroller" {
     server::checkstatus
     server::checkactivityforstop
     checkhardwarefor "stop"
+    checkplcfor "stop"
     server::newactivitycommand "stopping" [server::getstoppedactivity] "telescopecontroller::stopactivitycommand [server::getactivity]"
   }
   
   proc reset {} {
     server::checkstatus
     server::checkactivityforreset
+    checkplcfor "reset"
     server::newactivitycommand "resetting" [server::getstoppedactivity] telescopecontroller::resetactivitycommand
   }
 
@@ -379,6 +403,7 @@ namespace eval "telescopecontroller" {
     server::checkstatus
     server::checkactivityformove
     checkhardwarefor "switchon"
+    checkplcfor "switchon"
     server::newactivitycommand "switchingon" "idle" telescopecontroller::switchonactivitycommand
   }
 
@@ -386,6 +411,7 @@ namespace eval "telescopecontroller" {
     server::checkstatus
     server::checkactivityformove
     checkhardwarefor "switchoff"
+    checkplcfor "switchoff"
     server::newactivitycommand "switchingoff" "idle" telescopecontroller::switchoffactivitycommand
   }
 
