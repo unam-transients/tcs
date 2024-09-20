@@ -75,7 +75,7 @@ namespace eval "fans" {
 
   ######################################################################
 
-  server::setdata "mustbeclosed"        ""
+  server::setdata "mustbeoff"        ""
 
   proc switchautomaticallyloop {} {
 
@@ -91,12 +91,12 @@ namespace eval "fans" {
       log::debug "switchautomaticallyloop: updating weather data."
       if {[catch {client::update "weather"} message]} {
         log::debug "while updating weather data: $message"
-        set mustbeclosed true
+        set mustbeoff true
       } else {
-        set mustbeclosed [client::getdata "weather" "mustbeclosed"]
+        set mustbeoff [client::getdata "weather" "mustbeclosed"]
       }
         
-      server::setdata "mustbeclosed"        $mustbeclosed
+      server::setdata "mustbeoff" $mustbeoff
 
       log::debug [format "switchautomaticallyloop: mode is %s." [server::getdata "mode"]]
       if {![string equal [server::getdata "mode"] "automatic"]} {
@@ -106,7 +106,7 @@ namespace eval "fans" {
       set fans [server::getdata "fans"]
       set requestedfans $fans
 
-      if {$mustbeclosed} {
+      if {$mustbeoff} {
         if {![string equal $fans "off"]} {
           log::info "automatically switching off."
           set requestedfans "off"
