@@ -59,12 +59,12 @@ namespace eval "lights" {
     set requestedlights [server::getdata "requestedlights"]
     switch $requestedlights {
       "on" {
-        if {[catch {client::request "plc" "switchlightson"}]} {
+        if {[catch {client::request "plc" "switchonlights"}]} {
           log::warning "unable to switch lights on."
         }
       }
       "off" {
-        if {[catch {client::request "plc" "switchlightsoff"}]} {
+        if {[catch {client::request "plc" "switchofflights"}]} {
           log::warning "unable to switch lights off."
         }
       }
