@@ -123,6 +123,9 @@
       "target",
       "moon",
       "sun",
+      "mount",
+      "secondary",
+      "seeing",
       "sensors",
       "weather"
     ]
@@ -262,7 +265,7 @@
       "telescope-front-ring-2-temperature",
       "telescope-fork-arm-1-temperature",
       "telescope-fork-arm-2-temperature",
-      "column-temperature",
+      "column-middle-temperature",
       "control-room-temperature",
       "telescope-cabinet-temperature",
       "weather-humidity",
@@ -276,23 +279,11 @@
       "control-room-light-level",
       "plc-cabinet-temperature",
       "weather-cabinet-temperature",
-      "seeing-cabinet-temperature"
+      "seeing-cabinet-temperature",
+      "column-bottom-temperature"
     ],
-    "environmental-sensor-reference": "telescope-fork-arm-2-temperature",
+    "environmental-sensor-reference": "observing-room-comet1-temperature",
     "sensors": {
-      "test-temperature": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.47A740010000/temperature",
-        "prettyname": "test temperature",
-        "subsystem": "ogse",
-        "component": "close-electronics",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "C",
-        "correctionmodel": "",
-        "model": "iButtonLink MS-TL",
-        "identifier": "26.47A740010000",
-        "firmware": ""
-      },
       "weather-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/weather-temperature",
         "prettyname": "temperature",
@@ -498,9 +489,9 @@
         "identifier": "opentsi-sensor-14",
         "firmware": ""
       },
-      "column-temperature": {
+      "column-middle-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/ow/26.09FCD6010000/temperature",
-        "prettyname": "control room temperature",
+        "prettyname": "column middle temperature",
         "subsystem": "building",
         "component": "column",
         "group": "environmental-sensors",
@@ -509,6 +500,19 @@
         "correctionmodel": "",
         "model": "iButtonLink MS-T",
         "identifier": "26.09FCD6010000",
+        "firmware": ""
+      },      
+      "column-bottom-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/ow/26.47A740010000/temperature",
+        "prettyname": "column bottom temperature",
+        "subsystem": "building",
+        "component": "column",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.47A740010000",
         "firmware": ""
       },      
       "control-room-temperature": {
@@ -895,7 +899,7 @@
   },
   "telescope": {
     "type": "colibri",
-    "daytimetesting": "false"
+    "daytimetesting": "true"
   },
   "telescopecontroller": {
     "type": "opentsi"

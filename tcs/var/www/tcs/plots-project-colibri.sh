@@ -250,8 +250,9 @@ EOF
       "sensors.dat" using 2:3   title "External"       with lines linestyle 1, \
       "sensors.dat" using 4:5   title "Observing Room" with lines linestyle 2, \
       "sensors.dat" using 8:9   title "OGSE"           with lines linestyle 3, \
-      "sensors.dat" using 34:35 title "Column"         with lines linestyle 4, \
-      "sensors.dat" using 36:37 title "Control Room"   with lines linestyle 5
+      "sensors.dat" using 34:35 title "Column Middle"  with lines linestyle 4, \
+      "sensors.dat" using 64:65 title "Column Bottom"  with lines linestyle 5, \
+      "sensors.dat" using 36:37 title "Control Room"   with lines linestyle 6
       
     set yrange [-10:+10]
     set ytics -10,2,10
@@ -261,7 +262,8 @@ EOF
     plot \
       "sensors.dat" using 4:(\$3-\$5)  title "External - Observing Room" with lines linestyle 1, \
       "sensors.dat" using 4:(\$9-\$5)  title "OGSE - Observing Room"     with lines linestyle 3, \
-      "sensors.dat" using 4:(\$31-\$5) title "Column - Observing Room"   with lines linestyle 4
+      "sensors.dat" using 4:(\$31-\$5) title "Column Middle - Observing Room"   with lines linestyle 4, \
+      "sensors.dat" using 4:(\$65-\$5) title "Column Bottom - Observing Room"   with lines linestyle 5
 
     set yrange [-15:+50]
     set ytics -15,10,50
