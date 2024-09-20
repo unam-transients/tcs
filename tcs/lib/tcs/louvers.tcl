@@ -54,7 +54,7 @@ namespace eval "louvers" {
   proc initializeactivitycommand {} {
     set start [utcclock::seconds]
     server::setdata "requestedlouvers" "closed"
-    log::info "closing louvers."
+    log::info "initializing."
     closehardware
     log::info [format "finished initializing after %.1f seconds." [utcclock::diff now $start]]
   }
@@ -62,7 +62,7 @@ namespace eval "louvers" {
   proc openactivitycommand {} {
     set start [utcclock::seconds]
     server::setdata "requestedlouvers" "open"
-    log::info "opening louvers."
+    log::info "opening."
     openhardware
     log::info [format "finished opening after %.1f seconds." [utcclock::diff now $start]]
   }
@@ -70,7 +70,7 @@ namespace eval "louvers" {
   proc closeactivitycommand {} {
     set start [utcclock::seconds]
     server::setdata "requestedlouvers" "closed"
-    log::info "closing louvers."
+    log::info "closing."
     closehardware
     log::info [format "finished closing after %.1f seconds." [utcclock::diff now $start]]
   }
@@ -78,7 +78,7 @@ namespace eval "louvers" {
   proc emergencycloseactivitycommand {} {
     set start [utcclock::seconds]
     server::setdata "requestedlouvers" "closed"
-    log::info "emergency closing louvers."
+    log::info "emergency closing."
     closehardware
     log::info [format "finished emergency closing after %.1f seconds." [utcclock::diff now $start]]
   }
