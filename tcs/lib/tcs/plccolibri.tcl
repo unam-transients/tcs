@@ -863,7 +863,6 @@ namespace eval "plc" {
         error "unknown alarm \"$alarm\"."
       }
     }
-    log::info "enabling the $alarm alarm."
     controller::sendcommand $command
     log::info [format "finished enabling the $alarm alarm after %.1f seconds." [utcclock::diff now $start]]
   }
@@ -884,7 +883,6 @@ namespace eval "plc" {
         error "unknown alarm \"$alarm\"."
       }
     }
-    log::info "disabling the $alarm alarm."
     controller::sendcommand $command
     log::info [format "finished disabling the $alarm alarm after %.1f seconds." [utcclock::diff now $start]]
   }
