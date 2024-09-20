@@ -120,8 +120,8 @@ sed '
   s/→/\&rarr;/g
   s/±/\&plusmn;/g
   s/ -\([0-9]\)/ \&minus;\1/g
-  s/[^ ]*: error: .*/<emph class="error">&<\/emph>/
-  s/[^ ]*: warning: .*/<emph class="warning">&<\/emph>/
+  s/^\([0-9:.]* \)\([^ ]*: error: .*\)/\1<emph class="error">\2<\/emph>/
+  s/^\([0-9:.]* \)\([^ ]*: warning: .*\)/\1<emph class="warning">\2<\/emph>/
 ' 
 
 printf "</pre>"
