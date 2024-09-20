@@ -936,17 +936,33 @@ namespace eval "plc" {
 
   ######################################################################
 
-  proc switchlightson {} {
+  proc switchonlights {} {
     server::checkstatus
-    log::info "switching lights on."
+    log::info "switching on lights."
     controller::pushcommand "ObsRoomLight{ON}\n"
     return
   }
 
-  proc switchlightsoff {} {
+  proc switchofflights {} {
     server::checkstatus
-    log::info "switching lights off."
+    log::info "switching off lights."
     controller::pushcommand "ObsRoomLight{OFF}\n"
+    return
+  }
+
+  ######################################################################
+
+  proc switchonfans {} {
+    server::checkstatus
+    log::info "switching on fans."
+    controller::pushcommand "Fans{ON}\n"
+    return
+  }
+
+  proc switchofffans {} {
+    server::checkstatus
+    log::info "switching off fans."
+    controller::pushcommand "Fans{OFF}\n"
     return
   }
 
