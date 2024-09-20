@@ -374,6 +374,30 @@ namespace eval "telescopecontroller" {
     log::info [format "finished resetting after %.1f seconds." [utcclock::diff $end $start]]
   }
 
+  proc resetpanicactivitycommand {} {
+    variable errorstateflag
+    set start [utcclock::seconds]
+    log::info "resetting panic."
+    set i 0
+    while {$errorstateflag != 0 && $i < 3} {
+      if {$errorstateflag & 1} {
+        log::warning "attempting to clear panic."
+      } else {
+        log::info "attempting to clear errors."
+      }
+      opentsi::sendcommand "SET TELESCOPE.STATUS.CLEAR_PANIC=$errorstateflag"
+      coroutine::after 5000
+      incr i
+    }
+    if {$errorstateflag != 0} {
+      error "unable to clear panic."
+    }
+    log::info "stopping hardware"
+    stophardware
+    set end [utcclock::seconds]
+    log::info [format "finished resetting panic after %.1f seconds." [utcclock::diff $end $start]]
+  }
+
   ######################################################################
 
   proc initialize {} {
@@ -395,8 +419,17 @@ namespace eval "telescopecontroller" {
   proc reset {} {
     server::checkstatus
     server::checkactivityforreset
+    checkhardwarefor "reset"
     checkplcfor "reset"
     server::newactivitycommand "resetting" [server::getstoppedactivity] telescopecontroller::resetactivitycommand
+  }
+
+  proc resetpanic {} {
+    server::checkstatus
+    server::checkactivityforreset
+    checkhardwarefor "reset"
+    checkplcfor "reset"
+    server::newactivitycommand "resetting" "idle" telescopecontroller::resetpanicactivitycommand
   }
 
   proc switchon {} {
