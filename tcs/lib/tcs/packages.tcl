@@ -92,6 +92,8 @@ package ifneeded fans                  0.0 \
   [list source [file join [file dirname [info script]] fans.tcl]]
 package ifneeded fansserver            0.0 \
   [list source [file join [file dirname [info script]] fansserver.tcl]]
+package ifneeded fansplc            0.0 \
+  [list source [file join [file dirname [info script]] fansplc.tcl]]
 package ifneeded filterwheeldummy      0.0 \
   [list source [file join [file dirname [info script]] filterwheeldummy.tcl]]
 package ifneeded filterwheelfli        0.0 \

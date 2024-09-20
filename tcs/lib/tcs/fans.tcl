@@ -4,7 +4,7 @@
 
 ########################################################################
 
-# Copyright © 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
+# Copyright © 2010, 2011, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -22,7 +22,6 @@
 ########################################################################
 
 package require "config"
-package require "gpio"
 package require "log"
 package require "server"
 
@@ -32,91 +31,137 @@ namespace eval "fans" {
 
   ######################################################################
 
-  variable gpiopath [config::getvalue "fans" "gpiopath"]
-
-  ######################################################################
-
   set server::datalifeseconds 30
 
   ######################################################################
 
   server::setdata "requestedfans"  ""
   server::setdata "fans"           ""
-  server::setdata "timestamp"        ""
-
-  proc updatedata {} {
-
-    log::debug "updating data."
-
-    set timestamp [utcclock::combinedformat now]
-    
-    variable gpiopath
-    set fans [gpio::get $gpiopath]
-    log::debug "fans = \"$fans\"."
-
-    server::setstatus "ok"
-    server::setdata "timestamp" $timestamp
-    server::setdata "fans"    $fans
-
-    return true
-  }
+  server::setdata "mode"           ""
+  server::setdata "timestamp"      ""
 
   ######################################################################
   
   proc startactivitycommand {} {
     set start [utcclock::seconds]
     log::info "starting."
-    server::setdata "requestedfans" ""
     updatedata
     log::info [format "finished starting after %.1f seconds." [utcclock::diff now $start]]
   }
   
   proc initializeactivitycommand {} {
     set start [utcclock::seconds]
-    set requestedfans [server::getdata "requestedfans"]
-    log::info "switching $requestedfans."
-    variable gpiopath
-    gpio::set $gpiopath $requestedfans
-    updatedata
-    if {![string equal [server::getdata "fans"] $requestedfans]} {
-      error "the fans did not switch $requestedfans."
-    }
+    log::info "initializing."
+    server::setdata "requestedfans" "off"
+    switchoffhardware
     log::info [format "finished initializing after %.1f seconds." [utcclock::diff now $start]]
   }
   
-  proc switchactivitycommand {} {
+  proc switchonactivitycommand {} {
     set start [utcclock::seconds]
-    set requestedfans [server::getdata "requestedfans"]
-    log::info "switching $requestedfans."
-    variable gpiopath
-    gpio::set $gpiopath $requestedfans
-    updatedata
-    if {![string equal [server::getdata "fans"] $requestedfans]} {
-      error "the fans did not switch $requestedfans."
-    }
-    log::info [format "finished switching $requestedfans after %.1f seconds." [utcclock::diff now $start]]
+    log::info "switching on."
+    server::setdata "requestedfans" "on"
+    switchonhardware
+    log::info [format "finished switching on after %.1f seconds." [utcclock::diff now $start]]
+  }
+
+  proc switchoffactivitycommand {} {
+    set start [utcclock::seconds]
+    log::info "switching off."
+    server::setdata "requestedfans" "off"
+    switchoffhardware
+    log::info [format "finished switching off after %.1f seconds." [utcclock::diff now $start]]
   }
 
   ######################################################################
 
+  server::setdata "mustbeclosed"        ""
+
+  proc switchautomaticallyloop {} {
+
+    set loopseconds 10
+
+    log::debug "switchautomaticallyloop: starting."
+
+    while {true} {
+
+      set loopmilliseconds [expr {$loopseconds * 1000}]
+      coroutine::after $loopmilliseconds
+
+      log::debug "switchautomaticallyloop: updating weather data."
+      if {[catch {client::update "weather"} message]} {
+        log::debug "while updating weather data: $message"
+        set mustbeclosed true
+      } else {
+        set mustbeclosed [client::getdata "weather" "mustbeclosed"]
+      }
+        
+      server::setdata "mustbeclosed"        $mustbeclosed
+
+      log::debug [format "switchautomaticallyloop: mode is %s." [server::getdata "mode"]]
+      if {![string equal [server::getdata "mode"] "automatic"]} {
+        continue
+      }
+      
+      set fans [server::getdata "fans"]
+      set requestedfans $fans
+
+      if {$mustbeclosed} {
+        if {![string equal $fans "off"]} {
+          log::info "automatically switching off."
+          set requestedfans "off"
+        }
+      } else {
+        if {![string equal $fans "on"]} {
+          log::info "automatically switching on."
+          set requestedfans "on"
+        }
+      }
+      
+      if {![string equal $requestedfans $fans]} {
+        server::setdata "requestedfans" $requestedfans
+        if {[catch {
+          if {[string equal $requestedfans "on"]} {
+            switchonhardware
+          } else {
+            switchoffhardware
+          }
+        } message]} {
+          log::error $message
+        }
+      }
+
+    }
+  }
+
+  ######################################################################
+
+  proc switchautomatically {} {
+    server::checkstatus
+    server::checkactivityformove
+    log::info "switching automatically."
+    server::setdata "mode" "automatic"
+    return
+  }
+
   proc switchon {} {
     server::checkstatus
     server::checkactivityformove
-    server::setdata "requestedfans" "on"
-    server::newactivitycommand "switching" "idle" fans::switchactivitycommand
+    server::setdata "mode" "manual"
+    server::newactivitycommand "switching" "idle" fans::switchonactivitycommand
   }
 
   proc switchoff {} {
     server::checkstatus
     server::checkactivityformove
-    server::setdata "requestedfans" "off"
-    server::newactivitycommand "switching" "idle" fans::switchactivitycommand
+    server::setdata "mode" "manual"
+    server::newactivitycommand "switching" "idle" fans::switchoffactivitycommand
   }
   
   proc initialize {} {
     server::checkstatus
     server::checkactivityforinitialize
-    server::setdata "requestedfans" "off"
+    server::setdata "mode" "manual"
     server::newactivitycommand "initializing" "idle" fans::initializeactivitycommand
   }
   
@@ -124,7 +169,11 @@ namespace eval "fans" {
 
   proc start {} {
     coroutine::every 1000 fans::updatedata
-    server::newactivitycommand "starting" "idle" fans::startactivitycommand
+    server::newactivitycommand "starting" "started" fans::startactivitycommand
+    server::setdata "mode" "started"
+    after idle {
+      coroutine::create fans::switchautomaticallyloop
+    }
   }
 
 }

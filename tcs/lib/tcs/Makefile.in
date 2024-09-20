@@ -58,6 +58,7 @@ installs	:=			           \
 	executorddoti.tcl 		       \
 	executorserver.tcl 		       \
 	fans.tcl		        	   \
+	fansplc.tcl	    		       \
 	fansserver.tcl	    		   \
 	filterwheel.tcl		    	   \
 	filterwheeldummy.tcl           \

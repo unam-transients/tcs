@@ -21,8 +21,8 @@
 
 ########################################################################
 
+package require "fans[config::getvalue "fans" "type"]"
 package require "config"
-package require "fans"
 package require "log"
 package require "server"
 
@@ -44,12 +44,17 @@ namespace eval "fansserver" {
     fans::switchoff
   }
 
+  proc slaveswitchautomatically {} {
+    fans::switchautomatically
+  }
+
   proc configureslave {slave} {
-    interp alias $slave reset      {} server::handlereset
-    interp alias $slave stop       {} server::handlestop
-    interp alias $slave initialize {} fansserver::slaveinitialize
-    interp alias $slave switchon   {} fansserver::slaveswitchon
-    interp alias $slave switchoff  {} fansserver::slaveswitchoff
+    interp alias $slave reset               {} server::handlereset
+    interp alias $slave stop                {} server::handlestop
+    interp alias $slave initialize          {} fansserver::slaveinitialize
+    interp alias $slave switchon            {} fansserver::slaveswitchon
+    interp alias $slave switchoff           {} fansserver::slaveswitchoff
+    interp alias $slave switchautomatically {} fansserver::slaveswitchautomatically
   }
 
   ######################################################################
