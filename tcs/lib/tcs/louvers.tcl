@@ -85,7 +85,6 @@ namespace eval "louvers" {
 
   ######################################################################
 
-  variable coolloopseconds 10
 
   server::setdata "mustbeclosed"        ""
   server::setdata "externaltemperature" ""
@@ -94,12 +93,12 @@ namespace eval "louvers" {
   proc coolloop {} {
 
     variable internaltemperaturesensor
-    variable coolloopseconds
 
     log::debug "coolloop: starting."
 
     while {true} {
 
+      set coolloopseconds 10
       set coolloopmilliseconds [expr {$coolloopseconds * 1000}]
       coroutine::after $coolloopmilliseconds
 
@@ -134,7 +133,7 @@ namespace eval "louvers" {
       server::setdata "internaltemperature" $internaltemperature
 
       log::debug [format "coolloop: mode is %s." [server::getdata "mode"]]
-      if {![string equal [server::getdata "mode"] "cool"]} {
+      if {![string equal [server::getdata "mode"] "automatic"]} {
         continue
       }
       
@@ -143,7 +142,7 @@ namespace eval "louvers" {
 
       if {$mustbeclosed} {
         if {![string equal $louvers "closed"]} {
-          log::info "louvers must be closed."
+          log::info "must be closed."
           set requestedlouvers "closed"
         }
       } elseif {
@@ -184,33 +183,33 @@ namespace eval "louvers" {
     server::checkstatus
     server::checkactivityformove
     log::info "opening and closing louvers automatically to cool."
-    server::setdata "mode" "cool"
+    server::setdata "mode" "automatic"
     return
   }
 
   proc open {} {
     server::checkstatus
     server::checkactivityformove
-    server::setdata "mode" "open"
+    server::setdata "mode" "manual"
     server::newactivitycommand "opening" "idle" louvers::openactivitycommand
   }
 
   proc close {} {
     server::checkstatus
     server::checkactivityformove
-    server::setdata "mode" "closed"
+    server::setdata "mode" "manual"
     server::newactivitycommand "closing" "idle" louvers::closeactivitycommand
   }
   
   proc emergencyclose {} {
-    server::setdata "mode" "closed"
+    server::setdata "mode" "manual"
     server::newactivitycommand "closing" [server::getstoppedactivity] louvers::emergencycloseactivitycommand
   }
   
   proc initialize {} {
     server::checkstatus
     server::checkactivityforinitialize
-    server::setdata "mode" "closed"
+    server::setdata "mode" "manual"
     server::newactivitycommand "initializing" "idle" louvers::initializeactivitycommand
   }
   

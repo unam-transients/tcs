@@ -106,14 +106,14 @@ namespace eval "louvers" {
 
   proc openhardware {} {
     if {[catch {client::request "plc" "openlouvers"}]} {
-      log::warning "unable to open louvers."
+      log::warning "unable to open."
     }
     waitwhilemoving
   }
 
   proc closehardware {} {
     if {[catch {client::request "plc" "closelouvers"}]} {
-      log::warning "unable to close louvers."
+      log::warning "unable to close."
     }
     waitwhilemoving
   }
