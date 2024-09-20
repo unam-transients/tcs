@@ -118,6 +118,9 @@
   "executor": {
     "type": "colibri"
   },
+  "fans": {
+    "type": "plc"
+  },
   "fitsheader": {
     "servers": [
       "target",
@@ -135,6 +138,7 @@
       "covers",
       "dome",
       "executor",
+      "fans",
       "instrument",
       "lights",
       "louvers",
@@ -899,7 +903,7 @@
   },
   "telescope": {
     "type": "colibri",
-    "daytimetesting": "true"
+    "daytimetesting": "false"
   },
   "telescopecontroller": {
     "type": "opentsi"
