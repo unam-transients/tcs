@@ -45,6 +45,7 @@ namespace eval "supervisor" {
   variable mode                 "disabled"
   variable maybeopen            false
   variable maybeopentoventilate false
+  variable mustnotoperate       true
   variable why                  "starting"
   variable open                 false
   variable opentoventilate      false
@@ -57,18 +58,20 @@ namespace eval "supervisor" {
     variable mode
     variable maybeopen
     variable maybeopentoventilate
+    variable mustnotoperate
     variable open
     variable opentoventilate
     variable closed
     variable why
-    server::setdata "mode"            $mode
-    server::setdata "maybeopen"       $maybeopen
+    server::setdata "mode"                 $mode
+    server::setdata "maybeopen"            $maybeopen
     server::setdata "maybeopentoventilate" $maybeopentoventilate
-    server::setdata "open"            $open
+    server::setdata "mustnotoperate"       $mustnotoperate
+    server::setdata "open"                 $open
     server::setdata "opentoventilate"      $opentoventilate
-    server::setdata "closed"          $closed
-    server::setdata "timestamp"       [utcclock::combinedformat now]
-    server::setdata "why"             $why
+    server::setdata "closed"               $closed
+    server::setdata "timestamp"            [utcclock::combinedformat now]
+    server::setdata "why"                  $why
   }
   
   ######################################################################
@@ -128,6 +131,7 @@ namespace eval "supervisor" {
     variable closed
     variable maybeopen
     variable maybeopentoventilate
+    variable mustnotoperate
     variable why
     
     variable reportsun
@@ -186,17 +190,6 @@ namespace eval "supervisor" {
         set maybeopen false
         set maybeopentoventilate false
         set why "no sensors data"
-
-      } elseif {
-        ![string equal $mode "open"] &&
-        $withplc &&
-        [catch {client::update "plc"} message]
-      } {
-
-        log::debug "loop: unable to update plc data: $message"
-        set maybeopen false
-        set maybeopentoventilate false
-        set why "no plc data"
 
       } elseif {[catch {client::update "sun"} message]} {
 
@@ -316,15 +309,6 @@ namespace eval "supervisor" {
               set maybeopentoventilate false
             }
             set why "internal humidity"
-            
-          } elseif {
-            $withplc &&
-            [client::getdata "plc" "mustnotoperate"]
-          } {
-
-            set maybeopen false
-            set maybeopentoventilate false
-            set why "plc"
 
           }
 
@@ -332,9 +316,27 @@ namespace eval "supervisor" {
 
       }
 
-      if {![string equal $loopstartmode $mode]} {
-        set delay 0
-        continue
+      # Determine if the PLC will let us operate.
+      
+      if {!$withplc} {
+      
+        set mustnotoperate false
+        
+      } elseif {[catch {client::update "plc"} message]} {
+
+        log::debug "loop: unable to update plc data: $message"
+        set mustnotoperate true
+        set why "no plc data"
+
+      } elseif {[client::getdata "plc" "mustnotoperate"]} {
+
+        set mustnotoperate true
+        set why "plc forbids operation"
+        
+      } else {
+      
+        set mustnotoperate false
+      
       }
 
       updatedata
@@ -349,7 +351,18 @@ namespace eval "supervisor" {
       log::debug "loop: closed is $closed."
       log::debug "loop: maybeopen is $maybeopen."
       log::debug "loop: maybeopentoventilate is $maybeopentoventilate."
+      log::debug "loop: mustnotoperate is $mustnotoperate."
       log::debug "loop: why is $why."
+
+      if {$mustnotoperate} {
+          set delay 1000
+          continue
+      }
+            
+      if {![string equal $loopstartmode $mode]} {
+        set delay 0
+        continue
+      }
 
       if {[string equal $mode "disabled"]} {
 
@@ -366,7 +379,7 @@ namespace eval "supervisor" {
         continue
 
       }
-            
+      
       if {[catch {client::update "executor"} message]} {
         log::debug "loop: continue: unable to update executor data: $message"
         set delay 1000
@@ -588,8 +601,14 @@ namespace eval "supervisor" {
           coroutine::after 1000
       
           log::debug "plcaccessloop: updating plc data."
-          client::update "plc"
+          if {[catch {client::update "plc"}]} {
+            continue
+          }
         
+          if {![string equal [client::getstatus "plc"] "ok"]} {
+            continue
+          }
+
           log::debug "plcaccessloop: checking if access has been requested."
           variable accessrequested
           if {
