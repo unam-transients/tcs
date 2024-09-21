@@ -701,15 +701,14 @@ namespace eval "html" {
     if {[string equal [client::getstatus "louvers"] "ok"]} {
     
       set mustbeclosed [client::getdata "louvers" "mustbeclosed"]
-
       if {![string equal "" $mustbeclosed] && $mustbeclosed} {
         set emph "warning"
       } else {
         set emph ""
       }
+      writehtmlrow "Mode" [client::getdata "louvers" "mode"]
       writehtmlrow "Requested louvers" [client::getdata "louvers" "requestedlouvers"]
       writehtmlrow "Current louvers" [client::getdata "louvers" "louvers"]
-      writehtmlrow "Mode" [client::getdata "louvers" "mode"]
       writehtmlfullrowwithemph "Must be closed" $emph [client::getdata "louvers" "mustbeclosed"]   
       writehtmlrow "External temperature" [formatifdouble "%+.1f C" [client::getdata "louvers" "externaltemperature"]]
       writehtmlrow "Internal temperature" [formatifdouble "%+.1f C" [client::getdata "louvers" "internaltemperature"]]
@@ -883,13 +882,14 @@ namespace eval "html" {
     putshtml "<table class=\"status\">"
 
     if {[string equal [client::getstatus "supervisor"] "ok"]} {
-      writehtmlrow "Mode"                [client::getdata "supervisor" "mode"]
-      writehtmlrow "May be open"         [client::getdata "supervisor" "maybeopen"]
+      writehtmlrow "Mode"                     [client::getdata "supervisor" "mode"]
+      writehtmlrow "May be open"              [client::getdata "supervisor" "maybeopen"]
       writehtmlrow "May be open to ventilate" [client::getdata "supervisor" "maybeopentoventilate"]
-      writehtmlrow "Open"                [client::getdata "supervisor" "open"]
+      writehtmlrow "Must not operate"         [client::getdata "supervisor" "mustnotoperate"]
+      writehtmlrow "Open"                     [client::getdata "supervisor" "open"]
       writehtmlrow "Open to ventilate"        [client::getdata "supervisor" "opentoventilate"]
-      writehtmlrow "Closed"              [client::getdata "supervisor" "closed"]
-      writehtmlfullrow "Why"             [client::getdata "supervisor" "why"]
+      writehtmlrow "Closed"                   [client::getdata "supervisor" "closed"]
+      writehtmlfullrow "Why"                  [client::getdata "supervisor" "why"]
     }
 
     putshtml "</table>"
@@ -1378,8 +1378,16 @@ namespace eval "html" {
     putshtml "<table class=\"status\">"
 
     if {[string equal [client::getstatus "fans"] "ok"]} {
+      set mustbeoff [client::getdata "fans" "mustbeoff"]
+      if {![string equal "" $mustbeoff] && $mustbeoff} {
+        set emph "warning"
+      } else {
+        set emph ""
+      }
+      writehtmlrow "Mode" [client::getdata "fans" "mode"]
       writehtmlrow "Requested fans" [client::getdata "fans" "requestedfans"]
       writehtmlrow "Current fans" [client::getdata "fans" "fans"]
+      writehtmlfullrowwithemph "Must be off" $emph [client::getdata "fans" "mustbeoff"]   
     }
   
     putshtml "</table>"
@@ -1505,6 +1513,20 @@ namespace eval "html" {
         }
       }
       writehtmlfullrowwithemph "Supervisor" $emph $status
+
+    }
+
+    if {[lsearch -exact $servers "plc"] != -1} {
+
+      if {![string equal [client::getstatus "plc"] "ok"]} {
+        set value "[client::getstatus "plc"]"
+        set emph "error"
+      } else {
+        set value [client::getdata "plc" "mode"]
+        set emph ""
+      }
+      writehtmlfullrowwithemph "PLC mode" $emph $value
+
     }
 
     if {[lsearch -exact $servers "weather"] != -1} {
@@ -1641,6 +1663,14 @@ if {false} {
         writehtmlfullrow "Louvers" [client::getdata "louvers" "louvers"]
       } else {
         writehtmlfullrow "Louvers" 
+      }
+    }
+
+    if {[lsearch -exact $servers "fans"] != -1} {
+      if {[string equal [client::getstatus "fans"] "ok"]} {
+        writehtmlfullrow "Fans" [client::getdata "fans" "fans"]
+      } else {
+        writehtmlfullrow "Fans" 
       }
     }
 
