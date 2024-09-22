@@ -642,8 +642,6 @@ namespace eval "supervisor" {
             client::wait "selector"
           } message]} {
             log::error "unable to disable selector: $message"
-            log::error "unable to grant access."
-            continue
           }
 
           log::summary "stopping executor."
@@ -652,8 +650,6 @@ namespace eval "supervisor" {
             client::wait "executor"
           } message]} {
             log::error "unable to stop executor: $message"
-            log::error "unable to grant access."
-            continue
           }
 
           if {[client::getdata "plc" "accessrequested"]} {
