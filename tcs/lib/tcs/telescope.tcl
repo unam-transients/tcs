@@ -246,6 +246,7 @@ namespace eval "telescope" {
     variable withenclosure
     variable withcovers
     variable withlouvers
+    variable withfans
     variable idleha
     variable idledelta
     if {[catch {
@@ -285,6 +286,10 @@ namespace eval "telescope" {
         log::info "opening louvers."
         client::request "louvers" "open"
       }
+      if {$withfans} {
+        log::info "switching on fans."
+        client::request "fans" "switchon"
+      }
       if {$withdome} {
         client::wait "dome"  
         log::info "opening shutters."
@@ -303,6 +308,9 @@ namespace eval "telescope" {
       }
       if {$withlouvers} {
         client::wait "louvers"
+      }
+      if {$withfans} {
+        client::wait "fans"
       }
       if {$withmount} {
         log::info "unparking mount."
@@ -335,6 +343,7 @@ namespace eval "telescope" {
     variable withenclosure
     variable withcovers
     variable withlouvers
+    variable withfans
     variable idleha
     variable idledelta
     variable ventilateha
@@ -371,6 +380,10 @@ namespace eval "telescope" {
         log::info "opening louvers."
         client::request "louvers" "open"
       }
+      if {$withfans} {
+        log::info "switching on fans."
+        client::request "fans" "switchon"
+      }
       if {$withdome} {
         log::info "moving dome to open."
         client::request "dome" "preparetomove"
@@ -393,6 +406,9 @@ namespace eval "telescope" {
       }
       if {$withlouvers} {
         client::wait "louvers"
+      }
+      if {$withfans} {
+        client::wait "fans"
       }
       if {$withmount} {
         log::info "unparking mount."
@@ -443,6 +459,7 @@ namespace eval "telescope" {
     variable withenclosure
     variable withcovers
     variable withlouvers
+    variable withfans
     variable closeexplicitly
     variable idleha
     variable idledelta
@@ -486,6 +503,10 @@ namespace eval "telescope" {
         log::info "configuring louvers to cool."
         client::request "louvers" "cool"
       }
+      if {$withfans} {
+        log::info "switching automatically fans."
+        client::request "fans" "switchautomatically"
+      }
       if {$withcovers} {
         client::wait "covers" 
       }
@@ -510,6 +531,9 @@ namespace eval "telescope" {
       }
       if {$withlouvers} {
         client::wait "louvers"
+      }
+      if {$withfans} {
+        client::wait "fans"
       }
       if {$withtelescopecontroller} {
         log::info "switching off telescope controller."
@@ -543,22 +567,36 @@ namespace eval "telescope" {
       if {$closeexplicitly} {
         if {$withdome} {
           log::info "closing shutters."
-          catch {client::request "dome" "reset"}
-          client::request "dome" "emergencyclose"
-          client::wait "dome" 
+          catch {
+            client::request "dome" "reset"
+            client::request "dome" "emergencyclose"
+            client::wait "dome" 
+          }
           log::info [format "dome closed after %.1f seconds." [utcclock::diff now $start]]
         }
         if {$withenclosure} {
           log::info "closing enclosure."
-          catch {client::request "enclosure" "reset"}
-          client::request "enclosure" "emergencyclose"
-          client::wait "enclosure"
+          catch {
+            client::request "enclosure" "reset"
+            client::request "enclosure" "emergencyclose"
+            client::wait "enclosure"
+          }
         }
         if {$withlouvers} {
           log::info "closing louvers."
-          catch {client::request "louvers" "reset"}
-          client::request "louvers" "emergencyclose"
-          client::wait "louvers"
+          catch {
+            client::request "louvers" "reset"
+            client::request "louvers" "close"
+            client::wait "louvers"
+          }
+        }
+        if {$withfans} {
+          log::info "switching off fans."
+          catch {
+            client::request "fans" "reset"
+            client::request "fans" "switchoff"
+            client::wait "fans"
+          }
         }
       }
       catch {recoveractivitycommand}

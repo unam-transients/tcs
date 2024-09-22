@@ -37,6 +37,7 @@ namespace eval "telescope" {
   variable withlights  true
   variable withheater  true
   variable withlouvers false
+  variable withfans    false
     
   ######################################################################
 
