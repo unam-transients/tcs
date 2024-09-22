@@ -224,8 +224,17 @@ namespace eval "covers" {
   proc openhardware {} {
     server::setdata "requestedcovers" "open"
     opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=1"]
+    coroutine::after 1000
     opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=1"]
-    opentsi::sendcommand [format "SET AUXILIARY.COVER.TARGETPOS=1"]
+    variable coverstarget
+    while {true} {
+      opentsi::sendcommand [format "SET AUXILIARY.COVER.TARGETPOS=1"]
+      coroutine::after 5000
+      if {[string equal $coverstarget "open"]} {
+        break
+      }
+      log::warning "attempting to open covers again."
+    }      
     waitwhilemoving
     if {![string equal [server::getdata "covers"] "open"]} {
       error "the covers did not open."
@@ -235,8 +244,17 @@ namespace eval "covers" {
   proc closehardware {} {
     server::setdata "requestedcovers" "closed"
     opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=0"]
+    coroutine::after 1000
     opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=0"]
-    opentsi::sendcommand [format "SET AUXILIARY.COVER.TARGETPOS=0"]
+    variable coverstarget
+    while {true} {
+      opentsi::sendcommand [format "SET AUXILIARY.COVER.TARGETPOS=0"]
+      coroutine::after 5000
+      if {[string equal $coverstarget "closed"]} {
+        break
+      }
+      log::warning "attempting to close covers again."
+    }      
     waitwhilemoving
     if {![string equal [server::getdata "covers"] "closed"]} {
       error "the covers did not close."
