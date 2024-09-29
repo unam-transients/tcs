@@ -105,7 +105,7 @@ namespace eval "dome" {
 
   proc emergencycloseactivitycommand {} {
     set start [utcclock::seconds]
-    log::warning "emergency closing."
+    log::info "emergency closing."
     emergencyclosehardware
     set end [utcclock::seconds]
     log::info [format "finished emergency closing after %.1f seconds." [utcclock::diff $end $start]]

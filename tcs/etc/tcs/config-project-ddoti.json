@@ -587,6 +587,8 @@
     "meridianhalimit": "+00:30:00",
     "polardeltalimit": "+65d",
     "pointingmodelpolarhole": "1d",
+    "initialport": "prime",
+    "ports": {},
     "movingsettlingdelayseconds": "0",
     "trackingsettlingdelayseconds": "2",
     "trackingpositionerrorlimit": "1as",
@@ -1512,7 +1514,7 @@
   "telescope": {
     "type": "ddoti",
     "closeexplicitly": "true",
-    "daytimetesting": "true"
+    "daytimetesting": "false"
   },
   "weather": {
     "windaveragespeedlimit": "35"

@@ -126,13 +126,13 @@ namespace eval "enclosure" {
 
   proc emergencycloseactivitycommand {} {
     set start [utcclock::seconds]
-    log::warning "emergency closing."
+    log::info "emergency closing."
     setrequestedenclosure "closed"
     setrequestedposition 0
     doreset
     doclose
     checkenclosure
-    log::warning [format "finished emergency closing after %.1f seconds." [utcclock::diff now $start]]
+    log::info [format "finished emergency closing after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc resetactivitycommand {} {
