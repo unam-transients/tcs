@@ -677,6 +677,7 @@
       "shed-light-level",
       "enclosure-light-level"
     ],
+    "environmental-sensor-reference": "enclosure-temperature",
     "sensors": {
       "shed-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/ow/26.063DF5000000/temperature",
