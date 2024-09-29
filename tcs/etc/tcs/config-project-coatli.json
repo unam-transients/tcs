@@ -65,6 +65,7 @@
       "nx": "0",
       "ny": "0"
     },
+    "detectorboresight": "datawindowcenter",
     "detectorreadmodes": {
       "initial"             : "conventionaldefault",
       "default"             : "conventionaldefault",

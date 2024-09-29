@@ -83,6 +83,7 @@
       "nx": "8176",
       "ny": "16"
     },
+    "detectorboresight": "datawindowcenter",
     "coolerstartsetting": "following",
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
@@ -158,6 +159,7 @@
       "nx": "8176",
       "ny": "16"
     },
+    "detectorboresight": "datawindowcenter",
     "coolerstartsetting": "following",
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
@@ -233,6 +235,7 @@
       "nx": "8176",
       "ny": "16"
     },
+    "detectorboresight": "datawindowcenter",
     "coolerstartsetting": "following",
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
@@ -308,6 +311,7 @@
       "nx": "8176",
       "ny": "16"
     },
+    "detectorboresight": "datawindowcenter",
     "coolerstartsetting": "following",
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
@@ -383,6 +387,7 @@
       "nx": "8176",
       "ny": "16"
     },
+    "detectorboresight": "datawindowcenter",
     "coolerstartsetting": "following",
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
@@ -457,6 +462,7 @@
       "nx": "8176",
       "ny": "16"
     },
+    "detectorboresight": "datawindowcenter",
     "coolerstartsetting": "following",
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
