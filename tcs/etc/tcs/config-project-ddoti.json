@@ -1508,7 +1508,8 @@
   },
   "telescope": {
     "type": "ddoti",
-    "closeexplicitly": "true"
+    "closeexplicitly": "true",
+    "daytimetesting": "true"
   },
   "weather": {
     "windaveragespeedlimit": "35"

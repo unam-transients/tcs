@@ -686,7 +686,8 @@
   },
   "telescope": {
     "type": "coatli",
-    "closeexplicitly": "true"
+    "closeexplicitly": "true",
+    "daytimetesting": "true"
   },
   "weather": {
     "windaveragespeedlimit": "25"
