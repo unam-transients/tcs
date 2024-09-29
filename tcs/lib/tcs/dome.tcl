@@ -212,7 +212,7 @@ namespace eval "dome" {
   proc open {} {
     server::checkstatus
     server::checkactivityformove
-    checkhardwarefor "close"
+    checkhardwarefor "open"
     variable daytimetesting
     if {$daytimetesting} {
       server::newactivitycommand "closing" "idle" \
