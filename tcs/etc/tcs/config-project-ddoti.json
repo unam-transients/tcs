@@ -1476,6 +1476,8 @@
     "maxzenithdistancelimit": "75d",
     "idleha": "5d",
     "idledelta": "0d",
+    "ventilateha": "-4h",
+    "ventilatedelta": "30d",
     "pointingapertures": {
       "default": [
         "+0.00d",
