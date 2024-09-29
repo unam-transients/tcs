@@ -270,6 +270,8 @@
     "meridianhalimit": "+00:30:00",
     "polardeltalimit": "+65d",
     "pointingmodelpolarhole": "1d",
+    "initialport": "cassegrain",
+    "ports": {},
    // Pointing model "20211103"b.
     "pointingmodelparameters0": {
       "IH": "-0.005214",
