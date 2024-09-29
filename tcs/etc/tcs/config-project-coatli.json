@@ -399,6 +399,7 @@
       "enclosure-pressure",
       "rack-temperature"
     ],
+    "environmental-sensor-reference": "enclosure-temperature",
     "sensors": {
       "shed-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/ow/26.0FC8CF000000/temperature",
