@@ -118,12 +118,27 @@ namespace eval "weather" {
         set cloudiness     "unknown"
         set lightlevel     "unknown"
         set skytemperature "unknown"
-      
+              
       } else {
             
         log::debug "invalid data line: \"$dataline\"."
         continue
       
+      }
+      
+      # The OAN station signals invalid values as -10000.
+      if {
+        $temperature        < -100 ||
+        $humidity           < -100 ||
+        $dewpoint           < -100 ||
+        $windaveragespeed   < -100 ||
+        $windgustspeed      < -100 ||
+        $windaverageazimuth < -100 ||
+        $rainrate           < -100 ||
+        $pressure           < -100
+      } {
+        log::debug "invalid data: \"$dataline\""
+        continue
       }
 
       # Fix the format of the date.
