@@ -210,7 +210,7 @@
     "ports": {
       "new":     "port2",
       "old":     "port3",
-      "ogse":    "port3",
+      "ogse":    "port2",
       "port2":   "2",
       "port3":   "3"
     }
