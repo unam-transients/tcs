@@ -55,7 +55,18 @@ namespace eval "ccd" {
   variable detectorfullunbinnedbiaswindow  [config::getvalue $identifier "detectorfullunbinnedbiaswindow" ]
   variable detectorwindows                 [config::getvalue $identifier "detectorwindows"                ]
   variable detectorreadmodes               [config::getvalue $identifier "detectorreadmodes"              ]
+
   variable detectorboresight               [config::getvalue $identifier "detectorboresight"              ]
+  if {[string equal $detectorboresight "datawindowcenter"]} {
+    set sx [dict get $detectorfullunbinneddatawindow sx]
+    set sy [dict get $detectorfullunbinneddatawindow sy]
+    set nx [dict get $detectorfullunbinneddatawindow nx]
+    set ny [dict get $detectorfullunbinneddatawindow ny]
+    set x [expr {$sx + $nx / 2}]
+    set y [expr {$sy + $ny / 2}]
+    set detectorboresight [dict create x $x y $y]
+  }
+
   variable coolerstartsetting              [config::getvalue $identifier "coolerstartsetting"             ]
   variable cooleropensetting               [config::getvalue $identifier "cooleropensetting"              ]
   variable coolerclosedsetting             [config::getvalue $identifier "coolerclosedsetting"            ]

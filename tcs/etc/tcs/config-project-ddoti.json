@@ -83,6 +83,7 @@
       "nx": "8176",
       "ny": "16"
     },
+    "detectorboresight": "datawindowcenter",
     "coolerstartsetting": "following",
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
@@ -158,6 +159,7 @@
       "nx": "8176",
       "ny": "16"
     },
+    "detectorboresight": "datawindowcenter",
     "coolerstartsetting": "following",
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
@@ -233,6 +235,7 @@
       "nx": "8176",
       "ny": "16"
     },
+    "detectorboresight": "datawindowcenter",
     "coolerstartsetting": "following",
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
@@ -308,6 +311,7 @@
       "nx": "8176",
       "ny": "16"
     },
+    "detectorboresight": "datawindowcenter",
     "coolerstartsetting": "following",
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
@@ -383,6 +387,7 @@
       "nx": "8176",
       "ny": "16"
     },
+    "detectorboresight": "datawindowcenter",
     "coolerstartsetting": "following",
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
@@ -457,6 +462,7 @@
       "nx": "8176",
       "ny": "16"
     },
+    "detectorboresight": "datawindowcenter",
     "coolerstartsetting": "following",
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
@@ -581,6 +587,8 @@
     "meridianhalimit": "+00:30:00",
     "polardeltalimit": "+65d",
     "pointingmodelpolarhole": "1d",
+    "initialport": "prime",
+    "ports": {},
     "movingsettlingdelayseconds": "0",
     "trackingsettlingdelayseconds": "2",
     "trackingpositionerrorlimit": "1as",
@@ -671,6 +679,7 @@
       "shed-light-level",
       "enclosure-light-level"
     ],
+    "environmental-sensor-reference": "enclosure-temperature",
     "sensors": {
       "shed-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/ow/26.063DF5000000/temperature",
@@ -1469,6 +1478,8 @@
     "maxzenithdistancelimit": "75d",
     "idleha": "5d",
     "idledelta": "0d",
+    "ventilateha": "-4h",
+    "ventilatedelta": "30d",
     "pointingapertures": {
       "default": [
         "+0.00d",
@@ -1502,7 +1513,8 @@
   },
   "telescope": {
     "type": "ddoti",
-    "closeexplicitly": "true"
+    "closeexplicitly": "true",
+    "daytimetesting": "false"
   },
   "weather": {
     "windaveragespeedlimit": "35"

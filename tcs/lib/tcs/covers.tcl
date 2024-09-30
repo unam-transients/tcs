@@ -25,10 +25,6 @@ namespace eval "covers" {
 
   ######################################################################
 
-  variable daytimetesting   [config::getvalue "telescope" "daytimetesting"]
-
-  ######################################################################
-
   proc startactivitycommand {} {
     set start [utcclock::seconds]
     log::info "starting."
@@ -102,14 +98,8 @@ namespace eval "covers" {
     server::checkstatus
     server::checkactivityformove
     checkhardwarefor "open"
-    variable daytimetesting
-    if {$daytimetesting} {
-      server::newactivitycommand "closing" "idle" \
-        covers::closeactivitycommand
-    } else {
-      server::newactivitycommand "opening" "idle" \
-        covers::openactivitycommand
-    }
+    server::newactivitycommand "opening" "idle" \
+      covers::openactivitycommand
   }
 
   proc close {} {

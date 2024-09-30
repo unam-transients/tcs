@@ -105,7 +105,7 @@ namespace eval "dome" {
 
   proc emergencycloseactivitycommand {} {
     set start [utcclock::seconds]
-    log::warning "emergency closing."
+    log::info "emergency closing."
     emergencyclosehardware
     set end [utcclock::seconds]
     log::info [format "finished emergency closing after %.1f seconds." [utcclock::diff $end $start]]
@@ -212,7 +212,7 @@ namespace eval "dome" {
   proc open {} {
     server::checkstatus
     server::checkactivityformove
-    checkhardwarefor "close"
+    checkhardwarefor "open"
     variable daytimetesting
     if {$daytimetesting} {
       server::newactivitycommand "closing" "idle" \

@@ -214,9 +214,6 @@ namespace eval "weather" {
 
       variable windaveragespeedlimit
       
-      log::debug "windaveragespeed is \"$windaveragespeed\""
-      log::debug "windaveragespeedlimit is \"$windaveragespeedlimit\""
-      log::debug "lastwindalarmseconds is \"$lastwindalarmseconds\""
       if {
         ![string equal $windaveragespeedlimit ""] &&
         ([string equal $lastwindalarmseconds "unknown"] || $windaveragespeed >= $windaveragespeedlimit)
@@ -249,8 +246,13 @@ namespace eval "weather" {
     server::setdata "timestamp"               [utcclock::combinedformat $timestampseconds]
     server::setdata "temperature"             [format "%+.1f" $temperature]
     server::setdata "temperaturetrend"        $temperaturetrend
-    server::setdata "skytemperature"          [format "%+.1f" $skytemperature]
-    server::setdata "skytemperaturetrend"     $skytemperaturetrend
+    if {[string equal $skytemperature "unknown"]} {
+      server::setdata "skytemperature"        "unknown"
+      server::setdata "skytemperaturetrend"   "unknown"
+    } else {
+      server::setdata "skytemperature"        [format "%+.1f" $skytemperature]
+      server::setdata "skytemperaturetrend"   $skytemperaturetrend
+    }
     server::setdata "humidity"                $humidity
     server::setdata "humiditytrend"           $humiditytrend
     server::setdata "humiditylimit"           $humiditylimit
@@ -261,9 +263,9 @@ namespace eval "weather" {
     server::setdata "windaveragespeed"        $windaveragespeed
     server::setdata "windgustspeed"           $windgustspeed
     if {[string equal $windaverageazimuth "unknown"]} {
-      server::setdata "windaverageazimuth" $windaverageazimuth
+      server::setdata "windaverageazimuth"    "unknown"
     } else {
-      server::setdata "windaverageazimuth" [astrometry::degtorad $windaverageazimuth]
+      server::setdata "windaverageazimuth"    [astrometry::degtorad $windaverageazimuth]
     }
     server::setdata "rainrate"                $rainrate
     server::setdata "pressure"                $pressure

@@ -35,6 +35,8 @@ namespace eval "enclosure" {
   variable opentoventilateposition [config::getvalue "enclosure" "opentoventilateposition"]
   variable openposition       [config::getvalue "enclosure" "openposition"]
 
+  variable daytimetesting       [config::getvalue "telescope" "daytimetesting"]
+
   ######################################################################
 
   set server::datalifeseconds       30
@@ -124,13 +126,13 @@ namespace eval "enclosure" {
 
   proc emergencycloseactivitycommand {} {
     set start [utcclock::seconds]
-    log::warning "emergency closing."
+    log::info "emergency closing."
     setrequestedenclosure "closed"
     setrequestedposition 0
     doreset
     doclose
     checkenclosure
-    log::warning [format "finished emergency closing after %.1f seconds." [utcclock::diff now $start]]
+    log::info [format "finished emergency closing after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc resetactivitycommand {} {
@@ -190,7 +192,12 @@ namespace eval "enclosure" {
     server::checkactivityformove
     checkforopen
     checkposition $position
-    server::newactivitycommand "opening" "idle" "enclosure::openactivitycommand $position"
+    variable daytimetesting
+    if {$daytimetesting} {
+        server::newactivitycommand "closing" "idle" enclosure::closeactivitycommand
+    } else {
+        server::newactivitycommand "opening" "idle" "enclosure::openactivitycommand $position"
+    }
   }
 
   proc opentoventilate {} {
