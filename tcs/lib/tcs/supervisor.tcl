@@ -680,7 +680,13 @@ namespace eval "supervisor" {
     set start [utcclock::seconds]
     log::summary "emergency closing."
     variable mode
-    set mode "error"
+    variable open
+    variable opentoventilate
+    variable closed
+    set mode            "disabled"
+    set open            false
+    set opentoventilate false
+    set closed          false
     updatedata
     catch { client::request "selector" "disable" }
     if {![catch {
