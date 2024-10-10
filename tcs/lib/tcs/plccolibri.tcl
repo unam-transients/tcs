@@ -102,6 +102,16 @@ namespace eval "plc" {
       return false
     }
     
+    if {[string match "* Cloud Sensor has been restarted *" $response]} {
+      log::info "finished rebooting boltwood."
+      return false
+    }
+    
+    if {[string match "* Weather Station has been restarted *" $response]} {
+      log::info "finished rebooting vaisala."
+      return false
+    }
+    
     if {[string match "* Clarity II Software has been restarted *" $response]} {
       log::info "finished restarting boltwood software."
       return false
@@ -714,10 +724,6 @@ namespace eval "plc" {
     if {!$vaisalaenabled} {
       log::warning "the vaisala is not enabled."
     }
-    if {$boltwoodenabled} {
-      log::info "restarting boltwood software."
-      controller::sendcommand "CX5140{BoltwoodRestart}\n"
-    }
     controller::sendcommand "UnsafeTimer\{1\}\n"
     set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
@@ -745,11 +751,6 @@ namespace eval "plc" {
     set start [utcclock::seconds]
     log::info "resetting."
     controller::flushcommandqueue
-    variable boltwoodenabled
-    if {$boltwoodenabled} {
-      log::info "restarting boltwood software."
-      controller::sendcommand "CX5140{BoltwoodRestart}\n"
-    }
     log::info [format "finished resetting after %.1f seconds." [utcclock::diff now $start]]
   }
 
@@ -894,6 +895,24 @@ namespace eval "plc" {
     log::info [format "finished granting access after %.1f seconds." [utcclock::diff now $start]]
   }
 
+  proc rebootactivitycommand {} {
+    set start [utcclock::seconds]
+    log::info "rebooting."
+    variable boltwoodenabled
+    if {$boltwoodenabled} {
+      log::info "rebooting boltwood."
+      controller::sendcommand "CloudSensorRestart{RESTART}\n"
+      log::info "restarting boltwood software."
+      controller::sendcommand "CX5140{BoltwoodRestart}\n"
+    }
+    variable vaisalaenabled
+    if {$vaisalaenabled} {
+      log::info "rebooting vaisala."
+      controller::sendcommand "WeatherStationRestart{RESTART}\n"
+    }    
+    log::info [format "finished rebooting after %.1f seconds." [utcclock::diff now $start]]
+  }
+
   ######################################################################
   
   proc checkalarm {alarm} {
@@ -930,6 +949,14 @@ namespace eval "plc" {
     set start [utcclock::seconds]
     server::checkstatus
     server::newactivitycommand "granting" "idle" "plc::grantaccessactivitycommand"
+  }
+
+  ######################################################################
+
+  proc reboot {} {
+    set start [utcclock::seconds]
+    server::checkstatus
+    server::newactivitycommand "rebooting" "idle" "plc::rebootactivitycommand"
   }
 
   ######################################################################
