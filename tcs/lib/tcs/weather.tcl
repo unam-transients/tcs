@@ -62,62 +62,62 @@ namespace eval "weather" {
       if {
         [scan $dataline \
           "b.0 %s %s %*s %*f %f %*f %*f %f %f %f %f %f %*f %*f %f %*f %*f %*f %*f %*f %*f %*f %*f %f %*f %*d %d %d %*d %*d %*d %d"\
-          date time windaverageazimuth windaveragespeed windgustspeed temperature humidity pressure rainrate dewpoint rainindex cloudindex lightindex] == 13 ||
+          pendingdate pendingtime pendingwindaverageazimuth pendingwindaveragespeed pendingwindgustspeed pendingtemperature pendinghumidity pendingpressure pendingrainrate pendingdewpoint pendingrainindex pendingcloudindex pendinglightindex] == 13 ||
         [scan $dataline \
           "b.1 %s %s %*s %*s %*f %f %*f %*f %f %f %f %f %f %*f %*f %f %*f %*f %*f %*f %f %*f %*f %*f %f %*f %*d %d %d %*d %*d %*d %d"\
-          date time windaverageazimuth windaveragespeed windgustspeed temperature humidity pressure rainrate skytemperature dewpoint rainindex cloudindex lightindex] == 14
+          pendingdate pendingtime pendingwindaverageazimuth pendingwindaveragespeed pendingwindgustspeed pendingtemperature pendinghumidity pendingpressure pendingrainrate pendingskytemperature pendingdewpoint pendingrainindex pendingcloudindex pendinglightindex] == 14
       } {
       
         # This is the COLIBRI PLC
         
-        switch $cloudindex {
+        switch $pendingcloudindex {
           1 {
-            set cloudiness "clear"
+            set pendingcloudiness "clear"
           }
           2 {
-            set cloudiness "light"
+            set pendingcloudiness "light"
           }
           3 {
-            set cloudiness "heavy"
+            set pendingcloudiness "heavy"
           }
           default {
-            set cloudiness "unknown"
+            set pendingcloudiness "unknown"
           }
         }
         
-        if {$rainindex > 1 || $rainrate > 0} {
-          set rainalarm true
+        if {$pendingrainindex > 1 || $pendingrainrate > 0} {
+          set pendingrainalarm true
         } else {
-          set rainalarm false
+          set pendingrainalarm false
         }
         
-        if {$lightindex > 1} {
-          set lightlevel "bright"
+        if {$pendinglightindex > 1} {
+          set pendinglightlevel "bright"
         } else {
-          set lightlevel "dark"
+          set pendinglightlevel "dark"
         }
 
         # Convert from m/s to km/h        
-        set windaveragespeed [expr {$windaveragespeed * 3.6}]
-        set windgustspeed    [expr {$windgustspeed * 3.6}]
+        set pendingwindaveragespeed [expr {$pendingwindaveragespeed * 3.6}]
+        set pendingwindgustspeed    [expr {$pendingwindgustspeed * 3.6}]
 
       } elseif {
         [scan $dataline "%s %s %f %*f %*f %f %f %f %f %f %f %f" \
-          date time temperature humidity dewpoint \
-          windaveragespeed windgustspeed windaverageazimuth \
-          rainrate pressure] == 10
+          pendingdate pendingtime pendingtemperature pendinghumidity pendingdewpoint \
+          pendingwindaveragespeed pendingwindgustspeed pendingwindaverageazimuth \
+          pendingrainrate pendingpressure] == 10
       } {
       
         # This is the OAN weather station.
 
-        if {$rainrate > 0} {
-          set rainalarm true
+        if {$pendingrainrate > 0} {
+          set pendingrainalarm true
         } else {
-          set rainalarm false
+          set pendingrainalarm false
         }
-        set cloudiness     "unknown"
-        set lightlevel     "unknown"
-        set skytemperature "unknown"
+        set pendingcloudiness     "unknown"
+        set pendinglightlevel     "unknown"
+        set pendingskytemperature "unknown"
               
       } else {
             
@@ -128,18 +128,33 @@ namespace eval "weather" {
       
       # The OAN station signals invalid values as -10000.
       if {
-        $temperature        < -100 ||
-        $humidity           < -100 ||
-        $dewpoint           < -100 ||
-        $windaveragespeed   < -100 ||
-        $windgustspeed      < -100 ||
-        $windaverageazimuth < -100 ||
-        $rainrate           < -100 ||
-        $pressure           < -100
+        $pendingtemperature        < -100 ||
+        $pendinghumidity           < -100 ||
+        $pendingdewpoint           < -100 ||
+        $pendingwindaveragespeed   < -100 ||
+        $pendingwindgustspeed      < -100 ||
+        $pendingwindaverageazimuth < -100 ||
+        $pendingrainrate           < -100 ||
+        $pendingpressure           < -100
       } {
         log::debug "invalid data: \"$dataline\""
         continue
       }
+      
+      set date               $pendingdate
+      set time               $pendingtime
+      set temperature        $pendingtemperature
+      set humidity           $pendinghumidity
+      set dewpoint           $pendingdewpoint
+      set windaveragespeed   $pendingwindaveragespeed
+      set windgustspeed      $pendingwindgustspeed
+      set windaverageazimuth $pendingwindaverageazimuth
+      set pressure           $pendingpressure
+      set rainrate           $pendingrainrate
+      set rainalarm          $pendingrainalarm
+      set cloudiness         $pendingcloudiness
+      set lightlevel         $pendinglightlevel
+      set skytemperature     $pendingskytemperature
 
       # Fix the format of the date.
       if {[scan $date "%4d-%2d-%2d" years months days] == 3} {
