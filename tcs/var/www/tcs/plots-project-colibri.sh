@@ -29,9 +29,11 @@ cd "$(dirname "$0")"
 mkdir -p plots
 cd plots
 
-if test -z "$when"
+if test -z "$1"
 then
   when=$(date -u +%Y%m%dT%H)
+else
+  when="$1"
 fi
 whendate=$(echo $when | sed 's/T.*//')
 
@@ -84,6 +86,12 @@ EOF
     cd /usr/local/var/tcs
     cat $(ls [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/log/seeing-data.txt | sed -n "1,/$whendate/p" | tail -$(expr $days + 1)) | awk "NR % $lines == 0 { print; }"
   ) >seeing.dat
+
+  (
+    cd /usr/local/var/tcs
+    cat $(ls [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/log/focus-C0-data.txt | sed -n "1,/$whendate/p" | tail -$(expr $days + 1)) | awk "NR % $lines == 0 { print; }"
+  ) >focus-C0.dat
+
 
   gnuplot <<EOF
 
@@ -317,7 +325,8 @@ EOF
     set ylabel "FWHM (arcsec)"
     set key on
     plot \
-      "seeing.dat"  using 1:2 title "Seeing" with points linestyle 1
+      "seeing.dat"  using 1:2 title "Seeing" with points linestyle 1, \
+      "focus-C0.dat" using 1:2 title "C0 FWHM" with points linestyle 3
 
     set yrange [-15:30]
     set ytics -15,5,30
