@@ -56,17 +56,14 @@ fi
 mkdir -p "$tcsprefix"/var/tcs/seeing-c
 cd "$tcsprefix"/var/tcs/seeing-c
 
+date=$(date +"%Y%m%d")
+datekey=$(date +"%d/%m/%Y")
+
 tmp=.tmp
 
-for day in yesterday today
-do
-  date=$(date +"%Y%m%d" -d $day)
-  datekey=$(date +"%d/%m/%Y" -d $day)
-  grep "^$datekey" "$tcsprefix"/var/seeing/Seeing_Data.txt | sed 's/^/c /' >$tmp
-  if test ! -e $date.txt || ! cmp -s $tmp $date.txt
-  then
-    mv $tmp $date.txt
-  else
-    rm -f $tmp
-  fi
-done
+touch $date.txt
+(
+  cat $date.txt
+  grep "^$datekey" "$tcsprefix"/var/seeing/Last_Seeing_Data.txt | sed 's/^/c /'
+) | uniq >$tmp
+mv $tmp $date.txt
