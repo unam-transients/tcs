@@ -187,7 +187,6 @@
       "sun",
       "secondary",
       "mount",
-      "seeing",
       "sensors",
       "weather"
     ]
@@ -222,7 +221,6 @@
       "moon",
       "mount",
       "power",
-      "seeing",
       "selector",
       "secondary",
       "sensors",
@@ -692,7 +690,7 @@
   "telescope": {
     "type": "coatli",
     "closeexplicitly": "true",
-    "daytimetesting": "true"
+    "daytimetesting": "false"
   },
   "weather": {
     "windaveragespeedlimit": "25"
