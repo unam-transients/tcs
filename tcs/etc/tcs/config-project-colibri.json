@@ -128,7 +128,6 @@
       "sun",
       "mount",
       "secondary",
-      "seeing",
       "sensors",
       "weather"
     ]
@@ -147,7 +146,6 @@
       "plc",
       "power",
       "secondary",
-      "seeing",
       "selector",
       "sensors",
       "supervisor",
@@ -925,7 +923,6 @@
       "lights",
       "moon",
       "power",
-      "seeing",
       "selector",
       "sensors",
       "supervisor",
