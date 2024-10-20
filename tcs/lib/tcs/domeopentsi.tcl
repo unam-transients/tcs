@@ -163,10 +163,10 @@ namespace eval "dome" {
     # if the shutters were interrupted while opening.
     server::setdata "requestedshutters" "open"
     if {![string equal [server::getdata "shutters"] "open"]} {
-        opentsi::sendcommand "SET AUXILIARY.DOME.TARGETPOS=0"
-        while {![string equal [server::getdata "shutters"] "closed"]} {
-          coroutine::yield
-        }
+        #opentsi::sendcommand "SET AUXILIARY.DOME.TARGETPOS=0"
+        #while {![string equal [server::getdata "shutters"] "closed"]} {
+        #  coroutine::yield
+        #}
         opentsi::sendcommand "SET AUXILIARY.DOME.TARGETPOS=1"
         while {![string equal [server::getdata "shutters"] "open"]} {
           coroutine::yield
@@ -177,10 +177,10 @@ namespace eval "dome" {
   proc closehardware {} {
     server::setdata "requestedshutters" "closed"
     if {![string equal [server::getdata "shutters"] "closed"]} {
-        opentsi::sendcommand "SET AUXILIARY.DOME.TARGETPOS=1"
-        while {![string equal [server::getdata "shutters"] "open"]} {
-          coroutine::yield
-        }
+        #opentsi::sendcommand "SET AUXILIARY.DOME.TARGETPOS=1"
+        #while {![string equal [server::getdata "shutters"] "open"]} {
+        #  coroutine::yield
+        #}
         opentsi::sendcommand "SET AUXILIARY.DOME.TARGETPOS=0"
         while {![string equal [server::getdata "shutters"] "closed"]} {
           coroutine::yield
