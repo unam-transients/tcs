@@ -132,12 +132,28 @@
       "weather"
     ]
   },
+  "gcntan": {
+    "serverpacketport"              : "5358",
+    "swiftalertprojectidentifier"   : "1001",
+    "fermialertprojectidentifier"   : "1002",
+    "lvcalertprojectidentifier"     : "1003",
+    "hawcalertprojectidentifier"    : "1004",
+    "icecubealertprojectidentifier" : "1005",
+    "swiftbasepriority"             : "5",
+    "fermilatpriority"              : "5",
+    "fermisgrbpriority"             : "6",
+    "fermibasepriority"             : "10",
+    "lvcbasepriority"               : "10",
+    "hawcbasepriority"              : "10",
+    "icecubebasepriority"           : "10"
+  },
   "html": {
     "servers": [
       "covers",
       "dome",
       "executor",
       "fans",
+      "gcntan",
       "instrument",
       "lights",
       "louvers",
