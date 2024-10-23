@@ -239,7 +239,7 @@ namespace eval "enclosure" {
     if {($inputchannels >> 3) & 1} { lappend names "remote" }
     if {($inputchannels >> 4) & 1} { lappend names "overcurrent" }
     if {($inputchannels >> 5) & 1} { lappend names "rainsensor" }
-    if {($inputchannels >> 6) & 1} { lappend names "safetystrip" }
+    if {($inputchannels >> 6) & 1} { lappend names "safetyrail" }
     if {($inputchannels >> 7) & 1} { lappend names "emergencystop" }
     return [format "%08b (%s)" $inputchannels [join $names "/"]]
   }
@@ -269,6 +269,7 @@ namespace eval "enclosure" {
         controller::sendcommand "#010002\r"
     }
     settle    
+    controller::sendcommand "#010004\r"
     controller::sendcommand "#010000\r"
   }
   
@@ -280,6 +281,7 @@ namespace eval "enclosure" {
           # from 60 to 120, but it doesn't seem worthwhile to optimize this case.
           controller::sendcommand "#010002\r"
           settle
+          controller::sendcommand "#010004\r"
         }
     }
     if {$position == 60} {
@@ -291,6 +293,7 @@ namespace eval "enclosure" {
     }
     controller::sendcommand [format "#0100%02X\r" [expr {$selector | 1}]]
     settle
+    controller::sendcommand "#010004\r"
     controller::sendcommand [format "#0100%02X\r" [expr {$selector | 0}]]
   }
   
@@ -299,6 +302,7 @@ namespace eval "enclosure" {
         controller::sendcommand "#010002\r"
     }
     settle
+    controller::sendcommand "#010004\r"
     controller::sendcommand "#010000\r"
   }
   
