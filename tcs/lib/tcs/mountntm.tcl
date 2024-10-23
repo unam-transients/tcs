@@ -400,6 +400,9 @@ namespace eval "mount" {
     log::debug "state: state = $state."
     if {[string equal $laststate ""]} {
       log::info "the controller state is $state."
+      if {[string equal $state "error"]} {
+        server::erroractivity
+      }
     } elseif {![string equal $state $laststate]} {
       if {
         [string equal $state "error"] ||
