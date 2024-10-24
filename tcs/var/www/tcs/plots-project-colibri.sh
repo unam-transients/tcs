@@ -365,10 +365,6 @@ EOF
       "sensors.dat" using 10:(\$21-\$5) title "Spider 2 - Observing Room" with lines linestyle 5, \
       "sensors.dat" using 14:(\$15-\$5) title "M2 - Observing Room"       with lines linestyle 6, \
 
-    set format x "%Y%m%dT%H"
-    set xtics rotate by 90 right
-    set xlabel "UTC"
-
     set yrange [-15:+30]
     set ytics -15,5,30
     set format y "%+.0f"
@@ -385,6 +381,18 @@ EOF
       "sensors.dat" using 28:29 title "Front Ring 2"   with lines linestyle 9, \
       "sensors.dat" using 30:31 title "Fork Arm 1"     with lines linestyle 10, \
       "sensors.dat" using 32:33 title "Fork Arm 2"     with lines linestyle 11
+
+    set yrange [0:20]
+    set ytics 0,5,20
+    set format y "%.0f"
+    set ylabel "Pneumatic Pressure"
+    set key on
+    plot \
+      "sensors.dat" using 66:67 title "Pneumatic Pressure" with lines linestyle 1
+
+    set format x "%Y%m%dT%H"
+    set xtics rotate by 90 right
+    set xlabel "UTC"
 
     unset multiplot
 
