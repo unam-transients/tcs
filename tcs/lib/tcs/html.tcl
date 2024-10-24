@@ -1112,7 +1112,7 @@ namespace eval "html" {
           set unit [dict get $sensors $name "unit"]
           set group [dict get $sensors $name "group"]
           switch -glob "$name:$unit:$group" {
-            *-temperature:C:environmental-sensors {
+            *-temperature:C:environmental-temperature {
                 set difference [expr {$value - $referencetemperature}]
               if {[string equal $name $referencetemperaturename]} {
                 writehtmlfullrowwithemph $name $emphasis "$timestamp [format "%+4.1f C" $value] reference"
