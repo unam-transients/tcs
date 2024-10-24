@@ -21,6 +21,7 @@
 
 ########################################################################
 
+package require "astrometry"
 package require "config"
 package require "opentsi"
 package require "log"
@@ -65,32 +66,36 @@ namespace eval "telescopecontroller" {
     AUXILIARY.SENSOR[12].VALUE
     AUXILIARY.SENSOR[13].VALUE
     AUXILIARY.SENSOR[14].VALUE
+    POSITION.HORIZONTAL.AZ
+    POSITION.HORIZONTAL.ZD
   } ";"]"
 
   ######################################################################
 
-  variable readystate         ""
-  variable errorstateflag     ""
-  variable errorstate         ""
-  variable errorlist          ""
-  variable lasterrorlist      ""
-  variable ambienttemperature ""
-  variable ambientpressure    ""
-  variable sensor0            ""
-  variable sensor1            ""
-  variable sensor2            ""
-  variable sensor3            ""
-  variable sensor4            ""
-  variable sensor5            ""
-  variable sensor6            ""
-  variable sensor7            ""
-  variable sensor8            ""
-  variable sensor9            ""
-  variable sensor10           ""
-  variable sensor11           ""
-  variable sensor12           ""
-  variable sensor13           ""
-  variable sensor14           ""
+  variable readystate          ""
+  variable errorstateflag      ""
+  variable errorstate          ""
+  variable errorlist           ""
+  variable lasterrorlist       ""
+  variable ambienttemperature  ""
+  variable ambientpressure     ""
+  variable sensor0             ""
+  variable sensor1             ""
+  variable sensor2             ""
+  variable sensor3             ""
+  variable sensor4             ""
+  variable sensor5             ""
+  variable sensor6             ""
+  variable sensor7             ""
+  variable sensor8             ""
+  variable sensor9             ""
+  variable sensor10            ""
+  variable sensor11            ""
+  variable sensor12            ""
+  variable sensor13            ""
+  variable sensor14            ""
+  variable mountazimuth        ""
+  variable mountzenithdistance ""
 
   proc updatedata {response} {
 
@@ -116,6 +121,8 @@ namespace eval "telescopecontroller" {
     variable sensor12
     variable sensor13
     variable sensor14
+    variable mountazimuth
+    variable mountzenithdistance
     
     if {[scan $response "%*d DATA INLINE TELESCOPE.STATUS.GLOBAL=%d" value] == 1} {
       set errorstateflag $value
@@ -142,6 +149,15 @@ namespace eval "telescopecontroller" {
         set value ""
       }
       set sensor$i $value
+      return false
+    }
+
+    if {[scan $response "%*d DATA INLINE POSITION.HORIZONTAL.AZ=%f" value] == 1} {
+      set mountazimuth [astrometry::degtorad $value]
+      return false
+    }
+    if {[scan $response "%*d DATA INLINE POSITION.HORIZONTAL.ZD=%f" value] == 1} {
+      set mountzenithdistance [astrometry::degtorad $value]
       return false
     }
 
@@ -182,6 +198,8 @@ namespace eval "telescopecontroller" {
       log::info "error state is $errorstate"
     } elseif {![string equal $lasterrorstate $errorstate]} {
       log::info "error state has changed from $lasterrorstate to $errorstate."
+      log::info [format "mount position is %.1fd azimuth and %.1fd zenith distance." [astrometry::radtodeg $mountazimuth] [astrometry::radtodeg $mountzenithdistance]]
+      log::info [format "mount pneumatic pressure is %.1f." $sensor2]
     }
     if {$errorstateflag & 7 && ![string equal [server::getactivity] "resetting"]} {
       server::setactivity "error"
