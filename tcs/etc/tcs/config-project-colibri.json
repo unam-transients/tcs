@@ -946,6 +946,18 @@
         "identifier": "opentsi-sensor-2",
         "firmware": ""
       },
+      "european-ups-battery-charge-level": {
+        "file": "/usr/local/var/tcs/sensors/control/plc-european-ups-battery-charge-level",
+        "prettyname": "european ups battery charge level",
+        "subsystem": "ups",
+        "component": "european-ups",
+        "group": "charge-level",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
       "european-ups-battery-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/plc-european-ups-battery-temperature",
         "prettyname": "european ups battery temperature",
@@ -1098,6 +1110,18 @@
         "group": "frequency",
         "type": "float",
         "unit": "Hz",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "american-ups-battery-charge-level": {
+        "file": "/usr/local/var/tcs/sensors/control/plc-american-ups-battery-charge-level",
+        "prettyname": "american ups battery charge level",
+        "subsystem": "ups",
+        "component": "american-ups",
+        "group": "charge-level",
+        "type": "float",
+        "unit": "",
         "model": "",
         "identifier": "",
         "firmware": ""
