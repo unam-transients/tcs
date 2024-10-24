@@ -671,6 +671,19 @@ namespace eval "plc" {
       european-ups-input-frequency     europeanupsinputfrequency
       european-ups-output-frequency    europeanupsoutputfrequency
       
+      american-ups-battery-temperature americanupsbatterytemperature
+      american-ups-battery-voltage     americanupsbatteryvoltage
+      american-ups-battery-current     americanupsbatterycurrent
+      american-ups-battery-charge      americanupsbatterycharge
+      american-ups-load                americanupsload
+      american-ups-l1-voltage          americanupsl1voltage
+      american-ups-l2-voltage          americanupsl2voltage
+      american-ups-l3-voltage          americanupsl3voltage
+      american-ups-l1-current          americanupsl1current
+      american-ups-l2-current          americanupsl2current
+      american-ups-l3-current          americanupsl3current
+      american-ups-output-frequency    americanupsoutputfrequency
+
     } {
       log::writesensorsfile "plc-$sensorname" [server::getdata $dataname] [server::getdata "timestamp"]
     }
