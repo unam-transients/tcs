@@ -150,6 +150,13 @@ namespace eval "telescope" {
     log::info [format "finished stopping after %.1f seconds." [utcclock::diff now $start]]
   }
 
+  proc emergencystopactivitycommand {} {
+    set start [utcclock::seconds]
+    log::info "emergency stopping."
+    emergencystopaction
+    log::info [format "finished emergency stopping after %.1f seconds." [utcclock::diff now $start]]
+  }
+
   proc resetactivitycommand {} {
     set start [utcclock::seconds]
     log::info "resetting."
@@ -562,6 +569,7 @@ namespace eval "telescope" {
     variable withdome
     variable withenclosure
     variable withlouvers
+    variable withfans
     variable closeexplicitly
     catch {
       if {$closeexplicitly} {
@@ -956,6 +964,12 @@ namespace eval "telescope" {
     server::checkactivitynot "starting" "error"
     server::newactivitycommand "stopping" [server::getstoppedactivity] \
       "telescope::stopactivitycommand"
+  }
+  
+  proc emergencystop {} {
+    # This is the same as stop, but it doesn't check the server status.
+    server::newactivitycommand "stopping" [server::getstoppedactivity] \
+      "telescope::emergencystopactivitycommand"
   }
   
   proc initialize {} {

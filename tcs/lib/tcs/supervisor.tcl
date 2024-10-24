@@ -644,12 +644,12 @@ namespace eval "supervisor" {
             log::error "unable to disable selector: $message"
           }
 
-          log::summary "stopping executor."
+          log::summary "emergency stopping executor."
           if {[catch {
-            client::request "executor" "stop" 
+            client::request "executor" "emergencystop" 
             client::wait "executor"
           } message]} {
-            log::error "unable to stop executor: $message"
+            log::error "unable to emergency stop executor: $message"
           }
 
           if {[client::getdata "plc" "accessrequested"]} {

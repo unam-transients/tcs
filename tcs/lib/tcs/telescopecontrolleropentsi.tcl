@@ -343,12 +343,20 @@ namespace eval "telescopecontroller" {
     log::info [format "finished switching off after %.1f seconds." [utcclock::diff $end $start]]
   }
 
-  proc stopactivitycommand {previousactivity} {
+  proc stopactivitycommand {} {
     set start [utcclock::seconds]
     log::info "stopping."
     stophardware
     set end [utcclock::seconds]
     log::info [format "finished stopping after %.1f seconds." [utcclock::diff $end $start]]
+  }
+
+  proc emergencystopactivitycommand {} {
+    set start [utcclock::seconds]
+    log::info "emergency stopping."
+    stophardware
+    set end [utcclock::seconds]
+    log::info [format "finished emergency stopping after %.1f seconds." [utcclock::diff $end $start]]
   }
 
   proc resetactivitycommand {} {
@@ -413,9 +421,14 @@ namespace eval "telescopecontroller" {
     server::checkactivityforstop
     checkhardwarefor "stop"
     checkplcfor "stop"
-    server::newactivitycommand "stopping" [server::getstoppedactivity] "telescopecontroller::stopactivitycommand [server::getactivity]"
+    server::newactivitycommand "stopping" [server::getstoppedactivity] telescopecontroller::stopactivitycommand
   }
   
+  proc emergencystop {} {
+    # This is the same as stop, except it doesn't check the controller or hardware state.
+    server::newactivitycommand "stopping" [server::getstoppedactivity] telescopecontroller::emergencystopactivitycommand
+  }
+
   proc reset {} {
     server::checkstatus
     server::checkactivityforreset

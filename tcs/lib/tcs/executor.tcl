@@ -782,6 +782,30 @@ namespace eval "executor" {
 
   ######################################################################
 
+  proc stopactivitycommand {} {
+    set start [utcclock::seconds]
+    log::summary "stopping."
+    foreach server {telescope instrument} {
+      client::request $server "stop"
+    }
+    foreach server {telescope instrument} {
+      client::wait $server
+    }
+    log::summary [format "finished stopping after %.1f seconds." [utcclock::diff now $start]]
+  }
+
+  proc emergencystopactivitycommand {} {
+    set start [utcclock::seconds]
+    log::summary "emergency stopping."
+    foreach server {telescope} {
+      client::request $server "emergencystop"
+    }
+    foreach server {telescope} {
+      client::wait $server
+    }
+    log::summary [format "finished emergency stopping after %.1f seconds." [utcclock::diff now $start]]
+  }
+
   proc executeactivitycommand {filetype filename} {
   
     setfiles $filetype $filename
@@ -871,18 +895,6 @@ namespace eval "executor" {
     log::summary [format "finished executing [filetype] file \"[file tail [filename]]\" after %.1f seconds." [utcclock::diff now $blockstart]]
   }
   
-  proc stopactivitycommand {} {
-    set start [utcclock::seconds]
-    log::summary "stopping."
-    foreach server {telescope instrument} {
-      client::request $server "stop"
-    }
-    foreach server {telescope instrument} {
-      client::wait $server
-    }
-    log::summary [format "finished stopping after %.1f seconds." [utcclock::diff now $start]]
-  }
-
   proc resetactivitycommand {} {
     set start [utcclock::seconds]
     log::summary "resetting."
@@ -1006,6 +1018,12 @@ namespace eval "executor" {
     server::checkactivityforstop
     server::newactivitycommand "stopping" [server::getstoppedactivity] \
       "executor::stopactivitycommand"
+  }
+
+  proc emergencystop {} {
+    # This is the same as stop, except it doesn't check the server state.
+    server::newactivitycommand "stopping" [server::getstoppedactivity] \
+      "executor::emergencystopactivitycommand"
   }
 
   proc reset {} {

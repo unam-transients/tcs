@@ -53,6 +53,10 @@ namespace eval "telescopeserver" {
     telescope::stop
   }
   
+  proc slaveemergencystop {} {
+    telescope::emergencystop
+  }
+  
   proc slaveinitialize {} {
     telescope::initialize
   }
@@ -157,6 +161,7 @@ namespace eval "telescopeserver" {
     interp alias $slave correct                     {} telescopeserver::slavecorrect
     interp alias $slave movesecondary               {} telescopeserver::slavemovesecondary
     interp alias $slave setsecondaryoffset          {} telescopeserver::slavesetsecondaryoffset
+    interp alias $slave emergencystop               {} telescopeserver::slaveemergencystop
 
   }
 
