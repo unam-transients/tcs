@@ -1126,6 +1126,7 @@ namespace eval "html" {
             *-detector-cooler-power::* -
             *-humidity::* -
             *-light-level::* -
+            *-charge-level::* -
             *-disk-space-used::* {      
               writehtmlfullrowwithemph $name $emphasis "$timestamp [format "%.0f%%" [expr {$value * 100}]]"
             }

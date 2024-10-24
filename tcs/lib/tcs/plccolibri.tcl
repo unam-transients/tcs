@@ -229,7 +229,7 @@ namespace eval "plc" {
     }
     
     if {[catch {
-      server::setdata "europeanupsbatterycapacity"    [format "%.2f" [expr {0.01 * [lindex $field 36]}]]
+      server::setdata "europeanupsbatterychargelevel" [format "%.2f" [expr {0.01 * [lindex $field 36]}]]
       server::setdata "europeanupsbatterytemperature" [format "%.1f" [lindex $field 37]]
       server::setdata "europeanupsbatteryvoltage"     [format "%.0f" [lindex $field 38]]
       server::setdata "europeanupsbatterycurrent"     [format "%.0f" [lindex $field 39]]
@@ -521,7 +521,7 @@ namespace eval "plc" {
       server::setdata "americanupsload"               [format "%.2f" [expr {0.01 * [lindex $field 8]}]]
       server::setdata "americanupsoutputfrequency"    [format "%.1f" [lindex $field 9]]
       server::setdata "americanupsbatterytemperature" [format "%.1f" [lindex $field 10]]
-      server::setdata "americanupsbatterycharge"      [format "%.2f" [expr {0.01 * [lindex $field 11]}]]
+      server::setdata "americanupsbatterychargelevel" [format "%.2f" [expr {0.01 * [lindex $field 11]}]]
       server::setdata "americanupsbatteryvoltage"     [format "%.1f" [lindex $field 12]]
       server::setdata "americanupsbatterycurrent"     [format "%.1f" [lindex $field 13]]
       set statusword [lindex $field 14]
@@ -657,32 +657,33 @@ namespace eval "plc" {
       wind-index                 boltwoodwindindex
       cloud-index                boltwoodcloudindex
 
-      european-ups-battery-temperature europeanupsbatterytemperature
-      european-ups-battery-voltage     europeanupsbatteryvoltage
-      european-ups-battery-current     europeanupsbatterycurrent
-      european-ups-battery-seconds     europeanupsbatteryseconds
-      european-ups-load                europeanupsload
-      european-ups-l12-voltage         europeanupsl12voltage
-      european-ups-l23-voltage         europeanupsl23voltage
-      european-ups-l13-voltage         europeanupsl13voltage
-      european-ups-l1-current          europeanupsl1current
-      european-ups-l2-current          europeanupsl2current
-      european-ups-l3-current          europeanupsl3current
-      european-ups-input-frequency     europeanupsinputfrequency
-      european-ups-output-frequency    europeanupsoutputfrequency
+      european-ups-battery-charge-level europeanupsbatterychargelevel
+      european-ups-battery-temperature  europeanupsbatterytemperature
+      european-ups-battery-voltage      europeanupsbatteryvoltage
+      european-ups-battery-current      europeanupsbatterycurrent
+      european-ups-battery-seconds      europeanupsbatteryseconds
+      european-ups-load                 europeanupsload
+      european-ups-l12-voltage          europeanupsl12voltage
+      european-ups-l23-voltage          europeanupsl23voltage
+      european-ups-l13-voltage          europeanupsl13voltage
+      european-ups-l1-current           europeanupsl1current
+      european-ups-l2-current           europeanupsl2current
+      european-ups-l3-current           europeanupsl3current
+      european-ups-input-frequency      europeanupsinputfrequency
+      european-ups-output-frequency     europeanupsoutputfrequency
       
-      american-ups-battery-temperature americanupsbatterytemperature
-      american-ups-battery-voltage     americanupsbatteryvoltage
-      american-ups-battery-current     americanupsbatterycurrent
-      american-ups-battery-charge      americanupsbatterycharge
-      american-ups-load                americanupsload
-      american-ups-l1-voltage          americanupsl1voltage
-      american-ups-l2-voltage          americanupsl2voltage
-      american-ups-l3-voltage          americanupsl3voltage
-      american-ups-l1-current          americanupsl1current
-      american-ups-l2-current          americanupsl2current
-      american-ups-l3-current          americanupsl3current
-      american-ups-output-frequency    americanupsoutputfrequency
+      american-ups-battery-charge-level americanupsbatterychargelevel
+      american-ups-battery-temperature  americanupsbatterytemperature
+      american-ups-battery-voltage      americanupsbatteryvoltage
+      american-ups-battery-current      americanupsbatterycurrent
+      american-ups-load                 americanupsload
+      american-ups-l1-voltage           americanupsl1voltage
+      american-ups-l2-voltage           americanupsl2voltage
+      american-ups-l3-voltage           americanupsl3voltage
+      american-ups-l1-current           americanupsl1current
+      american-ups-l2-current           americanupsl2current
+      american-ups-l3-current           americanupsl3current
+      american-ups-output-frequency     americanupsoutputfrequency
 
     } {
       log::writesensorsfile "plc-$sensorname" [server::getdata $dataname] [server::getdata "timestamp"]
