@@ -1042,9 +1042,9 @@
         "identifier": "",
         "firmware": ""
       },
-      "european-ups-l12-current": {
-        "file": "/usr/local/var/tcs/sensors/control/plc-european-ups-l12-current",
-        "prettyname": "european ups l12 current",
+      "european-ups-l1-current": {
+        "file": "/usr/local/var/tcs/sensors/control/plc-european-ups-l1-current",
+        "prettyname": "european ups l1 current",
         "subsystem": "ups",
         "component": "european-ups",
         "group": "current",
@@ -1054,9 +1054,9 @@
         "identifier": "",
         "firmware": ""
       },
-      "european-ups-l23-current": {
-        "file": "/usr/local/var/tcs/sensors/control/plc-european-ups-l23-current",
-        "prettyname": "european ups l23 current",
+      "european-ups-l2-current": {
+        "file": "/usr/local/var/tcs/sensors/control/plc-european-ups-l2-current",
+        "prettyname": "european ups l2 current",
         "subsystem": "ups",
         "component": "european-ups",
         "group": "current",
@@ -1066,9 +1066,9 @@
         "identifier": "",
         "firmware": ""
       },
-      "european-ups-l13-current": {
-        "file": "/usr/local/var/tcs/sensors/control/plc-european-ups-l13-current",
-        "prettyname": "european ups l13 current",
+      "european-ups-l3-current": {
+        "file": "/usr/local/var/tcs/sensors/control/plc-european-ups-l3-current",
+        "prettyname": "european ups l3 current",
         "subsystem": "ups",
         "component": "european-ups",
         "group": "current",

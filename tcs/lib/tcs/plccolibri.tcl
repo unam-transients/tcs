@@ -238,9 +238,9 @@ namespace eval "plc" {
       server::setdata "europeanupsl12voltage"         [format "%.0f" [lindex $field 42]]
       server::setdata "europeanupsl23voltage"         [format "%.0f" [lindex $field 43]]
       server::setdata "europeanupsl13voltage"         [format "%.0f" [lindex $field 44]]
-      server::setdata "europeanupsl12current"         [format "%.0f" [lindex $field 45]]
-      server::setdata "europeanupsl23current"         [format "%.0f" [lindex $field 46]]
-      server::setdata "europeanupsl13current"         [format "%.0f" [lindex $field 47]]
+      server::setdata "europeanupsl1current"          [format "%.0f" [lindex $field 45]]
+      server::setdata "europeanupsl2current"          [format "%.0f" [lindex $field 46]]
+      server::setdata "europeanupsl3current"          [format "%.0f" [lindex $field 47]]
       server::setdata "europeanupsinputfrequency"     [format "%.0f" [lindex $field 48]]
       server::setdata "europeanupsoutputfrequency"    [format "%.0f" [lindex $field 49]]
     }]} {
@@ -665,9 +665,9 @@ namespace eval "plc" {
       european-ups-l12-voltage         europeanupsl12voltage
       european-ups-l23-voltage         europeanupsl23voltage
       european-ups-l13-voltage         europeanupsl13voltage
-      european-ups-l12-current         europeanupsl12current
-      european-ups-l23-current         europeanupsl23current
-      european-ups-l13-current         europeanupsl13current
+      european-ups-l1-current          europeanupsl1current
+      european-ups-l2-current          europeanupsl2current
+      european-ups-l3-current          europeanupsl3current
       european-ups-input-frequency     europeanupsinputfrequency
       european-ups-output-frequency    europeanupsoutputfrequency
       
