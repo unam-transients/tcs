@@ -58,6 +58,10 @@ namespace eval "telescope" {
 
   proc closeepilog {} {
   }
+  
+  proc emergencystopaction {} {
+    client::request telescopecontroller "emergencystop"
+  }
 
   ######################################################################
 
