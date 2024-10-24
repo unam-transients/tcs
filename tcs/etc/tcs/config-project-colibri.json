@@ -597,6 +597,18 @@
         "identifier": "",
         "firmware": ""
       },
+      "weather-sky-temperature": {
+        "file": "/usr/local/var/tcs/sensors/control/weather-sky-temperature",
+        "prettyname": "sky temperature",
+        "group": "environmental-sky-temperature",
+        "subsystem": "weather",
+        "component": "boltwood",
+        "type": "float",
+        "unit": "C",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
       "weather-humidity": {
         "file": "/usr/local/var/tcs/sensors/control/weather-humidity",
         "prettyname": "humidity",
@@ -729,6 +741,54 @@
         "group": "environmental-pressure",
         "type": "float",
         "unit": "mbar",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "weather-daylight-index": {
+        "file": "/usr/local/var/tcs/sensors/control/plc-daylight-index",
+        "prettyname": "daylight index",
+        "group": "environmental-indices",
+        "subsystem": "weather",
+        "component": "boltwood",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "weather-rain-index": {
+        "file": "/usr/local/var/tcs/sensors/control/plc-rain-index",
+        "prettyname": "rain index",
+        "group": "environmental-indices",
+        "subsystem": "weather",
+        "component": "boltwood",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "weather-wind-index": {
+        "file": "/usr/local/var/tcs/sensors/control/plc-wind-index",
+        "prettyname": "wind index",
+        "group": "environmental-indices",
+        "subsystem": "weather",
+        "component": "boltwood",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "weather-cloud-index": {
+        "file": "/usr/local/var/tcs/sensors/control/plc-cloud-index",
+        "prettyname": "cloud index",
+        "group": "environmental-indices",
+        "subsystem": "weather",
+        "component": "boltwood",
+        "type": "float",
+        "unit": "",
         "model": "",
         "identifier": "",
         "firmware": ""

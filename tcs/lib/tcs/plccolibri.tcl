@@ -642,13 +642,17 @@ namespace eval "plc" {
     server::setstatus "ok"
 
     foreach {sensorname dataname} {
-      plc-cabinet-temperature             plccabinettemperature 
+      plc-cabinet-temperature    plccabinettemperature 
       weather-cabinet-temperature weathercabinettemperature 
-      seeing-cabinet-temperature          seeingcabinettemperature 
-      comet1-temperature                  comet1temperature
-      comet2-temperature                  comet2temperature
-      comet1-humidity                     comet1humidity
-      comet2-humidity                     comet2humidity
+      seeing-cabinet-temperature seeingcabinettemperature 
+      comet1-temperature         comet1temperature
+      comet2-temperature         comet2temperature
+      comet1-humidity            comet1humidity
+      comet2-humidity            comet2humidity
+      daylight-index             boltwooddaylightindex
+      rain-index                 boltwoodrainindex
+      wind-index                 boltwoodwindindex
+      cloud-index                boltwoodcloudindex
     } {
       log::writesensorsfile "plc-$sensorname" [server::getdata $dataname] [server::getdata "timestamp"]
     }
