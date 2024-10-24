@@ -298,7 +298,8 @@
       "plc-cabinet-temperature",
       "weather-cabinet-temperature",
       "seeing-cabinet-temperature",
-      "column-bottom-temperature"
+      "column-bottom-temperature",
+      "telescope-pneumatic-pressure"
     ],
     "environmental-sensor-reference": "observing-room-comet1-temperature",
     "sensors": {
@@ -934,9 +935,9 @@
         "identifier": "opentsi-sensor-1",
         "firmware": ""
       },
-      "telescope-pneumatics-pressure": {
+      "telescope-pneumatic-pressure": {
         "file": "/usr/local/var/tcs/sensors/control/opentsi-2",
-        "prettyname": "telescope pneumatics pressure",
+        "prettyname": "telescope pneumatic pressure",
         "subsystem": "telescope",
         "component": "cabinet",
         "group": "telescope-pneumatic-pressure",
