@@ -69,14 +69,6 @@ installs_project_colibri	:=		    \
 installbins_project_colibri	:=		    \
 	alertscript-project-colibri
 
-installs_project_colibri_laboratory	:=	\
-	alert-project-colibri		        \
-	config-project-colibri.json		    \
-	servers-project-colibri.json		\
-	visitcommands-project-colibri.tcl
-	
-installbins_project_colibri_laboratory	:=
-
 INSTALL_DIR	:=	$(prefix)/etc/tcs/
 
 include ../../Makefile.epilog
