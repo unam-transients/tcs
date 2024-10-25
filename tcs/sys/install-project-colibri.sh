@@ -75,14 +75,14 @@ sudo mv /etc/hosts.tmp /etc/hosts
   echo 'MAILTO=""'
 
   cat <<"EOF"
-00 21 *  *  *  tcs cleanfiles
-*  *  *  *  *  tcs updatevarlatestlink
-*  *  *  *  *  tcs updatelocalsensorsfiles
-*  *  *  *  *  tcs checkreboot
-*  *  *  *  *  tcs checkrestart
-*  *  *  *  *  tcs checkhalt
-00 18 *  *  *  tcs updateiersfiles
-00 18 *  *  *  tcs updateleapsecondsfile
+00     21 *  *  *  tcs cleanfiles
+*      *  *  *  *  tcs updatevarlatestlink
+*      *  *  *  *  tcs updatelocalsensorsfiles
+*      *  *  *  *  tcs checkreboot
+*      *  *  *  *  tcs checkrestart
+*      *  *  *  *  tcs checkhalt
+00     18 *  *  *  tcs updateiersfiles
+00     18 *  *  *  tcs updateleapsecondsfile
 00     *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="*.jpg" --exclude="*.fits" --exclude="*.fits.*" /usr/local/var/tcs/ rsync://colibri-rsync/colibri-raw/
 01-59  *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="debug*.txt" --include="*.txt" --include="*.json" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://colibri-rsync/colibri-raw/
 *      *  *  *  *  rsync -aH --remove-source-files --exclude="*.tmp" --include="*.fits.*" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://colibri-rsync/colibri-raw/
@@ -92,12 +92,13 @@ EOF
   control)
     cat <<"EOF"
 *      *  *  *  *  sleep 10; tcs updatesensorsfiles control instrument
-#*      *  *  *  *  tcs updateweatherfiles-oan
+*      *  *  *  *  tcs updateseeingfiles-colibri
 *      *  *  *  *  tcs request plc updateweather
 *      *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
-*/5    *  *  *  *  tcs logsensors
+00     00 *  *  *  tcs loadblocks -F
+01     00 *  *  *  tcs loadblocks -L
 *      *  *  *  *  cd /usr/local/var/www/tcs/; sh plots.sh >plots.txt 2>&1
-*      *  *  *  *  tcs updateseeingfiles-colibri
+*/5    *  *  *  *  tcs logsensors
 EOF
     ;;
   esac

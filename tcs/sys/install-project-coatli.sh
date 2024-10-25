@@ -93,8 +93,8 @@ EOF
 *  *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
 00 00 *  *  *  tcs loadblocks -F
 01 00 *  *  *  tcs loadblocks -L
-*   *  *  *  *  sh /usr/local/var/www/tcs/plots.sh
-*/5 *  *  *  *  tcs logsensors
+*   *  * *  *  sh /usr/local/var/www/tcs/plots.sh
+*/5 *  * *  *  tcs logsensors
 EOF
     ;;
   instrument)
