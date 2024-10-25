@@ -9,9 +9,6 @@ coatli)
 colibri)
   hosts="control instrument"
   ;;
-colibri-laboratory)
-  hosts="control detectors"
-  ;;
 ddoti)
   hosts="control detectors0 detectors1 platform"
   ;;

@@ -134,18 +134,6 @@ installbins_project_colibri :=    \
 	updateweatherfiles-oan        \
 	updateseeingfiles-colibri
 		
-installbins_project_colibri_laboratory :=    \
-    coversserver                  \
-	C0server                      \
-	C1server                      \
-	telescopecontrollerserver     \
-	plcserver                     \
-	secondaryserver               \
-	updateweatherfiles-colibri
-	
-installbins_project_ddoticu :=    \
-	C0server
-	
 CLEAN_FILES         :=  *.o newpgrp
 
 INSTALL_DIR         :=  $(prefix)/libexec/tcs
