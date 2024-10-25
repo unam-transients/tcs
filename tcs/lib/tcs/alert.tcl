@@ -50,6 +50,29 @@ namespace eval "alert" {
       set oldalert $alert
     }
     
+    # Determine the best position
+    set bestuncertainty ""
+    foreach newalert $newalerts {
+      if {[dict exists $newalert "uncertainty"]} {
+        set uncertainty [astrometry::parsedistance [dict get $newalert "uncertainty"]]
+        if {[string equal $bestuncertainty ""] || $uncertainty < $bestuncertainty} {
+          set bestuncertainty $uncertainty
+          set bestalpha   [dict get $newalert "alpha"  ]
+          set bestdelta   [dict get $newalert "delta"  ]
+          set bestequinox [dict get $newalert "equinox"]
+        }
+      }
+    }
+    set bestuncertainty [astrometry::formatdistance $bestuncertainty]
+    if {![string equal $bestuncertainty ""]} {
+      set alert [dict merge $alert [dict create \
+        "uncertainty" $bestuncertainty \
+        "alpha"       $bestalpha       \
+        "delta"       $bestdelta       \
+        "equinox"     $bestequinox     \
+      ]]
+    }
+    
     # Determine the minimum and maximum event timestamps.
     set mineventtimestamp ""
     set maxeventtimestamp ""
