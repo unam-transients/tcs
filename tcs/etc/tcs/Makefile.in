@@ -23,28 +23,28 @@
 
 include ../../Makefile.prolog
 
-installs	:=				                \
-    version.json                            \
-	config-defaults.json			        \
-	fitsfwhm.param 				            \
-	fitsfwhm.sex 				            \
-	fitssolvewcs.cfg-a			            \
-	fitssolvewcs.cfg-b			            \
-	fitssolvewcs.conv			            \
-	fitssolvewcs.param 			            \
+installs	:=				            \
+    version.json                        \
+	config-defaults.json			    \
+	fitsfwhm.param 				        \
+	fitsfwhm.sex 				        \
+	fitssolvewcs.cfg-a			        \
+	fitssolvewcs.cfg-b			        \
+	fitssolvewcs.conv			        \
+	fitssolvewcs.param 			        \
 	fitssolvewcs.sex
 	
-installs_project_test		:=		        \
-	alert-project-test			            \
-	config-project-test.json		        \
-	servers-project-test.json		        \
+installs_project_test		:=		    \
+	alert-project-test			        \
+	config-project-test.json		    \
+	servers-project-test.json		    \
 	visitcommands-project-test.tcl
 	
-installbins_project_test	:=		        \
+installbins_project_test	:=		    \
 	alertscript-project-test
 
 installs_project_coatli	:=		        \
-	alert-project-coatli		            \
+	alert-project-coatli		        \
 	config-project-coatli.json		    \
 	servers-project-coatli.json		    \
 	visitcommands-project-coatli.tcl
@@ -61,23 +61,21 @@ installs_project_ddoti	:=		        \
 installbins_project_ddoti	:=		    \
 	alertscript-project-ddoti
 
-installs_project_colibri	:=		        \
+installs_project_colibri	:=		    \
 	config-project-colibri.json		    \
-	servers-project-colibri.json		    \
-	visitcommands-project-colibri.tcl	\
-	
-installbins_project_colibri	:=		    \
-
-installs_project_colibri	:=	        	\
-	alert-project-colibri		        \
-	config-project-colibri.json		    \
-	servers-project-colibri.json		    \
+	servers-project-colibri.json		\
 	visitcommands-project-colibri.tcl	\
 	
 installbins_project_colibri	:=		    \
 	alertscript-project-colibri
+
+installs_project_colibri_laboratory	:=	\
+	alert-project-colibri		        \
+	config-project-colibri.json		    \
+	servers-project-colibri.json		\
+	visitcommands-project-colibri.tcl
 	
-installbins_project_colibri	:=
+installbins_project_colibri_laboratory	:=
 
 INSTALL_DIR	:=	$(prefix)/etc/tcs/
 
