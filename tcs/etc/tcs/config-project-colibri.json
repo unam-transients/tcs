@@ -1269,7 +1269,7 @@
   },
   "supervisor": {
     "withplc": "true",
-    "internalhumiditysensor": "",
+    "internalhumiditysensor": "observing-room-comet1-humidity",
     "openoffsetseconds": "0",
     "opentoventilateoffsetseconds": "1800"
   },
