@@ -108,7 +108,7 @@
     "type": "opentsi",
     "openazimuth": "0d",
     "closeazimuth": "0d",
-    "parkazimuth": "180d",
+    "parkazimuth": "0d",
     // The COLIBRI dome aperture is 2.30 meters wide. The dome is 7.50
     // meters in diameter. Thus, if the dome were perfectly aligned, it
     // could accept 7.66 degrees of tolerance. We will reduce this to
@@ -211,13 +211,13 @@
     // "azimuthpark": "-0.0025d",
     // "zenithdistancepark": "0.0036d",
     // "derotatoranglepark": "0d",
-    // Park to the north
-    "azimuthpark": "0d",
-    "zenithdistancepark": "1d",
+    // Park to the south.
+    "azimuthpark": "180d",
+    "zenithdistancepark": "10d",
     "derotatoranglepark": "0d",
-    // Unpark to the north too.
-    "haunpark": "0h",
-    "deltaunpark": "1d",
+    // Unpark to the south too.
+    "haunpark": "12h",
+    "deltaunpark": "0d",
     "minzenithdistancelimit": "0.5d",
     "maxzenithdistancelimit": "80d",
     "initialport": "ogse",
