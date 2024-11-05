@@ -853,6 +853,10 @@ namespace eval "executor" {
     setproject [block::project [block]]
     setalert   [block::alert [block]]
 
+    log::info "stopping instrument."
+    client::request "instrument" "stop"
+    client::wait "instrument"
+
     log::summary "executing block [block::identifier [block]] \"[block::name [block]]\" of project [project::identifier [project]] \"[project::name [block::project [block]]]\"."
 
     foreach visit [block::visits [block]] {
@@ -874,15 +878,15 @@ namespace eval "executor" {
 
     }
     
-    catch {
-      log::summary "stopping."
-      foreach server {telescope instrument} {
-        client::request $server "stop"
-      }
-      foreach server {telescope instrument} {
-        client::wait $server
-      }
-    }
+    #catch {
+    #  log::summary "stopping."
+    #  foreach server {telescope instrument} {
+    #    client::request $server "stop"
+    #  }
+    #  foreach server {telescope instrument} {
+    #    client::wait $server
+    #  }
+    #}
 
     if {![block::persistent [block]]} {
       log::info "deleting [filetype] file \"[file tail [filename]]\"."

@@ -299,16 +299,16 @@ namespace eval "selector" {
         continue
       }
 
-      log::info "stopping."
-      server::setactivity "stopping"      
-      if {[catch {
-        client::request "executor" "stop"
-        client::wait "executor"
-      } message]} {
-        log::error "unable to stop: $message"
-        set recover true
-        continue
-      }
+      #log::info "stopping."
+      #server::setactivity "stopping"      
+      #if {[catch {
+      #  client::request "executor" "stop"
+      #  client::wait "executor"
+      #} message]} {
+      #  log::error "unable to stop: $message"
+      #  set recover true
+      #  continue
+      #}
 
       if {[string equal $mode "disabled"]} {
         continue
@@ -530,23 +530,23 @@ namespace eval "selector" {
 
     close $channel
     
-#    if {!$interrupt} {
-#      log::summary "not interrupting the executor: interrupt is false."
-#    } elseif {[string equal $mode "disabled"]} {
-#      log::summary "not interrupting the executor: selector is disabled."
-#    } else {
-#      set why [isselectablealertfile $alertfile [utcclock::seconds]]
-#      if {![string equal "" $why]} {
-#        log::summary "not interrupting the executor: alert is not selectable: $why"
-#      } else {
-#        log::summary "interrupting the executor."
-#        if {[catch {client::request "executor" "stop"} message]} {
-#          log::error "unable to interrupt the executor: $message"
-#        }
-#        variable alertindex
-#        set alertindex 0
-#      }
-#    }
+    if {!$interrupt} {
+      log::summary "not interrupting the executor: interrupt is false."
+    } elseif {[string equal $mode "disabled"]} {
+      log::summary "not interrupting the executor: selector is disabled."
+    } else {
+      set why [isselectablealertfile $alertfile [utcclock::seconds]]
+      if {![string equal "" $why]} {
+        log::summary "not interrupting the executor: alert is not selectable: $why"
+      } else {
+        log::summary "interrupting the executor."
+        if {[catch {client::request "executor" "stop"} message]} {
+          log::error "unable to interrupt the executor: $message"
+        }
+        variable alertindex
+        set alertindex 0
+      }
+    }
     
     if {!$alertfileexists && ([string equal "" $enabled] || $enabled)} {
       log::info "running alertscript."
