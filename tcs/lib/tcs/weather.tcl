@@ -252,7 +252,7 @@ namespace eval "weather" {
       }
         
       if {![string equal $windaverageazimuth "unknown"]} {
-        set windaverageazimuth [expr {22.5 * round($windaverageazimuth / 22.5)}]
+        set windaverageazimuth [astrometry::foldradpositive [expr {22.5 * round($windaverageazimuth / 22.5)}]]
       }
                 
       if {$humidity < 0.80} {
