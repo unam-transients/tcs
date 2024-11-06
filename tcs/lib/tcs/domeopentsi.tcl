@@ -104,10 +104,18 @@ namespace eval "dome" {
       set moving false
     }
     
+    set requestedazimuth [server::getdata "requestedazimuth"]
+    if {[string equal $requestedazimuth ""]} {
+        set azimutherror ""
+    } else {
+        set azimutherror [astrometry::foldradsymmetric [expr {$azimuth - $requestedazimuth}]]
+    }
+    
     set timestamp [utcclock::combinedformat "now"]
     
     server::setdata "timestamp"        $timestamp
     server::setdata "azimuth"          $azimuth
+    server::setdata "azimutherror"     $azimutherror
     server::setdata "shutters"         $shutters
 
     server::setstatus "ok"
@@ -130,6 +138,15 @@ namespace eval "dome" {
     set settle [utcclock::seconds]
     while {[utcclock::diff now $settle] < $settlingdelay} {
       coroutine::yield
+    }
+    set azimutherror [server::getdata "azimutherror"]
+    if {![string equal $azimutherror ""]} {
+      set azimutherrortolerance [astrometry::parsedistance "1d"]
+      if {abs($azimutherror) > $azimutherrortolerance} {
+        log::warning [format "azimuth error is %+.1fd" [astrometry::radtodeg $azimutherror]]
+      } else {
+        log::info [format "azimuth error is %+.1fd" [astrometry::radtodeg $azimutherror]]
+      }
     }
     log::info "finished waiting while moving."
   }
