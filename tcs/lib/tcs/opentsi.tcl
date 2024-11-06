@@ -47,10 +47,15 @@ namespace eval "opentsi" {
 
   ######################################################################
 
-  proc isignoredresponse {response} {
+  proc isauthenticationresponse {response} {
     expr {
       [regexp {TPL2 .*} $response] == 1 ||
-      [regexp {AUTH OK .*} $response] == 1 ||
+      [regexp {AUTH OK .*} $response] == 1
+    }
+  }
+  
+  proc isignoredresponse {response} {
+    expr {
       [regexp {^[0-9]+ COMMAND OK}  $response] == 1 ||
       [regexp {^[0-9]+ DATA OK}     $response] == 1 ||
       [regexp {^[0-9]+ EVENT INFO } $response] == 1 ||
@@ -164,27 +169,34 @@ namespace eval "opentsi" {
       return true
     }
     
-    if {[opentsi::isignoredresponse $response]} {
+    if {[opentsi::isauthenticationresponse $response]} {
+      log::info "received controller authentication response: \"$response\"."
       return false
-    }
-
-    if {[opentsi::iserrorresponse $response]
-    } {
-      log::warning "controller error: \"$response\"."
-      return false
-    }
-
-    if {![scan $response "%d " commandidentifier] == 1} {
-      log::warning "unexpected controller response \"$response\"."
-      return true
     }
 
     variable statuscommandidentifier
     variable emergencystopcommandidentifier
     variable completedcommandidentifier
 
+    if {[scan $response "%d " commandidentifier] != 1} {
+      log::warning "received unexpected controller response: \"$response\"."
+      return true
+    }
+
+    if {[opentsi::isignoredresponse $response]} {
+      if {$commandidentifier != $statuscommandidentifier} {
+        log::info "received controller response: \"$response\"."
+      }
+      return false
+    }
+
+    if {[opentsi::iserrorresponse $response]} {
+      log::warning "received controller error response: \"$response\"."
+      return false
+    }
+
     if {$commandidentifier == $emergencystopcommandidentifier} {
-      log::debug "controller response \"$response\"."
+      log::info "received controller response: \"$response\"."
       if {[regexp {^[0-9]+ COMMAND COMPLETE} $response] == 1} {
         log::warning "finished emergency stop."
         return false
@@ -194,7 +206,7 @@ namespace eval "opentsi" {
     if {$commandidentifier != $statuscommandidentifier} {
       variable currentcommandidentifier
       variable completedcurrentcommand
-      log::debug "controller response \"$response\"."
+      log::info "received controller response: \"$response\"."
       if {[regexp {^[0-9]+ COMMAND COMPLETE} $response] == 1} {
         log::debug [format "controller command %d completed." $commandidentifier]
         if {$commandidentifier == $currentcommandidentifier} {
