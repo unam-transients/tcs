@@ -481,7 +481,7 @@ namespace eval "supervisor" {
         if {![catch {
           client::request "selector" "disable"
           client::wait "selector"
-          client::request "executor" "recover"
+          client::request "executor" "recovertoclosed"
           client::wait "executor"
           client::request "executor" "open"
           client::wait "executor"
@@ -520,7 +520,7 @@ namespace eval "supervisor" {
         if {![catch {
           client::request "selector" "disable"
           client::wait "selector"
-          client::request "executor" "recover"
+          client::request "executor" "recovertoclosed"
           client::wait "executor"
           client::request "executor" "opentoventilate"
           client::wait "executor"
@@ -558,7 +558,7 @@ namespace eval "supervisor" {
         if {![catch {
           client::request "selector" "disable"
           client::wait "selector"
-          client::request "executor" "recover"
+          client::request "executor" "recovertoclosed"
           client::wait "executor"
           client::request "executor" "close"
           client::wait "executor"

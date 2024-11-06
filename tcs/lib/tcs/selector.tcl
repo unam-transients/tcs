@@ -248,7 +248,6 @@ namespace eval "selector" {
 
     set idled false
     set delay 0
-    set recover false
 
     server::setstatus "ok" 
     
@@ -263,7 +262,6 @@ namespace eval "selector" {
       if {[string equal $mode "disabled"]} {
         log::debug "blockloop: disabled."
         server::setactivity "idle"
-        set recover false
         coroutine::after 1000
         continue
       }
@@ -274,42 +272,6 @@ namespace eval "selector" {
         coroutine::after $delay
       }
       
-      if {[string equal $mode "disabled"]} {
-        continue
-      }
-
-      if {$recover} {
-        log::warning "recovering."
-        server::setactivity "recovering"      
-        if {[catch {
-          client::request "executor" "recover"
-          client::wait "executor"
-          client::request "executor" "open"
-          client::wait "executor"
-        } message]} {
-          log::error "unable to recover: $message"
-          client::request "executor" "emergencyclose"
-          disable
-          continue
-        }
-        set recover false
-      }
-      
-      if {[string equal $mode "disabled"]} {
-        continue
-      }
-
-      #log::info "stopping."
-      #server::setactivity "stopping"      
-      #if {[catch {
-      #  client::request "executor" "stop"
-      #  client::wait "executor"
-      #} message]} {
-      #  log::error "unable to stop: $message"
-      #  set recover true
-      #  continue
-      #}
-
       if {[string equal $mode "disabled"]} {
         continue
       }
@@ -358,7 +320,6 @@ namespace eval "selector" {
           } message]} {
             log::error "unable to idle: $message"
             set delay 60000
-            set recover true
             continue
           }
           set idled true
@@ -377,7 +338,6 @@ namespace eval "selector" {
       } message]} {
         log::error "unable to execute: $message"
         set delay 60000
-        set recover true
         continue
       }
       log::summary "finished executing $filetype file \"[file tail $filename]\"."
@@ -530,23 +490,23 @@ namespace eval "selector" {
 
     close $channel
     
-    if {!$interrupt} {
-      log::summary "not interrupting the executor: interrupt is false."
-    } elseif {[string equal $mode "disabled"]} {
-      log::summary "not interrupting the executor: selector is disabled."
-    } else {
-      set why [isselectablealertfile $alertfile [utcclock::seconds]]
-      if {![string equal "" $why]} {
-        log::summary "not interrupting the executor: alert is not selectable: $why"
-      } else {
-        log::summary "interrupting the executor."
-        if {[catch {client::request "executor" "stop"} message]} {
-          log::error "unable to interrupt the executor: $message"
-        }
-        variable alertindex
-        set alertindex 0
-      }
-    }
+#    if {!$interrupt} {
+#      log::summary "not interrupting the executor: interrupt is false."
+#    } elseif {[string equal $mode "disabled"]} {
+#      log::summary "not interrupting the executor: selector is disabled."
+#    } else {
+#      set why [isselectablealertfile $alertfile [utcclock::seconds]]
+#      if {![string equal "" $why]} {
+#        log::summary "not interrupting the executor: alert is not selectable: $why"
+#      } else {
+#        log::summary "interrupting the executor."
+#        if {[catch {client::request "executor" "stop"} message]} {
+#          log::error "unable to interrupt the executor: $message"
+#        }
+#        variable alertindex
+#        set alertindex 0
+#      }
+#    }
     
     if {!$alertfileexists && ([string equal "" $enabled] || $enabled)} {
       log::info "running alertscript."
