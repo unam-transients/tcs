@@ -868,26 +868,23 @@ namespace eval "executor" {
       
       set visitstart [utcclock::seconds]
       if {[catch {
+        client::request "instrument" "stop"
+        client::wait "instrument"
         eval [visit::command [visit]]
       } result]} {
         log::error "while executing visit: $result"
-        log::info "aborting block."
+        log::summary "aborting block."
+        log::summary "recovering."
+        foreach server {telescope instrument} {
+          client::request $server "recovertopen"
+          client::wait $server
+        }
         break
       }
       log::summary [format "finished executing visit after %.1f seconds." [utcclock::diff now $visitstart]]
 
     }
     
-    #catch {
-    #  log::summary "stopping."
-    #  foreach server {telescope instrument} {
-    #    client::request $server "stop"
-    #  }
-    #  foreach server {telescope instrument} {
-    #    client::wait $server
-    #  }
-    #}
-
     if {![block::persistent [block]]} {
       log::info "deleting [filetype] file \"[file tail [filename]]\"."
       file delete -force [filename]
@@ -904,26 +901,35 @@ namespace eval "executor" {
     log::summary "resetting."
     foreach server {telescope instrument} {
       catch {client::waituntilstarted $server}
-    }
-    foreach server {telescope instrument} {
       client::request $server "reset"
-    }
-    foreach server {telescope instrument} {
       client::wait $server
     }
     log::summary [format "finished resetting after %.1f seconds." [utcclock::diff now $start]]
   }
 
-  proc recoveractivitycommand {} {
+  proc recovertoclosedactivitycommand {} {
     set start [utcclock::seconds]
     log::summary "recovering."
     foreach server {telescope instrument} {
       catch {client::waituntilstarted $server}
-    }
-    foreach server {telescope instrument} {
       client::request $server "recover"
+      client::wait $server
     }
+    log::summary [format "finished recovering after %.1f seconds." [utcclock::diff now $start]]
+  }
+
+  proc recovertoopenactivitycommand {} {
+    set start [utcclock::seconds]
+    log::summary "recovering."
     foreach server {telescope instrument} {
+      catch {client::waituntilstarted $server}
+      client::request $server "recover"
+      client::wait $server
+    }
+    log::summary "opening."
+    foreach server {instrument telescope} {
+      catch {client::waituntilstarted $server}
+      client::request $server "open"
       client::wait $server
     }
     log::summary [format "finished recovering after %.1f seconds." [utcclock::diff now $start]]
@@ -1000,11 +1006,7 @@ namespace eval "executor" {
     log::info "idling."
     foreach server {telescope instrument} {
       catch {client::waituntilstarted $server}
-    }
-    foreach server {telescope instrument} {
       client::request $server "reset"
-    }
-    foreach server {telescope instrument} {
       client::wait $server
     }
     client::request "telescope" "movetoidle"
@@ -1037,11 +1039,18 @@ namespace eval "executor" {
       "executor::resetactivitycommand"
   }
   
-  proc recover {} {
+  proc recovertoopen {} {
     server::checkstatus
     server::checkactivityforreset
     server::newactivitycommand "recovering" "idle" \
-      "executor::recoveractivitycommand" 1800e3
+      "executor::recovertoopenactivitycommand" 1800e3
+  }
+  
+  proc recovertoclosed {} {
+    server::checkstatus
+    server::checkactivityforreset
+    server::newactivitycommand "recovering" "idle" \
+      "executor::recovertoclosedactivitycommand" 1800e3
   }
   
   proc initialize {} {
