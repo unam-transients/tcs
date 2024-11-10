@@ -56,7 +56,7 @@ ServerName coatli.astrossp.unam.mx
     Allow from ::1
   </LocationMatch>
 
-  <LocationMatch ^/(tcs|proxy)/>
+  <LocationMatch ^/tcs/>
     Deny from All
     Allow from 132.248.4
     Allow from 100.
@@ -64,15 +64,24 @@ ServerName coatli.astrossp.unam.mx
     Allow from 192.168
     Allow from 127.0.0
     Allow from ::1
-    <If "req('Host') == 'coatli.astrossp.unam.mx' || req('Host') == '132.248.4.23'">
-      AuthType Basic
-      AuthName "OAN/SPM COATLI Web Site"
-      AuthUserFile @prefix@/etc/htpasswd/coatli
-      Require valid-user
-    </If>
-    <Else>
-      Require all granted
-    </Else>
+    AuthType Basic
+    AuthName "COATLI Operations"
+    AuthUserFile @prefix@/etc/htpasswd/coatli-operations
+    Require valid-user
+  </LocationMatch>
+
+  <Location "/tcs/engineering.html">
+    AuthType Basic
+    AuthName "COATLI Engineering"
+    AuthUserFile @prefix@/etc/htpasswd/coatli-engineering
+    Require valid-user
+  </Location>
+
+  <LocationMatch "^/proxy/">
+    AuthType Basic
+    AuthName "COATLI Engineering"
+    AuthUserFile @prefix@/etc/htpasswd/coatli-engineering
+    Require valid-user
   </LocationMatch>
 
   ############################################################
