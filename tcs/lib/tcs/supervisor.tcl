@@ -417,11 +417,9 @@ namespace eval "supervisor" {
         set closed          false
         updatedata
         if {![catch {
-          client::request "executor" "reset"
-          client::wait "executor"
-          client::request "executor" "reset"
-          client::wait "executor"
-          client::request "executor" "initialize"
+          client::request "selector" "disable"
+          client::wait "selector"
+          client::request "executor" "recovertoclosed"
           client::wait "executor"
         } message]} {
           set closed true
