@@ -1,0 +1,89 @@
+#!/bin/sh
+
+########################################################################
+
+# This file is part of the UNAM telescope control system.
+
+########################################################################
+
+# Copyright © 2024 Alan M. Watson <alan@astro.unam.mx>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+# WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+# PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+# TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+########################################################################
+
+export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
+
+program="tcs $(basename "$0")"
+
+usageerror () {
+  echo 1>&2 "usage: $program message"
+  exit 1
+}
+
+optstring=
+if ! getopt -qQ -- "$optstring" "$@"
+then
+  usageerror
+fi
+eval set -- "$(getopt -q -- "$optstring" "$@")"
+while test "$1" != "--"
+do
+  case "$1" in
+  *)
+    usageerror
+    ;;
+  esac
+done
+shift
+if test $# != 1
+then
+  usageerror
+fi
+message="$1"
+
+case $(uname -n) in
+coatli-*)
+  source="COATLI"
+  url="https://chat.googleapis.com/v1/spaces/AAAAIjRMy3k/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=AJCE8H2jDqHQdhhq0k-Mf-dw2vVGfkRTDmTFJXn_FGk"
+  ;;
+ddoti-*)
+  source="DDOTI"
+  url="https://chat.googleapis.com/v1/spaces/AAAAIjRMy3k/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=hi6BtwzzxvGwK18u4LxtwJkOLGi9LH52PkD4ZXvvEIg"
+  ;;
+colibri-*)
+  source="COLIBRI"
+  url=""
+  ;;
+*)
+  echo 2>&1 "$program: error: no url configured for $(uname -n)."
+  exit 1
+  ;;
+esac
+
+if test -z "$url"
+then
+  exit 0
+fi
+
+# URL for the test chat
+url="https://chat.googleapis.com/v1/spaces/AAAALqR-TN0/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=H4Mc4xQFoOAIsTvj0v1l15EwEqPaHY8ZUWgzGoqtQ8M"
+
+if ! curl -s -X POST -H "Content-Type: application/json" -d "{\"text\": \"$source: $message\"}" $url >/dev/null
+then
+  echo 2>&1 "$program: error: API call failed."
+  exit 1
+fi
+
+exit 0
