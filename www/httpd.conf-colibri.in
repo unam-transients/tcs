@@ -56,7 +56,7 @@ ServerName colibri-services
     Allow from ::1
   </LocationMatch>
 
-  <LocationMatch ^/(tcs|proxy)/>
+  <LocationMatch ^/tcs/>
     Deny from All
     Allow from 132.248.4
     Allow from 100.
@@ -64,15 +64,24 @@ ServerName colibri-services
     Allow from 192.168
     Allow from 127.0.0
     Allow from ::1
-    <If "false">
-      AuthType Basic
-      AuthName "COLIBRI Web Site"
-      AuthUserFile @prefix@/etc/htpasswd/colibri
-      Require valid-user
-    </If>
-    <Else>
-      Require all granted
-    </Else>
+    AuthType Basic
+    AuthName "COLIBRI Operations"
+    AuthUserFile @prefix@/etc/htpasswd/colibri-operations
+    Require valid-user
+  </LocationMatch>
+
+  <Location "/tcs/engineering.html">
+    AuthType Basic
+    AuthName "COLIBRI Engineering"
+    AuthUserFile @prefix@/etc/htpasswd/colibri-engineering
+    Require valid-user
+  </Location>
+
+  <LocationMatch "^/proxy/">
+    AuthType Basic
+    AuthName "COLIBRI Engineering"
+    AuthUserFile @prefix@/etc/htpasswd/colibri-engineering
+    Require valid-user
   </LocationMatch>
 
   ############################################################
