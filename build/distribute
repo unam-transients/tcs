@@ -16,7 +16,7 @@ coatli)
   hosts="coatli-control coatli-instrument coatli-platform"
   ;;
 colibri)
-  hosts="colibri@control.colibri-obs.org colibri@instrument.colibri-obs.org"
+  hosts="colibri-control colibri-instrument"
   ;;
 ddoti)
   hosts="ddoti-control ddoti-detectors0 ddoti-detectors1 ddoti-platform"
