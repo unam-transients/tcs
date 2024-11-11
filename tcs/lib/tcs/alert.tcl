@@ -63,8 +63,8 @@ namespace eval "alert" {
         }
       }
     }
-    set bestuncertainty [astrometry::formatdistance $bestuncertainty]
     if {![string equal $bestuncertainty ""]} {
+      set bestuncertainty [astrometry::formatdistance $bestuncertainty]
       set alert [dict merge $alert [dict create \
         "uncertainty" $bestuncertainty \
         "alpha"       $bestalpha       \
