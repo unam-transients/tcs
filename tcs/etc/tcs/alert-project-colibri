@@ -37,6 +37,6 @@
   "minmoondistance": "15d",
   "maxzenithdistance": "72d",
   "maxfocusdelay": "3600",
-  "maxalertuncertainty": "5am"
+  "maxalertuncertainty": "15am"
 
 }
