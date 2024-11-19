@@ -96,6 +96,10 @@ namespace eval "plcserver" {
     plc::reboot
   }
   
+  proc slavespecial {args} {
+    plc::special $args
+  }
+  
 
   proc configureslave {slave} {
     interp alias $slave initialize           {} plcserver::slaveinitialize
@@ -114,6 +118,7 @@ namespace eval "plcserver" {
     interp alias $slave disablealarm         {} plcserver::slavedisablealarm
     interp alias $slave grantaccess          {} plcserver::slavegrantaccess
     interp alias $slave reboot               {} plcserver::slavereboot
+    interp alias $slave special              {} plcserver::slavespecial
   }
 
   ######################################################################

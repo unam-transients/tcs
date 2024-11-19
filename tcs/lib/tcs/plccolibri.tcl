@@ -1044,6 +1044,25 @@ namespace eval "plc" {
   }
 
   ######################################################################
+  
+  proc special {command args} {
+    switch "$command:$args" {
+      "enablelocalconfirmation:" {
+        log::warning "enabling local confirmation."
+        controller::pushcommand "LocalStaff{ON}\n"
+      }
+      "disablelocalconfirmation:" {
+        log::warning "disabling local confirmation."
+        controller::pushcommand "LocalStaff{RESET}\n"
+      }
+      default {
+        error "unexpected arguments \"$command $args\" to special command."
+      }
+    }
+    return
+  }
+
+  ######################################################################
 
   proc start {} {
     set controller::connectiontype "persistent"
