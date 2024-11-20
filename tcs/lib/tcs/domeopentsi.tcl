@@ -4,7 +4,7 @@
 
 ########################################################################
 
-# Copyright Â© 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
+# Copyright © 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -48,19 +48,18 @@ namespace eval "dome" {
 
   set statuscommand "GET [join {
     POSITION.INSTRUMENTAL.DOME[0].REALPOS
-    AUXILIARY.DOME.TARGETPOS
     AUXILIARY.DOME.REALPOS
   } ";"]"
 
   ######################################################################
 
-  variable pendingazimuth ""
+  variable pendingazimuth  ""
+  variable pendingshutters ""
 
   proc updatedata {response} {
 
     variable pendingazimuth
-    variable shutters
-    variable shutterstarget
+    variable pendingshutters
 
     if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.DOME\[0\].REALPOS=%f" value] == 1} {
       set pendingazimuth [astrometry::degtorad $value]
@@ -68,19 +67,11 @@ namespace eval "dome" {
     }
     if {[scan $response "%*d DATA INLINE AUXILIARY.DOME.REALPOS=%f" value] == 1} {
       if {$value == 0} {
-        set shutters "closed"
+        set pendingshutters "closed"
       } elseif {$value == 1.0} {
-        set shutters "open"
+        set pendingshutters "open"
       } else {
-        set shutters "intermediate"
-      }
-      return false
-    }
-    if {[scan $response "%*d DATA INLINE AUXILIARY.DOME.TARGETPOS=%f" value] == 1} {
-      if {$value == 0} {
-        set shutterstarget "closed"
-      } else {
-        set shutterstarget "open"
+        set pendingshutters "intermediate"
       }
       return false
     }
@@ -89,6 +80,7 @@ namespace eval "dome" {
       log::debug "status: ignoring DATA INLINE response."
       return false
     }
+
     if {[regexp {[0-9]+ COMMAND COMPLETE} $response] != 1} {
       log::warning "unexpected controller response \"$response\"."
       return true
@@ -106,7 +98,7 @@ namespace eval "dome" {
     server::setdata "timestamp"        $timestamp
     server::setdata "azimuth"          $pendingazimuth
     server::setdata "azimutherror"     $pendingazimutherror
-    server::setdata "shutters"         $shutters
+    server::setdata "shutters"         $pendingshutters
     
     server::setstatus "ok"
 
@@ -127,12 +119,12 @@ namespace eval "dome" {
   }
   
   proc initializehardware {} {
-    opentsi::sendcommand "SET POINTING.SETUP.DOME.SYNCMODE=0"
+    opentsi::sendcommandandwait "SET POINTING.SETUP.DOME.SYNCMODE=0"
   }
       
   proc stophardware {} {
     if {[opentsi::isoperational]} {
-      opentsi::sendcommand "SET TELESCOPE.STOP=1"
+      opentsi::sendcommandandwait "SET TELESCOPE.STOP=1"
     }
   }
   
@@ -142,28 +134,14 @@ namespace eval "dome" {
     # if the shutters were interrupted while opening.
     server::setdata "requestedshutters" "open"
     if {![string equal [server::getdata "shutters"] "open"]} {
-        #opentsi::sendcommand "SET AUXILIARY.DOME.TARGETPOS=0"
-        #while {![string equal [server::getdata "shutters"] "closed"]} {
-        #  coroutine::yield
-        #}
-        opentsi::sendcommand "SET AUXILIARY.DOME.TARGETPOS=1"
-        while {![string equal [server::getdata "shutters"] "open"]} {
-          coroutine::yield
-        }
+        opentsi::sendcommandandwait "SET AUXILIARY.DOME.TARGETPOS=1"
     }
   }
   
   proc closehardware {} {
     server::setdata "requestedshutters" "closed"
     if {![string equal [server::getdata "shutters"] "closed"]} {
-        #opentsi::sendcommand "SET AUXILIARY.DOME.TARGETPOS=1"
-        #while {![string equal [server::getdata "shutters"] "open"]} {
-        #  coroutine::yield
-        #}
-        opentsi::sendcommand "SET AUXILIARY.DOME.TARGETPOS=0"
-        while {![string equal [server::getdata "shutters"] "closed"]} {
-          coroutine::yield
-        }
+        opentsi::sendcommandandwait "SET AUXILIARY.DOME.TARGETPOS=0"
     }
   }
   
@@ -181,18 +159,14 @@ namespace eval "dome" {
       coroutine::yield
     }
     # Now close the dome.
-    opentsi::sendcommand "SET AUXILIARY.DOME.TARGETPOS=0"
-    waitwhilemoving
-    if {![string equal [server::getdata "shutters"] "closed"]} {
-      error "the shutters did not close."
-    }
+    opentsi::sendcommandandwait "SET AUXILIARY.DOME.TARGETPOS=0"
   }
   
   proc movehardware {azimuth} {
     set azimuth [astrometry::parseazimuth $azimuth]
     server::setdata "requestedazimuth" $azimuth
     server::setdata "azimutherror"     ""
-    opentsi::sendcommand [format "SET POSITION.INSTRUMENTAL.DOME\[0\].TARGETPOS=%f" [astrometry::radtodeg $azimuth]]
+    opentsi::sendcommandandwait [format "SET POSITION.INSTRUMENTAL.DOME\[0\].TARGETPOS=%f" [astrometry::radtodeg $azimuth]]
   }
   
   

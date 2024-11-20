@@ -435,7 +435,7 @@ namespace eval "telescope" {
       client::request "target" "move $ventilateha $ventilatedelta"
       client::wait "target"
       if {$withdome} {      
-        client::request "dome" "move"
+        client::request "dome" "move target"
         client::wait "dome"
       }
       if {$withmount} {      
@@ -649,7 +649,7 @@ namespace eval "telescope" {
       client::request "mount" "move"
     }
     if {$withdome} {
-      client::request "dome" "move"
+      client::request "dome" "move target"
     }
     variable withsecondary
     if {$withsecondary} {
