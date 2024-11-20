@@ -93,7 +93,7 @@ EOF
     cat <<"EOF"
 *      *  *  *  *  sleep 10; tcs updatesensorsfiles control instrument
 *      *  *  *  *  tcs updateseeingfiles-colibri
-*      *  *  *  *  tcs request plc updateweather
+*      *  *  *  *  tcs request plc special updateweather
 *      *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
 00     00 *  *  *  tcs loadblocks -F
 01     00 *  *  *  tcs loadblocks -L

@@ -67,14 +67,14 @@ namespace eval "fans" {
   ######################################################################
 
   proc switchonhardware {} {
-    if {[catch {client::request "plc" "switchonfans"}]} {
+    if {[catch {client::request "plc" "special switchonfans"}]} {
       log::warning "unable to switch on."
     }
     waitwhileswitching
   }
 
   proc switchoffhardware  {} {
-    if {[catch {client::request "plc" "switchofffans"}]} {
+    if {[catch {client::request "plc" "special switchofffans"}]} {
       log::warning "unable to switch off."
     }
     waitwhileswitching

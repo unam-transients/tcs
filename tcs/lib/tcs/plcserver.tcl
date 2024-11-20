@@ -44,30 +44,6 @@ namespace eval "plcserver" {
     plc::reset
   }
 
-  proc slaveswitchonlights {} {
-    plc::switchonlights
-  }
-
-  proc slaveswitchofflights {} {
-    plc::switchofflights
-  }
-  
-  proc slaveswitchonfans {} {
-    plc::switchonfans
-  }
-
-  proc slaveswitchofffans {} {
-    plc::switchofffans
-  }
-  
-  proc slaveopenlouvers {} {
-    plc::openlouvers
-  }
-
-  proc slavecloselouvers {} {
-    plc::closelouvers
-  }
-  
   proc slaveopen {} {
     plc::open
   }
@@ -76,48 +52,16 @@ namespace eval "plcserver" {
     plc::close
   }
   
-  proc slaveupdateweather {} {
-    plc::updateweather
+  proc slavespecial {command args} {
+    plc::special $command $args
   }
   
-  proc slaveenablealarm {alarm} {
-    plc::enablealarm $alarm
-  }
-  
-  proc slavedisablealarm {alarm} {
-    plc::disablealarm $alarm
-  }
-
-  proc slavegrantaccess {} {
-    plc::grantaccess
-  }
-  
-  proc slavereboot {} {
-    plc::reboot
-  }
-  
-  proc slavespecial {args} {
-    plc::special $args
-  }
-  
-
   proc configureslave {slave} {
     interp alias $slave initialize           {} plcserver::slaveinitialize
     interp alias $slave stop                 {} plcserver::slavestop
     interp alias $slave reset                {} plcserver::slavereset
-    interp alias $slave switchofflights      {} plcserver::slaveswitchofflights
-    interp alias $slave switchonlights       {} plcserver::slaveswitchonlights
-    interp alias $slave switchofffans        {} plcserver::slaveswitchofffans
-    interp alias $slave switchonfans         {} plcserver::slaveswitchonfans
-    interp alias $slave openlouvers          {} plcserver::slaveopenlouvers
-    interp alias $slave closelouvers         {} plcserver::slavecloselouvers
     interp alias $slave open                 {} plcserver::slaveopen
     interp alias $slave close                {} plcserver::slaveclose
-    interp alias $slave updateweather        {} plcserver::slaveupdateweather
-    interp alias $slave enablealarm          {} plcserver::slaveenablealarm
-    interp alias $slave disablealarm         {} plcserver::slavedisablealarm
-    interp alias $slave grantaccess          {} plcserver::slavegrantaccess
-    interp alias $slave reboot               {} plcserver::slavereboot
     interp alias $slave special              {} plcserver::slavespecial
   }
 

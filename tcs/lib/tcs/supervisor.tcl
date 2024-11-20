@@ -670,7 +670,7 @@ namespace eval "supervisor" {
           if {[client::getdata "plc" "accessrequested"]} {
             log::summary "granting access."
             if {[catch {
-              client::request "plc" "grantaccess"
+              client::request "plc" "special grantaccess"
               client::wait "plc"
             } message]} {
               log::error "unable to grant access: $message"
