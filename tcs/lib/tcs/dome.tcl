@@ -312,7 +312,7 @@ namespace eval "dome" {
 
   proc move {azimuth} {
     server::checkstatus
-    server::checkactivity "preparedtomove"
+    server::checkactivityformove
     checkhardwarefor "move"
     if {[string equal $azimuth "open"]} {
       variable openazimuth
@@ -338,7 +338,7 @@ namespace eval "dome" {
   
   proc park {} {
     server::checkstatus
-    server::checkactivity "preparedtomove"
+    server::checkactivityformove
     checkhardwarefor "park"
     server::newactivitycommand "parking" "idle" \
       dome::parkactivitycommand
@@ -354,7 +354,7 @@ namespace eval "dome" {
 
   proc track {} {
     server::checkstatus
-    server::checkactivity "preparedtotrack"
+    server::checkactivityformove
     checkhardwarefor "track"
     server::newactivitycommand "moving" "tracking" \
       dome::trackactivitycommand
