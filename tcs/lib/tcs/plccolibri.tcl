@@ -1062,7 +1062,7 @@ namespace eval "plc" {
   ######################################################################
 
   proc special {command commandargs} {
-    eval plc::special$command $commandargs 
+    eval special$command $commandargs 
     return
   }
 
