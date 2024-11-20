@@ -52,21 +52,18 @@ namespace eval "dome" {
     AUXILIARY.DOME.REALPOS
   } ";"]"
 
-
   ######################################################################
 
-  variable azimiuth ""
-  variable moving
+  variable pendingazimuth ""
 
   proc updatedata {response} {
 
-    variable azimuth
+    variable pendingazimuth
     variable shutters
     variable shutterstarget
-    variable moving
 
     if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.DOME\[0\].REALPOS=%f" value] == 1} {
-      set azimuth [astrometry::degtorad $value]
+      set pendingazimuth [astrometry::degtorad $value]
       return false
     }
     if {[scan $response "%*d DATA INLINE AUXILIARY.DOME.REALPOS=%f" value] == 1} {
@@ -97,58 +94,23 @@ namespace eval "dome" {
       return true
     }
 
-    set lastazimuth [server::getdata "azimuth"]
-    if {![string equal $lastazimuth ""] && $azimuth != $lastazimuth} {
-      set moving true
-    } else {
-      set moving false
-    }
-    
     set requestedazimuth [server::getdata "requestedazimuth"]
     if {[string equal $requestedazimuth ""]} {
-        set azimutherror ""
+        set pendingazimutherror ""
     } else {
-        set azimutherror [astrometry::foldradsymmetric [expr {$azimuth - $requestedazimuth}]]
+        set pendingazimutherror [astrometry::foldradsymmetric [expr {$pendingazimuth - $requestedazimuth}]]
     }
     
     set timestamp [utcclock::combinedformat "now"]
     
     server::setdata "timestamp"        $timestamp
-    server::setdata "azimuth"          $azimuth
-    server::setdata "azimutherror"     $azimutherror
+    server::setdata "azimuth"          $pendingazimuth
+    server::setdata "azimutherror"     $pendingazimutherror
     server::setdata "shutters"         $shutters
-
+    
     server::setstatus "ok"
 
     return true
-  }
-
-  proc waitwhilemoving {} {
-    log::info "waiting while moving."
-    variable moving
-    set startingdelay 2
-    set settlingdelay 1
-    set start [utcclock::seconds]
-    while {[utcclock::diff now $start] < $startingdelay} {
-      coroutine::yield
-    }
-    while {$moving} {
-      coroutine::yield
-    }
-    set settle [utcclock::seconds]
-    while {[utcclock::diff now $settle] < $settlingdelay} {
-      coroutine::yield
-    }
-    set azimutherror [server::getdata "azimutherror"]
-    if {![string equal $azimutherror ""]} {
-      set azimutherrortolerance [astrometry::parsedistance "1d"]
-      if {abs($azimutherror) > $azimutherrortolerance} {
-        log::warning [format "azimuth error is %+.1fd" [astrometry::radtodeg $azimutherror]]
-      } else {
-        log::info [format "azimuth error is %+.1fd" [astrometry::radtodeg $azimutherror]]
-      }
-    }
-    log::info "finished waiting while moving."
   }
 
   ######################################################################
@@ -229,8 +191,8 @@ namespace eval "dome" {
   proc movehardware {azimuth} {
     set azimuth [astrometry::parseazimuth $azimuth]
     server::setdata "requestedazimuth" $azimuth
+    server::setdata "azimutherror"     ""
     opentsi::sendcommand [format "SET POSITION.INSTRUMENTAL.DOME\[0\].TARGETPOS=%f" [astrometry::radtodeg $azimuth]]
-    waitwhilemoving
   }
   
   

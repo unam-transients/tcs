@@ -32,6 +32,43 @@ namespace eval "dome" {
   variable daytimetesting       [config::getvalue "telescope" "daytimetesting"]
 
   ########################################################################
+  
+  proc getazimutherror {} {
+    return [server::getdata "azimutherror"]
+  }
+
+  proc waitwhilemoving {} {
+
+    set settlingazimutherror [astrometry::parseazimuth "0.1d"]
+    set settlingdelay 1
+    set azimutherrortolerance [astrometry::parsedistance "1d"]
+
+    log::info "waiting while moving."
+    
+    while {[string equal [getazimutherror] ""]} {
+      coroutine::yield
+    }
+
+    while {abs([getazimutherror]) > $settlingazimutherror} {
+      coroutine::yield
+    }
+        
+    set settle [utcclock::seconds]
+    while {[utcclock::diff now $settle] < $settlingdelay} {
+      coroutine::yield
+    }
+
+    if {![string equal [getazimutherror] ""]} {
+      if {abs([getazimutherror]) > $azimutherrortolerance} {
+        log::warning [format "azimuth error is %+.1fd" [astrometry::radtodeg [getazimutherror]]]
+      }
+    }
+
+    log::info "finished waiting while moving."
+
+  }
+
+  ########################################################################
 
   proc gettargetazimuth {} {
     while {[catch {client::update "target"}]} {
@@ -81,6 +118,7 @@ namespace eval "dome" {
     initializehardware     
     variable openazimuth
     movehardware [astrometry::parseazimuth $openazimuth]    
+    waitwhilemoving
     log::info "closing."
     closehardware
     set end [utcclock::seconds]
@@ -119,6 +157,7 @@ namespace eval "dome" {
     set start [utcclock::seconds]
     log::info "moving."
     movehardware $azimuth
+    waitwhilemoving
     set end [utcclock::seconds]
     log::info [format "finished moving after %.1f seconds." [utcclock::diff $end $start]]
   }
@@ -128,6 +167,7 @@ namespace eval "dome" {
     variable parkazimuth
     log::info "parking."
     movehardware $parkazimuth
+    waitwhilemoving
     set end [utcclock::seconds]
     log::info [format "finished parking after %.1f seconds." [utcclock::diff $end $start]]
   }
@@ -160,6 +200,7 @@ namespace eval "dome" {
     log::info [format "moving dome to azimuth %s." [astrometry::formatazimuth $azimuth]]   
     server::setdata requestedazimuth $azimuth
     movehardware $azimuth
+    waitwhilemoving
     set lastazimuth $azimuth
     
     server::setactivity "tracking"
@@ -177,6 +218,7 @@ namespace eval "dome" {
         log::info [format "moving dome to azimuth %s." [astrometry::formatazimuth $azimuth]]   
         server::setdata requestedazimuth $azimuth
         movehardware $azimuth
+        waitwhilemoving
         set lastazimuth $azimuth
       }
       coroutine::yield
