@@ -1045,20 +1045,20 @@ namespace eval "plc" {
 
   ######################################################################
   
+  proc specialenablelocalconfirmation {} {
+    log::warning "enabling local confirmation."
+    controller::pushcommand "LocalStaff{RESET}\n"
+    return
+  }
+  
+  proc specialdisablelocalconfirmation {} {
+    log::warning "disabling local confirmation."
+    controller::pushcommand "LocalStaff{ON}\n"
+    return
+  }
+  
   proc special {command args} {
-    switch "$command:$args" {
-      "enablelocalconfirmation:" {
-        log::warning "enabling local confirmation."
-        controller::pushcommand "LocalStaff{ON}\n"
-      }
-      "disablelocalconfirmation:" {
-        log::warning "disabling local confirmation."
-        controller::pushcommand "LocalStaff{RESET}\n"
-      }
-      default {
-        error "unexpected arguments \"$command $args\" to special command."
-      }
-    }
+    eval "special$command" $args
     return
   }
 
