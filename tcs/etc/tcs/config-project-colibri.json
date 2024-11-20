@@ -216,7 +216,7 @@
     "zenithdistancepark": "10d",
     "derotatoranglepark": "0d",
     // Unpark to the south too.
-    "haunpark": "12h",
+    "haunpark": "0h",
     "deltaunpark": "0d",
     "minzenithdistancelimit": "0.5d",
     "maxzenithdistancelimit": "80d",
