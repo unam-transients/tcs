@@ -133,15 +133,21 @@ namespace eval "dome" {
     # OpenTSI that causes a request to open the shutters to be ignored
     # if the shutters were interrupted while opening.
     server::setdata "requestedshutters" "open"
+    if {[string equal [server::getdata "shutters"] "intermediate"]} {
+      opentsi::sendcommandandwait "SET AUXILIARY.DOME.TARGETPOS=0"
+    }
     if {![string equal [server::getdata "shutters"] "open"]} {
-        opentsi::sendcommandandwait "SET AUXILIARY.DOME.TARGETPOS=1"
+      opentsi::sendcommandandwait "SET AUXILIARY.DOME.TARGETPOS=1"
     }
   }
   
   proc closehardware {} {
     server::setdata "requestedshutters" "closed"
+    if {[string equal [server::getdata "shutters"] "intermediate"]} {
+      opentsi::sendcommandandwait "SET AUXILIARY.DOME.TARGETPOS=1"
+    }
     if {![string equal [server::getdata "shutters"] "closed"]} {
-        opentsi::sendcommandandwait "SET AUXILIARY.DOME.TARGETPOS=0"
+      opentsi::sendcommandandwait "SET AUXILIARY.DOME.TARGETPOS=0"
     }
   }
   
