@@ -27,48 +27,25 @@ namespace eval "dome" {
   variable closeazimuth         [astrometry::formatazimuth [config::getvalue "dome" "closeazimuth"    ]]
   variable parkazimuth          [astrometry::formatazimuth [config::getvalue "dome" "parkazimuth"     ]]
   
-  variable trackingtolerance    [astrometry::parseazimuth [config::getvalue "dome" "trackingtolerance"   ]]
+  variable moveazimuthtolerance     [astrometry::parseazimuth [config::getvalue "dome" "moveazimuthtolerance"    ]]
+  variable trackingazimuthtolerance [astrometry::parseazimuth [config::getvalue "dome" "trackingazimuthtolerance"]]
+  variable settlingseconds          3
 
   variable daytimetesting       [config::getvalue "telescope" "daytimetesting"]
 
   ########################################################################
-  
+
+  proc getazimuth {} {
+    return [server::getdata "azimuth"]
+  }
+
   proc getazimutherror {} {
     return [server::getdata "azimutherror"]
   }
 
-  proc waitwhilemoving {} {
-
-    set settlingazimutherror [astrometry::parseazimuth "0.1d"]
-    set settlingdelay 1
-    set azimutherrortolerance [astrometry::parsedistance "1d"]
-
-    log::info "waiting while moving."
-    
-    while {[string equal [getazimutherror] ""]} {
-      coroutine::yield
-    }
-
-    while {abs([getazimutherror]) > $settlingazimutherror} {
-      coroutine::yield
-    }
-        
-    set settle [utcclock::seconds]
-    while {[utcclock::diff now $settle] < $settlingdelay} {
-      coroutine::yield
-    }
-
-    if {![string equal [getazimutherror] ""]} {
-      if {abs([getazimutherror]) > $azimutherrortolerance} {
-        log::warning [format "azimuth error is %+.1fd" [astrometry::radtodeg [getazimutherror]]]
-      }
-    }
-
-    log::info "finished waiting while moving."
-
+  proc getshutters {} {
+    return [server::getdata "shutters"]
   }
-
-  ########################################################################
 
   proc gettargetazimuth {} {
     while {[catch {client::update "target"}]} {
@@ -86,21 +63,71 @@ namespace eval "dome" {
     }
     set observedazimuth     [client::getdata "target" "observedazimuth"]
     set observedazimuthrate [client::getdata "target" "observedazimuthrate"]
-    variable trackingtolerance
+    variable trackingazimuthtolerance
     log::info [format "target observed azimuth is %s." [astrometry::formatazimuth $observedazimuth]]   
-    log::info [format "target observed azimuth rate %s." $observedazimuthrate]   
-    if {[string equal $observedazimuthrate ""] || $observedazimuthrate > 0} {
+    if {[string equal $observedazimuthrate ""]} {
       set anticipateddomeazimuth $observedazimuth
-    } elseif {$observedazimuthrate > 0} {
-      set anticipateddomeazimuth [astrometry::foldradpositive [expr {$observedazimuth + $trackingtolerance}]]
     } else {
-      set anticipateddomeazimuth [astrometry::foldradpositive [expr {$observedazimuth - $trackingtolerance}]]
+      log::info [format "target observed azimuth rate %+5fd/s." [astrometry::radtodeg $observedazimuthrate]]
+      if {$observedazimuthrate > 0} {
+        set anticipateddomeazimuth [astrometry::foldradpositive [expr {$observedazimuth + $trackingazimuthtolerance}]]
+      } else {
+        set anticipateddomeazimuth [astrometry::foldradpositive [expr {$observedazimuth - $trackingazimuthtolerance}]]
+      }
     }
     log::info [format "anticipated dome azimuth is %s." [astrometry::formatazimuth $anticipateddomeazimuth]]   
     return $anticipateddomeazimuth
   }
   
-  ######################################################################
+  ########################################################################
+  
+  proc waitwhilesettling {} {
+    variable settlingseconds
+    set start [utcclock::seconds]
+    while {[utcclock::diff now $start] < $settlingseconds} {
+      coroutine::yield
+    }
+  }
+  
+  proc waitwhilemoving {} {
+    log::info "waiting while moving."
+    variable moveazimuthtolerance
+    variable settlingseconds
+    while {[string equal [getazimutherror] ""]} {
+      coroutine::yield
+    }
+    while {abs([getazimutherror]) > $moveazimuthtolerance} {
+      coroutine::yield
+    }   
+    waitwhilesettling
+    log::info "finished waiting while moving."
+    if {![string equal [getazimutherror] ""]} {
+      if {abs([getazimutherror]) > $moveazimuthtolerance} {
+        log::warning [format "azimuth error is %+.2fd after moving." [astrometry::radtodeg [getazimutherror]]]
+      }
+    }
+
+  }
+  
+  proc waitwhileopening {} {
+    log::info "waiting while opening."
+    while {![string equal [getshutters] "open"]} {
+      coroutine::yield
+    }
+    waitwhilesettling   
+    log::info "finished waiting while opening."
+  }
+
+  proc waitwhileclosing {} {
+    log::info "waiting while closing."
+    while {![string equal [getshutters] "closed"]} {
+      coroutine::yield
+    }
+    waitwhilesettling   
+    log::info "finished waiting while closing."
+  }
+
+  ########################################################################
   
   proc startactivitycommand {} {
     set start [utcclock::seconds]
@@ -116,11 +143,12 @@ namespace eval "dome" {
     set start [utcclock::seconds]
     log::info "initializing."
     initializehardware     
-    variable openazimuth
-    movehardware [astrometry::parseazimuth $openazimuth]    
-    waitwhilemoving
     log::info "closing."
+    variable closeazimuth
+    movehardware [astrometry::parseazimuth $closeazimuth]    
+    waitwhilemoving
     closehardware
+    waitwhileclosing
     set end [utcclock::seconds]
     log::info [format "finished initializing after %.1f seconds." [utcclock::diff $end $start]]
   }
@@ -128,7 +156,11 @@ namespace eval "dome" {
   proc openactivitycommand {} {
     set start [utcclock::seconds]
     log::info "opening."
+    variable openazimuth
+    movehardware [astrometry::parseazimuth $openazimuth]    
+    waitwhilemoving
     openhardware
+    waitwhileopening
     set end [utcclock::seconds]
     log::info [format "finished opening after %.1f seconds." [utcclock::diff $end $start]]
   }
@@ -136,7 +168,11 @@ namespace eval "dome" {
   proc closeactivitycommand {} {
     set start [utcclock::seconds]
     log::info "closing."
+    variable closeazimuth
+    movehardware [astrometry::parseazimuth $closeazimuth]    
+    waitwhilemoving
     closehardware
+    waitwhileclosing
     set end [utcclock::seconds]
     log::info [format "finished closing after %.1f seconds." [utcclock::diff $end $start]]
   }
@@ -145,6 +181,7 @@ namespace eval "dome" {
     set start [utcclock::seconds]
     log::info "emergency closing."
     emergencyclosehardware
+    waitwhileclosing
     set end [utcclock::seconds]
     log::info [format "finished emergency closing after %.1f seconds." [utcclock::diff $end $start]]
   }
@@ -175,6 +212,7 @@ namespace eval "dome" {
   proc stopactivitycommand {previousactivity} {
     set start [utcclock::seconds]
     log::info "stopping."
+    server::setdata "requestedazimuth" ""
     server::setdata "requestedshutters" ""
     stophardware
     set end [utcclock::seconds]
@@ -182,44 +220,29 @@ namespace eval "dome" {
   }
 
   proc preparetotrackactivitycommand {} {
-    server::setdata requestedazimuth ""
-    #stopmeasuringmaxabsazimutherror
+    server::setdata "requestedazimuth" ""
   } 
 
   proc trackactivitycommand {} {
-    #stopmeasuringmaxabsazimutherror
-
-    variable trackingtolerance
-
-    # Move to the target azimuth.
-    if {[catch {client::checkactivity "target" "tracking"} message]} {
-      log::warning "tracking cancelled because $message"
-      return
-    }
-    set azimuth [getanticipateddomeazimuth]
-    log::info [format "moving dome to azimuth %s." [astrometry::formatazimuth $azimuth]]   
-    server::setdata requestedazimuth $azimuth
-    movehardware $azimuth
-    waitwhilemoving
-    set lastazimuth $azimuth
-    
-    server::setactivity "tracking"
-    server::clearactivitytimeout
-
+    variable trackingazimuthtolerance
+    set first true
     while {true} {
       if {[catch {client::checkactivity "target" "tracking"} message]} {
         log::warning "tracking cancelled because $message"
         return
       }
-      set azimuth [gettargetazimuth]
-      set dazimuth [astrometry::foldradsymmetric [expr {$azimuth - $lastazimuth}]]
-      if {abs($dazimuth) > $trackingtolerance} {
-        set azimuth [getanticipateddomeazimuth]
-        log::info [format "moving dome to azimuth %s." [astrometry::formatazimuth $azimuth]]   
-        server::setdata requestedazimuth $azimuth
-        movehardware $azimuth
+      set targetazimuth [gettargetazimuth]
+      set azimuth       [getazimuth]
+      if {abs($targetazimuth - $azimuth) > $trackingazimuthtolerance} {
+        set anticipateddomeazimuth [getanticipateddomeazimuth]
+        log::info [format "moving dome to azimuth %s." [astrometry::formatazimuth $anticipateddomeazimuth]]   
+        movehardware $anticipateddomeazimuth
         waitwhilemoving
-        set lastazimuth $azimuth
+      }
+      if {$first} {
+        set first false
+        server::setactivity "tracking"
+        server::clearactivitytimeout
       }
       coroutine::yield
     }
@@ -302,6 +325,11 @@ namespace eval "dome" {
       set azimuth $parkazimuth
     } elseif {[string equal $azimuth "target"]} {
       set azimuth [getanticipateddomeazimuth]
+    }
+    if {[catch {
+      astrometry::parseazimuth $azimuth
+    }]} {
+      error "invalid azimuth \"$azimuth\"."
     }
     set azimuth [astrometry::parseazimuth $azimuth]    
     server::newactivitycommand "moving" "idle" \
