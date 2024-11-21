@@ -269,7 +269,8 @@
     "temperaturesensor": "telescope-M1-rear-temperature",
     "dzmodel": {
       "filter": {}
-    }
+    },
+    "settlingseconds": 0
   },
   "selector": {},
   "sensors": {

@@ -132,19 +132,13 @@ namespace eval "secondary" {
   proc waitwhilemoving {} {
     log::info "waiting while moving."
     variable moving
-    variable zerror
-    set startingdelay 2
-    set settlingdelay 0
     set moving true
-    set start [utcclock::seconds]
-    while {[utcclock::diff now $start] < $startingdelay} {
-      coroutine::yield
-    }
     while {$moving} {
       coroutine::yield
     }
+    variable settlingseconds
     set settle [utcclock::seconds]
-    while {[utcclock::diff now $settle] < $settlingdelay} {
+    while {[utcclock::diff now $settle] < $settlingseconds} {
       coroutine::yield
     }
     log::info "finished waiting while moving."
@@ -154,15 +148,15 @@ namespace eval "secondary" {
   
   proc starthardware {} {
     controller::flushcommandqueue
-    opentsi::sendcommand "SET POSITION.INSTRUMENTAL.FOCUS.OFFSET=0"
-    opentsi::sendcommand "SET POINTING.SETUP.FOCUS.SYNCMODE=0"
+    opentsi::sendcommandandwait "SET POSITION.INSTRUMENTAL.FOCUS.OFFSET=0"
+    opentsi::sendcommandandwait "SET POINTING.SETUP.FOCUS.SYNCMODE=0"
     waitwhilemoving
   }
 
   proc stophardware {} {
     controller::flushcommandqueue
     if {[opentsi::isoperational]} {
-      opentsi::sendcommand "SET TELESCOPE.STOP=1"
+      opentsi::sendcommandandwait "SET TELESCOPE.STOP=1"
     }
   }
   
@@ -181,7 +175,7 @@ namespace eval "secondary" {
     set z [server::getdata "z"]
     if {$z != $requestedz} {
       log::debug "movehardwaresimple: sending commands."
-      opentsi::sendcommand "SET POSITION.INSTRUMENTAL.FOCUS.OFFSET=0;POSITION.INSTRUMENTAL.FOCUS.TARGETPOS=[expr {$requestedz / 1000.0}]"
+      opentsi::sendcommandandwait "SET POSITION.INSTRUMENTAL.FOCUS.OFFSET=0;POSITION.INSTRUMENTAL.FOCUS.TARGETPOS=[expr {$requestedz / 1000.0}]"
       coroutine::after 1000
       waitwhilemoving
     }
