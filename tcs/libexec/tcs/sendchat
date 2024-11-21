@@ -64,7 +64,7 @@ ddoti-*)
   ;;
 colibri-*)
   source="COLIBRI"
-  url=""
+  url="https://mattermost.osupytheas.fr/hooks/8d36q11tzp8e7yxdnc7czhosdw"
   ;;
 *)
   echo 2>&1 "$program: error: no url configured for $(uname -n)."
@@ -72,13 +72,11 @@ colibri-*)
   ;;
 esac
 
+url="https://chat.googleapis.com/v1/spaces/AAAALqR-TN0/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=H4Mc4xQFoOAIsTvj0v1l15EwEqPaHY8ZUWgzGoqtQ8M"
 if test -z "$url"
 then
   exit 0
 fi
-
-# URL for the test chat
-url="https://chat.googleapis.com/v1/spaces/AAAALqR-TN0/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=H4Mc4xQFoOAIsTvj0v1l15EwEqPaHY8ZUWgzGoqtQ8M"
 
 if ! curl -s -X POST -H "Content-Type: application/json" -d "{\"text\": \"$source: $message\"}" $url >/dev/null
 then
