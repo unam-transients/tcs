@@ -188,13 +188,13 @@ namespace eval "opentsi" {
     variable completedcommandidentifier
 
     if {[scan $response "%d " commandidentifier] != 1} {
-      log::warning "received unexpected controller response: \"$response\"."
+      log::warning "received invalid controller response: \"$response\"."
       return true
     }
 
     if {[opentsi::isignoredresponse $response]} {
       if {$commandidentifier != $statuscommandidentifier} {
-        log::info "received controller response: \"$response\"."
+        log::debug "received controller response: \"$response\"."
       }
       return false
     }
