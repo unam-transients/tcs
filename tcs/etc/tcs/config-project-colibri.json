@@ -101,8 +101,10 @@
 
   "covers": {
     "type": "opentsi",
-    "port2name": "right",
-    "port3name": "left",
+    "ports": {
+      "port2": 2, 
+      "port3": 3
+    },
     "settlingseconds": 0
   },
   "dome": {
