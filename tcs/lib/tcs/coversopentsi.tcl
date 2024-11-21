@@ -26,12 +26,11 @@ package require "opentsi"
 package require "log"
 package require "server"
 
-config::setdefaultvalue "covers" "port2name"      "port2"
-config::setdefaultvalue "covers" "port3name"      "port3"
-
 package provide "coversopentsi" 0.0
 
 namespace eval "covers" {
+
+  variable ports [config::getvalue "covers" "ports"]
 
   ######################################################################
 
@@ -41,67 +40,56 @@ namespace eval "covers" {
   server::setdata "covers"           ""
   server::setdata "requestedcovers"  ""
   server::setdata "primarycover"     ""
-  server::setdata "port2cover"       ""
-  server::setdata "port3cover"       ""
-  server::setdata "port2name"        [config::getvalue "covers" "port2name"]
-  server::setdata "port3name"        [config::getvalue "covers" "port3name"]
+  foreach portname [dict keys $ports] {
+    server::setdata ${portname}cover ""
+  }
+  server::setdata "portnames"        [dict keys $ports]
   server::setdata "timestamp"        [utcclock::combinedformat now]
 
   ######################################################################
-
-  set statuscommand "GET [join {
-    AUXILIARY.COVER.REALPOS
-    AUXILIARY.PORT_COVER[2].REALPOS
-    AUXILIARY.PORT_COVER[3].REALPOS
-  } ";"]"
-
+  
+  set statuscommandlist "AUXILIARY.COVER.REALPOS"
+  foreach portindex [dict values $ports] {
+    lappend statuscommandlist [format "AUXILIARY.PORT_COVER\[%d\].REALPOS" $portindex]
+  }
+  set statuscommand "GET [join $statuscommandlist ";"]"
 
   ######################################################################
 
   variable covers ""
   variable requestedcovers ""
   variable primarycover ""
-  variable port2cover ""
-  variable port3cover ""
+  variable portcovers []
+  
+  proc coverstate {value} {
+    if {$value == 0} {
+      return "closed"
+    } elseif {$value == 1.0} {
+      return "open"
+    } else {
+      return "intermediate"
+    }
+  }
 
   proc updatedata {response} {
 
     variable covers
     variable primarycover
-    variable port2cover
-    variable port3cover
-    variable port2covertarget
-    variable port3covertarget
+    variable portcovers
+    variable ports
+
 
     if {[scan $response "%*d DATA INLINE AUXILIARY.COVER.REALPOS=%f" value] == 1} {
-      if {$value == 0} {
-        set primarycover "closed"
-      } elseif {$value == 1.0} {
-        set primarycover "open"
-      } else {
-        set primarycover "intermediate"
-      }
+      set primarycover [coverstate $value]
       return false
     }
-    if {[scan $response "%*d DATA INLINE AUXILIARY.PORT_COVER\[2\].REALPOS=%f" value] == 1} {
-      if {$value == 0} {
-        set port2cover "closed"
-      } elseif {$value == 1.0} {
-        set port2cover "open"
-      } else {
-        set port2cover "intermediate"
+    if {[scan $response "%*d DATA INLINE AUXILIARY.PORT_COVER\[%d\].REALPOS=%f" index value] == 2} {
+      foreach portname [dict keys $ports] {
+        if {$index == [dict get $ports $portname]} {
+          dict set portcovers $portname [coverstate $value]
+          return false
+        }
       }
-      return false
-    }
-    if {[scan $response "%*d DATA INLINE AUXILIARY.PORT_COVER\[3\].REALPOS=%f" value] == 1} {
-      if {$value == 0} {
-        set port3cover "closed"
-      } elseif {$value == 1.0} {
-        set port3cover "open"
-      } else {
-        set port3cover "intermediate"
-      }
-      return false
     }
 
     if {[regexp {[0-9]+ DATA INLINE } $response] == 1} {
@@ -115,38 +103,32 @@ namespace eval "covers" {
 
     set timestamp [utcclock::combinedformat "now"]
 
-    set lastcovers         [server::getdata "covers"]
-    set lastprimarycover   [server::getdata "primarycover"]
-    set lastport2cover     [server::getdata "port2cover"]
-    set lastport3cover     [server::getdata "port3cover"]
-    
-    if {![string equal $lastprimarycover ""] && ![string equal $primarycover $lastprimarycover]} {
-      log::info "primary cover changed from \"$lastprimarycover\" to \"$primarycover\"."
+    set lastcover [server::getdata "primarycover"]    
+    set cover [set primarycover]
+    if {![string equal $lastcover ""] && ![string equal $lastcover $cover]} {
+      log::info "primary cover changed from \"$lastcover\" to \"$cover\"."
     }
-    if {![string equal $lastport2cover ""] && ![string equal $port2cover $lastport2cover]} {
-      log::info "port 2 cover changed from \"$lastport2cover\" to \"$port2cover\"."
-    }
-    if {![string equal $lastport3cover ""] && ![string equal $port3cover $lastport3cover]} {
-      log::info "port 3 cover changed from \"$lastport3cover\" to \"$port3cover\"."
-    }
-
-    if {![string equal $lastcovers ""] && ![string equal $covers $lastcovers]} {
-      log::info "covers changed from \"$lastcovers\" to \"$covers\"."
+    foreach portname [dict keys $ports] {
+      set lastcover [server::getdata "${portname}cover"]
+      set cover [dict get $portcovers $portname]
+      if {![string equal $lastcover ""] && ![string equal $lastcover $cover]} {
+        log::info "$portname cover changed from \"$lastcover\" to \"$cover\"."
+      }
     }
 
     set covers $primarycover
-    if {![string equal $covers $port2cover]} {
-      set covers "intermediate"
-    }
-    if {![string equal $covers $port3cover]} {
-      set covers "intermediate"
+    foreach portname [dict keys $ports] {
+      if {![string equal $covers [dict get $portcovers $portname]]} {
+        set covers "intermediate"
+      }
     }
     
     server::setdata "timestamp"        $timestamp
     server::setdata "covers"           $covers
     server::setdata "primarycover"     $primarycover
-    server::setdata "port2cover"       $port2cover
-    server::setdata "port3cover"       $port3cover
+    foreach portname [dict keys $ports] {
+      server::setdata "${portname}cover" [dict get $portcovers $portname]
+    }
 
     server::setstatus "ok"
 
