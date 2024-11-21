@@ -69,6 +69,7 @@ namespace eval "mount" {
   variable derotatoroffsetunpark       [astrometry::parseangle [config::getvalue "mount" "derotatoroffsetunpark"]]
   variable haunpark                    [astrometry::parseha    [config::getvalue "mount" "haunpark"]]
   variable deltaunpark                 [astrometry::parsedelta [config::getvalue "mount" "deltaunpark"]]
+  variable settlingseconds             [config::getvalue "mount" "settlingseconds"]
   
   variable usemountcoordinates false
 
@@ -91,9 +92,8 @@ namespace eval "mount" {
     POSITION.EQUATORIAL.RA_CURRENT
     POSITION.EQUATORIAL.DEC_CURRENT
     POSITION.LOCAL.SIDEREAL_TIME
-    POSITION.INSTRUMENTAL.DEROTATOR[3].CURRPOS
+    POSITION.INSTRUMENTAL.DEROTATOR[2].CURRPOS
     CURRENT.TRACK
-    CURRENT.TARGETDISTANCE
     CURRENT.DEROTATOR_OFFSET
     POSITION.INSTRUMENTAL.PORT_SELECT.CURRPOS
   } ";"]"
@@ -156,11 +156,10 @@ namespace eval "mount" {
   variable pendingmountdelta           ""
   variable pendingmountst              ""
   variable pendingtelescopemotionstate ""
-  variable pendingtargetdistance       ""
   variable pendingportposition         ""
   
   variable telescopemotionstate        ""
-  variable targetdistance              ""
+  variable ontarget                    ""
 
   proc updatedata {response} {
 
@@ -172,11 +171,10 @@ namespace eval "mount" {
     variable pendingmountdelta
     variable pendingmountst
     variable pendingtelescopemotionstate
-    variable pendingtargetdistance
     variable pendingportposition
 
     variable telescopemotionstate
-    variable targetdistance
+    variable ontarget
 
     set response [string trim $response]
     set response [string trim $response "\0"]
@@ -191,7 +189,7 @@ namespace eval "mount" {
       set pendingmountzenithdistance [astrometry::degtorad $value]
       return false
     }
-    if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.DEROTATOR\[3\].CURRPOS=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.DEROTATOR\[2\].CURRPOS=%f" value] == 1} {
       set pendingmountderotatorangle [astrometry::degtorad $value]
       return false
     }
@@ -216,10 +214,6 @@ namespace eval "mount" {
         log::error "the mount is no longer tracking."
         server::setactivity "error"
       }
-      return false
-    }
-    if {[scan $response "%*d DATA INLINE CURRENT.TARGETDISTANCE=%f" value] == 1} {
-      set pendingtargetdistance [astrometry::degtorad $value]
       return false
     }
     if {[scan $response "%*d DATA INLINE CURRENT.DEROTATOR_OFFSET=%f" value] == 1} {
@@ -247,11 +241,14 @@ namespace eval "mount" {
     set mountdelta                   $pendingmountdelta
     set mountst                      $pendingmountst
     set mountha                      [astrometry::foldradsymmetric [expr {$mountst - $mountalpha}]]
+    set portposition                 $pendingportposition
 
     set telescopemotionstate         $pendingtelescopemotionstate
-    set targetdistance               $pendingtargetdistance
-    
-    set portposition                 $pendingportposition
+    if {($telescopemotionstate >> 3) & 1} {
+      set ontarget true
+    } else {
+      set ontarget false
+    }
     
     set requestedportposition [server::getdata "requestedportposition"]
     set requestedport         [server::getdata "requestedport"        ]
@@ -273,7 +270,7 @@ namespace eval "mount" {
         log::info "port changed from \"$lastport\" to \"$port\"."
       }
     }
-
+    
     set timestamp [utcclock::combinedformat "now"]
 
     server::setdata "timestamp"           $timestamp
@@ -299,24 +296,19 @@ namespace eval "mount" {
   
   ######################################################################
 
-  proc waitwhilemoving {} {
-    log::info "waiting while moving."
-    variable telescopemotionstate
-    variable targetdistance
-    set startingdelay 1
-    set settlingdelay 0
+  proc waituntilontarget {} {
+    log::info "waiting until on target."
+    variable ontarget
+    variable settlingseconds
+    set ontarget false
+    while {!$ontarget} {
+      coroutine::yield
+    }
     set start [utcclock::seconds]
-    while {[utcclock::diff now $start] < $startingdelay} {
+    while {[utcclock::diff now $start] < $settlingseconds} {
       coroutine::yield
     }
-    while {(($telescopemotionstate >> 3) & 1) == 0} {
-      coroutine::yield
-    }
-    set settle [utcclock::seconds]
-    while {[utcclock::diff now $settle] < $settlingdelay} {
-      coroutine::yield
-    }
-    log::info "finished waiting while moving."
+    log::info "finished waiting until on target."
   }
 
   ######################################################################
@@ -349,7 +341,7 @@ namespace eval "mount" {
   proc emergencystophardware {} {
     log::debug "emergency stop: sending emergency stop."
     controller::flushcommandqueue
-    opentsi::sendcommand "SET TELESCOPE.STOP=1"
+    opentsi::sendcommandandwait "SET TELESCOPE.STOP=1"
     log::debug "emergency stop: finished sending emergency stop."
   }
 
@@ -357,13 +349,13 @@ namespace eval "mount" {
     log::info "stopping the mount."
     controller::flushcommandqueue
     if {[opentsi::isoperational]} {
-      opentsi::sendcommand "SET TELESCOPE.STOP=1"
+      opentsi::sendcommandandwait "SET TELESCOPE.STOP=1"
     }
   }
   
   proc setportpositionhardware {portposition} {
     server::setdata "requestedportposition" $portposition
-    opentsi::sendcommand [format "SET POINTING.SETUP.USE_PORT=%d" $portposition]
+    opentsi::sendcommandandwait [format "SET POINTING.SETUP.USE_PORT=%d" $portposition]
   }
 
   proc parkhardware {} {
@@ -373,14 +365,14 @@ namespace eval "mount" {
     variable derotatoroffsetpark
     log::info "moving to park."
     # Turn off derotator movement.
-    opentsi::sendcommand [format "SET [join {
+    opentsi::sendcommandandwait [format "SET [join {
         "POINTING.SETUP.DEROTATOR.SYNCMODE=0"
       } ";"]" \
     ]
     log::info [format "setting derotator offset to %+.2fd." [astrometry::radtodeg $derotatoroffsetpark]]
     # Move the derotator to the parked position.
-    opentsi::sendcommand [format "SET [join {
-        "POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=%.6f"
+    opentsi::sendcommandandwait [format "SET [join {
+        "POSITION.INSTRUMENTAL.DEROTATOR\[2\].OFFSET=%.6f"
         "POINTING.SETUP.DEROTATOR.OFFSET=%.6f"
         "POINTING.SETUP.DEROTATOR.SYNCMODE=1"
       } ";"]" \
@@ -388,7 +380,7 @@ namespace eval "mount" {
       [astrometry::radtodeg $derotatoranglepark ] \
     ]
     # Move the mount to the parked position.
-    opentsi::sendcommand [format "SET [join {
+    opentsi::sendcommandandwait [format "SET [join {
         "OBJECT.INSTRUMENTAL.AZ=%.6f"
         "OBJECT.INSTRUMENTAL.ZD=%.6f"
         "POINTING.TRACK=2"
@@ -396,7 +388,7 @@ namespace eval "mount" {
       [astrometry::radtodeg $azimuthpark       ] \
       [astrometry::radtodeg $zenithdistancepark] \
     ]
-    waitwhilemoving
+    waituntilontarget
     server::setdata "unparked" false
   }
   
@@ -408,20 +400,20 @@ namespace eval "mount" {
     set azimuthunpark        [astrometry::equatorialtoazimuth        $haunpark $deltaunpark]
     set zenithdistanceunpark [astrometry::equatorialtozenithdistance $haunpark $deltaunpark]
     # Turn off derotator movement.
-    opentsi::sendcommand [format "SET [join {
+    opentsi::sendcommandandwait [format "SET [join {
         "POINTING.SETUP.DEROTATOR.SYNCMODE=0"
       } ";"]" \
     ]
     # Turn on derotator syncronization.
     log::info [format "setting derotator offset to %+.2fd." [astrometry::radtodeg $derotatoroffsetunpark]]
-    opentsi::sendcommand [format "SET [join {
-        "POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=%.6f"
+    opentsi::sendcommandandwait [format "SET [join {
+        "POSITION.INSTRUMENTAL.DEROTATOR\[2\].OFFSET=%.6f"
         "POINTING.SETUP.DEROTATOR.SYNCMODE=5"
       } ";"]" \
       [astrometry::radtodeg $derotatoroffsetunpark] \
     ]      
     # Move to unparked position.
-    opentsi::sendcommand [format "SET [join {
+    opentsi::sendcommandandwait [format "SET [join {
         "OBJECT.INSTRUMENTAL.AZ=%.6f"
         "OBJECT.INSTRUMENTAL.ZD=%.6f"
         "POINTING.TRACK=2"
@@ -429,7 +421,7 @@ namespace eval "mount" {
       [astrometry::radtodeg $azimuthunpark       ] \
       [astrometry::radtodeg $zenithdistanceunpark] \
     ]      
-    waitwhilemoving
+    waituntilontarget
     server::setdata "unparked" true
   }
   
@@ -460,12 +452,12 @@ namespace eval "mount" {
     variable azimuthpark
     variable zenithdistancepark
     variable derotatoranglepark
-    opentsi::sendcommand [format "SET TELESCOPE.CONFIG.AZ.PARK_POS=%.6f" [astrometry::radtodeg $azimuthpark]]
-    opentsi::sendcommand [format "SET TELESCOPE.CONFIG.ZD.PARK_POS=%.6f" [astrometry::radtodeg $zenithdistancepark]]
-    opentsi::sendcommand [format "SET TELESCOPE.CONFIG.PORT\[3\].DEROTATOR.PARK_POS=%.6f" [astrometry::radtodeg $derotatoranglepark]]
+    opentsi::sendcommandandwait [format "SET TELESCOPE.CONFIG.AZ.PARK_POS=%.6f" [astrometry::radtodeg $azimuthpark]]
+    opentsi::sendcommandandwait [format "SET TELESCOPE.CONFIG.ZD.PARK_POS=%.6f" [astrometry::radtodeg $zenithdistancepark]]
+    opentsi::sendcommandandwait [format "SET TELESCOPE.CONFIG.PORT\[2\].DEROTATOR.PARK_POS=%.6f" [astrometry::radtodeg $derotatoranglepark]]
     set taiminusutc [utcclock::gettaiminusutc]
     log::info [format "setting TAI-UTC to %+d seconds." $taiminusutc]
-    opentsi::sendcommand [format "SET TELESCOPE.CONFIG.LOCAL.TAI-UTC=%d" $taiminusutc]
+    opentsi::sendcommandandwait [format "SET TELESCOPE.CONFIG.LOCAL.TAI-UTC=%d" $taiminusutc]
     set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
   }
@@ -510,7 +502,7 @@ namespace eval "mount" {
     set start [utcclock::seconds]
     log::info "moving."
     updaterequestedpositiondata
-    opentsi::sendcommand [format "SET [join {
+    opentsi::sendcommandandwait [format "SET [join {
         "OBJECT.HORIZONTAL.AZ=%.6f"
         "OBJECT.HORIZONTAL.ZD=%.6f"
         "POINTING.TRACK=2"
@@ -518,7 +510,7 @@ namespace eval "mount" {
       [astrometry::radtodeg [server::getdata "requestedobservedazimuth"]] \
       [astrometry::radtodeg [server::getdata "requestedobservedzenithdistance"]] \
     ]      
-    waitwhilemoving
+    waituntilontarget
     set end [utcclock::seconds]
     log::info [format "finished moving after %.1f seconds." [utcclock::diff $end $start]]
   }
@@ -548,13 +540,13 @@ namespace eval "mount" {
       log::info "moving to track."
     }
     updaterequestedpositiondata
-    opentsi::sendcommand [format \
+    opentsi::sendcommandandwait [format \
       "SET OBJECT.EQUATORIAL.RA=%.6f;OBJECT.EQUATORIAL.DEC=%.6f;OBJECT.EQUATORIAL.EQUINOX=%.6f;POINTING.TRACK=1" \
       [astrometry::radtohr  [server::getdata "requestedstandardalpha"]] \
       [astrometry::radtodeg [server::getdata "requestedstandarddelta"]] \
       [server::getdata "requestedstandardequinox"] \
     ]      
-    waitwhilemoving
+    waituntilontarget
     log::info [format "started tracking after %.1f seconds." [utcclock::diff now $start]]
     server::setactivity "tracking"
     server::clearactivitytimeout
@@ -575,7 +567,7 @@ namespace eval "mount" {
       
       set dseconds [utcclock::diff "now" "19700101T000000"]
 
-      opentsi::sendcommand [format "SET [join {
+      opentsi::sendcommandandwait [format "SET [join {
           "TELESCOPE.MEASUREMENT.MODEL.NEW.RA=%.6f"
           "TELESCOPE.MEASUREMENT.MODEL.NEW.DEC=%.6f"
           "TELESCOPE.MEASUREMENT.MODEL.NEW.EQUINOX=%.3f"
