@@ -1075,7 +1075,7 @@ namespace eval "mount" {
 
   proc park {} {
     server::checkstatus
-    server::checkactivity "preparedtomove"
+    server::checkactivityformove
     checkhardwarefor "park"
     if {[catch {client::checkactivity "target" "idle"} message]} {
       stop
@@ -1086,7 +1086,7 @@ namespace eval "mount" {
 
   proc unpark {} {
     server::checkstatus
-    server::checkactivity "preparedtomove"
+    server::checkactivityformove
     checkhardwarefor "unpark"
     if {[catch {client::checkactivity "target" "idle"} message]} {
       stop
