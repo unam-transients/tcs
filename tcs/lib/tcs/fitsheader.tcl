@@ -192,6 +192,8 @@ namespace eval "fitsheader" {
     foreach {key fitskey fitstype} {
       filetype               FLTP   string
       filename               FLNM   string
+      blocktimestamp         BLKT   date
+      visittimestamp         VSTT   date
       projectidentifier      PRPID  string
       blockidentifier        BLKID  integer
       visitidentifier        VSTID  integer
