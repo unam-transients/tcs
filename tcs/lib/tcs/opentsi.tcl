@@ -230,7 +230,7 @@ namespace eval "opentsi" {
     
     if {[regexp {^[0-9]+ COMMAND COMPLETE} $response] == 1} {
       if {$commandidentifier != $statuscommandidentifier} {
-        log::info [format "controller command %d completed." $commandidentifier]
+        log::info "received controller response: \"$response\"."
         if {$commandidentifier == $currentcommandidentifier} {
           log::info "current controller command completed."
           set completedcurrentcommand true
