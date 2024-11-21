@@ -414,7 +414,7 @@ namespace eval "supervisor" {
       if {[string equal [client::getdata "executor" "activity"] "started"]} {
         set start [utcclock::seconds]
         log::summary "initializing ($why)."
-        sendchat "initializing."
+        sendchat "initializing ($why)."
         server::setrequestedactivity "idle"
         server::setactivity "initializing"
         set open            false
@@ -453,10 +453,12 @@ namespace eval "supervisor" {
 
         set start [utcclock::seconds]
         log::summary "disabling ($why)."
+        sendchat "disabling ($why)."
         server::setrequestedactivity "idle"
         set mode "disabled"
         updatedata
         log::summary [format "finished disabling after %.1f seconds." [utcclock::diff now $start]]
+        sendchat "finished disabling."
         log::debug "loop: continue: finished disabling."
         set delay 1000
         continue
@@ -519,7 +521,7 @@ namespace eval "supervisor" {
         loopreport
         set start [utcclock::seconds]
         log::summary "opening to ventilate ($why)."
-        sendchat "opening to ventilate."
+        sendchat "opening to ventilate ($why)."
         server::setrequestedactivity "idle"
         server::setactivity "opening"
         set open            false
@@ -560,7 +562,7 @@ namespace eval "supervisor" {
         loopreport
         set start [utcclock::seconds]
         log::summary "closing ($why)."
-        sendchat "closing."
+        sendchat "closing ($why)."
         server::setrequestedactivity "idle"
         server::setactivity "closing"
         set open            false
@@ -645,6 +647,7 @@ namespace eval "supervisor" {
 
           set start [utcclock::seconds]
           log::warning "responding for request to access."
+          sendchat "responding for request to access."
 
           log::summary "disabling supervisor."
           variable mode
@@ -682,6 +685,7 @@ namespace eval "supervisor" {
           coroutine::after 10000          
 
           log::warning [format "finished responding for request to access after %.1f seconds." [utcclock::diff now $start]]         
+          sendchat "finished responding for request to access."
           
         }
       
@@ -769,7 +773,6 @@ namespace eval "supervisor" {
   proc requestaccess {} {
     set start [utcclock::seconds]
     log::summary "requesting access."
-    sendchat "requesting access."
     variable accessrequested
     set accessrequested true
     log::summary [format "finished requesting access after %.1f seconds." [utcclock::diff now $start]]
