@@ -643,7 +643,8 @@ namespace eval "executor" {
       server::setdata "blockidentifier"   [block::identifier [block]]
       server::setdata "blockname"         [block::name [block]]
     }
-    server::setdata "timestamp" [utcclock::combinedformat]
+    server::setdata "blocktimestamp" [utcclock::combinedformat]
+    server::setdata "timestamp"      [utcclock::combinedformat]
   }
 
   proc updatevisitdata {} {
@@ -658,7 +659,8 @@ namespace eval "executor" {
       server::setdata "visitcommand"      [visit::command [visit]]
       server::setdata "visittasks"        [visit::tasks [visit]]
     }
-    server::setdata "timestamp" [utcclock::combinedformat]
+    server::setdata "visittimestamp" [utcclock::combinedformat]
+    server::setdata "timestamp"      [utcclock::combinedformat]
   }
   
   proc updatealertdata {} {
