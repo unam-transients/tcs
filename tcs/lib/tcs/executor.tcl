@@ -1071,6 +1071,30 @@ namespace eval "executor" {
     log::summary [format "finished emergency closing after %.1f seconds." [utcclock::diff now $start]]
   }
 
+  proc parkactivitycommand {} {
+    recoverifnecessary false
+    set start [utcclock::seconds]
+    log::summary "parking."
+    foreach server {telescope} {
+      catch {client::waituntilstarted $server}
+      client::request $server "park"
+      client::wait $server
+    }
+    log::summary [format "finished parking after %.1f seconds." [utcclock::diff now $start]]
+  }
+
+  proc unparkactivitycommand {} {
+    recoverifnecessary false
+    set start [utcclock::seconds]
+    log::summary "unparking."
+    foreach server {telescope} {
+      catch {client::waituntilstarted $server}
+      client::request $server "unpark"
+      client::wait $server
+    }
+    log::summary [format "finished unparking after %.1f seconds." [utcclock::diff now $start]]
+  }
+
   proc idleactivitycommand {} {
     recoverifnecessary true
     set start [utcclock::seconds]
@@ -1164,6 +1188,22 @@ namespace eval "executor" {
     # Do not check status or activity.
     server::newactivitycommand "closing" "idle" \
       "executor::emergencycloseactivitycommand" 900e3
+  }
+  
+  proc park {} {
+    server::checkstatus
+    server::checkactivityforreset
+    setinitialactivity
+    server::newactivitycommand "parking" "idle" \
+      "executor::parkactivitycommand" 900e3
+  }
+  
+  proc unpark {} {
+    server::checkstatus
+    server::checkactivityforreset
+    setinitialactivity
+    server::newactivitycommand "unparking" "idle" \
+      "executor::unparkactivitycommand" 900e3
   }
   
   proc execute {filetype filename} {
