@@ -635,23 +635,23 @@ namespace eval "supervisor" {
           }
 
           if {[client::getdata "plc" "accessrequested"]} {
-            log::summary "access requested by the plc."
+            log::warning "access requested by the plc."
           }
 
           if {$accessrequested} {
-            log::summary "access requested by the supervisor."
-              set accessrequested false
+            log::warning "access requested by the supervisor."
+            set accessrequested false
           }
 
           set start [utcclock::seconds]
-          log::summary "responding for request to access."
+          log::warning "responding for request to access."
 
           log::summary "disabling supervisor."
           variable mode
           set mode "disabled"
           updatedata
 
-          log::summary "disabling selector."
+          log::warning "disabling selector."
           if {[catch {
             client::request "selector" "disable" 
             client::wait "selector"
@@ -659,7 +659,7 @@ namespace eval "supervisor" {
             log::error "unable to disable selector: $message"
           }
 
-          log::summary "emergency stopping executor."
+          log::warning "emergency stopping executor."
           if {[catch {
             client::request "executor" "emergencystop" 
             client::wait "executor"
@@ -668,7 +668,7 @@ namespace eval "supervisor" {
           }
 
           if {[client::getdata "plc" "accessrequested"]} {
-            log::summary "granting access."
+            log::warning "granting access."
             if {[catch {
               client::request "plc" "special grantaccess"
               client::wait "plc"
@@ -678,7 +678,10 @@ namespace eval "supervisor" {
             }
           }
 
-          log::summary [format "finished responding for request to access after %.1f seconds." [utcclock::diff now $start]]
+          # Give the PLC time to turn off the accessrequested flag.
+          coroutine::after 10000          
+
+          log::warning [format "finished responding for request to access after %.1f seconds." [utcclock::diff now $start]]         
           
         }
       
