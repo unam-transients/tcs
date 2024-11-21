@@ -23,6 +23,40 @@
 
 namespace eval "covers" {
 
+  variable settlingseconds [config::getvalue "covers" "settlingseconds"]
+
+  ########################################################################
+
+  proc getcovers {} {
+    return [server::getdata "covers"]
+  }
+
+  proc getrequestedcovers {} {
+    return [server::getdata "requestedcovers"]
+  }
+
+  ########################################################################
+  
+  proc waitwhilesettling {} {
+    variable settlingseconds
+    set start [utcclock::seconds]
+    while {[utcclock::diff now $start] < $settlingseconds} {
+      coroutine::yield
+    }
+  }
+  
+  proc waitwhilemoving {} {
+    log::info "waiting while moving."
+    while {[string equal [getrequestedcovers] ""]} {
+      coroutine::yield
+    }
+    while {![string equal [getcovers] [getrequestedcovers]]} {
+      coroutine::yield
+    }   
+    waitwhilesettling
+    log::info "finished waiting while moving."
+  }
+  
   ######################################################################
 
   proc startactivitycommand {} {
@@ -40,6 +74,10 @@ namespace eval "covers" {
     log::info "initializing."
     log::info "closing."
     initializehardware
+    waitwhilemoving
+    if {![string equal [server::getdata "covers"] "closed"]} {
+      error "the covers did not close."
+    }
     set end [utcclock::seconds]
     log::info [format "finished initializing after %.1f seconds." [utcclock::diff $end $start]]
   }
@@ -48,6 +86,10 @@ namespace eval "covers" {
     set start [utcclock::seconds]
     log::info "opening."
     openhardware
+    waitwhilemoving
+    if {![string equal [server::getdata "covers"] "open"]} {
+      error "the covers did not open."
+    }
     set end [utcclock::seconds]
     log::info [format "finished opening after %.1f seconds." [utcclock::diff $end $start]]
   }
@@ -56,6 +98,10 @@ namespace eval "covers" {
     set start [utcclock::seconds]
     log::info "closing."
     closehardware
+    waitwhilemoving
+    if {![string equal [server::getdata "covers"] "closed"]} {
+      error "the covers did not close."
+    }
     set end [utcclock::seconds]
     log::info [format "finished closing after %.1f seconds." [utcclock::diff $end $start]]
   }
