@@ -54,11 +54,16 @@ namespace eval "opentsi" {
     }
   }
   
-  proc isignoredresponse {response} {
+  proc iseventresponse {response} {
     expr {
-      [regexp {^[0-9]+ DATA OK}     $response] == 1 ||
       [regexp {^[0-9]+ EVENT INFO } $response] == 1 ||
       [regexp {^[0-9]+ EVENT ERROR [^:]+:[0-9]+ No data available\.$} $response] == 1
+    }
+  }
+
+  proc isignoredresponse {response} {
+    expr {
+      [regexp {^[0-9]+ DATA OK}     $response] == 1
     }
   }
   
@@ -78,7 +83,7 @@ namespace eval "opentsi" {
   variable emergencystopcommandidentifier 2
   variable firstnormalcommandidentifier   3
   variable lastnormalcommandidentifier    99
-
+  
   ######################################################################
 
   variable currentcommandidentifier 0
@@ -131,6 +136,7 @@ namespace eval "opentsi" {
   variable readystatetext ""
   
   variable communicationfailure false
+  variable showevents           false
 
   proc updatedata {response} {
   
@@ -182,7 +188,7 @@ namespace eval "opentsi" {
       log::info "received controller authentication response: \"$response\"."
       return false
     }
-
+    
     variable statuscommandidentifier
     variable emergencystopcommandidentifier
     variable completedcommandidentifier
@@ -212,6 +218,16 @@ namespace eval "opentsi" {
       }
     }
 
+    variable showevents
+
+    if {[opentsi::iseventresponse $response]} {
+      if {$showevents} {
+        log::info "received controller event response: \"$response\"."
+      } else {
+        log::debug "received controller event response: \"$response\"."
+      }
+      return false
+    }
 
     variable currentcommandidentifier
     variable acceptedcurrentcommand
@@ -271,12 +287,14 @@ namespace eval "opentsi" {
   
   ######################################################################
 
-  proc start {statuscommand updatedata} {
+  proc start {statuscommand updatedata {showeventsarg false}} {
     variable statuscommandidentifier
     set controller::statuscommand "$statuscommandidentifier $statuscommand;TELESCOPE.READY_STATE\n"
     set controller::updatedata    "opentsi::updatedata"
     variable higherupdatedata
     set higherupdatedata "$updatedata"
+    variable showevents
+    set showevents $showeventsarg
     controller::startcommandloop "AUTH PLAIN \"admin\" \"admin\"\n"
     controller::startstatusloop
   }
