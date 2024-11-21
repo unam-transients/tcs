@@ -23,15 +23,13 @@
 
 namespace eval "dome" {
 
-  variable openazimuth          [astrometry::formatazimuth [config::getvalue "dome" "openazimuth"     ]]
-  variable closeazimuth         [astrometry::formatazimuth [config::getvalue "dome" "closeazimuth"    ]]
-  variable parkazimuth          [astrometry::formatazimuth [config::getvalue "dome" "parkazimuth"     ]]
-  
+  variable openazimuth              [astrometry::formatazimuth [config::getvalue "dome" "openazimuth"     ]]
+  variable closeazimuth             [astrometry::formatazimuth [config::getvalue "dome" "closeazimuth"    ]]
+  variable parkazimuth              [astrometry::formatazimuth [config::getvalue "dome" "parkazimuth"     ]]
   variable moveazimuthtolerance     [astrometry::parseazimuth [config::getvalue "dome" "moveazimuthtolerance"    ]]
   variable trackingazimuthtolerance [astrometry::parseazimuth [config::getvalue "dome" "trackingazimuthtolerance"]]
-  variable settlingseconds          3
-
-  variable daytimetesting       [config::getvalue "telescope" "daytimetesting"]
+  variable settlingseconds          [config::getvalue "dome" "settlingseconds"]
+  variable daytimetesting           [config::getvalue "telescope" "daytimetesting"]
 
   ########################################################################
 
@@ -92,7 +90,6 @@ namespace eval "dome" {
   proc waitwhilemoving {} {
     log::info "waiting while moving."
     variable moveazimuthtolerance
-    variable settlingseconds
     while {[string equal [getazimutherror] ""]} {
       coroutine::yield
     }
