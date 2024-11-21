@@ -123,15 +123,18 @@ namespace eval "dome" {
   }
       
   proc stophardware {} {
+    server::setdata "requestedshutters" ""
     if {[opentsi::isoperational]} {
       opentsi::sendcommandandwait "SET TELESCOPE.STOP=1"
     }
   }
   
+  # We sometimes close before opening to work around a bug in OpenTSI
+  # that causes a request to open the shutters to be ignored if the
+  # shutters were interrupted while opening. (And the converse with
+  # closing.)
+
   proc openhardware {} {
-    # We close the shutters and then open them to work around a bug in
-    # OpenTSI that causes a request to open the shutters to be ignored
-    # if the shutters were interrupted while opening.
     server::setdata "requestedshutters" "open"
     if {[string equal [server::getdata "shutters"] "intermediate"]} {
       opentsi::sendcommandandwait "SET AUXILIARY.DOME.TARGETPOS=0"
