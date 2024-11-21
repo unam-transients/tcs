@@ -233,7 +233,8 @@
       "ogse":    "port2",
       "port2":   "2",
       "port3":   "3"
-    }
+    },
+    "settlingseconds": 1
   },
   "plc": {
     "type": "colibri",
