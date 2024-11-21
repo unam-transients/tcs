@@ -102,7 +102,8 @@
   "covers": {
     "type": "opentsi",
     "port2name": "right",
-    "port3name": "left"
+    "port3name": "left",
+    "settlingseconds": 0
   },
   "dome": {
     "type": "opentsi",
@@ -110,15 +111,13 @@
     "openazimuth": "0d",
     "closeazimuth": "0d",
     "parkazimuth": "0d",
-    // Allow 1d tolerance on moves.
-    "moveazimuthtolerance": "1d",
-    // Wait 2 seconds after moves to damp vibrations.
-    "settlingseconds": 2,
     // The COLIBRI dome aperture is 2.30 meters wide. The dome is 7.50
     // meters in diameter. Thus, if the dome were perfectly aligned, it
     // could accept 7.66 degrees of tolerance. We will reduce this to
     // account for imperfections in the dome azimuth calibration.
-    "trackingazimuthtolerance": "5d"
+    "trackingazimuthtolerance": "5d",
+    "moveazimuthtolerance": "1d",
+    "settlingseconds": 1
   },
   "executor": {
     "type": "colibri"

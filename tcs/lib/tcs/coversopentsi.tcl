@@ -38,8 +38,9 @@ namespace eval "covers" {
   set server::datalifeseconds        30
 
   server::setdata "state"            ""
-  server::setdata "requestedcovers"  ""
   server::setdata "covers"           ""
+  server::setdata "requestedcovers"  ""
+  server::setdata "primarycover"     ""
   server::setdata "port2cover"       ""
   server::setdata "port3cover"       ""
   server::setdata "port2name"        [config::getvalue "covers" "port2name"]
@@ -52,39 +53,33 @@ namespace eval "covers" {
     AUXILIARY.COVER.REALPOS
     AUXILIARY.PORT_COVER[2].REALPOS
     AUXILIARY.PORT_COVER[3].REALPOS
-    AUXILIARY.COVER.TARGETPOS
-    AUXILIARY.PORT_COVER[2].TARGETPOS
-    AUXILIARY.PORT_COVER[3].TARGETPOS
   } ";"]"
 
 
   ######################################################################
 
   variable covers ""
+  variable requestedcovers ""
+  variable primarycover ""
   variable port2cover ""
   variable port3cover ""
-  variable coverstarget ""
-  variable port2covertarget ""
-  variable port3covertarget ""
-  variable intermediate
 
   proc updatedata {response} {
 
     variable covers
+    variable primarycover
     variable port2cover
     variable port3cover
-    variable coverstarget
     variable port2covertarget
     variable port3covertarget
-    variable intermediate
 
     if {[scan $response "%*d DATA INLINE AUXILIARY.COVER.REALPOS=%f" value] == 1} {
       if {$value == 0} {
-        set covers "closed"
+        set primarycover "closed"
       } elseif {$value == 1.0} {
-        set covers "open"
+        set primarycover "open"
       } else {
-        set covers "intermediate"
+        set primarycover "intermediate"
       }
       return false
     }
@@ -108,30 +103,6 @@ namespace eval "covers" {
       }
       return false
     }
-    if {[scan $response "%*d DATA INLINE AUXILIARY.COVER.TARGETPOS=%f" value] == 1} {
-      if {$value == 0} {
-        set coverstarget "closed"
-      } else {
-        set coverstarget "open"
-      }
-      return false
-    }
-    if {[scan $response "%*d DATA INLINE AUXILIARY.PORT_COVER\[2\].TARGETPOS=%f" value] == 1} {
-      if {$value == 0} {
-        set port2covertarget "closed"
-      } else {
-        set port2covertarget "open"
-      }
-      return false
-    }
-    if {[scan $response "%*d DATA INLINE AUXILIARY.PORT_COVER\[3\].TARGETPOS=%f" value] == 1} {
-      if {$value == 0} {
-        set port3covertarget "closed"
-      } elseif {$value == 1.0} {
-        set port3covertarget "open"
-      }
-      return false
-    }
 
     if {[regexp {[0-9]+ DATA INLINE } $response] == 1} {
       log::debug "status: ignoring DATA INLINE response."
@@ -145,11 +116,12 @@ namespace eval "covers" {
     set timestamp [utcclock::combinedformat "now"]
 
     set lastcovers         [server::getdata "covers"]
+    set lastprimarycover   [server::getdata "primarycover"]
     set lastport2cover     [server::getdata "port2cover"]
     set lastport3cover     [server::getdata "port3cover"]
     
-    if {![string equal $lastcovers ""] && ![string equal $covers $lastcovers]} {
-      log::info "covers changed from \"$lastcovers\" to \"$covers\"."
+    if {![string equal $lastprimarycover ""] && ![string equal $primarycover $lastprimarycover]} {
+      log::info "primary cover changed from \"$lastprimarycover\" to \"$primarycover\"."
     }
     if {![string equal $lastport2cover ""] && ![string equal $port2cover $lastport2cover]} {
       log::info "port 2 cover changed from \"$lastport2cover\" to \"$port2cover\"."
@@ -158,43 +130,27 @@ namespace eval "covers" {
       log::info "port 3 cover changed from \"$lastport3cover\" to \"$port3cover\"."
     }
 
-    if {
-      [string equal $covers     "intermediate"] ||
-      [string equal $port2cover "intermediate"] ||
-      [string equal $port3cover "intermediate"]
-    } {
-      set intermediate true
-    } else {
-      set intermediate false
+    if {![string equal $lastcovers ""] && ![string equal $covers $lastcovers]} {
+      log::info "covers changed from \"$lastcovers\" to \"$covers\"."
+    }
+
+    set covers $primarycover
+    if {![string equal $covers $port2cover]} {
+      set covers "intermediate"
+    }
+    if {![string equal $covers $port3cover]} {
+      set covers "intermediate"
     }
     
     server::setdata "timestamp"        $timestamp
     server::setdata "covers"           $covers
+    server::setdata "primarycover"     $primarycover
     server::setdata "port2cover"       $port2cover
     server::setdata "port3cover"       $port3cover
 
     server::setstatus "ok"
 
     return true
-  }
-
-  proc waitwhilemoving {} {
-    log::info "waiting while moving."
-    variable intermediate
-    set startingdelay 10
-    set settlingdelay 1
-    set start [utcclock::seconds]
-    while {[utcclock::diff now $start] < $startingdelay} {
-      coroutine::after 1000
-    }
-    while {$intermediate} {
-      coroutine::yield
-    }
-    set settle [utcclock::seconds]
-    while {[utcclock::diff now $settle] < $settlingdelay} {
-      coroutine::yield
-    }
-    log::info "finished waiting while moving."
   }
 
   ######################################################################
@@ -217,48 +173,22 @@ namespace eval "covers" {
   proc stophardware {} {
     server::setdata "requestedcovers" ""
     if {[opentsi::isoperational]} {
-      opentsi::sendcommand "SET TELESCOPE.STOP=1"
+      opentsi::sendcommandandwait "SET TELESCOPE.STOP=1"
     }
   }
   
   proc openhardware {} {
     server::setdata "requestedcovers" "open"
+    opentsi::sendcommand [format "SET AUXILIARY.COVER.TARGETPOS=1"]
     opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=1"]
-    coroutine::after 1000
     opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=1"]
-    variable coverstarget
-    while {true} {
-      opentsi::sendcommand [format "SET AUXILIARY.COVER.TARGETPOS=1"]
-      coroutine::after 5000
-      if {[string equal $coverstarget "open"]} {
-        break
-      }
-      log::warning "attempting to open covers again."
-    }      
-    waitwhilemoving
-    if {![string equal [server::getdata "covers"] "open"]} {
-      error "the covers did not open."
-    }
   }
   
   proc closehardware {} {
     server::setdata "requestedcovers" "closed"
+    opentsi::sendcommand [format "SET AUXILIARY.COVER.TARGETPOS=0"]
     opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=0"]
-    coroutine::after 1000
     opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=0"]
-    variable coverstarget
-    while {true} {
-      opentsi::sendcommand [format "SET AUXILIARY.COVER.TARGETPOS=0"]
-      coroutine::after 5000
-      if {[string equal $coverstarget "closed"]} {
-        break
-      }
-      log::warning "attempting to close covers again."
-    }      
-    waitwhilemoving
-    if {![string equal [server::getdata "covers"] "closed"]} {
-      error "the covers did not close."
-    }
   }
   
   ######################################################################
