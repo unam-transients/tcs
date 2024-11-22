@@ -381,7 +381,8 @@
       "temperature": {
         "dzdT": "-9.26"
       }
-    }
+    },
+    "settlingseconds": 0
   },
   "selector": {},
   "sensors": {
