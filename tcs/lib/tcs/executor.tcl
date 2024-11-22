@@ -117,6 +117,12 @@ namespace eval "executor" {
   
   ######################################################################
 
+  proc sendchat {category message} {
+    exec "[directories::prefix]/bin/tcs" "sendchat" "$category" "$message"
+  }
+  
+  ######################################################################
+
   variable trackstart
   
   proc track {{alphaoffset 0} {deltaoffset 0} {aperture "default"}} {
@@ -921,6 +927,9 @@ namespace eval "executor" {
     client::wait "instrument"
 
     log::summary "executing block [block::identifier [block]] \"[block::name [block]]\" of project [project::identifier [project]] \"[project::name [block::project [block]]]\"."
+    if {[string equal "alert" [filetype]]} {
+      sendchat "observations" "executing alert block [block::identifier [block]] \"[block::name [block]]\"."
+    }
 
     foreach visit [block::visits [block]] {
 
@@ -961,6 +970,9 @@ namespace eval "executor" {
 
     log::summary [format "finished executing block after %.1f seconds." [utcclock::diff now $blockstart]]
     log::summary [format "finished executing [filetype] file \"[file tail [filename]]\" after %.1f seconds." [utcclock::diff now $blockstart]]
+    if {[string equal "alert" [filetype]]} {
+      sendchat "observations" "finished executing alert block [block::identifier [block]] \"[block::name [block]]\"."
+    }
   }
   
   proc resetactivitycommand {} {
