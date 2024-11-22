@@ -28,7 +28,7 @@ export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bi
 program="tcs $(basename "$0")"
 
 usageerror () {
-  echo 1>&2 "usage: $program message"
+  echo 1>&2 "usage: $program category message"
   exit 1
 }
 
@@ -47,41 +47,84 @@ do
   esac
 done
 shift
-if test $# != 1
+if test $# != 2
 then
   usageerror
 fi
-message="$1"
+category="$1"
+message="$2"
 
 case $(uname -n) in
 coatli-*)
   source="COATLI"
-  url="https://chat.googleapis.com/v1/spaces/AAAAIjRMy3k/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=AJCE8H2jDqHQdhhq0k-Mf-dw2vVGfkRTDmTFJXn_FGk"
   ;;
 ddoti-*)
   source="DDOTI"
-  url="https://chat.googleapis.com/v1/spaces/AAAAIjRMy3k/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=hi6BtwzzxvGwK18u4LxtwJkOLGi9LH52PkD4ZXvvEIg"
   ;;
 colibri-*)
   source="COLIBRI"
-  url="https://mattermost.osupytheas.fr/hooks/8d36q11tzp8e7yxdnc7czhosdw"
   ;;
 *)
-  echo 2>&1 "$program: error: no url configured for $(uname -n)."
+  echo 2>&1 "$program: error: chat is not configured for $(uname -n)."
   exit 1
   ;;
 esac
 
-url="https://chat.googleapis.com/v1/spaces/AAAALqR-TN0/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=H4Mc4xQFoOAIsTvj0v1l15EwEqPaHY8ZUWgzGoqtQ8M"
-if test -z "$url"
+test="https://chat.googleapis.com/v1/spaces/AAAAvPDdHcE/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=aj0Xc4tJMEI32XNmBcD70mZ0KzyziQNjLqH458UfgMU"
+coatlioan="https://chat.googleapis.com/v1/spaces/AAAAIjRMy3k/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=KmgPQ0Ccob9q92uy5RKm64F90EG4uk2vHKZ4DDLWh28"
+ddotioan=$coatlioan
+colibrioan="https://chat.googleapis.com/v1/spaces/AAAA0_-MXYw/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=B6AEIpKYVfJzXdYDzkGzLciMi_DKzvzY0rk_2ySCaqg"
+colibtilam="https://mattermost.osupytheas.fr/hooks/8d36q11tzp8e7yxdnc7czhosdw"
+alerts="https://chat.googleapis.com/v1/spaces/AAAAUwc_GEQ/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=Ib_4l1JFkAlA92xd-0mOf-AyOpZZ37dBHLz3kPLSzAI"
+
+case $(uname -n):$category in
+coatli-*:operation)
+  urls="$coatlioan"
+  ;;
+ddoti-*:operation)
+  urls="$ddotioan"
+  ;;
+colibri-*:operations)
+  urls="$colibrioan $colibrilam"
+  ;;
+*-*:observations)
+  urls="$alerts"
+  ;;
+*-*:alerts)
+  urls="$alerts"
+  ;;
+*-*:test)
+  urls="$test"
+  ;;
+*)
+  echo 2>&1 "$program: error: chat is not configure for category $category on $(uname -n)."
+  exit 1
+  ;;
+esac
+
+if test -z "$urls"
 then
   exit 0
 fi
 
-if ! curl -s -X POST -H "Content-Type: application/json" -d "{\"text\": \"$source: $message\"}" $url >/dev/null
-then
-  echo 2>&1 "$program: error: API call failed."
-  exit 1
-fi
+for url in $urls
+do
+  case "$url" in
+  *mattermost*)
+    if ! curl -s -X POST -H 'Content-Type: application/json' -d "{\"text\": \"$source: $message\"}" $url >/dev/null
+    then
+      echo 2>&1 "$program: error: API call failed."
+      exit 1
+    fi
+    ;;
+  *googleapis*)
+    if ! curl -s -X POST -H "Content-Type: application/json" -d "{\"text\": \"$source: $message\"}" $url >/dev/null
+    then
+      echo 2>&1 "$program: error: API call failed."
+      exit 1
+    fi
+    ;;
+  esac
+done
 
 exit 0
