@@ -74,14 +74,14 @@ test="https://chat.googleapis.com/v1/spaces/AAAAvPDdHcE/messages?key=AIzaSyDdI0h
 coatlioan="https://chat.googleapis.com/v1/spaces/AAAAIjRMy3k/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=KmgPQ0Ccob9q92uy5RKm64F90EG4uk2vHKZ4DDLWh28"
 ddotioan=$coatlioan
 colibrioan="https://chat.googleapis.com/v1/spaces/AAAA0_-MXYw/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=B6AEIpKYVfJzXdYDzkGzLciMi_DKzvzY0rk_2ySCaqg"
-colibtilam="https://mattermost.osupytheas.fr/hooks/8d36q11tzp8e7yxdnc7czhosdw"
+colibrilam="https://mattermost.osupytheas.fr/hooks/8d36q11tzp8e7yxdnc7czhosdw"
 alerts="https://chat.googleapis.com/v1/spaces/AAAAUwc_GEQ/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=Ib_4l1JFkAlA92xd-0mOf-AyOpZZ37dBHLz3kPLSzAI"
 
 case $(uname -n):$category in
-coatli-*:operation)
+coatli-*:operations)
   urls="$coatlioan"
   ;;
-ddoti-*:operation)
+ddoti-*:operations)
   urls="$ddotioan"
   ;;
 colibri-*:operations)
