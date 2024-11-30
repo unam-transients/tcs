@@ -63,7 +63,8 @@ namespace eval "opentsi" {
 
   proc isignoredresponse {response} {
     expr {
-      [regexp {^[0-9]+ DATA OK}     $response] == 1
+      [regexp {^[0-9]+ DATA OK} $response] == 1 ||
+      [regexp {^[0-9]+ EVENT ERROR .* No data available\.$} $response] == 1
     }
   }
   
