@@ -249,6 +249,16 @@
         "type": "ibootbar",
         "outlets": "8",
         "inlets": "1"
+      },
+      "pdu1": {
+        "type": "ibootpdu",
+        "outlets": "8",
+        "inlets": "1"
+      },
+      "pdu2": {
+        "type": "ibootpdu",
+        "outlets": "8",
+        "inlets": "1"
       }
     },
     "outletgroupaddresses": {
