@@ -41,8 +41,8 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 192.168.100.30    american-ups            colibri-american-ups
 192.168.100.49    data                    colibri-data
 192.168.100.50    pdu0                    colibri-pdu0
-192.168.100.51    pdu1                    colibri-pdu0
-192.168.100.52    pdu2                    colibri-pdu0
+192.168.100.51    pdu1                    colibri-pdu1
+192.168.100.52    pdu2                    colibri-pdu2
 192.168.100.53    sparepdu                colibri-sparepdu
 192.168.100.54    control                 colibri-control
 192.168.100.55    rsync                   colibri-rsync
