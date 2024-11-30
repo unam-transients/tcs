@@ -70,6 +70,7 @@ namespace eval "selector" {
   ######################################################################
 
   proc sendchat {category message} {
+    log::info "sending $category message \"$message\"."
     exec "[directories::prefix]/bin/tcs" "sendchat" "$category" "$message"
   }
   
