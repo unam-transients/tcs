@@ -53,7 +53,7 @@ server = "log"
 who = sys.argv[1]
 type = sys.argv[2]
 payload = str(sys.argv[3])
-timestamp = datetime.now().isoformat()
+timestamp = datetime.now().isoformat(" ", "milliseconds")
 request = {
         "method": "log",
         "params": {
