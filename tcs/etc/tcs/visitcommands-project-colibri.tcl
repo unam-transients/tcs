@@ -22,7 +22,43 @@
 ########################################################################
 
 proc alertvisit {filters} {
-  dithervisit 16 60 r false
+  
+  log::summary "alertvisit: starting."
+  
+  set alpha   [visit::alpha   [executor::visit]]
+  set delta   [visit::delta   [executor::visit]]
+  set equinox [visit::equinox [executor::visit]]
+
+  log::summary [format "alertvisit: alert coordinates are %s %s %s." [astrometry::formatalpha $alpha]  [astrometry::formatdelta $delta] $equinox]
+
+  log::info "alertvisit: reading alert."
+
+  if {![file exists [executor::filename]]} {
+    log::summary "alertvisit: the alert is no longer in the queue."
+    return false
+  }
+
+  executor::setblock [alert::alerttoblock [alert::readalertfile [executor::filename]]]
+  executor::setalert [block::alert [executor::block]]
+
+  if {![alert::enabled [executor::alert]]} {
+    log::summary "alertvisit: the alert is no longer enabled."
+    return false
+  }
+
+  # For the time being, we just use one field.
+  # The decisions below aim to choose the smallest grid that includes
+  # the 90% region, assuming each field is 6.6d x 9.8d.
+  set uncertainty [astrometry::parsedistance [alert::uncertainty [executor::alert]]]
+  log::summary [format "alertvisit: uncertainty is %s." [astrometry::formatdistance $uncertainty 2]]
+  if {$uncertainty <= [astrometry::parsedistance "6am"]} {
+    log::summary "alertvisit: grid is 1 × 1 fields."
+    dithervisit 16 60 r false
+  } elseif {$uncertainty <= [astrometry::parsedistance "13am"]} {
+    log::summary "alertvisit: grid is 2 × 2 fields."
+    quaddithervisit 16 60 r false
+  }
+
 }
 
 ########################################################################
@@ -231,6 +267,69 @@ proc dithervisit {exposurerepeats exposuretimes filters {offsetfastest true} {di
 
   log::summary "dithervisit: finished."
   return true
+}
+
+########################################################################
+
+proc quaddithervisitoffset {diameter eastcenteroffset northcenteroffset} {
+  set diameter [astrometry::parseoffset $diameter]
+  set eastcenteroffset  [astrometry::parseoffset $eastcenteroffset ]
+  set northcenteroffset [astrometry::parseoffset $northcenteroffset]
+  while {true} {
+    set eastoffset  [expr {(rand() - 0.5) * $diameter}]
+    set northoffset [expr {(rand() - 0.5) * $diameter}]
+    if {$eastoffset * $eastoffset + $northoffset * $northoffset < 0.25 * $diameter * $diameter} {
+      break
+    }
+  }
+  set eastoffset  [expr {$eastoffset  + $eastcenteroffset }]
+  set northoffset [expr {$northoffset + $northcenteroffset}]  
+  executor::offset $eastoffset $northoffset "default"
+}
+
+
+proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest true} {diameter "1am"}} {
+
+  log::summary "quaddithervisit: starting."
+
+  log::summary "quaddithervisit: dithering in a circle of diameter $diameter in a 2 × 2 grid."
+
+  executor::setsecondaryoffset 0
+  executor::track
+
+  executor::setwindow "default"
+  executor::setbinning 2
+
+  executor::waituntiltracking
+  
+  if {[llength $exposuretimes] == 1} {
+    set exposuretimes [lrepeat [llength $filters] $exposuretimes]
+  } elseif {[llength $exposuretimes] != [llength $filters]} {
+    error "the exposuretimes and filters arguments have different lengths."
+  }
+  
+  foreach filter $filters exposuretime $exposuretimes {
+    executor::movefilterwheel $filter
+    set exposure 0
+    while {$exposure < $exposurerepeats} {
+      foreach {visitidentifier eastcenteroffset northcenteroffset} {
+        0 +6am +6am
+        1 -6am +6am
+        2 +6am -6am
+        3 -6am -6am
+      } {
+        executor::setvisit [visit::updatevisitidentifier [executor::visit] $visitidentifier]
+        quaddithervisitoffset $diameter $eastcenteroffset $northcenteroffset
+        executor::waituntiltracking
+        executor::expose object $exposuretime
+        incr exposure
+      }
+    }
+  }
+
+  log::summary "quaddithervisit: finished."
+  return true
+
 }
 
 ########################################################################
