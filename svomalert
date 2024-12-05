@@ -1,0 +1,313 @@
+#!/bin/env python3
+
+import gcn
+from datetime import datetime
+import xml.etree.ElementTree as ET
+
+import socket
+import json
+import sys
+import os
+import re
+from datetime import datetime
+
+################################################################################
+
+
+def removelinecomments(s):
+    r = re.compile("^[ \t]*//.*$", re.MULTILINE)
+    return re.sub(r, "", s)
+
+
+def serversfilename():
+    if "tcsprefix" in os.environ:
+        return os.environ["TCSPREFIX"] + "/etc/tcs/servers.json"
+    else:
+        return "/usr/local/etc/tcs/servers.json"
+
+
+def readserversfile():
+    filename = serversfilename()
+    if not os.path.exists(filename):
+        print("servers file does not exist: " + filename)
+        sys.exit(1)
+    try:
+        with open(filename) as f:
+            s = f.read(-1)
+            data = json.loads(removelinecomments(s))
+            return data
+    except:
+        print("servers file cannot be opened: " + filename)
+        sys.exit(1)
+
+
+def serverhost(serversdata, server):
+    try:
+        return str(serversdata[server]["host"])
+    except:
+        print("invalid server: " + server)
+        sys.exit(1)
+
+
+def serverport(serversdata, server):
+    try:
+        return int(serversdata[server]["port"])
+    except:
+        print("invalid server: " + server)
+        sys.exit(1)
+
+
+################################################################################
+
+who = "svomalertserver"
+
+
+def logerror(payload):
+    log("error", payload)
+
+
+def logwarning(payload):
+    log("warning", payload)
+
+
+def logsummary(payload):
+    log("summary", payload)
+
+
+def loginfo(payload):
+    log("info", payload)
+
+
+def logdebug(payload):
+    log("debug", payload)
+
+
+def log(type, payload):
+    server = "log"
+    timestamp = datetime.now().isoformat(" ", "milliseconds")
+    request = {
+        "method": "log",
+        "params": {
+            "who": who,
+            "type": type,
+            "payload": payload,
+            "timestamp": timestamp,
+        },
+        "jsonrpc": "2.0",
+    }
+    requeststring = json.dumps(request) + "\n"
+    requeststring = requeststring.encode(encoding="UTF-8", errors="strict")
+    serversdata = readserversfile()
+    host = serverhost(serversdata, server)
+    port = serverport(serversdata, server)
+    print("%s: %s: %s: %s" % (timestamp, who, type, payload), flush=True)
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((host, port))
+        s.sendall(requeststring)
+    except:
+        print("error while sending request", flush=True)
+
+
+################################################################################
+
+
+def xmltodict(s):
+
+    root = ET.fromstring(s)
+
+    alert = {}
+    alert["alerttimestamp"] = root.find("./Who/Date").text[:-1]
+
+    if root.find("./What/Description") is not None and re.match(
+        "^Broker test event", root.find("./What/Description").text
+    ):
+
+        alert["packettype"] = "svomtest"
+
+    else:
+
+        alert["packettypenumber"] = int(
+            root.find("./What/Param[@name='Packet_Type']").get("value")
+        )
+        alert["packeserialnumber"] = int(
+            root.find("./What/Param[@name='Pkt_Ser_Num']").get("value")
+        )
+        alert["instrument"] = root.find("./What/Param[@name='Instrument']").get("value")
+        alert["noticelevel"] = root.find(
+            "./What/Group[@name='Svom_Identifiers']/Param[@name='Notice_Level']"
+        ).get("value")
+        alert["burstid"] = root.find(
+            "./What/Group[@name='Svom_Identifiers']/Param[@name='Burst_Id']"
+        ).get("value")
+        alert["eventtimestamp"] = root.find(
+            "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Time/TimeInstant/ISOTime"
+        ).text
+
+        packettypedict = {
+            201: "svomgrmtrigger",
+            202: "svomeclairswakeup",
+            203: "svomeclairscatalog",
+            204: "svomslewing",
+            205: "svomnotslewing",
+            206: "svomeclairsrefined",
+            207: "svomgrmrefined",
+            208: "svomeclairsgrmhr",
+            209: "svommxtinitialqfnumber",
+            210: "svommxtupdateqfnumber",
+            211: "svomvtcandidate",
+            212: "svomcgftcandidate",
+            213: "svomgwaccandidate",
+            214: "svomfgftcandidate",
+            215: "svomretraction",
+            216: "svomeclairsfinal",
+            217: "svomgrmfinal",
+            218: "svommxtfinal",
+            219: "svomvtfinal",
+        }
+        packettypenumber = alert["packettypenumber"]
+        if packettypenumber not in packettypedict:
+            packettype = "svomunknown"
+        else:
+            packettype = packettypedict[packettypenumber]
+        alert["packettype"] = packettype
+
+        if (
+            root.find(
+                "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Position2D"
+            )
+            is not None
+        ):
+            alert["alpha"] = (
+                root.find(
+                    "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Position2D/Value2/C1"
+                ).text
+                + "d"
+            )
+            alert["delta"] = (
+                root.find(
+                    "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Position2D/Value2/C2"
+                ).text
+                + "d"
+            )
+            alert["uncertainty"] = (
+                root.find(
+                    "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Position2D/Error2Radius"
+                ).text
+                + "d"
+            )
+
+    for key in alert.keys():
+        logdebug("alert: %-20s = %r" % (key, alert[key]))
+
+    return alert
+
+
+def respond(alert):
+
+    def logresponse(s):
+        log("summary", "%s: %s" % (alert["packettype"], s))
+        return
+
+    projectidentifier = 1000
+
+    blockidentifier = alert["burstid"][2:]
+
+    year = int(alert["eventtimestamp"][2:4])
+    month = int(alert["eventtimestamp"][5:7])
+    day = int(alert["eventtimestamp"][8:10])
+    hours = int(alert["eventtimestamp"][11:13])
+    minutes = int(alert["eventtimestamp"][14:16])
+    seconds = int(alert["eventtimestamp"][17:19])
+    dayfraction = (hours + minutes / 60 + seconds / 3600) / 24
+    eventname = "SVOM %02d%02d%02d.%03d" % (year, month, day, int(dayfraction * 1000))
+    logresponse("event name is %s." % eventname)
+
+    origin = "svom"
+    identifier = alert["burstid"][2:]
+    alerttype = alert["packettype"]
+    logresponse(
+        "origin/identifier/type are %s/%s/%s." % (origin, identifier, alerttype)
+    )
+
+    if alert["packettype"] == "svomtest":
+      logresponse("not requesting selector to respond: this is a test packet.")
+      return
+
+    alerttimestamp = alert["alerttimestamp"]
+    logresponse("alert time stamp is %s." % alerttimestamp)
+
+    eventtimestamp = alert["eventtimestamp"]
+    logresponse("event time stamp is %s." % eventtimestamp)
+
+    enabled = "true"
+
+    if "alpha" in alert and "delta" in alert and "uncertainty" in alert:
+        alpha = alert["alpha"]
+        delta = alert["delta"]
+        uncertainty = alert["uncertainty"]
+    else:
+        alpha = "0h"
+        delta = "-90d"
+        uncertainty = "180d"
+    equinox = "2000"
+    logresponse("position is %s %s %s." % (alpha, delta, equinox))
+    logresponse("90%% uncertainty is %s in radius." % uncertainty)
+
+    priority = 1
+    logresponse("priority is %r." % priority)
+
+    logresponse("requesting selector to respond.")
+
+    print(
+        "tcs request selector respondtoalert %r %r %r %r %r %r %r %r %r %r %r %r %r %r"
+        % (
+            projectidentifier,
+            blockidentifier,
+            eventname,
+            origin,
+            identifier,
+            alerttype,
+            alerttimestamp,
+            eventtimestamp,
+            enabled,
+            alpha,
+            delta,
+            equinox,
+            uncertainty,
+            priority,
+        )
+    )
+
+if False:
+    alert = {}
+    alert["alerttimestamp"] = "2024-12-03T16:26:3"
+    alert["packettypenumber"] = 207
+    alert["packeserialnumber"] = 1
+    alert["instrument"] = "GRM"
+    alert["noticelevel"] = "N2g"
+    alert["burstid"] = "sb24100102"
+    alert["eventtimestamp"] = "2024-10-01T17:08:45.244000"
+    alert["packettype"] = "svomgrmrefined"
+    alert["alpha"] = "20.4243d"
+    alert["delta"] = "-43.5338d"
+    alert["uncertainty"] = "0.2156d"
+    
+    respond(alert)
+    exit(0)
+
+
+def handler(payload, root):
+    logdebug("handing: %r" % payload)
+    alert = xmltodict(payload)
+    respond(alert)
+
+
+loginfo("starting server.")
+gcn.listen(
+    host="voevent.svom.eu",
+    port=8099,
+    handler=handler,
+    iamalive_timeout=100.0,
+    max_reconnect_timeout=1,
+)
