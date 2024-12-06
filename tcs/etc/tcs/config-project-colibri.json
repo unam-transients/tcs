@@ -376,19 +376,19 @@
   },
   "instrument": {
     "detectors": [
-      "C0"
+      "C0", "C1", "C2"
     ],
     "activedetectors": [
-      "C0"
+      "C0", "C1", "C2"
     ],
     "activefocusers": [
-      "C0"
+      "C0", "C1", "C2"
     ],
     "idlefilterwheelpositions": [
-      "0"
+      "0", "0", "0"
     ],
     "pointingdetectors": [
-      "C0"
+      "C1"
     ],
     "outletgroups": []
   },
