@@ -517,7 +517,21 @@
       "weather-cabinet-temperature",
       "seeing-cabinet-temperature",
       "column-bottom-temperature",
-      "telescope-pneumatic-pressure"
+      "telescope-pneumatic-pressure",
+      "ddrago-external-temperature",
+      "ddrago-external-humidity",
+      "ddrago-external-light-level",
+      "ddrago-external-pressure",
+      "ddrago-close-electronics-temperature",
+      "ddrago-close-electronics-humidity",
+      "ddrago-internal-es3-temperature",
+      "ddrago-internal-es3-humidity",
+      "ddrago-internal-es4-temperature",
+      "ddrago-internal-es4-humidity",
+      "ddrago-internal-es5-temperature",
+      "ddrago-internal-es5-humidity",
+      "ddrago-external-tunnel-temperature",
+      "ddrago-external-tunnel-humidity"
     ],
     "environmental-sensor-reference": "observing-room-comet1-temperature",
     "sensors": {
@@ -790,9 +804,9 @@
         "identifier": "26.BCB01A020000",
         "firmware": ""
       },      
-      "ddrago-tunnel-external-temperature": {
+      "ddrago-external-tunnel-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.6985E1010000/temperature",
-        "prettyname": "ddrago tunnel external temperature",
+        "prettyname": "ddrago external tunnel temperature",
         "subsystem": "ddrago",
         "component": "main structure",
         "group": "environmental-temperature",
@@ -1022,9 +1036,9 @@
         "identifier": "26.BCB01A020000",
         "firmware": ""
       },      
-      "ddrago-tunnel-external-humidity": {
+      "ddrago-external-tunnel-humidity": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.6985E1010000/HIH4000/humidity",
-        "prettyname": "ddrago tunnel external humidity",
+        "prettyname": "ddrago external tunnel humidity",
         "subsystem": "ddrago",
         "component": "main structure",
         "group": "environmental-humidity",

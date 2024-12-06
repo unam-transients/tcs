@@ -215,10 +215,12 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "sensors.dat" using 2:3   title "Instrument External" with points linestyle 1, \
-      "sensors.dat" using 10:11 title "Instrument Internal" with points linestyle 2, \
-      "sensors.dat" using 14:15 title "Instrument Tunnel"   with points linestyle 3, \
-      "sensors.dat" using 18:19 title "Close Electronics"   with points linestyle 4
+      "sensors.dat" using 68:69 title "Instrument External"       with points linestyle 1, \
+      "sensors.dat" using 76:77 title "Close Electronics"         with points linestyle 2, \
+      "sensors.dat" using 80:81 title "Instrument Internal (ES3)" with points linestyle 3, \
+      "sensors.dat" using 84:85 title "Instrument Internal (ES4)" with points linestyle 4, \
+      "sensors.dat" using 88:89 title "Instrument Internal (ES5)" with points linestyle 5, \
+      "sensors.dat" using 92:93 title "Instrument Tunnel"         with points linestyle 6, \
       
     set yrange [0:100]
     set ytics 0,10,100
@@ -226,10 +228,13 @@ EOF
     set ylabel "RH (%)"
     set key on
     plot \
-      "sensors.dat" using 4:(\$5*100)   title "Instrument External" with points linestyle 1, \
-      "sensors.dat" using 12:(\$13*100) title "Instrument Internal" with points linestyle 2, \
-      "sensors.dat" using 16:(\$17*100) title "Instrument Tunnel"   with points linestyle 3, \
-      "sensors.dat" using 20:(\$21*100) title "Close Electronics"   with points linestyle 4
+      "sensors.dat" using 70:(\$71*100) title "Instrument External"       with points linestyle 1, \
+      "sensors.dat" using 78:(\$79*100) title "Close Electronics"         with points linestyle 2, \
+      "sensors.dat" using 82:(\$83*100) title "Instrument Internal (ES3)" with points linestyle 3, \
+      "sensors.dat" using 86:(\$87*100) title "Instrument Internal (ES4)" with points linestyle 4, \
+      "sensors.dat" using 90:(\$91*100) title "Instrument Internal (ES5)" with points linestyle 5, \
+      "sensors.dat" using 94:(\$95*100) title "Instrument Tunnel"         with points linestyle 6
+
       
     set yrange [0:2000]
     set ytics 0,200,2000
@@ -237,19 +242,19 @@ EOF
     set ylabel "Light Level (lux)"
     set key on
     plot \
-      "sensors.dat" using 8:9   title "Instrument External" with points linestyle 1
+      "sensors.dat" using 72:73 title "Instrument External" with points linestyle 1
       
     set format x "%Y%m%dT%H"
     set xtics rotate by 90 right
     set xlabel "UTC"
 
-    set yrange [900:1000]
-    set ytics 900,10,1000
+    set yrange [700:800]
+    set ytics 700,10,800
     set format y "%.0f"
     set ylabel "Pressure (mbar)"
     set key on
     plot \
-      "sensors.dat" using 6:7   title "Instrument External" with points linestyle 1
+      "sensors.dat" using 74:75 title "Instrument External" with points linestyle 1
       
     unset multiplot
 
@@ -270,9 +275,10 @@ EOF
       "sensors.dat" using 2:3   title "External"       with lines linestyle 1, \
       "sensors.dat" using 4:5   title "Observing Room" with lines linestyle 2, \
       "sensors.dat" using 8:9   title "OGSE"           with lines linestyle 3, \
-      "sensors.dat" using 34:35 title "Column Middle"  with lines linestyle 4, \
-      "sensors.dat" using 64:65 title "Column Bottom"  with lines linestyle 5, \
-      "sensors.dat" using 36:37 title "Control Room"   with lines linestyle 6
+      "sensors.dat" using 68:69 title "DDRAGO"         with lines linestyle 4, \
+      "sensors.dat" using 34:35 title "Column Middle"  with lines linestyle 5, \
+      "sensors.dat" using 64:65 title "Column Bottom"  with lines linestyle 6, \
+      "sensors.dat" using 36:37 title "Control Room"   with lines linestyle 7
       
     set yrange [-10:+10]
     set ytics -10,2,10
@@ -280,10 +286,11 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "sensors.dat" using 4:(\$3-\$5)  title "External - Observing Room" with lines linestyle 1, \
-      "sensors.dat" using 4:(\$9-\$5)  title "OGSE - Observing Room"     with lines linestyle 3, \
-      "sensors.dat" using 4:(\$31-\$5) title "Column Middle - Observing Room"   with lines linestyle 4, \
-      "sensors.dat" using 4:(\$65-\$5) title "Column Bottom - Observing Room"   with lines linestyle 5
+      "sensors.dat" using 4:(\$3-\$5)  title "External - Observing Room"      with lines linestyle 1, \
+      "sensors.dat" using 4:(\$9-\$5)  title "OGSE - Observing Room"          with lines linestyle 3, \
+      "sensors.dat" using 4:(\$69-\$5) title "DDRAGO - Observing Room"        with lines linestyle 4, \
+      "sensors.dat" using 4:(\$31-\$5) title "Column Middle - Observing Room" with lines linestyle 5, \
+      "sensors.dat" using 4:(\$65-\$5) title "Column Bottom - Observing Room" with lines linestyle 6
 
     set yrange [-15:+50]
     set ytics -15,10,50
@@ -349,10 +356,11 @@ EOF
       "sensors.dat" using 2:3   title "External"       with lines linestyle 1, \
       "sensors.dat" using 4:5   title "Observing Room" with lines linestyle 2, \
       "sensors.dat" using 8:9   title "OGSE"           with lines linestyle 3, \
-      "sensors.dat" using 10:11 title "M1 rear"        with lines linestyle 4, \
-      "sensors.dat" using 12:13 title "M1 edge"        with lines linestyle 5, \
-      "sensors.dat" using 14:15 title "M2"             with lines linestyle 6, \
-      "sensors.dat" using 16:17 title "M3"             with lines linestyle 7
+      "sensors.dat" using 68:69 title "DDRAGO"         with lines linestyle 4, \
+      "sensors.dat" using 10:11 title "M1 rear"        with lines linestyle 5, \
+      "sensors.dat" using 12:13 title "M1 edge"        with lines linestyle 6, \
+      "sensors.dat" using 14:15 title "M2"             with lines linestyle 7, \
+      "sensors.dat" using 16:17 title "M3"             with lines linestyle 8
 
     set yrange [-5:+5]
     set ytics -5,1,5
@@ -361,10 +369,11 @@ EOF
     set key on
     plot \
       "sensors.dat" using  8:(\$9-\$5)  title "OGSE - Observing Room"    with lines linestyle 3, \
-      "sensors.dat" using 10:(\$11-\$5) title "M1 rear - Observing Room" with lines linestyle 4, \
-      "sensors.dat" using 10:(\$13-\$5) title "M1 edge - Observing Room" with lines linestyle 5, \
-      "sensors.dat" using 14:(\$15-\$5) title "M2 - Observing Room"      with lines linestyle 6, \
-      "sensors.dat" using 16:(\$17-\$5) title "M3 - Observing Room"      with lines linestyle 7
+      "sensors.dat" using 68:(\$69-\$5) title "DDRAGO - Observing Room"  with lines linestyle 4, \
+      "sensors.dat" using 10:(\$11-\$5) title "M1 rear - Observing Room" with lines linestyle 5, \
+      "sensors.dat" using 12:(\$13-\$5) title "M1 edge - Observing Room" with lines linestyle 6, \
+      "sensors.dat" using 14:(\$15-\$5) title "M2 - Observing Room"      with lines linestyle 7, \
+      "sensors.dat" using 16:(\$17-\$5) title "M3 - Observing Room"      with lines linestyle 8
       
     set yrange [-5:+5]
     set ytics -5,1,5
@@ -373,9 +382,10 @@ EOF
     set key on
     plot \
       "sensors.dat" using  8:(\$9-\$5)  title "OGSE - Observing Room"     with lines linestyle 3, \
-      "sensors.dat" using 10:(\$19-\$5) title "Spider 1 - Observing Room" with lines linestyle 4, \
-      "sensors.dat" using 10:(\$21-\$5) title "Spider 2 - Observing Room" with lines linestyle 5, \
-      "sensors.dat" using 14:(\$15-\$5) title "M2 - Observing Room"       with lines linestyle 6, \
+      "sensors.dat" using 68:(\$69-\$5) title "DDRAGO - Observing Room"   with lines linestyle 4, \
+      "sensors.dat" using 10:(\$19-\$5) title "Spider 1 - Observing Room" with lines linestyle 5, \
+      "sensors.dat" using 12:(\$21-\$5) title "Spider 2 - Observing Room" with lines linestyle 6, \
+      "sensors.dat" using 14:(\$15-\$5) title "M2 - Observing Room"       with lines linestyle 7
 
     set yrange [-15:+30]
     set ytics -15,5,30
