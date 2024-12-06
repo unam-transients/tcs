@@ -74,6 +74,16 @@ EOF
 
   (
     cd /usr/local/var/tcs
+    cat $(ls [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/log/C1-data.txt | sed -n "1,/$whendate/p" | tail -$(expr $days + 1)) | awk "NR % $lines == 0 { print; }"
+  ) >C1.dat
+
+  (
+    cd /usr/local/var/tcs
+    cat $(ls [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/log/C2-data.txt | sed -n "1,/$whendate/p" | tail -$(expr $days + 1)) | awk "NR % $lines == 0 { print; }"
+  ) >C2.dat
+
+  (
+    cd /usr/local/var/tcs
     cat $(ls [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/log/sensors-data.txt | sed -n "1,/$whendate/p" | tail -$(expr $days + 1)) | awk "NR % $lines == 0 { print; }"
   ) >sensors.dat
 
@@ -138,7 +148,9 @@ EOF
       "C0.dat" using 1:2  title "C0 Detector"     with points linestyle 1, \
       "C0.dat" using 1:7  title "C0 Cold End"     with points linestyle 2, \
       "C1.dat" using 1:2  title "C1 Detector"     with points linestyle 3, \
-      "C1.dat" using 1:7  title "C1 Cold End"     with points linestyle 4
+      "C1.dat" using 1:7  title "C1 Cold End"     with points linestyle 4, \
+      "C1.dat" using 1:2  title "C1 Detector"     with points linestyle 5, \
+      "C1.dat" using 1:7  title "C1 Cold End"     with points linestyle 6
       
 
     set yrange [-111:-109]
@@ -147,8 +159,8 @@ EOF
     set ylabel "Temperature (C)"
     set key on
     plot \
-      "C0.dat" using 1:2  title "C0 Detector" with points linestyle 1, \
-      "C1.dat" using 1:2  title "C1 Detector" with points linestyle 3
+      "C1.dat" using 1:2  title "C1 Detector" with points linestyle 3, \
+      "C1.dat" using 1:2  title "C2 Detector" with points linestyle 5, \
 
 #    set yrange [1e-3:1000]
 #    set ylabel "Pressure (Torr)"
@@ -167,8 +179,8 @@ EOF
     set format y "10^{%L}"
     set key on
     plot \
-      "C0.dat" using 1:8 title "C0 Chamber" with points linestyle 1, \
-      "C1.dat" using 1:8 title "C1 Chamber" with points linestyle 2
+      "C1.dat" using 1:8 title "C1 Chamber" with points linestyle 3, \
+      "C2.dat" using 1:8 title "C2 Chamber" with points linestyle 5
     set nologscale
     set format y "%+g"
 
@@ -182,10 +194,10 @@ EOF
     set ylabel "Pressure (psi)"
     set key on
     plot \
-      "C0.dat" using 1:9  title "C0 Supply" with points linestyle 1, \
-      "C0.dat" using 1:10 title "C0 Return" with points linestyle 2, \
       "C1.dat" using 1:9  title "C1 Supply" with points linestyle 3, \
-      "C1.dat" using 1:10 title "C1 Return" with points linestyle 4
+      "C1.dat" using 1:10 title "C1 Return" with points linestyle 4, \
+      "C2.dat" using 1:9  title "C2 Supply" with points linestyle 5, \
+      "C2.dat" using 1:10 title "C2 Return" with points linestyle 6
       
     unset multiplot
 
