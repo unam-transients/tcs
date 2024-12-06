@@ -559,19 +559,6 @@
         "identifier": "",
         "firmware": ""
       },      
-      "ddrago-external-temperature": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/7E.983100001000/EDS0068/temperature",
-        "keyword": "ENTM",
-        "prettyname": "ddrago external temperature",
-        "subsystem": "ddrago",
-        "component": "close-electronics",
-        "group": "environmental-sensors",
-        "type": "float",
-        "unit": "C",
-        "model": "EDS OW-ENV-THPL",
-        "identifier": "7E.983100001000",
-        "firmware": ""
-      },
       "ogse-external-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.A493A0000000/temperature",
         "prettyname": "ogse external temperature",
@@ -583,6 +570,18 @@
         "correctionmodel": "",
         "model": "iButtonLink MS-TL",
         "identifier": "26.A493A0000000",
+        "firmware": ""
+      },
+      "ddrago-external-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/7E.983100001000/EDS0068/temperature",
+        "prettyname": "ddrago external temperature",
+        "subsystem": "ddrago",
+        "component": "close-electronics",
+        "group": "environmental-temperature",
+        "type": "float",
+        "unit": "C",
+        "model": "EDS OW-ENV-THPL",
+        "identifier": "7E.983100001000",
         "firmware": ""
       },
       "telescope-M1-rear-temperature": {
@@ -739,6 +738,71 @@
         "identifier": "opentsi-sensor-14",
         "firmware": ""
       },
+      "ddrago-close-electronics-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.E9AE1A020000/temperature",
+        "prettyname": "ddrago close electronics temperature",
+        "subsystem": "ddrago",
+        "component": "close electronics",
+        "group": "environmental-temperature",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.E9AE1A020000",
+        "firmware": ""
+      },      
+      "ddrago-internal-es3-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.EEB51A020000/temperature",
+        "prettyname": "ddrago internal es3 temperature",
+        "subsystem": "ddrago",
+        "component": "main structure",
+        "group": "environmental-temperature",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.EEB51A020000",
+        "firmware": ""
+      },      
+      "ddrago-internal-es4-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.5A971A020000/temperature",
+        "prettyname": "ddrago internal es4 temperature",
+        "subsystem": "ddrago",
+        "component": "main structure",
+        "group": "environmental-temperature",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.5A971A020000",
+        "firmware": ""
+      },      
+      "ddrago-internal-es5-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.BCB01A020000/temperature",
+        "prettyname": "ddrago internal es5 temperature",
+        "subsystem": "ddrago",
+        "component": "main structure",
+        "group": "environmental-temperature",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.BCB01A020000",
+        "firmware": ""
+      },      
+      "ddrago-tunnel-external-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.6985E1010000/temperature",
+        "prettyname": "ddrago tunnel external temperature",
+        "subsystem": "ddrago",
+        "component": "main structure",
+        "group": "environmental-temperature",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.6985E1010000",
+        "firmware": ""
+      },      
       "column-middle-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.09FCD6010000/temperature",
         "prettyname": "column middle temperature",
@@ -881,7 +945,6 @@
       },      
       "ogse-external-humidity": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.A493A0000000/HIH4000/humidity",
-        "keyword": "CR6HM",
         "prettyname": "ogse external humidity",
         "subsystem": "ogse",
         "component": "close-electronics",
@@ -893,6 +956,85 @@
         "identifier": "26.A493A0000000",
         "firmware": ""
       },
+      "ddrago-external-humidity": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/7E.983100001000/EDS0068/humidity",
+        "prettyname": "ddrago external humidity",
+        "subsystem": "ddrago",
+        "component": "close-electronics",
+        "relative": "humidity",
+        "group": "environmental-humidity",
+        "type": "float",
+        "correctionmodel": "ENV-H:1.0:0:0:0:0",
+        "unit": "",
+        "model": "EDS OW-ENV-THPL",
+        "identifier": "7E.983100001000",
+        "firmware": ""
+      },
+      "ddrago-close-electronics-humidity": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.E9AE1A020000/HIH4000/humidity",
+        "prettyname": "ddrago close electronics humidity",
+        "subsystem": "ddrago",
+        "component": "close electronics",
+        "group": "environmental-humidity",
+        "type": "float",
+        "unit": "",
+        "correctionmodel": "MS-H:1.0:0:0:0:0",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.E9AE1A020000",
+        "firmware": ""
+      },      
+      "ddrago-internal-es3-humidity": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.EEB51A020000/HIH4000/humidity",
+        "prettyname": "ddrago internal es3 humidity",
+        "subsystem": "ddrago",
+        "component": "main structure",
+        "group": "environmental-humidity",
+        "type": "float",
+        "unit": "",
+        "correctionmodel": "MS-H:1.0:0:0:0:0",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.EEB51A020000",
+        "firmware": ""
+      },      
+      "ddrago-internal-es4-humidity": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.5A971A020000/HIH4000/humidity",
+        "prettyname": "ddrago internal es4 humidity",
+        "subsystem": "ddrago",
+        "component": "main structure",
+        "group": "environmental-humidity",
+        "type": "float",
+        "unit": "",
+        "correctionmodel": "MS-H:1.0:0:0:0:0",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.5A971A020000",
+        "firmware": ""
+      },      
+      "ddrago-internal-es5-humidity": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.BCB01A020000/HIH4000/humidity",
+        "prettyname": "ddrago internal es5 humidity",
+        "subsystem": "ddrago",
+        "component": "main structure",
+        "group": "environmental-humidity",
+        "type": "float",
+        "unit": "",
+        "correctionmodel": "MS-H:1.0:0:0:0:0",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.BCB01A020000",
+        "firmware": ""
+      },      
+      "ddrago-tunnel-external-humidity": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.6985E1010000/HIH4000/humidity",
+        "prettyname": "ddrago tunnel external humidity",
+        "subsystem": "ddrago",
+        "component": "main structure",
+        "group": "environmental-humidity",
+        "type": "float",
+        "unit": "",
+        "correctionmodel": "MS-H:1.0:0:0:0:0",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.6985E1010000",
+        "firmware": ""
+      },      
       "weather-dewpoint": {
         "file": "/usr/local/var/tcs/sensors/control/weather-dewpoint",
         "prettyname": "dewpoint",
@@ -1037,6 +1179,18 @@
         "identifier": "26.B5A940010000",
         "firmware": ""
       },
+      "ddrago-external-light-level": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/7E.983100001000/EDS0068/light",
+        "prettyname": "ddrago external light level",
+        "subsystem": "ddrago",
+        "component": "close-electronics",
+        "group": "environmental-light-level",
+        "type": "float",
+        "unit": "lux",
+        "model": "EDS OW-ENV-THPL",
+        "identifier": "7E.983100001000",
+        "firmware": ""
+      },
       "control-room-light-level": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.7539F5000000/VAD",
         "prettyname": "control room light level",
@@ -1047,6 +1201,18 @@
         "unit": "",
         "model": "iButtonLink MS-TL",
         "identifier": "26.7539F5000000",
+        "firmware": ""
+      },
+      "ddrago-external-pressure": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/7E.983100001000/EDS0068/pressure",
+        "prettyname": "ddrago external pressure",
+        "subsystem": "ddrago",
+        "component": "close-electronics",
+        "group": "environmental-pressure",
+        "type": "float",
+        "unit": "mbar",
+        "model": "EDS OW-ENV-THPL",
+        "identifier": "7E.983100001000",
         "firmware": ""
       },
       "host-control-load": {
