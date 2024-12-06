@@ -99,6 +99,202 @@
     }
   },
 
+
+  "C1": {
+    "detectortype": "si",
+    "detectoridentifier": "blue:2055",
+    "detectorunbinnedpixelscale": "0.381as",
+    "detectorreadmodes": {
+      "initial": "default",
+      "closed" : "default",
+      "default": "0"
+    },
+    "detectorinitialsoftwaregain": 1,
+    "detectorinitialbinning": 1,
+    "detectorwindows": {
+      "initial": "default",
+      "default": "4kx4k",
+      "center": "1kx1k",
+      "1kx1k": {
+        "sx": 1586,
+        "sy": 1544,
+        "nx": 1024,
+        "ny": 1024
+      },
+      "2kx2k": {
+        "sx": 1074,
+        "sy": 1032,
+        "nx": 2048,
+        "ny": 2048
+      },
+      // For the default "4kx4k" window, we skip the first and last 8 rows for
+      // two reasons. First, the first and last row show odd behavior both in
+      // the underscan (high values) and the active (low value) regions. Second,
+      // it makes the data section square. If we really want the full CCD, we
+      // can use the implicit "full" window.
+      "4kx4k": {
+        "sx": 2,
+        "sy": 8,
+        "nx": 4192,
+        "ny": 4096
+      }
+    },
+    "detectorfullunbinneddatawindow": {
+      "sx": 50,
+      "sy": 0,
+      "nx": 4096,
+      "ny": 4112
+    },
+    "detectorfullunbinnedbiaswindow": {
+      "sx": 0,
+      "sy": 0,
+      "nx": 50,
+      "ny": 4112
+    },
+    "detectorboresight": { "x": 2048.0, "y": 2048.0 },
+    "coolerstartsetting": "last",
+    "cooleropensetting": "last",
+    "coolerclosedsetting": "last",
+    "temperaturelimit": 45,
+    "temperaturelimitoutletgroup": "blue-service-cabinet",
+    //"filterwheeltype": "null",
+    //"filterwheelidentifier": "null",
+    //"filters": {
+    //  "w"      : "0",
+    //  "initial": "w",
+    //  "idle"   : "w",
+    //  "closed" : "w"
+    //},
+    "filterwheeltype": "fli",
+    // The DDRAGO CFW-14-5 filter wheels are:
+    // FW0011318 -- firmware serial number "CFW-14-5"
+    // FW0021318 -- firmware serial number "FW0021318"
+    // FW0031318 -- firmware serial number "FW0031318"
+    "filterwheelidentifier": "FW0031318",
+    "filters": {
+      // 2021-09-13: r and g were accidentally installed in the wrong slots at OHP.
+      "g"      : "0",
+      "r"      : "1",
+      "i"      : "2",
+      "gri"    : "3",
+      "B"      : "4",
+      "initial": "r",
+      "idle"   : "r",
+      "closed" : "r"
+    },
+    "focusertype": "null",
+    "focuseridentifier": "null",
+    "focuserinitialposition": 0,
+    "focuserbacklashoffset": 0,
+    "focuserdzmodel": {},
+    "telescopedescription": "OAN COLIBRI 1.3-m",
+    "pointingmodelparameters": {},
+    "isstandalone": false,
+    "fitsfwhmargs": {
+      "1": "-m",
+      "2": "-A",
+      "4": "-A",
+      "8": "-A",
+      "16": "-A"
+    }
+  },
+
+  "C2": {
+    "detectortype": "si",
+    "detectoridentifier": "red:2055",
+    "detectorunbinnedpixelscale": "0.381as",
+    "detectorreadmodes": {
+      "initial": "default",
+      "closed" : "default",
+      "default": "0"
+    },
+    "detectorinitialsoftwaregain": 1,
+    "detectorinitialbinning": 1,
+    "detectorwindows": {
+      "initial": "default",
+      "default": "4kx4k",
+      "center": "1kx1k",
+      "1kx1k": {
+        "sx": 1586,
+        "sy": 1544,
+        "nx": 1024,
+        "ny": 1024
+      },
+      "2kx2k": {
+        "sx": 1074,
+        "sy": 1032,
+        "nx": 2048,
+        "ny": 2048
+      },
+      // For the default "4kx4k" window, we skip the first and last 8 rows for
+      // two reasons. First, the first and last row show odd behavior both in
+      // the underscan (high values) and the active (low value) regions. Second,
+      // it makes the data section square. If we really want the full CCD, we
+      // can use the implicit "full" window.
+      "4kx4k": {
+        "sx": 2,
+        "sy": 8,
+        "nx": 4192,
+        "ny": 4096
+      }
+    },
+    "detectorboresight": { "x": 2048.0, "y": 2048.0 },
+    "detectorfullunbinneddatawindow": {
+      "sx": 50,
+      "sy": 0,
+      "nx": 4096,
+      "ny": 4112
+    },
+    "detectorfullunbinnedbiaswindow": {
+      "sx": 0,
+      "sy": 0,
+      "nx": 50,
+      "ny": 4112
+    },
+    "coolerstartsetting": "last",
+    "cooleropensetting": "last",
+    "coolerclosedsetting": "last",
+    "temperaturelimit": 45,
+    "temperaturelimitoutletgroup": "red-service-cabinet",
+    "filterwheeltype": "null",
+    "filterwheelidentifier": "null",
+    "filters": {
+      "w"      : "0",
+      "initial": "w",
+      "idle"   : "w",
+      "closed" : "w"
+    },
+    //"filterwheeltype": "fli",
+    // The DDRAGO CFW-14-5 filter wheels are:
+    // FW0011318 -- firmware serial number "CFW-14-5"
+    // FW0021318 -- firmware serial number "FW0021318"
+    // FW0031318 -- firmware serial number "FW0031318"
+    //"filterwheelidentifier": "FW0021318",
+    //"filters": {
+    //  "z"      : "0",
+    //  "y"      : "1",
+    //  "zy"     : "2",
+    //  "initial": "z",
+    //  "idle"   : "z",
+    //  "closed" : "z"
+    //},
+    "focusertype": "null",
+    "focuseridentifier": "null",
+    "focuserinitialposition": 0,
+    "focuserbacklashoffset": 0,
+    "focuserdzmodel": {},
+    "telescopedescription": "OAN COLIBRI 1.3-m",
+    "pointingmodelparameters": {},
+    "isstandalone": false,
+    "fitsfwhmargs": {
+      "1": "-m",
+      "2": "-A",
+      "4": "-A",
+      "8": "-A",
+      "16": "-A"
+    }
+  },
+
   "covers": {
     "type": "opentsi",
     "ports": {
@@ -262,7 +458,11 @@
       }
     },
     "outletgroupaddresses": {
-      "instrument": [[ "pdu0", "a", "1"]]
+      "instrument"           : [[ "pdu0", "a", "1" ]],
+      "blue"                 : [[ "pdu2", "a", "1" ]],
+      "red"                  : [[ "pdu2", "a", "2" ]],
+      "blue-service-cabinet" : [[ "pdu1", "a", "4" ]],
+      "red-service-cabinet"  : [[ "pdu1", "a", "3" ]]
     }
   },
   "safetyswitch": {
@@ -359,6 +559,19 @@
         "identifier": "",
         "firmware": ""
       },      
+      "ddrago-external-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/7E.983100001000/EDS0068/temperature",
+        "keyword": "ENTM",
+        "prettyname": "ddrago external temperature",
+        "subsystem": "ddrago",
+        "component": "close-electronics",
+        "group": "environmental-sensors",
+        "type": "float",
+        "unit": "C",
+        "model": "EDS OW-ENV-THPL",
+        "identifier": "7E.983100001000",
+        "firmware": ""
+      },
       "ogse-external-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.A493A0000000/temperature",
         "prettyname": "ogse external temperature",
@@ -527,7 +740,7 @@
         "firmware": ""
       },
       "column-middle-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.09FCD6010000/temperature",
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.09FCD6010000/temperature",
         "prettyname": "column middle temperature",
         "subsystem": "building",
         "component": "column",
@@ -540,7 +753,7 @@
         "firmware": ""
       },      
       "column-bottom-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.47A740010000/temperature",
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.47A740010000/temperature",
         "prettyname": "column bottom temperature",
         "subsystem": "building",
         "component": "column",
@@ -553,7 +766,7 @@
         "firmware": ""
       },      
       "control-room-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.7539F5000000/temperature",
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.7539F5000000/temperature",
         "prettyname": "control room temperature",
         "subsystem": "building",
         "component": "control-room",
@@ -825,7 +1038,7 @@
         "firmware": ""
       },
       "control-room-light-level": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.7539F5000000/VAD",
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.7539F5000000/VAD",
         "prettyname": "control room light level",
         "subsystem": "building",
         "component": "control-room",
@@ -934,6 +1147,110 @@
         "prettyname": "C0 filter wheel position",
         "subsystem": "ogse",
         "component": "C0-filter-wheel",
+        "group": "filter-wheel-position",
+        "type": "string",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "C1-detector-detector-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/C1-detector-detector-temperature",
+        "keyword": "",
+        "prettyname": "C1 detector temperature",
+        "subsystem": "ddrago",
+        "component": "C1-detector",
+        "group": "detector-temperature",
+        "type": "float",
+        "unit": "C",
+        "model": "SI 1110",
+        "identifier": "SI 1110-167",
+        "firmware": ""
+      },
+      "C1-detector-cooler-set-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/C1-detector-cooler-set-temperature",
+        "keyword": "",
+        "prettyname": "C1 cooler set temperature",
+        "subsystem": "ddrago",
+        "component": "C1-detector",
+        "group": "detector-cooler-set-temperature",
+        "type": "float",
+        "unit": "C",
+        "model": "SI 1110",
+        "identifier": "SI 1110-167",
+        "firmware": ""
+      },
+      "C1-detector-cooler-state": {
+        "file": "/usr/local/var/tcs/sensors/instrument/C1-detector-cooler-state",
+        "keyword": "",
+        "prettyname": "C1 cooler state",
+        "subsystem": "ddrago",
+        "component": "C1-detector",
+        "group": "detector-cooler-state",
+        "type": "string",
+        "unit": "state",
+        "model": "SI 1110",
+        "identifier": "SI 1110-167",
+        "firmware": ""
+      },
+      "C1-filter-wheel-position": {
+        "file": "/usr/local/var/tcs/sensors/instrument/C1-filter-wheel-position",
+        "keyword": "",
+        "prettyname": "C1 filter wheel position",
+        "subsystem": "ddrago",
+        "component": "C1-filter-wheel",
+        "group": "filter-wheel-position",
+        "type": "string",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "C2-detector-detector-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/C2-detector-detector-temperature",
+        "keyword": "",
+        "prettyname": "C2 detector temperature",
+        "subsystem": "ddrago",
+        "component": "C2-detector",
+        "group": "detector-temperature",
+        "type": "float",
+        "unit": "C",
+        "model": "SI 1110",
+        "identifier": "SI 1110-185",
+        "firmware": ""
+      },
+      "C2-detector-cooler-set-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/C2-detector-cooler-set-temperature",
+        "keyword": "",
+        "prettyname": "C2 cooler set temperature",
+        "subsystem": "ddrago",
+        "component": "C2-detector",
+        "group": "detector-cooler-set-temperature",
+        "type": "float",
+        "unit": "C",
+        "model": "SI 1110",
+        "identifier": "SI 1110-185",
+        "firmware": ""
+      },
+      "C2-detector-cooler-state": {
+        "file": "/usr/local/var/tcs/sensors/instrument/C2-detector-cooler-state",
+        "keyword": "",
+        "prettyname": "C2 cooler state",
+        "subsystem": "ddrago",
+        "component": "C2-detector",
+        "group": "detector-cooler-state",
+        "type": "string",
+        "unit": "state",
+        "model": "SI 1110",
+        "identifier": "SI 1110-185",
+        "firmware": ""
+      },
+      "C2-filter-wheel-position": {
+        "file": "/usr/local/var/tcs/sensors/instrument/C2-filter-wheel-position",
+        "keyword": "",
+        "prettyname": "C2 filter wheel position",
+        "subsystem": "ddrago",
+        "component": "C2-filter-wheel",
         "group": "filter-wheel-position",
         "type": "string",
         "unit": "",

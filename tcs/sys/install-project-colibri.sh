@@ -39,6 +39,8 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 192.168.100.28    plc                     colibri-plc
 192.168.100.29    european-ups            colibri-european-ups
 192.168.100.30    american-ups            colibri-american-ups
+192.168.100.47    blue                    colibri-blue
+192.168.100.48    red                     colibri-red
 192.168.100.49    data                    colibri-data
 192.168.100.50    pdu0                    colibri-pdu0
 192.168.100.51    pdu1                    colibri-pdu1
@@ -140,10 +142,14 @@ EOF
   case $host in
   instrument)
     echo "tcs instrumentimageserver C0 control &"
+    echo "tcs instrumentimageserver C1 control &"
+    echo "tcs instrumentimageserver C2 control &"
     echo "tcs instrumentdataserver -f -d rsync://colibri-rsync/colibri-raw/ &"
     ;;
   control)
     echo "tcs instrumentimageserver C0 &"
+    echo "tcs instrumentimageserver C1 &"
+    echo "tcs instrumentimageserver C2 &"
     echo "tcs webcamimageserver -d '0 -0.1 0' a http://colibri:matpud-juxHe7-wiksym@webcam-a/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver b http://colibri:matpud-juxHe7-wiksym@webcam-b/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver c http://colibri:matpud-juxHe7-wiksym@webcam-c/cgi-bin/viewer/video.jpg &"
@@ -176,7 +182,9 @@ sudo mv /etc/rc.local.tmp /etc/rc.local
 # /etc/owfs
 
 sudo cp /dev/stdin <<"EOF" /etc/owfs.conf.tmp
-server: device = /dev/ttyFTDI
+server: device = /dev/ttyFTDI-ow-ddrago-close-electronics
+server: device = /dev/ttyFTDI-ow-ddrago-control-room
+server: device = /dev/ttyFTDI-ow-ogse
 server: port = localhost:4304
 ! server: server = localhost:4304
 EOF
@@ -226,8 +234,11 @@ fi
 if test -d /etc/udev/rules.d
 then
   sudo cp /dev/stdin <<"EOF" /etc/udev/rules.d/99-ttyFTDI.rules
-SUBSYSTEMS=="usb", ATTRS{manufacturer}=="FTDI", ATTRS{product}=="FT232R USB UART", SYMLINK+="ttyFTDI"
-SUBSYSTEMS=="usb", ATTRS{manufacturer}=="Optec, Inc.", ATTRS{product}=="Optec USB/Serial Cable", SYMLINK+="ttyFTDI"
+SUBSYSTEMS=="usb", ATTRS{manufacturer}=="FTDI", ATTRS{product}=="FT232R USB UART", ATTRS{serial}=="A7009GNK", SYMLINK+="ttyFTDI-ow-ddrago-close-electronics"
+SUBSYSTEMS=="usb", ATTRS{manufacturer}=="FTDI", ATTRS{product}=="FT232R USB UART", ATTRS{serial}=="A7009KLW", SYMLINK+="ttyFTDI-ow-ddrago-control-room"
+SUBSYSTEMS=="usb", ATTRS{manufacturer}=="FTDI", ATTRS{product}=="FT232R USB UART", ATTRS{serial}=="AJ02WJ50", SYMLINK+="ttyFTDI-ow-ogse"
+#SUBSYSTEMS=="usb", ATTRS{manufacturer}=="FTDI", ATTRS{product}=="FT232R USB UART", SYMLINK+="ttyFTDI"
+#SUBSYSTEMS=="usb", ATTRS{manufacturer}=="Optec, Inc.", ATTRS{product}=="Optec USB/Serial Cable", SYMLINK+="ttyFTDI"
 EOF
 fi
 
