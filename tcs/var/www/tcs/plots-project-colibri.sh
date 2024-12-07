@@ -149,8 +149,8 @@ EOF
       "C0.dat" using 1:7  title "C0 Cold End"     with points linestyle 2, \
       "C1.dat" using 1:2  title "C1 Detector"     with points linestyle 3, \
       "C1.dat" using 1:7  title "C1 Cold End"     with points linestyle 4, \
-      "C1.dat" using 1:2  title "C1 Detector"     with points linestyle 5, \
-      "C1.dat" using 1:7  title "C1 Cold End"     with points linestyle 6
+      "C2.dat" using 1:2  title "C2 Detector"     with points linestyle 5, \
+      "C2.dat" using 1:7  title "C2 Cold End"     with points linestyle 6
       
 
     set yrange [-111:-109]
@@ -160,7 +160,7 @@ EOF
     set key on
     plot \
       "C1.dat" using 1:2  title "C1 Detector" with points linestyle 3, \
-      "C1.dat" using 1:2  title "C2 Detector" with points linestyle 5, \
+      "C2.dat" using 1:2  title "C2 Detector" with points linestyle 5, \
 
 #    set yrange [1e-3:1000]
 #    set ylabel "Pressure (Torr)"
