@@ -340,9 +340,9 @@ proc coarsefocusvisit {{exposuretime 5} {filter "r"}} {
   
   executor::setsecondaryoffset 0
   executor::track
-  executor::setwindow "full"
-  executor::setbinning 8
-  executor::movefilterwheel "$filter"
+  executor::setwindow "1kx1k"
+  executor::setbinning 4
+  #executor::movefilterwheel "$filter"
   executor::waituntiltracking
 
   log::summary "coarsefocusvisit: centering."
@@ -350,7 +350,10 @@ proc coarsefocusvisit {{exposuretime 5} {filter "r"}} {
   executor::waituntiltracking
 
   log::summary "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning 8."
-  executor::focus $exposuretime 500 50 false true
+  #executor::focus $exposuretime 500 50 false true
+  
+  executor::focussecondary "C1" $exposuretime 500 50 true false
+  executor::focussecondary "C2" $exposuretime 500 50 true false
   
   log::summary "coarsefocusvisit: finished."
 
@@ -360,6 +363,8 @@ proc coarsefocusvisit {{exposuretime 5} {filter "r"}} {
 ########################################################################
 
 proc focusvisit {{exposuretime 5} {filter "r"}} {
+
+  return true
 
   log::summary "focusvisit: starting."
   
@@ -513,7 +518,7 @@ proc twilightflatsvisit {targetngood filter} {
   # g, and finally r.
 
   set maxlevel 30000
-  set minlevel 15000
+  set minlevel  5000
   set exposuretime 5
   
   log::info "twilightflatsvisit: filter $filter."
@@ -525,7 +530,7 @@ proc twilightflatsvisit {targetngood filter} {
   while {true} {
     executor::expose flat $exposuretime
     executor::analyze levels
-    set level [executor::exposureaverage C0]
+    set level [executor::exposureaverage C1]
     log::info [format "twilightflatsvisit: level is %.1f DN in filter $filter in $exposuretime seconds." $level]
     if {$level > 2 * $maxlevel} {
       log::info "twilightflatsvisit: level is much too bright."
