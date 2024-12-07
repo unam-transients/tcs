@@ -33,9 +33,11 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 # Start of tcs epilog.
 
 192.168.100.1     gateway                 colibri-gateway
+192.168.100.10    astelco-opentsi         colibri- astelco-opentsi
 192.168.100.15    qnap-spare              colibri-qnap-spare
 192.168.100.17    qnap-prod               colibri-qnap-prod
 192.168.100.23    astelco-pc              colibri-astelco-pc opentsi
+192.168.100.23    astelco-mini-pc         colibri-astelco-mini-pc
 192.168.100.28    plc                     colibri-plc
 192.168.100.29    european-ups            colibri-european-ups
 192.168.100.30    american-ups            colibri-american-ups
