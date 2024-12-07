@@ -256,28 +256,28 @@
     "coolerclosedsetting": "last",
     "temperaturelimit": 45,
     "temperaturelimitoutletgroup": "red-service-cabinet",
-    "filterwheeltype": "null",
-    "filterwheelidentifier": "null",
-    "filters": {
-      "w"      : "0",
-      "initial": "w",
-      "idle"   : "w",
-      "closed" : "w"
-    },
-    //"filterwheeltype": "fli",
+    //"filterwheeltype": "null",
+    //"filterwheelidentifier": "null",
+    //"filters": {
+    //  "w"      : "0",
+    //  "initial": "w",
+    //  "idle"   : "w",
+    //  "closed" : "w"
+    //},
+    "filterwheeltype": "fli",
     // The DDRAGO CFW-14-5 filter wheels are:
     // FW0011318 -- firmware serial number "CFW-14-5"
     // FW0021318 -- firmware serial number "FW0021318"
     // FW0031318 -- firmware serial number "FW0031318"
-    //"filterwheelidentifier": "FW0021318",
-    //"filters": {
-    //  "z"      : "0",
-    //  "y"      : "1",
-    //  "zy"     : "2",
-    //  "initial": "z",
-    //  "idle"   : "z",
-    //  "closed" : "z"
-    //},
+    "filterwheelidentifier": "FW0021318",
+    "filters": {
+      "z"      : "0",
+      "y"      : "1",
+      "zy"     : "2",
+      "initial": "z",
+      "idle"   : "z",
+      "closed" : "z"
+    },
     "focusertype": "null",
     "focuseridentifier": "null",
     "focuserinitialposition": 0,
@@ -458,11 +458,13 @@
       }
     },
     "outletgroupaddresses": {
-      "instrument"           : [[ "pdu0", "a", "1" ]],
-      "blue"                 : [[ "pdu2", "a", "1" ]],
-      "red"                  : [[ "pdu2", "a", "2" ]],
-      "blue-service-cabinet" : [[ "pdu1", "a", "4" ]],
-      "red-service-cabinet"  : [[ "pdu1", "a", "3" ]]
+      "instrument"              : [[ "pdu0", "a", "1" ]],
+      "blue"                    : [[ "pdu2", "a", "1" ]],
+      "red"                     : [[ "pdu2", "a", "2" ]],
+      "close-electronics"       : [[ "pdu1", "a", "1" ]],
+      "close-electronics-spare" : [[ "pdu1", "a", "2" ]],
+      "red-service-cabinet"     : [[ "pdu1", "a", "4" ]],
+      "blue-service-cabinet"    : [[ "pdu1", "a", "3" ]]
     }
   },
   "safetyswitch": {
