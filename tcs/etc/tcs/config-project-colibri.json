@@ -422,11 +422,12 @@
     "deltaunpark": "0d",
     "minzenithdistancelimit": "0.5d",
     "maxzenithdistancelimit": "80d",
-    "initialport": "ogse",
+    "initialport": "ddrago",
     "ports": {
       "new":     "port2",
       "old":     "port3",
       "ogse":    "port2",
+      "ddrago":  "port3",
       "port2":   "2",
       "port3":   "3"
     },
