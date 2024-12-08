@@ -53,10 +53,10 @@ proc alertvisit {filters} {
   log::summary [format "alertvisit: uncertainty is %s." [astrometry::formatdistance $uncertainty 2]]
   if {$uncertainty <= [astrometry::parsedistance "6am"]} {
     log::summary "alertvisit: grid is 1 × 1 fields."
-    dithervisit 16 60 r false
+    dithervisit 16 60 {{w r z}} false
   } elseif {$uncertainty <= [astrometry::parsedistance "13am"]} {
     log::summary "alertvisit: grid is 2 × 2 fields."
-    quaddithervisit 16 60 r false
+    quaddithervisit 16 60 {{w r z}} false
   }
 
 }
@@ -97,7 +97,7 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
   while {$gridrepeat < $gridrepeats} {
     if {$offsetfastest} {
       foreach filter $filters exposuretime $exposuretimes {
-        executor::movefilterwheel $filter
+        eval executor::movefilterwheel $filter
         foreach {eastoffset northoffset} $dithers {
           executor::offset $eastoffset $northoffset "default"
           executor::waituntiltracking
@@ -113,7 +113,7 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
         executor::offset $eastoffset $northoffset "default"
         executor::waituntiltracking
         foreach filter $filters exposuretime $exposuretimes {
-          executor::movefilterwheel $filter
+          eval executor::movefilterwheel $filter
           set exposure 0
           while {$exposure < $exposurerepeats} {
             executor::expose object $exposuretime
@@ -165,7 +165,7 @@ proc fullgridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters
   while {$gridrepeat < $gridrepeats} {
     if {$offsetfastest} {
       foreach filter $filters exposuretime $exposuretimes {
-        executor::movefilterwheel $filter
+        eval executor::movefilterwheel $filter
         foreach {eastdither northdither} $dithers {
           foreach {eaststep northstep} { 
             "-6am" "-6am"
@@ -190,7 +190,7 @@ proc fullgridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters
         executor::offset $eastoffset $northoffset "default"
         executor::waituntiltracking
         foreach filter $filters exposuretime $exposuretimes {
-          executor::movefilterwheel $filter
+          eval executor::movefilterwheel $filter
           set exposure 0
           while {$exposure < $exposurerepeats} {
             executor::expose object $exposuretime
@@ -243,7 +243,7 @@ proc dithervisit {exposurerepeats exposuretimes filters {offsetfastest true} {di
     
   if {$offsetfastest} {
       foreach filter $filters exposuretime $exposuretimes {
-        executor::movefilterwheel $filter
+        eval executor::movefilterwheel $filter
         set exposure 0
         while {$exposure < $exposurerepeats} {
           dithervisitoffset $diameter
@@ -258,7 +258,7 @@ proc dithervisit {exposurerepeats exposuretimes filters {offsetfastest true} {di
       dithervisitoffset $diameter
       executor::waituntiltracking
       foreach filter $filters exposuretime $exposuretimes {
-        executor::movefilterwheel $filter
+        eval executor::movefilterwheel $filter
         executor::expose object $exposuretime
         incr exposure
       }
@@ -309,7 +309,7 @@ proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest true}
   }
   
   foreach filter $filters exposuretime $exposuretimes {
-    executor::movefilterwheel $filter
+    eval executor::movefilterwheel $filter
     set exposure 0
     while {$exposure < $exposurerepeats} {
       foreach {visitidentifier eastcenteroffset northcenteroffset} {
@@ -334,15 +334,15 @@ proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest true}
 
 ########################################################################
 
-proc coarsefocusvisit {{exposuretime 5} {filter "r"}} {
+proc coarsefocusvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
 
   log::summary "coarsefocusvisit: starting."
   
   executor::setsecondaryoffset 0
   executor::track
-  executor::setwindow "1kx1k"
-  executor::setbinning 4
-  #executor::movefilterwheel "$filter"
+  executor::setwindow "default"
+  executor::setbinning 8
+  eval executor::movefilterwheel $filter
   executor::waituntiltracking
 
   log::summary "coarsefocusvisit: centering."
@@ -350,10 +350,10 @@ proc coarsefocusvisit {{exposuretime 5} {filter "r"}} {
   executor::waituntiltracking
 
   log::summary "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning 8."
+  executor::setwindow "2kx2k"
   #executor::focus $exposuretime 500 50 false true
-  
-  executor::focussecondary "C1" $exposuretime 500 50 true false
-  executor::focussecondary "C2" $exposuretime 500 50 true false
+  executor::focussecondary "C1" $exposuretime 1000 100 false true
+  #executor::focussecondary "C2" $exposuretime 100 10 true false
   
   log::summary "coarsefocusvisit: finished."
 
@@ -362,27 +362,25 @@ proc coarsefocusvisit {{exposuretime 5} {filter "r"}} {
 
 ########################################################################
 
-proc focusvisit {{exposuretime 5} {filter "r"}} {
-
-  return true
+proc focusvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
 
   log::summary "focusvisit: starting."
   
   executor::setsecondaryoffset 0
   executor::track
-  executor::setwindow "full"
-  executor::setbinning 2
-  executor::movefilterwheel "$filter"
+  executor::setwindow "default"
+  executor::setbinning 1
+  eval executor::movefilterwheel "$filter"
   executor::waituntiltracking
 
   log::summary "focusvisit: centering."
   executor::center $exposuretime
   executor::waituntiltracking
 
-  log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 2."
-  executor::setwindow "1kx1k-boresight"
-  executor::setbinning 2
-  executor::focus $exposuretime 100 10 true false
+  log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
+  executor::setwindow "1kx1k"
+  executor::setbinning 1
+  executor::focussecondary C1 $exposuretime 100 10 true false
   
   log::summary "focusvisit: finished."
 
@@ -391,15 +389,15 @@ proc focusvisit {{exposuretime 5} {filter "r"}} {
 
 ########################################################################
 
-proc focustiltvisit {{exposuretime 5} {filter "r"}} {
+proc focustiltvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
 
   log::summary "focustiltvisit: starting."
   
   executor::setsecondaryoffset 0
   executor::track
   executor::setwindow "4kx4k"
-  executor::setbinning 2
-  executor::movefilterwheel "$filter"
+  executor::setbinning 1
+  eval executor::movefilterwheel "$filter"
   executor::waituntiltracking
 
   log::summary "focustiltvisit: focusing in filter $filter with $exposuretime second exposures and binning 2."
@@ -413,15 +411,15 @@ proc focustiltvisit {{exposuretime 5} {filter "r"}} {
 
 ########################################################################
 
-proc focuswitnessvisit {{exposuretime 5} {filter "r"}} {
+proc focuswitnessvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
 
   log::summary "focuswitnessvisit: starting."
 
   executor::setsecondaryoffset 0
   executor::track
   executor::setwindow "default"
-  executor::setbinning 2
-  executor::movefilterwheel $filter
+  executor::setbinning 1
+  eval executor::movefilterwheel $filter
   executor::waituntiltracking
   
   set dithers {
@@ -446,7 +444,7 @@ proc focuswitnessvisit {{exposuretime 5} {filter "r"}} {
 
 ########################################################################
 
-proc pointingcorrectionvisit {{exposuretime 5} {filter "r"}} {
+proc pointingcorrectionvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
 
   log::summary "correctpointingvisit: starting."
 
@@ -455,8 +453,8 @@ proc pointingcorrectionvisit {{exposuretime 5} {filter "r"}} {
   executor::track
 
   executor::setwindow "default"
-  executor::setbinning 2
-  executor::movefilterwheel $filter
+  executor::setbinning 1
+  eval executor::movefilterwheel $filter
 
   executor::waituntiltracking
 
@@ -521,41 +519,48 @@ proc twilightflatsvisit {targetngood filter} {
   set minlevel  5000
   set exposuretime 5
   
-  log::info "twilightflatsvisit: filter $filter."
-  executor::movefilterwheel $filter
-
-  set ngood 0
-  set mingoodlevel $maxlevel
-  set maxgoodlevel $minlevel
-  while {true} {
-    executor::expose flat $exposuretime
-    executor::analyze levels
-    set level [executor::exposureaverage C1]
-    log::info [format "twilightflatsvisit: level is %.1f DN in filter $filter in $exposuretime seconds." $level]
-    if {$level > 2 * $maxlevel} {
-      log::info "twilightflatsvisit: level is much too bright."
-      log::info "twilightflatsvisit: waiting for 60 seconds."
-      coroutine::after 60000
-    } elseif {$level > $maxlevel} {
-      log::info "twilightflatsvisit: level is too bright."
-    } elseif {$level < $minlevel} {
-      log::info "twilightflatsvisit: level is too faint."
-      break
-    } else {
-      log::info "twilightflatsvisit: level is good."
-      incr ngood
-      set mingoodlevel [expr {min($level,$mingoodlevel)}]
-      set maxgoodlevel [expr {max($level,$maxgoodlevel)}]
-      if {$ngood == $targetngood} {
-        break
-      }
-    }
+  set filters {
+    { r i   y  }
+    { r r   z  }
+    { r g   zy }
+    { r gri zy }
   }
-
-  if {$ngood == 0} {
-    log::summary [format "twilightflatsvisit: $ngood good flats in filter $filter."]
-  } else {
-    log::summary [format "twilightflatsvisit: $ngood good flats in filter $filter (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
+  
+  for filter in filters {
+  
+      log::info "twilightflatsvisit: filter $filter."
+      eval executor::movefilterwheel $filter
+    
+      set ngood 0
+      set mingoodlevel $maxlevel
+      set maxgoodlevel $minlevel
+      while {true} {
+        executor::expose flat $exposuretime
+        executor::analyze levels
+        set level [executor::exposureaverage C1]
+        log::info [format "twilightflatsvisit: level is %.1f DN in filter $filter in $exposuretime seconds." $level]
+        if {$level > $maxlevel} {
+          log::info "twilightflatsvisit: level is too bright."
+        } elseif {$level < $minlevel} {
+          log::info "twilightflatsvisit: level is too faint."
+          break
+        } else {
+          log::info "twilightflatsvisit: level is good."
+          incr ngood
+          set mingoodlevel [expr {min($level,$mingoodlevel)}]
+          set maxgoodlevel [expr {max($level,$maxgoodlevel)}]
+          if {$ngood == $targetngood} {
+            break
+          }
+        }
+      }
+    
+      if {$ngood == 0} {
+        log::summary [format "twilightflatsvisit: $ngood good flats in filter $filter."]
+      } else {
+        log::summary [format "twilightflatsvisit: $ngood good flats in filter $filter (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
+      }
+      
   }
 
   log::summary "twilightflatsvisit: finished."
@@ -565,7 +570,7 @@ proc twilightflatsvisit {targetngood filter} {
 
 ########################################################################
 
-proc brightstarvisit {{offset 10am} {exposuretime 5} {filter "r"}} {
+proc brightstarvisit {{offset 10am} {exposuretime 5} {filter {"r" "i" "z"}}} {
 
   log::summary "brightstarvisit: starting."
 
@@ -573,7 +578,7 @@ proc brightstarvisit {{offset 10am} {exposuretime 5} {filter "r"}} {
   executor::track
   executor::setwindow "default"
   executor::setbinning 2
-  executor::movefilterwheel $filter
+  eval executor::movefilterwheel $filter
   executor::waituntiltracking
   
   log::summary "brightstarvisit: offset is $offset."
@@ -603,7 +608,7 @@ proc brightstarvisit {{offset 10am} {exposuretime 5} {filter "r"}} {
 
 ########################################################################
 
-proc hartmanntestvisit {secondaryoffset {eastoffset 0am} {northoffset 0am} {exposuretime 10} {filter "g"} {exposures 10}} {
+proc hartmanntestvisit {secondaryoffset {eastoffset 0am} {northoffset 0am} {exposuretime 10} {filter {"r" "g" "z"}} {exposures 10}} {
 
   log::summary "hartmanntestvisit: starting."
 
@@ -611,7 +616,7 @@ proc hartmanntestvisit {secondaryoffset {eastoffset 0am} {northoffset 0am} {expo
 
   executor::setwindow "default"
   executor::setbinning 2
-  executor::movefilterwheel $filter
+  eval executor::movefilterwheel $filter
 
   log::summary "hartmanntestvisit: extrafocal images: secondary offset is +$secondaryoffset."
 
@@ -647,7 +652,7 @@ proc hartmanntestvisit {secondaryoffset {eastoffset 0am} {northoffset 0am} {expo
 
 ########################################################################
 
-proc tokovinintestvisit {{eastoffset 0am} {northoffset 0am} {exposuretime 10} {filter "r"} {exposures 10}} {
+proc tokovinintestvisit {{eastoffset 0am} {northoffset 0am} {exposuretime 10} {filter {"r" "i" "z"}} {exposures 10}} {
 
   log::summary "tokovinintestvisit: starting."
 
@@ -655,7 +660,7 @@ proc tokovinintestvisit {{eastoffset 0am} {northoffset 0am} {exposuretime 10} {f
 
   executor::setwindow "default"
   executor::setbinning 2
-  executor::movefilterwheel $filter
+  eval executor::movefilterwheel $filter
 
   executor::track $eastoffset $northoffset
   executor::waituntiltracking
@@ -690,13 +695,13 @@ proc tokovinintestvisit {{eastoffset 0am} {northoffset 0am} {exposuretime 10} {f
 
 ########################################################################
 
-proc nearfocustestvisit {{exposuretime 10} {filter "r"} {exposures 3}} {
+proc nearfocustestvisit {{exposuretime 10} {filter {"r" "i" "z"}} {exposures 3}} {
 
   log::summary "nearfocustestvisit: starting."
 
   executor::setwindow "default"
   executor::setbinning 2
-  executor::movefilterwheel $filter
+  eval executor::movefilterwheel $filter
 
   executor::track 0 0
   executor::waituntiltracking
@@ -731,7 +736,7 @@ proc nearfocustestvisit {{exposuretime 10} {filter "r"} {exposures 3}} {
 
 ########################################################################
 
-proc pointingmapvisit {{exposuretime 15} {filter "r"}} {
+proc pointingmapvisit {{exposuretime 15} {filter {"r" "i" "z"}}} {
 
   log::summary "pointingmapvisit: starting."
 
@@ -741,7 +746,7 @@ proc pointingmapvisit {{exposuretime 15} {filter "r"}} {
   executor::setwindow "default"
   executor::setbinning 2
   
-  executor::movefilterwheel $filter
+  eval executor::movefilterwheel $filter
   
   executor::waituntiltracking
 
