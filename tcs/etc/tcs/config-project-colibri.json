@@ -407,7 +407,9 @@
     "derotatoroffsetpark": "-5d.00",
     // The unparked derotator offset is with respect to the cardinal directions of the detector.
     // Value at OHP with DDRAGUITO: "derotatoroffsetunpark": "7.75d",
-    "derotatoroffsetunpark": "9.27d",
+    // Value at OAN for OGSE: "derotatoroffsetunpark": "9.27d",
+    // Value at OAN for DDRAGO "derotatoroffsetunpark": "15.85d",
+    "derotatoroffsetunpark": "15.85d",
     // When the PLC parks the telescope, it uses these positions. These are not
     // configuarable using OpenTSI.
     // "azimuthpark": "-0.0025d",
@@ -857,6 +859,58 @@
         "correctionmodel": "",
         "model": "iButtonLink MS-TL",
         "identifier": "26.7539F5000000",
+        "firmware": ""
+      },      
+      "ddrago-bdsc-external-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.C7961A020000/temperature",
+        "prettyname": "blue detector service cabinet external temperature",
+        "subsystem": "building",
+        "component": "control-room",
+        "group": "environmental-temperature",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.C7961A020000",
+        "firmware": ""
+      },      
+      "ddrago-bdsc-internal-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.15971A020000/temperature",
+        "prettyname": "blue detector service cabinet internal temperature",
+        "subsystem": "building",
+        "component": "control-room",
+        "group": "environmental-temperature",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.15971A020000",
+        "firmware": ""
+      },      
+      "ddrago-rdsc-external-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.FE7D1A020000/temperature",
+        "prettyname": "red detector service cabinet external temperature",
+        "subsystem": "building",
+        "component": "control-room",
+        "group": "environmental-temperature",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.FE7D1A020000",
+        "firmware": ""
+      },      
+      "ddrago-rdsc-internal-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.F3961A020000/temperature",
+        "prettyname": "red detector service cabinet internal temperature",
+        "subsystem": "building",
+        "component": "control-room",
+        "group": "environmental-temperature",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.F3961A020000",
         "firmware": ""
       },      
       "telescope-cabinet-temperature": {
