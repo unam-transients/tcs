@@ -139,10 +139,9 @@ EOF
   echo "  sleep 10"
   echo "done"  
 
-  echo "owserver -c /etc/owfs.conf"
-  
   case $host in
   instrument)
+    echo "owserver -d /dev/ttyFTDI-ow-ddrago-close-electronics -d /dev/ttyFTDI-ow-ddrago-control-room -d /dev/ttyFTDI-ow-ogse"
     echo "tcs instrumentimageserver C0 control &"
     echo "tcs instrumentimageserver C1 control &"
     echo "tcs instrumentimageserver C2 control &"
@@ -184,9 +183,6 @@ sudo mv /etc/rc.local.tmp /etc/rc.local
 # /etc/owfs
 
 sudo cp /dev/stdin <<"EOF" /etc/owfs.conf.tmp
-server: device = /dev/ttyFTDI-ow-ddrago-close-electronics
-server: device = /dev/ttyFTDI-ow-ddrago-control-room
-server: device = /dev/ttyFTDI-ow-ogse
 server: port = localhost:4304
 ! server: server = localhost:4304
 EOF
