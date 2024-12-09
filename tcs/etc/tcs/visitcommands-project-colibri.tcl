@@ -526,7 +526,7 @@ proc twilightflatsvisit {targetngood filter} {
     { r gri zy }
   }
   
-  for filter in filters {
+  foreach filter $filters {
   
       log::info "twilightflatsvisit: filter $filter."
       eval executor::movefilterwheel $filter
