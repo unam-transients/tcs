@@ -298,8 +298,7 @@
   "covers": {
     "type": "opentsi",
     "ports": {
-      "port2": 2, 
-      "port3": 3
+      "port2": 2
     },
     "settlingseconds": 0
   },
