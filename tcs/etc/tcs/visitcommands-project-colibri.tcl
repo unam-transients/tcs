@@ -53,10 +53,10 @@ proc alertvisit {filters} {
   log::summary [format "alertvisit: uncertainty is %s." [astrometry::formatdistance $uncertainty 2]]
   if {$uncertainty <= [astrometry::parsedistance "6am"]} {
     log::summary "alertvisit: grid is 1 × 1 fields."
-    dithervisit 16 60 {{w r z}} false
+    dithervisit 16 60 {{r r z}} false
   } elseif {$uncertainty <= [astrometry::parsedistance "13am"]} {
     log::summary "alertvisit: grid is 2 × 2 fields."
-    quaddithervisit 16 60 {{w r z}} false
+    quaddithervisit 16 60 {{r r z}} false
   }
 
 }
@@ -71,7 +71,7 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
   executor::track
 
   executor::setwindow "default"
-  executor::setbinning 2
+  executor::setbinning 1
 
   executor::waituntiltracking
   
@@ -139,7 +139,7 @@ proc fullgridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters
   executor::track
 
   executor::setwindow "default"
-  executor::setbinning 2
+  executor::setbinning 1
 
   executor::waituntiltracking
   
@@ -231,7 +231,7 @@ proc dithervisit {exposurerepeats exposuretimes filters {offsetfastest true} {di
   executor::track
 
   executor::setwindow "default"
-  executor::setbinning 2
+  executor::setbinning 1
 
   executor::waituntiltracking
   
@@ -298,7 +298,7 @@ proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest true}
   executor::track
 
   executor::setwindow "default"
-  executor::setbinning 2
+  executor::setbinning 1
 
   executor::waituntiltracking
   
@@ -351,8 +351,9 @@ proc coarsefocusvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
 
   log::summary "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning 8."
   executor::setwindow "2kx2k"
-  #executor::focus $exposuretime 500 50 false true
-  executor::focussecondary "C1" $exposuretime 1000 100 false true
+  executor::setbinning 8
+  #executor::focussecondary "C0" $exposuretime 1000 100 false true
+  executor::focussecondary "C1" $exposuretime 100 10 true false
   #executor::focussecondary "C2" $exposuretime 100 10 true false
   
   log::summary "coarsefocusvisit: finished."
@@ -377,10 +378,25 @@ proc focusvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
   executor::center $exposuretime
   executor::waituntiltracking
 
-  log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
   executor::setwindow "1kx1k"
-  executor::setbinning 1
-  executor::focussecondary C1 $exposuretime 100 10 true false
+  if {1} {
+    executor::setbinning 1
+    foreach filter {i} {
+      log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
+      executor::movefilterwheel r "$filter" z
+      executor::focussecondary C1 $exposuretime 100 10 true false
+    }
+    foreach filter {z} {
+      log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
+      executor::movefilterwheel r i "$filter"
+      executor::focussecondary C2 $exposuretime 100 10 true false
+    }
+  } else {
+      log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 2."
+      executor::setbinning 1
+      executor::movefilterwheel r i z
+      executor::focussecondary C0 $exposuretime 100 10 true false
+  }
   
   log::summary "focusvisit: finished."
 
@@ -507,7 +523,7 @@ proc twilightflatsvisit {targetngood filter} {
   executor::move
 
   executor::setwindow "default"
-  executor::setbinning 2
+  executor::setbinning 1
 
   # The dark current is about 1000 DN/s at -10 C, so use shorter exposures than
   # normal. The gain is about 2.2 electrons/DN and the bias about 500 DN, so 15k
@@ -577,7 +593,7 @@ proc brightstarvisit {{offset 10am} {exposuretime 5} {filter {"r" "i" "z"}}} {
   executor::setsecondaryoffset 0
   executor::track
   executor::setwindow "default"
-  executor::setbinning 2
+  executor::setbinning 1
   eval executor::movefilterwheel $filter
   executor::waituntiltracking
   
@@ -615,7 +631,7 @@ proc hartmanntestvisit {secondaryoffset {eastoffset 0am} {northoffset 0am} {expo
   log::summary "hartmanntestvisit: offset is $eastoffset $northoffset."
 
   executor::setwindow "default"
-  executor::setbinning 2
+  executor::setbinning 1
   eval executor::movefilterwheel $filter
 
   log::summary "hartmanntestvisit: extrafocal images: secondary offset is +$secondaryoffset."
@@ -659,7 +675,7 @@ proc tokovinintestvisit {{eastoffset 0am} {northoffset 0am} {exposuretime 10} {f
   log::summary "tokovinintestvisit: offset is $eastoffset $northoffset."
 
   executor::setwindow "default"
-  executor::setbinning 2
+  executor::setbinning 1
   eval executor::movefilterwheel $filter
 
   executor::track $eastoffset $northoffset
@@ -700,7 +716,7 @@ proc nearfocustestvisit {{exposuretime 10} {filter {"r" "i" "z"}} {exposures 3}}
   log::summary "nearfocustestvisit: starting."
 
   executor::setwindow "default"
-  executor::setbinning 2
+  executor::setbinning 1
   eval executor::movefilterwheel $filter
 
   executor::track 0 0
@@ -744,7 +760,7 @@ proc pointingmapvisit {{exposuretime 15} {filter {"r" "i" "z"}}} {
   executor::track
 
   executor::setwindow "default"
-  executor::setbinning 2
+  executor::setbinning 1
   
   eval executor::movefilterwheel $filter
   
