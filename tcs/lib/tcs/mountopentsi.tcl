@@ -92,7 +92,7 @@ namespace eval "mount" {
     POSITION.EQUATORIAL.RA_CURRENT
     POSITION.EQUATORIAL.DEC_CURRENT
     POSITION.LOCAL.SIDEREAL_TIME
-    POSITION.INSTRUMENTAL.DEROTATOR[2].CURRPOS
+    POSITION.INSTRUMENTAL.DEROTATOR[3].CURRPOS
     CURRENT.TRACK
     CURRENT.DEROTATOR_OFFSET
     POSITION.INSTRUMENTAL.PORT_SELECT.CURRPOS
@@ -189,7 +189,7 @@ namespace eval "mount" {
       set pendingmountzenithdistance [astrometry::degtorad $value]
       return false
     }
-    if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.DEROTATOR\[2\].CURRPOS=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.DEROTATOR\[3\].CURRPOS=%f" value] == 1} {
       set pendingmountderotatorangle [astrometry::degtorad $value]
       return false
     }
@@ -372,7 +372,7 @@ namespace eval "mount" {
     log::info [format "setting derotator offset to %+.2fd." [astrometry::radtodeg $derotatoroffsetpark]]
     # Move the derotator to the parked position.
     opentsi::sendcommandandwait [format "SET [join {
-        "POSITION.INSTRUMENTAL.DEROTATOR\[2\].OFFSET=%.6f"
+        "POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=%.6f"
         "POINTING.SETUP.DEROTATOR.OFFSET=%.6f"
         "POINTING.SETUP.DEROTATOR.SYNCMODE=1"
       } ";"]" \
@@ -407,7 +407,7 @@ namespace eval "mount" {
     # Turn on derotator syncronization.
     log::info [format "setting derotator offset to %+.2fd." [astrometry::radtodeg $derotatoroffsetunpark]]
     opentsi::sendcommandandwait [format "SET [join {
-        "POSITION.INSTRUMENTAL.DEROTATOR\[2\].OFFSET=%.6f"
+        "POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=%.6f"
         "POINTING.SETUP.DEROTATOR.SYNCMODE=5"
       } ";"]" \
       [astrometry::radtodeg $derotatoroffsetunpark] \
@@ -454,7 +454,7 @@ namespace eval "mount" {
     variable derotatoranglepark
     opentsi::sendcommandandwait [format "SET TELESCOPE.CONFIG.AZ.PARK_POS=%.6f" [astrometry::radtodeg $azimuthpark]]
     opentsi::sendcommandandwait [format "SET TELESCOPE.CONFIG.ZD.PARK_POS=%.6f" [astrometry::radtodeg $zenithdistancepark]]
-    opentsi::sendcommandandwait [format "SET TELESCOPE.CONFIG.PORT\[2\].DEROTATOR.PARK_POS=%.6f" [astrometry::radtodeg $derotatoranglepark]]
+    opentsi::sendcommandandwait [format "SET TELESCOPE.CONFIG.PORT\[3\].DEROTATOR.PARK_POS=%.6f" [astrometry::radtodeg $derotatoranglepark]]
     set taiminusutc [utcclock::gettaiminusutc]
     log::info [format "setting TAI-UTC to %+d seconds." $taiminusutc]
     opentsi::sendcommandandwait [format "SET TELESCOPE.CONFIG.LOCAL.TAI-UTC=%d" $taiminusutc]
