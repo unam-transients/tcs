@@ -455,14 +455,6 @@ namespace eval "telescopecontroller" {
     server::newactivitycommand "resetting" [server::getstoppedactivity] telescopecontroller::resetactivitycommand
   }
 
-  proc resetpanic {} {
-    server::checkstatus
-    server::checkactivityforreset
-    checkhardwarefor "reset"
-    checkplcfor "reset"
-    server::newactivitycommand "resetting" "idle" telescopecontroller::resetpanicactivitycommand
-  }
-
   proc switchon {} {
     server::checkstatus
     server::checkactivityformove
@@ -481,8 +473,25 @@ namespace eval "telescopecontroller" {
 
   ######################################################################
 
+  proc specialresetpanic {} {
+    server::checkstatus
+    server::checkactivityforreset
+    checkhardwarefor "reset"
+    checkplcfor "reset"
+    server::newactivitycommand "resetting" "idle" telescopecontroller::resetpanicactivitycommand
+  }
+
+  ######################################################################
+
+  proc special {command commandargs} {
+    eval special$command $commandargs 
+    return
+  }
+
+  ######################################################################
+
   proc start {} {
-    opentsi::start $telescopecontroller::statuscommand telescopecontroller::updatedata
+    opentsi::start $telescopecontroller::statuscommand telescopecontroller::updatedata true
     server::newactivitycommand "starting" "started" telescopecontroller::startactivitycommand
   }
 

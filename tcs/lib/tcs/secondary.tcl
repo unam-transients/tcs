@@ -43,8 +43,9 @@ namespace eval "secondary" {
   variable zdeadzonewidth    [config::getvalue "secondary" "zdeadzonewidth"   ]
   variable minz              [config::getvalue "secondary" "minz"             ]
   variable maxz              [config::getvalue "secondary" "maxz"             ]
-  variable dzmodel           [config::getvalue "secondary" "dzmodel"]
-  
+  variable dzmodel           [config::getvalue "secondary" "dzmodel"          ]
+  variable settlingseconds   [config::getvalue "secondary" "settlingseconds"  ]
+
   ######################################################################
 
   server::setdata "z"                 ""

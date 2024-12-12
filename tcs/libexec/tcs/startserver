@@ -73,7 +73,7 @@ colibri-control)
   ALLARGS="gcntan"
   ;;
 colibri-instrument)
-  allargs="C0 1 instrument"
+  allargs="C0 C1 C2 1 instrument"
   ALLARGS=""
   ;;
 *)

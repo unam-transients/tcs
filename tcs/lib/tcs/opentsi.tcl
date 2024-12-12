@@ -54,12 +54,17 @@ namespace eval "opentsi" {
     }
   }
   
-  proc isignoredresponse {response} {
+  proc iseventresponse {response} {
     expr {
-      [regexp {^[0-9]+ COMMAND OK}  $response] == 1 ||
-      [regexp {^[0-9]+ DATA OK}     $response] == 1 ||
       [regexp {^[0-9]+ EVENT INFO } $response] == 1 ||
       [regexp {^[0-9]+ EVENT ERROR [^:]+:[0-9]+ No data available\.$} $response] == 1
+    }
+  }
+
+  proc isignoredresponse {response} {
+    expr {
+      [regexp {^[0-9]+ DATA OK} $response] == 1 ||
+      [regexp {^[0-9]+ EVENT ERROR .* No data available\.$} $response] == 1
     }
   }
   
@@ -79,27 +84,37 @@ namespace eval "opentsi" {
   variable emergencystopcommandidentifier 2
   variable firstnormalcommandidentifier   3
   variable lastnormalcommandidentifier    99
-
+  
   ######################################################################
 
   variable currentcommandidentifier 0
   variable nextcommandidentifier $firstnormalcommandidentifier
+  variable acceptedcurrentcommand
   variable completedcurrentcommand
 
   proc sendcommand {command} {
     variable currentcommandidentifier
     variable nextcommandidentifier
+    variable acceptedcurrentcommand
     variable completedcurrentcommand
     variable firstnormalcommandidentifier
     variable lastnormalcommandidentifier
+    set start [utcclock::seconds]
     set currentcommandidentifier $nextcommandidentifier
     if {$nextcommandidentifier == $lastnormalcommandidentifier} {
       set nextcommandidentifier $firstnormalcommandidentifier
     } else {
       set nextcommandidentifier [expr {$nextcommandidentifier + 1}]
     }
+    set acceptedcurrentcommand false
     log::info "sending controller command: \"$currentcommandidentifier $command\"."
     controller::pushcommand "$currentcommandidentifier $command\n"
+    coroutine::yield
+    while {!$acceptedcurrentcommand} {
+      coroutine::yield
+    }
+    set end [utcclock::seconds]
+    log::debug [format "accepted controller command $currentcommandidentifier after %.1f seconds." [utcclock::diff $end $start]]
   }
 
   proc sendcommandandwait {command} {
@@ -107,7 +122,7 @@ namespace eval "opentsi" {
     variable completedcurrentcommand
     set start [utcclock::seconds]
     set completedcurrentcommand false
-    sendcommand $command    
+    sendcommand $command
     coroutine::yield
     while {!$completedcurrentcommand} {
       coroutine::yield
@@ -122,6 +137,7 @@ namespace eval "opentsi" {
   variable readystatetext ""
   
   variable communicationfailure false
+  variable showevents           false
 
   proc updatedata {response} {
   
@@ -173,19 +189,19 @@ namespace eval "opentsi" {
       log::info "received controller authentication response: \"$response\"."
       return false
     }
-
+    
     variable statuscommandidentifier
     variable emergencystopcommandidentifier
     variable completedcommandidentifier
 
     if {[scan $response "%d " commandidentifier] != 1} {
-      log::warning "received unexpected controller response: \"$response\"."
+      log::warning "received invalid controller response: \"$response\"."
       return true
     }
 
     if {[opentsi::isignoredresponse $response]} {
       if {$commandidentifier != $statuscommandidentifier} {
-        log::info "received controller response: \"$response\"."
+        log::debug "received controller response: \"$response\"."
       }
       return false
     }
@@ -203,18 +219,41 @@ namespace eval "opentsi" {
       }
     }
 
-    if {$commandidentifier != $statuscommandidentifier} {
-      variable currentcommandidentifier
-      variable completedcurrentcommand
-      log::info "received controller response: \"$response\"."
-      if {[regexp {^[0-9]+ COMMAND COMPLETE} $response] == 1} {
-        log::debug [format "controller command %d completed." $commandidentifier]
+    variable showevents
+
+    if {[opentsi::iseventresponse $response]} {
+      if {$showevents} {
+        log::info "received controller event response: \"$response\"."
+      } else {
+        log::debug "received controller event response: \"$response\"."
+      }
+      return false
+    }
+
+    variable currentcommandidentifier
+    variable acceptedcurrentcommand
+    variable completedcurrentcommand
+
+    if {[regexp {^[0-9]+ COMMAND OK} $response] == 1} {
+      if {$commandidentifier != $statuscommandidentifier} {
+        log::info "received controller response: \"$response\"."
         if {$commandidentifier == $currentcommandidentifier} {
-          log::debug "current controller command completed."
-          set completedcurrentcommand true
+          log::info "current controller command accepted."
+          set acceptedcurrentcommand true
         }
       }
       return false
+    }
+    
+    if {[regexp {^[0-9]+ COMMAND COMPLETE} $response] == 1} {
+      if {$commandidentifier != $statuscommandidentifier} {
+        log::info "received controller response: \"$response\"."
+        if {$commandidentifier == $currentcommandidentifier} {
+          log::info "current controller command completed."
+          set completedcurrentcommand true
+        }
+        return false
+      }
     }
 
     variable higherupdatedata
@@ -249,12 +288,14 @@ namespace eval "opentsi" {
   
   ######################################################################
 
-  proc start {statuscommand updatedata} {
+  proc start {statuscommand updatedata {showeventsarg false}} {
     variable statuscommandidentifier
     set controller::statuscommand "$statuscommandidentifier $statuscommand;TELESCOPE.READY_STATE\n"
     set controller::updatedata    "opentsi::updatedata"
     variable higherupdatedata
     set higherupdatedata "$updatedata"
+    variable showevents
+    set showevents $showeventsarg
     controller::startcommandloop "AUTH PLAIN \"admin\" \"admin\"\n"
     controller::startstatusloop
   }

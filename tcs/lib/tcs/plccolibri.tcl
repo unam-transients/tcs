@@ -856,7 +856,7 @@ namespace eval "plc" {
     server::newactivitycommand "closing" "idle" plc::closeactivitycommand
   }
   
-  proc updateweather {} {
+  proc specialupdateweather {} {
     server::checkstatus
     variable lastresponsea
     if {[string equal "" $lastresponsea]} {
@@ -967,21 +967,23 @@ namespace eval "plc" {
     }
   }
   
-  proc enablealarm {alarm} {
+  proc specialenablealarm {alarm} {
     set start [utcclock::seconds]
     server::checkstatus
     checkalarm $alarm
     server::newactivitycommand "enabling" "idle" "plc::enablealarmactivitycommand $alarm"
   }
 
-  proc disablealarm {alarm} {
+  proc specialdisablealarm {alarm} {
     set start [utcclock::seconds]
     server::checkstatus
     checkalarm $alarm
     server::newactivitycommand "disabling" "idle" "plc::disablealarmactivitycommand $alarm"
   }
 
-  proc grantaccess {} {
+  ######################################################################
+
+  proc specialgrantaccess {} {
     set start [utcclock::seconds]
     server::checkstatus
     server::newactivitycommand "granting" "idle" "plc::grantaccessactivitycommand"
@@ -989,7 +991,7 @@ namespace eval "plc" {
 
   ######################################################################
 
-  proc reboot {} {
+  proc specialreboot {} {
     set start [utcclock::seconds]
     server::checkstatus
     server::newactivitycommand "rebooting" "idle" "plc::rebootactivitycommand"
@@ -997,14 +999,14 @@ namespace eval "plc" {
 
   ######################################################################
 
-  proc switchonlights {} {
+  proc specialswitchonlights {} {
     server::checkstatus
     log::info "switching on lights."
     controller::pushcommand "ObsRoomLight{ON}\n"
     return
   }
 
-  proc switchofflights {} {
+  proc specialswitchofflights {} {
     server::checkstatus
     log::info "switching off lights."
     controller::pushcommand "ObsRoomLight{OFF}\n"
@@ -1013,14 +1015,14 @@ namespace eval "plc" {
 
   ######################################################################
 
-  proc switchonfans {} {
+  proc specialswitchonfans {} {
     server::checkstatus
     log::info "switching on fans."
     controller::pushcommand "Fans{ON}\n"
     return
   }
 
-  proc switchofffans {} {
+  proc specialswitchofffans {} {
     server::checkstatus
     log::info "switching off fans."
     controller::pushcommand "Fans{OFF}\n"
@@ -1029,17 +1031,38 @@ namespace eval "plc" {
 
   ######################################################################
 
-  proc openlouvers {} {
+  proc specialopenlouvers {} {
     server::checkstatus
     log::info "opening louvers."
     controller::pushcommand "Louver{ALL,OPEN}\n"
     return
   }
 
-  proc closelouvers {} {
+  proc specialcloselouvers {} {
     server::checkstatus
     log::info "closing louvers."
     controller::pushcommand "Louver{ALL,CLOSE}\n"
+    return
+  }
+
+  ######################################################################
+  
+  proc specialenablelocalconfirmation {} {
+    log::warning "enabling local confirmation."
+    controller::pushcommand "LocalStaff{RESET}\n"
+    return
+  }
+  
+  proc specialdisablelocalconfirmation {} {
+    log::warning "disabling local confirmation."
+    controller::pushcommand "LocalStaff{ON}\n"
+    return
+  }
+  
+  ######################################################################
+
+  proc special {command commandargs} {
+    eval special$command $commandargs 
     return
   }
 

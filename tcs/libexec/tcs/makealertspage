@@ -1,0 +1,110 @@
+#!/usr/bin/env python3
+
+import os
+from datetime import datetime
+from datetime import timezone
+import json
+import re
+
+htmlfilename = "/usr/local/var/www/alerts.html"
+jsonfilename = "/usr/local/var/tcs/alerts.json"
+
+htmlfile = open(htmlfilename, "w")
+
+def readjson(filename):
+    with open(filename, "r") as f:
+        return json.loads(f.read(-1))
+
+def writehtml(s):
+    print(s, file=htmlfile)
+
+def formattimestamp(timestamp):
+    timestamp = re.sub("T", " ", timestamp)
+    timestamp = re.sub("\.[0-9]*$", "", timestamp)
+    return timestamp  
+  
+def formatage(eventtimestamp):
+    eventtimestamp = re.sub("\.[0-9]*$", "", eventtimestamp)
+    event = datetime.fromisoformat(eventtimestamp)
+    now = datetime.now()
+    age = now - event
+    return "%.2f" % (age.days + age.seconds / 86400)
+    
+
+alerts = readjson(jsonfilename)
+
+writehtml("""
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<link rel="stylesheet" href="style.css" type="text/css"/>
+<title>Alerts</title>
+</head>
+
+<body>
+
+<div id="title">
+<h1>Alerts</h1>
+<hr/>
+</div>
+
+<div id="body">
+<table class="alerts">
+""")
+
+writehtml("<tr>")
+for text in ["", "Identifier", "Age (days)", "Event Time",  "α", "δ", "Epoch", "Uncertainty", "Priority", "Enabled", "Name"]:
+  writehtml("<th class=\"alerts\">%s</th>" % text)
+writehtml("</tr>")
+
+for alert in alerts:
+    print(alert["name"])
+    writehtml("<tr>")
+    writehtml("<td class=\"alerts\"><input type=\"radio\" name=\"id\" value=\"%s\"></td>" % alert["identifier"])
+    for field in ["identifier", "age", "eventtimestamp", "alpha", "delta", "equinox", "uncertainty", "priority", "enabled", "name"]:
+        writehtml("<td class=\"alerts\">")
+        if field == "eventtimestamp":
+            writehtml(formattimestamp(alert[field]))
+        elif field == "age":
+            writehtml(formatage(alert["eventtimestamp"]))
+        else:
+            writehtml(alert[field])
+        writehtml("</td>")
+    writehtml("</tr>")
+
+writehtml("""
+</table>
+
+<hr/>
+
+<button type="button">Enable</button>
+<button type="button">Disable</button>
+<button type="button">Update</button>
+α <input type="text" id="alert" name="alpha">
+δ <input type="text" id="alert" name="delta">
+Uncertainty <input type="text" id="alert" name="uncertainty">
+Priority <input type="text" id="alert" name="priority">
+
+<hr/>
+
+<button type="button">New</button>
+Event Time <input type="text" id="alert" name="eventtime">
+α <input type="text" id="alert" name="alpha">
+δ <input type="text" id="alert" name="delta">
+Uncertainty <input type="text" id="alert" name="uncertainty">
+Priority <input type="text" id="alert" name="priority">
+
+</div>
+
+<div>
+<hr/>
+Updated: %s UTC
+</div>
+
+</body>
+
+
+</html>
+""" % datetime.now(timezone.utc).replace(tzinfo=None).isoformat(" ", timespec="seconds"))

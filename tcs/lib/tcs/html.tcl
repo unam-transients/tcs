@@ -548,24 +548,14 @@ namespace eval "html" {
     if {[string equal [client::getstatus "covers"] "ok"]} {
       writehtmlrow "Requested covers" [client::getdata "covers" "requestedcovers"]
       writehtmlrow "Current covers" [client::getdata "covers" "covers"]
-      if {![catch {client::getdata "covers" "port2cover"}]} {
-        set name [client::getdata "covers" "port2name"]
-        set cover [client::getdata "covers" "port2cover"]
-        writehtmlrow "Current port 2 cover ($name)" $cover
+      if {![catch {client::getdata "covers" "primarycover"}]} {
+        set cover [client::getdata "covers" "primarycover"]
+        writehtmlrow "Current primary cover" $cover
       }
-      if {![catch {client::getdata "covers" "port3cover"}]} {
-        set name [client::getdata "covers" "port3name"]
-        set cover [client::getdata "covers" "port3cover"]
-        writehtmlrow "Current port 3 cover ($name)" $cover
-      }
-      if {![catch {client::getdata "covers" "mode"}]} {
-        writehtmlrow "Mode" [client::getdata "covers" "mode"]
-      }
-      if {![catch {client::getdata "covers" "inputchannels"}]} {
-        writehtmlrow "Input channels" [client::getdata "covers" "inputchannels"]
-      }
-      if {![catch {client::getdata "covers" "outputchannels"}]} {
-        writehtmlrow "Output channels" [client::getdata "covers" "outputchannels"]
+      if {![catch {client::getdata "covers" "portnames"}]} {
+        foreach portname [client::getdata "covers" "portnames"] {
+          writehtmlrow "Current $portname cover" [client::getdata "covers" "${portname}cover"]
+        }
       }
     }
   

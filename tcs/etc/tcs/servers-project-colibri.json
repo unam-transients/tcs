@@ -56,7 +56,7 @@
     "port": 5007
   },
   "C1": {
-    "host": "control",
+    "host": "instrument",
     "port": 5008
   },
   "plc": {
@@ -130,5 +130,9 @@
   "gcntan": {
     "host": "control",
     "port": 5027
+  },
+  "C2": {
+    "host": "instrument",
+    "port": 5028
   }
 }

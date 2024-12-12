@@ -79,6 +79,8 @@ installs_project_ddoti	:=		         \
 installs_project_colibri	:=		     \
 	allsky-project-colibri.html     	 \
 	C0-project-colibri.html  	      	 \
+	C1-project-colibri.html  	      	 \
+	C2-project-colibri.html  	      	 \
 	config-project-colibri.js	         \
 	operations-project-colibri.html      \
 	engineering-project-colibri.html     \

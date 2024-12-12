@@ -76,8 +76,8 @@ namespace eval "supervisor" {
   
   ######################################################################
   
-  proc sendchat {message} {
-    exec "[directories::prefix]/bin/tcs" "sendchat" "$message"
+  proc sendchat {category message} {
+    exec "[directories::prefix]/bin/tcs" "sendchat" "$category" "$message"
   }
   
   proc loopreport {} {
@@ -414,7 +414,6 @@ namespace eval "supervisor" {
       if {[string equal [client::getdata "executor" "activity"] "started"]} {
         set start [utcclock::seconds]
         log::summary "initializing ($why)."
-        sendchat "initializing."
         server::setrequestedactivity "idle"
         server::setactivity "initializing"
         set open            false
@@ -430,13 +429,11 @@ namespace eval "supervisor" {
           set closed true
           updatedata          
           log::summary [format "finished initializing after %.1f seconds." [utcclock::diff now $start]]  
-          sendchat "finished initializing."
           log::debug "loop: continue: finished initializing."      
           set delay 1000
           continue
         }
         log::error "unable to initialize: $message"
-        sendchat "unable to initialize!"
         set mode "error"
         updatedata
         log::debug "loop: continue: unable to initialize: $message"
@@ -477,7 +474,7 @@ namespace eval "supervisor" {
         loopreport
         set start [utcclock::seconds]
         log::summary "opening."
-        sendchat "opening."
+        sendchat "operations" "opening."
         server::setrequestedactivity "idle"
         server::setactivity "opening"
         set open            false
@@ -496,13 +493,13 @@ namespace eval "supervisor" {
           set open true
           updatedata
           log::summary [format "finished opening after %.1f seconds." [utcclock::diff now $start]]
-          sendchat "finished opening."
+          sendchat "operations" "finished opening."
           log::debug "loop: continue: finished opening."
           set delay 1000
           continue
         }
         log::error "unable to open: $message"
-        sendchat "unable to open!"
+        sendchat "operations" "unable to open!"
         set mode "error"
         updatedata
         log::debug "loop: continue: unable to open."
@@ -519,7 +516,7 @@ namespace eval "supervisor" {
         loopreport
         set start [utcclock::seconds]
         log::summary "opening to ventilate ($why)."
-        sendchat "opening to ventilate."
+        sendchat "operations" "opening to ventilate ($why)."
         server::setrequestedactivity "idle"
         server::setactivity "opening"
         set open            false
@@ -537,13 +534,13 @@ namespace eval "supervisor" {
           set opentoventilate true
           updatedata
           log::summary [format "finished opening to ventilate after %.1f seconds." [utcclock::diff now $start]]
-          sendchat "finished opening to ventilate."
+          sendchat "operations" "finished opening to ventilate."
           log::debug "loop: continue: finished opening to ventilate."
           set delay 1000
           continue
         }
         log::error "unable to open to ventilate: $message"
-        sendchat "unable to open to ventilate!"
+        sendchat "operations" "unable to open to ventilate!"
         set mode "error"
         updatedata
         log::debug "loop: continue: unable to open to ventilate."
@@ -560,7 +557,7 @@ namespace eval "supervisor" {
         loopreport
         set start [utcclock::seconds]
         log::summary "closing ($why)."
-        sendchat "closing."
+        sendchat "operations" "closing ($why)."
         server::setrequestedactivity "idle"
         server::setactivity "closing"
         set open            false
@@ -576,7 +573,7 @@ namespace eval "supervisor" {
           client::wait "executor"
         } message]} {
           log::summary [format "finished closing after %.1f seconds." [utcclock::diff now $start]]
-          sendchat "finished closing."
+          sendchat "operations" "finished closing."
           set closed true
           updatedata
           log::debug "loop: continue: finished closing."      
@@ -584,9 +581,9 @@ namespace eval "supervisor" {
           continue
         }
         log::error "unable to close: $message"
-        sendchat "unable to close!"
+        sendchat "operations" "unable to close!"
         log::summary "emergency closing."
-        sendchat "emergency closing."
+        sendchat "operations" "emergency closing."
         catch {
           client::request "executor" "emergencyclose"
           client::wait "executor"
@@ -635,23 +632,23 @@ namespace eval "supervisor" {
           }
 
           if {[client::getdata "plc" "accessrequested"]} {
-            log::summary "access requested by the plc."
+            log::warning "access requested by the plc."
           }
 
           if {$accessrequested} {
-            log::summary "access requested by the supervisor."
-              set accessrequested false
+            log::warning "access requested by the supervisor."
+            set accessrequested false
           }
 
           set start [utcclock::seconds]
-          log::summary "responding for request to access."
+          log::warning "responding for request to access."
 
           log::summary "disabling supervisor."
           variable mode
           set mode "disabled"
           updatedata
 
-          log::summary "disabling selector."
+          log::warning "disabling selector."
           if {[catch {
             client::request "selector" "disable" 
             client::wait "selector"
@@ -659,7 +656,7 @@ namespace eval "supervisor" {
             log::error "unable to disable selector: $message"
           }
 
-          log::summary "emergency stopping executor."
+          log::warning "emergency stopping executor."
           if {[catch {
             client::request "executor" "emergencystop" 
             client::wait "executor"
@@ -668,9 +665,9 @@ namespace eval "supervisor" {
           }
 
           if {[client::getdata "plc" "accessrequested"]} {
-            log::summary "granting access."
+            log::warning "granting access."
             if {[catch {
-              client::request "plc" "grantaccess"
+              client::request "plc" "special grantaccess"
               client::wait "plc"
             } message]} {
               log::error "unable to grant access: $message"
@@ -678,7 +675,10 @@ namespace eval "supervisor" {
             }
           }
 
-          log::summary [format "finished responding for request to access after %.1f seconds." [utcclock::diff now $start]]
+          # Give the PLC time to turn off the accessrequested flag.
+          coroutine::after 10000          
+
+          log::warning [format "finished responding for request to access after %.1f seconds." [utcclock::diff now $start]]         
           
         }
       
@@ -722,7 +722,6 @@ namespace eval "supervisor" {
   proc enable {} {
     set start [utcclock::seconds]
     log::summary "setting mode to enabled."
-    sendchat "setting mode to enabled."
     variable mode
     set mode "enabled"
     updatedata
@@ -733,7 +732,6 @@ namespace eval "supervisor" {
   proc disable {} {
     set start [utcclock::seconds]
     log::summary "setting mode to disabled."
-    sendchat "setting mode to disabled."
     variable mode
     set mode "disabled"
     updatedata
@@ -744,7 +742,6 @@ namespace eval "supervisor" {
   proc open {} {
     set start [utcclock::seconds]
     log::summary "setting mode to open."
-    sendchat "setting mode to open."
     variable mode
     set mode "open"
     updatedata
@@ -755,7 +752,6 @@ namespace eval "supervisor" {
   proc close {} {
     set start [utcclock::seconds]
     log::summary "setting mode to closed."
-    sendchat "setting mode to closed."
     variable mode
     set mode "closed"
     updatedata
@@ -766,7 +762,6 @@ namespace eval "supervisor" {
   proc requestaccess {} {
     set start [utcclock::seconds]
     log::summary "requesting access."
-    sendchat "requesting access."
     variable accessrequested
     set accessrequested true
     log::summary [format "finished requesting access after %.1f seconds." [utcclock::diff now $start]]
@@ -774,7 +769,6 @@ namespace eval "supervisor" {
   }
 
   proc emergencyclose {} {
-    sendchat "emergency close."
     server::newactivitycommand "closing" "idle" \
       "supervisor::emergencycloseactivitycommand" 900e3
   }
