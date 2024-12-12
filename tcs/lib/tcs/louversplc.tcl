@@ -105,14 +105,14 @@ namespace eval "louvers" {
   ######################################################################
 
   proc openhardware {} {
-    if {[catch {client::request "plc" "openlouvers"}]} {
+    if {[catch {client::request "plc" "special openlouvers"}]} {
       log::warning "unable to open."
     }
     waitwhilemoving
   }
 
   proc closehardware {} {
-    if {[catch {client::request "plc" "closelouvers"}]} {
+    if {[catch {client::request "plc" "special closelouvers"}]} {
       log::warning "unable to close."
     }
     waitwhilemoving

@@ -48,6 +48,8 @@ $(function () {
     "webcam-e-small" : "webcam/e/latest-small.jpg",
     "webcam-f-small" : "webcam/f/latest-small.jpg",
     "C0-small"       : "instrument/C0/latest-small.jpg",
+    "C1-small"       : "instrument/C1/latest-small.jpg",
+    "C2-small"       : "instrument/C2/latest-small.jpg",
   });
   newcomponent("summary", "Summary");
 });
@@ -67,6 +69,8 @@ $(function () {
 <div id="images">
 <a href="allsky.html"  ><img src="blank.png" alt="All-Sky Camera" id="allsky-small"   class="allsky-small"    /></a>
 <a href="C0.html"      ><img src="blank.png" alt="C0"             id="C0-small"       class="instrument-small"/></a>
+<a href="C1.html"      ><img src="blank.png" alt="C1"             id="C1-small"       class="instrument-small"/></a>
+<a href="C2.html"      ><img src="blank.png" alt="C2"             id="C2-small"       class="instrument-small"/></a>
 </div>
 
 <div id="navigation">
@@ -79,6 +83,8 @@ $(function () {
 <a href="plots.html">Plots</a>
 </br>
 <a href="" onclick='newcomponent("C0"                 , "C0"                  ); return false;'>C0</a> | 
+<a href="" onclick='newcomponent("C1"                 , "C1"                  ); return false;'>C1</a> | 
+<a href="" onclick='newcomponent("C2"                 , "C2"                  ); return false;'>C2</a> | 
 <a href="" onclick='newcomponent("covers"             , "Covers"              ); return false;'>Covers</a> | 
 <a href="" onclick='newcomponent("dome"               , "Dome"                ); return false;'>Dome</a> | 
 <a href="" onclick='newcomponent("executor"           , "Executor"            ); return false;'>Executor</a> |
@@ -89,11 +95,11 @@ $(function () {
 <a href="" onclick='newcomponent("lights"             , "Lights"              ); return false;'>Lights</a> |
 <a href="" onclick='newcomponent("louvers"            , "Louvers"             ); return false;'>Louvers</a> |
 <a href="" onclick='newcomponent("moon"               , "Moon"                ); return false;'>Moon</a> |
-<a href="" onclick='newcomponent("mount"              , "Mount"               ); return false;'>Mount</a> |
+<a href="" onclick='newcomponent("mount"              , "Mount"               ); return false;'>Mount</a>
+</br>
 <a href="" onclick='newcomponent("plc"                , "PLC"                 ); return false;'>PLC</a> |
 <a href="" onclick='newcomponent("power"              , "Power"               ); return false;'>Power</a> |
-<a href="" onclick='newcomponent("secondary"          , "Secondary"           ); return false;'>Secondary</a>
-</br>
+<a href="" onclick='newcomponent("secondary"          , "Secondary"           ); return false;'>Secondary</a> |
 <a href="" onclick='newcomponent("seeing"             , "Seeing"              ); return false;'>Seeing</a> | 
 <a href="" onclick='newcomponent("selector"           , "Selector"            ); return false;'>Selector</a> | 
 <a href="" onclick='newcomponent("sensors"            , "Sensors"             ); return false;'>Sensors</a> | 

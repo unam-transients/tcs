@@ -33,16 +33,20 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 # Start of tcs epilog.
 
 192.168.100.1     gateway                 colibri-gateway
+192.168.100.10    astelco-opentsi         colibri- astelco-opentsi
 192.168.100.15    qnap-spare              colibri-qnap-spare
 192.168.100.17    qnap-prod               colibri-qnap-prod
 192.168.100.23    astelco-pc              colibri-astelco-pc opentsi
+192.168.100.23    astelco-mini-pc         colibri-astelco-mini-pc
 192.168.100.28    plc                     colibri-plc
 192.168.100.29    european-ups            colibri-european-ups
 192.168.100.30    american-ups            colibri-american-ups
+192.168.100.47    blue                    colibri-blue
+192.168.100.48    red                     colibri-red
 192.168.100.49    data                    colibri-data
 192.168.100.50    pdu0                    colibri-pdu0
-192.168.100.51    pdu1                    colibri-pdu0
-192.168.100.52    pdu2                    colibri-pdu0
+192.168.100.51    pdu1                    colibri-pdu1
+192.168.100.52    pdu2                    colibri-pdu2
 192.168.100.53    sparepdu                colibri-sparepdu
 192.168.100.54    control                 colibri-control
 192.168.100.55    rsync                   colibri-rsync
@@ -93,7 +97,7 @@ EOF
     cat <<"EOF"
 *      *  *  *  *  sleep 10; tcs updatesensorsfiles control instrument
 *      *  *  *  *  tcs updateseeingfiles-colibri
-*      *  *  *  *  tcs request plc updateweather
+*      *  *  *  *  tcs request plc special updateweather
 *      *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
 00     00 *  *  *  tcs loadblocks -F
 01     00 *  *  *  tcs loadblocks -L
@@ -135,15 +139,18 @@ EOF
   echo "  sleep 10"
   echo "done"  
 
-  echo "owserver -c /etc/owfs.conf"
-  
   case $host in
   instrument)
+    echo "owserver -d /dev/ttyFTDI-ow-ddrago-close-electronics -d /dev/ttyFTDI-ow-ddrago-control-room -d /dev/ttyFTDI-ow-ogse"
     echo "tcs instrumentimageserver C0 control &"
+    echo "tcs instrumentimageserver C1 control &"
+    echo "tcs instrumentimageserver C2 control &"
     echo "tcs instrumentdataserver -f -d rsync://colibri-rsync/colibri-raw/ &"
     ;;
   control)
     echo "tcs instrumentimageserver C0 &"
+    echo "tcs instrumentimageserver C1 &"
+    echo "tcs instrumentimageserver C2 &"
     echo "tcs webcamimageserver -d '0 -0.1 0' a http://colibri:matpud-juxHe7-wiksym@webcam-a/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver b http://colibri:matpud-juxHe7-wiksym@webcam-b/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver c http://colibri:matpud-juxHe7-wiksym@webcam-c/cgi-bin/viewer/video.jpg &"
@@ -176,7 +183,6 @@ sudo mv /etc/rc.local.tmp /etc/rc.local
 # /etc/owfs
 
 sudo cp /dev/stdin <<"EOF" /etc/owfs.conf.tmp
-server: device = /dev/ttyFTDI
 server: port = localhost:4304
 ! server: server = localhost:4304
 EOF
@@ -226,8 +232,11 @@ fi
 if test -d /etc/udev/rules.d
 then
   sudo cp /dev/stdin <<"EOF" /etc/udev/rules.d/99-ttyFTDI.rules
-SUBSYSTEMS=="usb", ATTRS{manufacturer}=="FTDI", ATTRS{product}=="FT232R USB UART", SYMLINK+="ttyFTDI"
-SUBSYSTEMS=="usb", ATTRS{manufacturer}=="Optec, Inc.", ATTRS{product}=="Optec USB/Serial Cable", SYMLINK+="ttyFTDI"
+SUBSYSTEMS=="usb", ATTRS{manufacturer}=="FTDI", ATTRS{product}=="FT232R USB UART", ATTRS{serial}=="A7009GNK", SYMLINK+="ttyFTDI-ow-ddrago-close-electronics"
+SUBSYSTEMS=="usb", ATTRS{manufacturer}=="FTDI", ATTRS{product}=="FT232R USB UART", ATTRS{serial}=="A7009KLW", SYMLINK+="ttyFTDI-ow-ddrago-control-room"
+SUBSYSTEMS=="usb", ATTRS{manufacturer}=="FTDI", ATTRS{product}=="FT232R USB UART", ATTRS{serial}=="AJ02WJ50", SYMLINK+="ttyFTDI-ow-ogse"
+#SUBSYSTEMS=="usb", ATTRS{manufacturer}=="FTDI", ATTRS{product}=="FT232R USB UART", SYMLINK+="ttyFTDI"
+#SUBSYSTEMS=="usb", ATTRS{manufacturer}=="Optec, Inc.", ATTRS{product}=="Optec USB/Serial Cable", SYMLINK+="ttyFTDI"
 EOF
 fi
 

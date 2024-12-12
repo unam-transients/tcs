@@ -99,13 +99,212 @@
     }
   },
 
+
+  "C1": {
+    "detectortype": "si",
+    "detectoridentifier": "blue:2055",
+    "detectorunbinnedpixelscale": "0.381as",
+    "detectorreadmodes": {
+      "initial": "default",
+      "closed" : "default",
+      "default": "0"
+    },
+    "detectorinitialsoftwaregain": 1,
+    "detectorinitialbinning": 1,
+    "detectorwindows": {
+      "initial": "default",
+      "default": "4kx4k",
+      "center": "1kx1k",
+      "1kx1k": {
+        "sx": 1586,
+        "sy": 1544,
+        "nx": 1024,
+        "ny": 1024
+      },
+      "2kx2k": {
+        "sx": 1074,
+        "sy": 1032,
+        "nx": 2048,
+        "ny": 2048
+      },
+      // For the default "4kx4k" window, we skip the first and last 8 rows for
+      // two reasons. First, the first and last row show odd behavior both in
+      // the underscan (high values) and the active (low value) regions. Second,
+      // it makes the data section square. If we really want the full CCD, we
+      // can use the implicit "full" window.
+      "4kx4k": {
+        "sx": 2,
+        "sy": 8,
+        "nx": 4192,
+        "ny": 4096
+      }
+    },
+    "detectorfullunbinneddatawindow": {
+      "sx": 50,
+      "sy": 0,
+      "nx": 4096,
+      "ny": 4112
+    },
+    "detectorfullunbinnedbiaswindow": {
+      "sx": 0,
+      "sy": 0,
+      "nx": 50,
+      "ny": 4112
+    },
+    "detectorboresight": { "x": 2048.0, "y": 2048.0 },
+    "coolerstartsetting": "last",
+    "cooleropensetting": "last",
+    "coolerclosedsetting": "last",
+    "temperaturelimit": 45,
+    "temperaturelimitoutletgroup": "blue-service-cabinet",
+    //"filterwheeltype": "null",
+    //"filterwheelidentifier": "null",
+    //"filters": {
+    //  "w"      : "0",
+    //  "initial": "w",
+    //  "idle"   : "w",
+    //  "closed" : "w"
+    //},
+    "filterwheeltype": "fli",
+    // The DDRAGO CFW-14-5 filter wheels are:
+    // FW0011318 -- firmware serial number "CFW-14-5"
+    // FW0021318 -- firmware serial number "FW0021318"
+    // FW0031318 -- firmware serial number "FW0031318"
+    "filterwheelidentifier": "FW0031318",
+    "filters": {
+      // 2021-09-13: r and g were accidentally installed in the wrong slots at OHP.
+      "g"      : "0",
+      "r"      : "1",
+      "i"      : "2",
+      "gri"    : "3",
+      "B"      : "4",
+      "initial": "r",
+      "idle"   : "r",
+      "closed" : "r"
+    },
+    "focusertype": "null",
+    "focuseridentifier": "null",
+    "focuserinitialposition": 0,
+    "focuserbacklashoffset": 0,
+    "focuserdzmodel": {},
+    "telescopedescription": "OAN COLIBRI 1.3-m",
+    "pointingmodelparameters": {},
+    "isstandalone": false,
+    "fitsfwhmargs": {
+      "1": "-m",
+      "2": "-A",
+      "4": "-A",
+      "8": "-A",
+      "16": "-A"
+    }
+  },
+
+  "C2": {
+    "detectortype": "si",
+    "detectoridentifier": "red:2055",
+    "detectorunbinnedpixelscale": "0.381as",
+    "detectorreadmodes": {
+      "initial": "default",
+      "closed" : "default",
+      "default": "0"
+    },
+    "detectorinitialsoftwaregain": 1,
+    "detectorinitialbinning": 1,
+    "detectorwindows": {
+      "initial": "default",
+      "default": "4kx4k",
+      "center": "1kx1k",
+      "1kx1k": {
+        "sx": 1586,
+        "sy": 1544,
+        "nx": 1024,
+        "ny": 1024
+      },
+      "2kx2k": {
+        "sx": 1074,
+        "sy": 1032,
+        "nx": 2048,
+        "ny": 2048
+      },
+      // For the default "4kx4k" window, we skip the first and last 8 rows for
+      // two reasons. First, the first and last row show odd behavior both in
+      // the underscan (high values) and the active (low value) regions. Second,
+      // it makes the data section square. If we really want the full CCD, we
+      // can use the implicit "full" window.
+      "4kx4k": {
+        "sx": 2,
+        "sy": 8,
+        "nx": 4192,
+        "ny": 4096
+      }
+    },
+    "detectorboresight": { "x": 2048.0, "y": 2048.0 },
+    "detectorfullunbinneddatawindow": {
+      "sx": 50,
+      "sy": 0,
+      "nx": 4096,
+      "ny": 4112
+    },
+    "detectorfullunbinnedbiaswindow": {
+      "sx": 0,
+      "sy": 0,
+      "nx": 50,
+      "ny": 4112
+    },
+    "coolerstartsetting": "last",
+    "cooleropensetting": "last",
+    "coolerclosedsetting": "last",
+    "temperaturelimit": 45,
+    "temperaturelimitoutletgroup": "red-service-cabinet",
+    //"filterwheeltype": "null",
+    //"filterwheelidentifier": "null",
+    //"filters": {
+    //  "w"      : "0",
+    //  "initial": "w",
+    //  "idle"   : "w",
+    //  "closed" : "w"
+    //},
+    "filterwheeltype": "fli",
+    // The DDRAGO CFW-14-5 filter wheels are:
+    // FW0011318 -- firmware serial number "CFW-14-5"
+    // FW0021318 -- firmware serial number "FW0021318"
+    // FW0031318 -- firmware serial number "FW0031318"
+    "filterwheelidentifier": "FW0021318",
+    "filters": {
+      "z"      : "0",
+      "y"      : "1",
+      "zy"     : "2",
+      "initial": "z",
+      "idle"   : "z",
+      "closed" : "z"
+    },
+    "focusertype": "null",
+    "focuseridentifier": "null",
+    "focuserinitialposition": 0,
+    "focuserbacklashoffset": 0,
+    "focuserdzmodel": {},
+    "telescopedescription": "OAN COLIBRI 1.3-m",
+    "pointingmodelparameters": {},
+    "isstandalone": false,
+    "fitsfwhmargs": {
+      "1": "-m",
+      "2": "-A",
+      "4": "-A",
+      "8": "-A",
+      "16": "-A"
+    }
+  },
+
   "covers": {
     "type": "opentsi",
-    "port2name": "right",
-    "port3name": "left"
+    "ports": {
+      "port2": 2
+    },
+    "settlingseconds": 0
   },
   "dome": {
     "type": "opentsi",
+    // Open, close, and park to the north.
     "openazimuth": "0d",
     "closeazimuth": "0d",
     "parkazimuth": "0d",
@@ -113,7 +312,9 @@
     // meters in diameter. Thus, if the dome were perfectly aligned, it
     // could accept 7.66 degrees of tolerance. We will reduce this to
     // account for imperfections in the dome azimuth calibration.
-    "trackingtolerance": "5d"
+    "trackingazimuthtolerance": "5d",
+    "moveazimuthtolerance": "1d",
+    "settlingseconds": 1
   },
   "executor": {
     "type": "colibri"
@@ -174,19 +375,19 @@
   },
   "instrument": {
     "detectors": [
-      "C0"
+      "C0", "C1", "C2"
     ],
     "activedetectors": [
-      "C0"
+      "C0", "C1", "C2"
     ],
     "activefocusers": [
-      "C0"
+      "C0", "C1", "C2"
     ],
     "idlefilterwheelpositions": [
-      "0"
+      "0", "0", "0"
     ],
     "pointingdetectors": [
-      "C0"
+      "C1"
     ],
     "outletgroups": []
   },
@@ -205,7 +406,9 @@
     "derotatoroffsetpark": "-5d.00",
     // The unparked derotator offset is with respect to the cardinal directions of the detector.
     // Value at OHP with DDRAGUITO: "derotatoroffsetunpark": "7.75d",
-    "derotatoroffsetunpark": "-27.6d",
+    // Value at OAN for OGSE: "derotatoroffsetunpark": "9.27d",
+    // Value at OAN for DDRAGO "derotatoroffsetunpark": "15.85d",
+    "derotatoroffsetunpark": "15.85d",
     // When the PLC parks the telescope, it uses these positions. These are not
     // configuarable using OpenTSI.
     // "azimuthpark": "-0.0025d",
@@ -216,18 +419,20 @@
     "zenithdistancepark": "10d",
     "derotatoranglepark": "0d",
     // Unpark to the south too.
-    "haunpark": "12h",
+    "haunpark": "0h",
     "deltaunpark": "0d",
     "minzenithdistancelimit": "0.5d",
     "maxzenithdistancelimit": "80d",
-    "initialport": "ogse",
+    "initialport": "ddrago",
     "ports": {
       "new":     "port2",
       "old":     "port3",
       "ogse":    "port2",
+      "ddrago":  "port3",
       "port2":   "2",
       "port3":   "3"
-    }
+    },
+    "settlingseconds": 1
   },
   "plc": {
     "type": "colibri",
@@ -242,10 +447,26 @@
         "type": "ibootbar",
         "outlets": "8",
         "inlets": "1"
+      },
+      "pdu1": {
+        "type": "ibootpdu",
+        "outlets": "8",
+        "inlets": "1"
+      },
+      "pdu2": {
+        "type": "ibootpdu",
+        "outlets": "8",
+        "inlets": "1"
       }
     },
     "outletgroupaddresses": {
-      "instrument": [[ "pdu0", "a", "1"]]
+      "instrument"              : [[ "pdu0", "a", "1" ]],
+      "blue"                    : [[ "pdu2", "a", "1" ]],
+      "red"                     : [[ "pdu2", "a", "2" ]],
+      "close-electronics"       : [[ "pdu1", "a", "1" ]],
+      "close-electronics-spare" : [[ "pdu1", "a", "2" ]],
+      "red-service-cabinet"     : [[ "pdu1", "a", "4" ]],
+      "blue-service-cabinet"    : [[ "pdu1", "a", "3" ]]
     }
   },
   "safetyswitch": {
@@ -262,7 +483,8 @@
     "temperaturesensor": "telescope-M1-rear-temperature",
     "dzmodel": {
       "filter": {}
-    }
+    },
+    "settlingseconds": 0
   },
   "selector": {},
   "sensors": {
@@ -299,7 +521,21 @@
       "weather-cabinet-temperature",
       "seeing-cabinet-temperature",
       "column-bottom-temperature",
-      "telescope-pneumatic-pressure"
+      "telescope-pneumatic-pressure",
+      "ddrago-external-temperature",
+      "ddrago-external-humidity",
+      "ddrago-external-light-level",
+      "ddrago-external-pressure",
+      "ddrago-close-electronics-temperature",
+      "ddrago-close-electronics-humidity",
+      "ddrago-internal-es3-temperature",
+      "ddrago-internal-es3-humidity",
+      "ddrago-internal-es4-temperature",
+      "ddrago-internal-es4-humidity",
+      "ddrago-internal-es5-temperature",
+      "ddrago-internal-es5-humidity",
+      "ddrago-external-tunnel-temperature",
+      "ddrago-external-tunnel-humidity"
     ],
     "environmental-sensor-reference": "observing-room-comet1-temperature",
     "sensors": {
@@ -352,6 +588,18 @@
         "correctionmodel": "",
         "model": "iButtonLink MS-TL",
         "identifier": "26.A493A0000000",
+        "firmware": ""
+      },
+      "ddrago-external-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/7E.983100001000/EDS0068/temperature",
+        "prettyname": "ddrago external temperature",
+        "subsystem": "ddrago",
+        "component": "close-electronics",
+        "group": "environmental-temperature",
+        "type": "float",
+        "unit": "C",
+        "model": "EDS OW-ENV-THPL",
+        "identifier": "7E.983100001000",
         "firmware": ""
       },
       "telescope-M1-rear-temperature": {
@@ -508,8 +756,73 @@
         "identifier": "opentsi-sensor-14",
         "firmware": ""
       },
+      "ddrago-close-electronics-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.E9AE1A020000/temperature",
+        "prettyname": "ddrago close electronics temperature",
+        "subsystem": "ddrago",
+        "component": "close electronics",
+        "group": "environmental-temperature",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.E9AE1A020000",
+        "firmware": ""
+      },      
+      "ddrago-internal-es3-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.EEB51A020000/temperature",
+        "prettyname": "ddrago internal es3 temperature",
+        "subsystem": "ddrago",
+        "component": "main structure",
+        "group": "environmental-temperature",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.EEB51A020000",
+        "firmware": ""
+      },      
+      "ddrago-internal-es4-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.5A971A020000/temperature",
+        "prettyname": "ddrago internal es4 temperature",
+        "subsystem": "ddrago",
+        "component": "main structure",
+        "group": "environmental-temperature",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.5A971A020000",
+        "firmware": ""
+      },      
+      "ddrago-internal-es5-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.BCB01A020000/temperature",
+        "prettyname": "ddrago internal es5 temperature",
+        "subsystem": "ddrago",
+        "component": "main structure",
+        "group": "environmental-temperature",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.BCB01A020000",
+        "firmware": ""
+      },      
+      "ddrago-external-tunnel-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.6985E1010000/temperature",
+        "prettyname": "ddrago external tunnel temperature",
+        "subsystem": "ddrago",
+        "component": "main structure",
+        "group": "environmental-temperature",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.6985E1010000",
+        "firmware": ""
+      },      
       "column-middle-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.09FCD6010000/temperature",
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.09FCD6010000/temperature",
         "prettyname": "column middle temperature",
         "subsystem": "building",
         "component": "column",
@@ -522,7 +835,7 @@
         "firmware": ""
       },      
       "column-bottom-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.47A740010000/temperature",
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.47A740010000/temperature",
         "prettyname": "column bottom temperature",
         "subsystem": "building",
         "component": "column",
@@ -535,7 +848,7 @@
         "firmware": ""
       },      
       "control-room-temperature": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.7539F5000000/temperature",
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.7539F5000000/temperature",
         "prettyname": "control room temperature",
         "subsystem": "building",
         "component": "control-room",
@@ -545,6 +858,58 @@
         "correctionmodel": "",
         "model": "iButtonLink MS-TL",
         "identifier": "26.7539F5000000",
+        "firmware": ""
+      },      
+      "ddrago-bdsc-external-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.C7961A020000/temperature",
+        "prettyname": "blue detector service cabinet external temperature",
+        "subsystem": "building",
+        "component": "control-room",
+        "group": "environmental-temperature",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.C7961A020000",
+        "firmware": ""
+      },      
+      "ddrago-bdsc-internal-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.15971A020000/temperature",
+        "prettyname": "blue detector service cabinet internal temperature",
+        "subsystem": "building",
+        "component": "control-room",
+        "group": "environmental-temperature",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.15971A020000",
+        "firmware": ""
+      },      
+      "ddrago-rdsc-external-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.FE7D1A020000/temperature",
+        "prettyname": "red detector service cabinet external temperature",
+        "subsystem": "building",
+        "component": "control-room",
+        "group": "environmental-temperature",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.FE7D1A020000",
+        "firmware": ""
+      },      
+      "ddrago-rdsc-internal-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.F3961A020000/temperature",
+        "prettyname": "red detector service cabinet internal temperature",
+        "subsystem": "building",
+        "component": "control-room",
+        "group": "environmental-temperature",
+        "type": "float",
+        "unit": "C",
+        "correctionmodel": "",
+        "model": "iButtonLink MS-TL",
+        "identifier": "26.F3961A020000",
         "firmware": ""
       },      
       "telescope-cabinet-temperature": {
@@ -650,7 +1015,6 @@
       },      
       "ogse-external-humidity": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.A493A0000000/HIH4000/humidity",
-        "keyword": "CR6HM",
         "prettyname": "ogse external humidity",
         "subsystem": "ogse",
         "component": "close-electronics",
@@ -662,6 +1026,85 @@
         "identifier": "26.A493A0000000",
         "firmware": ""
       },
+      "ddrago-external-humidity": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/7E.983100001000/EDS0068/humidity",
+        "prettyname": "ddrago external humidity",
+        "subsystem": "ddrago",
+        "component": "close-electronics",
+        "relative": "humidity",
+        "group": "environmental-humidity",
+        "type": "float",
+        "correctionmodel": "ENV-H:1.0:0:0:0:0",
+        "unit": "",
+        "model": "EDS OW-ENV-THPL",
+        "identifier": "7E.983100001000",
+        "firmware": ""
+      },
+      "ddrago-close-electronics-humidity": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.E9AE1A020000/HIH4000/humidity",
+        "prettyname": "ddrago close electronics humidity",
+        "subsystem": "ddrago",
+        "component": "close electronics",
+        "group": "environmental-humidity",
+        "type": "float",
+        "unit": "",
+        "correctionmodel": "MS-H:1.0:0:0:0:0",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.E9AE1A020000",
+        "firmware": ""
+      },      
+      "ddrago-internal-es3-humidity": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.EEB51A020000/HIH4000/humidity",
+        "prettyname": "ddrago internal es3 humidity",
+        "subsystem": "ddrago",
+        "component": "main structure",
+        "group": "environmental-humidity",
+        "type": "float",
+        "unit": "",
+        "correctionmodel": "MS-H:1.0:0:0:0:0",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.EEB51A020000",
+        "firmware": ""
+      },      
+      "ddrago-internal-es4-humidity": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.5A971A020000/HIH4000/humidity",
+        "prettyname": "ddrago internal es4 humidity",
+        "subsystem": "ddrago",
+        "component": "main structure",
+        "group": "environmental-humidity",
+        "type": "float",
+        "unit": "",
+        "correctionmodel": "MS-H:1.0:0:0:0:0",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.5A971A020000",
+        "firmware": ""
+      },      
+      "ddrago-internal-es5-humidity": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.BCB01A020000/HIH4000/humidity",
+        "prettyname": "ddrago internal es5 humidity",
+        "subsystem": "ddrago",
+        "component": "main structure",
+        "group": "environmental-humidity",
+        "type": "float",
+        "unit": "",
+        "correctionmodel": "MS-H:1.0:0:0:0:0",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.BCB01A020000",
+        "firmware": ""
+      },      
+      "ddrago-external-tunnel-humidity": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.6985E1010000/HIH4000/humidity",
+        "prettyname": "ddrago external tunnel humidity",
+        "subsystem": "ddrago",
+        "component": "main structure",
+        "group": "environmental-humidity",
+        "type": "float",
+        "unit": "",
+        "correctionmodel": "MS-H:1.0:0:0:0:0",
+        "model": "iButtonLink MS-TH",
+        "identifier": "26.6985E1010000",
+        "firmware": ""
+      },      
       "weather-dewpoint": {
         "file": "/usr/local/var/tcs/sensors/control/weather-dewpoint",
         "prettyname": "dewpoint",
@@ -806,8 +1249,20 @@
         "identifier": "26.B5A940010000",
         "firmware": ""
       },
+      "ddrago-external-light-level": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/7E.983100001000/EDS0068/light",
+        "prettyname": "ddrago external light level",
+        "subsystem": "ddrago",
+        "component": "close-electronics",
+        "group": "environmental-light-level",
+        "type": "float",
+        "unit": "lux",
+        "model": "EDS OW-ENV-THPL",
+        "identifier": "7E.983100001000",
+        "firmware": ""
+      },
       "control-room-light-level": {
-        "file": "/usr/local/var/tcs/sensors/control/ow/26.7539F5000000/VAD",
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.7539F5000000/VAD",
         "prettyname": "control room light level",
         "subsystem": "building",
         "component": "control-room",
@@ -816,6 +1271,18 @@
         "unit": "",
         "model": "iButtonLink MS-TL",
         "identifier": "26.7539F5000000",
+        "firmware": ""
+      },
+      "ddrago-external-pressure": {
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/7E.983100001000/EDS0068/pressure",
+        "prettyname": "ddrago external pressure",
+        "subsystem": "ddrago",
+        "component": "close-electronics",
+        "group": "environmental-pressure",
+        "type": "float",
+        "unit": "mbar",
+        "model": "EDS OW-ENV-THPL",
+        "identifier": "7E.983100001000",
         "firmware": ""
       },
       "host-control-load": {
@@ -916,6 +1383,110 @@
         "prettyname": "C0 filter wheel position",
         "subsystem": "ogse",
         "component": "C0-filter-wheel",
+        "group": "filter-wheel-position",
+        "type": "string",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "C1-detector-detector-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/C1-detector-detector-temperature",
+        "keyword": "",
+        "prettyname": "C1 detector temperature",
+        "subsystem": "ddrago",
+        "component": "C1-detector",
+        "group": "detector-temperature",
+        "type": "float",
+        "unit": "C",
+        "model": "SI 1110",
+        "identifier": "SI 1110-167",
+        "firmware": ""
+      },
+      "C1-detector-cooler-set-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/C1-detector-cooler-set-temperature",
+        "keyword": "",
+        "prettyname": "C1 cooler set temperature",
+        "subsystem": "ddrago",
+        "component": "C1-detector",
+        "group": "detector-cooler-set-temperature",
+        "type": "float",
+        "unit": "C",
+        "model": "SI 1110",
+        "identifier": "SI 1110-167",
+        "firmware": ""
+      },
+      "C1-detector-cooler-state": {
+        "file": "/usr/local/var/tcs/sensors/instrument/C1-detector-cooler-state",
+        "keyword": "",
+        "prettyname": "C1 cooler state",
+        "subsystem": "ddrago",
+        "component": "C1-detector",
+        "group": "detector-cooler-state",
+        "type": "string",
+        "unit": "state",
+        "model": "SI 1110",
+        "identifier": "SI 1110-167",
+        "firmware": ""
+      },
+      "C1-filter-wheel-position": {
+        "file": "/usr/local/var/tcs/sensors/instrument/C1-filter-wheel-position",
+        "keyword": "",
+        "prettyname": "C1 filter wheel position",
+        "subsystem": "ddrago",
+        "component": "C1-filter-wheel",
+        "group": "filter-wheel-position",
+        "type": "string",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "C2-detector-detector-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/C2-detector-detector-temperature",
+        "keyword": "",
+        "prettyname": "C2 detector temperature",
+        "subsystem": "ddrago",
+        "component": "C2-detector",
+        "group": "detector-temperature",
+        "type": "float",
+        "unit": "C",
+        "model": "SI 1110",
+        "identifier": "SI 1110-185",
+        "firmware": ""
+      },
+      "C2-detector-cooler-set-temperature": {
+        "file": "/usr/local/var/tcs/sensors/instrument/C2-detector-cooler-set-temperature",
+        "keyword": "",
+        "prettyname": "C2 cooler set temperature",
+        "subsystem": "ddrago",
+        "component": "C2-detector",
+        "group": "detector-cooler-set-temperature",
+        "type": "float",
+        "unit": "C",
+        "model": "SI 1110",
+        "identifier": "SI 1110-185",
+        "firmware": ""
+      },
+      "C2-detector-cooler-state": {
+        "file": "/usr/local/var/tcs/sensors/instrument/C2-detector-cooler-state",
+        "keyword": "",
+        "prettyname": "C2 cooler state",
+        "subsystem": "ddrago",
+        "component": "C2-detector",
+        "group": "detector-cooler-state",
+        "type": "string",
+        "unit": "state",
+        "model": "SI 1110",
+        "identifier": "SI 1110-185",
+        "firmware": ""
+      },
+      "C2-filter-wheel-position": {
+        "file": "/usr/local/var/tcs/sensors/instrument/C2-filter-wheel-position",
+        "keyword": "",
+        "prettyname": "C2 filter wheel position",
+        "subsystem": "ddrago",
+        "component": "C2-filter-wheel",
         "group": "filter-wheel-position",
         "type": "string",
         "unit": "",

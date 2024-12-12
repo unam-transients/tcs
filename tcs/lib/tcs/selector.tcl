@@ -69,6 +69,13 @@ namespace eval "selector" {
   
   ######################################################################
 
+  proc sendchat {category message} {
+    log::info "sending $category message \"$message\"."
+    exec "[directories::prefix]/bin/tcs" "sendchat" "$category" "$message"
+  }
+  
+  ######################################################################
+
   proc getblockfiles {} {
     if {[catch {
       set channel [open "|[directories::bin]/tcs getblockfiles" "r"]
@@ -508,6 +515,7 @@ namespace eval "selector" {
 #      }
 #    }
     
+    sendchat alerts "block $blockidentifier ($name): received a $type GCN Notice for $identifier."
     if {!$alertfileexists && ([string equal "" $enabled] || $enabled)} {
       log::info "running alertscript."
       if {[catch {

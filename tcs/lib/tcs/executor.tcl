@@ -117,6 +117,12 @@ namespace eval "executor" {
   
   ######################################################################
 
+  proc sendchat {category message} {
+    exec "[directories::prefix]/bin/tcs" "sendchat" "$category" "$message"
+  }
+  
+  ######################################################################
+
   variable trackstart
   
   proc track {{alphaoffset 0} {deltaoffset 0} {aperture "default"}} {
@@ -643,7 +649,8 @@ namespace eval "executor" {
       server::setdata "blockidentifier"   [block::identifier [block]]
       server::setdata "blockname"         [block::name [block]]
     }
-    server::setdata "timestamp" [utcclock::combinedformat]
+    server::setdata "blocktimestamp" [utcclock::combinedformat]
+    server::setdata "timestamp"      [utcclock::combinedformat]
   }
 
   proc updatevisitdata {} {
@@ -658,7 +665,8 @@ namespace eval "executor" {
       server::setdata "visitcommand"      [visit::command [visit]]
       server::setdata "visittasks"        [visit::tasks [visit]]
     }
-    server::setdata "timestamp" [utcclock::combinedformat]
+    server::setdata "visittimestamp" [utcclock::combinedformat]
+    server::setdata "timestamp"      [utcclock::combinedformat]
   }
   
   proc updatealertdata {} {
@@ -919,6 +927,9 @@ namespace eval "executor" {
     client::wait "instrument"
 
     log::summary "executing block [block::identifier [block]] \"[block::name [block]]\" of project [project::identifier [project]] \"[project::name [block::project [block]]]\"."
+    if {[string equal "alert" [filetype]]} {
+      sendchat "observations" "executing alert block [block::identifier [block]] \"[block::name [block]]\"."
+    }
 
     foreach visit [block::visits [block]] {
 
@@ -959,6 +970,9 @@ namespace eval "executor" {
 
     log::summary [format "finished executing block after %.1f seconds." [utcclock::diff now $blockstart]]
     log::summary [format "finished executing [filetype] file \"[file tail [filename]]\" after %.1f seconds." [utcclock::diff now $blockstart]]
+    if {[string equal "alert" [filetype]]} {
+      sendchat "observations" "finished executing alert block [block::identifier [block]] \"[block::name [block]]\"."
+    }
   }
   
   proc resetactivitycommand {} {
@@ -1069,6 +1083,30 @@ namespace eval "executor" {
     log::summary [format "finished emergency closing after %.1f seconds." [utcclock::diff now $start]]
   }
 
+  proc parkactivitycommand {} {
+    recoverifnecessary false
+    set start [utcclock::seconds]
+    log::summary "parking."
+    foreach server {telescope} {
+      catch {client::waituntilstarted $server}
+      client::request $server "park"
+      client::wait $server
+    }
+    log::summary [format "finished parking after %.1f seconds." [utcclock::diff now $start]]
+  }
+
+  proc unparkactivitycommand {} {
+    recoverifnecessary false
+    set start [utcclock::seconds]
+    log::summary "unparking."
+    foreach server {telescope} {
+      catch {client::waituntilstarted $server}
+      client::request $server "unpark"
+      client::wait $server
+    }
+    log::summary [format "finished unparking after %.1f seconds." [utcclock::diff now $start]]
+  }
+
   proc idleactivitycommand {} {
     recoverifnecessary true
     set start [utcclock::seconds]
@@ -1162,6 +1200,22 @@ namespace eval "executor" {
     # Do not check status or activity.
     server::newactivitycommand "closing" "idle" \
       "executor::emergencycloseactivitycommand" 900e3
+  }
+  
+  proc park {} {
+    server::checkstatus
+    server::checkactivityforreset
+    setinitialactivity
+    server::newactivitycommand "parking" "idle" \
+      "executor::parkactivitycommand" 900e3
+  }
+  
+  proc unpark {} {
+    server::checkstatus
+    server::checkactivityforreset
+    setinitialactivity
+    server::newactivitycommand "unparking" "idle" \
+      "executor::unparkactivitycommand" 900e3
   }
   
   proc execute {filetype filename} {
