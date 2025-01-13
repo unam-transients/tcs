@@ -65,6 +65,7 @@ do
   if sudo curl -k -q -s -o bulletin$bulletin.txt.tmp https://datacenter.iers.org/data/latestVersion/bulletin$bulletin.txt 
   then
     sudo mv bulletin$bulletin.txt.tmp bulletin$bulletin.txt
+    tcs log "$program" info "updated bulletin $bulletin."
   else
     tcs log "$program" warning "unable to update bulletin $bulletin."
   fi
