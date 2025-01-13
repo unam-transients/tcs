@@ -551,7 +551,7 @@ namespace eval "plc" {
     server::setdata "windalarmdisabled"                     [boolean [expr {[server::getdata "bypasswindalarm"]     || [server::getdata "bypassweatheralarms"]}]]
     server::setdata "humidityalarmdisabled"                 [boolean [expr {[server::getdata "bypasshumidityalarm"] || [server::getdata "bypassweatheralarms"]}]]
     server::setdata "cloudalarmdisabled"                    [boolean [expr {[server::getdata "bypasscloudalarm"]    || [server::getdata "bypassweatheralarms"]}]]
-    server::setdata "daylightalarmdisabled"                 [boolean [expr {[server::getdata "bypassdaylightalarm"] || [server::getdata "bypassweatheralarms"]}]]
+    server::setdata "daylightalarmdisabled"                 [server::getdata "bypassdaylightalarm"]
     
     server::setdata "tcsalarmdisabled"                      [server::getdata "bypasstcsalarm"]
     server::setdata "upsalarmdisabled"                      [server::getdata "bypassupsalarm"]
