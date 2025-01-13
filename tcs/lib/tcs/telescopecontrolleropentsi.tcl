@@ -226,6 +226,13 @@ namespace eval "telescopecontroller" {
         } elseif {$level != 0} {
           log::warning "error \"$grouppart\"."
           set anyerror true
+          if {[string match "*position value invalid for lower range*" $grouppart]} {
+            log::error "reference switch error."
+            log::warning "switching off telescope controller."
+            switchoffhardware
+            log::warning "exiting."
+            exit 0
+          }
         }
       }
       if {!$anyerror} {
