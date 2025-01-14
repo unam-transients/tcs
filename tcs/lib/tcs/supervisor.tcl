@@ -337,6 +337,13 @@ namespace eval "supervisor" {
         set mustnotoperate true
         set why "plc forbids operation"
         
+      } elseif {[client::getdata "plc" "mustbeclosed"]} {
+
+        set mustnotoperate false
+        set maybeopen false
+        set maybeopentoventilate false
+        set why "plc"
+        
       } else {
       
         set mustnotoperate false
