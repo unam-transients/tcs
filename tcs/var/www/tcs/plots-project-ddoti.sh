@@ -34,7 +34,7 @@ then
   when=$(date -u +%Y%m%d)
 fi
 
-for days in 1 4 30 120 360 1600
+for days in 1 2 4 8 16 32 64 128 256 512 1024
 do
 
   lines=$(expr $days / 4)
@@ -51,14 +51,26 @@ do
     ) >$component.dat
   done
 
-  xrange=$(
-    tclsh <<EOF
-      set now [clock scan "$when" -timezone UTC]
-      set min [clock format [expr {\$now - 24 * 3600 * ($days - 1)}] -format "%Y-%m-%d" -timezone UTC]
-      set max [clock format [expr {\$now + 24 * 3600 * 1}] -format "%Y-%m-%d" -timezone UTC]
-      puts "\[\"\$min\":\"\$max\"\]"
+  if test $days = 1 || test $days = 2 || test $days = 4
+  then
+    xrange=$(
+      tclsh <<EOF
+        set now [clock scan "$when" -format "%Y%m%dT%H" -timezone UTC]
+        set min [clock format [expr {\$now - (24 * $days - 1) * 3600}] -format "%Y-%m-%dT%H" -timezone UTC]
+        set max [clock format [expr {\$now + 1 * 3600}] -format "%Y-%m-%dT%H" -timezone UTC]
+        puts "\[\"\$min\":\"\$max\"\]"
 EOF
-  )
+    )
+  else
+    xrange=$(
+      tclsh <<EOF
+        set now [clock scan "$whendate" -format "%Y%m%d" -timezone UTC]
+        set min [clock format [expr {\$now - 24 * 3600 * ($days - 1)}] -format "%Y-%m-%dT00" -timezone UTC]
+        set max [clock format [expr {\$now + 24 * 3600 * 1}] -format "%Y-%m-%dT00" -timezone UTC]
+        puts "\[\"\$min\":\"\$max\"\]"
+EOF
+    )
+  fi
 
   gnuplot <<EOF
 
