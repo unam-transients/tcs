@@ -303,7 +303,7 @@ namespace eval "plc" {
     }
 
     if {[catch {
-      server::setdata "needtopark"                    [boolean [string index $responseb 31]]
+      server::setdata "mustbeclosed"                  [boolean [string index $responseb 31]]
       server::setdata "rainalarm"                     [boolean [string index $responseb 32]]
       server::setdata "windalarm"                     [boolean [string index $responseb 33]]
       server::setdata "cloudalarm"                    [boolean [string index $responseb 34]]
@@ -617,7 +617,6 @@ namespace eval "plc" {
       "info"    "rioboltwoodcommunicationalarm" "rio boltwoodcommunication alarm"
       "info"    "emergencystopalarm"            "emergency stop alarm"
 
-      "info"    "needtopark"                    "needtopark"
 
       "summary" "keyswitch"                     "key switch"
       "summary" "mode"                          "mode"
@@ -631,6 +630,7 @@ namespace eval "plc" {
       "summary" "requestedcloseshutters"        "requested close shutters"
       
       "summary" "mustnotoperate"                "mustnotoperate"
+      "summary" "mustbeclosed"                  "mustbeclosed"
       
       "summary" "accessrequested"               "accessrequested"
 
