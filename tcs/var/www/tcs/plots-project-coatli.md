@@ -23,26 +23,11 @@ PERFORMANCE OF THIS SOFTWARE.
 
 # COATLI Plots
 
-* CCDs: 
-  + [1 day](plots/ccds-1.png) 
-  + [4 days](plots/ccds-4.png) 
-  + [30 days](plots/ccds-30.png) 
-  + [120 days](plots/ccds-120.png)
-  + [360 days](plots/ccds-360.png) 
-  + [1600 days](plots/ccds-1600.png)
-* Shed and Enclosure: 
-  + [1 day](plots/building-1.png)
-  + [4 days](plots/building-4.png)
-  + [30 days](plots/building-30.png)
-  + [120 days](plots/instrument-120.png)
-  + [360 days](plots/building-360.png)
-  + [1600 days](plots/building-1600.png)
+* CCDs:
+  + [1](plots/ccds-1.png) [2](plots/ccds-2.png) [4](plots/ccds-4.png) [8](plots/ccds-8.png) [16](plots/ccds-16.png) [32](plots/ccds-32.png) [64](plots/ccds-64.png) [128](plots/ccds-128.png) [256](plots/ccds-256.png)  [512](plots/ccds-512.png) [1024](plots/ccds-1024.png) days
+* Building: 
+  + [1](plots/building-1.png) [2](plots/building-2.png) [4](plots/building-4.png) [8](plots/building-8.png) [16](plots/building-16.png) [32](plots/building-32.png) [64](plots/building-64.png) [128](plots/building-128.png) [256](plots/building-256.png)  [512](plots/building-512.png) [1024](plots/building-1024.png) days
 * Weather:
-  + [1 day](plots/weather-1.png)
-  + [4 days](plots/weather-4.png)
-  + [30 days](plots/weather-30.png)
-  + [120 days](plots/weather-120.png)
-  + [360 days](plots/weather-360.png)
-  + [1600 days](plots/weather-1600.png)
+  + [1](plots/weather-1.png) [2](plots/weather-2.png) [4](plots/weather-4.png) [8](plots/weather-8.png) [16](plots/weather-16.png) [32](plots/weather-32.png) [64](plots/weather-64.png) [128](plots/weather-128.png) [256](plots/weather-256.png)  [512](plots/weather-512.png) [1024](plots/weather-1024.png) days
 
 </hr>

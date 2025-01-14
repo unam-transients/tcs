@@ -37,7 +37,7 @@ else
 fi
 whendate=$(echo $when | sed 's/T.*//')
 
-for days in 1 4 30 120 360 1600
+for days in 1 2 4 8 16 32 64 128 256 512 1024
 do
 
   lines=$(expr $days / 4)
@@ -46,7 +46,7 @@ do
     lines=1
   fi
 
-  if test $days = 1 || test $days = 4
+  if test $days = 1 || test $days = 2 || test $days = 4
   then
     xrange=$(
       tclsh <<EOF
