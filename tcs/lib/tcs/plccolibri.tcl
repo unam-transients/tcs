@@ -54,6 +54,10 @@ namespace eval "plc" {
   
   ######################################################################
 
+  variable forcemustbeclosed false
+
+  ######################################################################
+
   server::setdata "timestamp"         ""
 
   variable settledelayseconds 5
@@ -313,6 +317,11 @@ namespace eval "plc" {
       server::setdata "upsalarm"                      [boolean [string index $responseb 38]]
     }]} {
       log::warning "unable to read alarm data."
+    }
+    
+    variable forcemustbeclosed
+    if {$forcemustbeclosed} {
+      server::setdata "mustbeclosed" true 
     }
     
     switch -- "[string index $responseb 39]" {
@@ -1056,6 +1065,15 @@ namespace eval "plc" {
   proc specialdisablelocalconfirmation {} {
     log::warning "disabling local confirmation."
     controller::pushcommand "LocalStaff{ON}\n"
+    return
+  }
+  
+  ######################################################################
+  
+  proc specialsetforcemustbeclosed {value} {
+    log::info "setting forcemustbeclosed to $value."
+    variable forcemustbeclosed
+    set forcemustbeclosed $value
     return
   }
   
