@@ -43,6 +43,7 @@ namespace eval "executor" {
   
   variable detectors         [config::getvalue "instrument" "detectors"]
   variable pointingdetectors [config::getvalue "instrument" "pointingdetectors"]
+  variable activefocusers    [config::getvalue "instrument" "activefocusers"]
   
   ######################################################################
   
@@ -264,7 +265,8 @@ namespace eval "executor" {
         set timestamp [utcclock::combinedformat now]
         eval expose "focus" [lrepeat [llength $detectors] $exposuretime]
         eval analyze [lrepeat [llength $detectors] "fwhm"]
-        foreach detector $detectors {
+        variable activefocusers
+        foreach detector $activefocusers {
           client::update $detector
           set fitsfilename [file tail [client::getdata $detector "fitsfilename"]]
           set fwhm         [client::getdata $detector "fwhm"]
