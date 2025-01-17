@@ -37,6 +37,10 @@ namespace eval "weather" {
 
   ######################################################################
 
+  variable forcemustbeclosed false
+
+  ######################################################################
+
   server::setdata "windaveragespeedlimit" $windaveragespeedlimit
   server::setdata "humidityalarm"  "unknown"
   server::setdata "windalarm"      "unknown"
@@ -345,10 +349,12 @@ namespace eval "weather" {
     }
     
     set lastmustbeclosed [server::getdata "mustbeclosed"]
+    variable forcemustbeclosed
     if {
       [server::getdata "windalarm"] ||
       [server::getdata "humidityalarm"] ||
-      [server::getdata "rainalarm"]    
+      [server::getdata "rainalarm"] ||
+      $forcemustbeclosed
     } {
       set mustbeclosed true
     } else {
@@ -442,6 +448,15 @@ namespace eval "weather" {
       parsedata $datalines
   }
 
+  ######################################################################
+  
+  proc setforcemustbeclosed {value} {
+    log::info "setting forcemustbeclosed to $value."
+    variable forcemustbeclosed
+    set forcemustbeclosed $value
+    return
+  }
+  
   ######################################################################
 
   variable updatedatapollseconds 15

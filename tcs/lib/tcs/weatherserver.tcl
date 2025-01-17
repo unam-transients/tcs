@@ -28,7 +28,12 @@ package provide "weatherserver" 0.0
 
 namespace eval "weatherserver" {
 
+  proc slavesetforcemustbeclosed {value} {
+    weather::setforcemustbeclosed $value
+  }
+  
   proc configureslave {slave} {
+    interp alias $slave setforcemustbeclosed {} weatherserver::slavesetforcemustbeclosed
   }
 
   proc start {} {
