@@ -35,6 +35,7 @@ namespace eval "instrument" {
   ######################################################################
 
   variable detectors                 [config::getvalue "instrument" "detectors"]
+  variable monitoreddetectors        [config::getvalue "instrument" "monitoreddetectors"]
   variable activefocusers            [config::getvalue "instrument" "activefocusers"]
   variable activedetectors           [config::getvalue "instrument" "activedetectors"]
   variable pointingdetectors         [config::getvalue "instrument" "pointingdetectors"]
@@ -931,8 +932,12 @@ namespace eval "instrument" {
     server::setrequestedactivity "started"
     variable detectors
     server::setdata "detectors" [join $detectors]
+    variable monitoreddetectors
+    server::setdata "monitoreddetectors" [join $monitoreddetectors]
     variable activedetectors
     server::setdata "activedetectors" [join $activedetectors]
+    variable activefocusers
+    server::setdata "activefocusers" [join $activefocusers]
     server::setdata "timestamp" [utcclock::combinedformat]
     server::setactivity [server::getrequestedactivity]
     server::setstatus "ok"

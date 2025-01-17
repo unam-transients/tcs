@@ -39,7 +39,7 @@ namespace eval "html" {
   variable servers [concat \
     { "html" } \
     [config::getvalue "html" "servers"] \
-    [config::getvalue "instrument" "activedetectors"] \
+    [config::getvalue "instrument" "monitoreddetectors"] \
   ]
   variable sensors                   [config::getvalue "sensors" "sensors"]
   variable powerhosts                [config::getvalue "power" "hosts"]
@@ -1002,7 +1002,9 @@ namespace eval "html" {
 
     if {[string equal [client::getstatus "instrument"] "ok"]} {
       writehtmlfullrow "Detectors" [join [client::getdata "instrument" "detectors"]]
+      writehtmlfullrow "Monitored detectors" [join [client::getdata "instrument" "monitoreddetectors"]]
       writehtmlfullrow "Active detectors" [join [client::getdata "instrument" "activedetectors"]]
+      writehtmlfullrow "Active focusers" [join [client::getdata "instrument" "activefocusers"]]
     }
 
     putshtml "</table>"
