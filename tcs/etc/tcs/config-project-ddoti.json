@@ -555,6 +555,9 @@
     "detectors": [
       "C0", "C1", "C2", "C3", "C4", "C5"
     ],
+    "monitoreddetectors": [
+      "C0", "C1", "C2", "C3", "C4", "C5"
+    ],
     "activedetectors": [
       "C0", "C1", "C2", "C3", "C4", "C5"
     ],

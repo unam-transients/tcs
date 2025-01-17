@@ -235,6 +235,9 @@
     "detectors": [
       "C0"
     ],
+    "monitoreddetectors": [
+      "C0"
+    ],
     "activedetectors": [
       "C0"
     ],

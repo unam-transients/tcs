@@ -117,6 +117,9 @@
     "detectors": [
       "C0", "C1"
     ],
+    "monitoreddetectors": [
+      "C0", "C1"
+    ],
     "activedetectors": [
       "C0", "C1"
     ],
