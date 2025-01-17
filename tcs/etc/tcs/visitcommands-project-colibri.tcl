@@ -23,6 +23,8 @@
 
 proc alertvisit {filters} {
   
+  set filters {"r"}
+
   log::summary "alertvisit: starting."
   
   set alpha   [visit::alpha   [executor::visit]]
@@ -64,6 +66,8 @@ proc alertvisit {filters} {
 ########################################################################
 
 proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {offsetfastest true}} {
+
+  set filters {"r"}
 
   log::summary "gridvisit: starting."
 
@@ -132,6 +136,8 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
 ########################################################################
 
 proc fullgridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {offsetfastest true}} {
+
+  set filters {"r"}
 
   log::summary "gridvisit: starting."
 
@@ -221,6 +227,8 @@ proc dithervisitoffset {diameter} {
 }
 
 proc dithervisit {exposurerepeats exposuretimes filters {offsetfastest true} {diameter "1am"}} {
+
+  set filters {"r"}
 
   log::summary "dithervisit: starting."
 
@@ -336,6 +344,8 @@ proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest true}
 
 proc coarsefocusvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
 
+  set filter "r"
+
   log::summary "coarsefocusvisit: starting."
   
   executor::setsecondaryoffset 0
@@ -352,8 +362,8 @@ proc coarsefocusvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
   log::summary "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning 8."
   executor::setwindow "2kx2k"
   executor::setbinning 8
-  #executor::focussecondary "C0" $exposuretime 1000 100 false true
-  executor::focussecondary "C1" $exposuretime 100 10 true false
+  executor::focussecondary "C0" $exposuretime 1000 100 false true
+  #executor::focussecondary "C1" $exposuretime 100 10 true false
   #executor::focussecondary "C2" $exposuretime 100 10 true false
   
   log::summary "coarsefocusvisit: finished."
@@ -364,6 +374,8 @@ proc coarsefocusvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
 ########################################################################
 
 proc focusvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
+
+  set filter "r"
 
   log::summary "focusvisit: starting."
   
@@ -379,7 +391,7 @@ proc focusvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
   executor::waituntiltracking
 
   executor::setwindow "1kx1k"
-  if {1} {
+  if {0} {
     executor::setbinning 1
     foreach filter {i} {
       log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
@@ -394,7 +406,7 @@ proc focusvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
   } else {
       log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 2."
       executor::setbinning 1
-      executor::movefilterwheel r i z
+      executor::movefilterwheel $filter
       executor::focussecondary C0 $exposuretime 100 10 true false
   }
   
@@ -406,6 +418,8 @@ proc focusvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
 ########################################################################
 
 proc focustiltvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
+
+  set filter "r"
 
   log::summary "focustiltvisit: starting."
   
@@ -428,6 +442,8 @@ proc focustiltvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
 ########################################################################
 
 proc focuswitnessvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
+
+  set filter "r"
 
   log::summary "focuswitnessvisit: starting."
 
@@ -461,6 +477,8 @@ proc focuswitnessvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
 ########################################################################
 
 proc pointingcorrectionvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
+
+  set filter "r"
 
   log::summary "correctpointingvisit: starting."
 
@@ -542,6 +560,8 @@ proc twilightflatsvisit {targetngood filter} {
     { r gri zy }
   }
   
+  set filters { "r" }
+  
   foreach filter $filters {
   
       log::info "twilightflatsvisit: filter $filter."
@@ -553,7 +573,7 @@ proc twilightflatsvisit {targetngood filter} {
       while {true} {
         executor::expose flat $exposuretime
         executor::analyze levels
-        set level [executor::exposureaverage C1]
+        set level [executor::exposureaverage C0]
         log::info [format "twilightflatsvisit: level is %.1f DN in filter $filter in $exposuretime seconds." $level]
         if {$level > $maxlevel} {
           log::info "twilightflatsvisit: level is too bright."
@@ -753,6 +773,8 @@ proc nearfocustestvisit {{exposuretime 10} {filter {"r" "i" "z"}} {exposures 3}}
 ########################################################################
 
 proc pointingmapvisit {{exposuretime 15} {filter {"r" "i" "z"}}} {
+
+  set filter "r"
 
   log::summary "pointingmapvisit: starting."
 
