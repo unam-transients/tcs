@@ -320,7 +320,7 @@ namespace eval "supervisor" {
 
       }
 
-      # Determine if the PLC will let us operate.
+      # Determine if the PLC will let us operate or open.
       
       if {!$withplc} {
       
@@ -454,7 +454,6 @@ namespace eval "supervisor" {
       }
 
       if {$mustdisable} {
-
         set start [utcclock::seconds]
         log::summary "disabling ($why)."
         server::setrequestedactivity "idle"
