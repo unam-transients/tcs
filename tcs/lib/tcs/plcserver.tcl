@@ -52,6 +52,10 @@ namespace eval "plcserver" {
     plc::close
   }
   
+  proc slavesetforcemustbeclosed {value} {
+    plc::setforcemustbeclosed $value
+  }
+  
   proc slavespecial {command args} {
     plc::special $command $args
   }
@@ -62,6 +66,7 @@ namespace eval "plcserver" {
     interp alias $slave reset                {} plcserver::slavereset
     interp alias $slave open                 {} plcserver::slaveopen
     interp alias $slave close                {} plcserver::slaveclose
+    interp alias $slave setforcemustbeclosed {} plcserver::slavesetforcemustbeclosed
     interp alias $slave special              {} plcserver::slavespecial
   }
 

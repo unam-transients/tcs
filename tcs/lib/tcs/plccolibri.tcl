@@ -1070,7 +1070,7 @@ namespace eval "plc" {
   
   ######################################################################
   
-  proc specialsetforcemustbeclosed {value} {
+  proc setforcemustbeclosed {value} {
     log::info "setting forcemustbeclosed to $value."
     variable forcemustbeclosed
     set forcemustbeclosed $value
