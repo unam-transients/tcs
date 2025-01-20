@@ -441,7 +441,8 @@
     "controllerhost": "192.168.100.28",
     "controllerport": "200",
     "boltwoodenabled": true,
-    "vaisalaenabled": true
+    "vaisalaenabled": true,
+    "daylightalarmoffsetseconds": "2700"
   },
   "power": {
     "hosts": {
