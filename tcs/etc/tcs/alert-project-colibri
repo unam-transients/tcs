@@ -29,7 +29,7 @@
   "name": "",
   "enabled": "true",
 
-  "command": "alertvisit r",
+  "command": "alertvisit {r r zy}",
   "estimatedduration": "20m",
   "visitidentifier": "0",
 

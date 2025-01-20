@@ -23,8 +23,6 @@
 
 proc alertvisit {filters} {
   
-  set filters {"r"}
-
   log::summary "alertvisit: starting."
   
   set alpha   [visit::alpha   [executor::visit]]
@@ -66,8 +64,6 @@ proc alertvisit {filters} {
 ########################################################################
 
 proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {offsetfastest true}} {
-
-  set filters {"r"}
 
   log::summary "gridvisit: starting."
 
@@ -136,8 +132,6 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
 ########################################################################
 
 proc fullgridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {offsetfastest true}} {
-
-  set filters {"r"}
 
   log::summary "gridvisit: starting."
 
@@ -227,8 +221,6 @@ proc dithervisitoffset {diameter} {
 }
 
 proc dithervisit {exposurerepeats exposuretimes filters {offsetfastest true} {diameter "1am"}} {
-
-  set filters {"r"}
 
   log::summary "dithervisit: starting."
 
@@ -344,8 +336,6 @@ proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest true}
 
 proc coarsefocusvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
 
-  set filter "r"
-
   log::summary "coarsefocusvisit: starting."
   
   executor::setsecondaryoffset 0
@@ -375,8 +365,6 @@ proc coarsefocusvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
 
 proc focusvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
 
-  set filter "r"
-
   log::summary "focusvisit: starting."
   
   executor::setsecondaryoffset 0
@@ -395,18 +383,15 @@ proc focusvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
     executor::setbinning 1
     foreach filter {i} {
       log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
-      executor::movefilterwheel r "$filter" z
       executor::focussecondary C1 $exposuretime 100 10 true false
     }
     foreach filter {z} {
       log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
-      executor::movefilterwheel r i "$filter"
       executor::focussecondary C2 $exposuretime 100 10 true false
     }
   } else {
       log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 2."
       executor::setbinning 1
-      executor::movefilterwheel $filter
       executor::focussecondary C0 $exposuretime 100 10 true false
   }
   
@@ -418,8 +403,6 @@ proc focusvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
 ########################################################################
 
 proc focustiltvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
-
-  set filter "r"
 
   log::summary "focustiltvisit: starting."
   
@@ -442,8 +425,6 @@ proc focustiltvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
 ########################################################################
 
 proc focuswitnessvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
-
-  set filter "r"
 
   log::summary "focuswitnessvisit: starting."
 
@@ -477,8 +458,6 @@ proc focuswitnessvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
 ########################################################################
 
 proc pointingcorrectionvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
-
-  set filter "r"
 
   log::summary "correctpointingvisit: starting."
 
@@ -559,8 +538,6 @@ proc twilightflatsvisit {targetngood filter} {
     { r g   zy }
     { r gri zy }
   }
-  
-  set filters { "r" }
   
   foreach filter $filters {
   
@@ -773,8 +750,6 @@ proc nearfocustestvisit {{exposuretime 10} {filter {"r" "i" "z"}} {exposures 3}}
 ########################################################################
 
 proc pointingmapvisit {{exposuretime 15} {filter {"r" "i" "z"}}} {
-
-  set filter "r"
 
   log::summary "pointingmapvisit: starting."
 
