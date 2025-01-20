@@ -13,7 +13,7 @@
 # THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
 # WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
 # WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
-# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL<
 # DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
 # PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 # TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
@@ -21,10 +21,12 @@
 
 ########################################################################
 
+package require "client"
 package require "config"
 package require "controller"
 package require "log"
 package require "server"
+package require "utcclock"
 
 package provide "plccolibri" 0.0
 
@@ -32,8 +34,9 @@ namespace eval "plc" {
 
   ######################################################################
 
-  variable controllerhost [config::getvalue "plc" "controllerhost"]
-  variable controllerport [config::getvalue "plc" "controllerport"]  
+  variable controllerhost             [config::getvalue "plc" "controllerhost"]
+  variable controllerport             [config::getvalue "plc" "controllerport"]  
+  variable daylightalarmoffsetseconds [config::getvalue "plc" "daylightalarmoffsetseconds"]
   
   ######################################################################
 
@@ -960,6 +963,69 @@ namespace eval "plc" {
 
   ######################################################################
   
+  proc daylightalarmloop {} {
+  
+    if {[catch {
+
+        variable daylightalarmoffsetseconds
+      
+        while {true} {
+      
+            log::debug "daylightalarmloop: waiting"
+    
+            coroutine::after 10000
+    
+            log::debug "daylightalarmloop: updating sun data"
+    
+            if {[catch {client::update "sun"} message]} {
+                log::debug "daylightalarmloop: unable to update sun data: $message"
+                continue
+            }
+            
+            set skystate [client::getdata "sun" "skystate"]
+            set observedha [client::getdata "sun" "observedha"]
+            if {$observedha > 0} {
+              set evening true
+            } else {
+              set evening false
+            }
+            set seconds         [utcclock::seconds]
+            set endofdayseconds [utcclock::scan [client::getdata "sun" "endofday"]]
+
+            log::debug "daylightalarmloop: skystate is $skystate." 
+            log::debug "daylightalarmloop: evening is $evening." 
+            log::debug [format "daylightalarmloop: end of day in %.0f seconds." [expr {$endofdayseconds - $seconds}]]
+
+            log::debug [format "daylightalarmloop: daylightalarmdisabled is %s." [server::getdata "daylightalarmdisabled"]]
+
+            if {[server::getdata "daylightalarmdisabled"]} {
+                log::debug "daylightalarmloop: checking if the daylight alarm should be enabled."
+                if {[string equal "night" $skystate] || (!$evening && [string match "*twilight" $skystate])} {
+                    log::info "automatically enabling the daylight alarm."
+                    controller::sendcommand "DayLightThreshold\{ON\}\n"
+                    log::info "finished automatically enabling daylight alarm."
+                }
+            } else {
+                log::debug "daylightalarmloop: checking if the daylight alarm should be disabled."
+                set seconds         [utcclock::seconds]
+                set endofdayseconds [utcclock::scan [client::getdata "sun" "endofday"]]
+                if {$endofdayseconds - $seconds < $daylightalarmoffsetseconds || ($evening && [string match "*twilight" $skystate])} {
+                    log::info "automatically disabling the daylight alarm."
+                    controller::sendcommand "DayLightThreshold\{OFF\}\n"
+                    log::info "finished automatically disabling daylight alarm."
+                }
+            }
+            
+        }
+
+    } message]} {
+      log::error "in daylight alarm loop: $message."
+    }
+  
+  }
+  
+  ######################################################################
+  
   proc checkalarm {alarm} {
     switch $alarm {
       "weather"  { return }
@@ -1091,6 +1157,10 @@ namespace eval "plc" {
     controller::startcommandloop
     controller::startstatusloop
     server::newactivitycommand "starting" "idle" plc::startactivitycommand
+    after idle {
+      coroutine ::plc::sunloopcoroutine plc::daylightalarmloop
+    }
+    
   }
 
 }
