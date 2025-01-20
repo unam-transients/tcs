@@ -78,7 +78,6 @@ namespace eval "covers" {
     variable portcovers
     variable ports
 
-
     if {[scan $response "%*d DATA INLINE AUXILIARY.COVER.REALPOS=%f" value] == 1} {
       set primarycover [coverstate $value]
       return false
@@ -162,15 +161,20 @@ namespace eval "covers" {
   proc openhardware {} {
     server::setdata "requestedcovers" "open"
     opentsi::sendcommand [format "SET AUXILIARY.COVER.TARGETPOS=1"]
-    opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=1"]
-    opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=1"]
+    variable ports
+    foreach portindex [dict values $ports] {
+      opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[%d\].TARGETPOS=1" $portindex]
+    }
   }
   
   proc closehardware {} {
     server::setdata "requestedcovers" "closed"
     opentsi::sendcommand [format "SET AUXILIARY.COVER.TARGETPOS=0"]
+    variable ports
+    foreach portindex [dict values $ports] {
+      opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[%d\].TARGETPOS=0" $portindex]
+    }
     opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[2\].TARGETPOS=0"]
-    opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[3\].TARGETPOS=0"]
   }
   
   ######################################################################
