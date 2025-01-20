@@ -43,7 +43,6 @@ namespace eval "executor" {
   
   variable detectors         [config::getvalue "instrument" "detectors"]
   variable pointingdetectors [config::getvalue "instrument" "pointingdetectors"]
-  variable activefocusers    [config::getvalue "instrument" "activefocusers"]
   
   ######################################################################
   
@@ -265,39 +264,36 @@ namespace eval "executor" {
         set timestamp [utcclock::combinedformat now]
         eval expose "focus" [lrepeat [llength $detectors] $exposuretime]
         eval analyze [lrepeat [llength $detectors] "fwhm"]
-        variable activefocusers
-        foreach detector $activefocusers {
-          client::update $detector
-          set fitsfilename [file tail [client::getdata $detector "fitsfilename"]]
-          set fwhm         [client::getdata $detector "fwhm"]
-          set fwhmpixels   [client::getdata $detector "fwhmpixels"]
-          set binning      [client::getdata $detector "detectorbinning"]
-          set filter       [client::getdata $detector "filter"]
-          if {[string equal "$fwhm" ""]} {
-            log::summary [format "$fitsfilename: $detector witness FWHM is unknown (with binning $binning) in filter $filter at secondary position $z0 in $exposuretime seconds."]
-            set success false
-          } else {
-            log::summary [format \
-              "$fitsfilename: $detector witness FWHM is %.2fas (%.2f pixels with binning $binning) in filter $filter at secondary position $z0 in $exposuretime seconds." \
-              [astrometry::radtoarcsec $fwhm] $fwhmpixels \
+        client::update $detector
+        set fitsfilename [file tail [client::getdata $detector "fitsfilename"]]
+        set fwhm         [client::getdata $detector "fwhm"]
+        set fwhmpixels   [client::getdata $detector "fwhmpixels"]
+        set binning      [client::getdata $detector "detectorbinning"]
+        set filter       [client::getdata $detector "filter"]
+        if {[string equal "$fwhm" ""]} {
+          log::summary [format "$fitsfilename: $detector witness FWHM is unknown (with binning $binning) in filter $filter at secondary position $z0 in $exposuretime seconds."]
+          set success false
+        } else {
+          log::summary [format \
+            "$fitsfilename: $detector witness FWHM is %.2fas (%.2f pixels with binning $binning) in filter $filter at secondary position $z0 in $exposuretime seconds." \
+            [astrometry::radtoarcsec $fwhm] $fwhmpixels \
+          ]
+          log::putmessage $timestamp "focus-$detector" "keys" "timestamp\tfwhm\tfilter\tbinning"
+          log::putmessage $timestamp "focus-$detector" "data" "$timestamp\t[astrometry::radtoarcsec $fwhm]\t$filter\t$binning"
+          if {[catch {
+            client::update "secondary"
+            set T [client::getdata "secondary" "T"]
+            set z [client::getdata "secondary" "z"]
+            set dztemperature [client::getdata "secondary" "dztemperature"]
+            set dzposition [client::getdata "secondary" "dzposition"]
+            set channel [::open [file join [directories::vartoday] "focus.csv"] "a"]
+            puts $channel [format \
+              "\"%s\",%.2f,%d,%.1f,\"%s\",%.2f,%.0f,%.0f,%.0f" \
+              $fitsfilename $fwhm $binning $exposuretime $filter $T $z $dztemperature $dzposition \
             ]
-            log::putmessage $timestamp "focus-$detector" "keys" "timestamp\tfwhm\tfilter\tbinning"
-            log::putmessage $timestamp "focus-$detector" "data" "$timestamp\t[astrometry::radtoarcsec $fwhm]\t$filter\t$binning"
-            if {[catch {
-              client::update "secondary"
-              set T [client::getdata "secondary" "T"]
-              set z [client::getdata "secondary" "z"]
-              set dztemperature [client::getdata "secondary" "dztemperature"]
-              set dzposition [client::getdata "secondary" "dzposition"]
-              set channel [::open [file join [directories::vartoday] "focus.csv"] "a"]
-              puts $channel [format \
-                "\"%s\",%.2f,%d,%.1f,\"%s\",%.2f,%.0f,%.0f,%.0f" \
-                $fitsfilename $fwhm $binning $exposuretime $filter $T $z $dztemperature $dzposition \
-              ]
-              ::close $channel
-            } message]} {
-              log::warning "unable to write focus.csv file: $message"
-            }
+            ::close $channel
+          } message]} {
+            log::warning "unable to write focus.csv file: $message"
           }
         }
       }
