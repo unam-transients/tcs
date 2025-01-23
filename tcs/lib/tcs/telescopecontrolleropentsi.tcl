@@ -68,6 +68,7 @@ namespace eval "telescopecontroller" {
     AUXILIARY.SENSOR[14].VALUE
     POSITION.HORIZONTAL.AZ
     POSITION.HORIZONTAL.ZD
+    POSITION.INSTRUMENTAL.DOME[0].REALPOS
   } ";"]"
 
   ######################################################################
@@ -96,6 +97,7 @@ namespace eval "telescopecontroller" {
   variable sensor14            ""
   variable mountazimuth        ""
   variable mountzenithdistance ""
+  variable domeazimuth         ""
 
   proc updatedata {response} {
 
@@ -123,6 +125,7 @@ namespace eval "telescopecontroller" {
     variable sensor14
     variable mountazimuth
     variable mountzenithdistance
+    variable domeazimuth
     
     if {[scan $response "%*d DATA INLINE TELESCOPE.STATUS.GLOBAL=%d" value] == 1} {
       set errorstateflag $value
@@ -158,6 +161,10 @@ namespace eval "telescopecontroller" {
     }
     if {[scan $response "%*d DATA INLINE POSITION.HORIZONTAL.ZD=%f" value] == 1} {
       set mountzenithdistance [astrometry::degtorad $value]
+      return false
+    }
+    if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.DOME\[0\].REALPOS=%f" value] == 1} {
+      set domeazimuth [astrometry::degtorad $value]
       return false
     }
 
@@ -199,7 +206,8 @@ namespace eval "telescopecontroller" {
     } elseif {![string equal $lasterrorstate $errorstate]} {
       log::info "error state has changed from $lasterrorstate to $errorstate."
       log::info [format "mount position is %.1fd azimuth and %.1fd zenith distance." [astrometry::radtodeg $mountazimuth] [astrometry::radtodeg $mountzenithdistance]]
-      log::info [format "mount pneumatic pressure is %.1f." $sensor2]
+      log::info [format "mount pneumatic pressure is %.1fd." $sensor2]
+      log::info [format "dome azimuth is %.1fd." [astrometry::radtodeg $domeazimuth]]
     }
     if {$errorstateflag & 7 && ![string equal [server::getactivity] "resetting"]} {
       server::setactivity "error"
