@@ -88,9 +88,45 @@ namespace eval "block" {
     }  
   }
   
+  proc priority {block} {
+    if {[dict exists $block "priority"]} {
+      return [dict get $block "priority"]
+    } else {
+      return "10"
+    }  
+  }
+  
   ######################################################################
   
-  proc makeblock {identifier name project constraints visits {alert ""} {persistent false}} {
+  variable why
+
+  proc setwhy {whyarg} {
+    variable why
+    set why $whyarg
+  }
+  
+  proc why {} {
+    variable why
+    return $why
+  }
+
+  ######################################################################  
+  
+  proc checkpriority {block priority} {
+  
+    setwhy ""
+    
+    if {$priority != [priority $block]} {
+      setwhy "priority is [priority $block]."
+      return false
+    }
+    
+    return true
+  }
+  
+  ######################################################################
+  
+  proc makeblock {identifier name project constraints visits {alert ""} {persistent false} {priority "10"}} {
     return [dict create          \
       "identifier"  $identifier  \
       "name"        $name        \
@@ -99,6 +135,7 @@ namespace eval "block" {
       "visits"      $visits      \
       "alert"       $alert       \
       "persistent"  $persistent  \
+      "priority"    $priority    \
     ]
   }
   
