@@ -132,6 +132,16 @@ namespace eval "selector" {
   }
   
   ######################################################################
+  
+  proc isselectableblock {block seconds priority} {
+    if {![block::checkpriority $block $priority]} {
+      return [block::why]
+    } elseif {![constraints::check $block $seconds]} {
+      return [constraints::why]
+    } else {
+      return ""
+    }
+  }
 
   proc isselectablealertfile {alertfile seconds priority} {
     if {[catch {
@@ -140,13 +150,7 @@ namespace eval "selector" {
       log::warning "error while reading alert file \"[file tail $alertfile]\": $message"
       return "invalid alert file."
     } 
-    if {![alert::checkpriority [block::alert $block] $priority]} {
-      return [alert::why]
-    } elseif {![constraints::check $block $seconds]} {
-      return [constraints::why]
-    } else {
-      return ""
-    }
+    return [isselectableblock $block $seconds $priority]
   }
   
   proc selectalertfile {seconds priority} {
@@ -163,7 +167,7 @@ namespace eval "selector" {
     return ""
   }
     
-  proc isselectableblockfile {blockfile seconds} {
+  proc isselectableblockfile {blockfile seconds priority} {
     if {[catch {
       set block [block::readfile $blockfile]
     } message]} {
@@ -171,19 +175,15 @@ namespace eval "selector" {
       log::warning "deleting block file \"[file tail $blockfile]\"."
       file delete -force $blockfile
       return "invalid block file."
-    } 
-    if {[constraints::check $block $seconds]} {
-      return ""
-    } else {
-      return [constraints::why]
     }
+    return [isselectableblock $block $seconds $priority]
   }
   
-  proc selectblockfile {seconds} {
+  proc selectblockfile {seconds priority} {
     swift::updatefavoredside
     foreach blockfile [getblockfiles] {
       log::info "considering block file \"[file tail $blockfile]\"."
-      set why [isselectableblockfile $blockfile $seconds]
+      set why [isselectableblockfile $blockfile $seconds $priority]
       if {[string equal $why ""]} {
         log::summary "selected block file \"[file tail $blockfile]\"."
         return $blockfile
@@ -296,19 +296,19 @@ namespace eval "selector" {
         continue
       }
 
-      foreach priority {0 1 2 3 4 5 6 7 8 9} {
+      foreach priority {0 1 2 3 4 5 6 7 8 9 10} {
         log::info "checking alert queue for priority $priority alerts."
         set filename [selectalertfile $seconds $priority]
         if {![string equal $filename ""]} {
+          set filetype "alert"
           break
         }
-      }
-      if {![string equal $filename ""]} {
-        set filetype "alert"
-      } else {
-        set filetype "block"
-        set filename [selectblockfile $seconds]
-        set priority ""
+        log::info "checking block queue for priority $priority blocks."
+        set filename [selectblockfile $seconds $priority]
+        if {![string equal $filename ""]} {
+          set filetype "block"
+          break
+        }
       }
       updatedata
       

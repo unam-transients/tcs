@@ -126,7 +126,7 @@ namespace eval "alert" {
       lappend visits [visit::makevisit [visitidentifier $alert] [name $alert] $targetcoordinates [command $alert] [estimatedduration $alert]]
     }
       
-    set block [block::makeblock [identifier $alert] [name $alert] $project [constraints $alert] $visits $alert true]
+    set block [block::makeblock [identifier $alert] [name $alert] $project [constraints $alert] $visits $alert true [priority $alert]]
 
     return $block
   }
@@ -362,34 +362,6 @@ namespace eval "alert" {
       "priority"        $priority          \
     ]
   } 
-  
-  ######################################################################
-  
-  variable why
-
-  proc setwhy {whyarg} {
-    variable why
-    set why $whyarg
-  }
-  
-  proc why {} {
-    variable why
-    return $why
-  }
-
-  ######################################################################  
-  
-  proc checkpriority {alert priority} {
-  
-    setwhy ""
-    
-    if {$priority != [priority $alert]} {
-      setwhy "priority is [priority $alert]."
-      return false
-    }
-    
-    return true
-  }
   
   ######################################################################
 
