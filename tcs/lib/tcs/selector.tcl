@@ -50,7 +50,7 @@ namespace eval "selector" {
   variable filetype       ""
   variable filename       ""
   variable priority       ""
-  variable alertindex     0
+  variable alertrollindex 0
 
   ######################################################################
   
@@ -103,7 +103,7 @@ namespace eval "selector" {
   }
   
   proc getalertfiles {rolled} {
-    variable alertindex
+    variable alertrollindex
     set names [glob -nocomplain -directory [file join [directories::var] "alerts"] "*"]
     set mtimesandnames {}
     foreach name $names {
@@ -115,18 +115,17 @@ namespace eval "selector" {
       set name [lindex $mtimeandname 1]
       lappend names $name
     }
-    log::debug "unrolled alertfile list is \"$names\"."
     if {$rolled} {
-      log::debug "alertindex is $alertindex."
+      log::info "unrolled alertfile list is \"$names\"."
+      log::info "alertrollindex is $alertrollindex."
       set n [llength $names]
       if {$n != 0} {
         set names [concat \
-          [lrange $names [expr {$alertindex % $n}] end] \
-          [lrange $names 0 [expr {$alertindex % $n - 1}]] \
+          [lrange $names [expr {$alertrollindex % $n}] end] \
+          [lrange $names 0 [expr {$alertrollindex % $n - 1}]] \
         ]
       }
-      log::debug "rolled alertfile list is \"$names\"."
-      set alertindex [expr {$alertindex + 1}]
+      log::info "rolled alertfile list is \"$names\"."
     }
     return $names
   }
@@ -301,6 +300,8 @@ namespace eval "selector" {
         set filename [selectalertfile $seconds $priority]
         if {![string equal $filename ""]} {
           set filetype "alert"
+          variable alertrollindex
+          set alertrollindex [expr {$alertrollindex + 1}]
           break
         }
         log::info "checking block queue for priority $priority blocks."
@@ -510,8 +511,8 @@ namespace eval "selector" {
 #        if {[catch {client::request "executor" "stop"} message]} {
 #          log::error "unable to interrupt the executor: $message"
 #        }
-#        variable alertindex
-#        set alertindex 0
+#        variable alertrollindex
+#        set alertrollindex 0
 #      }
 #    }
     
