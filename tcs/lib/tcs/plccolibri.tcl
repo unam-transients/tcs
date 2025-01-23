@@ -898,7 +898,7 @@ namespace eval "plc" {
 
   proc enablealarmactivitycommand {alarm} {
     set start [utcclock::seconds]
-    log::info "enabling the $alarm alarm."
+    log::summary "enabling the $alarm alarm."
     switch $alarm { 
       "weather"  { set command "ByPassWeather\{OFF\}\n" }
       "rain"     { set command "RainAlarm\{ON\}\n" }
@@ -913,12 +913,12 @@ namespace eval "plc" {
       }
     }
     controller::sendcommand $command
-    log::info [format "finished enabling the $alarm alarm after %.1f seconds." [utcclock::diff now $start]]
+    log::summary [format "finished enabling the $alarm alarm after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc disablealarmactivitycommand {alarm} {
     set start [utcclock::seconds]
-    log::info "disabling the $alarm alarm."
+    log::summary "disabling the $alarm alarm."
     switch $alarm { 
       "weather"  { set command "ByPassWeather\{ON\}\n" }
       "rain"     { set command "RainAlarm\{OFF\}\n" }
@@ -933,7 +933,7 @@ namespace eval "plc" {
       }
     }
     controller::sendcommand $command
-    log::info [format "finished disabling the $alarm alarm after %.1f seconds." [utcclock::diff now $start]]
+    log::summary [format "finished disabling the $alarm alarm after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc grantaccessactivitycommand {} {
@@ -945,7 +945,7 @@ namespace eval "plc" {
 
   proc rebootactivitycommand {} {
     set start [utcclock::seconds]
-    log::info "rebooting."
+    log::summary "rebooting."
     variable boltwoodenabled
     if {$boltwoodenabled} {
       log::info "rebooting boltwood."
@@ -958,7 +958,7 @@ namespace eval "plc" {
       log::info "rebooting vaisala."
       controller::sendcommand "WeatherStationRestart{RESTART}\n"
     }    
-    log::info [format "finished rebooting after %.1f seconds." [utcclock::diff now $start]]
+    log::summary [format "finished rebooting after %.1f seconds." [utcclock::diff now $start]]
   }
 
   ######################################################################
@@ -1001,18 +1001,18 @@ namespace eval "plc" {
             if {[server::getdata "daylightalarmdisabled"]} {
                 log::debug "daylightalarmloop: checking if the daylight alarm should be enabled."
                 if {[string equal "night" $skystate] || (!$evening && [string match "*twilight" $skystate])} {
-                    log::info "automatically enabling the daylight alarm."
+                    log::summary "automatically enabling the daylight alarm."
                     controller::sendcommand "DayLightThreshold\{ON\}\n"
-                    log::info "finished automatically enabling daylight alarm."
+                    log::summary "finished automatically enabling daylight alarm."
                 }
             } else {
                 log::debug "daylightalarmloop: checking if the daylight alarm should be disabled."
                 set seconds         [utcclock::seconds]
                 set endofdayseconds [utcclock::scan [client::getdata "sun" "endofday"]]
                 if {$endofdayseconds - $seconds < $daylightalarmoffsetseconds || ($evening && [string match "*twilight" $skystate])} {
-                    log::info "automatically disabling the daylight alarm."
+                    log::summary "automatically disabling the daylight alarm."
                     controller::sendcommand "DayLightThreshold\{OFF\}\n"
-                    log::info "finished automatically disabling daylight alarm."
+                    log::summary "finished automatically disabling daylight alarm."
                 }
             }
             
