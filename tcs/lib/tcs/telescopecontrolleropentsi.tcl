@@ -66,9 +66,9 @@ namespace eval "telescopecontroller" {
     AUXILIARY.SENSOR[12].VALUE
     AUXILIARY.SENSOR[13].VALUE
     AUXILIARY.SENSOR[14].VALUE
-    POSITION.HORIZONTAL.AZ
-    POSITION.HORIZONTAL.ZD
     POSITION.INSTRUMENTAL.DOME[0].REALPOS
+    POSITION.INSTRUMENTAL.AZ.REALPOS
+    POSITION.INSTRUMENTAL.ZD.REALPOS
   } ";"]"
 
   ######################################################################
@@ -155,11 +155,11 @@ namespace eval "telescopecontroller" {
       return false
     }
 
-    if {[scan $response "%*d DATA INLINE POSITION.HORIZONTAL.AZ=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.AZ.REALPOS=%f" value] == 1} {
       set mountazimuth [astrometry::degtorad $value]
       return false
     }
-    if {[scan $response "%*d DATA INLINE POSITION.HORIZONTAL.ZD=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.ZD.REALPOS=%f" value] == 1} {
       set mountzenithdistance [astrometry::degtorad $value]
       return false
     }
@@ -275,6 +275,9 @@ namespace eval "telescopecontroller" {
   ######################################################################
   
   proc switchonhardware {} {
+    variable mountazimuth
+    variable mountzenithdistance
+    log::info [format "mount position is %.1fd azimuth and %.1fd zenith distance." [astrometry::radtodeg $mountazimuth] [astrometry::radtodeg $mountzenithdistance]]
     opentsi::sendcommand "SET TELESCOPE.POWER=1"
     while {$opentsi::readystate != 1.0} {
       coroutine::yield
@@ -292,6 +295,9 @@ namespace eval "telescopecontroller" {
     while {$opentsi::readystate != 0.0} {
       coroutine::yield
     }
+    variable mountazimuth
+    variable mountzenithdistance
+    log::info [format "mount position is %.1fd azimuth and %.1fd zenith distance." [astrometry::radtodeg $mountazimuth] [astrometry::radtodeg $mountzenithdistance]]
   }
   
   proc stophardware {} {

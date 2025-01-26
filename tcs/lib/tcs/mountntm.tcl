@@ -589,6 +589,7 @@ namespace eval "mount" {
       coroutine::yield
     }
     log::debug "waituntiloperational: finished."
+    log::info "the controller is operational."    
   }
 
   ######################################################################
@@ -893,7 +894,6 @@ namespace eval "mount" {
       coroutine::after 1000
       waituntiloperational
     }
-    log::info "the controller state is operational."
     sendcommandandwait "SET DEC.OFFSET=0"
     sendcommandandwait "SET HA.OFFSET=0"
     parkhardware
@@ -936,6 +936,8 @@ namespace eval "mount" {
     server::setdata "mounttracking" false
     stophardware
     variable initialized
+    variable state
+    log::info "the controller state is $state."    
     if {![isoperational] && $initialized} {
       log::info "attempting to change the controller state from [server::getdata "state"] to operational."
       sendcommandandwait "SET CABINET.POWER=0"
@@ -946,7 +948,7 @@ namespace eval "mount" {
       coroutine::after 1000
       waituntiloperational
     }
-    log::info "the controller state is [server::getdata "state"]."    
+    log::info "the controller state is $state."    
     set end [utcclock::seconds]
     log::info [format "finished resetting after %.1f seconds." [utcclock::diff $end $start]]
   }
