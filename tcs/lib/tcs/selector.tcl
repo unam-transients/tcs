@@ -468,14 +468,8 @@ namespace eval "selector" {
     set alertfileexists [file exists $fullalertfile]
 
     if {$alertfileexists} {
-      set interrupt false
       set alert [alert::readalertfile $fullalertfile]
     } else {
-      if {[string equal $enabled ""] || $enabled} {
-        set interrupt true
-      } else {
-        set interrupt false
-      }
       set alert {}        
     }
 
@@ -542,23 +536,23 @@ namespace eval "selector" {
 
     close $channel
     
-#    if {!$interrupt} {
-#      log::summary "not interrupting the executor: interrupt is false."
-#    } elseif {[string equal $mode "disabled"]} {
-#      log::summary "not interrupting the executor: selector is disabled."
-#    } else {
-#      set why [isselectablealertfile $alertfile [utcclock::seconds]]
-#      if {![string equal "" $why]} {
-#        log::summary "not interrupting the executor: alert is not selectable: $why"
-#      } else {
-#        log::summary "interrupting the executor."
-#        if {[catch {client::request "executor" "stop"} message]} {
-#          log::error "unable to interrupt the executor: $message"
-#        }
-#        variable alertrollindex
-#        set alertrollindex 0
-#      }
-#    }
+    if {[string equal $mode "disabled"]} {
+      log::summary "not interrupting the executor: selector is disabled."
+    } elseif {![string equal "" [server::getdata "priority"]] && ([server::getdata "priority"] < $priority)} {
+      log::summary [format "not interrupting the executor: current priority is %d." [server::getdata "priority"]]
+    } else {
+      set why [isselectablealertfile $alertfile [utcclock::seconds] $priority]
+      if {![string equal "" $why]} {
+        log::summary "not interrupting the executor: alert is not selectable: $why"
+      } else {
+        log::summary "interrupting the executor."
+        if {[catch {client::request "executor" "stop"} message]} {
+          log::error "unable to interrupt the executor: $message"
+        }
+        variable alertrollindex
+        set alertrollindex 0
+      }
+    }
     
     sendchat alerts "block $blockidentifier ($name): received a $type GCN Notice for $identifier."
     if {!$alertfileexists && ([string equal "" $enabled] || $enabled)} {
