@@ -36,20 +36,6 @@ namespace eval "gcntan" {
   # We should get an imalive packet every 60 seconds.
   variable packettimeout 300000
   
-  variable swiftalertprojectidentifier   [config::getvalue "gcntan" "swiftalertprojectidentifier"  ]
-  variable fermialertprojectidentifier   [config::getvalue "gcntan" "fermialertprojectidentifier"  ]
-  variable lvcalertprojectidentifier     [config::getvalue "gcntan" "lvcalertprojectidentifier"    ]
-  variable hawcalertprojectidentifier    [config::getvalue "gcntan" "hawcalertprojectidentifier"   ]
-  variable icecubealertprojectidentifier [config::getvalue "gcntan" "icecubealertprojectidentifier"]
-
-  variable swiftbasepriority    [config::getvalue "gcntan" "swiftbasepriority"  ]
-  variable fermibasepriority    [config::getvalue "gcntan" "fermibasepriority"  ]
-  variable fermilatpriority     [config::getvalue "gcntan" "fermilatpriority"   ]
-  variable fermisgrbpriority    [config::getvalue "gcntan" "fermisgrbpriority"  ]
-  variable lvcbasepriority      [config::getvalue "gcntan" "lvcbasepriority"    ]
-  variable hawcbasepriority     [config::getvalue "gcntan" "hawcbasepriority"   ]
-  variable icecubebasepriority  [config::getvalue "gcntan" "icecubebasepriority"]
-  
   ######################################################################
 
   server::setdata "swiftalpha"   ""
@@ -214,10 +200,10 @@ namespace eval "gcntan" {
         set uncertainty        [swiftuncertainty     $log $packet]
         set worthy             [swiftworthy          $log $packet]
         set retraction         [swiftretraction      $log $packet]
-        set priority           [swiftpriority        $log $packet]
+        set class              [swiftclass           $log $packet]
         respondtoalert $log $test $projectidentifier $blockidentifier \
           $eventname $origin $identifier $type $timestamp $eventtimestamp \
-          $retraction $worthy $alpha $delta $equinox $uncertainty $priority
+          $retraction $worthy $alpha $delta $equinox $uncertainty $class
         return "echo"
       }
 
@@ -241,10 +227,10 @@ namespace eval "gcntan" {
         set uncertainty        [fermigbmuncertainty  $log $packet]
         set worthy             [fermiworthy          $log $packet]
         set retraction         [fermiretraction      $log $packet]
-        set priority           [fermipriority        $log $packet]
+        set class              [fermiclass           $log $packet]
         respondtoalert $log $test $projectidentifier $blockidentifier \
           $eventname $origin $identifier $type $timestamp $eventtimestamp \
-          $retraction $worthy $alpha $delta $equinox $uncertainty $priority
+          $retraction $worthy $alpha $delta $equinox $uncertainty $class
         return "echo"
       }
        
@@ -268,10 +254,10 @@ namespace eval "gcntan" {
         set uncertainty        [fermilatuncertainty  $log $packet]
         set worthy             [fermiworthy          $log $packet]
         set retraction         [fermiretraction      $log $packet]
-        set priority           [fermipriority        $log $packet]
+        set class              [fermiclass           $log $packet]
         respondtoalert $log $test $projectidentifier $blockidentifier \
           $eventname $origin $identifier $type $timestamp $eventtimestamp \
-          $retraction $worthy $alpha $delta $equinox $uncertainty $priority
+          $retraction $worthy $alpha $delta $equinox $uncertainty $class
         return "echo"
       }
       
@@ -292,10 +278,10 @@ namespace eval "gcntan" {
         set uncertainty        [hawcuncertainty    $log $packet]
         set worthy             [hawcworthy         $log $packet]
         set retraction         [hawcretraction     $log $packet]
-        set priority           [hawcpriority       $log $packet]
+        set class              [hawcclass          $log $packet]
         respondtoalert $log $test $projectidentifier $blockidentifier \
           $eventname $origin $identifier $type $timestamp $eventtimestamp \
-          $retraction $worthy $alpha $delta $equinox $uncertainty $priority
+          $retraction $worthy $alpha $delta $equinox $uncertainty $class
         return "echo"
       }
 
@@ -318,10 +304,10 @@ namespace eval "gcntan" {
         set uncertainty        [icecubeuncertainty    $log $packet]
         set worthy             [icecubeworthy         $log $packet]
         set retraction         [icecuberetraction     $log $packet]
-        set priority           [icecubepriority       $log $packet]
+        set class              [icecubeclass          $log $packet]
         respondtoalert $log $test $projectidentifier $blockidentifier \
           $eventname $origin $identifier $type $timestamp $eventtimestamp \
-          $retraction $worthy $alpha $delta $equinox $uncertainty $priority
+          $retraction $worthy $alpha $delta $equinox $uncertainty $class
         return "echo"      
       }
 
@@ -342,10 +328,10 @@ namespace eval "gcntan" {
         set test               [lvctest            $log $packet]
         set retraction         [lvcretraction      $log $packet]
         set skymapurl          [lvcurl             $log $packet]
-        set priority           [lvcpriority        $log $packet]
+        set class              [lvcclass           $log $packet]
         respondtolvcalert $log $test $projectidentifier $blockidentifier \
           $eventname $origin $identifier $type $timestamp $eventtimestamp \
-          $retraction $skymapurl $priority
+          $retraction $skymapurl $class
         return "echo"
       }
        
@@ -375,7 +361,7 @@ namespace eval "gcntan" {
   
   proc respondtoalert {log test projectidentifier blockidentifier eventname
     origin identifier type alerttimestamp eventtimestamp retraction worthy
-    alpha delta equinox uncertainty priority
+    alpha delta equinox uncertainty class
   } {
     $log [format "%s: event name is %s." $type $eventname]
     if {$test} {
@@ -409,7 +395,7 @@ namespace eval "gcntan" {
     $log [format "%s: 90%% uncertainty is %s in radius." $type [astrometry::formatdistance $uncertainty]]
     $log [format "%s: project identifier is %s." $type $projectidentifier]
     $log [format "%s: block identifier is %d." $type $blockidentifier]
-    $log [format "%s: priority is %d." $type $priority] 
+    $log [format "%s: class is %s." $type $class] 
     if {$test} {
       $log [format "%s: not requesting selector to respond: this is a test packet." $type]
     } elseif {[string equal $projectidentifier ""]} {
@@ -420,7 +406,7 @@ namespace eval "gcntan" {
         client::request "selector" [list respondtoalert \
           $projectidentifier $blockidentifier $eventname $origin $identifier \
           $type $alerttimestamp $eventtimestamp $enabled $alpha $delta \
-          $equinox $uncertainty $priority \
+          $equinox $uncertainty $class \
         ]
       } result]} {
         log::warning [format "%s: unable to request selector: %s" $type $result]
@@ -430,7 +416,7 @@ namespace eval "gcntan" {
   
   proc respondtolvcalert {log test projectidentifier blockidentifier eventname
     origin identifier type alerttimestamp eventtimestamp retraction skymapurl
-    priority
+    class
   } {
     $log [format "%s: event name is %s." $type $eventname]
     if {$test} {
@@ -453,7 +439,7 @@ namespace eval "gcntan" {
     }
     $log [format "%s: project identifier is \"%s\"." $type $projectidentifier]
     $log [format "%s: block identifier is %d." $type $blockidentifier]
-    $log [format "%s: priority is %d." $type $priority] 
+    $log [format "%s: class is %s." $type $class] 
     if {$test} {
       $log [format "%s: not requesting selector to respond: this is a test packet." $type]
     } elseif {[string equal $projectidentifier ""]} {
@@ -463,7 +449,7 @@ namespace eval "gcntan" {
       if {[catch {
         client::request "selector" [list respondtolvcalert $projectidentifier \
           $blockidentifier $eventname $origin $identifier $type \
-          $alerttimestamp  $eventtimestamp $enabled $skymapurl $priority \
+          $alerttimestamp  $eventtimestamp $enabled $skymapurl $class \
         ]
       } result]} {
         log::warning [format "%s: unable to request selector: %s" $type $result]
@@ -611,15 +597,10 @@ namespace eval "gcntan" {
     } elseif {[swiftcataloged lognull $packet]} {
       return "cataloged"
     } else {
-      return "GRB"
+      return "grb"
     }
   }
   
-  proc swiftpriority {log packet} {
-    variable swiftbasepriority
-    return $swiftbasepriority
-  }
-
   ######################################################################
 
   # These procedures are designed to work with the following packet types:
@@ -818,7 +799,7 @@ namespace eval "gcntan" {
       "fermigbmfltpos" {
         set sigma [fermigbmtriggersigma $log $packet]
         $log [format "%s: %.1f sigma." $type $sigma]
-        if {[string equal $class "GRB"]} {
+        if {[string equal $class "grb"]} {
           return true
         } else {
           return false
@@ -923,36 +904,36 @@ namespace eval "gcntan" {
       "fermigbmfinpos" {
         switch [fermigbmgrbduration $log $packet] {
           "long" {
-            return "LGRB"
+            return "lgrb"
           }
           "short" {
-            return "SGRB"
+            return "sgrb"
           }
           default {
-            return "GRB"
+            return "grb"
           }
         }
       }
       default {
-        return "GRB"
+        return "grb"
       }
     }
   }
 
   variable fermigbmclassdict {
     0 "error"
-    1 "Unreliable Location"
-    2 "Local Particles"
-    3 "Below Horizon"
-    4 "GRB"
-    5 "Generic SGR"
-    6 "Generic Transient"
-    7 "Distant Particles"
-    8 "Solar Flare"
-    9 "Cyg-X1"
-    10 "SGR 1806-20"
-    11 "GRO J0422+32"
-    19 "TGF"
+    1 "unreliablelocation"
+    2 "localparticles"
+    3 "belowhorizon"
+    4 "grb"
+    5 "genericsgr"
+    6 "generictransient"
+    7 "distantparticles"
+    8 "solarflare"
+    9 "cygx1"
+    10 "sgr1806-20"
+    11 "groj0422+32"
+    19 "tgf"
   }
   
   proc fermiclassprobability {packet} {
@@ -964,23 +945,6 @@ namespace eval "gcntan" {
       }
       default {
         return 1.0
-      }
-    }
-  }
-  
-  proc fermipriority {log packet} {
-    variable fermilatpriority
-    variable fermisgrbpriority
-    variable fermibasepriority
-    switch [type $packet]-[fermiclass $log $packet] {
-      "fermilat*-*" {
-        return $fermilatpriority
-      }
-      "*-SGRB" {
-        return $fermisgrbpriority
-      }
-      default {
-        return $fermibasepriority
       }
     }
   }
@@ -1086,13 +1050,8 @@ namespace eval "gcntan" {
     if {[hawcretraction lognull $packet]} {
       return "retraction"
     } else {
-      return "detection"
+      return "grb"
     }
-  }
-
-  proc hawcpriority {log packet} {
-    variable hawcbasepriority
-    return $hawcbasepriority
   }
   
   ######################################################################
@@ -1190,22 +1149,17 @@ namespace eval "gcntan" {
     set type [type $packet]
     switch $type {
       "icecubeastrotrackgold" {
-        return "gold track"
+        return "goldtrack"
       }
       "icecubeastrotrackbronze" {
-        return "bronze track"
+        return "bronzetrack"
       }
       "icecubecascade" {
         return "cascade"
       }
     }
   }
-
-  proc icecubepriority {log packet} {
-    variable icecubebasepriority
-    return $icecubebasepriority
-  }
-
+  
   ######################################################################
 
   proc lvcidentifier {log packet} {
@@ -1320,11 +1274,6 @@ namespace eval "gcntan" {
     }
   }
 
-  proc lvcpriority {log packet} {
-    variable lvcbasepriority
-    return $lvcbasepriority
-  }
-  
   ######################################################################
 
   proc seconds {packet i} {

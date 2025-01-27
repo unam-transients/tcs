@@ -43,6 +43,7 @@ namespace eval "selector" {
 
   variable alertprojectidentifier         [config::getvalue "selector" "alertprojectidentifier"]
   variable eventtimestamptoleranceseconds [config::getvalue "selector" "eventtimestamptoleranceseconds"]
+  variable priorities                     [config::getvalue "selector" "priorities"]
 
   ######################################################################
 
@@ -402,9 +403,22 @@ namespace eval "selector" {
     return
   }
   
+  proc getpriority {type class} {
+  
+    variable priorities
+  
+    foreach matcher [dict keys $priorities] {
+      if [string match $matcher "$type-$class"] {
+        return [dict get $priorities $matcher]
+      }
+    }
+
+    return 10  
+  }
+  
   proc respondtoalert {projectidentifier blockidentifier name origin
     identifier type alerttimestamp eventtimestamp enabled alpha delta equinox
-    uncertainty priority
+    uncertainty class
   } {
     variable mode
     
@@ -435,7 +449,7 @@ namespace eval "selector" {
       log::info [format "position is %s %s %s." [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox]
       log::info [format "uncertainty is %s." [astrometry::formatdistance $uncertainty]]
     }
-    log::info [format "priority is %d." $priority]
+    log::info [format "class is %s." $class]
     if {![string equal $enabled ""]} {
       if {$enabled} {
         log::info "this alert is enabled."
@@ -443,6 +457,9 @@ namespace eval "selector" {
         log::info "this alert is not enabled."
       }
     }
+    
+    set priority [getpriority $type $class]
+    log::info [format "priority is %d." $priority]
     
     set alertfile [matchalert $origin $identifier $eventtimestamp $alerttimestamp]
     set fullalertfile [getalertfile $alertfile]
@@ -532,7 +549,7 @@ namespace eval "selector" {
   }
   
   proc respondtolvcalert {projectidentifier blockidentifier name origin
-    identifier type alerttimestamp eventtimestamp enabled skymapurl priority
+    identifier type alerttimestamp eventtimestamp enabled skymapurl class
   } {
     log::summary "responding to lvc alert."    
     if {![string equal $skymapurl ""]} {
@@ -561,7 +578,7 @@ namespace eval "selector" {
     }
     respondtoalert $projectidentifier $blockidentifier $name $origin \
       $identifier $type $alerttimestamp $eventtimestamp $enabled \
-      $alpha $delta $equinox $uncertainty $priority
+      $alpha $delta $equinox $uncertainty $class
     log::summary "finished responding to lvc alert."
     return
   }
