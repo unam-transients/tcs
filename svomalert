@@ -231,8 +231,8 @@ def respond(alert):
     )
 
     if alert["packettype"] == "svomtest":
-      logresponse("not requesting selector to respond: this is a test packet.")
-      return
+        logresponse("not requesting selector to respond: this is a test packet.")
+        return
 
     alerttimestamp = alert["alerttimestamp"]
     logresponse("alert time stamp is %s." % alerttimestamp)
@@ -260,7 +260,7 @@ def respond(alert):
     logresponse("requesting selector to respond.")
 
     print(
-        "tcs request selector respondtoalert %r %r %r %r %r %r %r %r %r %r %r %r %r %r"
+        "tcs request selector respondtoalert %r %r %r %r %r %r %r %r %r %r %r %r %r %r %r"
         % (
             projectidentifier,
             blockidentifier,
@@ -275,9 +275,11 @@ def respond(alert):
             delta,
             equinox,
             uncertainty,
-            priority,
+            "grb",
+            "electromagnetic",
         )
     )
+
 
 if False:
     alert = {}
@@ -292,7 +294,7 @@ if False:
     alert["alpha"] = "20.4243d"
     alert["delta"] = "-43.5338d"
     alert["uncertainty"] = "0.2156d"
-    
+
     respond(alert)
     exit(0)
 
