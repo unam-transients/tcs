@@ -199,7 +199,7 @@ namespace eval "selector" {
   proc getallalertfiles {} {
     set names    [glob -nocomplain -directory [file join [directories::var] "alerts"   ] "*"]
     set oldnames [glob -nocomplain -directory [file join [directories::var] "oldalerts"] "*"]
-    return [concat $names $oldnames]
+    return [lsort -decreasing [concat $names $oldnames]]
   }
   
   proc matchalert {origin identifier eventtimestamp alerttimestamp} {
