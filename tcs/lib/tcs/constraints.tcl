@@ -869,6 +869,7 @@ namespace eval "constraints" {
       log::debug "no minimum focus delay constraint."
     } else {
       set mindelay [getconstraint $constraints "minfocusdelay"]
+      set mindelay [utcclock::scaninterval $mindelay]
       variable focustimestamp
       log::debug "checking focus delay against the minimum allowed ($mindelay seconds)."
       if {[string equal "" $focustimestamp]} {
@@ -896,6 +897,7 @@ namespace eval "constraints" {
       log::debug "no maximum focus delay constraint."
     } else {
       set maxdelay [getconstraint $constraints "maxfocusdelay"]
+      set maxdelay [utcclock::scaninterval $maxdelay]
       variable focustimestamp
       log::debug "checking the focus delay against the maximum allowed ($maxdelay seconds)."
       if {[string equal "" $focustimestamp]} {
@@ -937,6 +939,7 @@ namespace eval "constraints" {
         log::debug "no minimum alert delay constraint."
       } else {
         set mindelay [getconstraint $constraints "minalertdelay"]
+        set mindelay [utcclock::scaninterval $mindelay]
         log::debug [format "checking the alert delay against the minimum allowed of %s." [utcclock::formatinterval $mindelay]]
         set delay [alert::delay $alert]
         if {$delay < $mindelay} {
@@ -959,6 +962,7 @@ namespace eval "constraints" {
         log::debug "no maximum alert delay constraint."
       } else {
         set maxdelay [getconstraint $constraints "maxalertdelay"]
+        set maxdelay [utcclock::scaninterval $maxdelay]
         log::debug [format "checking the alert delay against the maximum allowed of %s." [utcclock::formatinterval $maxdelay]]
         set delay [alert::delay $alert]
         if {$delay > $maxdelay} {
