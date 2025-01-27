@@ -513,19 +513,7 @@
     ]
   },
   "gcntan": {
-    "serverpacketport": "5351",
-    "swiftalertprojectidentifier"  : "1001",
-    "fermialertprojectidentifier"  : "1002",
-    "lvcalertprojectidentifier"    : "1003",
-    "hawcalertprojectidentifier"   : "1004",
-    "icecubealertprojectidentifier": "1005",
-    "swiftbasepriority"            : "6",
-    "fermilatpriority"             : "5",
-    "fermisgrbpriority"            : "5",
-    "fermibasepriority"            : "9",
-    "lvcbasepriority"              : "9",
-    "hawcbasepriority"             : "8",
-    "icecubebasepriority"          : "8"
+    "serverpacketport": "5351"
   },
   "heater": {
     "type": "gpio",
@@ -665,7 +653,15 @@
   "safetyswitch": {
     "type": "arts"
   },
-  "selector": {},
+  "selector": {
+    "priorities": {
+      "lvc*-*"          : 3,
+      "svom*-*"         : 4,
+      "fermilat*-*"     : 5,
+      "fermigbm*-sgrb"  : 6,
+      "swift*-*"        : 7
+    }
+  },
   "sensors": {
     "lognames": [
       "shed-temperature",

@@ -334,19 +334,7 @@
     ]
   },
   "gcntan": {
-    "serverpacketport"              : "5358",
-    "swiftalertprojectidentifier"   : "1001",
-    "fermialertprojectidentifier"   : "1002",
-    "lvcalertprojectidentifier"     : "1003",
-    "hawcalertprojectidentifier"    : "1004",
-    "icecubealertprojectidentifier" : "1005",
-    "swiftbasepriority"             : "5",
-    "fermilatpriority"              : "5",
-    "fermisgrbpriority"             : "6",
-    "fermibasepriority"             : "10",
-    "lvcbasepriority"               : "10",
-    "hawcbasepriority"              : "10",
-    "icecubebasepriority"           : "10"
+    "serverpacketport"              : "5358"
   },
   "html": {
     "servers": [
@@ -489,7 +477,15 @@
     },
     "settlingseconds": 0
   },
-  "selector": {},
+  "selector": {
+    "priorities": {
+      "lvc*-*"          : 3,
+      "svom*-*"         : 4,
+      "fermilat*-*"     : 5,
+      "fermigbm*-sgrb"  : 6,
+      "swift*-*"        : 7
+    }
+  },
   "sensors": {
     "lognames": [
       "weather-temperature",
