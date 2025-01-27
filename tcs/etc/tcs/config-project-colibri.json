@@ -479,6 +479,9 @@
   },
   "selector": {
     "priorities": {
+      "*-*-electromagnetic/gravitational/*": 2,
+      "*-*-electromagnetic/*/neutrino"     : 2,
+      "*-*-*/gravitational/neutrino"       : 2,
       "lvc*-*"          : 3,
       "svom*-*"         : 4,
       "fermilat*-*"     : 5,

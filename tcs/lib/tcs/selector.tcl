@@ -403,12 +403,13 @@ namespace eval "selector" {
     return
   }
   
-  proc getpriority {type class} {
+  proc getpriority {type class messengers} {
   
     variable priorities
   
     foreach matcher [dict keys $priorities] {
-      if [string match $matcher "$type-$class"] {
+      if {[string match $matcher "$type-$class-$messengers"]} {
+        log::info "event matches \"$matcher\"."
         return [dict get $priorities $matcher]
       }
     }
@@ -418,7 +419,7 @@ namespace eval "selector" {
   
   proc respondtoalert {projectidentifier blockidentifier name origin
     identifier type alerttimestamp eventtimestamp enabled alpha delta equinox
-    uncertainty class
+    uncertainty class messenger
   } {
     variable mode
     
@@ -450,6 +451,7 @@ namespace eval "selector" {
       log::info [format "uncertainty is %s." [astrometry::formatdistance $uncertainty]]
     }
     log::info [format "class is %s." $class]
+    log::info [format "messenger is %s." $messenger]
     if {![string equal $enabled ""]} {
       if {$enabled} {
         log::info "this alert is enabled."
@@ -457,9 +459,6 @@ namespace eval "selector" {
         log::info "this alert is not enabled."
       }
     }
-    
-    set priority [getpriority $type $class]
-    log::info [format "priority is %d." $priority]
     
     set alertfile [matchalert $origin $identifier $eventtimestamp $alerttimestamp]
     set fullalertfile [getalertfile $alertfile]
@@ -470,11 +469,38 @@ namespace eval "selector" {
 
     if {$alertfileexists} {
       set interrupt false
-    } elseif {[string equal $enabled ""] || $enabled} {
-      set interrupt true
+      set alert [alert::readalertfile $fullalertfile]
     } else {
-      set interrupt false
+      if {[string equal $enabled ""] || $enabled} {
+        set interrupt true
+      } else {
+        set interrupt false
+      }
+      set alert {}        
     }
+
+    set messengers {}
+    if {[alert::messenger $alert "electromagnetic"] || [string equal "electromagnetic" $messenger]} {
+      lappend messengers "electromagnetic"
+    } else {
+      lappend messengers ""
+    }
+    if {[alert::messenger $alert "gravitational"  ] || [string equal "gravitational"   $messenger]} {
+      lappend messengers "gravitational"
+    } else {
+      lappend messengers ""
+    }
+    if {[alert::messenger $alert "neutrino"       ] || [string equal "neutrino"        $messenger]} {
+      lappend messengers "neutrino"
+    } else {
+      lappend messengers ""
+    }
+    set messengers [join $messengers "/"]
+    log::info [format "messengers are %s." $messengers]
+
+    set priority [getpriority $type $class $messengers]
+    log::info [format "priority is %d." $priority]
+    
     set channel [open $fullalertfile "a"]
     if {!$alertfileexists} {
       puts $channel [format "// Alert file \"%s\"." $alertfile]
@@ -510,7 +536,8 @@ namespace eval "selector" {
     if {![string equal "" $eventtimestamp]} {
       puts $channel [format "  \"eventtimestamp\": \"%s\"," $eventtimestamp]
     }
-    puts $channel [format "  \"alerttimestamp\": \"%s\"" $alerttimestamp]
+    puts $channel [format "  \"alerttimestamp\": \"%s\"," $alerttimestamp]
+    puts $channel [format "  \"%s\": \"true\"" $messenger]
     puts $channel [format "\}"]
 
     close $channel
@@ -578,7 +605,7 @@ namespace eval "selector" {
     }
     respondtoalert $projectidentifier $blockidentifier $name $origin \
       $identifier $type $alerttimestamp $eventtimestamp $enabled \
-      $alpha $delta $equinox $uncertainty $class
+      $alpha $delta $equinox $uncertainty $class "gravitational"
     log::summary "finished responding to lvc alert."
     return
   }

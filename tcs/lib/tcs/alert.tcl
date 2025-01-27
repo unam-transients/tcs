@@ -342,6 +342,10 @@ namespace eval "alert" {
       return "0"
     }
   }
+  
+  proc messenger {alert messenger} {
+    return [dict exists $alert $messenger]
+  }
     
   ######################################################################
 
