@@ -21,7 +21,9 @@
 
 ########################################################################
 
-source utcclock.tcl
+source [file join "/usr/local/lib/tcs/packages.tcl"]
+
+package require "utcclock"
 
 puts [utcclock::getresolution]
 puts [utcclock::getprecision]
@@ -46,3 +48,27 @@ puts [utcclock::formatinterval 100]
 puts [utcclock::formatinterval 1000]
 puts [utcclock::formatinterval 10000]
 
+set seconds [utcclock::scan "2025-01-28T12:00:00"]
+puts [utcclock::jd $seconds]
+
+proc tjd {seconds} {
+  # TJD=13370 is 01 Jan 2005 according to https://gcn.gsfc.nasa.gov/sock_pkt_def_doc.html
+  set jd0 [expr {[utcclock::jd [utcclock::scan "2005-01-01T00:00:00"]] - 13370}]
+  return [expr {[utcclock::jd $seconds] - $jd0}]
+}
+
+set seconds [utcclock::scan "2005-01-01T00:00:00"]
+puts [tjd $seconds]
+
+proc fromjd {jd} {
+  set epochjd 2440587.5
+  set seconds [expr {($jd - $epochjd) * (24.0 * 60.0 * 60.0)}]
+  set seconds [utcclock::posixtoutcseconds $seconds]
+  return $seconds
+}
+
+puts [utcclock::format $seconds]
+puts [utcclock::jd $seconds]
+puts [utcclock::jd [fromjd [utcclock::jd $seconds]]]
+puts $seconds
+puts [fromjd [utcclock::jd $seconds]]

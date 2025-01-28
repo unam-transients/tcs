@@ -1270,7 +1270,9 @@ namespace eval "gcntan" {
     # number of seconds since the start of the JD.
     set tjd [field0 $packet $i]
     set sod [field2 $packet [expr {$i + 1}]]
-    expr {($tjd - 10281) * 24.0 * 60.0 * 60.0 + [utcclock::scan "19960717T000000"] + $sod}
+    set jd [expr {$tjd - 10281 + [utcclock::jd "1996-07-17T00:00:00"]}]
+    set seconds [expr {[utcclock::fromjd $jd] + $sod}]
+    return $seconds
   }
   
   variable typedict {

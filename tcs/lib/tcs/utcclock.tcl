@@ -184,22 +184,43 @@ namespace eval "utcclock" {
 
   ######################################################################
 
+  variable epochmjd   40587.0
+  variable epochjd  2440587.5
+  
+  proc frommjd {mjd} {
+    variable epochmjd
+    set seconds [expr {($mjd - $epochmjd) * (24.0 * 60.0 * 60.0)}]
+    set seconds [posixtoutcseconds $seconds]
+    return $seconds
+  }
+  
   proc mjd {{seconds "now"}} {
+    variable epochmjd
     if {[string equal $seconds now]} {
       set seconds [seconds]
-    }
+    } elseif {![string is double -strict $seconds]} {
+      set seconds [scan $seconds]
+    }    
     set seconds [utctoposixseconds $seconds]
-    set epochmjd 40587.0
     expr {$seconds / (24.0 * 60.0 * 60.0) + $epochmjd}
   }
 
-  proc jd {{seconds "now"}} {
+  proc fromjd {jd} {
+    variable epochjd
+    set seconds [expr {($jd - $epochjd) * (24.0 * 60.0 * 60.0)}]
+    set seconds [posixtoutcseconds $seconds]
+    return $seconds
+  }
+  
+  proc jd {seconds} {
+    variable epochjd
     if {[string equal $seconds now]} {
       set seconds [seconds]
-    }
+    } elseif {![string is double -strict $seconds]} {
+      set seconds [scan $seconds]
+    }    
     set seconds [utctoposixseconds $seconds]
-    set epochjd 2440587.5
-    expr {$seconds / (24.0 * 60.0 * 60.0) + $epochjd}
+    return [expr {$seconds / (24.0 * 60.0 * 60.0) + $epochjd}]
   }
   
   proc epoch {{seconds "now"}} {
