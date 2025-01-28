@@ -51,12 +51,12 @@ namespace eval "selectorserver" {
     return
   }
   
-  proc slaverespondtoalert {proposalidentifier blockidentifier name origin identifier type alerttimestamp eventtimestamp enabled alpha delta equinox uncertainty class messenger} {
-    selector::respondtoalert $proposalidentifier $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty $class $messenger
+  proc slaverespondtoalert {blockidentifier name origin identifier type alerttimestamp eventtimestamp enabled alpha delta equinox uncertainty class messenger} {
+    selector::respondtoalert $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty $class $messenger
   }
 
-  proc slaverespondtolvcalert {proposalidentifier blockidentifier name origin identifier type alerttimestamp eventtimestamp enabled skymapurl class} {
-    selector::respondtolvcalert $proposalidentifier $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $skymapurl $class
+  proc slaverespondtolvcalert {blockidentifier name origin identifier type alerttimestamp eventtimestamp enabled skymapurl class} {
+    selector::respondtolvcalert $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $skymapurl $class
   }
 
   proc slavesetfocused {} {
