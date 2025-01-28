@@ -417,7 +417,7 @@ namespace eval "selector" {
     return 10  
   }
   
-  proc respondtoalert {projectidentifier blockidentifier name origin
+  proc respondtoalert {blockidentifier name origin
     identifier type alerttimestamp eventtimestamp enabled alpha delta equinox
     uncertainty class messenger
   } {
@@ -432,7 +432,6 @@ namespace eval "selector" {
       set eventtimestamp [utcclock::combinedformat [utcclock::scan $eventtimestamp]]
     }
 
-    log::info [format "projectidentifier is %s." $projectidentifier]
     log::info [format "blockidentifier is %s." $blockidentifier]
     log::info [format "origin/identifier/type are %s/%s/%s." $origin $identifier $type]
     log::info [format "alert timestamp is %s." [utcclock::format [utcclock::scan $alerttimestamp]]]
@@ -569,7 +568,7 @@ namespace eval "selector" {
     return
   }
   
-  proc respondtolvcalert {projectidentifier blockidentifier name origin
+  proc respondtolvcalert {blockidentifier name origin
     identifier type alerttimestamp eventtimestamp enabled skymapurl class
   } {
     log::summary "responding to lvc alert."    
@@ -597,7 +596,7 @@ namespace eval "selector" {
       set equinox     ""
       set uncertainty ""
     }
-    respondtoalert $projectidentifier $blockidentifier $name $origin \
+    respondtoalert $blockidentifier $name $origin \
       $identifier $type $alerttimestamp $eventtimestamp $enabled \
       $alpha $delta $equinox $uncertainty $class "gravitational"
     log::summary "finished responding to lvc alert."

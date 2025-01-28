@@ -184,10 +184,8 @@ namespace eval "gcntan" {
       "swiftbatgrbposition" -
       "swiftxrtposition" - 
       "swiftuvotposition" {
-        variable swiftalertprojectidentifier
         set log [logprocedure $packet]
         $log [format "received %s packet." $type]
-        set projectidentifier  $swiftalertprojectidentifier
         set blockidentifier    [swifttrigger         $log $packet]
         set eventname          [swifteventname       $log $packet]
         set origin             "swift"
@@ -201,7 +199,7 @@ namespace eval "gcntan" {
         set worthy             [swiftworthy          $log $packet]
         set retraction         [swiftretraction      $log $packet]
         set class              [swiftclass           $log $packet]
-        respondtoalert $log $test $projectidentifier $blockidentifier \
+        respondtoalert $log $test $blockidentifier \
           $eventname $origin $identifier $type $timestamp $eventtimestamp \
           $retraction $worthy $alpha $delta $equinox $uncertainty $class \
           "electromagnetic"
@@ -212,10 +210,8 @@ namespace eval "gcntan" {
       "fermigbmgndpos" -
       "fermigbmfinpos" -
       "fermigbmpostest" {
-        variable fermialertprojectidentifier
         set log [logprocedure $packet]
         $log [format "received %s packet." $type]
-        set projectidentifier  $fermialertprojectidentifier
         set blockidentifier    [fermitrigger         $log $packet]
         set eventname          [fermieventname       $log $packet]
         set origin             "fermi"
@@ -229,7 +225,7 @@ namespace eval "gcntan" {
         set worthy             [fermiworthy          $log $packet]
         set retraction         [fermiretraction      $log $packet]
         set class              [fermiclass           $log $packet]
-        respondtoalert $log $test $projectidentifier $blockidentifier \
+        respondtoalert $log $test $blockidentifier \
           $eventname $origin $identifier $type $timestamp $eventtimestamp \
           $retraction $worthy $alpha $delta $equinox $uncertainty $class \
           "electromagnetic"
@@ -240,10 +236,8 @@ namespace eval "gcntan" {
       "fermilatgrbposupd" -
       "fermilatgnd" -
       "fermilatoffline" {
-        variable fermialertprojectidentifier
         set log [logprocedure $packet]
         $log [format "received %s packet." $type]
-        set projectidentifier  $fermialertprojectidentifier
         set blockidentifier    [fermitrigger         $log $packet]
         set eventname          [fermieventname       $log $packet]
         set origin             "fermi"
@@ -257,7 +251,7 @@ namespace eval "gcntan" {
         set worthy             [fermiworthy          $log $packet]
         set retraction         [fermiretraction      $log $packet]
         set class              [fermiclass           $log $packet]
-        respondtoalert $log $test $projectidentifier $blockidentifier \
+        respondtoalert $log $test $blockidentifier \
           $eventname $origin $identifier $type $timestamp $eventtimestamp \
           $retraction $worthy $alpha $delta $equinox $uncertainty $class \
           "electromagnetic"
@@ -265,10 +259,8 @@ namespace eval "gcntan" {
       }
       
       "hawcburstmonitor" {
-        variable hawcalertprojectidentifier
         set log [logprocedure $packet]
         $log [format "received %s packet." $type]
-        set projectidentifier  $hawcalertprojectidentifier
         set blockidentifier    [hawctrigger        $log $packet]
         set eventname          [hawceventname      $log $packet]
         set origin             "hawc"
@@ -282,7 +274,7 @@ namespace eval "gcntan" {
         set worthy             [hawcworthy         $log $packet]
         set retraction         [hawcretraction     $log $packet]
         set class              [hawcclass          $log $packet]
-        respondtoalert $log $test $projectidentifier $blockidentifier \
+        respondtoalert $log $test $blockidentifier \
           $eventname $origin $identifier $type $timestamp $eventtimestamp \
           $retraction $worthy $alpha $delta $equinox $uncertainty $class \
           "electromagnetic"
@@ -292,10 +284,8 @@ namespace eval "gcntan" {
       "icecubeastrotrackgold" -
       "icecubeastrotrackbronze" -
       "icecubecascade" {
-        variable icecubealertprojectidentifier
         set log [logprocedure $packet]
         $log [format "received %s packet." $type]
-        set projectidentifier  $icecubealertprojectidentifier
         set blockidentifier    [icecubetrigger        $log $packet]
         set eventname          [icecubeeventname      $log $packet]
         set origin             "icecube"
@@ -309,7 +299,7 @@ namespace eval "gcntan" {
         set worthy             [icecubeworthy         $log $packet]
         set retraction         [icecuberetraction     $log $packet]
         set class              [icecubeclass          $log $packet]
-        respondtoalert $log $test $projectidentifier $blockidentifier \
+        respondtoalert $log $test $blockidentifier \
           $eventname $origin $identifier $type $timestamp $eventtimestamp \
           $retraction $worthy $alpha $delta $equinox $uncertainty $class \
           "neutrino"
@@ -320,11 +310,9 @@ namespace eval "gcntan" {
       "lvcinitial" -
       "lvcupdate" -
       "lvcretraction" {
-        variable lvcalertprojectidentifier
         log::info [format "received %s packet." $type]
         set log [logprocedure $packet]
         $log [format "received %s packet." $type]
-        set projectidentifier  $lvcalertprojectidentifier
         set blockidentifier    [lvctrigger         $log $packet]
         set eventname          [lvcname            $log $packet]
         set origin             "lvc"
@@ -334,7 +322,7 @@ namespace eval "gcntan" {
         set retraction         [lvcretraction      $log $packet]
         set skymapurl          [lvcurl             $log $packet]
         set class              [lvcclass           $log $packet]
-        respondtolvcalert $log $test $projectidentifier $blockidentifier \
+        respondtolvcalert $log $test $blockidentifier \
           $eventname $origin $identifier $type $timestamp $eventtimestamp \
           $retraction $skymapurl $class
         return "echo"
@@ -364,7 +352,7 @@ namespace eval "gcntan" {
   
   ######################################################################
   
-  proc respondtoalert {log test projectidentifier blockidentifier eventname
+  proc respondtoalert {log test blockidentifier eventname
     origin identifier type alerttimestamp eventtimestamp retraction worthy
     alpha delta equinox uncertainty class messenger
   } {
@@ -398,19 +386,16 @@ namespace eval "gcntan" {
     }
     $log [format "%s: position is %s %s %s." $type [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox]
     $log [format "%s: 90%% uncertainty is %s in radius." $type [astrometry::formatdistance $uncertainty]]
-    $log [format "%s: project identifier is %s." $type $projectidentifier]
     $log [format "%s: block identifier is %d." $type $blockidentifier]
     $log [format "%s: class is %s." $type $class] 
     $log [format "%s: messenger is %s." $type $messenger] 
     if {$test} {
       $log [format "%s: not requesting selector to respond: this is a test packet." $type]
-    } elseif {[string equal $projectidentifier ""]} {
-      $log [format "%s: not requesting selector to respond: no project identifier." $type]
     } else {
       $log [format "%s: requesting selector to respond." $type]
       if {[catch {
         client::request "selector" [list respondtoalert \
-          $projectidentifier $blockidentifier $eventname $origin $identifier \
+          $blockidentifier $eventname $origin $identifier \
           $type $alerttimestamp $eventtimestamp $enabled $alpha $delta \
           $equinox $uncertainty $class $messenger \
         ]
@@ -420,7 +405,7 @@ namespace eval "gcntan" {
     }
   }
   
-  proc respondtolvcalert {log test projectidentifier blockidentifier eventname
+  proc respondtolvcalert {log test blockidentifier eventname
     origin identifier type alerttimestamp eventtimestamp retraction skymapurl
     class
   } {
@@ -443,17 +428,14 @@ namespace eval "gcntan" {
     if {![string equal $skymapurl ""]} {
       $log [format "%s: skymap url is %s." $type $skymapurl]
     }
-    $log [format "%s: project identifier is \"%s\"." $type $projectidentifier]
     $log [format "%s: block identifier is %d." $type $blockidentifier]
     $log [format "%s: class is %s." $type $class] 
     if {$test} {
       $log [format "%s: not requesting selector to respond: this is a test packet." $type]
-    } elseif {[string equal $projectidentifier ""]} {
-      $log [format "%s: not requesting selector to respond: no project identifier." $type]
     } else {
       $log [format "%s: requesting selector to respond." $type]
       if {[catch {
-        client::request "selector" [list respondtolvcalert $projectidentifier \
+        client::request "selector" [list respondtolvcalert \
           $blockidentifier $eventname $origin $identifier $type \
           $alerttimestamp  $eventtimestamp $enabled $skymapurl $class \
           "gravitational" \

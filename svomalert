@@ -209,8 +209,6 @@ def respond(alert):
         log("summary", "%s: %s" % (alert["packettype"], s))
         return
 
-    projectidentifier = 1000
-
     blockidentifier = alert["burstid"][2:]
 
     year = int(alert["eventtimestamp"][2:4])
@@ -260,9 +258,8 @@ def respond(alert):
     logresponse("requesting selector to respond.")
 
     print(
-        "tcs request selector respondtoalert %r %r %r %r %r %r %r %r %r %r %r %r %r %r %r"
+        "tcs request selector respondtoalert %r %r %r %r %r %r %r %r %r %r %r %r %r %r"
         % (
-            projectidentifier,
             blockidentifier,
             eventname,
             origin,
