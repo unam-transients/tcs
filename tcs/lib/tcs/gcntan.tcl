@@ -438,7 +438,6 @@ namespace eval "gcntan" {
         client::request "selector" [list respondtolvcalert \
           $blockidentifier $eventname $origin $identifier $type \
           $alerttimestamp  $eventtimestamp $enabled $skymapurl $class \
-          "gravitational" \
         ]
       } result]} {
         log::warning [format "%s: unable to request selector: %s" $type $result]
