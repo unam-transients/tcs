@@ -479,14 +479,16 @@
   },
   "selector": {
     "priorities": {
-      "*-*-electromagnetic/gravitational/*": 2,
-      "*-*-electromagnetic/*/neutrino"     : 2,
-      "*-*-*/gravitational/neutrino"       : 2,
+      "*-*-electromagnetic/gravitational/*": 1,
+      "*-*-electromagnetic/*/neutrino"     : 1,
+      "*-*-*/gravitational/neutrino"       : 1,
       "lvc*-*"          : 3,
-      "svom*-*"         : 4,
+      "svomeclairs*-*"  : 4,
+      "svommxt*-*"      : 4,
+      "svomvt*-*"       : 4,
       "fermilat*-*"     : 5,
-      "fermigbm*-sgrb"  : 6,
-      "swift*-*"        : 7
+      "fermigbm*-sgrb"  : 7,
+      "swift*-*"        : 8
     }
   },
   "sensors": {
