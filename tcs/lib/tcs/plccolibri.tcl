@@ -629,7 +629,6 @@ namespace eval "plc" {
       "info"    "rioboltwoodcommunicationalarm" "rio boltwoodcommunication alarm"
       "info"    "emergencystopalarm"            "emergency stop alarm"
 
-
       "summary" "keyswitch"                     "key switch"
       "summary" "mode"                          "mode"
 
@@ -773,6 +772,7 @@ namespace eval "plc" {
       log::warning "the vaisala is not enabled."
     }
     controller::sendcommand "UnsafeTimer\{1\}\n"
+    controller::sendcommand "UnsafeTimer\n"
     set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
   }

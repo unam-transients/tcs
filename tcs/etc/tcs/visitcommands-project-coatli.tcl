@@ -329,8 +329,8 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefa
     foreach {eastoffset northoffset} $dithers {
       executor::offset $eastoffset $northoffset "default"
       executor::waituntiltracking
-      executor::expose object $exposuretime
-      executor::focuswitness
+      executor::expose "object" $exposuretime
+      executor::analyse "fwhmwitness"
     }
     
   }

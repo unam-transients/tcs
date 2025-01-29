@@ -407,42 +407,6 @@ namespace eval "instrument" {
     foreach detector $activedetectors {
       client::wait $detector 1000
     }
-    if {[string equal $type "focuswitness"]} {
-      foreach detector $detectors exposuretime $exposuretimes {
-        if {![string equal $exposuretime "none"] && [isactivefocuser $detector]} {
-          client::request $detector "analyze fwhm"
-        }
-      }
-      set worstfwhmpixels ""
-      foreach detector $detectors exposuretime $exposuretimes {
-        if {![string equal $exposuretime "none"] && [isactivefocuser $detector]} {
-          client::wait $detector
-          set fitsfilename    [file tail [client::getdata $detector "fitsfilename"]]
-          set fwhm            [client::getdata $detector "fwhm"]
-          set fwhmpixels      [client::getdata $detector "fwhmpixels"]
-          set binning         [client::getdata $detector "detectorbinning"]
-          set filter          [client::getdata $detector "filter"]
-          set focuserposition [client::getdata $detector "focuserposition"]
-          if {[string equal "$fwhm" ""]} {
-            set fwhmarcsec "unknown"
-            set fwhmpixels "unknown"
-            set worstfwhmpixels "unknown"
-          } else {
-            set fwhmarcsec [format "%.2fas" [astrometry::radtoarcsec $fwhm]]
-            set fwhmpixels [format "%.2f" $fwhmpixels]
-            if {
-              [string equal $worstfwhmpixels ""] ||
-              (![string equal $worstfwhmpixels "unknown"] && $fwhmpixels > $worstfwhmpixels)
-            } {
-              set worstfwhmpixels $fwhmpixels
-            }
-          }
-          log::summary "$fitsfilename: $detector witness FWHM is $fwhmarcsec ($fwhmpixels pixels with binning $binning) at $focuserposition in filter $filter in $exposuretime seconds."
-        }
-      }
-      log::summary "worst witness FWHM is $worstfwhmpixels pixels with binning $binning."
-      server::setdata "worstfwhmpixels" $worstfwhmpixels
-    }
     log::info [format "finished exposing $type image after %.1f seconds." [utcclock::diff now $start]]
   }
   
@@ -461,8 +425,64 @@ namespace eval "instrument" {
         client::request $detector "analyze $type"
       }
     }
-    foreach detector $activedetectors {
-      client::wait $detector
+    set worstfwhm ""
+    foreach detector $detectors type $types {
+      if {![string equal $type "none"] && [isactivedetector $detector]} {
+        client::wait $detector
+        if {[string equal $type "fwhmwitness"]} {
+          set fitsfilename    [file tail [client::getdata $detector "fitsfilename"]]
+          set fwhm            [client::getdata $detector "fwhm"]
+          set fwhmpixels      [client::getdata $detector "fwhmpixels"]
+          set binning         [client::getdata $detector "detectorbinning"]
+          set filter          [client::getdata $detector "filter"]
+          set focuserposition [client::getdata $detector "focuserposition"]
+          set exposuretime    [client::getdata $detector "exposuretime"]
+          if {[string equal "$fwhm" ""]} {
+            set fwhmarcsec "unknown"
+            set fwhmpixels "unknown"
+            set worstfwhm "unknown"
+          } else {
+            set fwhmarcsec [format "%.2fas" [astrometry::radtoarcsec $fwhm]]
+            set fwhmpixels [format "%.2f" $fwhmpixels]
+            if {
+              [string equal $worstfwhm ""] ||
+              (![string equal $worstfwhm "unknown"] && $fwhm > $worstfwhm)
+            } {
+              set worstfwhm $fwhm
+            }
+            if {![catch {client::update "secondary"}]} {
+              set T [client::getdata "secondary" "T"]
+              set z [client::getdata "secondary" "z"]
+              set dztemperature [client::getdata "secondary" "dztemperature"]
+              set dzposition [client::getdata "secondary" "dzposition"]
+            } else {
+              set T 0
+              set z 0
+              set dztemperature 0
+              set dzposition 0
+            }
+            set channel [::open [file join [directories::vartoday] "fwhmwitness.csv"] "a"]
+            puts $channel [format \
+              "\"%s\",\"%s\",%.2f,%d,%.1f,\"%s\",%d,%.2f,%.0f,%.0f,%.0f" \
+              $detector $fitsfilename $fwhm $binning $exposuretime $filter $focuserposition $T $z $dztemperature $dzposition \
+            ]
+            ::close $channel
+          }
+          log::summary [format \
+            "%s witness FWHM is %s (%s pixels with binning %s) in filter %s in %s seconds." \
+            $detector $fwhmarcsec $fwhmpixels $binning $filter $exposuretime \
+          ]
+        }
+      }
+    }
+    if {![string equal $worstfwhm ""]} {
+      if {[string equal "$worstfwhm" "unknown"]} {
+        set worstfwhmarcsec "unknown"
+      } else {
+        set worstfwhmarcsec [format "%.2fas" [astrometry::radtoarcsec $worstfwhm]]
+      }
+      log::summary "worst witness FWHM is $worstfwhmarcsec."
+      server::setdata "worstfwhmarcsec" $worstfwhmarcsec
     }
     log::info [format "finished analyzing after %.1f seconds." [utcclock::diff now $start]]
   }
@@ -841,7 +861,6 @@ namespace eval "instrument" {
       ![string equal $type "object"] &&
       ![string equal $type "astrometry"] &&
       ![string equal $type "focus"] &&
-      ![string equal $type "focuswitness"] &&
       ![string equal $type "flat"] &&
       ![string equal $type "dark"] &&
       ![string equal $type "bias"]
@@ -882,6 +901,7 @@ namespace eval "instrument" {
         ![string equal $type "none"] &&
         ![string equal $type "levels"] &&
         ![string equal $type "fwhm"] &&
+        ![string equal $type "fwhmwitness"] &&
         ![string equal $type "center"] &&
         ![string equal $type "astrometry"]
       } {

@@ -64,7 +64,7 @@ namespace eval "ccd" {
     set ny [dict get $detectorfullunbinneddatawindow ny]
     set x [expr {$sx + $nx / 2}]
     set y [expr {$sy + $ny / 2}]
-    set detectorboresight [dict create x $x y $y]
+    set detectorboresight [dict create "x" $x "y" $y]
   }
 
   variable coolerstartsetting              [config::getvalue $identifier "coolerstartsetting"             ]
@@ -360,7 +360,6 @@ namespace eval "ccd" {
         set suffix "o"
       }
       "focus" -
-      "focuswitness" -
       "astrometry" {
         set suffix "u"
       }
@@ -387,7 +386,6 @@ namespace eval "ccd" {
         set suffix "oc"
       }
       "focus" -
-      "focuswitness" -
       "astrometry" {
         set suffix "uc"
       }
@@ -637,7 +635,6 @@ namespace eval "ccd" {
     switch $exposuretype {
       "object" -
       "focus" -
-      "focuswitness" -
       "astrometry" -
       "dark" - 
       "bias" {
@@ -702,8 +699,7 @@ namespace eval "ccd" {
     if {[string equal $exposuretype "object"          ] || 
         [string equal $exposuretype "flat"            ] || 
         [string equal $exposuretype "astrometry"      ] ||
-        [string equal $exposuretype "focus"           ] ||
-        [string equal $exposuretype "focuswitness"    ]
+        [string equal $exposuretype "focus"           ]
     } {
       set shutter open
     } elseif {[string equal $exposuretype "bias"] ||
@@ -818,7 +814,7 @@ namespace eval "ccd" {
       server::setdata "average"           [detector::getaverage]
       server::setdata "standarddeviation" [detector::getstandarddeviation]
       log::info [format "level is %.1f ± %.1f DN." [detector::getaverage] [detector::getstandarddeviation]]
-    } elseif {[string equal $type "fwhm"]} {
+    } elseif {[string equal $type "fwhm"] || [string equal $type "fwhmwitness"]} {
       variable fitsfwhmchannel
       variable fitsfwhmargs
       set binning [server::getdata "detectorbinning"]
@@ -852,8 +848,8 @@ namespace eval "ccd" {
         server::setdata "fwhm" $fwhm
         server::setdata "fwhmpixels" $fwhmpixels
         log::info [format \
-          "FWHM is %.2fas (%.2f pixels with binning $binning) in filter %s in %s seconds." \
-          [astrometry::radtoarcsec $fwhm] $fwhmpixels $filter $exposuretime \
+          "FWHM is %.2fas (%.2f pixels with binning %d) in filter %s in %s seconds." \
+          [astrometry::radtoarcsec $fwhm] $fwhmpixels $binning $filter $exposuretime \
         ]
       }
     } elseif {[string equal $type "center"]} {
@@ -1112,8 +1108,7 @@ namespace eval "ccd" {
       ![string equal $exposuretype "dark"            ] &&
       ![string equal $exposuretype "flat"            ] &&
       ![string equal $exposuretype "astrometry"      ] &&
-      ![string equal $exposuretype "focus"           ] &&
-      ![string equal $exposuretype "focuswitness"    ]
+      ![string equal $exposuretype "focus"           ]
     } {
       error "invalid exposure type \"$exposuretype\"."
     }
@@ -1139,6 +1134,7 @@ namespace eval "ccd" {
     if {
       ![string equal $type "levels"         ] &&
       ![string equal $type "fwhm"           ] &&
+      ![string equal $type "fwhmwitness"    ] &&
       ![string equal $type "center"         ] &&
       ![string equal $type "astrometry"     ]
     } {

@@ -446,8 +446,8 @@ proc focuswitnessvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
   foreach {eastoffset northoffset} $dithers {
     executor::offset $eastoffset $northoffset "default"
     executor::waituntiltracking
-    executor::expose object $exposuretime
-    executor::focuswitness
+    executor::expose "object" $exposuretime
+    executor::analyse "fwhmwitness"
   }
 
   log::summary "focuswitnessvisit: finished."

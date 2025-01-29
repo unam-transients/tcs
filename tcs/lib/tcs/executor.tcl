@@ -308,43 +308,6 @@ namespace eval "executor" {
     log::info [format "finished focusing secondary after %.1f seconds." [utcclock::diff now $start]]
   }
   
-  proc focuswitness {} {
-    variable detectors
-    eval analyze [lrepeat [llength $detectors] "fwhm"]
-    foreach detector $detectors {
-      client::update $detector
-      set fitsfilename [file tail [client::getdata $detector "fitsfilename"]]
-      set fwhm         [client::getdata $detector "fwhm"]
-      set fwhmpixels   [client::getdata $detector "fwhmpixels"]
-      set binning      [client::getdata $detector "detectorbinning"]
-      set filter       [client::getdata $detector "filter"]
-      set exposuretime [client::getdata $detector "exposuretime"]
-      if {[string equal "$fwhm" ""]} {
-        log::summary [format "$fitsfilename: witness FWHM is unknown with binning $binning in filter $filter in %.0f seconds." $exposuretime]
-      } else {
-        log::summary [format \
-          "$fitsfilename: witness FWHM is %.2fas (%.2f pixels with binning $binning) in filter $filter in $exposuretime seconds." \
-          [astrometry::radtoarcsec $fwhm] $fwhmpixels \
-        ]
-        if {[catch {
-          client::update "secondary"
-          set T [client::getdata "secondary" "T"]
-          set z [client::getdata "secondary" "z"]
-          set dztemperature [client::getdata "secondary" "dztemperature"]
-          set dzposition [client::getdata "secondary" "dzposition"]
-          set channel [::open [file join [directories::vartoday] "focus.csv"] "a"]
-          puts $channel [format \
-            "\"%s\",%.2f,%d,%.1f,\"%s\",%.2f,%.0f,%.0f,%.0f" \
-            $fitsfilename $fwhm $binning $exposuretime $filter $T $z $dztemperature $dzposition \
-          ]
-          ::close $channel
-        } message]} {
-          log::warning "unable to write focus.csv file: $message"
-        }
-      }
-    }
-  }
-  
   ######################################################################
 
   proc expose {type args} {
