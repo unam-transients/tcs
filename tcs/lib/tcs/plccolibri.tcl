@@ -771,8 +771,7 @@ namespace eval "plc" {
     if {!$vaisalaenabled} {
       log::warning "the vaisala is not enabled."
     }
-    controller::sendcommand "UnsafeTimer\{1\}\n"
-    controller::sendcommand "UnsafeTimer\n"
+    controller::sendcommand "UnsafeTimer\{10\}\n"
     set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
   }
