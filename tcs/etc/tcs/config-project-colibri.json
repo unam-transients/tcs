@@ -170,7 +170,7 @@
     // FW0011318 -- firmware serial number "CFW-14-5"
     // FW0021318 -- firmware serial number "FW0021318"
     // FW0031318 -- firmware serial number "FW0031318"
-    "filterwheelidentifier": "FW0031318",
+    "filterwheelidentifier": "FW0021318",
     "filters": {
       // 2021-09-13: r and g were accidentally installed in the wrong slots at OHP.
       "g"      : "0",
@@ -269,7 +269,7 @@
     // FW0011318 -- firmware serial number "CFW-14-5"
     // FW0021318 -- firmware serial number "FW0021318"
     // FW0031318 -- firmware serial number "FW0031318"
-    "filterwheelidentifier": "FW0021318",
+    "filterwheelidentifier": "FW0031318",
     "filters": {
       "z"      : "0",
       "y"      : "1",
@@ -369,7 +369,7 @@
       "C0", "C1", "C2"
     ],
     "activedetectors": [
-      "C0"
+      "C1"
     ],
     "activefocusers": [
     ],
@@ -377,7 +377,7 @@
       "0"
     ],
     "pointingdetectors": [
-      "C0"
+      "C1"
     ],
     "outletgroups": []
   },
@@ -413,7 +413,7 @@
     "deltaunpark": "0d",
     "minzenithdistancelimit": "0.5d",
     "maxzenithdistancelimit": "80d",
-    "initialport": "ogse",
+    "initialport": "ddrago",
     "ports": {
       "new":     "port2",
       "old":     "port3",
