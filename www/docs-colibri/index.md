@@ -25,6 +25,7 @@ PERFORMANCE OF THIS SOFTWARE.
 
 This is the TCS web site for the COLIBRI telescope at OAN.
 
+* [Monitoring Interface](/tcs/monitoring.html)
 * [Operations Interface](/tcs/operations.html)
 * [Documentation](documentation.html)
 * [Engineering Interface](/tcs/engineering.html)
@@ -38,6 +39,6 @@ This is the TCS web site for the COLIBRI telescope at OAN.
   * <a href="/proxy/pdu1/" target="_newtab">pdu1</a>
   * <a href="/proxy/pdu2/" target="_newtab">pdu2</a>
 * Weather Forecast
-  * [Meteoblue](https://www.meteoblue.com/en/weather/week/parque-nacional-san-pedro-mártir_mexico_3983083)
+  * [Meteoblue](https://www.meteoblue.com/en/weather/forecast/meteogramweb/parque-nacional-san-pedro-m%c3%a1rtir_mexico_3983083)
 
 <hr/>
