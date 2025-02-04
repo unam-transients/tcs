@@ -540,7 +540,7 @@ namespace eval "selector" {
     } elseif {![string equal "" [server::getdata "priority"]] && ([server::getdata "priority"] < $priority)} {
       log::summary [format "not interrupting the executor: current priority is %d." [server::getdata "priority"]]
     } else {
-      set why [isselectablealertfile $alertfile [utcclock::seconds] $priority]
+      set why [isselectablealertfile $fullalertfile [utcclock::seconds] $priority]
       if {![string equal "" $why]} {
         log::summary "not interrupting the executor: alert is not selectable: $why"
       } else {
