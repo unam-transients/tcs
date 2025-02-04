@@ -117,7 +117,7 @@ def xmltodict(s):
     root = ET.fromstring(s)
 
     alert = {}
-    alert["alerttimestamp"] = root.find("./Who/Date").text[:-1]
+    alert["alerttimestamp"] = root.find("./Who/Date").text
 
     if root.find("./What/Description") is not None and re.match(
         "^Broker test event", root.find("./What/Description").text
@@ -167,7 +167,7 @@ def xmltodict(s):
         }
         packettypenumber = alert["packettypenumber"]
         if packettypenumber not in packettypedict:
-            packettype = "svomunknown"
+            packettype = "svomunknown%d" % packettypenumber
         else:
             packettype = packettypedict[packettypenumber]
         alert["packettype"] = packettype
@@ -208,6 +208,10 @@ def respond(alert):
     def logresponse(s):
         log("summary", "%s: %s" % (alert["packettype"], s))
         return
+        
+    if alert["packettype"] == "svomtest":
+        logresponse("not requesting selector to respond: this is a test packet.")
+        return
 
     blockidentifier = alert["burstid"][2:]
 
@@ -228,9 +232,6 @@ def respond(alert):
         "origin/identifier/type are %s/%s/%s." % (origin, identifier, alerttype)
     )
 
-    if alert["packettype"] == "svomtest":
-        logresponse("not requesting selector to respond: this is a test packet.")
-        return
 
     alerttimestamp = alert["alerttimestamp"]
     logresponse("alert time stamp is %s." % alerttimestamp)
