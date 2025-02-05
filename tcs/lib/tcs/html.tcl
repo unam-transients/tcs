@@ -737,6 +737,28 @@ namespace eval "html" {
     putshtml "</table>"
 
   }
+  
+  proc writenotifier {} {
+
+    putshtml "<table class=\"status\">"
+
+    writehtmlstatusblock "notifier"
+
+    putshtml "</table>"
+
+    putshtml "<table class=\"status\">"
+
+    writehtmlfullrow "Problem servers" [join [client::getdata "notifier" "problemservers"] " "]
+    set lastnoproblemtimestamp [client::getdata "notifier" "lastnoproblemtimestamp"]
+    set timestamp [utcclock::format $lastnoproblemtimestamp 0]
+    set interval [utcclock::formatinterval [utcclock::diff now $lastnoproblemtimestamp] false]
+    writehtmlfullrow "No problems" "$timestamp ($interval ago)."
+
+    putshtml "</table>"
+
+  }
+
+  
 
   proc writetelescopecontroller {} {
 
@@ -1702,6 +1724,7 @@ if {false} {
       louvers             {Louvers}
       moon                {Moon}
       mount               {Mount}
+      notifier            {Notifier}
       plc                 {PLC}
       seeing              {Seeing}
       secondary           {Secondary}
@@ -1829,7 +1852,7 @@ if {false} {
       
       set script [file join [directories::prefix] "lib" "tcs" "html-log.sh"]
 
-      foreach server [concat "info" "summary" "warning" "error" $servers] {
+      foreach server [concat "info" "summary" "warning" "error" "svom" $servers] {
 
         coroutine::after 1
 

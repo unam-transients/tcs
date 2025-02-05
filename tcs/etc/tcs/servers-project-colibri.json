@@ -134,5 +134,9 @@
   "C2": {
     "host": "instrument",
     "port": 5028
+  },
+  "notifier": {
+    "host": "control",
+    "port": 5029
   }
 }

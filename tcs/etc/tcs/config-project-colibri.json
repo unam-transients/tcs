@@ -348,6 +348,7 @@
       "louvers",
       "moon",
       "mount",
+      "notifier",
       "plc",
       "power",
       "secondary",
@@ -423,6 +424,33 @@
       "port3":   "3"
     },
     "settlingseconds": 1
+  },
+  "notifier": {
+    "monitoredservers": [
+      "covers",
+      "dome",
+      "executor",
+      "fans",
+      "gcntan",
+      "html",
+      "instrument",
+      "lights",
+      "louvers",
+      "moon",
+      "mount",
+      "plc",
+      "power",
+      "secondary",
+      "selector",
+      "sensors",
+      "supervisor",
+      "sun",
+      "target",
+      "telescope",
+      "telescopecontroller",
+      "weather"
+    ],
+    "problemtoleranceseconds": 120
   },
   "plc": {
     "type": "colibri",

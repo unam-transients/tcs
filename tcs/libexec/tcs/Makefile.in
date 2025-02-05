@@ -68,6 +68,7 @@ installbins         :=            \
 	moonserver                    \
 	mountserver                   \
 	newpgrp                       \
+	notifierserver                \
 	owsensorsserver               \
 	powerserver                   \
 	rebootinstrument              \

@@ -64,11 +64,14 @@ ServerName colibri-services
     Allow from 192.168
     Allow from 127.0.0
     Allow from ::1
+  </LocationMatch>
+
+  <Location "/tcs/operations.html">
     AuthType Basic
     AuthName "COLIBRI Operations"
     AuthUserFile @prefix@/etc/htpasswd/colibri-operations
     Require valid-user
-  </LocationMatch>
+  </Location>
 
   <Location "/tcs/engineering.html">
     AuthType Basic

@@ -69,7 +69,7 @@ ddoti-detectors1)
   ALLARGS=""
   ;;
 colibri-control)
-  allargs="html 1 weather sensors plc power 1 target 1 moon sun 1 telescopecontroller 1 lights louvers fans mount secondary covers dome 1 telescope 1 executor selector supervisor"
+  allargs="html 1 weather sensors plc power 1 target 1 moon sun 1 telescopecontroller 1 lights louvers fans mount secondary covers dome 1 telescope 1 executor selector notifier supervisor"
   ALLARGS="gcntan"
   ;;
 colibri-instrument)

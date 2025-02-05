@@ -291,13 +291,21 @@ namespace eval "utcclock" {
     }
   }
   
-  proc formatinterval {seconds} {
+  proc formatinterval {seconds {extended true}} {
     if {$seconds < 60} {
       return [::format "%.1f seconds" $seconds]
     } elseif {$seconds < 3600} {
-      return [::format "%.1f seconds (%.1f minutes)" $seconds [expr {$seconds / 60.0}]]
+      if {$extended} {
+        return [::format "%.1f seconds (%.1f minutes)" $seconds [expr {$seconds / 60.0}]]
+      } else {
+        return [::format "%.1f minutes" [expr {$seconds / 60.0}]]
+      }
     } else {
-      return [::format "%.1f seconds (%.1f hours)" $seconds [expr {$seconds / 3600.0}]]
+      if {$extended} {
+        return [::format "%.1f seconds (%.1f hours)" $seconds [expr {$seconds / 3600.0}]]
+      } else {
+        return [::format "%.1f hours" [expr {$seconds / 3660.0}]]
+      }
     }
   }
 

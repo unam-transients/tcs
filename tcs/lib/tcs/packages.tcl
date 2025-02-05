@@ -162,6 +162,10 @@ package ifneeded mountopentsi          0.0 \
   [list source [file join [file dirname [info script]] mountopentsi.tcl]]
 package ifneeded mountserver           0.0 \
   [list source [file join [file dirname [info script]] mountserver.tcl]]
+package ifneeded notifier              0.0 \
+  [list source [file join [file dirname [info script]] notifier.tcl]]
+package ifneeded notifierserver        0.0 \
+  [list source [file join [file dirname [info script]] notifierserver.tcl]]
 package ifneeded opentsi               0.0 \
   [list source [file join [file dirname [info script]] opentsi.tcl]]
 package ifneeded owsensors             0.0 \

@@ -100,6 +100,8 @@ installs	:=			           \
 	mountntm.tcl		    	   \
 	mountopentsi.tcl		       \
 	mountserver.tcl		    	   \
+	notifierserver.tcl             \
+	notifier.tcl                   \
 	opentsi.tcl                    \
 	owsensors.tcl		    	   \
 	owsensorsserver.tcl	    	   \
