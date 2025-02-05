@@ -753,8 +753,8 @@ namespace eval "html" {
     if {[string equal "" $problemtimestamp]} {
       writehtmlfullrow "Problems since" ""
     } else {
-      set timestamp [utcclock::format $lastnoproblemtimestamp 0]
-      set interval [utcclock::formatinterval [utcclock::diff now $lastnoproblemtimestamp] false]
+      set timestamp [utcclock::format $problemtimestamp 0]
+      set interval [utcclock::formatinterval [utcclock::diff now $problemtimestamp] false]
       writehtmlfullrow "Problems since" "$timestamp ($interval ago)"
     }
 

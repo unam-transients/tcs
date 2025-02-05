@@ -55,7 +55,7 @@ namespace eval "notifier" {
   proc notify {} {
     variable problemservers
     variable problemtimestamp
-    log::warning [format
+    log::warning [format \
       "persistent problems since %s with: %s" \
       [utcclock::format $problemtimestamp 0] [join $problemservers " "] \
     ]
@@ -105,7 +105,7 @@ namespace eval "notifier" {
       if {[llength $lastproblemservers] == 0} {
         set problemtimestamp [utcclock::combinedformat "now"]
       }
-      log::info [format
+      log::info [format \
         "problems since %s with: %s" \
         [utcclock::format $problemtimestamp 0] [join $problemservers " "] \
       ]
