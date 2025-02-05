@@ -38,23 +38,41 @@ namespace eval "notifier" {
   variable problemtoleranceseconds [config::getvalue "notifier" "problemtoleranceseconds"]
 
   ######################################################################
+
+  variable problemservers   {}
+  variable problemtimestamp ""
+  variable problemnotified false
+  
+  ######################################################################
+
+  server::setdata "servers"          $servers
+  server::setdata "problemservers"   {}
+  server::setdata "problemtimestamp" ""
+  server::setdata "timestamp"        [utcclock::combinedformat "now"]
+
+  ######################################################################
   
   proc notify {} {
-    log::warning "notifying: persistent problems with: [join $problemservers " "]."
+    variable problemservers
+    variable problemtimestamp
+    log::warning [format
+      "persistent problems since %s with: %s" \
+      [utcclock::format $problemtimestamp 0] [join $problemservers " "] \
+    ]
   }
   
   ######################################################################
-  
-  variable lastnoproblemtimestamp [utcclock::combinedformat "now"]
-  variable notified false
   
   proc monitorservers {} {
   
     variable servers
     variable problemtoleranceseconds
-    variable lastnoproblemtimestamp
+    variable problemservers
+    variable problemtimestamp
     variable problemnotified
     
+    set lastproblemservers $problemservers
+
     set problemservers {}
     foreach server $servers {
 
@@ -82,24 +100,31 @@ namespace eval "notifier" {
     
     if {[llength $problemservers] == 0} {
       log::info "no servers have problems."
+      set problemtimestamp ""
     } else {
-      log::info "problems with: [join $problemservers " "]."
+      if {[llength $lastproblemservers] == 0} {
+        set problemtimestamp [utcclock::combinedformat "now"]
+      }
+      log::info [format
+        "problems since %s with: %s" \
+        [utcclock::format $problemtimestamp 0] [join $problemservers " "] \
+      ]
     }
     
+    server::setdata "servers"          $servers
+    server::setdata "problemservers"   $problemservers
+    server::setdata "problemtimestamp" $problemtimestamp
+    server::setdata "timestamp"        [utcclock::combinedformat "now"]
+
     if {[llength $problemservers] == 0} {
-      set lastnoproblemtimestamp [utcclock::combinedformat "now"]
-      set notified false
-    } elseif {[utcclock::diff now $lastnoproblemtimestamp] > $problemtoleranceseconds} {
-      if {!$notified} {
+      set problemnotified false
+    } elseif {[utcclock::diff now $problemtimestamp] > $problemtoleranceseconds} {
+      if {!$problemnotified} {
         notify
-        set notified true
+        set problemnotified true
       }
     }
 
-    server::setdata "servers"                  $servers
-    server::setdata "problemservers"           $problemservers
-    server::setdata "lastnoproblemtimestamp"   $lastnoproblemtimestamp
-    server::setdata "timestamp"                [utcclock::combinedformat "now"]
 
   }
 

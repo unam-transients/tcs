@@ -749,10 +749,14 @@ namespace eval "html" {
     putshtml "<table class=\"status\">"
 
     writehtmlfullrow "Problem servers" [join [client::getdata "notifier" "problemservers"] " "]
-    set lastnoproblemtimestamp [client::getdata "notifier" "lastnoproblemtimestamp"]
-    set timestamp [utcclock::format $lastnoproblemtimestamp 0]
-    set interval [utcclock::formatinterval [utcclock::diff now $lastnoproblemtimestamp] false]
-    writehtmlfullrow "No problems" "$timestamp ($interval ago)."
+    set problemtimestamp [client::getdata "notifier" "problemtimestamp"]
+    if {[string equal "" $problemtimestamp]} {
+      writehtmlfullrow "Problems since" ""
+    } else {
+      set timestamp [utcclock::format $lastnoproblemtimestamp 0]
+      set interval [utcclock::formatinterval [utcclock::diff now $lastnoproblemtimestamp] false]
+      writehtmlfullrow "Problems since" "$timestamp ($interval ago)"
+    }
 
     putshtml "</table>"
 
