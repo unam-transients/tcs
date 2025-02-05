@@ -210,7 +210,7 @@ namespace eval "telescopecontroller" {
       log::info [format "dome azimuth is %.1fd." [astrometry::radtodeg $domeazimuth]]
     }
     if {$errorstateflag & 7 && ![string equal [server::getactivity] "resetting"]} {
-      server::setactivity "error"
+      #server::setactivity "error"
     }
 
     set lastreadystate $readystate

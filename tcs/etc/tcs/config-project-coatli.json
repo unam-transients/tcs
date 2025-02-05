@@ -301,6 +301,28 @@
       "HDCD2": "+0.000129"
     }
   },
+  "notifier": {
+    "monitoredservers": [
+      "enclosure",
+      "executor",
+      "gcntan",
+      "heater",
+      "instrument",
+      "lights",
+      "moon",
+      "mount",
+      "power",
+      "selector",
+      "secondary",
+      "sensors",
+      "sun",
+      "supervisor",
+      "target",
+      "telescope",
+      "weather"
+    ],
+    "problemtoleranceseconds": 180
+  },
   "power": {
     "hosts": {
       "ibb-127": {

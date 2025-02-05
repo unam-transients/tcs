@@ -41,7 +41,7 @@ usageerror () {
 host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
 case "$host" in
 coatli-control)
-  allargs="html 1 sensors power weather seeing 1 target 1 moon sun 1 secondary enclosure mount 1 telescope 1 executor selector supervisor"
+  allargs="html 1 sensors power weather seeing 1 target 1 moon sun 1 secondary enclosure mount 1 telescope 1 executor selector notifier supervisor"
   ALLARGS="gcntan"
   ;;
 coatli-instrument)
