@@ -39,13 +39,21 @@ namespace eval "notifier" {
 
   ######################################################################
   
+  proc notify {} {
+    log::warning "notifying: persistent problems with: [join $problemservers " "]."
+  }
+  
+  ######################################################################
+  
   variable lastnoproblemtimestamp [utcclock::combinedformat "now"]
+  variable notified false
   
   proc monitorservers {} {
   
     variable servers
     variable problemtoleranceseconds
     variable lastnoproblemtimestamp
+    variable problemnotified
     
     set problemservers {}
     foreach server $servers {
@@ -74,17 +82,18 @@ namespace eval "notifier" {
     
     if {[llength $problemservers] == 0} {
       log::info "no servers have problems."
-    } elseif {[llength $problemservers] == 1} {
-      log::info "this server has problems: [join $problemservers " "]."
     } else {
-      log::info "these servers have problems: [join $problemservers " "]."
+      log::info "problems with: [join $problemservers " "]."
     }
     
     if {[llength $problemservers] == 0} {
       set lastnoproblemtimestamp [utcclock::combinedformat "now"]
-    }
-    
-    if {[utcclock::diff now $lastnoproblemtimestamp] > $problemtoleranceseconds} {
+      set notified false
+    } elseif {[utcclock::diff now $lastnoproblemtimestamp] > $problemtoleranceseconds} {
+      if {!$notified} {
+        notify
+        set notified true
+      }
     }
 
     server::setdata "servers"                  $servers
@@ -92,17 +101,17 @@ namespace eval "notifier" {
     server::setdata "lastnoproblemtimestamp"   $lastnoproblemtimestamp
     server::setdata "timestamp"                [utcclock::combinedformat "now"]
 
-    server::setactivity "idle"
-    server::setstatus "ok"
   }
 
   ######################################################################
 
-  set server::datalifeseconds 60
+  set server::datalifeseconds 120
 
   proc start {} {
     server::setrequestedactivity "idle"
-    coroutine::every 10000 notifier::monitorservers
+    server::setactivity "idle"
+    server::setstatus "ok"
+    coroutine::every 30000 notifier::monitorservers
   }
 
 }

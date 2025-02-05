@@ -450,7 +450,7 @@
       "telescopecontroller",
       "weather"
     ],
-    "problemtoleranceseconds": 120
+    "problemtoleranceseconds": 180
   },
   "plc": {
     "type": "colibri",
