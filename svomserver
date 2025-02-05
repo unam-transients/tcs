@@ -59,7 +59,7 @@ def serverport(serversdata, server):
 
 ################################################################################
 
-who = "svomalertserver"
+who = "svomserver"
 
 
 def logerror(payload):
@@ -118,6 +118,8 @@ def xmltodict(s):
 
     alert = {}
     alert["alerttimestamp"] = root.find("./Who/Date").text
+    if alert["alerttimestamp"][-1] == "Z":
+        alert["alerttimestamp"] = alert["alerttimestamp"][:-1]
 
     if root.find("./What/Description") is not None and re.match(
         "^Broker test event", root.find("./What/Description").text
@@ -143,6 +145,8 @@ def xmltodict(s):
         alert["eventtimestamp"] = root.find(
             "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Time/TimeInstant/ISOTime"
         ).text
+        if alert["eventtimestamp"][-1] == "Z":
+            alert["eventtimestamp"] = alert["eventtimestamp"][:-1]
 
         packettypedict = {
             201: "svomgrmtrigger",
@@ -208,9 +212,10 @@ def respond(alert):
     def logresponse(s):
         log("summary", "%s: %s" % (alert["packettype"], s))
         return
-        
+
     if alert["packettype"] == "svomtest":
-        logresponse("not requesting selector to respond: this is a test packet.")
+        alerttimestamp = alert["alerttimestamp"]
+        logresponse("alert time stamp is %s." % alerttimestamp)
         return
 
     blockidentifier = alert["burstid"][2:]
@@ -231,7 +236,6 @@ def respond(alert):
     logresponse(
         "origin/identifier/type are %s/%s/%s." % (origin, identifier, alerttype)
     )
-
 
     alerttimestamp = alert["alerttimestamp"]
     logresponse("alert time stamp is %s." % alerttimestamp)
