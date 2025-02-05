@@ -1899,7 +1899,7 @@
     "type": "opentsi"
   },
   "weather": {
-    "windaveragespeedlimit": "45"
+    "windaveragespeedlimit": "55"
   },
 
   // To use the dummy telescope, remove the "dummy-" prefixes below.
