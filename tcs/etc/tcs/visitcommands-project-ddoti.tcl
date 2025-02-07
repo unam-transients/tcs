@@ -78,13 +78,13 @@ proc alertvisit {{filter "w"}} {
   # the 90% region, assuming each field is 6.6d x 9.8d.
   set uncertainty [astrometry::parsedistance [alert::uncertainty [executor::alert]]]
   log::summary [format "alertvisit: uncertainty is %s." [astrometry::formatdistance $uncertainty 2]]
-  if {true || $uncertainty <= [astrometry::parsedistance "1.65d"]} {
+  if {$uncertainty <= [astrometry::parsedistance "1.65d"]} {
     log::summary "alertvisit: grid is 1 × 1 fields."
     set visits {
       0 0.0d 0.0d
     }
     set aperture "NW"
-  } elseif {$uncertainty <= [astrometry::parsedistance "3.3d"]} {
+  } elseif {true || $uncertainty <= [astrometry::parsedistance "3.3d"]} {
     log::summary "alertvisit: grid is 1 × 1 fields."
     set visits {
       0 0.0d 0.0d
