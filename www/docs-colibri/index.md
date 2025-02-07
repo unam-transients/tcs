@@ -25,10 +25,14 @@ PERFORMANCE OF THIS SOFTWARE.
 
 This is the TCS web site for the COLIBRI telescope at OAN.
 
-* [Monitoring Interface](/tcs/monitoring.html)
-* [Operations Interface](/tcs/operations.html)
+* Interfaces
+  * [Monitoring Interface](/tcs/monitoring.html)
+  * [Operations Interface](/tcs/operations.html)
+  * [Engineering Interface](/tcs/engineering.html)
+* Alerts
+  * [Alert Queue](/tcs/alerts.html)
+  * [Raw Alert Queue](/tcs/alerts/)
 * [Documentation](documentation.html)
-* [Engineering Interface](/tcs/engineering.html)
 * Plots
   * CCDs: [1 day](tcs/plots/ccds-1.png) [4 days](tcs/plots/ccds-4.png) [30 days](tcs/plots/ccds-30.png) [120 days](tcs/plots/ccds-120.png) [360 days](tcs/plots/ccds-360.png) [1600 days](tcs/plots/ccds-1600.png)
   * Building: [1 day](tcs/plots/building-1.png) [4 days](tcs/plots/building-4.png) [30 days](tcs/plots/building-30.png) [120 days](tcs/plots/building-120.png) [360 days](tcs/plots/building-360.png) [1600 days](tcs/plots/building-1600.png)
