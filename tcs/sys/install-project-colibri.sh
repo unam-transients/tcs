@@ -103,6 +103,8 @@ EOF
 01     00 *  *  *  tcs loadblocks -L
 *      *  *  *  *  cd /usr/local/var/www/tcs/; sh plots.sh >plots.txt 2>&1
 */5    *  *  *  *  tcs logsensors
+*      *  *  *  *  mkdir -p /usr/local/var/www/tcs/alerts/; rsync --delete --dirs /usr/local/var/tcs/alerts/ /usr/local/var/www/tcs/alerts/
+*      *  *  *  *  tcs makealertspage
 EOF
     ;;
   esac

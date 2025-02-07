@@ -42,6 +42,7 @@ namespace eval "notifier" {
   variable problemservers   {}
   variable problemtimestamp ""
   variable problemnotified false
+  variable enabled false
   
   ######################################################################
 
@@ -53,12 +54,29 @@ namespace eval "notifier" {
   ######################################################################
   
   proc notify {} {
+
     variable problemservers
     variable problemtimestamp
+
     log::warning [format \
       "persistent problems since %s with: %s" \
       [utcclock::format $problemtimestamp 0] [join $problemservers " "] \
     ]
+    
+    variable enabled
+    if {!$enabled} {
+      return
+    }
+
+    set message [format \
+      "notifier: persistent problems since %s with: %s" \
+      [utcclock::format $problemtimestamp 0] [join $problemservers " "] \
+    ]
+    exec "[directories::prefix]/bin/tcs" "sendpushover" \
+      "-P" "emergency" \
+      "-s" "Notifier" \
+      "emergency" "$message"
+
   }
   
   ######################################################################
@@ -99,7 +117,9 @@ namespace eval "notifier" {
     }
     
     if {[llength $problemservers] == 0} {
-      log::info "no servers have problems."
+      if {[llength $lastproblemservers] > 0} {
+        log::info "no servers have problems."
+      }
       set problemtimestamp ""
     } else {
       if {[llength $lastproblemservers] == 0} {
@@ -111,6 +131,8 @@ namespace eval "notifier" {
       ]
     }
     
+    variable enabled
+    server::setdata "enabled"          $enabled
     server::setdata "servers"          $servers
     server::setdata "problemservers"   $problemservers
     server::setdata "problemtimestamp" $problemtimestamp
@@ -128,6 +150,26 @@ namespace eval "notifier" {
 
   }
 
+  ######################################################################
+
+  proc enable {} {
+    log::summary "enabling."
+    variable enabled
+    set enabled true
+    server::setdata "enabled" $enabled
+    log::summary "finished enabling."
+    return
+  }
+  
+  proc disable {} {
+    log::summary "disabling."
+    variable enabled
+    set enabled false
+    server::setdata "enabled" $enabled
+    log::summary "finished disabling."
+    return
+  }
+  
   ######################################################################
 
   set server::datalifeseconds 120

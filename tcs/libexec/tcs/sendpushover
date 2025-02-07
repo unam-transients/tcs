@@ -28,7 +28,7 @@ export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bi
 program="tcs $(basename "$0")"
 
 usageerror () {
-  echo 1>&2 "usage: $program [-s subject] [-P priority] [-U URL] to"
+  echo 1>&2 "usage: $program [-P priority] [-U URL] [-s subject] to message"
   exit 1
 }
 
@@ -62,32 +62,49 @@ do
   esac
 done
 shift
-if test $# != 1
+if test $# != 2
 then
   usageerror
 fi
 to="$1"
-body=$(cat)
+message="$2"
 
 case $(uname -n) in
 ddoti-*)
   from=a8unfz1ihyc1kgkcbnbmrb26g4fynf
   ;;
 coatli-*)
-  from=a211448fi9nio3gpj731v2red8o4nc
+  from=abps4xgknzg4j9atufnjbnhkb68gc3
+  ;;
+colibri-*)
+  from=af9kucdjg9h8mz5qkczoxkcff8eph4
+  ;;
+*)
+  echo 2>&1 "$program: error: invalid host \"$$(uname -n)\"."
+  exit 1  
   ;;
 esac
 
-case $to in
-  alan)
-    to=uopAQF3pQRWhpJNCQgd2q8tGKDZRjW
-    ;;
+case $(uname -n):$to in
+*:alan)
+  to=uopAQF3pQRWhpJNCQgd2q8tGKDZRjW
+  ;;
   grb-group)
-    to=g7i8cm37qhqhef3xcd8kkkgshgwsyg
-    ;;
-  gw-group)
-    to=gphngipidum2tto8xg69zz9cgibcja
-    ;;
+  to=g7i8cm37qhqhef3xcd8kkkgshgwsyg
+  ;;
+coatli-*:emergency)
+  to=g7aded162wnz8gy82owkju5t5c7op5
+  ;;
+colibri-*:emergency)
+  to=gp2n8mdxhgeygwzmsmwt8b6hdhzeg3
+  ;;
+gw-group)
+  to=gphngipidum2tto8xg69zz9cgibcja
+  ;;
+*)
+  echo 2>&1 "$program: error: invalid recipient \"$to\"."
+  exit 1  
+  ;;
 esac
 
 case $priority in
@@ -106,6 +123,10 @@ low)
 lowest)
   priority=-2
   ;;
+*)
+  echo 2>&1 "$program: error: invalid priority \"$priority\"."
+  exit 1  
+  ;;
 esac
 
 if ! curl -s \
@@ -115,7 +136,7 @@ if ! curl -s \
   --form-string "retry=60" \
   --form-string "expire=86400" \
   --form-string "title=$subject" \
-  --form-string "message=$body" \
+  --form-string "message=$message" \
   --form-string "url=$url" \
   https://api.pushover.net/1/messages.json >/dev/null
 then

@@ -55,15 +55,17 @@ writehtml("""
 """)
 
 writehtml("<tr>")
-for text in ["", "Identifier", "Age (days)", "Event Time",  "α", "δ", "Epoch", "Uncertainty", "Priority", "Enabled", "Name"]:
+for text in ["", "Name", "Event Time", "Age (days)", "α", "δ", "Epoch", "Uncertainty", "Priority", "Enabled", "Identifier"]:
   writehtml("<th class=\"alerts\">%s</th>" % text)
 writehtml("</tr>")
+
+alerts.sort(key=lambda x: x["eventtimestamp"], reverse=True)
 
 for alert in alerts:
     print(alert["name"])
     writehtml("<tr>")
     writehtml("<td class=\"alerts\"><input type=\"radio\" name=\"id\" value=\"%s\"></td>" % alert["identifier"])
-    for field in ["identifier", "age", "eventtimestamp", "alpha", "delta", "equinox", "uncertainty", "priority", "enabled", "name"]:
+    for field in ["name", "eventtimestamp", "age", "alpha", "delta", "equinox", "uncertainty", "priority", "enabled", "identifier"]:
         writehtml("<td class=\"alerts\">")
         if field == "eventtimestamp":
             writehtml(formattimestamp(alert[field]))
@@ -79,22 +81,38 @@ writehtml("""
 
 <hr/>
 
-<button type="button">Enable</button>
-<button type="button">Disable</button>
-<button type="button">Update</button>
-α <input type="text" id="alert" name="alpha">
-δ <input type="text" id="alert" name="delta">
-Uncertainty <input type="text" id="alert" name="uncertainty">
-Priority <input type="text" id="alert" name="priority">
+<p>NONE OF THE BUTTONS WORK YET!</p>
+
+<p>A new page is created each minute, but you have to reload manually.</p>
 
 <hr/>
 
-<button type="button">New</button>
-Event Time <input type="text" id="alert" name="eventtime">
-α <input type="text" id="alert" name="alpha">
-δ <input type="text" id="alert" name="delta">
-Uncertainty <input type="text" id="alert" name="uncertainty">
-Priority <input type="text" id="alert" name="priority">
+<table>
+<tr><td><button type="button">Enable</button></td></tr>
+<tr><td><button type="button">Disable</button</td></tr>
+</table>
+
+<hr/>
+
+<table>
+<tr><td><button type="button">Update</button></td></tr>
+<tr><td>α</td><td><input type="text" id="alert" name="alpha"></td></tr>
+<tr><td>δ</td><td><input type="text" id="alert" name="delta"></td></tr>
+<tr><td>Uncertainty</td><td><input type="text" id="alert" name="uncertainty"></td></tr>
+<tr><td>Priority</td><td><input type="text" id="alert" name="priority"></td></tr>
+</table>
+
+<hr/>
+
+<table>
+<tr><td><button type="button">New</button></td></tr>
+<tr><td>Name</td><td><input type="text" id="alert" name="name"></td></tr>
+<tr><td>Event Time</td><td><input type="text" id="alert" name="eventtime"></td></tr>
+<tr><td>α</td><td><input type="text" id="alert" name="alpha"></td></tr>
+<tr><td>δ</td><td><input type="text" id="alert" name="delta"></td></tr>
+<tr><td>Uncertainty</td><td><input type="text" id="alert" name="uncertainty"></td></tr>
+<tr><td>Priority</td><td><input type="text" id="alert" name="priority"></td></tr>
+</table>
 
 </div>
 

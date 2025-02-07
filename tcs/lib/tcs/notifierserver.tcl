@@ -31,7 +31,19 @@ namespace eval "notifierserver" {
 
   ######################################################################
 
+  proc slaveenable {} {
+    notifier::enable
+    return
+  }
+
+  proc slavedisable {} {
+    notifier::disable
+    return
+  }
+  
   proc configureslave {slave} {
+    interp alias $slave enable            {} notifierserver::slaveenable
+    interp alias $slave disable           {} notifierserver::slavedisable
   }
 
   ######################################################################

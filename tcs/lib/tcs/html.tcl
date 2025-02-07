@@ -748,6 +748,7 @@ namespace eval "html" {
 
     putshtml "<table class=\"status\">"
 
+    writehtmlrow "Enabled" [client::getdata "notifier" "enabled"]
     writehtmlfullrow "Problem servers" [join [client::getdata "notifier" "problemservers"] " "]
     set problemtimestamp [client::getdata "notifier" "problemtimestamp"]
     if {[string equal "" $problemtimestamp]} {
