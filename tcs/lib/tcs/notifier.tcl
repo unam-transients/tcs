@@ -53,12 +53,24 @@ namespace eval "notifier" {
   ######################################################################
   
   proc notify {} {
+
     variable problemservers
     variable problemtimestamp
+
     log::warning [format \
       "persistent problems since %s with: %s" \
       [utcclock::format $problemtimestamp 0] [join $problemservers " "] \
     ]
+
+    set message [format \
+      "notifier: persistent problems since %s with: %s" \
+      [utcclock::format $problemtimestamp 0] [join $problemservers " "] \
+    ]
+    exec "[directories::prefix]/bin/tcs" "sendpushover" \
+      "-P" "emergency" \
+      "-s" "Notifier" \
+      "emergency" "$message"
+
   }
   
   ######################################################################
@@ -99,7 +111,9 @@ namespace eval "notifier" {
     }
     
     if {[llength $problemservers] == 0} {
-      log::info "no servers have problems."
+      if {[llength $lastproblemservers] > 0} {
+        log::info "no servers have problems."
+      }
       set problemtimestamp ""
     } else {
       if {[llength $lastproblemservers] == 0} {
