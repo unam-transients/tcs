@@ -51,7 +51,7 @@ proc alertvisit {filters} {
   # the 90% region, assuming each field is 6.6d x 9.8d.
   set uncertainty [astrometry::parsedistance [alert::uncertainty [executor::alert]]]
   log::summary [format "alertvisit: uncertainty is %s." [astrometry::formatdistance $uncertainty 2]]
-  if {$uncertainty <= [astrometry::parsedistance "6am"]} {
+  if {true || $uncertainty <= [astrometry::parsedistance "6am"]} {
     log::summary "alertvisit: grid is 1 × 1 fields."
     dithervisit 16 60 {{r r z}} false
   } elseif {$uncertainty <= [astrometry::parsedistance "13am"]} {
