@@ -45,6 +45,6 @@
   
   "maxfocusdelay": "1h",
 
-  "maxalertdelay": "24h"
+  "maxalertdelay": "48h"
 
 }
