@@ -95,6 +95,8 @@ EOF
 01 00 *  *  *  tcs loadblocks -L
 *   *  * *  *  sh /usr/local/var/www/tcs/plots.sh
 */5 *  * *  *  tcs logsensors
+*      *  *  *  *  mkdir -p /usr/local/var/www/tcs/alerts/; rsync --delete --dirs /usr/local/var/tcs/alerts/ /usr/local/var/www/tcs/alerts/
+*      *  *  *  *  tcs makealertspage
 EOF
     ;;
   instrument)
