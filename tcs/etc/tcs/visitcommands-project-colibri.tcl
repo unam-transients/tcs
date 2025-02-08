@@ -21,7 +21,7 @@
 
 ########################################################################
 
-proc alertvisit {filters} {
+proc alertvisit {{exposurerepeats 16} {exposuretimes 60} {filters "r/zy"}} {
   
   log::summary "alertvisit: starting."
   
@@ -46,19 +46,78 @@ proc alertvisit {filters} {
     return false
   }
 
-  # For the time being, we just use one field.
-  # The decisions below aim to choose the smallest grid that includes
-  # the 90% region, assuming each field is 6.6d x 9.8d.
   set uncertainty [astrometry::parsedistance [alert::uncertainty [executor::alert]]]
   log::summary [format "alertvisit: uncertainty is %s." [astrometry::formatdistance $uncertainty 2]]
+
   if {true || $uncertainty <= [astrometry::parsedistance "6am"]} {
     log::summary "alertvisit: grid is 1 × 1 fields."
-    dithervisit 16 60 {{r r z}} false
+    dithervisit $exposurerepeats $exposuretimes $filters false
   } elseif {$uncertainty <= [astrometry::parsedistance "13am"]} {
     log::summary "alertvisit: grid is 2 × 2 fields."
-    quaddithervisit 16 60 {{r r z}} false
+    quaddithervisit $exposurerepeats $exposuretimes $filters false
   }
 
+}
+
+########################################################################
+
+proc parsefilters {filters} {
+  switch $filters {
+    "gri" -
+    "gri/zy" {
+      set filters {{r gri zy}}
+    }
+    "g" -
+    "g/z" {
+      set filters {{r g z}}
+    }
+    "g/r" -
+    "g/r/z" {
+      set filters {{r g z} {r r z}}
+    }
+    "g/r/zy" {
+      set filters {{r g zy} {r r zy}}
+    }
+    "g/i" -
+    "g/i/z" {
+      set filters {{r g z} {r i z}}
+    }
+    "g/i/zy" {
+      set filters {{r g zy} {r i zy}}
+    }
+    "g/r/i" -
+    "g/r/i/z" {
+      set filters {{r g z} {r r z} {r i z}}
+    }
+    "g/r/i/zy" {
+      set filters {{r g zy} {r r zy} {r i zy}}
+    }
+    "g/r/i/z/y" {
+      set filters {{r g z} {r r y} {r i y}}
+    }
+    "r" -
+    "r/z" {
+      set filters {{r r z}}
+    }
+    "r/zy" {
+      set filters {{r r zy}}
+    }
+    "r/i" -
+    "r/i/z" {
+      set filters {{r r z} {r i z}}
+    }
+    "r/i/zy" {
+      set filters {{r r zy} {r i zy}}
+    }
+    "i" -
+    "i/z" {
+      set filters {{r i z}}
+    }
+    "i/zy" {
+      set filters {{r i zy}}
+    }    
+  }
+  return $filters
 }
 
 ########################################################################
@@ -74,6 +133,8 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
   executor::setbinning 1
 
   executor::waituntiltracking
+  
+  set filters [parsefilters $filters]
   
   if {[llength $exposuretimes] == 1} {
     set exposuretimes [lrepeat [llength $filters] $exposuretimes]
@@ -143,6 +204,8 @@ proc fullgridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters
 
   executor::waituntiltracking
   
+  set filters [parsefilters $filters]
+
   if {[llength $exposuretimes] == 1} {
     set exposuretimes [lrepeat [llength $filters] $exposuretimes]
   } elseif {[llength $exposuretimes] != [llength $filters]} {
@@ -226,7 +289,6 @@ proc dithervisit {exposurerepeats exposuretimes filters {offsetfastest true} {di
 
   log::summary "dithervisit: dithering in a circle of diameter $diameter."
 
-
   executor::setsecondaryoffset 0
   executor::track
 
@@ -235,6 +297,8 @@ proc dithervisit {exposurerepeats exposuretimes filters {offsetfastest true} {di
 
   executor::waituntiltracking
   
+  set filters [parsefilters $filters]
+
   if {[llength $exposuretimes] == 1} {
     set exposuretimes [lrepeat [llength $filters] $exposuretimes]
   } elseif {[llength $exposuretimes] != [llength $filters]} {
@@ -302,6 +366,8 @@ proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest true}
 
   executor::waituntiltracking
   
+  set filters [parsefilters $filters]
+
   if {[llength $exposuretimes] == 1} {
     set exposuretimes [lrepeat [llength $filters] $exposuretimes]
   } elseif {[llength $exposuretimes] != [llength $filters]} {
