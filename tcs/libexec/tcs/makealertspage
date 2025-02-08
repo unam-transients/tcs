@@ -5,35 +5,71 @@ from datetime import datetime
 from datetime import timezone
 import json
 import re
+import math
 
 htmlfilename = "/usr/local/var/www/alerts.html"
 jsonfilename = "/usr/local/var/tcs/alerts.json"
 
 htmlfile = open(htmlfilename, "w")
 
+
 def readjson(filename):
     with open(filename, "r") as f:
         return json.loads(f.read(-1))
 
+
 def writehtml(s):
     print(s, file=htmlfile)
+
 
 def formattimestamp(timestamp):
     timestamp = re.sub("T", " ", timestamp)
     timestamp = re.sub("\.[0-9]*$", "", timestamp)
-    return timestamp  
-  
+    return timestamp
+
+
 def formatage(eventtimestamp):
-    eventtimestamp = re.sub("\.[0-9]*$", "", eventtimestamp)
-    event = datetime.fromisoformat(eventtimestamp)
+    return "%.2fd" % (age(eventtimestamp) / 86400)
+
+
+def parseangle(angle):
+    if angle[-1:] == "r":
+        angle = float(angle[:-1])
+    elif angle[-1:] == "d":
+        angle = math.radians(float(angle[:-1]))
+    elif angle[-2:] == "am":
+        angle = math.radians(float(angle[:-2]) / 60)
+    elif angle[-2:] == "as":
+        angle = math.radians(float(angle[:-2]) / 60 / 60)
+    else:
+        angle = float(angle)
+    return angle
+
+
+def parseinterval(interval):
+    if interval[-1:] == "h":
+        interval = float(interval[:-1]) * 3600
+    elif interval[-1:] == "m":
+        interval = float(interval[:-1]) * 60
+    elif interval[-1:] == "s":
+        interval = float(interval[:-1])
+    else:
+        interval = float(interval)
+    return interval
+
+
+def age(timestamp):
+    timestamp = re.sub("\.[0-9]*$", "", timestamp)
+    event = datetime.fromisoformat(timestamp)
     now = datetime.now()
     age = now - event
-    return "%.2f" % (age.days + age.seconds / 86400)
-    
+    return age.days * 86400 + age.seconds
+
 
 alerts = readjson(jsonfilename)
 
-writehtml("""
+writehtml(
+    """
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
@@ -51,33 +87,84 @@ writehtml("""
 </div>
 
 <div id="body">
-<table class="alerts">
-""")
-
-writehtml("<tr>")
-for text in ["", "Name", "Event Time", "Age (days)", "α", "δ", "Epoch", "Uncertainty", "Priority", "Enabled", "Identifier"]:
-  writehtml("<th class=\"alerts\">%s</th>" % text)
-writehtml("</tr>")
+"""
+)
 
 alerts.sort(key=lambda x: x["eventtimestamp"], reverse=True)
 
+selectablealerts = []
+unselectablealerts = []
 for alert in alerts:
-    print(alert["name"])
-    writehtml("<tr>")
-    writehtml("<td class=\"alerts\"><input type=\"radio\" name=\"id\" value=\"%s\"></td>" % alert["identifier"])
-    for field in ["name", "eventtimestamp", "age", "alpha", "delta", "equinox", "uncertainty", "priority", "enabled", "identifier"]:
-        writehtml("<td class=\"alerts\">")
-        if field == "eventtimestamp":
-            writehtml(formattimestamp(alert[field]))
-        elif field == "age":
-            writehtml(formatage(alert["eventtimestamp"]))
-        else:
-            writehtml(alert[field])
-        writehtml("</td>")
-    writehtml("</tr>")
+    if "uncertainty" not in alert.keys() or "eventtimestamp" not in alert.keys() or "enabled" not in alert.keys():
+        unselectablealerts.append(alert)
+    elif alert["enabled"] == "false":
+        unselectablealerts.append(alert)
+    elif parseangle(alert["uncertainty"]) > parseangle(alert["maxalertuncertainty"]):
+        unselectablealerts.append(alert)
+    elif age(alert["eventtimestamp"]) > parseinterval(alert["maxalertdelay"]):
+        unselectablealerts.append(alert)
+    else:
+        selectablealerts.append(alert)
 
-writehtml("""
-</table>
+
+def writealertstable(alerts):
+    writehtml("<tr>")
+    for text in [
+        "",
+        "Name",
+        "Event Time",
+        "Age (days)",
+        "α",
+        "δ",
+        "Epoch",
+        "Uncertainty",
+        "Priority",
+        "Enabled",
+        "Identifier",
+    ]:
+        writehtml('<th class="alerts">%s</th>' % text)
+    writehtml("</tr>")
+    for alert in alerts:
+        writehtml("<tr>")
+        writehtml(
+            '<td class="alerts"><input type="radio" name="id" value="%s"></td>'
+            % alert["identifier"]
+        )
+        for key in [
+            "name",
+            "eventtimestamp",
+            "age",
+            "alpha",
+            "delta",
+            "equinox",
+            "uncertainty",
+            "priority",
+            "enabled",
+            "identifier",
+        ]:
+            writehtml('<td class="alerts">')
+            if key == "age" and "eventtimestamp" in alert.keys():
+                writehtml(formatage(alert["eventtimestamp"]))
+            elif key not in alert.keys():
+                writehtml("—")
+            elif key == "eventtimestamp":
+                writehtml(formattimestamp(alert[key]))
+            else:
+                writehtml(alert[key])
+            writehtml("</td>")
+        writehtml("</tr>")
+
+
+writehtml('<table class="alerts">')
+writehtml('<tr><th colspan="11">Selectable Alerts</th></tr>')
+writealertstable(selectablealerts)
+writehtml('<tr><td colspan="11"><hr/></td></tr>')
+writehtml('<tr><th colspan="11">Unselectable Alerts</th></tr>')
+writealertstable(unselectablealerts)
+writehtml("</table>")
+
+writehtml(
+    """
 
 <hr/>
 
@@ -125,4 +212,6 @@ Updated: %s UTC
 
 
 </html>
-""" % datetime.now(timezone.utc).replace(tzinfo=None).isoformat(" ", timespec="seconds"))
+"""
+    % datetime.now(timezone.utc).replace(tzinfo=None).isoformat(" ", timespec="seconds")
+)
