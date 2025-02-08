@@ -44,5 +44,5 @@
   "telescope"  : { "host" : "control"   , "port" : 5024 },
   "weather"    : { "host" : "control"   , "port" : 5025 },
   "seeing"     : { "host" : "control"   , "port" : 5026 },
-  "notifier"   : { "host" : "control"   , "port" : 5027 }
+  "watchdog"   : { "host" : "control"   , "port" : 5027 }
 }

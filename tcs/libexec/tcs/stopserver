@@ -40,7 +40,7 @@ usageerror () {
 host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
 case "$host" in
 coatli-control)
-  allargs="sensors power supervisor notifier selector executor telescope mount enclosure secondary seeing weather sun moon target html"
+  allargs="sensors power supervisor watchdog selector executor telescope mount enclosure secondary seeing weather sun moon target html"
   ALLARGS="gcntan"
   ;;
 coatli-instrument)
@@ -68,7 +68,7 @@ ddoti-detectors1)
   ALLARGS=""
   ;;
 colibri-control)
-  allargs="supervisor notifier selector executor telescope lights louvers fans mount secondary covers dome telescopecontroller sun moon target weather plc power sensors html"
+  allargs="supervisor watchdog selector executor telescope lights louvers fans mount secondary covers dome telescopecontroller sun moon target weather plc power sensors html"
   ALLARGS="gcntan"
   ;;
 colibri-instrument)

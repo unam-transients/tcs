@@ -1,5 +1,3 @@
-#!/bin/sh
-
 ########################################################################
 
 # This file is part of the UNAM telescope control system.
@@ -23,13 +21,38 @@
 
 ########################################################################
 
-#\
-umask 0; PATH=/usr/local/opt/tcl-tk/bin:$PATH exec tclsh8.6 -encoding "utf-8" "$0" ${1+"$@"}
-
-source [file join $::env(tcsprefix) "lib" "tcs" "packages.tcl"]
-
+package require "watchdog"
+package require "log"
 package require "server"
-server::start {
-  package require notifierserver
-  notifierserver::start
+
+package provide "watchdogserver" 0.0
+
+namespace eval "watchdogserver" {
+
+  ######################################################################
+
+  proc slaveenable {} {
+    watchdog::enable
+    return
+  }
+
+  proc slavedisable {} {
+    watchdog::disable
+    return
+  }
+  
+  proc configureslave {slave} {
+    interp alias $slave enable            {} watchdogserver::slaveenable
+    interp alias $slave disable           {} watchdogserver::slavedisable
+  }
+
+  ######################################################################
+
+  proc start {} {
+    watchdog::start
+    server::listen watchdog watchdogserver::configureslave
+  }
+
+  ######################################################################
+
 }

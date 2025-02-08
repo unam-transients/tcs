@@ -23,120 +23,33 @@
 ////////////////////////////////////////////////////////////////////////
 
 {
-  "log": {
-    "host": "control",
-    "port": 5000
-  },
-  "target": {
-    "host": "control",
-    "port": 5001
-  },
-  "moon": {
-    "host": "control",
-    "port": 5002
-  },
-  "sun": {
-    "host": "control",
-    "port": 5003
-  },
-  "weather": {
-    "host": "control",
-    "port": 5004
-  },
-  "sensors": {
-    "host": "control",
-    "port": 5005
-  },
-  "html": {
-    "host": "control",
-    "port": 5006
-  },
-  "C0": {
-    "host": "instrument",
-    "port": 5007
-  },
-  "C1": {
-    "host": "instrument",
-    "port": 5008
-  },
-  "plc": {
-    "host": "control",
-    "port": 5009
-  },
-  "selector": {
-    "host": "control",
-    "port": 5011
-  },
-  "executor": {
-    "host": "control",
-    "port": 5012
-  },
-  "telescope": {
-    "host": "control",
-    "port": 5013
-  },
-  "instrument": {
-    "host": "instrument",
-    "port": 5014
-  },
-  "power": {
-    "host": "control",
-    "port": 5015
-  },
-  "mount": {
-    "host": "control",
-    "port": 5016
-  },
-  "covers": {
-    "host": "control",
-    "port": 5017
-  },
-  "secondary": {
-    "host": "control",
-    "port": 5018
-  },
-  "telescopecontroller": {
-    "host": "control",
-    "port": 5019
-  },
-  "supervisor": {
-    "host": "control",
-    "port": 5020
-  },
-  "lights": {
-    "host": "control",
-    "port": 5021
-  },
-  "dome": {
-    "host": "control",
-    "port": 5022
-  },
-  "power": {
-    "host": "control",
-    "port": 5023
-  },
-  "louvers": {
-    "host": "control",
-    "port": 5024
-  },
-  "seeing": {
-    "host": "control",
-    "port": 5025
-  },
-  "fans": {
-    "host": "control",
-    "port": 5026
-  },
-  "gcntan": {
-    "host": "control",
-    "port": 5027
-  },
-  "C2": {
-    "host": "instrument",
-    "port": 5028
-  },
-  "notifier": {
-    "host": "control",
-    "port": 5029
-  }
+ "log"                : { "host": "control"   , "port": 5000 },
+ "target"             : { "host": "control"   , "port": 5001 },
+ "moon"               : { "host": "control"   , "port": 5002 },
+ "sun"                : { "host": "control"   , "port": 5003 },
+ "weather"            : { "host": "control"   , "port": 5004 },
+ "sensors"            : { "host": "control"   , "port": 5005 },
+ "html"               : { "host": "control"   , "port": 5006 },
+ "C0"                 : { "host": "instrument", "port": 5007 },
+ "C1"                 : { "host": "instrument", "port": 5008 },
+ "plc"                : { "host": "control"   , "port": 5009 },
+ "selector"           : { "host": "control"   , "port": 5011 },
+ "executor"           : { "host": "control"   , "port": 5012 },
+ "telescope"          : { "host": "control"   , "port": 5013 },
+ "instrument"         : { "host": "instrument", "port": 5014 },
+ "power"              : { "host": "control"   , "port": 5015 },
+ "mount"              : { "host": "control"   , "port": 5016 },
+ "covers"             : { "host": "control"   , "port": 5017 },
+ "secondary"          : { "host": "control"   , "port": 5018 },
+ "telescopecontroller": { "host": "control"   , "port": 5019 },
+ "supervisor"         : { "host": "control"   , "port": 5020 },
+ "lights"             : { "host": "control"   , "port": 5021 },
+ "dome"               : { "host": "control"   , "port": 5022 },
+ "power"              : { "host": "control"   , "port": 5023 },
+ "louvers"            : { "host": "control"   , "port": 5024 },
+ "seeing"             : { "host": "control"   , "port": 5025 },
+ "fans"               : { "host": "control"   , "port": 5026 },
+ "gcntan"             : { "host": "control"   , "port": 5027 },
+ "C2"                 : { "host": "instrument", "port": 5028 },
+ "watchdog"           : { "host": "control"   , "port": 5029 }
 }

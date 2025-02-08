@@ -950,6 +950,9 @@ namespace eval "executor" {
   proc recovertoclosedactivitycommand {} {
     set start [utcclock::seconds]
     log::summary "recovering to closed."
+    catch {client::waituntilstarted "watchdog"}
+    client::request "watchdog" "enable"
+    client::wait "watchdog"
     foreach server {telescope instrument} {
       catch {client::waituntilstarted $server}
       client::request $server "recover"
@@ -961,6 +964,9 @@ namespace eval "executor" {
   proc recovertoopenactivitycommand {} {
     set start [utcclock::seconds]
     log::summary "recovering to open."
+    catch {client::waituntilstarted "watchdog"}
+    client::request "watchdog" "enable"
+    client::wait "watchdog"
     foreach server {telescope instrument} {
       catch {client::waituntilstarted $server}
       client::request $server "recover"
@@ -978,6 +984,9 @@ namespace eval "executor" {
   proc initializeactivitycommand {} {
     set start [utcclock::seconds]
     log::summary "initializing."
+    catch {client::waituntilstarted "watchdog"}
+    client::request "watchdog" "enable"
+    client::wait "watchdog"
     foreach server {instrument telescope} {
       catch {client::waituntilstarted $server}
       client::request $server "initialize"

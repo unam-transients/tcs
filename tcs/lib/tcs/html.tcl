@@ -738,19 +738,19 @@ namespace eval "html" {
 
   }
   
-  proc writenotifier {} {
+  proc writewatchdog {} {
 
     putshtml "<table class=\"status\">"
 
-    writehtmlstatusblock "notifier"
+    writehtmlstatusblock "watchdog"
 
     putshtml "</table>"
 
     putshtml "<table class=\"status\">"
 
-    writehtmlrow "Enabled" [client::getdata "notifier" "enabled"]
-    writehtmlfullrow "Problem servers" [join [client::getdata "notifier" "problemservers"] " "]
-    set problemtimestamp [client::getdata "notifier" "problemtimestamp"]
+    writehtmlrow "Enabled" [client::getdata "watchdog" "enabled"]
+    writehtmlfullrow "Problem servers" [join [client::getdata "watchdog" "problemservers"] " "]
+    set problemtimestamp [client::getdata "watchdog" "problemtimestamp"]
     if {[string equal "" $problemtimestamp]} {
       writehtmlfullrow "Problems since" ""
     } else {
@@ -1729,7 +1729,7 @@ if {false} {
       louvers             {Louvers}
       moon                {Moon}
       mount               {Mount}
-      notifier            {Notifier}
+      watchdog            {Watchdog}
       plc                 {PLC}
       seeing              {Seeing}
       secondary           {Secondary}

@@ -27,15 +27,15 @@ package require "coroutine"
 package require "server"
 package require "utcclock"
 
-package provide "notifier" 0.0
+package provide "watchdog" 0.0
 
-namespace eval "notifier" {
+namespace eval "watchdog" {
 
   variable servers [concat \
-    [config::getvalue "notifier" "monitoredservers"] \
+    [config::getvalue "watchdog" "monitoredservers"] \
     [config::getvalue "instrument" "monitoreddetectors"] \
   ]
-  variable problemtoleranceseconds [config::getvalue "notifier" "problemtoleranceseconds"]
+  variable problemtoleranceseconds [config::getvalue "watchdog" "problemtoleranceseconds"]
 
   ######################################################################
 
@@ -46,6 +46,7 @@ namespace eval "notifier" {
   
   ######################################################################
 
+  server::setdata "enabled"          false
   server::setdata "servers"          $servers
   server::setdata "problemservers"   {}
   server::setdata "problemtimestamp" ""
@@ -69,12 +70,12 @@ namespace eval "notifier" {
     }
 
     set message [format \
-      "notifier: persistent problems since %s with: %s" \
+      "watchdog: persistent problems since %s with: %s" \
       [utcclock::format $problemtimestamp 0] [join $problemservers " "] \
     ]
     exec "[directories::prefix]/bin/tcs" "sendpushover" \
       "-P" "emergency" \
-      "-s" "Notifier" \
+      "-s" "Watchdog" \
       "emergency" "$message"
 
   }
@@ -178,7 +179,7 @@ namespace eval "notifier" {
     server::setrequestedactivity "idle"
     server::setactivity "idle"
     server::setstatus "ok"
-    coroutine::every 30000 notifier::monitorservers
+    coroutine::every 30000 watchdog::monitorservers
   }
 
 }

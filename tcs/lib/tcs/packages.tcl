@@ -162,10 +162,6 @@ package ifneeded mountopentsi          0.0 \
   [list source [file join [file dirname [info script]] mountopentsi.tcl]]
 package ifneeded mountserver           0.0 \
   [list source [file join [file dirname [info script]] mountserver.tcl]]
-package ifneeded notifier              0.0 \
-  [list source [file join [file dirname [info script]] notifier.tcl]]
-package ifneeded notifierserver        0.0 \
-  [list source [file join [file dirname [info script]] notifierserver.tcl]]
 package ifneeded opentsi               0.0 \
   [list source [file join [file dirname [info script]] opentsi.tcl]]
 package ifneeded owsensors             0.0 \
@@ -256,6 +252,10 @@ package ifneeded version               0.0 \
   [list source [file join [file dirname [info script]] version.tcl]]
 package ifneeded visit                 0.0 \
   [list source [file join [file dirname [info script]] visit.tcl]]
+package ifneeded watchdog              0.0 \
+  [list source [file join [file dirname [info script]] watchdog.tcl]]
+package ifneeded watchdogserver        0.0 \
+  [list source [file join [file dirname [info script]] watchdogserver.tcl]]
 package ifneeded weather               0.0 \
   [list source [file join [file dirname [info script]] weather.tcl]]
 package ifneeded weatherserver         0.0 \

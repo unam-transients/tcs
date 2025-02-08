@@ -100,8 +100,6 @@ installs	:=			           \
 	mountntm.tcl		    	   \
 	mountopentsi.tcl		       \
 	mountserver.tcl		    	   \
-	notifierserver.tcl             \
-	notifier.tcl                   \
 	opentsi.tcl                    \
 	owsensors.tcl		    	   \
 	owsensorsserver.tcl	    	   \
@@ -148,6 +146,8 @@ installs	:=			           \
 	utcclock.tcl		    	   \
 	visit.tcl 		        	   \
 	version.tcl                    \
+	watchdogserver.tcl             \
+	watchdog.tcl                   \
 	weather.tcl		        	   \
 	weatherserver.tcl
 

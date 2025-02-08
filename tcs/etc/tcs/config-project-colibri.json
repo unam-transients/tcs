@@ -348,7 +348,6 @@
       "louvers",
       "moon",
       "mount",
-      "notifier",
       "plc",
       "power",
       "secondary",
@@ -359,6 +358,7 @@
       "target",
       "telescope",
       "telescopecontroller",
+      "watchdog",
       "weather"
     ]
   },
@@ -424,33 +424,6 @@
       "port3":   "3"
     },
     "settlingseconds": 1
-  },
-  "notifier": {
-    "monitoredservers": [
-      "covers",
-      "dome",
-      "executor",
-      "fans",
-      "gcntan",
-      "html",
-      "instrument",
-      "lights",
-      "louvers",
-      "moon",
-      "mount",
-      "plc",
-      "power",
-      "secondary",
-      "selector",
-      "sensors",
-      "supervisor",
-      "sun",
-      "target",
-      "telescope",
-      "telescopecontroller",
-      "weather"
-    ],
-    "problemtoleranceseconds": 180
   },
   "plc": {
     "type": "colibri",
@@ -1897,6 +1870,33 @@
   },
   "telescopecontroller": {
     "type": "opentsi"
+  },
+  "watchdog": {
+    "monitoredservers": [
+      "covers",
+      "dome",
+      "executor",
+      "fans",
+      "gcntan",
+      "html",
+      "instrument",
+      "lights",
+      "louvers",
+      "moon",
+      "mount",
+      "plc",
+      "power",
+      "secondary",
+      "selector",
+      "sensors",
+      "supervisor",
+      "sun",
+      "target",
+      "telescope",
+      "telescopecontroller",
+      "weather"
+    ],
+    "problemtoleranceseconds": 180
   },
   "weather": {
     "windaveragespeedlimit": "55"

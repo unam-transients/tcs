@@ -69,7 +69,6 @@ installbins         :=            \
 	moonserver                    \
 	mountserver                   \
 	newpgrp                       \
-	notifierserver                \
 	owsensorsserver               \
 	powerserver                   \
 	rebootinstrument              \
@@ -97,6 +96,7 @@ installbins         :=            \
 	updatesensorsfiles            \
 	updatevarlatestlink           \
 	wait                          \
+	watchdogserver                \
 	weatherserver                 \
 	webcamimageserver
 
