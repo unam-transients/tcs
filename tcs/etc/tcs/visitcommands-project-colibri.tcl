@@ -534,8 +534,8 @@ proc twilightflatsvisit {targetngood filter} {
   
   set filters {
     { r i   y  }
-    { r r   z  }
     { r B   y  }
+    { r r   z  }
     { r g   zy }
     { r gri zy }
   }
