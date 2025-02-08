@@ -147,8 +147,11 @@ td.control {
 }
 
 table.alerts, tr.alerts, th.alerts, td.alerts {
-  padding: 0.5em;
-  border-spacing: 1em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+input.alert {
+  width: 4em;
 }
 
 input {

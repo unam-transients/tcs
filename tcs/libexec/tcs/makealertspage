@@ -75,7 +75,7 @@ writehtml(
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-<link rel="stylesheet" href="style.css" type="text/css"/>
+<link rel="stylesheet" href="/tcs/style.css" type="text/css"/>
 <title>Alerts</title>
 </head>
 
@@ -113,7 +113,7 @@ def writealertstable(alerts):
         "",
         "Name",
         "Event Time",
-        "Age (days)",
+        "Age",
         "α",
         "δ",
         "Epoch",
@@ -127,7 +127,7 @@ def writealertstable(alerts):
     for alert in alerts:
         writehtml("<tr>")
         writehtml(
-            '<td class="alerts"><input type="radio" name="id" value="%s"></td>'
+            '<td class="alerts"><input type="radio" name="id" value="%s" class="alert"></td>'
             % alert["identifier"]
         )
         for key in [
@@ -157,9 +157,11 @@ def writealertstable(alerts):
 
 writehtml('<table class="alerts">')
 writehtml('<tr><th colspan="11">Selectable Alerts</th></tr>')
+writehtml('<tr><td colspan="11"><hr/></td></tr>')
 writealertstable(selectablealerts)
 writehtml('<tr><td colspan="11"><hr/></td></tr>')
 writehtml('<tr><th colspan="11">Unselectable Alerts</th></tr>')
+writehtml('<tr><td colspan="11"><hr/></td></tr>')
 writealertstable(unselectablealerts)
 writehtml("</table>")
 
