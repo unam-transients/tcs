@@ -108,6 +108,7 @@ table.control {
   margin-bottom:      1em;
 }
 
+
 td.key {
   padding-right:      0em;
   width:              24em;
@@ -146,11 +147,19 @@ td.control {
   padding:            0.2em;
 }
 
-table.alerts, tr.alerts, th.alerts, td.alerts {
-  padding-left: 0.5em;
-  padding-right: 0.5em;
+table.alertstable, tr.alertstable, th.alertstable, td.alertstable {
+  padding-left:       0.5em;
+  padding-right:      0.5em;
 }
-input.alert {
+
+table.alertsinputs, tr.alertsinputs, th.alertsinputs, td.alertsinputs {
+  padding-left:       0.5em;
+  padding-right:      0.5em;
+  padding-top:        0.2em;
+  padding-bottom:     0.2em;
+} 
+
+input.alertstable {
   width: 4em;
 }
 

@@ -104,36 +104,75 @@ writehtml(
 
 <hr/>
 
-<table>
-<tr><td><form id="alert-refresh"><input type="submit" value="Refresh"/></form></td></tr>
+<table class="alertsinputs">
+<tr class="alertsinputs">
+<td class="alertsinputs"><form id="alert-refresh"><input type="submit" value="Refresh"/></form></td>
+</tr>
 </table>
 
 <hr/>
 
-<table>
-<tr><td><form id="alert-enable"><input type="submit" value="Enable"/></form></td><td><form id="alert-disable"><input type="submit" value="Disable"/></form></td></tr>
+<table class="alertsinputs">
+<tr class="alertsinputs">
+<td class="alertsinputs"><form id="alert-enable"><input type="submit" value="Enable"/></form></td>
+<td class="alertsinputs"><form id="alert-disable"><input type="submit" value="Disable"/></form></td>
+</tr>
 </table>
 
 <hr/>
 
-<table>
-<tr><td><form id="alert-modify"><input type="submit" value="Modify"/></form></td></tr>
-<tr><td>α</td><td><input type="text" id="modify-alpha" name="modify-alpha"></td></tr>
-<tr><td>δ</td><td><input type="text" id="modify-delta" name="modify-delta"></td></tr>
-<tr><td>Uncertainty</td><td><input type="text" id="modify-uncertainty" name="modify-uncertainty"></td></tr>
-<tr><td>Priority</td><td><input type="text" id="modify-priority" name="modify-priority"></td></tr>
+<table class="alertsinputs">
+<tr class="alertsinputs">
+<td class="alertsinputs"><form id="alert-modify"><input type="submit" value="Modify"/></form></td>
+</tr>
+<tr class="alertsinputs">
+<td class="alertsinputs">α</td>
+<td class="alertsinputs"><input type="text" id="modify-alpha" name="modify-alpha"></td>
+</tr>
+<tr class="alertsinputs">
+<td class="alertsinputs">δ</td>
+<td class="alertsinputs"><input type="text" id="modify-delta" name="modify-delta"></td>
+</tr>
+<tr class="alertsinputs">
+<td class="alertsinputs">Uncertainty</td>
+<td class="alertsinputs"><input type="text" id="modify-uncertainty" name="modify-uncertainty"></td>
+</tr>
+<tr class="alertsinputs">
+<td class="alertsinputs">Priority</td>
+<td class="alertsinputs"><input type="text" id="modify-priority" name="modify-priority"></td>
+</tr>
 </table>
 
 <hr/>
 
-<table>
-<tr><td><form id="alert-create"><input type="submit" value="Create"/></form></td></tr>
-<tr><td>Name</td><td><input type="text" id="create-name" name="create-name"></td></tr>
-<tr><td>Event Time</td><td><input type="text" id="create-eventtime" name="create-eventtime"></td></tr>
-<tr><td>α</td><td><input type="text" id="create-alpha" name="create-alpha"></td></tr>
-<tr><td>δ</td><td><input type="text" id="create-delta" name="create-delta"></td></tr>
-<tr><td>Uncertainty</td><td><input type="text" id="create-uncertainty" name="create-uncertainty"></td></tr>
-<tr><td>Priority</td><td><input type="text" id="create-priority" name="create-priority"></td></tr>
+<table class="alertsinputs">
+<tr class="alertsinputs">
+<td class="alertsinputs"><form id="alert-create"><input type="submit" value="Create"/></form></td>
+</tr>
+<tr class="alertsinputs">
+<td class="alertsinputs">Name</td>
+<td class="alertsinputs"><input type="text" id="create-name" name="create-name"></td>
+</tr>
+<tr class="alertsinputs">
+<td class="alertsinputs">Event Time</td>
+<td class="alertsinputs"><input type="text" id="create-eventtime" name="create-eventtime"></td>
+</tr>
+<tr>
+<td class="alertsinputs">α</td>
+<td class="alertsinputs"><input type="text" id="create-alpha" name="create-alpha"></td>
+</tr>
+<tr class="alertsinputs">
+<td class="alertsinputs">δ</td>
+<td class="alertsinputs"><input type="text" id="create-delta" name="create-delta"></td>
+</tr>
+<tr class="alertsinputs">
+<td class="alertsinputs">Uncertainty</td>
+<td class="alertsinputs"><input type="text" id="create-uncertainty" name="create-uncertainty"></td>
+</tr>
+<tr class="alertsinputs">
+<td class="alertsinputs">Priority</td>
+<td class="alertsinputs"><input type="text" id="create-priority" name="create-priority"></td>
+</tr>
 </table>
 
 
@@ -179,12 +218,12 @@ def writealertstable(alerts, name):
             "Enabled",
             "Identifier",
         ]:
-            writehtml('<th class="alerts">%s</th>' % text)
+            writehtml('<th class="alertstable">%s</th>' % text)
         writehtml("</tr>")
         for alert in alerts:
             writehtml("<tr>")
             writehtml(
-                '<td class="alerts"><input type="radio" name="identifier" value="%s" class="alert"></td>'
+                '<td class="alertstable"><input type="radio" name="identifier" value="%s" class="alertstable"></td>'
                 % alert["identifier"]
             )
             for key in [
@@ -199,7 +238,7 @@ def writealertstable(alerts, name):
                 "enabled",
                 "identifier",
             ]:
-                writehtml('<td class="alerts">')
+                writehtml('<td class="alertstable">')
                 if key == "age" and "eventtimestamp" in alert.keys():
                     writehtml(formatage(alert["eventtimestamp"]))
                 elif key not in alert.keys():
@@ -212,7 +251,7 @@ def writealertstable(alerts, name):
             writehtml("</tr>")
 
 
-writehtml('<table class="alerts">')
+writehtml('<table class="alertstable">')
 writealertstable(selectablealerts, "Selectable Alerts")
 writehtml('<tr><td colspan="11"><hr/></td></tr>')
 writealertstable(unselectablealerts, "Unselectable Alerts")
