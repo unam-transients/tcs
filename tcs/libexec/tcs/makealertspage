@@ -112,10 +112,10 @@ writehtml(
 
 <table>
 <tr><td><form id="alert-update"><input type="submit" value="Update"/></form></td></tr>
-<tr><td>α</td><td><input type="text" id="alert" name="alpha"></td></tr>
-<tr><td>δ</td><td><input type="text" id="alert" name="delta"></td></tr>
-<tr><td>Uncertainty</td><td><input type="text" id="alert" name="uncertainty"></td></tr>
-<tr><td>Priority</td><td><input type="text" id="alert" name="priority"></td></tr>
+<tr><td>α</td><td><input type="text" id="update-alpha" name="update-alpha"></td></tr>
+<tr><td>δ</td><td><input type="text" id="update-delta" name="update-delta"></td></tr>
+<tr><td>Uncertainty</td><td><input type="text" id="update-uncertainty" name="update-uncertainty"></td></tr>
+<tr><td>Priority</td><td><input type="text" id="update-priority" name="update-priority"></td></tr>
 </table>
 
 <hr/>

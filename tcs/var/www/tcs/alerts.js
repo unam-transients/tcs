@@ -54,6 +54,11 @@ function getidentifier() {
   return identifier
 }
 
+function quote(s) {
+  return "\"" + s + "\""
+}
+
+
 $(function () {
   confirm("alerts.js loading\n")
   $("form#alert-enable").submit(function () {
@@ -64,11 +69,21 @@ $(function () {
   });
   $("form#alert-disable").submit(function () {
     identifier = getidentifier()
-    if (identifier !== undefinded) {
+    if (identifier !== undefined) {
       return submitrequest("selector disablealert " + identifier);
     }
   });
-  $("form#telescope-move").submit(function () {
-    return submitrequest("telescope move " + $("input#move-args").val());
+  $("form#alert-update").submit(function () {
+    confirm("updating\n")
+    identifier = getidentifier()
+    if (identifier !== undefined) {
+      return submitrequest(
+        "selector updatealert " + identifier + 
+          " " + quote($("input[name=\"update-alpha\"]").val()) +
+          " " + quote($("input[name=\"update-delta\"]").val()) +
+          " " + quote($("input[name=\"update-uncertainty\"]").val()) +
+          " " + quote($("input[name=\"update-priority\"]").val())
+         );
+    }
   });
 });
