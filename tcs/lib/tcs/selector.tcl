@@ -259,15 +259,15 @@ namespace eval "selector" {
 
   ######################################################################
   
-  proc updatealertfile {alertfile enabled alpha delta uncertainty priority} {
+  proc updatealertfile {alertfile enabled alpha delta equinox uncertainty priority} {
     set channel [open $alertfile "a"]
     puts $channel [format "// Updated at %s." [utcclock::format now]]
     puts $channel [format "\{"]
     if {![string equal $alpha ""]} {
-      log::info [format "updated position is %s %s 2000." [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta]]
+      log::info [format "updated position is %s %s %s." [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox]
       puts $channel [format "  \"alpha\": \"%s\"," [astrometry::formatalpha $alpha]]
       puts $channel [format "  \"delta\": \"%s\"," [astrometry::formatdelta $delta]]
-      puts $channel [format "  \"equinox\": \"2000\","]
+      puts $channel [format "  \"equinox\": \"%s\"," $equinox]
       log::info [format "updated uncertainty is %s." [astrometry::formatdistance $uncertainty]]
       puts $channel [format "  \"uncertainty\": \"%s\"," [astrometry::formatdistance $uncertainty]]
     }
@@ -695,7 +695,7 @@ namespace eval "selector" {
       error "no alert has an identifier of \"$identifier\"."
     }
     log::info "alert file is $alertfile."
-    updatealertfile $alertfile true "" "" "" ""
+    updatealertfile $alertfile true "" "" "" "" ""
     log::info "finished enabling alert $identifier."
     return
   }
@@ -707,18 +707,21 @@ namespace eval "selector" {
       error "no alert has an identifier of \"$identifier\"."
     }
     log::info "alert file is $alertfile."
-    updatealertfile $alertfile false "" "" "" ""
+    updatealertfile $alertfile false "" "" "" "" ""
     log::info "finished disabling alert $identifier."
     return
   }
   
-  proc updatealert {identifier alpha delta uncertainty priority} {
+  proc updatealert {identifier alpha delta equinox uncertainty priority} {
     log::info "updating alert $identifier."
     if {![string equal "" $alpha] && [catch {astrometry::parsealpha $alpha}]} {
       error "invalid alpha value \"$alpha\"."
     }
     if {![string equal "" $delta] && [catch {astrometry::parsedelta $delta}]} {
       error "invalid delta value \"$delta\"."
+    }
+    if {[catch {astrometry::parseequinox $equinox}]} {
+      error "invalid equinox value \"$equinox\"."
     }
     if {![string equal "" $uncertainty] && [catch {astrometry::parsedistance $uncertainty}]} {
       error "invalid uncertainty value \"$uncertainty\"."
@@ -740,11 +743,39 @@ namespace eval "selector" {
       error "no alert has an identifier of \"$identifier\"."
     }
     log::info "alert file is $alertfile."
-    updatealertfile $alertfile "" $alpha $delta $uncertainty $priority
+    updatealertfile $alertfile "" $alpha $delta $equinox $uncertainty $priority
     log::info "finished updating alert $identifier."
     return
   }
   
+  proc createalert {name eventtimestamp alpha delta equinox uncertainty priority} {
+    log::info "creating alert."
+    if {[catch {utcclock::scan $eventtimestamp}]} {
+      error "invalid event timestamp \"$eventtimestamp\"."
+    }
+    if {[catch {astrometry::parsealpha $alpha}]} {
+      error "invalid alpha value \"$alpha\"."
+    }
+    if {[catch {astrometry::parsedelta $delta}]} {
+      error "invalid delta value \"$delta\"."
+    }
+    if {[catch {astrometry::parseequinox $equinox}]} {
+      error "invalid equinox value \"$equinox\"."
+    }
+    if {[catch {astrometry::parsedistance $uncertainty}]} {
+      error "invalid uncertainty value \"$uncertainty\"."
+    }
+    if {!([string is integer -strict $priority] && 0 <= $priority && $priority <= 10)} {
+      error "invalid priority value \"$priority\"."
+    }
+    set alerttimestamp [utcclock::combinedformat "now"]
+    set eventtimestamp [utcclock::combinedformat [utcclock::scan $eventtimestamp]]
+    set identifier     [string map {"T" ""} [utcclock::combinedformat [utcclock::scan $eventtimestamp] 0]]
+    respondtoalert $identifier $name "unknown" \
+      $alerttimestamp "unknown" $alerttimestamp $eventtimestamp true $alpha $delta $equinox \
+      $uncertainty "unknown" "unknown"
+  }
+
   ######################################################################
 
   set server::datalifeseconds 0

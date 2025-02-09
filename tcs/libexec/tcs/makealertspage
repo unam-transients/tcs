@@ -96,8 +96,6 @@ writehtml(
 
 writehtml(
     """
-<p>NONE OF THE BUTTONS WORK YET!</p>
-
 <p>A new page is created each minute, but you have to reload manually.</p>
 
 <hr/>
@@ -122,12 +120,12 @@ writehtml(
 
 <table>
 <tr><td><form id="alert-create"><input type="submit" value="Create"/></form></td></tr>
-<tr><td>Name</td><td><input type="text" id="alert" name="name"></td></tr>
-<tr><td>Event Time</td><td><input type="text" id="alert" name="eventtime"></td></tr>
-<tr><td>α</td><td><input type="text" id="alert" name="alpha"></td></tr>
-<tr><td>δ</td><td><input type="text" id="alert" name="delta"></td></tr>
-<tr><td>Uncertainty</td><td><input type="text" id="alert" name="uncertainty"></td></tr>
-<tr><td>Priority</td><td><input type="text" id="alert" name="priority"></td></tr>
+<tr><td>Name</td><td><input type="text" id="create-name" name="create-name"></td></tr>
+<tr><td>Event Time</td><td><input type="text" id="create-eventtime" name="create-eventtime"></td></tr>
+<tr><td>α</td><td><input type="text" id="create-alpha" name="create-alpha"></td></tr>
+<tr><td>δ</td><td><input type="text" id="create-delta" name="create-delta"></td></tr>
+<tr><td>Uncertainty</td><td><input type="text" id="create-uncertainty" name="create-uncertainty"></td></tr>
+<tr><td>Priority</td><td><input type="text" id="create-priority" name="create-priority"></td></tr>
 </table>
 
 

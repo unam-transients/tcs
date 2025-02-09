@@ -83,8 +83,12 @@ namespace eval "selectorserver" {
     selector::disablealert $identifier
   }
 
-  proc slaveupdatealert {identifier alpha delta uncertainty priority} {
-    selector::updatealert $identifier $alpha $delta $uncertainty $priority
+  proc slaveupdatealert {identifier alpha delta equinox uncertainty priority} {
+    selector::updatealert $identifier $alpha $delta $equinox $uncertainty $priority
+  }
+
+  proc slavecreatealert {name eventtimestamp alpha delta equinox uncertainty priority} {
+    selector::createalert $name $eventtimestamp $alpha $delta $equinox $uncertainty $priority
   }
 
   proc configureslave {slave} {
@@ -101,6 +105,7 @@ namespace eval "selectorserver" {
     interp alias $slave enablealert       {} selectorserver::slaveenablealert
     interp alias $slave disablealert      {} selectorserver::slavedisablealert
     interp alias $slave updatealert       {} selectorserver::slaveupdatealert
+    interp alias $slave createalert       {} selectorserver::slavecreatealert
   }
 
   ######################################################################

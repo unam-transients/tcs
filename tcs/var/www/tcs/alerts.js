@@ -22,7 +22,7 @@
 
 ////////////////////////////////////////////////////////////////////////
 
-confirmrequest = true;
+confirmrequest = false;
 
 function submitrequest(request) {
   if (!confirmrequest || confirm("Do you want to submit this request?\n\n" + request + "\n")) {
@@ -60,7 +60,6 @@ function quote(s) {
 
 
 $(function () {
-  confirm("alerts.js loading\n")
   $("form#alert-enable").submit(function () {
     identifier = getidentifier()
     if (identifier !== undefined) {
@@ -74,16 +73,28 @@ $(function () {
     }
   });
   $("form#alert-update").submit(function () {
-    confirm("updating\n")
     identifier = getidentifier()
     if (identifier !== undefined) {
       return submitrequest(
         "selector updatealert " + identifier + 
-          " " + quote($("input[name=\"update-alpha\"]").val()) +
-          " " + quote($("input[name=\"update-delta\"]").val()) +
-          " " + quote($("input[name=\"update-uncertainty\"]").val()) +
-          " " + quote($("input[name=\"update-priority\"]").val())
-         );
+        " " + quote($("input[name=\"update-alpha\"]").val()) +
+        " " + quote($("input[name=\"update-delta\"]").val()) +
+        " 2000 " +
+        " " + quote($("input[name=\"update-uncertainty\"]").val()) +
+        " " + quote($("input[name=\"update-priority\"]").val())
+        );
     }
+  });
+  $("form#alert-create").submit(function () {
+    return submitrequest(
+      "selector createalert" +
+      " " + quote($("input[name=\"create-name\"]").val()) +
+      " " + quote($("input[name=\"create-eventtime\"]").val()) +
+      " " + quote($("input[name=\"create-alpha\"]").val()) +
+      " " + quote($("input[name=\"create-delta\"]").val()) +
+      " 2000 " +
+      " " + quote($("input[name=\"create-uncertainty\"]").val()) +
+      " " + quote($("input[name=\"create-priority\"]").val())
+    );
   });
 });
