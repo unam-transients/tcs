@@ -24,7 +24,7 @@
 
 confirmrequest = false;
 
-function submitrequest(request) {
+function submitrequest(request, confirmsuccess) {
   if (!confirmrequest || confirm("Do you want to submit this request?\n\n" + request + "\n")) {
     $.ajax({
       type: "get",
@@ -37,7 +37,10 @@ function submitrequest(request) {
         if (data != "ok\r\n") {
           alert(data);
         } else {
-          alert("success.")
+          if (confirmsuccess) {
+            alert("success.")
+          }
+          location.reload(true)
         }
       },
       error: function (data, status, error) {
@@ -62,16 +65,19 @@ function quote(s) {
 
 
 $(function () {
+  $("form#alert-refresh").submit(function () {
+    return submitrequest("selector makealertspage", false);
+  });
   $("form#alert-enable").submit(function () {
     identifier = getidentifier()
     if (identifier !== undefined) {
-      return submitrequest("selector enablealert " + identifier);
+      return submitrequest("selector enablealert " + identifier, true);
     }
   });
   $("form#alert-disable").submit(function () {
     identifier = getidentifier()
     if (identifier !== undefined) {
-      return submitrequest("selector disablealert " + identifier);
+      return submitrequest("selector disablealert " + identifier, true);
     }
   });
   $("form#alert-modify").submit(function () {
@@ -83,7 +89,8 @@ $(function () {
         " " + quote($("input[name=\"modify-delta\"]").val()) +
         " 2000 " +
         " " + quote($("input[name=\"modify-uncertainty\"]").val()) +
-        " " + quote($("input[name=\"modify-priority\"]").val())
+        " " + quote($("input[name=\"modify-priority\"]").val()), 
+        true
         );
     }
   });
@@ -96,7 +103,8 @@ $(function () {
       " " + quote($("input[name=\"create-delta\"]").val()) +
       " 2000 " +
       " " + quote($("input[name=\"create-uncertainty\"]").val()) +
-      " " + quote($("input[name=\"create-priority\"]").val())
+      " " + quote($("input[name=\"create-priority\"]").val()),
+      true
     );
   });
 });

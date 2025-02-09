@@ -1772,45 +1772,6 @@ if {false} {
 
   ######################################################################
   
-  proc writealertstable {} {
-    client::request "selector" "writealerts"
-    if {[catch {
-      set alerts [fromjson::readfile [file join [directories::var] "alerts.json"]]    
-    }]} {
-      set alerts ""
-    }
-    putshtml "<table class=\"alerts\">"
-    putshtml "<tr class=\"alerts\">"
-    putshtml "<th class=\"alerts\">Project</th>"
-    putshtml "<th class=\"alerts\">Block</th>"
-    putshtml "<th class=\"alerts\">Name</th>"
-    putshtml "<th class=\"alerts\">&alpha;</th>"
-    putshtml "<th class=\"alerts\">&delta;</th>"
-    putshtml "<th class=\"alerts\">Equinox</th>"
-    putshtml "<th class=\"alerts\">Uncertainty</th>"
-    putshtml "<th class=\"alerts\">Event Time</th>"
-    putshtml "<th class=\"alerts\">Enabled</th>"
-    putshtml "<th class=\"alerts\">Command</th>"
-    putshtml "</tr>"
-    foreach alert $alerts {
-      putshtml "<tr>"
-      putshtml "<td class=\"alerts\">[entify [alert::projectidentifier $alert]]</td>"
-      putshtml "<td class=\"alerts\">[entify [alert::identifier $alert]]</td>"
-      putshtml "<td class=\"alerts\">[entify [alert::name $alert]]</td>"
-      putshtml "<td class=\"alerts\">[entify [alert::alpha $alert]]</td>"
-      putshtml "<td class=\"alerts\">[entify [alert::delta $alert]]</td>"
-      putshtml "<td class=\"alerts\">[entify [alert::equinox $alert]]</td>"
-      putshtml "<td class=\"alerts\">[entify [alert::uncertainty $alert]]</td>"
-      putshtml "<td class=\"alerts\">[entify [alert::eventtimestamp $alert]]</td>"
-      putshtml "<td class=\"alerts\">[entify [alert::enabled $alert]]</td>"
-      putshtml "<td class=\"alerts\">[entify [alert::command $alert]]</td>"
-      putshtml "</tr>"
-    }
-    putshtml "</table>"
-  }
-  
-  ######################################################################
-
   proc writehtmlloop {} {
   
     variable wwwdirectory
@@ -1875,18 +1836,6 @@ if {false} {
       }
       
       log::debug "finished writing log files."
-
-      log::debug "writing alert table files."
-      
-      if {[catch {
-        openhtml "$wwwdirectory/status/alerts.html"
-        writealertstable
-        closehtml
-      } message]} {
-          log::warning "unable to generate alert table files: $message" 
-      }
-      
-      log::debug "finished writing alert table files."
 
       set endmilliseconds [utcclock::milliseconds]
       set durationmilliseconds [expr {$endmilliseconds - $startmilliseconds}]

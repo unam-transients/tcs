@@ -605,6 +605,8 @@ namespace eval "selector" {
       log::info "finished running alertscript."
     }
 
+    makealertspage
+
     log::summary "finished responding to alert."
     return
   }
@@ -671,7 +673,7 @@ namespace eval "selector" {
     return
   }
   
-  proc writealerts {} {
+  proc makealertspage {} {
     set tmpfilename [file join [directories::var] "alerts.json.[pid]"]
     set channel [open $tmpfilename "w"]
     puts $channel "\["
@@ -686,6 +688,7 @@ namespace eval "selector" {
     puts $channel "\]"
     close $channel
     file rename -force -- $tmpfilename [file join [directories::var] "alerts.json"]
+    exec "[directories::prefix]/bin/tcs" "makealertspage"
   }
   
   proc enablealert {identifier} {
@@ -696,6 +699,7 @@ namespace eval "selector" {
     }
     log::info "alert file is $alertfile."
     modifyalertfile $alertfile true "" "" "" "" ""
+    makealertspage
     log::info "finished enabling alert $identifier."
     return
   }
@@ -708,6 +712,7 @@ namespace eval "selector" {
     }
     log::info "alert file is $alertfile."
     modifyalertfile $alertfile false "" "" "" "" ""
+    makealertspage
     log::info "finished disabling alert $identifier."
     return
   }
@@ -744,6 +749,7 @@ namespace eval "selector" {
     }
     log::info "alert file is $alertfile."
     modifyalertfile $alertfile "" $alpha $delta $equinox $uncertainty $priority
+    makealertspage
     log::info "finished modifying alert $identifier."
     return
   }
@@ -774,6 +780,8 @@ namespace eval "selector" {
     respondtoalert $identifier $name "unknown" \
       $alerttimestamp "unknown" $alerttimestamp $eventtimestamp true $alpha $delta $equinox \
       $uncertainty "unknown" "unknown"
+    log::info "finished creating alert."
+    return
   }
 
   ######################################################################

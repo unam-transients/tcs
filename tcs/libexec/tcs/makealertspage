@@ -104,12 +104,13 @@ writehtml(
 
 <hr/>
 
-<p>A new page is created each minute, but you have to reload manually. Sorry. I will try to improve this.</p>
+<table>
+<tr><td><form id="alert-refresh"><input type="submit" value="Refresh"/></form></td></tr>
+</table>
 
 <hr/>
 
 <table>
-
 <tr><td><form id="alert-enable"><input type="submit" value="Enable"/></form></td><td><form id="alert-disable"><input type="submit" value="Disable"/></form></td></tr>
 </table>
 
