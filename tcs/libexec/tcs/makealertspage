@@ -255,6 +255,8 @@ def writealertstable(alerts, name):
                     writehtml("—")
                 elif key == "eventtimestamp":
                     writehtml(formattimestamp(alert[key]))
+                elif alert[key][0] == "-":
+                    writehtml("&minus;%s" % alert[key][1:])
                 else:
                     writehtml(alert[key])
                 writehtml("</td>")
