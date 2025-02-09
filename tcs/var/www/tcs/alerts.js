@@ -36,6 +36,8 @@ function submitrequest(request) {
       success: function (data, status, request) {
         if (data != "ok\r\n") {
           alert(data);
+        } else {
+          alert("success.")
         }
       },
       error: function (data, status, error) {
