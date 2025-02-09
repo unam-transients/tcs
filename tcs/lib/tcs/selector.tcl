@@ -259,26 +259,26 @@ namespace eval "selector" {
 
   ######################################################################
   
-  proc updatealertfile {alertfile enabled alpha delta equinox uncertainty priority} {
+  proc modifyalertfile {alertfile enabled alpha delta equinox uncertainty priority} {
     set channel [open $alertfile "a"]
-    puts $channel [format "// Updated at %s." [utcclock::format now]]
+    puts $channel [format "// Modified at %s." [utcclock::format now]]
     puts $channel [format "\{"]
     if {![string equal $alpha ""]} {
-      log::info [format "updated position is %s %s %s." [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox]
+      log::info [format "modified position is %s %s %s." [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox]
       puts $channel [format "  \"alpha\": \"%s\"," [astrometry::formatalpha $alpha]]
       puts $channel [format "  \"delta\": \"%s\"," [astrometry::formatdelta $delta]]
       puts $channel [format "  \"equinox\": \"%s\"," $equinox]
-      log::info [format "updated uncertainty is %s." [astrometry::formatdistance $uncertainty]]
+      log::info [format "modified uncertainty is %s." [astrometry::formatdistance $uncertainty]]
       puts $channel [format "  \"uncertainty\": \"%s\"," [astrometry::formatdistance $uncertainty]]
     }
     if {![string equal $priority ""]} {
-      log::info [format "updated priority is %d." $priority]
+      log::info [format "modified priority is %d." $priority]
       puts $channel [format "  \"priority\": \"%d\"," $priority]
     }
     if {![string equal $enabled ""]} {
       puts $channel [format "  \"enabled\": \"%s\"," $enabled]
     }
-    puts $channel [format "  \"lastupdatetimestamp\": \"%s\"" [utcclock::combinedformat now]]
+    puts $channel [format "  \"lastmodifiedtimestamp\": \"%s\"" [utcclock::combinedformat now]]
     puts $channel [format "\}"]
     close $channel 
   }
@@ -695,7 +695,7 @@ namespace eval "selector" {
       error "no alert has an identifier of \"$identifier\"."
     }
     log::info "alert file is $alertfile."
-    updatealertfile $alertfile true "" "" "" "" ""
+    modifyalertfile $alertfile true "" "" "" "" ""
     log::info "finished enabling alert $identifier."
     return
   }
@@ -707,13 +707,13 @@ namespace eval "selector" {
       error "no alert has an identifier of \"$identifier\"."
     }
     log::info "alert file is $alertfile."
-    updatealertfile $alertfile false "" "" "" "" ""
+    modifyalertfile $alertfile false "" "" "" "" ""
     log::info "finished disabling alert $identifier."
     return
   }
   
-  proc updatealert {identifier alpha delta equinox uncertainty priority} {
-    log::info "updating alert $identifier."
+  proc modifyalert {identifier alpha delta equinox uncertainty priority} {
+    log::info "modifying alert $identifier."
     if {![string equal "" $alpha] && [catch {astrometry::parsealpha $alpha}]} {
       error "invalid alpha value \"$alpha\"."
     }
@@ -743,8 +743,8 @@ namespace eval "selector" {
       error "no alert has an identifier of \"$identifier\"."
     }
     log::info "alert file is $alertfile."
-    updatealertfile $alertfile "" $alpha $delta $equinox $uncertainty $priority
-    log::info "finished updating alert $identifier."
+    modifyalertfile $alertfile "" $alpha $delta $equinox $uncertainty $priority
+    log::info "finished modifying alert $identifier."
     return
   }
   

@@ -72,16 +72,16 @@ $(function () {
       return submitrequest("selector disablealert " + identifier);
     }
   });
-  $("form#alert-update").submit(function () {
+  $("form#alert-modify").submit(function () {
     identifier = getidentifier()
     if (identifier !== undefined) {
       return submitrequest(
-        "selector updatealert " + identifier + 
-        " " + quote($("input[name=\"update-alpha\"]").val()) +
-        " " + quote($("input[name=\"update-delta\"]").val()) +
+        "selector modifyalert " + identifier + 
+        " " + quote($("input[name=\"modify-alpha\"]").val()) +
+        " " + quote($("input[name=\"modify-delta\"]").val()) +
         " 2000 " +
-        " " + quote($("input[name=\"update-uncertainty\"]").val()) +
-        " " + quote($("input[name=\"update-priority\"]").val())
+        " " + quote($("input[name=\"modify-uncertainty\"]").val()) +
+        " " + quote($("input[name=\"modify-priority\"]").val())
         );
     }
   });

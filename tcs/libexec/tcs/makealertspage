@@ -96,24 +96,31 @@ writehtml(
 
 writehtml(
     """
-<p>A new page is created each minute, but you have to reload manually.</p>
+
+<p>
+<a href="/index.html">Home</a> |
+<a href="https://github.com/unam-transients/tcs/wiki/Creating-and-Modifying-Alerts-Manually">Help</a>
+</p>
+
+<hr/>
+
+<p>A new page is created each minute, but you have to reload manually. Sorry. I will try to improve this.</p>
 
 <hr/>
 
 <table>
 
-<tr><td><form id="alert-enable"><input type="submit" value="Enable"/></form></td></tr>
-<tr><td><form id="alert-disable"><input type="submit" value="Disable"/></form></td></tr>
+<tr><td><form id="alert-enable"><input type="submit" value="Enable"/></form></td><td><form id="alert-disable"><input type="submit" value="Disable"/></form></td></tr>
 </table>
 
 <hr/>
 
 <table>
-<tr><td><form id="alert-update"><input type="submit" value="Update"/></form></td></tr>
-<tr><td>α</td><td><input type="text" id="update-alpha" name="update-alpha"></td></tr>
-<tr><td>δ</td><td><input type="text" id="update-delta" name="update-delta"></td></tr>
-<tr><td>Uncertainty</td><td><input type="text" id="update-uncertainty" name="update-uncertainty"></td></tr>
-<tr><td>Priority</td><td><input type="text" id="update-priority" name="update-priority"></td></tr>
+<tr><td><form id="alert-modify"><input type="submit" value="Modify"/></form></td></tr>
+<tr><td>α</td><td><input type="text" id="modify-alpha" name="modify-alpha"></td></tr>
+<tr><td>δ</td><td><input type="text" id="modify-delta" name="modify-delta"></td></tr>
+<tr><td>Uncertainty</td><td><input type="text" id="modify-uncertainty" name="modify-uncertainty"></td></tr>
+<tr><td>Priority</td><td><input type="text" id="modify-priority" name="modify-priority"></td></tr>
 </table>
 
 <hr/>
