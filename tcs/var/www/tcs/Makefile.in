@@ -33,6 +33,7 @@ include ../../../Makefile.prolog
 
 installs			:=	                 \
 	.htaccess			                 \
+	alerts.js                            \
 	blank.png			                 \
 	cgi.tcl				                 \
 	jquery.js			                 \

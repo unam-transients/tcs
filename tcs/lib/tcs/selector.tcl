@@ -197,12 +197,12 @@ namespace eval "selector" {
   ######################################################################
 
   proc getallalertfiles {} {
-    set names    [glob -nocomplain -directory [file join [directories::var] "alerts"   ] "*"]
-    set oldnames [glob -nocomplain -directory [file join [directories::var] "oldalerts"] "*"]
-    return [lsort -decreasing [concat $names $oldnames]]
+    set names    [lsort -decreasing [glob -nocomplain -directory [file join [directories::var] "alerts"   ] "*"]]
+    set oldnames [lsort -decreasing [glob -nocomplain -directory [file join [directories::var] "oldalerts"] "*"]]
+    return [concat $names $oldnames]
   }
   
-  proc matchalert {origin identifier eventtimestamp alerttimestamp} {
+  proc matchalert {origin originidentifier eventtimestamp alerttimestamp} {
     foreach alertfile [getallalertfiles] {
       if {[catch {
         set alert [alert::readalertfile $alertfile]
@@ -210,8 +210,8 @@ namespace eval "selector" {
         log::warning "error while reading alert file \"[file tail $alertfile]\": $message"
         continue
       }
-      if {[string equal [alert::originidentifier $alert $origin] $identifier]} {
-        log::info "alert file \"[file tail $alertfile]\" matches by origin and identifier."
+      if {[string equal [alert::originidentifier $alert $origin] $originidentifier]} {
+        log::info "alert file \"[file tail $alertfile]\" matches by origin identifier."
         return [file tail $alertfile]
       }
       set mineventtimestamp [alert::mineventtimestamp $alert]
@@ -242,6 +242,35 @@ namespace eval "selector" {
     return $alertfile
   }
 
+  proc getalertfilebyidentifier {identifier} {
+    foreach alertfile [getallalertfiles] {
+      if {[catch {
+        set alert [alert::readalertfile $alertfile]
+      } message]} {
+        log::warning "error while reading alert file \"[file tail $alertfile]\": $message"
+        continue
+      }
+      if {[string equal [alert::identifier $alert] $identifier]} {
+        return $alertfile
+      }
+    }
+    return ""
+  }
+
+  ######################################################################
+  
+  proc updatealertfile {alertfile enabled} {
+    set channel [open $alertfile "a"]
+    puts $channel [format "// Updated at %s." [utcclock::format now]]
+    puts $channel [format "\{"]
+    if {![string equal $enabled ""]} {
+      puts $channel [format "  \"enabled\": \"%s\"," $enabled]
+    }
+    puts $channel [format "  \"lastupdatetimestamp\": \"%s\"" [utcclock::combinedformat now]]
+    puts $channel [format "\}"]
+    close $channel 
+  }
+  
   ######################################################################
 
   proc blockloop {} {
@@ -418,7 +447,7 @@ namespace eval "selector" {
   }
   
   proc respondtoalert {blockidentifier name origin
-    identifier type alerttimestamp eventtimestamp enabled alpha delta equinox
+    originidentifier type alerttimestamp eventtimestamp enabled alpha delta equinox
     uncertainty class messenger
   } {
     variable mode
@@ -433,7 +462,7 @@ namespace eval "selector" {
     }
 
     log::info [format "blockidentifier is %s." $blockidentifier]
-    log::info [format "origin/identifier/type are %s/%s/%s." $origin $identifier $type]
+    log::info [format "origin/originidentifier/type are %s/%s/%s." $origin $originidentifier $type]
     log::info [format "alert timestamp is %s." [utcclock::format [utcclock::scan $alerttimestamp]]]
     if {![string equal $eventtimestamp ""]} {
       log::info [format "event timestamp is %s." [utcclock::format [utcclock::scan $eventtimestamp]]]
@@ -459,7 +488,7 @@ namespace eval "selector" {
       }
     }
     
-    set alertfile [matchalert $origin $identifier $eventtimestamp $alerttimestamp]
+    set alertfile [matchalert $origin $originidentifier $eventtimestamp $alerttimestamp]
     set fullalertfile [getalertfile $alertfile]
     
     file mkdir [file dirname $fullalertfile]
@@ -506,7 +535,7 @@ namespace eval "selector" {
       puts $channel [format "  \"name\": \"%s\"," $name]
     }
     puts $channel [format "  \"origin\": \"%s\"," $origin]
-    puts $channel [format "  \"%sidentifier\": \"%s\"," $origin $identifier]
+    puts $channel [format "  \"%sidentifier\": \"%s\"," $origin $originidentifier]
     puts $channel [format "  \"type\": \"%s\"," $type]
     variable alertprojectidentifier
     puts $channel [format "  \"projectidentifier\": \"%s\"," $alertprojectidentifier]
@@ -553,11 +582,11 @@ namespace eval "selector" {
       }
     }
     
-    sendchat alerts "block $blockidentifier ($name): received a $type GCN Notice for $identifier."
+    sendchat alerts "block $blockidentifier ($name): received a $type GCN Notice for $originidentifier."
     if {!$alertfileexists && ([string equal "" $enabled] || $enabled)} {
       log::info "running alertscript."
       if {[catch {
-        exec "[directories::etc]/alertscript" $name $origin $identifier $type
+        exec "[directories::etc]/alertscript" $name $origin $originidentifier $type
       } message]} {
         log::warning "alertscript failed: $message."
       }
@@ -569,7 +598,7 @@ namespace eval "selector" {
   }
   
   proc respondtolvcalert {blockidentifier name origin
-    identifier type alerttimestamp eventtimestamp enabled skymapurl class
+    originidentifier type alerttimestamp eventtimestamp enabled skymapurl class
   } {
     log::summary "responding to lvc alert."    
     if {![string equal $skymapurl ""]} {
@@ -597,7 +626,7 @@ namespace eval "selector" {
       set uncertainty ""
     }
     respondtoalert $blockidentifier $name $origin \
-      $identifier $type $alerttimestamp $eventtimestamp $enabled \
+      $originidentifier $type $alerttimestamp $eventtimestamp $enabled \
       $alpha $delta $equinox $uncertainty $class "gravitational"
     log::summary "finished responding to lvc alert."
     return
@@ -627,6 +656,7 @@ namespace eval "selector" {
       client::request "executor" "stop"
     }
     log::info "finished requesting refocus."
+    return
   }
   
   proc writealerts {} {
@@ -644,6 +674,30 @@ namespace eval "selector" {
     puts $channel "\]"
     close $channel
     file rename -force -- $tmpfilename [file join [directories::var] "alerts.json"]
+  }
+  
+  proc enablealert {identifier} {
+    log::info "enabling alert $identifier."
+    set alertfile [getalertfilebyidentifier $identifier]
+    if {[string equal "" $alertfile]} {
+      error "no alert has an identifier of \"$identifier\"."
+    }
+    log::info "alert file is $alertfile."
+    updatealertfile $alertfile true
+    log::info "finished enabling alert $identifier."
+    return
+  }
+  
+  proc disablealert {identifier} {
+    log::info "disabling alert $identifier."
+    set alertfile [getalertfilebyidentifier $identifier]
+    if {[string equal "" $alertfile]} {
+      error "no alert has an identifier of \"$identifier\"."
+    }
+    log::info "alert file is $alertfile."
+    updatealertfile $alertfile false
+    log::info "finished disabling alert $identifier."
+    return
   }
   
   ######################################################################

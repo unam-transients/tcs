@@ -75,6 +75,14 @@ namespace eval "selectorserver" {
     selector::writealerts
   }
 
+  proc slaveenablealert {identifier} {
+    selector::enablealert $identifier
+  }
+
+  proc slavedisablealert {identifier} {
+    selector::disablealert $identifier
+  }
+
   proc configureslave {slave} {
     interp alias $slave stop              {} selectorserver::slavestop
     interp alias $slave reset             {} selectorserver::slavereset
@@ -86,6 +94,8 @@ namespace eval "selectorserver" {
     interp alias $slave setunfocused      {} selectorserver::slavesetunfocused
     interp alias $slave refocus           {} selectorserver::slaverefocus
     interp alias $slave writealerts       {} selectorserver::slavewritealerts
+    interp alias $slave enablealert       {} selectorserver::slaveenablealert
+    interp alias $slave disablealert      {} selectorserver::slavedisablealert
   }
 
   ######################################################################

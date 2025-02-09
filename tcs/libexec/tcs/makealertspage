@@ -7,7 +7,7 @@ import json
 import re
 import math
 
-htmlfilename = "/usr/local/var/www/alerts.html"
+htmlfilename = "/usr/local/var/www/tcs/alerts.html"
 jsonfilename = "/usr/local/var/tcs/alerts.json"
 
 htmlfile = open(htmlfilename, "w")
@@ -75,11 +75,15 @@ writehtml(
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-<link rel="stylesheet" href="/tcs/style.css" type="text/css"/>
+<link rel="stylesheet" href="style.css" type="text/css"/>
 <title>Alerts</title>
 </head>
 
 <body>
+
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="config.js"></script>
+<script type="text/javascript" src="alerts.js"></script>
 
 <div id="title">
 <h1>Alerts</h1>
@@ -89,6 +93,46 @@ writehtml(
 <div id="body">
 """
 )
+
+writehtml(
+    """
+<p>NONE OF THE BUTTONS WORK YET!</p>
+
+<p>A new page is created each minute, but you have to reload manually.</p>
+
+<hr/>
+
+<table>
+
+<tr><td><form id="alert-enable"><input type="submit" value="Enable"/></form></td></tr>
+<tr><td><form id="alert-disable"><input type="submit" value="Disable"/></form></td></tr>
+</table>
+
+<hr/>
+
+<table>
+<tr><td><form id="alert-update"><input type="submit" value="Update"/></form></td></tr>
+<tr><td>α</td><td><input type="text" id="alert" name="alpha"></td></tr>
+<tr><td>δ</td><td><input type="text" id="alert" name="delta"></td></tr>
+<tr><td>Uncertainty</td><td><input type="text" id="alert" name="uncertainty"></td></tr>
+<tr><td>Priority</td><td><input type="text" id="alert" name="priority"></td></tr>
+</table>
+
+<hr/>
+
+<table>
+<tr><td><form id="alert-create"><input type="submit" value="Create"/></form></td></tr>
+<tr><td>Name</td><td><input type="text" id="alert" name="name"></td></tr>
+<tr><td>Event Time</td><td><input type="text" id="alert" name="eventtime"></td></tr>
+<tr><td>α</td><td><input type="text" id="alert" name="alpha"></td></tr>
+<tr><td>δ</td><td><input type="text" id="alert" name="delta"></td></tr>
+<tr><td>Uncertainty</td><td><input type="text" id="alert" name="uncertainty"></td></tr>
+<tr><td>Priority</td><td><input type="text" id="alert" name="priority"></td></tr>
+</table>
+
+
+<hr/>
+""")
 
 alerts.sort(key=lambda x: x["eventtimestamp"], reverse=True)
 
@@ -127,7 +171,7 @@ def writealertstable(alerts):
     for alert in alerts:
         writehtml("<tr>")
         writehtml(
-            '<td class="alerts"><input type="radio" name="id" value="%s" class="alert"></td>'
+            '<td class="alerts"><input type="radio" name="identifier" value="%s" class="alert"></td>'
             % alert["identifier"]
         )
         for key in [
@@ -167,42 +211,6 @@ writehtml("</table>")
 
 writehtml(
     """
-
-<hr/>
-
-<p>NONE OF THE BUTTONS WORK YET!</p>
-
-<p>A new page is created each minute, but you have to reload manually.</p>
-
-<hr/>
-
-<table>
-<tr><td><button type="button">Enable</button></td></tr>
-<tr><td><button type="button">Disable</button</td></tr>
-</table>
-
-<hr/>
-
-<table>
-<tr><td><button type="button">Update</button></td></tr>
-<tr><td>α</td><td><input type="text" id="alert" name="alpha"></td></tr>
-<tr><td>δ</td><td><input type="text" id="alert" name="delta"></td></tr>
-<tr><td>Uncertainty</td><td><input type="text" id="alert" name="uncertainty"></td></tr>
-<tr><td>Priority</td><td><input type="text" id="alert" name="priority"></td></tr>
-</table>
-
-<hr/>
-
-<table>
-<tr><td><button type="button">New</button></td></tr>
-<tr><td>Name</td><td><input type="text" id="alert" name="name"></td></tr>
-<tr><td>Event Time</td><td><input type="text" id="alert" name="eventtime"></td></tr>
-<tr><td>α</td><td><input type="text" id="alert" name="alpha"></td></tr>
-<tr><td>δ</td><td><input type="text" id="alert" name="delta"></td></tr>
-<tr><td>Uncertainty</td><td><input type="text" id="alert" name="uncertainty"></td></tr>
-<tr><td>Priority</td><td><input type="text" id="alert" name="priority"></td></tr>
-</table>
-
 </div>
 
 <div>
