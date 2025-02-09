@@ -334,10 +334,13 @@ namespace eval "utcclock" {
   proc scaninterval {interval} {
     if {[string is double -strict $interval]} {
       set newinterval $interval
-    } elseif {[::scan $interval "%f%\[hms\]" value unit] == 2} {
+    } elseif {[::scan $interval "%f%\[dhms\]" value unit] == 2} {
       switch -nocase $unit {
+        "d" {
+          set newinterval [expr {$value * 60 * 60 * 24}]
+        }
         "h" {
-          set newinterval [expr {$value * 3600}]
+          set newinterval [expr {$value * 60 * 60}]
         }
         "m" {
           set newinterval [expr {$value * 60}]

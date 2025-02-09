@@ -72,3 +72,13 @@ puts [utcclock::jd $seconds]
 puts [utcclock::jd [fromjd [utcclock::jd $seconds]]]
 puts $seconds
 puts [fromjd [utcclock::jd $seconds]]
+
+puts [utcclock::scaninterval "3.0s"]
+puts [utcclock::scaninterval "3.0m"]
+puts [utcclock::scaninterval "3.0h"]
+puts [utcclock::scaninterval "3.0d"]
+
+puts [utcclock::scaninterval "3s"]
+puts [utcclock::scaninterval "3m"]
+puts [utcclock::scaninterval "3h"]
+puts [utcclock::scaninterval "3d"]
