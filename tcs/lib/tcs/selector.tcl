@@ -744,7 +744,7 @@ namespace eval "selector" {
     if {![string equal "" $alpha] && [string equal "" $uncertainty]} {
       error "position given without uncertainty."
     }
-    if {[catch {utcclock::scaninterval $maxalertdelay}]} {
+    if {![string equal "" $maxalertdelay] && [catch {utcclock::scaninterval $maxalertdelay}]} {
       error "invalid maxalertdelay value \"$maxalertdelay\"."
     }
     if {![string equal "" $priority] && !([string is integer -strict $priority] && 0 <= $priority && $priority <= 10)} {
