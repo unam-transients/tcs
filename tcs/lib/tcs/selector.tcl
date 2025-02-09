@@ -259,7 +259,7 @@ namespace eval "selector" {
 
   ######################################################################
   
-  proc modifyalertfile {alertfile enabled alpha delta equinox uncertainty priority} {
+  proc modifyalertfile {alertfile enabled alpha delta equinox uncertainty maxalertdelay priority} {
     set channel [open $alertfile "a"]
     puts $channel [format "// Modified at %s." [utcclock::format now]]
     puts $channel [format "\{"]
@@ -270,6 +270,10 @@ namespace eval "selector" {
       puts $channel [format "  \"equinox\": \"%s\"," $equinox]
       log::info [format "modified uncertainty is %s." [astrometry::formatdistance $uncertainty]]
       puts $channel [format "  \"uncertainty\": \"%s\"," [astrometry::formatdistance $uncertainty]]
+    }
+    if {![string equal $maxalertdelay ""]} {
+      log::info [format "modified maxalertdelay is %s." $maxalertdelay]
+      puts $channel [format "  \"maxalertdelay\": \"%s\"," $maxalertdelay]
     }
     if {![string equal $priority ""]} {
       log::info [format "modified priority is %d." $priority]
@@ -698,7 +702,7 @@ namespace eval "selector" {
       error "no alert has an identifier of \"$identifier\"."
     }
     log::info "alert file is $alertfile."
-    modifyalertfile $alertfile true "" "" "" "" ""
+    modifyalertfile $alertfile true "" "" "" "" "" ""
     makealertspage
     log::info "finished enabling alert $identifier."
     return
@@ -711,13 +715,13 @@ namespace eval "selector" {
       error "no alert has an identifier of \"$identifier\"."
     }
     log::info "alert file is $alertfile."
-    modifyalertfile $alertfile false "" "" "" "" ""
+    modifyalertfile $alertfile false "" "" "" "" "" ""
     makealertspage
     log::info "finished disabling alert $identifier."
     return
   }
   
-  proc modifyalert {identifier alpha delta equinox uncertainty priority} {
+  proc modifyalert {identifier alpha delta equinox uncertainty maxalertdelay priority} {
     log::info "modifying alert $identifier."
     if {![string equal "" $alpha] && [catch {astrometry::parsealpha $alpha}]} {
       error "invalid alpha value \"$alpha\"."
@@ -740,6 +744,9 @@ namespace eval "selector" {
     if {![string equal "" $alpha] && [string equal "" $uncertainty]} {
       error "position given without uncertainty."
     }
+    if {[catch {utcclock::scaninterval $maxalertdelay}]} {
+      error "invalid maxalertdelay value \"$maxalertdelay\"."
+    }
     if {![string equal "" $priority] && !([string is integer -strict $priority] && 0 <= $priority && $priority <= 10)} {
       error "invalid priority value \"$priority\"."
     }
@@ -748,7 +755,7 @@ namespace eval "selector" {
       error "no alert has an identifier of \"$identifier\"."
     }
     log::info "alert file is $alertfile."
-    modifyalertfile $alertfile "" $alpha $delta $equinox $uncertainty $priority
+    modifyalertfile $alertfile "" $alpha $delta $equinox $uncertainty $maxalertdelay $priority
     makealertspage
     log::info "finished modifying alert $identifier."
     return

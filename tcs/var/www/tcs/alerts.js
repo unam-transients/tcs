@@ -89,6 +89,7 @@ $(function () {
         " " + quote($("input[name=\"modify-delta\"]").val()) +
         " 2000 " +
         " " + quote($("input[name=\"modify-uncertainty\"]").val()) +
+        " " + quote($("input[name=\"modify-max-age\"]").val()) +
         " " + quote($("input[name=\"modify-priority\"]").val()), 
         true
         );

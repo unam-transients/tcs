@@ -28,8 +28,8 @@ def formattimestamp(timestamp):
     return timestamp
 
 
-def formatage(eventtimestamp):
-    return "%.2fd" % (age(eventtimestamp) / 86400)
+def formatage(age):
+    return "%.2fd" % (age / 86400)
 
 
 def parseangle(angle):
@@ -47,8 +47,10 @@ def parseangle(angle):
 
 
 def parseinterval(interval):
-    if interval[-1:] == "h":
-        interval = float(interval[:-1]) * 3600
+    if interval[-1:] == "d":
+        interval = float(interval[:-1]) * 60 * 60 * 24
+    elif interval[-1:] == "h":
+        interval = float(interval[:-1]) * 60 * 60
     elif interval[-1:] == "m":
         interval = float(interval[:-1]) * 60
     elif interval[-1:] == "s":
@@ -138,6 +140,10 @@ writehtml(
 <td class="alertsinputs"><input type="text" id="modify-uncertainty" name="modify-uncertainty"></td>
 </tr>
 <tr class="alertsinputs">
+<td class="alertsinputs">Max Age</td>
+<td class="alertsinputs"><input type="text" id="modify-max-age" name="modify-max-age"></td>
+</tr>
+<tr class="alertsinputs">
 <td class="alertsinputs">Priority</td>
 <td class="alertsinputs"><input type="text" id="modify-priority" name="modify-priority"></td>
 </tr>
@@ -198,18 +204,19 @@ for alert in alerts:
 
 def writealertstable(alerts, name):
     if len(alerts) == 0:
-        writehtml('<tr><th colspan="11">No %s</th></tr>' % name)
-        writehtml('<tr><td colspan="11"><hr/></td></tr>')
+        writehtml('<tr><th colspan="12">No %s</th></tr>' % name)
+        writehtml('<tr><td colspan="12"><hr/></td></tr>')
         return
     else:
-        writehtml('<tr><th colspan="11">%s</th></tr>' % name)
-        writehtml('<tr><td colspan="11"><hr/></td></tr>')
+        writehtml('<tr><th colspan="12">%s</th></tr>' % name)
+        writehtml('<tr><td colspan="12"><hr/></td></tr>')
         writehtml("<tr>")
         for text in [
             "",
             "Name",
             "Event Time",
             "Age",
+            "Max Age",
             "α",
             "δ",
             "Epoch",
@@ -230,6 +237,7 @@ def writealertstable(alerts, name):
                 "name",
                 "eventtimestamp",
                 "age",
+                "maxage",
                 "alpha",
                 "delta",
                 "equinox",
@@ -240,7 +248,9 @@ def writealertstable(alerts, name):
             ]:
                 writehtml('<td class="alertstable">')
                 if key == "age" and "eventtimestamp" in alert.keys():
-                    writehtml(formatage(alert["eventtimestamp"]))
+                    writehtml(formatage(age(alert["eventtimestamp"])))
+                elif key == "maxage" and "maxalertdelay" in alert.keys():
+                    writehtml(formatage(parseinterval(alert["maxalertdelay"])))
                 elif key not in alert.keys():
                     writehtml("—")
                 elif key == "eventtimestamp":
@@ -253,7 +263,7 @@ def writealertstable(alerts, name):
 
 writehtml('<table class="alertstable">')
 writealertstable(selectablealerts, "Selectable Alerts")
-writehtml('<tr><td colspan="11"><hr/></td></tr>')
+writehtml('<tr><td colspan="12"><hr/></td></tr>')
 writealertstable(unselectablealerts, "Unselectable Alerts")
 writehtml("</table>")
 
