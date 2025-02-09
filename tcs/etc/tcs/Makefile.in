@@ -62,6 +62,7 @@ installbins_project_ddoti	:=		    \
 	alertscript-project-ddoti
 
 installs_project_colibri	:=		    \
+	alert-project-colibri		        \
 	config-project-colibri.json		    \
 	servers-project-colibri.json		\
 	visitcommands-project-colibri.tcl	\
