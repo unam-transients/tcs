@@ -55,7 +55,7 @@ namespace eval "alert" {
     foreach newalert $newalerts {
       if {[dict exists $newalert "uncertainty"]} {
         set uncertainty [astrometry::parsedistance [dict get $newalert "uncertainty"]]
-        if {[string equal $bestuncertainty ""] || $uncertainty < $bestuncertainty} {
+        if {[string equal $bestuncertainty ""] || $uncertainty <= $bestuncertainty} {
           set bestuncertainty $uncertainty
           set bestalpha   [dict get $newalert "alpha"  ]
           set bestdelta   [dict get $newalert "delta"  ]
