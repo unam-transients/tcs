@@ -149,62 +149,65 @@ for alert in alerts:
         selectablealerts.append(alert)
 
 
-def writealertstable(alerts):
-    writehtml("<tr>")
-    for text in [
-        "",
-        "Name",
-        "Event Time",
-        "Age",
-        "α",
-        "δ",
-        "Epoch",
-        "Uncertainty",
-        "Priority",
-        "Enabled",
-        "Identifier",
-    ]:
-        writehtml('<th class="alerts">%s</th>' % text)
-    writehtml("</tr>")
-    for alert in alerts:
+def writealertstable(alerts, name):
+    if len(alerts) == 0:
+        writehtml('<tr><th colspan="11">No %s</th></tr>' % name)
+        writehtml('<tr><td colspan="11"><hr/></td></tr>')
+        return
+    else:
+        writehtml('<tr><th colspan="11">%s</th></tr>' % name)
+        writehtml('<tr><td colspan="11"><hr/></td></tr>')
         writehtml("<tr>")
-        writehtml(
-            '<td class="alerts"><input type="radio" name="identifier" value="%s" class="alert"></td>'
-            % alert["identifier"]
-        )
-        for key in [
-            "name",
-            "eventtimestamp",
-            "age",
-            "alpha",
-            "delta",
-            "equinox",
-            "uncertainty",
-            "priority",
-            "enabled",
-            "identifier",
+        for text in [
+            "",
+            "Name",
+            "Event Time",
+            "Age",
+            "α",
+            "δ",
+            "Epoch",
+            "Uncertainty",
+            "Priority",
+            "Enabled",
+            "Identifier",
         ]:
-            writehtml('<td class="alerts">')
-            if key == "age" and "eventtimestamp" in alert.keys():
-                writehtml(formatage(alert["eventtimestamp"]))
-            elif key not in alert.keys():
-                writehtml("—")
-            elif key == "eventtimestamp":
-                writehtml(formattimestamp(alert[key]))
-            else:
-                writehtml(alert[key])
-            writehtml("</td>")
+            writehtml('<th class="alerts">%s</th>' % text)
         writehtml("</tr>")
+        for alert in alerts:
+            writehtml("<tr>")
+            writehtml(
+                '<td class="alerts"><input type="radio" name="identifier" value="%s" class="alert"></td>'
+                % alert["identifier"]
+            )
+            for key in [
+                "name",
+                "eventtimestamp",
+                "age",
+                "alpha",
+                "delta",
+                "equinox",
+                "uncertainty",
+                "priority",
+                "enabled",
+                "identifier",
+            ]:
+                writehtml('<td class="alerts">')
+                if key == "age" and "eventtimestamp" in alert.keys():
+                    writehtml(formatage(alert["eventtimestamp"]))
+                elif key not in alert.keys():
+                    writehtml("—")
+                elif key == "eventtimestamp":
+                    writehtml(formattimestamp(alert[key]))
+                else:
+                    writehtml(alert[key])
+                writehtml("</td>")
+            writehtml("</tr>")
 
 
 writehtml('<table class="alerts">')
-writehtml('<tr><th colspan="11">Selectable Alerts</th></tr>')
+writealertstable(selectablealerts, "Selectable Alerts")
 writehtml('<tr><td colspan="11"><hr/></td></tr>')
-writealertstable(selectablealerts)
-writehtml('<tr><td colspan="11"><hr/></td></tr>')
-writehtml('<tr><th colspan="11">Unselectable Alerts</th></tr>')
-writehtml('<tr><td colspan="11"><hr/></td></tr>')
-writealertstable(unselectablealerts)
+writealertstable(unselectablealerts, "Unselectable Alerts")
 writehtml("</table>")
 
 writehtml(
