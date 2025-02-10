@@ -152,6 +152,7 @@ table.alertstable, tr.alertstable, th.alertstable, td.alertstable {
   padding-right:      0.5em;
   padding-top:        0.2em;
   padding-bottom:     0.2em;
+  line-height:        1.6;
 }
 
 table.alertsinputs, tr.alertsinputs, th.alertsinputs, td.alertsinputs {
@@ -162,10 +163,7 @@ table.alertsinputs, tr.alertsinputs, th.alertsinputs, td.alertsinputs {
 } 
 
 input.alertstable {
-  width:              4em;
-  border:             0px;
-  padding:            0px;
-  width:              100%;
+  width:              2em;
   height:             1em;
 }
 
