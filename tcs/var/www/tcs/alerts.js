@@ -65,6 +65,10 @@ function quote(s) {
 
 
 $(function () {
+  $("form#alert-rugby").submit(function () {
+    alert("England 26 — 25 France");
+    return false;
+  });
   $("form#alert-refresh").submit(function () {
     return submitrequest("selector makealertspage", false);
   });
