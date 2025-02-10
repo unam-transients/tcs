@@ -480,9 +480,9 @@
   },
   "selector": {
     "priorities": {
-      "*-*-electromagnetic/gravitational/*": 1,
-      "*-*-electromagnetic/*/neutrino"     : 1,
-      "*-*-*/gravitational/neutrino"       : 1,
+      "*-*-electromagnetic/gravitational/*": 2,
+      "*-*-electromagnetic/*/neutrino"     : 2,
+      "*-*-*/gravitational/neutrino"       : 2,
       "lvc*-*"          : 3,
       "svomeclairs*-*"  : 4,
       "svommxt*-*"      : 4,
