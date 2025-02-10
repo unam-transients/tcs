@@ -150,6 +150,8 @@ td.control {
 table.alertstable, tr.alertstable, th.alertstable, td.alertstable {
   padding-left:       0.5em;
   padding-right:      0.5em;
+  padding-top:        0.2em;
+  padding-bottom:     0.2em;
 }
 
 table.alertsinputs, tr.alertsinputs, th.alertsinputs, td.alertsinputs {
@@ -160,7 +162,11 @@ table.alertsinputs, tr.alertsinputs, th.alertsinputs, td.alertsinputs {
 } 
 
 input.alertstable {
-  width: 4em;
+  width:              4em;
+  border:             0px;
+  padding:            0px;
+  width:              100%;
+  height:             1em;
 }
 
 input {
