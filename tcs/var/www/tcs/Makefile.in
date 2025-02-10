@@ -83,7 +83,7 @@ installs_project_colibri	:=		     \
 	C1-project-colibri.html  	      	 \
 	C2-project-colibri.html  	      	 \
 	config-project-colibri.js	         \
-	monitoring-project-colibri.html      \
+	observations-project-colibri.html    \
 	operations-project-colibri.html      \
 	engineering-project-colibri.html     \
 	interface.html                       \
