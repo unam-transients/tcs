@@ -47,6 +47,7 @@ installs_project_coatli	:=		         \
 	allsky-project-coatli.html		     \
 	C0-project-coatli.html       	     \
 	config-project-coatli.js		     \
+	observations-project-coatli.html	 \
 	operations-project-coatli.html	     \
 	engineering-project-coatli.html      \
 	interface.html                       \
