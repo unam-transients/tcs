@@ -33,6 +33,7 @@ installbins         :=            \
 	checkreboot                   \
 	checkrestart                  \
 	cleanfiles                    \
+	clearblocks                   \
 	emergencystop                 \
 	executorserver                \
 	fansserver                    \
@@ -66,6 +67,7 @@ installbins         :=            \
 	logserver                     \
 	lvcskymapfindpeak             \
 	makealertspage                \
+	makeblockspage                \
 	moonserver                    \
 	mountserver                   \
 	newpgrp                       \

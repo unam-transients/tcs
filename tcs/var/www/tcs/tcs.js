@@ -195,6 +195,9 @@ $(function () {
   $("form#system-rebootmount").submit(function () {
     return submitrequest("rebootmount");
   });
+  $("form#system-clearblocks").submit(function () {
+    return submitrequest("clearblocks");
+  });
   $("form#system-loadblocks").submit(function () {
     return submitrequest("loadblocks");
   });
@@ -251,6 +254,9 @@ $(function () {
   });
   $("form#selector-refocus").submit(function () {
     return submitrequest("selector refocus");
+  });
+  $("form#selector-stop").submit(function () {
+    return submitrequest("selector stop");
   });
   $("form#telescope-stop").submit(function () {
     return submitrequest("telescope stop");

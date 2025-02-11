@@ -1,0 +1,63 @@
+#!/bin/sh
+
+export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
+
+program="tcs $(basename "$0")"
+
+usageerror () {
+  echo 1>&2 "usage: $program"
+  exit 1
+}
+
+error () {
+  log error "$@"
+  exit 1
+}
+
+log () {
+  level=$1
+  shift
+  tcs log "$program" $level "$*"
+  echo 1>&2 "$(date -u '+%F %T'): $program: $level: $*"
+}
+
+optstring=
+if ! getopt -qQ -- "$optstring" "$@"
+then
+  usageerror
+fi
+eval set -- "$(getopt -q -- "$optstring" "$@")"
+while test "$1" != "--"
+do
+  case "$1" in
+  *)
+    usageerror
+    ;;
+  esac
+done
+shift
+if test $# != 0
+then
+  usageerror
+fi
+
+################################################################################
+
+log summary "clearing blocks."
+
+queuedir=/usr/local/var/tcs/blocks
+
+sudo mkdir -p "$queuedir"
+sudo rm -rf "$queuedir"/*
+
+################################################################################
+
+tcs makeblockspage
+
+################################################################################
+
+log summary "finished clearing blocks."
+
+exit 0
+
+################################################################################
