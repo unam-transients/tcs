@@ -37,6 +37,7 @@ namespace eval "plc" {
   variable controllerhost             [config::getvalue "plc" "controllerhost"]
   variable controllerport             [config::getvalue "plc" "controllerport"]  
   variable daylightalarmoffsetseconds [config::getvalue "plc" "daylightalarmoffsetseconds"]
+  variable windspeedlimit             [config::getvalue "plc" "windspeedlimit"]
   
   ######################################################################
 
@@ -177,9 +178,10 @@ namespace eval "plc" {
       server::setdata "vaisalawindminazimuth"        [format "%d"   [parseinteger [lindex $field 2]]]
       server::setdata "vaisalawindaverageazimuth"    [format "%d"   [parseinteger [lindex $field 3]]]
       server::setdata "vaisalawindmaxzimuth"         [format "%d"   [parseinteger [lindex $field 4]]]
-      server::setdata "vaisalawindminspeed"          [format "%.1f" [lindex $field 5]]
-      server::setdata "vaisalawindaveragespeed"      [format "%.1f" [lindex $field 6]]
-      server::setdata "vaisalawindmaxspeed"          [format "%.1f" [lindex $field 7]]
+      # Covert the Vaisala speeds from m/s to km/h.
+      server::setdata "vaisalawindminspeed"          [format "%.1f" [expr {[lindex $field 5] * 3.6}]]
+      server::setdata "vaisalawindaveragespeed"      [format "%.1f" [expr {[lindex $field 6] * 3.6}]]
+      server::setdata "vaisalawindmaxspeed"          [format "%.1f" [expr {[lindex $field 7] * 3.6}]]
       server::setdata "vaisalatemperature"           [format "%.1f" [lindex $field 8]]
       server::setdata "vaisalahumidity"              [format "%.3f" [expr {0.01 * [lindex $field 9]}]]
       server::setdata "vaisalapressure"              [format "%.1f" [lindex $field 10]]
@@ -779,6 +781,9 @@ namespace eval "plc" {
       log::warning "the vaisala is not enabled."
     }
     controller::sendcommand "UnsafeTimer\{10\}\n"
+    variable windspeedlimit
+    controller::sendcommand "WindThreshold\{$windspeedlimit\}\n"
+    server::setdata "windspeedlimit" $windspeedlimit
     set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
   }
@@ -1142,6 +1147,15 @@ namespace eval "plc" {
   
   ######################################################################
   
+  proc specialsetwindspeedlimit {limit} {
+    log::info "setting wind speed limit to $limit."
+    controller::pushcommand "WindThreshold{$limit}\n"
+    server::setdata "windspeedlimit" $limit
+    return
+  }
+  
+  ######################################################################
+  
   proc setforcemustbeclosed {value} {
     log::info "setting forcemustbeclosed to $value."
     variable forcemustbeclosed
@@ -1166,7 +1180,6 @@ namespace eval "plc" {
     after idle {
       coroutine ::plc::sunloopcoroutine plc::daylightalarmloop
     }
-    
   }
 
 }

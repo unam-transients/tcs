@@ -431,7 +431,8 @@
     "controllerport": "200",
     "boltwoodenabled": true,
     "vaisalaenabled": true,
-    "daylightalarmoffsetseconds": "2700"
+    "daylightalarmoffsetseconds": "2700",
+    "windspeedlimit": "65"
   },
   "power": {
     "hosts": {

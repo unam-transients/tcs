@@ -95,17 +95,17 @@ EOF
   case $host in
   control)
     cat <<"EOF"
-*      *  *  *  *  sleep 10; tcs updatesensorsfiles control instrument
-*      *  *  *  *  tcs updateseeingfiles-colibri
-*      *  *  *  *  tcs request plc special updateweather
-*      *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
-00     00 *  *  *  tcs loadblocks -F
-01     00 *  *  *  tcs loadblocks -L
-*      *  *  *  *  cd /usr/local/var/www/tcs/; sh plots.sh >plots.txt 2>&1
-*/5    *  *  *  *  tcs logsensors
-*      *  *  *  *  mkdir -p /usr/local/var/www/tcs/alerts/; rsync --delete --dirs /usr/local/var/tcs/alerts/ /usr/local/var/www/tcs/alerts/
-*      *  *  *  *  mkdir -p /usr/local/var/www/tcs/blocks/; rsync --delete --dirs /usr/local/var/tcs/blocks/ /usr/local/var/www/tcs/blocks/
-*      *  *  *  *  tcs request selector makealertspage
+*   *  *  *  *  sleep 10; tcs updatesensorsfiles control instrument
+*   *  *  *  *  tcs updateseeingfiles-colibri
+*   *  *  *  *  tcs request plc special updateweather
+*   *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
+00  00 *  *  *  tcs loadblocks -F
+01  00 *  *  *  tcs loadblocks -L
+*   *  *  *  *  cd /usr/local/var/www/tcs/; sh plots.sh >plots.txt 2>&1
+*/5 *  *  *  *  tcs logsensors
+*   *  *  *  *  mkdir -p /usr/local/var/www/tcs/alerts/; rsync --delete --dirs /usr/local/var/tcs/alerts/ /usr/local/var/www/tcs/alerts/
+*   *  *  *  *  mkdir -p /usr/local/var/www/tcs/blocks/; rsync --delete --dirs /usr/local/var/tcs/blocks/ /usr/local/var/www/tcs/blocks/
+*   *  *  *  *  tcs request selector makealertspage
 EOF
     ;;
   esac

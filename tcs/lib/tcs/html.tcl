@@ -838,6 +838,15 @@ namespace eval "html" {
           writealarm   "Vaisala communication alarm"   [client::getdata "plc" "riovaisalacommunicationalarm" ] [client::getdata "plc" "riovaisalacommunicationalarmdisabled"]
           writealarm   "Boltwood communication alarm"  [client::getdata "plc" "rioboltwoodcommunicationalarm"] [client::getdata "plc" "rioboltwoodcommunicationalarmdisabled"]
 
+        writehtmlrow "Vaisala average wind speed" \
+          [formatifok "%.0f km/h" [client::getdata "plc" "vaisalawindaveragespeed"]]
+        writehtmlrow "Vaisala maximum wind speed" \
+          [formatifok "%.0f km/h" [client::getdata "plc" "vaisalawindmaxspeed"]]
+        writehtmlrow "Boltwood wind speed" \
+          [formatifok "%.0f km/h" [client::getdata "plc" "boltwoodwindspeed"]]
+        writehtmlrow "Wind speed limit" \
+          [formatifok "%.0f km/h" [client::getdata "plc" "windspeedlimit"]]
+
           writehtmlrow "PLC cabinet temperature"       [format "%+.1f C" [client::getdata "plc" "plccabinettemperature"]]
           writehtmlrow "Weather cabinet temperature"   [format "%+.1f C" [client::getdata "plc" "weathercabinettemperature"]]
           writehtmlrow "Seeing cabinet temperature"    [format "%+.1f C" [client::getdata "plc" "seeingcabinettemperature"]]
