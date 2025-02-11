@@ -254,28 +254,7 @@ namespace eval "plc" {
       log::warning "unable to read european ups data."
     }
     
-    # Master is PLC and telescope normally left in remote.
     set rawmode [lindex $field 50]
-    switch $rawmode {
-    
-      
-      "MANU"           { set mode "local" }
-      "OFF"            { set mode "off"   }
-      "WAIT_ACK"       { set mode "remote and waiting for local confirmation to operate"}
-      "AUTO"           { set mode "remote and may operate" }
-      "AUTO_PARK"      { set mode "remote but must not operate" }
-      "AUTO_INTRUSION" { set mode "remote but intrusion detected"}
-      "ESTOP"          { set mode "emergency stop activated"}
-      "WAIT_MANU"      { set mode "local but waiting for telescope to be switched to remote" }
-      "WAIT_OFF"       { set mode "off but waiting for telescope to be switched to remote" }
-      "WAIT_AUTO"      { set mode "remote but waiting for telescope to be switched to remote" }
-
-       default          { 
-        log::warning "unable to read mode data."
-        set mode ""
-      }
-    }
-    server::setdata "mode"                          $mode
 
     if {[catch {
       server::setdata "unsafeseconds"                 [format "%d" [parseinteger [lindex $field 51]]]
@@ -453,8 +432,12 @@ namespace eval "plc" {
         }
       }
       server::setdata "requestedtelescopemode"         $telescopemode
-      server::setdata "requestedpark"                  [boolean [expr {![string index $responseb 84]}]]
-      server::setdata "requestedcloseshutters"         [boolean [expr {![string index $responseb 85]}]]
+
+      set requestedpark [boolean [expr {![string index $responseb 84]}]]
+      server::setdata "requestedpark" $requestedpark
+      set requestedclose [boolean [expr {![string index $responseb 85]}]]
+      server::setdata "requestedclose" $requestedclose
+
       switch -- "[string index $responseb 86]" {
         "0" { set domemode "remote" }
         "1" { set domemode "local"  }
@@ -575,8 +558,32 @@ namespace eval "plc" {
     server::setdata "riovaisalacommunicationalarmdisabled"  [server::getdata "bypassweatheralarms"]
     server::setdata "rioboltwoodcommunicationalarmdisabled" [server::getdata "bypassweatheralarms"]
     
-    set mustnotoperate [boolean [expr {![string equal $mode "remote and may operate"]}]]
-    server::setdata "mustnotoperate"                        $mustnotoperate
+    # The PLC is normally left in remote mode.
+
+    switch -glob $rawmode/$requestedpark/$requestedclose {
+      "MANU/*/*"              { set mode "local" }
+      "WAIT_MANU/*/*"         { set mode "local" }
+      "OFF/*/*"               { set mode "off"   }
+      "WAIT_OFF/*/*"          { set mode "off" }
+      "WAIT_AUTO/*/*"         { set mode "waiting for telescope to be switched to remote" }
+      "WAIT_ACK/*/*"          { set mode "waiting for local confirmation"}
+      "AUTO/*/*"              { set mode "may open" }
+      "AUTO_PARK/false/false" { set mode "must close" }
+      "AUTO_PARK/*/*"         { set mode "must not operate" }
+      "AUTO_INTRUSION/*/*"    { set mode "intrusion detected" }
+      "ESTOP/*/*"             { set mode "emergency stop activated"}
+       default          { 
+        log::warning "unable to read mode data: $rawmode/$requestedpark/$requestedclose."
+        set mode ""
+      }
+    }
+    server::setdata "mode" $mode
+
+    set mustnotoperate [boolean [expr {
+      ![string equal $mode "may open"] &&
+      ![string equal $mode "must close"]
+    }]]
+    server::setdata "mustnotoperate" $mustnotoperate
     
     foreach {level name prettyname} {
 
@@ -638,7 +645,7 @@ namespace eval "plc" {
       "info"    "domemode"                      "dome mode"
 
       "summary" "requestedpark"                 "requested park"
-      "summary" "requestedcloseshutters"        "requested close shutters"
+      "summary" "requestedclose"        "requested close shutters"
       
       "summary" "mustnotoperate"                "mustnotoperate"
       "summary" "mustbeclosed"                  "mustbeclosed"

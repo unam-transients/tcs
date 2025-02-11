@@ -332,12 +332,14 @@ namespace eval "supervisor" {
         set mustnotoperate true
         set why "no plc data"
 
-      } elseif {[client::getdata "plc" "mustnotoperate"]} {
+      } elseif {[string equal [client::getdata "plc" "mode"] "may open"]} {
 
-        set mustnotoperate true
-        set why "plc forbids operation"
+        set mustnotoperate false
+        set maybeopen true
+        set maybeopentoventilate true
+        set why "plc"
         
-      } elseif {[client::getdata "plc" "mustbeclosed"]} {
+      } elseif {[string equal [client::getdata "plc" "mode"] "must close"]} {
 
         set mustnotoperate false
         set maybeopen false
@@ -345,8 +347,11 @@ namespace eval "supervisor" {
         set why "plc"
         
       } else {
-      
-        set mustnotoperate false
+
+        set mustnotoperate true
+        set maybeopen false
+        set maybeopentoventilate false
+        set why "plc"
       
       }
 

@@ -808,14 +808,14 @@ namespace eval "html" {
       switch $type {
         "colibri" {
 
+          writehtmlfullrow "Mode"                      [client::getdata "plc" "mode"]
+          writehtmlrow     "Safety delay"              [format "%d s" [client::getdata "plc" "unsafeseconds"]]
+
           writealarm       "Must not operate"          [client::getdata "plc" "mustnotoperate"]
           writealarm       "Must be closed"            [client::getdata "plc" "mustbeclosed"]
           writehtmlrow     "Key switch"                [client::getdata "plc" "keyswitch"]
           writehtmlrow     "Local confirmation"        [client::getdata "plc" "localconfirmation"]
           writehtmlrow     "Access requested"          [client::getdata "plc" "accessrequested"]
-
-          writehtmlfullrow "Mode"                      [client::getdata "plc" "mode"]
-          writehtmlrow     "Safety delay"              [format "%d s" [client::getdata "plc" "unsafeseconds"]]
 
           writehtmlfullrow "Telescope cabinet power"   [client::getdata "plc" "telescopecabinetpower"]
           writehtmlfullrow "Requested telescope mode"  [client::getdata "plc" "requestedtelescopemode"]
@@ -823,7 +823,7 @@ namespace eval "html" {
           writehtmlfullrow "Dome mode"                 [client::getdata "plc" "domemode"]
 
           writehtmlfullrow "Requested park"            [client::getdata "plc" "requestedpark"]
-          writehtmlfullrow "Requested close shutters"  [client::getdata "plc" "requestedcloseshutters"]
+          writehtmlfullrow "Requested close shutters"  [client::getdata "plc" "requestedclose"]
 
           writealarm   "Rain alarm"                    [client::getdata "plc" "rainalarm"                    ] [client::getdata "plc" "rainalarmdisabled"]
           writealarm   "Wind alarm"                    [client::getdata "plc" "windalarm"                    ] [client::getdata "plc" "windalarmdisabled"]
