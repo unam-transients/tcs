@@ -335,8 +335,6 @@ namespace eval "supervisor" {
       } elseif {[string equal [client::getdata "plc" "mode"] "may open"]} {
 
         set mustnotoperate false
-        set maybeopen true
-        set maybeopentoventilate true
         set why "plc"
         
       } elseif {[string equal [client::getdata "plc" "mode"] "must close"]} {
