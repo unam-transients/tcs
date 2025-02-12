@@ -838,14 +838,20 @@ namespace eval "html" {
           writealarm   "Vaisala communication alarm"   [client::getdata "plc" "riovaisalacommunicationalarm" ] [client::getdata "plc" "riovaisalacommunicationalarmdisabled"]
           writealarm   "Boltwood communication alarm"  [client::getdata "plc" "rioboltwoodcommunicationalarm"] [client::getdata "plc" "rioboltwoodcommunicationalarmdisabled"]
 
-        writehtmlrow "Vaisala average wind speed" \
-          [formatifok "%.0f km/h" [client::getdata "plc" "vaisalawindaveragespeed"]]
-        writehtmlrow "Vaisala maximum wind speed" \
-          [formatifok "%.0f km/h" [client::getdata "plc" "vaisalawindmaxspeed"]]
-        writehtmlrow "Boltwood wind speed" \
-          [formatifok "%.0f km/h" [client::getdata "plc" "boltwoodwindspeed"]]
-        writehtmlrow "Wind speed limit" \
-          [formatifok "%.0f km/h" [client::getdata "plc" "windspeedlimit"]]
+          catch {
+            writehtmlrow "OAN wind average speed" \
+             [formatifok "%.0f km/h" [client::getdata "sensors" "oan-wind-average-speed"]]
+            writehtmlrow "OAN wind gust speed" \
+              [formatifok "%.0f km/h" [client::getdata "sensors" "oan-wind-gust-speed"]]
+          }
+          writehtmlrow "Vaisala wind average speed" \
+            [formatifok "%.0f km/h" [client::getdata "plc" "vaisalawindaveragespeed"]]
+          writehtmlrow "Vaisala wind gust speed" \
+            [formatifok "%.0f km/h" [client::getdata "plc" "vaisalawindmaxspeed"]]
+          writehtmlrow "Boltwood wind speed" \
+            [formatifok "%.0f km/h" [client::getdata "plc" "boltwoodwindspeed"]]
+          writehtmlrow "Wind speed limit" \
+            [formatifok "%.0f km/h" [client::getdata "plc" "windspeedlimit"]]
 
           writehtmlrow "PLC cabinet temperature"       [format "%+.1f C" [client::getdata "plc" "plccabinettemperature"]]
           writehtmlrow "Weather cabinet temperature"   [format "%+.1f C" [client::getdata "plc" "weathercabinettemperature"]]
@@ -1112,7 +1118,7 @@ namespace eval "html" {
   proc writesensors {} {
   
     variable sensors
-
+    
     putshtml "<table class=\"status\">"
 
     writehtmlstatusblock "sensors"
@@ -1127,45 +1133,49 @@ namespace eval "html" {
       set referencetemperature [client::getdata "sensors" $referencetemperaturename]
     
       foreach name [dict keys $sensors] {
-        set value [join [client::getdata "sensors" "$name"] " "]
-        set timestamp [client::getdata "sensors" "${name}-timestamp"]
-        if {[string equal $value ""] || [string equal $timestamp ""]} {
-          writehtmlfullrowwithemph $name "warning" "unknown"
-        } else {
-          set timestamp [utcclock::format $timestamp 0]
-          if {[utcclock::diff now $timestamp] > 600} {
-            set emphasis "warning"
+        if {[catch {
+          set value [join [client::getdata "sensors" "$name"] " "]
+          set timestamp [client::getdata "sensors" "${name}-timestamp"]
+          if {[string equal $value ""] || [string equal $timestamp ""]} {
+            writehtmlfullrowwithemph $name "warning" "unknown"
           } else {
-            set emphasis ""
-          }
-          set unit [dict get $sensors $name "unit"]
-          set group [dict get $sensors $name "group"]
-          switch -glob "$name:$unit:$group" {
-            *-temperature:C:environmental-temperature {
-                set difference [expr {$value - $referencetemperature}]
-              if {[string equal $name $referencetemperaturename]} {
-                writehtmlfullrowwithemph $name $emphasis "$timestamp [format "%+4.1f C" $value] reference"
-              } else {
-                writehtmlfullrowwithemph $name $emphasis "$timestamp [format "%+5.1f C" $value] [format "%+5.1f C" $difference]"
+            set timestamp [utcclock::format $timestamp 0]
+            if {[utcclock::diff now $timestamp] > 600} {
+              set emphasis "warning"
+            } else {
+              set emphasis ""
+            }
+            set unit [dict get $sensors $name "unit"]
+            set group [dict get $sensors $name "group"]
+            switch -glob "$name:$unit:$group" {
+              *-temperature:C:environmental-temperature {
+                  set difference [expr {$value - $referencetemperature}]
+                if {[string equal $name $referencetemperaturename]} {
+                  writehtmlfullrowwithemph $name $emphasis "$timestamp [format "%+4.1f C" $value] reference"
+                } else {
+                  writehtmlfullrowwithemph $name $emphasis "$timestamp [format "%+5.1f C" $value] [format "%+5.1f C" $difference]"
+                }
+              }
+              *-temperature:C:* {
+                writehtmlfullrowwithemph $name $emphasis "$timestamp [format "%+5.1f C" $value]"
+              }
+              *-detector-cooler-power::* -
+              *-humidity::* -
+              *-light-level::* -
+              *-charge-level::* -
+              *-disk-space-used::* {      
+                writehtmlfullrowwithemph $name $emphasis "$timestamp [format "%.0f%%" [expr {$value * 100}]]"
+              }
+              *::* {
+                writehtmlfullrowwithemph $name $emphasis "$timestamp $value"
+              }
+              default {
+                writehtmlfullrowwithemph $name $emphasis "$timestamp $value $unit"
               }
             }
-            *-temperature:C:* {
-              writehtmlfullrowwithemph $name $emphasis "$timestamp [format "%+5.1f C" $value]"
-            }
-            *-detector-cooler-power::* -
-            *-humidity::* -
-            *-light-level::* -
-            *-charge-level::* -
-            *-disk-space-used::* {      
-              writehtmlfullrowwithemph $name $emphasis "$timestamp [format "%.0f%%" [expr {$value * 100}]]"
-            }
-            *::* {
-              writehtmlfullrowwithemph $name $emphasis "$timestamp $value"
-            }
-            default {
-              writehtmlfullrowwithemph $name $emphasis "$timestamp $value $unit"
-            }
           }
+        }]} {
+          writehtmlfullrowwithemph $name "warning" ""
         }
       }
     }

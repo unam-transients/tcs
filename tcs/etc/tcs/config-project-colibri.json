@@ -1135,6 +1135,30 @@
         "identifier": "",
         "firmware": ""
       },
+      "oan-wind-average-speed": {
+        "file": "/usr/local/var/tcs/sensors/control/oan-wind-average-speed",
+        "prettyname": "oan wind average speed",
+        "subsystem": "weather",
+        "component": "oan",
+        "group": "environmental-wind-speed",
+        "type": "float",
+        "unit": "km/h",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "oan-wind-gust-speed": {
+        "file": "/usr/local/var/tcs/sensors/control/oan-wind-gust-speed",
+        "prettyname": "oan wind gust speed",
+        "subsystem": "weather",
+        "component": "oan",
+        "group": "environmental-wind-speed",
+        "type": "float",
+        "unit": "km/h",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
       "weather-wind-average-speed": {
         "file": "/usr/local/var/tcs/sensors/control/weather-wind-average-speed",
         "prettyname": "wind average speed",
