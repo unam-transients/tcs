@@ -245,7 +245,10 @@ def respond(alert):
     eventtimestamp = alert["eventtimestamp"]
     logresponse("event time stamp is %s." % eventtimestamp)
 
-    enabled = "true"
+    if alerttype == "svomeclairscatalog" or alerttype == "svomretraction":
+        enabled = "false"
+    else:
+        enabled = "true"
 
     if "alpha" in alert and "delta" in alert and "uncertainty" in alert:
         alpha = alert["alpha"]
