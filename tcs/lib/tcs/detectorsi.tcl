@@ -1156,13 +1156,13 @@ namespace eval "detector" {
       # <dgilmore@specinst.com> in 2020/2021. The best thing we can do in this
       # circumstance is simply wait for the exposure to end and then read it
       # out.
-
-      if {![detectorrawgetreadytoberead]} {
-        return "wait"
-      } else {
-        detectorrawread
-        return "ok"
-      }
+      #
+      # if {![detectorrawgetreadytoberead]} {
+      #   return "wait"
+      # } else {
+      #   detectorrawread
+      #   return "ok"
+      # }
       
       # The bug appears to be fixed in the PCIe card of the red CCD.
       

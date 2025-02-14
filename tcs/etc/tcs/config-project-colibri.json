@@ -102,7 +102,7 @@
 
   "C1": {
     "detectortype": "si",
-    "detectoridentifier": "blue:2055",
+    "detectoridentifier": "red:2055",
     "detectorunbinnedpixelscale": "0.381as",
     "detectorreadmodes": {
       "initial": "default",
@@ -201,7 +201,7 @@
 
   "C2": {
     "detectortype": "si",
-    "detectoridentifier": "red:2055",
+    "detectoridentifier": "blue:2055",
     "detectorunbinnedpixelscale": "0.381as",
     "detectorreadmodes": {
       "initial": "default",
@@ -298,7 +298,8 @@
   "covers": {
     "type": "opentsi",
     "ports": {
-      "port2": 2
+      "ogse": 2,
+      "ddrago": 3
     },
     "settlingseconds": 0
   },
