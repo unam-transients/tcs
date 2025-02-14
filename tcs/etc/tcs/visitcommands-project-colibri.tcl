@@ -456,7 +456,7 @@ proc focusvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
       executor::focussecondary C2 $exposuretime 100 10 true false
     }
   } else {
-      log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 2."
+      log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
       executor::setbinning 1
       executor::focussecondary C1 $exposuretime 100 10 true false
   }
@@ -839,25 +839,6 @@ proc pointingmapvisit {{exposuretime 15} {filter {"r" "i" "z"}}} {
   log::summary "pointingmapvisit: finished."
   return true
 }
-
-########################################################################
-
-
-proc idle {} {
-
-  log::summary "idle: starting."
-
-  executor::setsecondaryoffset 0
-  executor::tracktopocentric
-
-  executor::move
-  coroutine::after 60000
-
-  log::summary "idleintowind: finished."
-  return true
-
-}
-
 
 ########################################################################
 
