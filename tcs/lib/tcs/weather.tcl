@@ -89,7 +89,10 @@ namespace eval "weather" {
           }
         }
         
-        if {$pendingrainindex > 1 || $pendingrainrate > 0} {
+        # We ignore the rain rate from the Vaisala, since it sometimes
+        # generates spurious positive rain rates even when the other
+        # sensors do not and the sky is clear.
+        if {$pendingrainindex > 1} {
           set pendingrainalarm true
         } else {
           set pendingrainalarm false
