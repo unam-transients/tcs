@@ -314,35 +314,9 @@ namespace eval "mount" {
   ######################################################################
 
   proc emergencystophardware {} {
-    log::debug "emergency stop: sending emergency stop."
-    variable emergencystopcommandidentifier
-    set command "$emergencystopcommandidentifier SET TELESCOPE.STOP=1"
-    log::debug "emergency stop: sending command \"$command\"."
-    controller::flushcommandqueue
-    controller::pushcommand "$command\n"
-    log::debug "emergency stop: finished sending emergency stop."
-  }
-
-  ######################################################################
-
-  proc startemergencystop {} {
-    log::warning "starting emergency stop."
-    emergencystophardware
-    server::setdata "mounttracking" false
-    server::erroractivity
-  }
-
-  proc finishemergencystop {} {
-    log::error "finished emergency stop."
-  }
-
-  ######################################################################
-
-  proc emergencystophardware {} {
-    log::debug "emergency stop: sending emergency stop."
-    controller::flushcommandqueue
-    opentsi::sendcommandandwait "SET TELESCOPE.STOP=1"
-    log::debug "emergency stop: finished sending emergency stop."
+    log::warning "emergency stop: sending emergency stop."
+    opentsi::sendemergencystopcommand
+    log::warning "emergency stop: finished sending emergency stop."
   }
 
   proc stophardware {} {

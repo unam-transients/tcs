@@ -131,6 +131,12 @@ namespace eval "opentsi" {
     log::debug [format "completed controller command $currentcommandidentifier after %.1f seconds." [utcclock::diff $end $start]]
   }
 
+  proc sendemergencystopcommand {} {
+    variable emergencystopcommandidentifier
+    controller::flushcommandqueue
+    controller::pushcommand "$emergencystopcommandidentifier SET TELESCOPE.STOP=1\n"
+  }
+
   ######################################################################
   
   variable readystate     ""

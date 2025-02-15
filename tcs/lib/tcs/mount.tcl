@@ -952,6 +952,7 @@ namespace eval "mount" {
 
     log::warning "starting emergency stop."
     emergencystophardware
+    log::info "finished emergency stop."
 
     server::setdata "mounttracking" false
 
