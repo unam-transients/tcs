@@ -116,11 +116,11 @@ namespace eval "covers" {
     }
 
     set covers $primarycover
-    foreach portname {ogse} {
-      if {![string equal $covers [dict get $portcovers $portname]]} {
-        set covers "intermediate"
-      }
-    }
+    #foreach portname {[dict keys $ports]} {
+    #  if {![string equal $covers [dict get $portcovers $portname]]} {
+    #    set covers "intermediate"
+    #  }
+    #}
     
     server::setdata "timestamp"        $timestamp
     server::setdata "covers"           $covers
