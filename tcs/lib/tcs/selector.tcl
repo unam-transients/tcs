@@ -234,10 +234,11 @@ namespace eval "selector" {
     }
     log::info "no existing alert file matches."
     if {[string equal $eventtimestamp ""]} {
-      set alertfile [utcclock::combinedformat $alerttimestamp 0 false]
+      set timestamp $alerttimestamp
     } else {
-      set alertfile [utcclock::combinedformat $eventtimestamp 0 false]
+      set timestamp $eventtimestamp
     }
+    set alertfile [string map {"T" ""} [utcclock::combinedformat $timestamp 0 false]]
     set alertfile [file join [file join [directories::var] "alerts"] $alertfile]
     return $alertfile
   }
