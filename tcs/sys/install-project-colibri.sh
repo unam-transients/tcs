@@ -98,7 +98,7 @@ EOF
 *   *  *  *  *  sleep 10; tcs updatesensorsfiles control instrument
 *   *  *  *  *  tcs updateseeingfiles-colibri
 *   *  *  *  *  tcs request plc special updateweather
-*   *  *  *  *  rsync -a rsync://132.248.4.141/weather/Archive/. "$tcsprefix"/var/tcs/weather-b/. ; cd /usr/local/var/tcs/weather-b/; tail -1 $(ls *.txt | sort -r | head -1) | awk '{ print $8; }' >/usr/local/var/tcs/sensors/local/oan-wind-average-speed ; tail -1 $(ls *.txt | sort -r | head -1) | awk '{ print $9; }' >/usr/local/var/tcs/sensors/local/oan-wind-gust-speed
+*   *  *  *  *  rsync -a rsync://132.248.4.141/weather/Archive/. /usr/local/var/tcs/weather-b/. ; cd /usr/local/var/tcs/weather-b/; tail -1 $(ls *.txt | sort -r | head -1) | awk '{ print $8; }' >/usr/local/var/tcs/sensors/local/oan-wind-average-speed ; tail -1 $(ls *.txt | sort -r | head -1) | awk '{ print $9; }' >/usr/local/var/tcs/sensors/local/oan-wind-gust-speed
 *   *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
 00  00 *  *  *  tcs loadblocks -F
 01  00 *  *  *  tcs loadblocks -L
