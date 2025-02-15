@@ -205,12 +205,12 @@ for alert in alerts:
 
 def writealertstable(alerts, name):
     if len(alerts) == 0:
-        writehtml('<tr><th colspan="11">No %s</th></tr>' % name)
-        writehtml('<tr><td colspan="11"><hr/></td></tr>')
+        writehtml('<tr><th colspan="12">No %s</th></tr>' % name)
+        writehtml('<tr><td colspan="12"><hr/></td></tr>')
         return
     else:
-        writehtml('<tr><th colspan="11">%s</th></tr>' % name)
-        writehtml('<tr><td colspan="11"><hr/></td></tr>')
+        writehtml('<tr><th colspan="12">%s</th></tr>' % name)
+        writehtml('<tr><td colspan="12"><hr/></td></tr>')
         writehtml("<tr>")
         for text in [
             "Name",
@@ -224,6 +224,7 @@ def writealertstable(alerts, name):
             "Priority",
             "Enabled",
             "Identifier",
+            "SVOM Identifier",
         ]:
             writehtml('<th class="alertstable">%s</th>' % text)
         writehtml("</tr>")
@@ -241,6 +242,7 @@ def writealertstable(alerts, name):
                 "priority",
                 "enabled",
                 "identifier",
+                "svomidentifier",
             ]:
                 writehtml('<td class="alertstable">')
                 if key == "age" and "eventtimestamp" in alert.keys():
@@ -253,7 +255,7 @@ def writealertstable(alerts, name):
                     writehtml('<input type="radio" name="identifier" id="%s" value="%s" class="alertstable"><label for="%s">%s</label>' % (alert["identifier"], alert["identifier"], alert["identifier"], alert[key]))
                 elif key == "eventtimestamp":
                     writehtml(formattimestamp(alert[key]))
-                elif alert[key][0] == "-":
+                elif alert[key] != "" and alert[key][0] == "-":
                     writehtml("&minus;%s" % alert[key][1:])
                 else:
                     writehtml(alert[key])
@@ -263,7 +265,7 @@ def writealertstable(alerts, name):
 
 writehtml('<table class="alertstable">')
 writealertstable(selectablealerts, "Selectable Alerts")
-writehtml('<tr><td colspan="11"><hr/></td></tr>')
+writehtml('<tr><td colspan="12"><hr/></td></tr>')
 writealertstable(unselectablealerts, "Unselectable Alerts")
 writehtml("</table>")
 
