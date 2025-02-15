@@ -591,18 +591,19 @@ namespace eval "supervisor" {
         }
         log::error "unable to close: $message"
         sendchat "operations" "unable to close!"
-        log::summary "emergency closing."
-        sendchat "operations" "emergency closing."
-        catch {
-          client::request "executor" "emergencyclose"
-          client::wait "executor"
+        if {!$withplc} {
+          log::summary "emergency closing."
+          sendchat "operations" "emergency closing."
+          catch {
+            client::request "executor" "emergencyclose"
+            client::wait "executor"
+          }
+          set mode "error"
+          updatedata
+          log::debug "loop: continue: after emergency close."      
         }
-        set mode "error"
-        updatedata
-        log::debug "loop: continue: after emergency close."      
         set delay 60000
-        continue
-        
+        continue        
       }
       
     }
