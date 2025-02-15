@@ -150,7 +150,7 @@ def xmltodict(s):
 
         packettypedict = {
             199: "svomgrmpreliminary",
-            200: "svomeclairspreliminary"
+            200: "svomeclairspreliminary",
             201: "svomgrmtrigger",
             202: "svomeclairswakeup",
             203: "svomeclairscatalog",
