@@ -414,7 +414,9 @@
     "haunpark": "0h",
     "deltaunpark": "0d",
     "minzenithdistancelimit": "0.5d",
-    "maxzenithdistancelimit": "80d",
+    // The telescope has a hard limit on zenith distance
+    // of 75d (email from ASTELCO on 2024-09-16).
+    "maxzenithdistancelimit": "74d",
     "initialport": "ddrago",
     "ports": {
       "new":     "port2",
@@ -1880,11 +1882,12 @@
   },
   "target": {
     // Although the telescope can't track fast enough close to the zenith, it
-    // has no formal limit. It does have a soft limit on zenith distance and
-    // this configured to be 85d as of 2022-11-22
-    // (TELESCOPE.CONFIG.POINTING.HORIZON_LIMIT).
+    // has no formal limit. 
     "minzenithdistancelimit": "1d",
-    "maxzenithdistancelimit": "75d",
+    // This zenith distance limit is acosd(1/3.5) and corresponds to an
+    // airmass of 3.5. The telescope has a hard limit on zenith distance
+    // of 75d (email from ASTELCO on 2024-09-16).
+    "maxzenithdistancelimit": "73.398450401d",
     "idleha": "0h",
     "idledelta": "0d",
     "ventilateha": "-4h",
