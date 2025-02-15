@@ -10,6 +10,7 @@ import sys
 import os
 import re
 from datetime import datetime
+import subprocess
 
 ################################################################################
 
@@ -245,7 +246,7 @@ def respond(alert):
     eventtimestamp = alert["eventtimestamp"]
     logresponse("event time stamp is %s." % eventtimestamp)
 
-    if alerttype == "svomeclairscatalog" or alerttype == "svomretraction":
+    if alerttype == "svomeclairscatalog" or alerttype == "svomretraction" or alerttype == "svomeclairspreliminary":
         enabled = "false"
     else:
         enabled = "true"
@@ -282,6 +283,28 @@ def respond(alert):
             "grb",
             "electromagnetic",
         )
+    )
+    subprocess.run(
+        [
+            "tcs",
+            "request",
+            "selector",
+            "respondtoalert",
+            blockidentifier,
+            eventname,
+            origin,
+            identifier,
+            alerttype,
+            alerttimestamp,
+            eventtimestamp,
+            enabled,
+            alpha,
+            delta,
+            equinox,
+            uncertainty,
+            "grb",
+            "electromagnetic",
+        ]
     )
 
 

@@ -184,14 +184,19 @@ writehtml(
 
 
 <hr/>
-""")
+"""
+)
 
 alerts.sort(key=lambda x: x["eventtimestamp"], reverse=True)
 
 selectablealerts = []
 unselectablealerts = []
 for alert in alerts:
-    if "uncertainty" not in alert.keys() or "eventtimestamp" not in alert.keys() or "enabled" not in alert.keys():
+    if (
+        "uncertainty" not in alert.keys()
+        or "eventtimestamp" not in alert.keys()
+        or "enabled" not in alert.keys()
+    ):
         unselectablealerts.append(alert)
     elif alert["enabled"] == "false":
         unselectablealerts.append(alert)
@@ -258,9 +263,20 @@ def writealertstable(alerts, name):
                 elif key not in alert.keys():
                     writehtml("—")
                 elif key == "identifier":
-                    writehtml('<a href="alerts/%s">%s</a>' % (alert["identifier"], alert["identifier"]))
+                    writehtml(
+                        '<a href="alerts/%s">%s</a>'
+                        % (alert["identifier"], alert["identifier"])
+                    )
                 elif key == "name":
-                    writehtml('<input type="radio" name="identifier" id="%s" value="%s" class="alertstable"><label for="%s">%s</label>' % (alert["identifier"], alert["identifier"], alert["identifier"], alert[key]))
+                    writehtml(
+                        '<input type="radio" name="identifier" id="%s" value="%s" class="alertstable"><label for="%s">%s</label>'
+                        % (
+                            alert["identifier"],
+                            alert["identifier"],
+                            alert["identifier"],
+                            alert[key],
+                        )
+                    )
                 elif key == "eventtimestamp":
                     writehtml(formattimestamp(alert[key]))
                 elif alert[key] != "" and alert[key][0] == "-":
