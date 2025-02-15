@@ -251,6 +251,8 @@ def writealertstable(alerts, name):
                     writehtml(formatage(parseinterval(alert["maxalertdelay"])))
                 elif key not in alert.keys():
                     writehtml("—")
+                elif key == "identifier":
+                    writehtml('<a href="alerts/%s">%s</a>' % (alert["identifier"], alert["identifier"]))
                 elif key == "name":
                     writehtml('<input type="radio" name="identifier" id="%s" value="%s" class="alertstable"><label for="%s">%s</label>' % (alert["identifier"], alert["identifier"], alert["identifier"], alert[key]))
                 elif key == "eventtimestamp":
