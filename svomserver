@@ -262,9 +262,6 @@ def respond(alert):
     logresponse("position is %s %s %s." % (alpha, delta, equinox))
     logresponse("90%% uncertainty is %s in radius." % uncertainty)
 
-    priority = 1
-    logresponse("priority is %r." % priority)
-
     logresponse("requesting selector to respond.")
 
     print(
