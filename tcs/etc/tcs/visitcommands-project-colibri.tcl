@@ -21,7 +21,7 @@
 
 ########################################################################
 
-proc alertvisit {{exposurerepeats 16} {exposuretimes 60} {filters "r/zy"}} {
+proc alertvisit {filters} {
   
   log::summary "alertvisit: starting."
   
@@ -46,15 +46,21 @@ proc alertvisit {{exposurerepeats 16} {exposuretimes 60} {filters "r/zy"}} {
     return false
   }
 
+  log::summary [format "alertvisit: filters are %s." $filters]
+  set nfilters [llength [parsefilters $filters]]
+  set exposurerepeats [expr {int(16 / $nfilters)}]
+  set exposuretime 60
+  log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
+
   set uncertainty [astrometry::parsedistance [alert::uncertainty [executor::alert]]]
   log::summary [format "alertvisit: uncertainty is %s." [astrometry::formatdistance $uncertainty 2]]
-
+  
   if {true || $uncertainty <= [astrometry::parsedistance "6am"]} {
     log::summary "alertvisit: grid is 1 × 1 fields."
-    dithervisit $exposurerepeats $exposuretimes $filters false
+    dithervisit $exposurerepeats $exposuretime $filters false
   } elseif {$uncertainty <= [astrometry::parsedistance "13am"]} {
     log::summary "alertvisit: grid is 2 × 2 fields."
-    quaddithervisit $exposurerepeats $exposuretimes $filters false
+    quaddithervisit $exposurerepeats $exposuretime $filters false
   }
 
 }
