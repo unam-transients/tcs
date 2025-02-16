@@ -707,7 +707,7 @@ namespace eval "selector" {
       error "no alert has an identifier of \"$identifier\"."
     }
     log::info "alert file is $alertfile."
-    modifyalertfile $alertfile true "" "" "" "" "" ""
+    modifyalertfile $alertfile true "" "" "" "" "" "" ""
     makealertspage
     log::info "finished enabling alert $identifier."
     return
@@ -720,7 +720,7 @@ namespace eval "selector" {
       error "no alert has an identifier of \"$identifier\"."
     }
     log::info "alert file is $alertfile."
-    modifyalertfile $alertfile false "" "" "" "" "" ""
+    modifyalertfile $alertfile false "" "" "" "" "" "" ""
     makealertspage
     log::info "finished disabling alert $identifier."
     return
