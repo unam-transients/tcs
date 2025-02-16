@@ -109,7 +109,7 @@ writehtml(
 <table class="alertsinputs">
 <tr class="alertsinputs">
 <td class="alertsinputs"><form id="alert-refresh"><input type="submit" value="Refresh"/></form></td>
-<td class="alertsinputs"><form id="alert-rugby"><input type="submit" value="Rugby"/></form></td>
+<!---<td class="alertsinputs"><form id="alert-rugby"><input type="submit" value="Rugby"/></form></td>--->
 </tr>
 </table>
 
