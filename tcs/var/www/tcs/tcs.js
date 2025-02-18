@@ -255,8 +255,8 @@ $(function () {
   $("form#selector-refocus").submit(function () {
     return submitrequest("selector refocus");
   });
-  $("form#selector-stop").submit(function () {
-    return submitrequest("selector stop");
+  $("form#selector-reselect").submit(function () {
+    return submitrequest("selector reselect");
   });
   $("form#telescope-stop").submit(function () {
     return submitrequest("telescope stop");

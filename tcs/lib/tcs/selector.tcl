@@ -678,6 +678,16 @@ namespace eval "selector" {
     return
   }
   
+  proc reselect {} {
+    log::info "requesting reselect."
+    variable mode
+    if {[string equal [server::getactivity] "executing"]} {
+      client::request "executor" "stop"
+    }
+    log::info "finished requesting reselect."
+    return
+  }
+  
   proc makealertspage {} {
     set tmpfilename [file join [directories::var] "alerts.json.[pid]"]
     set channel [open $tmpfilename "w"]
