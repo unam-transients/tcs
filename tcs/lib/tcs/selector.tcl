@@ -278,7 +278,7 @@ namespace eval "selector" {
     }
     if {![string equal $priority ""]} {
       log::info [format "modified priority is %d." $priority]
-      puts $channel [format "  \"priority\": \"%d\"," $priority]
+      puts $channel [format "  \"modifiedpriority\": \"%d\"," $priority]
     }
     if {![string equal $enabled ""]} {
       puts $channel [format "  \"enabled\": \"%s\"," $enabled]

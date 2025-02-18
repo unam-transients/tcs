@@ -336,7 +336,9 @@ namespace eval "alert" {
   }
   
   proc priority {alert} {
-    if {[dict exists $alert "priority"]} {
+    if {[dict exists $alert "modifiedpriority"]} {
+      return [dict get $alert "modifiedpriority"]
+    } elseif {[dict exists $alert "priority"]} {
       return [dict get $alert "priority"]
     } else {
       return "0"
