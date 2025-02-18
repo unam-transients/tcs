@@ -257,8 +257,8 @@ def writealertstable(alerts, name):
                     writehtml(formatage(age(alert["eventtimestamp"])))
                 elif key == "maxage" and "maxalertdelay" in alert.keys():
                     writehtml(formatage(parseinterval(alert["maxalertdelay"])))
-                elif key == "priority" and "modifiedpriority" in alert.keys():
-                    writehtml(alert["modifiedpriority"])
+                elif key == "priority" and "fixedpriority" in alert.keys():
+                    writehtml(alert["fixedpriority"])
                 elif key not in alert.keys():
                     writehtml("—")
                 elif key == "identifier":

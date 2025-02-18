@@ -278,7 +278,7 @@ namespace eval "selector" {
     }
     if {![string equal $priority ""]} {
       log::info [format "modified priority is %d." $priority]
-      puts $channel [format "  \"modifiedpriority\": \"%d\"," $priority]
+      puts $channel [format "  \"fixedpriority\": \"%d\"," $priority]
     }
     if {![string equal $enabled ""]} {
       puts $channel [format "  \"enabled\": \"%s\"," $enabled]
@@ -465,7 +465,7 @@ namespace eval "selector" {
   
   proc respondtoalert {blockidentifier name origin
     originidentifier type alerttimestamp eventtimestamp enabled alpha delta equinox
-    uncertainty class messenger
+    uncertainty class messenger fixedpriority
   } {
     variable mode
     
@@ -518,27 +518,34 @@ namespace eval "selector" {
       set alert {}        
     }
 
-    set messengers {}
-    if {[alert::messenger $alert "electromagnetic"] || [string equal "electromagnetic" $messenger]} {
-      lappend messengers "electromagnetic"
-    } else {
-      lappend messengers ""
-    }
-    if {[alert::messenger $alert "gravitational"  ] || [string equal "gravitational"   $messenger]} {
-      lappend messengers "gravitational"
-    } else {
-      lappend messengers ""
-    }
-    if {[alert::messenger $alert "neutrino"       ] || [string equal "neutrino"        $messenger]} {
-      lappend messengers "neutrino"
-    } else {
-      lappend messengers ""
-    }
-    set messengers [join $messengers "/"]
-    log::info [format "messengers are %s." $messengers]
+    if {[string equal "" $fixedpriority]} {
 
-    set priority [getpriority $type $class $messengers]
-    log::info [format "priority is %d." $priority]
+      set messengers {}
+      if {[alert::messenger $alert "electromagnetic"] || [string equal "electromagnetic" $messenger]} {
+        lappend messengers "electromagnetic"
+      } else {
+        lappend messengers ""
+      }
+      if {[alert::messenger $alert "gravitational"  ] || [string equal "gravitational"   $messenger]} {
+        lappend messengers "gravitational"
+      } else {
+        lappend messengers ""
+      }
+      if {[alert::messenger $alert "neutrino"       ] || [string equal "neutrino"        $messenger]} {
+        lappend messengers "neutrino"
+      } else {
+        lappend messengers ""
+      }
+      set messengers [join $messengers "/"]
+      log::info [format "messengers are %s." $messengers]
+      set priority [getpriority $type $class $messengers]
+      log::info [format "priority is %d." $priority]
+
+    } else {
+
+      log::info [format "fixed priority is %d." $fixedpriority]
+
+    }
     
     set channel [open $fullalertfile "a"]
     if {!$alertfileexists} {
@@ -557,7 +564,11 @@ namespace eval "selector" {
     variable alertprojectidentifier
     puts $channel [format "  \"projectidentifier\": \"%s\"," $alertprojectidentifier]
     puts $channel [format "  \"identifier\": \"%s\"," [string map {"T" ""} [file tail $alertfile]]]
-    puts $channel [format "  \"priority\": %d," $priority]
+    if {[string equal "" $fixedpriority]} {
+      puts $channel [format "  \"priority\": %d," $priority]
+    } else {
+      puts $channel [format "  \"fixedpriority\": %d," $fixedpriority]
+    }
     if {
       ![string equal "" $alpha] && 
       ![string equal "" $delta] &&
@@ -646,7 +657,7 @@ namespace eval "selector" {
     }
     respondtoalert $blockidentifier $name $origin \
       $originidentifier $type $alerttimestamp $eventtimestamp $enabled \
-      $alpha $delta $equinox $uncertainty $class "gravitational"
+      $alpha $delta $equinox $uncertainty $class "gravitational" ""
     log::summary "finished responding to lvc alert."
     return
   }
@@ -772,7 +783,7 @@ namespace eval "selector" {
     return
   }
   
-  proc createalert {name eventtimestamp alpha delta equinox uncertainty priority} {
+  proc createalert {name eventtimestamp alpha delta equinox uncertainty fixedpriority} {
     log::info "creating alert."
     if {[catch {utcclock::scan $eventtimestamp}]} {
       error "invalid event timestamp \"$eventtimestamp\"."
@@ -789,15 +800,15 @@ namespace eval "selector" {
     if {[catch {astrometry::parsedistance $uncertainty}]} {
       error "invalid uncertainty value \"$uncertainty\"."
     }
-    if {!([string is integer -strict $priority] && 0 <= $priority && $priority <= 10)} {
-      error "invalid priority value \"$priority\"."
+    if {!([string is integer -strict $fixedpriority] && 0 <= $fixedpriority && $fixedpriority <= 10)} {
+      error "invalid fixed priority value \"$fixedpriority\"."
     }
     set alerttimestamp [utcclock::combinedformat "now"]
     set eventtimestamp [utcclock::combinedformat [utcclock::scan $eventtimestamp]]
     set identifier     [string map {"T" ""} [utcclock::combinedformat [utcclock::scan $eventtimestamp] 0]]
     respondtoalert $identifier $name "unknown" \
       $alerttimestamp "unknown" $alerttimestamp $eventtimestamp true $alpha $delta $equinox \
-      $uncertainty "unknown" "unknown"
+      $uncertainty "unknown" "unknown" $fixedpriority
     log::info "finished creating alert."
     return
   }
