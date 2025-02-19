@@ -87,8 +87,8 @@ namespace eval "selectorserver" {
     selector::disablealert $identifier
   }
 
-  proc slavemodifyalert {identifier alpha delta equinox uncertainty maxalertdelay priority filters} {
-    selector::modifyalert $identifier $alpha $delta $equinox $uncertainty $maxalertdelay $priority $filters
+  proc slavemodifyalert {identifier alpha delta equinox uncertainty maxalertdelay minha maxha priority filters} {
+    selector::modifyalert $identifier $alpha $delta $equinox $uncertainty $maxalertdelay $minha $maxha $priority $filters
   }
 
   proc slavecreatealert {name eventtimestamp alpha delta equinox uncertainty fixedpriority} {

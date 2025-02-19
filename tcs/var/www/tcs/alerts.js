@@ -94,6 +94,8 @@ $(function () {
         " 2000 " +
         " " + quote($("input[name=\"modify-uncertainty\"]").val()) +
         " " + quote($("input[name=\"modify-max-age\"]").val()) +
+        " " + quote($("input[name=\"modify-min-hour-angle\"]").val()) +
+        " " + quote($("input[name=\"modify-max-hour-angle\"]").val()) +
         " " + quote($("input[name=\"modify-priority\"]").val()) +
         " " + quote($("select[name=\"modify-filters\"] option:selected").val()), 
         true

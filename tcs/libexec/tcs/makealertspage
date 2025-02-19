@@ -151,6 +151,16 @@ writehtml(
 <td>(e.g., 5.0d)</td>
 </tr>
 <tr class="alertsinputs">
+<td class="alertsinputs">Min HA</td>
+<td class="alertsinputs"><input type="text" id="modify-min-hour-angle" name="modify-min-hour-angle"></td>
+<td>(e.g., -2.0h)</td>
+</tr>
+<tr class="alertsinputs">
+<td class="alertsinputs">Max HA</td>
+<td class="alertsinputs"><input type="text" id="modify-max-hour-angle" name="modify-max-hour-angle"></td>
+<td>(e.g., +2.0h)</td>
+</tr>
+<tr class="alertsinputs">
 <td class="alertsinputs">Priority</td>
 <td class="alertsinputs"><input type="text" id="modify-priority" name="modify-priority"></td>
 <td>(1 to 10)</td>
@@ -234,7 +244,7 @@ for alert in alerts:
     else:
         selectablealerts.append(alert)
 
-nalertstablecolumns = 16
+nalertstablecolumns = 18
 
 def writealertstable(alerts, name):
     if len(alerts) == 0:
@@ -250,6 +260,8 @@ def writealertstable(alerts, name):
             "Event Time",
             "Age",
             "Max Age",
+            "Min HA",
+            "Max HA",
             "α",
             "δ",
             "Epoch",
@@ -272,6 +284,8 @@ def writealertstable(alerts, name):
                 "eventtimestamp",
                 "age",
                 "maxage",
+                "minha",
+                "maxha",
                 "alpha",
                 "delta",
                 "equinox",
