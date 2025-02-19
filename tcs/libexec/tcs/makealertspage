@@ -158,6 +158,7 @@ writehtml(
 <tr class="alertsinputs">
 <td class="alertsinputs">Filters</td>
 <td class="alertsinputs"><select id="modify-filters" name="modify-filters">
+    <option selected="selected"></option>
     <option>gri</option>
     <option>g</option>
     <option>g/r</option>
@@ -165,8 +166,9 @@ writehtml(
     <option>g/i</option>
     <option>r</option>
     <option>r/i</option>
-    <option selected="selected">i</option>
+    <option>i</option>
 </select></td>
+<td>If previously detected in g/r/B/V, use r. Otherwise, use i.</td>
 </tr>
 </table>
 
