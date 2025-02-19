@@ -133,22 +133,27 @@ writehtml(
 <tr class="alertsinputs">
 <td class="alertsinputs">α</td>
 <td class="alertsinputs"><input type="text" id="modify-alpha" name="modify-alpha"></td>
+<td>(e.g., 10:23:11.23 or 143.234d)</td>
 </tr>
 <tr class="alertsinputs">
 <td class="alertsinputs">δ</td>
 <td class="alertsinputs"><input type="text" id="modify-delta" name="modify-delta"></td>
+<td>(e.g., -05:23:11.1 or +22.334d)</td>
 </tr>
 <tr class="alertsinputs">
 <td class="alertsinputs">Uncertainty</td>
 <td class="alertsinputs"><input type="text" id="modify-uncertainty" name="modify-uncertainty"></td>
+<td>(e.g., 1.8as or 10.2am or 0.33d)
 </tr>
 <tr class="alertsinputs">
 <td class="alertsinputs">Max Age</td>
 <td class="alertsinputs"><input type="text" id="modify-max-age" name="modify-max-age"></td>
+<td>(e.g., 5.0d)</td>
 </tr>
 <tr class="alertsinputs">
 <td class="alertsinputs">Priority</td>
 <td class="alertsinputs"><input type="text" id="modify-priority" name="modify-priority"></td>
+<td>(1 to 10)</td>
 </tr>
 </table>
 
@@ -165,22 +170,27 @@ writehtml(
 <tr class="alertsinputs">
 <td class="alertsinputs">Event Time</td>
 <td class="alertsinputs"><input type="text" id="create-eventtime" name="create-eventtime"></td>
+<td>(e.g, 2025-02-13T23:42:11.234)
 </tr>
 <tr>
 <td class="alertsinputs">α</td>
 <td class="alertsinputs"><input type="text" id="create-alpha" name="create-alpha"></td>
+<td>(e.g., 10:23:11.23 or 143.234d)</td>
 </tr>
 <tr class="alertsinputs">
 <td class="alertsinputs">δ</td>
 <td class="alertsinputs"><input type="text" id="create-delta" name="create-delta"></td>
+<td>(e.g., -05:23:11.1 or +22.334d)</td>
 </tr>
 <tr class="alertsinputs">
 <td class="alertsinputs">Uncertainty</td>
 <td class="alertsinputs"><input type="text" id="create-uncertainty" name="create-uncertainty"></td>
+<td>(e.g., 1.8as or 10.2am or 0.33d)
 </tr>
 <tr class="alertsinputs">
 <td class="alertsinputs">Priority</td>
 <td class="alertsinputs"><input type="text" id="create-priority" name="create-priority"></td>
+<td>(1 to 10)</td>
 </tr>
 </table>
 
