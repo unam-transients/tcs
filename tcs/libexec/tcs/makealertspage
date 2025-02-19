@@ -163,7 +163,7 @@ writehtml(
 <tr class="alertsinputs">
 <td class="alertsinputs">Priority</td>
 <td class="alertsinputs"><input type="text" id="modify-priority" name="modify-priority"></td>
-<td>(1 to 10)</td>
+<td>(1 to 10, with 4 for SVOM)</td>
 </tr>
 <tr class="alertsinputs">
 <td class="alertsinputs">Filters</td>
@@ -195,7 +195,7 @@ writehtml(
 <tr class="alertsinputs">
 <td class="alertsinputs">Event Time</td>
 <td class="alertsinputs"><input type="text" id="create-eventtime" name="create-eventtime"></td>
-<td>(e.g, 2025-02-13T23:42:11.234)
+<td>(e.g., 2025-02-13T23:42:11.234)
 </tr>
 <tr>
 <td class="alertsinputs">α</td>
@@ -215,7 +215,7 @@ writehtml(
 <tr class="alertsinputs">
 <td class="alertsinputs">Priority</td>
 <td class="alertsinputs"><input type="text" id="create-priority" name="create-priority"></td>
-<td>(1 to 10)</td>
+<td>(1 to 10, with 4 for SVOM)</td>
 </tr>
 </table>
 
