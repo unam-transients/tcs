@@ -41,8 +41,15 @@ namespace eval "gcntanserver" {
     return
   }
   
-  proc slaverespondtoalert {log test projectidentifier blockidentifier eventname origin identifier type alerttimestamp eventtimestamp retraction worthy alpha delta equinox uncertainty} {
-    gcntan::respondtoalert $log $test $projectidentifier $blockidentifier $eventname $origin $identifier $type $alerttimestamp $eventtimestamp $retraction $worthy $alpha $delta $equinox $uncertainty
+  proc slaverespondtoalert {
+    log test blockidentifier eventname
+    origin identifier type alerttimestamp eventtimestamp retraction worthy
+    alpha delta equinox uncertainty class messenger fixedpriority
+  } {
+    gcntan::respondtoalert \
+      $log $test $blockidentifier $eventname \
+      $origin $identifier $type $alerttimestamp $eventtimestamp $retraction $worthy \
+      $alpha $delta $equinox $uncertainty $class $messenger $fixedpriority
     return
   }
 

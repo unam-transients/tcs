@@ -202,7 +202,7 @@ namespace eval "gcntan" {
         respondtoalert $log $test $blockidentifier \
           $eventname $origin $identifier $type $timestamp $eventtimestamp \
           $retraction $worthy $alpha $delta $equinox $uncertainty $class \
-          "electromagnetic"
+          "electromagnetic" ""
         return "echo"
       }
 
@@ -228,7 +228,7 @@ namespace eval "gcntan" {
         respondtoalert $log $test $blockidentifier \
           $eventname $origin $identifier $type $timestamp $eventtimestamp \
           $retraction $worthy $alpha $delta $equinox $uncertainty $class \
-          "electromagnetic"
+          "electromagnetic" ""
         return "echo"
       }
        
@@ -254,7 +254,7 @@ namespace eval "gcntan" {
         respondtoalert $log $test $blockidentifier \
           $eventname $origin $identifier $type $timestamp $eventtimestamp \
           $retraction $worthy $alpha $delta $equinox $uncertainty $class \
-          "electromagnetic"
+          "electromagnetic" ""
         return "echo"
       }
       
@@ -277,7 +277,7 @@ namespace eval "gcntan" {
         respondtoalert $log $test $blockidentifier \
           $eventname $origin $identifier $type $timestamp $eventtimestamp \
           $retraction $worthy $alpha $delta $equinox $uncertainty $class \
-          "electromagnetic"
+          "electromagnetic" ""
         return "echo"
       }
 
@@ -302,7 +302,7 @@ namespace eval "gcntan" {
         respondtoalert $log $test $blockidentifier \
           $eventname $origin $identifier $type $timestamp $eventtimestamp \
           $retraction $worthy $alpha $delta $equinox $uncertainty $class \
-          "neutrino"
+          "neutrino" ""
         return "echo"      
       }
 
@@ -354,7 +354,7 @@ namespace eval "gcntan" {
   
   proc respondtoalert {log test blockidentifier eventname
     origin identifier type alerttimestamp eventtimestamp retraction worthy
-    alpha delta equinox uncertainty class messenger
+    alpha delta equinox uncertainty class messenger fixedpriority
   } {
     $log [format "%s: event name is %s." $type $eventname]
     if {$test} {
@@ -389,6 +389,9 @@ namespace eval "gcntan" {
     $log [format "%s: block identifier is %d." $type $blockidentifier]
     $log [format "%s: class is %s." $type $class] 
     $log [format "%s: messenger is %s." $type $messenger] 
+    if {![string equal "" $fixedpriority]} {
+    $log [format "%s: fixed priority is %d." $type $fixedpriority] 
+    }
     if {$test} {
       $log [format "%s: not requesting selector to respond: this is a test packet." $type]
     } else {
@@ -397,7 +400,7 @@ namespace eval "gcntan" {
         client::request "selector" [list respondtoalert \
           $blockidentifier $eventname $origin $identifier \
           $type $alerttimestamp $eventtimestamp $enabled $alpha $delta \
-          $equinox $uncertainty $class $messenger \
+          $equinox $uncertainty $class $messenger $fixedpriority \
         ]
       } result]} {
         log::warning [format "%s: unable to request selector: %s" $type $result]

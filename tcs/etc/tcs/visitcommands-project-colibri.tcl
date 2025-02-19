@@ -122,13 +122,16 @@ proc parsefilters {filters} {
     "i/zy" {
       set filters {{r i zy}}
     }    
+    "g/r/i/gri/B" {
+      set filters {{r g zy} {r r zy} {r i zy} {r gri zy} {r B zy}}
+    }
   }
   return $filters
 }
 
 ########################################################################
 
-proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {offsetfastest true}} {
+proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {offsetfastest false}} {
 
   log::summary "gridvisit: starting."
 
@@ -198,7 +201,7 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
 
 ########################################################################
 
-proc fullgridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {offsetfastest true}} {
+proc fullgridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {offsetfastest false}} {
 
   log::summary "gridvisit: starting."
 
@@ -289,7 +292,7 @@ proc dithervisitoffset {diameter} {
   executor::offset $eastoffset $northoffset "default"
 }
 
-proc dithervisit {exposurerepeats exposuretimes filters {offsetfastest true} {diameter "1am"}} {
+proc dithervisit {exposurerepeats exposuretimes filters {offsetfastest false} {diameter "1am"}} {
 
   log::summary "dithervisit: starting."
 
@@ -358,7 +361,7 @@ proc quaddithervisitoffset {diameter eastcenteroffset northcenteroffset} {
 }
 
 
-proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest true} {diameter "1am"}} {
+proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest false} {diameter "1am"}} {
 
   log::summary "quaddithervisit: starting."
 

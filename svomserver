@@ -203,6 +203,9 @@ def xmltodict(s):
                 ).text
                 + "d"
             )
+            # SVOM uses -1.0 for an unknown uncertainty.
+            if alert["uncertainty"][0] == "-":
+                alert["uncertainty"] == "180d"
 
     for key in alert.keys():
         logdebug("alert: %-20s = %r" % (key, alert[key]))
@@ -282,6 +285,7 @@ def respond(alert):
             uncertainty,
             "grb",
             "electromagnetic",
+            "",
         )
     )
     subprocess.run(
