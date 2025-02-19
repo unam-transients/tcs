@@ -51,8 +51,8 @@ namespace eval "selectorserver" {
     return
   }
   
-  proc slaverespondtoalert {blockidentifier name origin identifier type alerttimestamp eventtimestamp enabled alpha delta equinox uncertainty class messenger} {
-    selector::respondtoalert $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty $class $messenger
+  proc slaverespondtoalert {blockidentifier name origin identifier type alerttimestamp eventtimestamp enabled alpha delta equinox uncertainty class messenger fixedpriority} {
+    selector::respondtoalert $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty $class $messenger $fixedpriority
   }
 
   proc slaverespondtolvcalert {blockidentifier name origin identifier type alerttimestamp eventtimestamp enabled skymapurl class} {
@@ -91,8 +91,8 @@ namespace eval "selectorserver" {
     selector::modifyalert $identifier $alpha $delta $equinox $uncertainty $maxalertdelay $priority $filters
   }
 
-  proc slavecreatealert {name eventtimestamp alpha delta equinox uncertainty priority} {
-    selector::createalert $name $eventtimestamp $alpha $delta $equinox $uncertainty $priority
+  proc slavecreatealert {name eventtimestamp alpha delta equinox uncertainty fixedpriority} {
+    selector::createalert $name $eventtimestamp $alpha $delta $equinox $uncertainty $fixedpriority
   }
 
   proc configureslave {slave} {
