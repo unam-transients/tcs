@@ -269,7 +269,7 @@ def respond(alert):
     logresponse("requesting selector to respond.")
 
     print(
-        "tcs request selector respondtoalert %r %r %r %r %r %r %r %r %r %r %r %r %r %r"
+        "tcs request selector respondtoalert %r %r %r %r %r %r %r %r %r %r %r %r %r %r %r"
         % (
             blockidentifier,
             eventname,
