@@ -89,6 +89,7 @@ $(function () {
     if (identifier !== undefined) {
       return submitrequest(
         "selector modifyalert " + identifier + 
+        " " + quote($("input[name=\"modify-name\"]").val()) +
         " " + quote($("input[name=\"modify-alpha\"]").val()) +
         " " + quote($("input[name=\"modify-delta\"]").val()) +
         " 2000 " +

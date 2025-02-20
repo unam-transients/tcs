@@ -131,6 +131,10 @@ writehtml(
 <td class="alertsinputs"><form id="alert-modify"><input type="submit" value="Modify"/></form></td>
 </tr>
 <tr class="alertsinputs">
+<td class="alertsinputs">Name</td>
+<td class="alertsinputs"><input type="text" id="modify-name" name="modify-name"></td>
+</tr>
+<tr class="alertsinputs">
 <td class="alertsinputs">α</td>
 <td class="alertsinputs"><input type="text" id="modify-alpha" name="modify-alpha"></td>
 <td>(e.g., 10:23:11.23 or 143.234d)</td>

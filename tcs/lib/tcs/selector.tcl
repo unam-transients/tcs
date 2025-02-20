@@ -297,10 +297,14 @@ namespace eval "selector" {
   
   ######################################################################
   
-  proc modifyalertfile {alertfile enabled alpha delta equinox uncertainty maxalertdelay minha maxha priority filters} {
+  proc modifyalertfile {alertfile enabled name alpha delta equinox uncertainty maxalertdelay minha maxha priority filters} {
     set channel [open $alertfile "a"]
     puts $channel [format "// Modified at %s." [utcclock::format now]]
     puts $channel [format "\{"]
+    if {![string equal $name ""]} {
+      log::info [format "modified name is \"%s\"." $name]
+      puts $channel [format "  \"name\": \"%s\"," $name]
+    }
     if {![string equal $alpha ""]} {
       log::info [format "modified position is %s %s %s." [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox]
       puts $channel [format "  \"alpha\": \"%s\"," [astrometry::formatalpha $alpha]]
@@ -775,7 +779,7 @@ namespace eval "selector" {
       error "no alert has an identifier of \"$identifier\"."
     }
     log::info "alert file is $alertfile."
-    modifyalertfile $alertfile true "" "" "" "" "" "" "" "" ""
+    modifyalertfile $alertfile true "" "" "" "" "" "" "" "" "" ""
     makealertspage
     log::info "finished enabling alert $identifier."
     return
@@ -788,13 +792,13 @@ namespace eval "selector" {
       error "no alert has an identifier of \"$identifier\"."
     }
     log::info "alert file is $alertfile."
-    modifyalertfile $alertfile false "" "" "" "" "" "" "" "" ""
+    modifyalertfile $alertfile false "" "" "" "" "" "" "" "" "" ""
     makealertspage
     log::info "finished disabling alert $identifier."
     return
   }
   
-  proc modifyalert {identifier alpha delta equinox uncertainty maxalertdelay minha maxha priority filters} {
+  proc modifyalert {identifier name alpha delta equinox uncertainty maxalertdelay minha maxha priority filters} {
     log::info "modifying alert $identifier."
     if {![string equal "" $alpha] && [catch {astrometry::parsealpha $alpha}]} {
       error "invalid alpha value \"$alpha\"."
@@ -834,7 +838,7 @@ namespace eval "selector" {
       error "no alert has an identifier of \"$identifier\"."
     }
     log::info "alert file is $alertfile."
-    modifyalertfile $alertfile "" $alpha $delta $equinox $uncertainty $maxalertdelay $minha $maxha $priority $filters
+    modifyalertfile $alertfile "" $name $alpha $delta $equinox $uncertainty $maxalertdelay $minha $maxha $priority $filters
     makealertspage
     log::info "finished modifying alert $identifier."
     return
