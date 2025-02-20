@@ -103,8 +103,7 @@ namespace eval "selector" {
     }
   }
   
-  proc getalertfiles {rolled} {
-    variable alertrollindex
+  proc getalertfiles {} {
     set names [glob -nocomplain -directory [file join [directories::var] "alerts"] "*"]
     set mtimesandnames {}
     foreach name $names {
@@ -115,18 +114,6 @@ namespace eval "selector" {
     foreach mtimeandname $mtimesandnames {
       set name [lindex $mtimeandname 1]
       lappend names $name
-    }
-    if {$rolled} {
-      log::info "unrolled alertfile list is \"$names\"."
-      log::info "alertrollindex is $alertrollindex."
-      set n [llength $names]
-      if {$n != 0} {
-        set names [concat \
-          [lrange $names [expr {$alertrollindex % $n}] end] \
-          [lrange $names 0 [expr {$alertrollindex % $n - 1}]] \
-        ]
-      }
-      log::info "rolled alertfile list is \"$names\"."
     }
     return $names
   }
@@ -153,8 +140,8 @@ namespace eval "selector" {
     return [isselectableblock $block $seconds $priority]
   }
   
-  proc selectalertfile {seconds priority} {
-    foreach alertfile [getalertfiles true] {
+  proc selectalertfile {selectablealertfiles seconds priority} {
+    foreach alertfile $selectablealertfiles {
       log::info "considering alert file \"[file tail $alertfile]\"."
       set why [isselectablealertfile $alertfile $seconds $priority]
       if {[string equal $why ""]} {
@@ -179,9 +166,8 @@ namespace eval "selector" {
     return [isselectableblock $block $seconds $priority]
   }
   
-  proc selectblockfile {seconds priority} {
-    swift::updatefavoredside
-    foreach blockfile [getblockfiles] {
+  proc selectblockfile {selectableblockfiles seconds priority} {
+    foreach blockfile $selectableblockfiles {
       log::info "considering block file \"[file tail $blockfile]\"."
       set why [isselectableblockfile $blockfile $seconds $priority]
       if {[string equal $why ""]} {
@@ -194,6 +180,57 @@ namespace eval "selector" {
     return ""
   }
   
+  proc getselectableblockfiles {seconds} {
+    swift::updatefavoredside
+    set blockfiles [getblockfiles]
+    set selectableblockfiles {}
+    foreach blockfile $blockfiles {
+      set why [isselectableblockfile $blockfile $seconds ""]
+      if {[string equal $why ""]} {
+        log::info "block file \"[file tail $blockfile]\" is selectable."
+        lappend selectableblockfiles $blockfile
+      } else {
+        log::info "block file \"[file tail $blockfile]\" is not selectable: $why"
+      }
+    }
+    return $selectableblockfiles
+  }
+
+  proc getselectablealertfiles {seconds} {
+
+    set alertfiles [getalertfiles]
+    set selectablealertfiles {}
+    foreach alertfile $alertfiles {
+      set why [isselectablealertfile $alertfile $seconds ""]
+      if {[string equal $why ""]} {
+        log::info "alert file \"[file tail $alertfile]\" is selectable."
+        lappend selectablealertfiles $alertfile
+      } else {
+        log::info "alert file \"[file tail $alertfile]\" is not selectable: $why"
+      }
+    }
+
+    variable alertrollindex
+    log::info "unrolled selectable alert files list is:"
+    foreach alertfile $selectablealertfiles {
+      log::info " - [file tail $alertfile]"
+    }
+    log::info "alertrollindex is $alertrollindex."
+    set n [llength $selectablealertfiles]
+    if {$n != 0} {
+      set selectablealertfiles [concat \
+        [lrange $selectablealertfiles [expr {$alertrollindex % $n}] end] \
+        [lrange $selectablealertfiles 0 [expr {$alertrollindex % $n - 1}]] \
+      ]
+    }
+    log::info "rolled selectable alert file list is:"
+    foreach alertfile $selectablealertfiles {
+      log::info " - [file tail $alertfile]"
+    }
+
+    return $selectablealertfiles
+  }
+
   ######################################################################
 
   proc getallalertfiles {} {
@@ -257,7 +294,7 @@ namespace eval "selector" {
     }
     return ""
   }
-
+  
   ######################################################################
   
   proc modifyalertfile {alertfile enabled alpha delta equinox uncertainty maxalertdelay minha maxha priority filters} {
@@ -353,18 +390,20 @@ namespace eval "selector" {
       if {[string equal $mode "disabled"]} {
         continue
       }
-
+      
+      set selectablealertfiles [getselectablealertfiles $seconds]
+      set selectableblockfiles [getselectableblockfiles $seconds]      
       foreach priority {0 1 2 3 4 5 6 7 8 9 10} {
-        log::info "checking alert queue for priority $priority alerts."
-        set filename [selectalertfile $seconds $priority]
+        log::info "checking selectable alerts for priority $priority alerts."
+        set filename [selectalertfile $selectablealertfiles $seconds $priority]
         if {![string equal $filename ""]} {
           set filetype "alert"
           variable alertrollindex
           set alertrollindex [expr {$alertrollindex + 1}]
           break
         }
-        log::info "checking block queue for priority $priority blocks."
-        set filename [selectblockfile $seconds $priority]
+        log::info "checking selectable blocks for priority $priority blocks."
+        set filename [selectblockfile $selectableblockfiles $seconds $priority]
         if {![string equal $filename ""]} {
           set filetype "block"
           break
@@ -716,7 +755,7 @@ namespace eval "selector" {
     set channel [open $tmpfilename "w"]
     puts $channel "\["
     set first true
-    foreach alertfile [getalertfiles false] {
+    foreach alertfile [getalertfiles] {
       if {!$first} {
         puts $channel ","
       }

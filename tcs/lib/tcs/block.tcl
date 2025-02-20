@@ -116,7 +116,7 @@ namespace eval "block" {
   
     setwhy ""
     
-    if {$priority != [priority $block]} {
+    if {![string equal $priority ""] && $priority != [priority $block]} {
       setwhy "priority is [priority $block]."
       return false
     }
