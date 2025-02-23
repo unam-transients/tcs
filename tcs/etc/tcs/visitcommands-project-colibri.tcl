@@ -139,6 +139,15 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
 
   log::summary "gridvisit: starting."
 
+  set filters [parsefilters $filters]
+  if {[llength $exposuretimes] == 1} {
+    set exposuretimes [lrepeat [llength $filters] $exposuretimes]
+  } elseif {[llength $filters] == 1} {
+    set filters [lrepeat [llength $exposuretimes] $filters]
+  } elseif {[llength $exposuretimes] != [llength $filters]} {
+    error "the exposuretimes and filters arguments have different lengths."
+  }
+
   executor::setsecondaryoffset 0
   executor::track
 
@@ -146,14 +155,6 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
   executor::setbinning 1
 
   executor::waituntiltracking
-  
-  set filters [parsefilters $filters]
-  
-  if {[llength $exposuretimes] == 1} {
-    set exposuretimes [lrepeat [llength $filters] $exposuretimes]
-  } elseif {[llength $exposuretimes] != [llength $filters]} {
-    error "the exposuretimes and filters arguments have different lengths."
-  }
   
   # Thus gives reasonable results for 1, 2, 4, 5, and 9 gridpoints.
   if {$gridpoints == 0} {
@@ -214,6 +215,15 @@ proc fullgridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters
 
   log::summary "gridvisit: starting."
 
+  set filters [parsefilters $filters]
+  if {[llength $exposuretimes] == 1} {
+    set exposuretimes [lrepeat [llength $filters] $exposuretimes]
+  } elseif {[llength $filters] == 1} {
+    set filters [lrepeat [llength $exposuretimes] $filters]
+  } elseif {[llength $exposuretimes] != [llength $filters]} {
+    error "the exposuretimes and filters arguments have different lengths."
+  }
+  
   executor::setsecondaryoffset 0
   executor::track
 
@@ -222,25 +232,22 @@ proc fullgridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters
 
   executor::waituntiltracking
   
-  set filters [parsefilters $filters]
-
-  if {[llength $exposuretimes] == 1} {
-    set exposuretimes [lrepeat [llength $filters] $exposuretimes]
-  } elseif {[llength $exposuretimes] != [llength $filters]} {
-    error "the exposuretimes and filters arguments have different lengths."
+  # Thus gives reasonable results for 1, 2, 4, 5, and 9 gridpoints.
+  if {$gridpoints == 0} {
+    set dithers { 0as 0as }
+  } else {
+    set dithers [lrange {
+          +30as +30as
+          -30as -30as
+          +30as -30as
+          -30as +30as
+            0as   0as
+          +30as   0as
+          -30as   0as
+            0as +30as
+            0as -30as
+        } 0 [expr {$gridpoints * 2 - 1}]]
   }
-  
-  set dithers [lrange {
-          0as   0as
-        +30as +30as
-        -30as -30as
-        +30as -30as
-        -30as +30as
-        +30as   0as
-        -30as   0as
-          0as +30as
-          0as -30as
-      } 0 [expr {$gridpoints * 2 - 1}]]
 
   set gridrepeat 0
   while {$gridrepeat < $gridrepeats} {
@@ -305,8 +312,15 @@ proc dithervisit {exposurerepeats exposuretimes filters {offsetfastest false} {d
 
   log::summary "dithervisit: starting."
 
-  log::summary "dithervisit: dithering in a circle of diameter $diameter."
-
+  set filters [parsefilters $filters]
+  if {[llength $exposuretimes] == 1} {
+    set exposuretimes [lrepeat [llength $filters] $exposuretimes]
+  } elseif {[llength $filters] == 1} {
+    set filters [lrepeat [llength $exposuretimes] $filters]
+  } elseif {[llength $exposuretimes] != [llength $filters]} {
+    error "the exposuretimes and filters arguments have different lengths."
+  }
+    
   executor::setsecondaryoffset 0
   executor::track
 
@@ -315,14 +329,7 @@ proc dithervisit {exposurerepeats exposuretimes filters {offsetfastest false} {d
 
   executor::waituntiltracking
   
-  set filters [parsefilters $filters]
-
-  if {[llength $exposuretimes] == 1} {
-    set exposuretimes [lrepeat [llength $filters] $exposuretimes]
-  } elseif {[llength $exposuretimes] != [llength $filters]} {
-    error "the exposuretimes and filters arguments have different lengths."
-  }
-    
+  log::summary "dithervisit: dithering in a circle of diameter $diameter."
   if {$offsetfastest} {
       foreach filter $filters exposuretime $exposuretimes {
         eval executor::movefilterwheel $filter
@@ -374,8 +381,15 @@ proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest false
 
   log::summary "quaddithervisit: starting."
 
-  log::summary "quaddithervisit: dithering in a circle of diameter $diameter in a 2 × 2 grid."
-
+  set filters [parsefilters $filters]
+  if {[llength $exposuretimes] == 1} {
+    set exposuretimes [lrepeat [llength $filters] $exposuretimes]
+  } elseif {[llength $filters] == 1} {
+    set filters [lrepeat [llength $exposuretimes] $filters]
+  } elseif {[llength $exposuretimes] != [llength $filters]} {
+    error "the exposuretimes and filters arguments have different lengths."
+  }
+  
   executor::setsecondaryoffset 0
   executor::track
 
@@ -384,14 +398,7 @@ proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest false
 
   executor::waituntiltracking
   
-  set filters [parsefilters $filters]
-
-  if {[llength $exposuretimes] == 1} {
-    set exposuretimes [lrepeat [llength $filters] $exposuretimes]
-  } elseif {[llength $exposuretimes] != [llength $filters]} {
-    error "the exposuretimes and filters arguments have different lengths."
-  }
-  
+  log::summary "quaddithervisit: dithering in a circle of diameter $diameter in a 2 × 2 grid."
   foreach filter $filters exposuretime $exposuretimes {
     eval executor::movefilterwheel $filter
     set exposure 0
