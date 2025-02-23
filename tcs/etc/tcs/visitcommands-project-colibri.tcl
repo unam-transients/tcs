@@ -155,17 +155,22 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
     error "the exposuretimes and filters arguments have different lengths."
   }
   
-  set dithers [lrange {
-          0as   0as
-        +30as +30as
-        -30as -30as
-        +30as -30as
-        -30as +30as
-        +30as   0as
-        -30as   0as
-          0as +30as
-          0as -30as
-      } 0 [expr {$gridpoints * 2 - 1}]]
+  # Thus gives reasonable results for 1, 2, 4, 5, and 9 gridpoints.
+  if {$gridpoints == 0} {
+    set dithers { 0as 0as }
+  } else {
+    set dithers [lrange {
+          +30as +30as
+          -30as -30as
+          +30as -30as
+          -30as +30as
+            0as   0as
+          +30as   0as
+          -30as   0as
+            0as +30as
+            0as -30as
+        } 0 [expr {$gridpoints * 2 - 1}]]
+  }
 
   set gridrepeat 0
   while {$gridrepeat < $gridrepeats} {
