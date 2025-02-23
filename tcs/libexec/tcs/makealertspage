@@ -250,6 +250,7 @@ for alert in alerts:
 
 nalertstablecolumns = 18
 
+
 def writealertstable(alerts, name):
     if len(alerts) == 0:
         writehtml('<tr><th colspan="%d">No %s</th></tr>' % (nalertstablecolumns, name))
