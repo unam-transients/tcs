@@ -101,6 +101,10 @@ proc parsefilters {filters} {
     "g/r/i/z/y" {
       set filters {{r g z} {r r y} {r i y}}
     }
+    "g/r/i/B" -
+    "g/r/i/B/z" {
+      set filters {{r g z} {r r z} {r i z} {r B z}}
+    }
     "r" -
     "r/z" {
       set filters {{r r z}}
