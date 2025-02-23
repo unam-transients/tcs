@@ -249,8 +249,37 @@ def respond(alert):
     eventtimestamp = alert["eventtimestamp"]
     logresponse("event time stamp is %s." % eventtimestamp)
 
-    if alerttype == "svomeclairscatalog" or alerttype == "svomretraction" or alerttype == "svomeclairspreliminary":
+    #        199: "svomgrmpreliminary",
+    #        200: "svomeclairspreliminary",
+    #        201: "svomgrmtrigger",
+    #        202: "svomeclairswakeup",
+    #        203: "svomeclairscatalog",
+    #        204: "svomslewing",
+    #        205: "svomnotslewing",
+    #        206: "svomeclairsrefined",
+    #        207: "svomgrmrefined",
+    #        208: "svomeclairsgrmhr",
+    #        209: "svommxtinitialqfnumber",
+    #        210: "svommxtupdateqfnumber",
+    #        211: "svomvtcandidate",
+    #        212: "svomcgftcandidate",
+    #        213: "svomgwaccandidate",
+    #        214: "svomfgftcandidate",
+    #        215: "svomretraction",
+    #        216: "svomeclairsfinal",
+    #        217: "svomgrmfinal",
+    #        218: "svommxtfinal",
+    #        219: "svomvtfinal",
+
+    if (
+        alerttype == "svomgrmpreliminary"
+        or alerttype == "svomeclairspreliminary"
+        or alerttype == "svomeclairscatalog"
+        or alerttype == "svomretraction"
+    ):
         enabled = "false"
+    elif alerttype == "svomslewing" or "svomnotslewing":
+        enabled = ""
     else:
         enabled = "true"
 
@@ -308,9 +337,18 @@ def respond(alert):
             uncertainty,
             "grb",
             "electromagnetic",
-            ""
+            "",
         ]
     )
+
+
+if False:
+    respond(
+        xmltodict(
+            b'<?xml version="1.0" encoding="UTF-8"?>\n<voe:VOEvent\n  xmlns:voe="http://www.ivoa.net/xml/VOEvent/v2.0"\n  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n  xsi:schemaLocation="http://www.ivoa.net/xml/VOEvent/v2.0 http://www.ivoa.net/xml/VOEvent/VOEvent-v2.0.xsd"\n  role="observation"\n  version="2.0"\n  ivorn="ivo://org.svom/fsc#sb25022114_grm-preliminary">\n  <Who>\n    <AuthorIVORN>ivo://org.svom/FSC</AuthorIVORN>\n    <Date>2025-02-21T20:47:53</Date>\n    <Author>\n      <title>SVOM French Science Center</title>\n      <shortName>FSC</shortName>\n      <contactName>Timothe Roland</contactName>\n      <contactEmail>svom-contact@cea.fr</contactEmail>\n    </Author>\n  </Who>\n  <What>\n    <Param name="Packet_Type" value="199" ucd="meta.id"/>\n    <Param name="Pkt_Ser_Num" value="1" ucd="meta.id"/>\n    <Param name="Instrument" value="GRM" ucd="instr"/>\n    <Group name="Svom_Identifiers">\n      <Param name="Notice_Level" value="N1g" ucd="meta.id"/>\n      <Param name="Burst_Id" value="sb25022114" ucd="meta.id"/>\n    </Group>\n    <Group name="Detection_Info">\n      <Param name="SNR" value="5.70" unit="sigma" ucd="stat.snr"/>\n      <Param name="Timescale" value="1.0" unit="s" ucd="time.interval"/>\n      <Param name="Time_Window_Start" value="2025-02-21T20:47:34.000Z" ucd="time.start"/>\n      <Param name="Time_Window_End" value="2025-02-21T20:47:35.000Z" ucd="time.end"/>\n      <Param name="Lower_Energy_Bound" value="31.311155" unit="keV" ucd="em.energy"/>\n      <Param name="Upper_Energy_Bound" value="105.319336" unit="keV" ucd="em.energy"/>\n      <Param name="Triggered_GRDs" value="111" ucd="instr.param"/>\n    </Group>\n    <Group name="Target_Info">\n      <Param name="Galactic_Lon" value="4.82" unit="deg" ucd="pos.galactic.lon"/>\n      <Param name="Galactic_Lat" value="21.38" unit="deg" ucd="pos.galactic.lat"/>\n      <Param name="Moon_Angle" value="15.24" unit="deg" ucd="pos.angDistance"/>\n      <Param name="Sun_Angle" value="82.65" unit="deg" ucd="pos.angDistance"/>\n    </Group>\n    <Group name="Satellite_Info">\n      <Param name="Attitude_Ra" value="238.50" unit="deg" ucd="instr.param"/>\n      <Param name="Attitude_Dec" value="-15.44" unit="deg" ucd="instr.param"/>\n      <Param name="Attitude_Roll" value="258.22" unit="deg" ucd="instr.param"/>\n    </Group>\n  </What>\n  <WhereWhen>\n    <ObsDataLocation>\n      <ObservatoryLocation id="GEOLEO"/>\n      <ObservationLocation>\n        <AstroCoordSystem id="UTC-ICRS-GEO"/>\n        <AstroCoords coord_system_id="UTC-ICRS-GEO">\n          <Time unit="s">\n            <TimeInstant>\n              <ISOTime>2025-02-21T20:47:34</ISOTime>\n            </TimeInstant>\n          </Time>\n          <Position2D unit="deg">\n            <Name1>RA</Name1>\n            <Name2>Dec</Name2>\n            <Value2>\n              <C1>250.2974</C1>\n              <C2>-12.9603</C2>\n            </Value2>\n            <Error2Radius>-1.0000</Error2Radius>\n          </Position2D>\n        </AstroCoords>\n      </ObservationLocation>\n    </ObsDataLocation>\n  </WhereWhen>\n  <Why importance="0.57">\n    <Inference probability="0.57">\n      <Concept>process.variation.burst;em.gamma</Concept>\n    </Inference>\n  </Why>\n  <How>\n    <Description>N1g notice, data from GRM</Description>\n    <Reference uri="https://www.svom.eu/en/grm-gamma-ray-burst-monitor-en/"/>\n  </How>\n</voe:VOEvent>\n'
+        )
+    )
+    exit(0)
 
 
 if False:
@@ -325,7 +363,7 @@ if False:
     alert["packettype"] = "svomgrmrefined"
     alert["alpha"] = "20.4243d"
     alert["delta"] = "-43.5338d"
-    alert["uncertainty"] = "0.2156d"
+    alert["uncertainty"] = "-1.0000"
 
     respond(alert)
     exit(0)
