@@ -83,34 +83,18 @@ proc alertvisit {{filter "w"}} {
     set visits {
       0 0.0d 0.0d
     }
-    set aperture "NW"
-  } elseif {true || $uncertainty <= [astrometry::parsedistance "3.3d"]} {
+    set aperture "W"
+  } elseif {$uncertainty <= [astrometry::parsedistance "10d"]} {
     log::summary "alertvisit: grid is 1 × 1 fields."
     set visits {
       0 0.0d 0.0d
     }
     set aperture "default"
-  } elseif {$uncertainty <= [astrometry::parsedistance "6.6d"]} {
-    log::summary "alertvisit: grid is 2 × 2 fields."
-    set visits {
-      0 -3.3d -3.3d
-      1 +3.3d -3.3d
-      2 -3.3d +3.3d
-      3 +3.3d +3.3d
-    }
-    set aperture "default"
   } else {
-    log::summary "alertvisit: grid is 3 × 3 fields."
+    log::summary "alertvisit: grid is 2 × 1 fields."
     set visits {
-      0 -6.6d -6.6d
-      1  0.0d -6.6d
-      2 +6.6d -6.6d
-      3 -6.6d +0.0d
-      4  0.0d +0.0d
-      5 +6.6d +0.0d
-      3 -6.6d +6.6d
-      4  0.0d +6.6d
-      5 +6.6d +6.6d
+      0 0d -3.3d
+      1 0d -3.3d
     }
     set aperture "default"
   }

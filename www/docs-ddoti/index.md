@@ -27,7 +27,7 @@ This is the mountain-top web site for the DDOTI project at the
 [OAN/SPM](http://www.astrossp.unam.mx).
 
 * Interfaces
-  * [Monitoring Interface](/tcs/monitoring.html)
+  * [Observations Interface](/tcs/observations.html)
   * [Operations Interface](/tcs/operations.html)
   * [Engineering Interface](/tcs/engineering.html)
 * Alerts

@@ -67,6 +67,7 @@ installs_project_ddoti	:=		         \
 	C4-project-ddoti.html  	     	     \
 	C5-project-ddoti.html  	     	     \
 	config-project-ddoti.js		         \
+	observations-project-ddoti.html      \
 	operations-project-ddoti.html  	     \
 	interface.html                       \
 	engineering-project-ddoti.html       \
