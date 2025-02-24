@@ -536,6 +536,7 @@
       "supervisor",
       "target",
       "telescope",
+      "watchdog",
       "weather"
     ]
   },
@@ -1517,6 +1518,28 @@
     "type": "ddoti",
     "closeexplicitly": "true",
     "daytimetesting": "false"
+  },
+  "watchdog": {
+    "monitoredservers": [
+      "enclosure",
+      "executor",
+      "gcntan",
+      "heater",
+      "html",
+      "instrument",
+      "lights",
+      "moon",
+      "mount",
+      "power",
+      "selector",
+      "sensors",
+      "supervisor",
+      "sun",
+      "target",
+      "telescope",
+      "weather"
+    ],
+    "problemtoleranceseconds": 180
   },
   "weather": {
     "windaveragespeedlimit": "35"

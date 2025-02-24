@@ -53,7 +53,7 @@ coatli-platform)
   ALLARGS=""
   ;;
 ddoti-control)
-  allargs="html 1 sensors power weather 1 target 1 moon sun 1 enclosure mount 1 telescope instrument 1 executor selector supervisor"
+  allargs="html 1 sensors power weather 1 target 1 moon sun 1 enclosure mount 1 telescope instrument 1 executor selector watchdog supervisor"
   ALLARGS="gcntan"
   ;;
 ddoti-platform)
