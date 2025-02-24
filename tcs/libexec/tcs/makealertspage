@@ -6,6 +6,19 @@ from datetime import timezone
 import json
 import re
 import math
+import platform
+
+if platform.node().startswith("coatli"):
+    project = "coatli"
+    projectname = "COATLI"
+elif platform.node().startswith("colibri"):
+    project = "colibri"
+    projectname = "COLIBRÍ"
+elif platform.node().startswith("ddoti"):
+    project = "ddoti"
+    projectname = "DDOTI"
+else:
+    raise RuntimeError("unknown project.")
 
 htmlfilename = "/usr/local/var/www/tcs/alerts.html"
 jsonfilename = "/usr/local/var/tcs/alerts.json"
@@ -78,7 +91,7 @@ writehtml(
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <link rel="stylesheet" href="style.css" type="text/css"/>
-<title>Alerts</title>
+<title>%s: Alerts</title>
 </head>
 
 <body>
@@ -88,12 +101,13 @@ writehtml(
 <script type="text/javascript" src="alerts.js"></script>
 
 <div id="title">
-<h1>Alerts</h1>
+<h1>%s: Alerts</h1>
 <hr/>
 </div>
 
 <div id="body">
 """
+    % (projectname, projectname)
 )
 
 writehtml(
@@ -167,25 +181,55 @@ writehtml(
 <tr class="alertsinputs">
 <td class="alertsinputs">Priority</td>
 <td class="alertsinputs"><input type="text" id="modify-priority" name="modify-priority"></td>
-<td>(1 to 10, with 4 for SVOM)</td>
+<td>(see <a href="https://github.com/unam-transients/tcs/wiki/Alert-Priorities">Alert Priorities</a>)</td>
 </tr>
+"""
+)
+
+writehtml(
+    """
 <tr class="alertsinputs">
 <td class="alertsinputs">Filters</td>
 <td class="alertsinputs"><select id="modify-filters" name="modify-filters">
     <option selected="selected"></option>
-    <option>gri</option>
-    <option>g</option>
-    <option>g/r</option>
-    <option>g/r/i</option>
-    <option>g/i</option>
-    <option>r</option>
-    <option>r/i</option>
-    <option>i</option>
+"""
+)
+if project == "coatli":
+    writehtml(
+        """
+        <option>r</option>
+    """
+    )
+elif project == "colibri":
+    writehtml(
+        """
+        <option>gri</option>
+        <option>g</option>
+        <option>g/r</option>
+        <option>g/r/i</option>
+        <option>g/i</option>
+        <option>r</option>
+        <option>r/i</option>
+        <option>i</option>
+    """
+    )
+elif project == "ddoti":
+    writehtml(
+        """
+        <option>w</option>
+    """
+    )
+writehtml(
+    """
 </select></td>
-<td>If previously detected in g/r/B/V, use r. Otherwise, use i.</td>
+<td>(see <a href="https://github.com/unam-transients/tcs/wiki/Alert-Filters">Alert Filters</a>)</td>
 </tr>
 </table>
+"""
+)
 
+writehtml(
+    """
 <hr/>
 
 <table class="alertsinputs">
@@ -219,7 +263,7 @@ writehtml(
 <tr class="alertsinputs">
 <td class="alertsinputs">Priority</td>
 <td class="alertsinputs"><input type="text" id="create-priority" name="create-priority"></td>
-<td>(1 to 10, with 4 for SVOM)</td>
+<td>(see <a href="https://github.com/unam-transients/tcs/wiki/Alert-Priorities">Alert Priorities</a>)</td>
 </tr>
 </table>
 
