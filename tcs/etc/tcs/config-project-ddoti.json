@@ -658,7 +658,7 @@
       "*-*-electromagnetic/gravitational/*": 2,
       "*-*-electromagnetic/*/neutrino"     : 2,
       "*-*-*/gravitational/neutrino"       : 2,
-      "lvc*-*"          : 3,
+      "lvc*-*"          : 4,
       "fermilat*-*"     : 5,
       "fermigbm*-sgrb"  : 6,
       "svom*-*"         : 7,

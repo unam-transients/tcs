@@ -487,11 +487,10 @@
       "*-*-electromagnetic/gravitational/*": 2,
       "*-*-electromagnetic/*/neutrino"     : 2,
       "*-*-*/gravitational/neutrino"       : 2,
-      "lvc*-*"          : 3,
-      "svomeclairs*-*"  : 4,
-      "svommxt*-*"      : 4,
-      "svomvt*-*"       : 4,
-      "fermilat*-*"     : 5,
+      "svomeclairs*-*"  : 5,
+      "svommxt*-*"      : 5,
+      "svomvt*-*"       : 5,
+      "fermilat*-*"     : 6,
       "fermigbm*-sgrb"  : 7,
       "swift*-*"        : 8
     }

@@ -381,11 +381,10 @@
       "*-*-electromagnetic/gravitational/*": 2,
       "*-*-electromagnetic/*/neutrino"     : 2,
       "*-*-*/gravitational/neutrino"       : 2,
-      "lvc*-*-*"        : 3,
-      "svom*-*-*"       : 4,
       "fermilat*-*-*"   : 5,
       "fermigbm*-sgrb-*": 6,
-      "swift*-*-*"      : 7
+      "swift*-*-*"      : 7,
+      "svom*-*-*"       : 8
     }
   },
   "sensors": {
