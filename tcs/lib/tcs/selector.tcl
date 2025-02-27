@@ -647,6 +647,10 @@ namespace eval "selector" {
 
     close $channel
     
+    if {[string equal "" $priority]} {
+      set priority $fixedpriority
+    }
+    
     if {[string equal $mode "disabled"]} {
       log::summary "not interrupting the executor: selector is disabled."
     } elseif {![string equal "" [server::getdata "priority"]] && ([server::getdata "priority"] < $priority)} {
