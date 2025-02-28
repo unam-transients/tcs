@@ -197,7 +197,7 @@ namespace eval "fitsheader" {
       projectidentifier      PRPID  string
       blockidentifier        BLKID  integer
       visitidentifier        VSTID  integer
-      projectname            PRKNM  string
+      projectname            PRPNM  string
       blockname              BLKNM  string
       visitname              VSTNM  string
       alertname              ALNM   string
