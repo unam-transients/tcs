@@ -308,7 +308,7 @@ proc dithervisitoffset {diameter} {
   executor::offset $eastoffset $northoffset "default"
 }
 
-proc dithervisit {exposurerepeats exposuretimes filters {offsetfastest false} {diameter "1am"}} {
+proc dithervisit {dithers exposuretimes filters {offsetfastest false} {diameter "1am"}} {
 
   log::summary "dithervisit: starting."
 
@@ -331,11 +331,13 @@ proc dithervisit {exposurerepeats exposuretimes filters {offsetfastest false} {d
   
   log::summary "dithervisit: dithering in a circle of diameter $diameter."
   if {$offsetfastest} {
+      set exposure 0
       foreach filter $filters exposuretime $exposuretimes {
         eval executor::movefilterwheel $filter
-        set exposure 0
-        while {$exposure < $exposurerepeats} {
+        set dither 0
+        while {$dither < $dithers} {
           dithervisitoffset $diameter
+          incr dither
           executor::waituntiltracking
           executor::expose object $exposuretime
           incr exposure
@@ -343,8 +345,10 @@ proc dithervisit {exposurerepeats exposuretimes filters {offsetfastest false} {d
       }
   } else {
     set exposure 0
-    while {$exposure < $exposurerepeats} {    
+    set dither 0
+    while {$dither < $dithers} {    
       dithervisitoffset $diameter
+      incr dither
       executor::waituntiltracking
       foreach filter $filters exposuretime $exposuretimes {
         eval executor::movefilterwheel $filter
