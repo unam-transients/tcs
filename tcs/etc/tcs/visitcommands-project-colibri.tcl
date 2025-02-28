@@ -624,8 +624,8 @@ proc twilightflatsvisit {targetngood filter} {
   set exposuretime 5
   
   set filters {
-    { r i   y  }
     { r B   y  }
+    { r i   y  }
     { r r   z  }
     { r g   zy }
     { r gri zy }
