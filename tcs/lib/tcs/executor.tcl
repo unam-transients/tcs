@@ -43,6 +43,7 @@ namespace eval "executor" {
   
   variable detectors         [config::getvalue "instrument" "detectors"]
   variable pointingdetectors [config::getvalue "instrument" "pointingdetectors"]
+  variable maxcorrection     [astrometry::parseangle [config::getvalue "mount" "maxcorrection"]]
   
   ######################################################################
   
@@ -516,26 +517,40 @@ namespace eval "executor" {
     log::info "solved mean position is [astrometry::formatalpha $truealpha] [astrometry::formatdelta $truedelta] $equinox."
     
     client::update "target"
-    set requestedalpha [client::getdata "target" requestedalpha]
-    set requesteddelta [client::getdata "target" requesteddelta]
+    set targetalpha   [client::getdata "target" standardalpha]
+    set targetdelta   [client::getdata "target" standarddelta]
+    set targetequinox [client::getdata "target" standardequinox]
+    log::info "target position is [astrometry::formatalpha $targetalpha] [astrometry::formatdelta $targetdelta] $equinox."
     
-    set dalpha [astrometry::foldradsymmetric [expr {$requestedalpha - $truealpha}]]
-    set ddelta [astrometry::foldradsymmetric [expr {$requesteddelta - $truedelta}]]
+    set d [astrometry::distance $targetalpha $targetdelta $truealpha $truedelta]
+    log::info [format "correction is %s." [astrometry::formatdistance $d]]
+
+    set dalpha [astrometry::foldradsymmetric [expr {$targetalpha - $truealpha}]]
+    set ddelta [astrometry::foldradsymmetric [expr {$targetdelta - $truedelta}]]
     set alphaoffset [expr {$dalpha * cos($truedelta)}]
     set deltaoffset $ddelta
     log::info [format "correction is %s E and %s N." [astrometry::formatoffset $alphaoffset] [astrometry::formatoffset $deltaoffset]]
 
-    variable trackstart
-    set trackstart [utcclock::seconds]
-    client::update "target"
-    set aperture [client::getdata "target" "requestedaperture"]
-    log::info [format \
-      "offsetting %s E and %s N at aperture %s." \
-      [astrometry::formatoffset $alphaoffset] \
-      [astrometry::formatoffset $deltaoffset] \
-      $aperture \
-    ]
-    client::request "telescope" "offset $alphaoffset $deltaoffset $aperture"
+    variable maxcorrection
+    if {$d >= $maxcorrection} {
+
+      log::warning [format "ignoring correction: the correction distance of %s is larger than the maximum allowed of %s." [astrometry::formatdistance $d] [astrometry::formatdistance $maxcorrection]]
+
+    } else {
+
+      variable trackstart
+      set trackstart [utcclock::seconds]
+      client::update "target"
+      set aperture [client::getdata "target" "targetaperture"]
+      log::info [format \
+        "offsetting %s E and %s N at aperture %s." \
+        [astrometry::formatoffset $alphaoffset] \
+        [astrometry::formatoffset $deltaoffset] \
+        $aperture \
+      ]
+      client::request "telescope" "offset $alphaoffset $deltaoffset $aperture"
+      
+    }
   }
   
 

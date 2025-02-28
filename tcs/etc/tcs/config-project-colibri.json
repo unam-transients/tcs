@@ -417,6 +417,7 @@
     // The telescope has a hard limit on zenith distance
     // of 75d (email from ASTELCO on 2024-09-16).
     "maxzenithdistancelimit": "74d",
+    "maxcorrection": "0.25d",
     "initialport": "ddrago",
     "ports": {
       "new":     "port2",
