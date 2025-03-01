@@ -433,6 +433,8 @@ namespace eval "mount" {
     log::info [format "setting TAI-UTC to %+d seconds." $taiminusutc]
     opentsi::sendcommandandwait [format "SET TELESCOPE.CONFIG.LOCAL.TAI-UTC=%d" $taiminusutc]
     set end [utcclock::seconds]
+    opentsi::sendcommandandwait "SET POINTING.SETUP.OPTIMIZATION=1"
+    opentsi::sendcommandandwait "SET POINTING.SETUP.MIN_TRACKTIME=600"
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
   }
 
