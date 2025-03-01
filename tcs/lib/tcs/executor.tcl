@@ -541,7 +541,7 @@ namespace eval "executor" {
       variable trackstart
       set trackstart [utcclock::seconds]
       client::update "target"
-      set aperture [client::getdata "target" "targetaperture"]
+      set aperture [client::getdata "target" "requestedaperture"]
       log::info [format \
         "offsetting %s E and %s N at aperture %s." \
         [astrometry::formatoffset $alphaoffset] \
