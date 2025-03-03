@@ -271,17 +271,18 @@ def respond(alert):
     #        218: "svommxtfinal",
     #        219: "svomvtfinal",
 
-    if (
-        alerttype == "svomgrmpreliminary"
-        or alerttype == "svomeclairspreliminary"
-        or alerttype == "svomeclairscatalog"
-        or alerttype == "svomretraction"
-    ):
+    if alerttype == "svomeclairscatalog" or alerttype == "svomretraction":
         enabled = "false"
+        preliminary = ""
     elif alerttype == "svomslewing" or "svomnotslewing":
         enabled = ""
+        preliminary = ""
+    elif alerttype == "svomgrmpreliminary" or alerttype == "svomeclairspreliminary":
+        enabled = "true"
+        preliminary = "true"
     else:
         enabled = "true"
+        preliminary = "false"
 
     if "alpha" in alert and "delta" in alert and "uncertainty" in alert:
         alpha = alert["alpha"]
@@ -298,7 +299,7 @@ def respond(alert):
     logresponse("requesting selector to respond.")
 
     print(
-        "tcs request selector respondtoalert %r %r %r %r %r %r %r %r %r %r %r %r %r %r %r"
+        "tcs request selector respondtoalert %r %r %r %r %r %r %r %r %r %r %r %r %r %r %r %r"
         % (
             blockidentifier,
             eventname,
@@ -314,6 +315,7 @@ def respond(alert):
             uncertainty,
             "grb",
             "electromagnetic",
+            "",
             "",
         )
     )
@@ -338,6 +340,7 @@ def respond(alert):
             "grb",
             "electromagnetic",
             "",
+            preliminary,
         ]
     )
 

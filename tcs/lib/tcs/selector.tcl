@@ -520,7 +520,7 @@ namespace eval "selector" {
   
   proc respondtoalert {blockidentifier name origin
     originidentifier type alerttimestamp eventtimestamp enabled alpha delta equinox
-    uncertainty class messenger fixedpriority
+    uncertainty class messenger fixedpriority preliminary
   } {
     variable mode
     
@@ -624,6 +624,9 @@ namespace eval "selector" {
     } else {
       puts $channel [format "  \"fixedpriority\": %d," $fixedpriority]
     }
+    if {![string equal "" $preliminary]} {
+      puts $channel [format "  \"preliminary\": %d," $preliminary]
+    }
     if {
       ![string equal "" $alpha] && 
       ![string equal "" $delta] &&
@@ -716,7 +719,7 @@ namespace eval "selector" {
     }
     respondtoalert $blockidentifier $name $origin \
       $originidentifier $type $alerttimestamp $eventtimestamp $enabled \
-      $alpha $delta $equinox $uncertainty $class "gravitational" ""
+      $alpha $delta $equinox $uncertainty $class "gravitational" "" "false"
     log::summary "finished responding to lvc alert."
     return
   }
@@ -873,7 +876,7 @@ namespace eval "selector" {
     set identifier     [string map {"T" ""} [utcclock::combinedformat [utcclock::scan $eventtimestamp] 0]]
     respondtoalert $identifier $name "unknown" \
       $alerttimestamp "unknown" $alerttimestamp $eventtimestamp true $alpha $delta $equinox \
-      $uncertainty "unknown" "unknown" $fixedpriority
+      $uncertainty "unknown" "unknown" $fixedpriority "false"
     log::info "finished creating alert."
     return
   }

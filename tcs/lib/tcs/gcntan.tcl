@@ -202,7 +202,7 @@ namespace eval "gcntan" {
         respondtoalert $log $test $blockidentifier \
           $eventname $origin $identifier $type $timestamp $eventtimestamp \
           $retraction $worthy $alpha $delta $equinox $uncertainty $class \
-          "electromagnetic" ""
+          "electromagnetic" "" "false"
         return "echo"
       }
 
@@ -228,7 +228,7 @@ namespace eval "gcntan" {
         respondtoalert $log $test $blockidentifier \
           $eventname $origin $identifier $type $timestamp $eventtimestamp \
           $retraction $worthy $alpha $delta $equinox $uncertainty $class \
-          "electromagnetic" ""
+          "electromagnetic" "" "false"
         return "echo"
       }
        
@@ -254,7 +254,7 @@ namespace eval "gcntan" {
         respondtoalert $log $test $blockidentifier \
           $eventname $origin $identifier $type $timestamp $eventtimestamp \
           $retraction $worthy $alpha $delta $equinox $uncertainty $class \
-          "electromagnetic" ""
+          "electromagnetic" "" "false"
         return "echo"
       }
       
@@ -277,7 +277,7 @@ namespace eval "gcntan" {
         respondtoalert $log $test $blockidentifier \
           $eventname $origin $identifier $type $timestamp $eventtimestamp \
           $retraction $worthy $alpha $delta $equinox $uncertainty $class \
-          "electromagnetic" ""
+          "electromagnetic" "" "false"
         return "echo"
       }
 
@@ -302,7 +302,7 @@ namespace eval "gcntan" {
         respondtoalert $log $test $blockidentifier \
           $eventname $origin $identifier $type $timestamp $eventtimestamp \
           $retraction $worthy $alpha $delta $equinox $uncertainty $class \
-          "neutrino" ""
+          "neutrino" "" "false"
         return "echo"      
       }
 
@@ -354,7 +354,7 @@ namespace eval "gcntan" {
   
   proc respondtoalert {log test blockidentifier eventname
     origin identifier type alerttimestamp eventtimestamp retraction worthy
-    alpha delta equinox uncertainty class messenger fixedpriority
+    alpha delta equinox uncertainty class messenger fixedpriority preliminary
   } {
     $log [format "%s: event name is %s." $type $eventname]
     if {$test} {
@@ -400,7 +400,7 @@ namespace eval "gcntan" {
         client::request "selector" [list respondtoalert \
           $blockidentifier $eventname $origin $identifier \
           $type $alerttimestamp $eventtimestamp $enabled $alpha $delta \
-          $equinox $uncertainty $class $messenger $fixedpriority \
+          $equinox $uncertainty $class $messenger $fixedpriority $preliminary \
         ]
       } result]} {
         log::warning [format "%s: unable to request selector: %s" $type $result]
