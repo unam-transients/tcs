@@ -4,7 +4,7 @@
 
 ########################################################################
 
-# Copyright Â© 2019 Alan M. Watson <alan@astro.unam.mx>
+# Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -107,6 +107,24 @@ namespace eval "alert" {
     if {![string equal $priority ""]} {
       set alert [dict merge $alert [dict create "priority" $priority]]
     }    
+
+    # Determine if the alert is preliminary.
+    set preliminary true
+    foreach newalert $newalerts {
+      if {[dict exists $newalert "preliminary"]} {
+        set newpreliminary [dict get $newalert "preliminary"]
+        if {![string equal $newpreliminary ""]} {
+          set preliminary [expr {$preliminary && $newpreliminary}]
+        }
+      }
+    }
+    if {$preliminary} {
+      set preliminary "true"
+    } else {
+      set preliminary "false"
+    }
+    set alert [dict merge $alert [dict create "preliminary" $preliminary]]
+
     return $alert  
   }
   
@@ -322,6 +340,14 @@ namespace eval "alert" {
     }
   }
   
+  proc preliminary {alert} {
+    if {[dict exists $alert "preliminary"]} {
+      return [dict get $alert "preliminary"]
+    } else {
+      return true
+    }
+  }
+  
   proc delay {alert} {
     set eventtimestamp [eventtimestamp $alert]
     set alerttimestamp [alerttimestamp $alert]
@@ -351,7 +377,7 @@ namespace eval "alert" {
     
   ######################################################################
 
-  proc makealert {name origin identifier type alpha delta equinox uncertainty eventtimestamp alerttimestamp command enabled priority} {
+  proc makealert {name origin identifier type alpha delta equinox uncertainty eventtimestamp alerttimestamp command enabled preliminary} {
     return [dict create                    \
       "name"            $name              \
       "origin"          $origin            \
@@ -366,6 +392,7 @@ namespace eval "alert" {
       "command"         $command           \
       "enabled"         $enabled           \
       "priority"        $priority          \
+      "preliminary"     $preliminary       \
     ]
   } 
   

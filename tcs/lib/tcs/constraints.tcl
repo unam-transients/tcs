@@ -958,10 +958,15 @@ namespace eval "constraints" {
   
   proc checkmaxalertdelay {alert constraints} {
     if {![string equal "" $alert]} {
-      if {![hasconstraint $constraints "maxalertdelay"]} {
+      if {[alert::preliminary $alert]} {
+        set maxalertdelaykey "maxpreliminaryalertdelay"
+      } else {
+        set maxalertdelaykey "maxalertdelay"
+      }
+      if {![hasconstraint $constraints $maxalertdelaykey]} {
         log::debug "no maximum alert delay constraint."
       } else {
-        set maxdelay [getconstraint $constraints "maxalertdelay"]
+        set maxdelay [getconstraint $constraints $maxalertdelaykey]
         set maxdelay [utcclock::scaninterval $maxdelay]
         log::debug [format "checking the alert delay against the maximum allowed of %s." [utcclock::formatinterval $maxdelay]]
         set delay [alert::delay $alert]

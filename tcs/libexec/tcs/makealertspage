@@ -79,6 +79,13 @@ def age(timestamp):
     now = datetime.now()
     age = now - event
     return age.days * 86400 + age.seconds
+    
+
+def maxage(alert):
+    if alert["preliminary"]:
+        return alert["maxpreliminaryalertdelay"]
+    else:
+        return alert["maxalertdelay"]
 
 
 alerts = readjson(jsonfilename)
@@ -351,8 +358,8 @@ def writealertstable(alerts, name):
                 writehtml('<td class="alertstable">')
                 if key == "age" and "eventtimestamp" in alert.keys():
                     writehtml(formatage(age(alert["eventtimestamp"])))
-                elif key == "maxage" and "maxalertdelay" in alert.keys():
-                    writehtml(formatage(parseinterval(alert["maxalertdelay"])))
+                elif key == "maxage":
+                    writehtml(formatage(parseinterval(maxage(alert))))
                 elif key == "filters" and "command" in alert.keys():
                     filters = alert["command"].split()[1]
                     writehtml(filters)
