@@ -647,7 +647,7 @@ namespace eval "selector" {
 
     close $channel
     
-    if {[string equal "" $priority]} {
+    if {![string equal "" $fixedpriority]} {
       set priority $fixedpriority
     }
     
