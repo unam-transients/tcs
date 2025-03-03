@@ -68,7 +68,7 @@ namespace eval "weather" {
           "b.0 %s %s %*s %*f %f %*f %*f %f %f %f %f %f %*f %*f %f %*f %*f %*f %*f %*f %*f %*f %*f %f %*f %*d %d %d %*d %*d %*d %d"\
           pendingdate pendingtime pendingwindaverageazimuth pendingwindaveragespeed pendingwindgustspeed pendingtemperature pendinghumidity pendingpressure pendingrainrate pendingdewpoint pendingrainindex pendingcloudindex pendinglightindex] == 13 ||
         [scan $dataline \
-          "b.1 %s %s %*s %*s %*f %f %*f %*f %f %f %f %f %f %*f %*f %f %*f %*f %*f %*f %f %*f %*f %*f %f %*f %*d %d %d %*d %*d %*d %d"\
+          "b.1 %s %s %*s %*s %s %*s %*s %s %s %f %f %f %*f %*f %f %*f %*f %*f %*f %f %*f %*f %*f %f %*f %*d %d %d %*d %*d %*d %d"\
           pendingdate pendingtime pendingwindaverageazimuth pendingwindaveragespeed pendingwindgustspeed pendingtemperature pendinghumidity pendingpressure pendingrainrate pendingskytemperature pendingdewpoint pendingrainindex pendingcloudindex pendinglightindex] == 14
       } {
       
@@ -103,10 +103,26 @@ namespace eval "weather" {
         } else {
           set pendinglightlevel "dark"
         }
-
-        # Convert from m/s to km/h        
-        set pendingwindaveragespeed [expr {$pendingwindaveragespeed * 3.6}]
-        set pendingwindgustspeed    [expr {$pendingwindgustspeed * 3.6}]
+        
+        # The presense of a "#" means the Vaisala wind sensor is
+        # inoperative. We also need to convert Vaisala wind speeds from
+        # m/s to km/h.      
+        puts $pendingwindaverageazimuth
+        if {[scan $pendingwindaverageazimuth "%d%s" pendingwindaverageazimuth trailing] != 1} {
+          set pendingwindaverageazimuth "unknown"
+        }
+        puts $pendingwindaveragespeed
+        if {[scan $pendingwindaveragespeed "%f%s" pendingwindaveragespeed trailing] != 1} {
+          set pendingwindaveragespeed "unknown"
+        } else {
+          set pendingwindaveragespeed [expr {$pendingwindaveragespeed * 3.6}]
+        }
+        puts $pendingwindgustspeed
+        if {[scan $pendingwindgustspeed "%f%s" pendingwindgustspeed trailing] != 1} {
+          set pendingwindgustspeed "unknown"
+        } else {
+          set pendingwindgustspeed [expr {$pendingwindgustspeed * 3.6}]
+        }
 
       } elseif {
         [scan $dataline "%s %s %f %*f %*f %f %f %f %f %f %f %f" \
@@ -251,11 +267,14 @@ namespace eval "weather" {
 
       variable windaveragespeedlimit
       
-      if {
-        ![string equal $windaveragespeedlimit ""] &&
-        ([string equal $lastwindalarmseconds "unknown"] || $windaveragespeed >= $windaveragespeedlimit)
-      } {
-        set lastwindalarmseconds $timestampseconds
+      if {![string equal $windaveragespeedlimit ""]} {
+        if { \
+             [string equal $lastwindalarmseconds "unknown"] ||
+             [string equal $windaveragespeed "unknown"] ||
+             $windaveragespeed >= $windaveragespeedlimit
+        } {
+          set lastwindalarmseconds $timestampseconds
+        }
       }
         
       if {![string equal $windaverageazimuth "unknown"]} {
@@ -401,9 +420,15 @@ namespace eval "weather" {
     } {
       log::writesensorsfile "weather-$sensorname" [server::getdata $dataname] [server::getdata "timestamp"]
     }
-    log::writesensorsfile "weather-wind-average-azimuth" \
-      [astrometry::radtodeg [server::getdata "windaverageazimuth"]] \
-      [server::getdata "timestamp"]
+    if {[string equal [server::getdata "windaverageazimuth"] "unknown"]} {
+      log::writesensorsfile "weather-wind-average-azimuth" \
+        [server::getdata "windaverageazimuth"] \
+        [server::getdata "timestamp"]
+    } else {
+      log::writesensorsfile "weather-wind-average-azimuth" \
+        [astrometry::radtodeg [server::getdata "windaverageazimuth"]] \
+        [server::getdata "timestamp"]
+    }
 
   }
 

@@ -1230,20 +1230,20 @@ namespace eval "html" {
           [format "%.0f km/h" [client::getdata "weather" "windaveragespeed"]] \
           [format "%.1f m/s" [expr {[client::getdata "weather" "windaveragespeed"] / 3.6}]]
       } else {
-        writehtmlrow "Wind average speed"
+        writehtmlrowwithemph "Wind average speed" "warning" "unknown"
       }
       if {![string equal [client::getdata "weather" "windgustspeed"] "unknown"]} {
         writehtmlrow "Wind gust speed" \
           [format "%.0f km/h" [client::getdata "weather" "windgustspeed"]] \
           [format "%.1f m/s" [expr {[client::getdata "weather" "windgustspeed"] / 3.6}]]        
       } else {
-        writehtmlrow "Wind gust speed"
+        writehtmlrowwithemph "Wind gust speed" "warning" "unknown"
       }
       if {![string equal [client::getdata "weather" "windaverageazimuth"] "unknown"]} {
         writehtmlrow "Wind average azimuth" \
           [formatradtodegifdouble "%.1f°" [client::getdata "weather" "windaverageazimuth"]]
       } else {
-        writehtmlrow "Wind average azimuth"
+        writehtmlrowwithemph "Wind average azimuth" "warning" "unknown"
       }
       writehtmlrow "Wind average speed limit" \
         [formatifok "%.0f km/h" [client::getdata "weather" "windaveragespeedlimit"]]
