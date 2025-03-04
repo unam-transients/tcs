@@ -68,7 +68,7 @@ namespace eval "weather" {
           "b.0 %s %s %*s %*f %f %*f %*f %f %f %f %f %f %*f %*f %f %*f %*f %*f %*f %*f %*f %*f %*f %f %*f %*d %d %d %*d %*d %*d %d"\
           pendingdate pendingtime pendingwindaverageazimuth pendingwindaveragespeed pendingwindgustspeed pendingtemperature pendinghumidity pendingpressure pendingrainrate pendingdewpoint pendingrainindex pendingcloudindex pendinglightindex] == 13 ||
         [scan $dataline \
-          "b.1 %s %s %*s %*s %*s %s %*s %s %s %*s %f %f %f %*f %*f %f %*f %*f %*f %*f %f %*f %*f %*f %f %*f %*d %d %d %*d %*d %*d %d"\
+          "b.1 %s %s a %*s %*s %s %*s %*s %s %s %f %f %f %*f %*f %f %*f %*f %*f %*f %f %*f %*f %*f %f %*f %*d %d %d %*d %*d %*d %d"\
           pendingdate pendingtime pendingwindaverageazimuth pendingwindaveragespeed pendingwindgustspeed pendingtemperature pendinghumidity pendingpressure pendingrainrate pendingskytemperature pendingdewpoint pendingrainindex pendingcloudindex pendinglightindex] == 14
       } {
       
@@ -107,17 +107,14 @@ namespace eval "weather" {
         # The presense of a "#" means the Vaisala wind sensor is
         # inoperative. We also need to convert Vaisala wind speeds from
         # m/s to km/h.      
-        puts $pendingwindaverageazimuth
         if {[scan $pendingwindaverageazimuth "%d%s" pendingwindaverageazimuth trailing] != 1} {
           set pendingwindaverageazimuth "unknown"
         }
-        puts $pendingwindaveragespeed
         if {[scan $pendingwindaveragespeed "%f%s" pendingwindaveragespeed trailing] != 1} {
           set pendingwindaveragespeed "unknown"
         } else {
           set pendingwindaveragespeed [expr {$pendingwindaveragespeed * 3.6}]
         }
-        puts $pendingwindgustspeed
         if {[scan $pendingwindgustspeed "%f%s" pendingwindgustspeed trailing] != 1} {
           set pendingwindgustspeed "unknown"
         } else {
@@ -292,7 +289,7 @@ namespace eval "weather" {
     if {[string equal $previoustemperature "unknown"]} {
       error "no valid data."
     }
-
+    
     if {[string equal $windaveragespeedlimit ""]} {
       set lowwindspeedseconds 0
     } else {
