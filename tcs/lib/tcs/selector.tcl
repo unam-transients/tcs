@@ -625,9 +625,6 @@ namespace eval "selector" {
     } else {
       puts $channel [format "  \"fixedpriority\": %d," $fixedpriority]
     }
-    if {![string equal "" $preliminary]} {
-      puts $channel [format "  \"preliminary\": %d," $preliminary]
-    }
     if {
       ![string equal "" $alpha] && 
       ![string equal "" $delta] &&
@@ -640,7 +637,18 @@ namespace eval "selector" {
       puts $channel [format "  \"uncertainty\": \"%s\"," [astrometry::formatdistance $uncertainty]]
     }
     if {![string equal "" $enabled]} {
-      puts $channel [format "  \"enabled\": \"%s\"," $enabled]
+      if {$enabled} {
+        puts $channel [format "  \"enabled\": \"true\","]
+      } else {
+        puts $channel [format "  \"enabled\": \"false\","]
+      }
+    }
+    if {![string equal "" $preliminary]} {
+      if {$preliminary} {
+        puts $channel [format "  \"preliminary\": \"true\","]
+      } else {
+        puts $channel [format "  \"preliminary\": \"false\","]
+      }
     }
     if {![string equal "" $eventtimestamp]} {
       puts $channel [format "  \"eventtimestamp\": \"%s\"," $eventtimestamp]
