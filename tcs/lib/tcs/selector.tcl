@@ -267,7 +267,7 @@ namespace eval "selector" {
           return [file tail $alertfile]
         }
       }
-      log::info "alert file \"[file tail $alertfile]\" is not a match."
+      log::debug "alert file \"[file tail $alertfile]\" is not a match."
     }
     log::info "no existing alert file matches."
     if {[string equal $eventtimestamp ""]} {
@@ -316,6 +316,7 @@ namespace eval "selector" {
     if {![string equal $maxalertdelay ""]} {
       log::info [format "modified maxalertdelay is %s." $maxalertdelay]
       puts $channel [format "  \"maxalertdelay\": \"%s\"," $maxalertdelay]
+      puts $channel [format "  \"maxpreliminaryalertdelay\": \"%s\"," $maxalertdelay]
     }
     if {![string equal $minha ""]} {
       log::info [format "modified minha is %s." $minha]
@@ -690,7 +691,7 @@ namespace eval "selector" {
   }
   
   proc respondtolvcalert {blockidentifier name origin
-    originidentifier type alerttimestamp eventtimestamp enabled skymapurl class
+    originidentifier type alerttimestamp eventtimestamp enabled skymapurl class preliminary
   } {
     log::summary "responding to lvc alert."    
     if {![string equal $skymapurl ""]} {
@@ -719,7 +720,7 @@ namespace eval "selector" {
     }
     respondtoalert $blockidentifier $name $origin \
       $originidentifier $type $alerttimestamp $eventtimestamp $enabled \
-      $alpha $delta $equinox $uncertainty $class "gravitational" "" "false"
+      $alpha $delta $equinox $uncertainty $class "gravitational" "" $preliminary
     log::summary "finished responding to lvc alert."
     return
   }

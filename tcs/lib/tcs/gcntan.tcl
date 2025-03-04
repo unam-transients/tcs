@@ -322,9 +322,10 @@ namespace eval "gcntan" {
         set retraction         [lvcretraction      $log $packet]
         set skymapurl          [lvcurl             $log $packet]
         set class              [lvcclass           $log $packet]
+        set preliminary        [lvcpreliminary     $log $packet]
         respondtolvcalert $log $test $blockidentifier \
           $eventname $origin $identifier $type $timestamp $eventtimestamp \
-          $retraction $skymapurl $class
+          $retraction $skymapurl $class $preliminary
         return "echo"
       }
        
@@ -388,6 +389,7 @@ namespace eval "gcntan" {
     $log [format "%s: 90%% uncertainty is %s in radius." $type [astrometry::formatdistance $uncertainty]]
     $log [format "%s: block identifier is %d." $type $blockidentifier]
     $log [format "%s: class is %s." $type $class] 
+    $log [format "%s: preliminary is %s." $type $preliminary] 
     $log [format "%s: messenger is %s." $type $messenger] 
     if {![string equal "" $fixedpriority]} {
     $log [format "%s: fixed priority is %d." $type $fixedpriority] 
@@ -410,7 +412,7 @@ namespace eval "gcntan" {
   
   proc respondtolvcalert {log test blockidentifier eventname
     origin identifier type alerttimestamp eventtimestamp retraction skymapurl
-    class
+    class preliminary
   } {
     $log [format "%s: event name is %s." $type $eventname]
     if {$test} {
@@ -433,6 +435,7 @@ namespace eval "gcntan" {
     }
     $log [format "%s: block identifier is %d." $type $blockidentifier]
     $log [format "%s: class is %s." $type $class] 
+    $log [format "%s: preliminary is %s." $type $preliminary] 
     if {$test} {
       $log [format "%s: not requesting selector to respond: this is a test packet." $type]
     } else {
@@ -441,6 +444,7 @@ namespace eval "gcntan" {
         client::request "selector" [list respondtolvcalert \
           $blockidentifier $eventname $origin $identifier $type \
           $alerttimestamp  $eventtimestamp $enabled $skymapurl $class \
+          $preliminary \
         ]
       } result]} {
         log::warning [format "%s: unable to request selector: %s" $type $result]
@@ -1262,6 +1266,17 @@ namespace eval "gcntan" {
       return "retraction"
     } else {
       return "detection"
+    }
+  }
+
+  proc lvcpreliminary {log packet} {
+    switch [type $packet] {
+      "lvcpreliminary" {
+        return true
+      }
+      default {
+        return false
+      }
     }
   }
 

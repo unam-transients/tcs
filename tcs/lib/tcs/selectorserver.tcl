@@ -55,8 +55,8 @@ namespace eval "selectorserver" {
     selector::respondtoalert $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $alpha $delta $equinox $uncertainty $class $messenger $fixedpriority $preliminary
   }
 
-  proc slaverespondtolvcalert {blockidentifier name origin identifier type alerttimestamp eventtimestamp enabled skymapurl class} {
-    selector::respondtolvcalert $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $skymapurl $class
+  proc slaverespondtolvcalert {blockidentifier name origin identifier type alerttimestamp eventtimestamp enabled skymapurl class preliminary} {
+    selector::respondtolvcalert $blockidentifier $name $origin $identifier $type $alerttimestamp $eventtimestamp $enabled $skymapurl $class $preliminary
   }
 
   proc slavesetfocused {} {

@@ -32,6 +32,7 @@ namespace eval "alert" {
   ######################################################################
   
   proc readalertfile {alertfile} {
+
     set defaultalertfile [file join [directories::etc] "alert"]
       
     # Read the defaults.

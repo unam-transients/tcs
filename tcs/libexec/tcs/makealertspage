@@ -42,7 +42,10 @@ def formattimestamp(timestamp):
 
 
 def formatage(age):
-    return "%.2fd" % (age / 86400)
+    if age < 86400:
+        return "%.1fh" % (age / 3600)
+    else:
+        return "%.1fd" % (age / 86400)
 
 
 def parseangle(angle):
@@ -82,7 +85,7 @@ def age(timestamp):
     
 
 def maxage(alert):
-    if alert["preliminary"]:
+    if alert["preliminary"] == "true":
         return alert["maxpreliminaryalertdelay"]
     else:
         return alert["maxalertdelay"]
@@ -294,7 +297,7 @@ for alert in alerts:
         unselectablealerts.append(alert)
     elif parseangle(alert["uncertainty"]) > parseangle(alert["maxalertuncertainty"]):
         unselectablealerts.append(alert)
-    elif age(alert["eventtimestamp"]) > parseinterval(alert["maxalertdelay"]):
+    elif age(alert["eventtimestamp"]) > parseinterval(maxage(alert)):
         unselectablealerts.append(alert)
     else:
         selectablealerts.append(alert)
