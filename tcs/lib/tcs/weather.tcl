@@ -68,7 +68,7 @@ namespace eval "weather" {
           "b.0 %s %s %*s %*f %f %*f %*f %f %f %f %f %f %*f %*f %f %*f %*f %*f %*f %*f %*f %*f %*f %f %*f %*d %d %d %*d %*d %*d %d"\
           pendingdate pendingtime pendingwindaverageazimuth pendingwindaveragespeed pendingwindgustspeed pendingtemperature pendinghumidity pendingpressure pendingrainrate pendingdewpoint pendingrainindex pendingcloudindex pendinglightindex] == 13 ||
         [scan $dataline \
-          "b.1 %s %s %*s %*s %s %*s %*s %s %s %f %f %f %*f %*f %f %*f %*f %*f %*f %f %*f %*f %*f %f %*f %*d %d %d %*d %*d %*d %d"\
+          "b.1 %s %s %*s %*s %*s %s %*s %s %s %*s %f %f %f %*f %*f %f %*f %*f %*f %*f %f %*f %*f %*f %f %*f %*d %d %d %*d %*d %*d %d"\
           pendingdate pendingtime pendingwindaverageazimuth pendingwindaveragespeed pendingwindgustspeed pendingtemperature pendinghumidity pendingpressure pendingrainrate pendingskytemperature pendingdewpoint pendingrainindex pendingcloudindex pendinglightindex] == 14
       } {
       
