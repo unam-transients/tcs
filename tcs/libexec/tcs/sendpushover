@@ -70,14 +70,14 @@ to="$1"
 message="$2"
 
 case $(uname -n) in
-ddoti-*)
-  from=a8unfz1ihyc1kgkcbnbmrb26g4fynf
-  ;;
 coatli-*)
   from=abps4xgknzg4j9atufnjbnhkb68gc3
   ;;
 colibri-*)
   from=af9kucdjg9h8mz5qkczoxkcff8eph4
+  ;;
+ddoti-*)
+  from=a8unfz1ihyc1kgkcbnbmrb26g4fynf
   ;;
 *)
   echo 2>&1 "$program: error: invalid host \"$$(uname -n)\"."
@@ -89,14 +89,17 @@ case $(uname -n):$to in
 *:alan)
   to=uopAQF3pQRWhpJNCQgd2q8tGKDZRjW
   ;;
-  grb-group)
-  to=g7i8cm37qhqhef3xcd8kkkgshgwsyg
-  ;;
 coatli-*:emergency)
   to=g7aded162wnz8gy82owkju5t5c7op5
   ;;
 colibri-*:emergency)
   to=gp2n8mdxhgeygwzmsmwt8b6hdhzeg3
+  ;;
+ddoti-*:emergency)
+  to=g3omst54iqohudou2h69yi7eb75iht
+  ;;
+grb-group)
+  to=g7i8cm37qhqhef3xcd8kkkgshgwsyg
   ;;
 gw-group)
   to=gphngipidum2tto8xg69zz9cgibcja
