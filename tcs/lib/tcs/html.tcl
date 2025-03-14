@@ -844,18 +844,10 @@ namespace eval "html" {
             writehtmlrow "OAN wind gust speed" \
               [formatifok "%.0f km/h" [client::getdata "sensors" "oan-wind-gust-speed"]]
           }
-          if {[string equal "" [client::getdata "plc" "vaisalawindaveragespeed"]]} {
-            writehtmlrowwithemph "Vaisala wind average speed" "warning" "unknown"
-          } else {
-            writehtmlrow "Vaisala wind average speed" \
-              [formatifok "%.0f km/h" [client::getdata "plc" "vaisalawindaveragespeed"]]
-          }
-          if {[string equal "" [client::getdata "plc" "vaisalawindmaxspeed"]]} {
-            writehtmlrowwithemph "Vaisala wind gust speed" "warning" "unknown"
-          } else {
-            writehtmlrow "Vaisala wind gust speed" \
-              [formatifok "%.0f km/h" [client::getdata "plc" "vaisalawindmaxspeed"]]
-          }
+          writehtmlrow "Vaisala wind average speed" \
+            [formatifok "%.0f km/h" [client::getdata "plc" "vaisalawindaveragespeed"]]
+          writehtmlrow "Vaisala wind gust speed" \
+            [formatifok "%.0f km/h" [client::getdata "plc" "vaisalawindmaxspeed"]]
           writehtmlrow "Boltwood wind speed" \
             [formatifok "%.0f km/h" [client::getdata "plc" "boltwoodwindspeed"]]
           writehtmlrow "Wind speed limit" \
