@@ -405,7 +405,12 @@ namespace eval "instrument" {
     }
     log::info [format "finished requesting exposures after %.1f seconds." [utcclock::diff now $start]]
     foreach detector $activedetectors {
-      client::wait $detector 1000
+      client::waituntilnot $detector "exposing" 500
+    }
+    log::info [format "reading after %.1f seconds." [utcclock::diff now $start]]
+    server::setactivity "reading"
+    foreach detector $activedetectors {
+      client::wait $detector 500
     }
     log::info [format "finished exposing $type image after %.1f seconds." [utcclock::diff now $start]]
   }

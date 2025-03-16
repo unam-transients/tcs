@@ -161,19 +161,43 @@ namespace eval "client" {
     }
   }
   
-  proc waitcheck {server} {
+  proc waitcheck {server waitedactivity} {
     update $server
     set activity [getdata $server "activity"]
     if {[string equal $activity "error"]} {
       error "$server activity is \"error\"."
     }
-    set requestedactivity [getdata $server "requestedactivity"]
-    return [string equal $activity $requestedactivity]
+    if {[string equal $waitedactivity ""]} {
+      set waitedactivity [getdata $server "requestedactivity"]
+    }
+    return [string equal $activity $waitedactivity]
   }
   
   proc wait {server {pollinterval 100}} {
     set first true
-    while {![waitcheck $server]} {
+    while {![waitcheck $server ""]} {
+      if {$first} {
+        log::info "waiting for $server."
+        set first false
+      }
+      coroutine::after $pollinterval
+    }
+  }
+  
+  proc waituntil {server waitedactivity {pollinterval 100}} {
+    set first true
+    while {![waitcheck $server $waitedactivity]} {
+      if {$first} {
+        log::info "waiting for $server."
+        set first false
+      }
+      coroutine::after $pollinterval
+    }
+  }
+  
+  proc waituntilnot {server waitedactivity {pollinterval 100}} {
+    set first true
+    while {[waitcheck $server $waitedactivity]} {
       if {$first} {
         log::info "waiting for $server."
         set first false
