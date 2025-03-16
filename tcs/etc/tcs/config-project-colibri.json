@@ -368,10 +368,10 @@
       "C0", "C1", "C2"
     ],
     "monitoreddetectors": [
-      "C0", "C1", "C2"
+      "C0", "C1"
     ],
     "activedetectors": [
-      "C1"
+      "C0"
     ],
     "activefocusers": [
     ],
@@ -379,7 +379,7 @@
       "0"
     ],
     "pointingdetectors": [
-      "C1"
+      "C0"
     ],
     "outletgroups": []
   },
@@ -418,7 +418,7 @@
     // of 75d (email from ASTELCO on 2024-09-16).
     "maxzenithdistancelimit": "74.9d",
     "maxcorrection": "0.25d",
-    "initialport": "ddrago",
+    "initialport": "ogse",
     "ports": {
       "new":     "port2",
       "old":     "port3",
