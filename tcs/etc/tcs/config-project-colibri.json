@@ -34,7 +34,7 @@
       "default": "8MHz"
     },
     "detectorinitialsoftwaregain": 1,
-    "detectordefaultbinning": 1,
+    "detectordefaultbinning": 2,
     "detectorwindows": {
       "initial": "full",
       "default": "full",
