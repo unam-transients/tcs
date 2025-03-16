@@ -46,22 +46,40 @@ proc alertvisit {filters} {
     return false
   }
 
-  log::summary [format "alertvisit: filters are %s." $filters]
-  set nfilters [llength [parsefilters $filters]]
-  set exposurerepeats [expr {int(16 / $nfilters)}]
-  set exposuretime 60
-  log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
+  set alertdelay [alert::delay [executor::alert]]
+  log::summary [format "alertvisit: alert delay at start of visit is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
 
   set uncertainty [astrometry::parsedistance [alert::uncertainty [executor::alert]]]
   log::summary [format "alertvisit: uncertainty is %s." [astrometry::formatdistance $uncertainty 2]]
+
+  log::summary [format "alertvisit: filters are %s." $filters]
+  set nfilters [llength [parsefilters $filters]]
+  set exposurerepeats [expr {int(16 / $nfilters)}]
+
+  if {$alertdelay < 300 && $uncertainty <= [astrometry::parsedistance "13am"]} {
   
-  if {$uncertainty <= [astrometry::parsedistance "13am"]} {
-    log::summary "alertvisit: grid is 1 × 1 fields."
-    dithervisit $exposurerepeats $exposuretime $filters false
-  } elseif {$uncertainty <= [astrometry::parsedistance "26am"]} {
-    log::summary "alertvisit: grid is 2 × 2 fields."
-    quaddithervisit $exposurerepeats $exposuretime $filters false
+    set exposuretime 10
+    log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
+
+    gridvisit 1 1 $exposurerepeats 10 $filters
+  
+  } else {
+
+    set exposuretime 60
+    log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
+
+    if {$uncertainty <= [astrometry::parsedistance "13am"]} {
+      log::summary "alertvisit: grid is 1 × 1 fields."
+      dithervisit $exposurerepeats $exposuretime $filters false
+    } elseif {$uncertainty <= [astrometry::parsedistance "26am"]} {
+      log::summary "alertvisit: grid is 2 × 2 fields."
+      quaddithervisit $exposurerepeats $exposuretime $filters false
+    }
+
   }
+  
+  set alertdelay [alert::delay [executor::alert]]
+  log::summary [format "alertvisit: alert delay at end of visit is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
 
   return
 
@@ -167,7 +185,7 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
   executor::waituntiltracking
   
   # Thus gives reasonable results for 1, 2, 4, 5, and 9 gridpoints.
-  if {$gridpoints == 0} {
+  if {$gridpoints == 1} {
     set dithers { 0as 0as }
   } else {
     set dithers [lrange {
