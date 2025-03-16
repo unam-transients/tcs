@@ -28,7 +28,7 @@
     "detectoridentifier": "",
     "detectorunbinnedpixelscale": "0.23as",
     "detectorinitialsoftwaregain": "1",
-    "detectorinitialbinning": "1",
+    "detectordefaultbinning": "1",
     "detectorwindows": {
       "initial": "default",
       "default": "1kx1k",

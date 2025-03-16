@@ -50,7 +50,7 @@ namespace eval "ccd" {
   variable detectortype                    [config::getvalue $identifier "detectortype"                   ]
   variable detectoridentifier              [config::getvalue $identifier "detectoridentifier"             ]
   variable detectorinitialsoftwaregain     [config::getvalue $identifier "detectorinitialsoftwaregain"    ]
-  variable detectorinitialbinning          [config::getvalue $identifier "detectorinitialbinning"         ]
+  variable detectordefaultbinning          [config::getvalue $identifier "detectordefaultbinning"         ]
   variable detectorfullunbinneddatawindow  [config::getvalue $identifier "detectorfullunbinneddatawindow" ]
   variable detectorfullunbinnedbiaswindow  [config::getvalue $identifier "detectorfullunbinnedbiaswindow" ]
   variable detectorwindows                 [config::getvalue $identifier "detectorwindows"                ]
@@ -514,8 +514,8 @@ namespace eval "ccd" {
       set window [dict get $detectorwindows $window]
     }
     detector::setunbinnedwindow $window
-    variable detectorinitialbinning
-    detector::setbinning $detectorinitialbinning
+    variable detectordefaultbinning
+    detector::setbinning $detectordefaultbinning
     setcoolerhelper "closed"
     variable focuserinitialposition
     movefocuseractivitycommand $focuserinitialposition
@@ -1328,8 +1328,8 @@ namespace eval "ccd" {
       }
     }
     detector::setunbinnedwindow $window
-    variable detectorinitialbinning
-    detector::setbinning $detectorinitialbinning
+    variable detectordefaultbinning
+    detector::setbinning $detectordefaultbinning
     updatedata
     log::info [format "finished setting window after %.1f seconds." [utcclock::diff now $start]]
     return
@@ -1346,9 +1346,9 @@ namespace eval "ccd" {
     log::info "setting binning to $binning."
     server::checkstatus
     server::checkactivity "idle"
-    if {[string equal $binning "initial"]} {
-      variable detectorinitialbinning
-      set binning $detectorinitialbinning
+    if {[string equal $binning "default"]} {
+      variable detectordefaultbinning
+      set binning $detectordefaultbinning
     }
     if {
       ![string is integer -strict $binning] ||
@@ -1378,8 +1378,8 @@ namespace eval "ccd" {
       set window [dict get $detectorwindows $window]
     }
     detector::setunbinnedwindow $window
-    variable detectorinitialbinning
-    detector::setbinning $detectorinitialbinning
+    variable detectordefaultbinning
+    detector::setbinning $detectordefaultbinning
     updatedata
     log::info [format "finished setting read mode after %.1f seconds." [utcclock::diff now $start]]
     return

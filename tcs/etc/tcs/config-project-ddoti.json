@@ -48,7 +48,7 @@
       "default": "16MHz"
     },
     "detectorinitialsoftwaregain": "16",
-    "detectorinitialbinning": "1",
+    "detectordefaultbinning": "1",
     "detectorwindows": {
       "initial": "default",
       "default": "6kx6k",
@@ -124,7 +124,7 @@
       "default": "16MHz"
     },
     "detectorinitialsoftwaregain": "16",
-    "detectorinitialbinning": "1",
+    "detectordefaultbinning": "1",
     "detectorwindows": {
       "initial": "default",
       "default": "6kx6k",
@@ -200,7 +200,7 @@
       "default": "16MHz"
     },
     "detectorinitialsoftwaregain": "16",
-    "detectorinitialbinning": "1",
+    "detectordefaultbinning": "1",
     "detectorwindows": {
       "initial": "default",
       "default": "6kx6k",
@@ -276,7 +276,7 @@
       "default": "16MHz"
     },
     "detectorinitialsoftwaregain": "16",
-    "detectorinitialbinning": "1",
+    "detectordefaultbinning": "1",
     "detectorwindows": {
       "initial": "default",
       "default": "6kx6k",
@@ -352,7 +352,7 @@
       "default": "16MHz"
     },
     "detectorinitialsoftwaregain": "16",
-    "detectorinitialbinning": "1",
+    "detectordefaultbinning": "1",
     "detectorwindows": {
       "initial": "default",
       "default": "6kx6k",
@@ -427,7 +427,7 @@
       "default": "16MHz"
     },
     "detectorinitialsoftwaregain": "16",
-    "detectorinitialbinning": "1",
+    "detectordefaultbinning": "1",
     "detectorwindows": {
       "initial": "default",
       "default": "6kx6k",

@@ -112,7 +112,7 @@
       "initial": ""
     },
     "detectorinitialsoftwaregain": 1,
-    "detectorinitialbinning": 1,
+    "detectordefaultbinning": 1,
     "detectorwindows": {
       "initial": "default",
       "default": "4kx4k",

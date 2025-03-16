@@ -34,7 +34,7 @@
       "default": "8MHz"
     },
     "detectorinitialsoftwaregain": 1,
-    "detectorinitialbinning": 1,
+    "detectordefaultbinning": 1,
     "detectorwindows": {
       "initial": "full",
       "default": "full",
@@ -110,7 +110,7 @@
       "default": "0"
     },
     "detectorinitialsoftwaregain": 1,
-    "detectorinitialbinning": 1,
+    "detectordefaultbinning": 1,
     "detectorwindows": {
       "initial": "default",
       "default": "4kx4k",
@@ -209,7 +209,7 @@
       "default": "0"
     },
     "detectorinitialsoftwaregain": 1,
-    "detectorinitialbinning": 1,
+    "detectordefaultbinning": 1,
     "detectorwindows": {
       "initial": "default",
       "default": "4kx4k",
@@ -1965,7 +1965,7 @@
       "default": ""
     },
     "detectorinitialsoftwaregain": 1,
-    "detectorinitialbinning": 1,
+    "detectordefaultbinning": 1,
     "detectorwindows": {
       "initial": "default",
       "default": "4kx4k",

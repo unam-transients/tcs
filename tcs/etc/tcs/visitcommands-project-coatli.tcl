@@ -59,11 +59,9 @@ proc alertvisit {{filters "r"} {readmode "conventionaldefault"}} {
   set alertdelay [alert::delay [executor::alert]]
   log::summary [format "alertvisit: alert delay at start of visit is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
   if {$alertdelay < 1800} {
-    set binning            1
     set exposuretime       15
     set exposuresperdither 4
   } else {
-    set binning            1
     set exposuretime       15
     set exposuresperdither 4
   }
@@ -71,7 +69,7 @@ proc alertvisit {{filters "r"} {readmode "conventionaldefault"}} {
   if {$exposuresperfilterperdither == 0} {
     set exposuresperfilterperdither 1
   }
-  log::summary [format "alertvisit: taking %.0f second exposures with binning of %d in %s." $exposuretime $binning $filters]
+  log::summary [format "alertvisit: taking %.0f second exposures in %s." $exposuretime $filters]
   log::summary [format "alertvisit: taking %d exposures per filter per dither." $exposuresperfilterperdither]
   
   executor::setsecondaryoffset 0
@@ -81,7 +79,7 @@ proc alertvisit {{filters "r"} {readmode "conventionaldefault"}} {
   executor::movefocuser "center"
   executor::setreadmode $readmode
   executor::setwindow "default"
-  executor::setbinning $binning
+  executor::setbinning "default"
   executor::movefilterwheel [lindex $filters 0]
 
   executor::waituntiltracking
@@ -180,7 +178,7 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
 
   executor::movefocuser "center"
   executor::setreadmode $readmode
-  executor::setbinning 1
+  executor::setbinning "default"
 
   executor::waituntiltracking
   
@@ -281,12 +279,12 @@ proc focusvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} 
   executor::movefocuser "center"
   executor::setreadmode $readmode
   executor::movefilterwheel $filter
-  executor::setbinning 1
+  executor::setbinning "default"
   executor::setwindow "default"
 
   executor::waituntiltracking
 
-  log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning 1."
+  log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures."
   executor::focus $exposuretime 100 10 true false
   executor::setfocused
   
@@ -307,7 +305,7 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefa
 
   executor::movefocuser "center"
   executor::setreadmode $readmode
-  executor::setbinning 1
+  executor::setbinning "default"
   executor::setwindow "default"
 
   executor::waituntiltracking
@@ -376,7 +374,7 @@ proc focusinstrumentvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingd
 
   executor::setreadmode $readmode
   executor::setwindow "default"
-  executor::setbinning 1
+  executor::setbinning "default"
   executor::movefilterwheel $filter
 
   executor::waituntiltracking
@@ -426,7 +424,7 @@ proc pointingcorrectionvisit {{exposuretime 15} {filter "i"} {readmode "conventi
   executor::movefocuser "center"
   executor::setreadmode $readmode
   executor::setwindow "default"
-  executor::setbinning 1
+  executor::setbinning "default"
   executor::movefilterwheel $filter
 
   executor::waituntiltracking
@@ -450,7 +448,7 @@ proc donutvisit {{exposuretime 10} {filter "i"}} {
 
   executor::setreadmode "conventionaldefault"
   executor::setwindow "default"
-  executor::setbinning 1
+  executor::setbinning "default"
   executor::movefilterwheel $filter
 
   executor::waituntiltracking
@@ -498,7 +496,7 @@ proc pointingmapvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefa
   executor::movefocuser "center"
   executor::setwindow "default"
   executor::setreadmode "default"
-  executor::setbinning 1
+  executor::setbinning "default"
   executor::movefilterwheel $filter
   executor::waituntiltracking
 
@@ -521,7 +519,7 @@ proc twilightflatsvisit {targetngood filter} {
   executor::movefocuser "center"
   executor::setreadmode "conventionaldefault"
   executor::setwindow "default"
-  executor::setbinning 1
+  executor::setbinning "default"
 
   set maxlevel 16000
   set minlevel 3500
@@ -577,7 +575,7 @@ proc domeflatsvisit {} {
   executor::movefocuser "center"
   executor::setreadmode "conventionaldefault"
   executor::setwindow "default"
-  executor::setbinning 1
+  executor::setbinning "default"
 
   set maxlevel 16000
   set minlevel 3500
@@ -853,7 +851,7 @@ proc satellitevisit {start exposures exposuretime} {
   executor::movefilterwheel "g"
   executor::setreadmode "conventionaldefault"
   executor::setwindow "default"
-  executor::setbinning 1
+  executor::setbinning "default"
   executor::waituntiltracking
   
   log::summary "satellitevisit: waiting until $start."

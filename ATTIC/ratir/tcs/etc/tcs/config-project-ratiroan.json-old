@@ -33,7 +33,7 @@
       "default": "1MHz"
     },
     "detectorinitialsoftwaregain": "4",
-    "detectorinitialbinning": "2",
+    "detectordefaultbinning": "2",
     "detectorwindows": {
       "initial": "default",
       "default": "2kx2k",
@@ -101,7 +101,7 @@
       "default": "1MHz"
     },
     "detectorinitialsoftwaregain": "4",
-    "detectorinitialbinning": "2",
+    "detectordefaultbinning": "2",
     "detectorwindows": {
       "initial": "default",
       "default": "2kx2k",
@@ -160,7 +160,7 @@
       "default": "1"
     },
     "detectorinitialsoftwaregain": "2",
-    "detectorinitialbinning": "1",
+    "detectordefaultbinning": "1",
     "detectorwindows": {
       "initial": "default",
       "default": "2kx2k",
@@ -219,7 +219,7 @@
       "default": "1"
     },
     "detectorinitialsoftwaregain": "2",
-    "detectorinitialbinning": "1",
+    "detectordefaultbinning": "1",
     "detectorwindows": {
       "initial": "default",
       "default": "2kx2k",
@@ -389,7 +389,7 @@
     "detectorwidth":                   "0.68d",
     "detectorinitialreadmode":         "5MHz",
     "detectorinitialsoftwaregain":     "8",
-    "detectorinitialbinning":          "2",
+    "detectordefaultbinning":          "2",
     "detectorfullunbinneddatawindow":  { "sx": "46", "sy": "34", "nx": "2184", "ny": "1472" },
     "detectorfullunbinnedbiaswindow":  { "sx": "12", "sy": "34", "nx":   "34", "ny": "1472" },
     "coolersettemperature":            "-30",
@@ -532,7 +532,7 @@
     "detectorwidth":                   "0.68d",
     "detectorinitialreadmode":         "5MHz",
     "detectorinitialsoftwaregain":     "8",
-    "detectorinitialbinning":          "2",
+    "detectordefaultbinning":          "2",
     "detectorfullunbinneddatawindow":  { "sx": "46", "sy": "34", "nx": "2184", "ny": "1472" },
     "detectorfullunbinnedbiaswindow":  { "sx": "12", "sy": "34", "nx":   "34", "ny": "1472" },
     "coolersettemperature":            "-30",

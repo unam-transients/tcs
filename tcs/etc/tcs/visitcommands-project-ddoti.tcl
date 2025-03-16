@@ -62,15 +62,13 @@ proc alertvisit {{filter "w"}} {
   if {$alertdelay < 1800} {
     set exposuretime       30
     set exposuresperdither 4
-    set binning            1
   } else {
     set exposuretime       60
     set exposuresperdither 2
-    set binning            1
   }
-  log::summary [format "alertvisit: %.0f second exposures with binning of %d." $exposuretime $binning]
+  log::summary [format "alertvisit: %.0f second exposures." $exposuretime]
 
-  executor::setbinning $binning
+  executor::setbinning "default"
   executor::setwindow "default"
 
   # For the time being, we just use one field.
@@ -211,14 +209,14 @@ proc alertprologvisit {} {
 
   log::summary "alertprologvisit: focusing with binning 1."
   executor::setwindow "1kx1k"
-  executor::setbinning 1
+  executor::setbinning "default"
   executor::focus 4 600 75 false false
 
   # Then correct pointing
 
   log::summary "alertprologvisit: correcting pointing."
   executor::setwindow "6kx6k"
-  executor::setbinning 1
+  executor::setbinning "default"
   executor::correctpointing 4
   
   log::summary "alertprologvisit: finished."
@@ -265,12 +263,11 @@ proc starevisit {exposures exposuretime {filters "w"}} {
 
   log::summary "starevisit: starting."
 
-  set binning 1
   executor::setwindow "default"
-  executor::setbinning $binning
+  executor::setbinning "default"
   
-  log::summary [format "starevisit: %d × %.0f second exposures with binning of %d." \
-    $exposures $exposuretime $binning \
+  log::summary [format "starevisit: %d × %.0f second exposures." \
+    $exposures $exposuretime \
   ]
 
   executor::track
@@ -293,12 +290,11 @@ proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime {filters 
 
   log::summary "gridvisit: starting."
 
-  set binning 1
   executor::setwindow "default"
-  executor::setbinning $binning
+  executor::setbinning "default"
   
-  log::summary [format "gridvisit: %d × %.0f second exposures with binning of %d." \
-    [expr {$gridrepeats * $gridpoints * $exposuresperdither}] $exposuretime $binning \
+  log::summary [format "gridvisit: %d × %.0f second exposures." \
+    [expr {$gridrepeats * $gridpoints * $exposuresperdither}] $exposuretime \
   ]
   log::summary [format "gridvisit: %d grid repeats." $gridrepeats]
   log::summary [format "gridvisit: %d dithers per repeat." $gridpoints]
@@ -379,12 +375,11 @@ proc steppedgridvisit {gridrepeats exposuresperdither exposuretime} {
 
   variable visit
 
-  set binning 1
   executor::setwindow "default"
-  executor::setbinning $binning
+  executor::setbinning "default"
   
-  log::summary [format "steppedgridvisit: %d × %.0f second exposures with binning of %d." \
-    [expr {$gridrepeats * 5 * $exposuresperdither}] $exposuretime $binning \
+  log::summary [format "steppedgridvisit: %d × %.0f second exposures." \
+    [expr {$gridrepeats * 5 * $exposuresperdither}] $exposuretime \
   ]
   log::summary [format "steppedgridvisit: %d grid repeats." $gridrepeats]
   log::summary [format "steppedgridvisit: %d dithers per repeat." 5]
@@ -427,9 +422,8 @@ proc allskyvisit {} {
 
   log::summary "allskyvisit: starting."
 
-  set binning 1
   executor::setwindow "default"
-  executor::setbinning $binning
+  executor::setbinning "default"
   
   set eastoffsets  {0.0d 0.85d 1.70d 2.55d}
   set northoffsets {0.0d 0.85d 1.70d 2.55d}
@@ -439,8 +433,8 @@ proc allskyvisit {} {
   set exposuretime 60
   set gridpoints [expr {[llength $eastoffsets] * [llength $northoffsets]}]  
 
-  log::summary [format "allskyvisit: %d × %.0f second exposures with binning of %d." \
-    [expr {$gridrepeats * $gridpoints * $exposuresperdither}] $exposuretime $binning \
+  log::summary [format "allskyvisit: %d × %.0f second exposures." \
+    [expr {$gridrepeats * $gridpoints * $exposuresperdither}] $exposuretime \
   ]
   log::summary [format "allskyvisit: %d grid repeats." $gridrepeats]
   log::summary [format "allskyvisit: %d dithers per repeat." $gridpoints]
@@ -504,7 +498,7 @@ proc allskyprologvisit {} {
 
   log::summary "allskyprologvisit: correcting pointing."
   executor::setwindow "6kx6k"
-  executor::setbinning 1
+  executor::setbinning "default"
   executor::correctpointing 4
   
   log::summary "allskyprologvisit: finished."
@@ -518,9 +512,8 @@ proc trackingtestvisit {exposures exposuretime} {
   log::summary "trackingvisit: starting."
   log::summary [format "trackingvisit: %d × %.0f second exposures." $exposures $exposuretime]
 
-  set binning 1
   executor::setwindow "1kx1k"
-  executor::setbinning $binning
+  executor::setbinning "default"
   
   executor::tracktopocentric
   executor::waituntiltracking
@@ -579,7 +572,7 @@ proc correctpointingvisit {} {
   log::summary "correctpointingvisit: starting."
   executor::tracktopocentric
   executor::setwindow "6kx6k"
-  executor::setbinning 1
+  executor::setbinning "default"
   executor::waituntiltracking
   log::summary "correctpointingvisit: correcting."
   executor::correctpointing 4

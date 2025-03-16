@@ -35,7 +35,7 @@
       "nx": 800,
       "ny": 512
     },
-    "detectorinitialbinning": "1",
+    "detectordefaultbinning": "1",
     "detectorfullunbinneddatawindow": {
       "sx": 0,
       "sy": 0,
