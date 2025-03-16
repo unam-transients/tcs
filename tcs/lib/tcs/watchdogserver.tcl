@@ -41,9 +41,15 @@ namespace eval "watchdogserver" {
     return
   }
   
+  proc slavereset {} {
+    watchdog::reset
+    return
+  }
+  
   proc configureslave {slave} {
     interp alias $slave enable            {} watchdogserver::slaveenable
     interp alias $slave disable           {} watchdogserver::slavedisable
+    interp alias $slave reset             {} watchdogserver::slavereset
   }
 
   ######################################################################

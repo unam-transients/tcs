@@ -72,7 +72,11 @@ namespace eval "selector" {
 
   proc sendchat {category message} {
     log::info "sending $category message \"$message\"."
-    exec "[directories::prefix]/bin/tcs" "sendchat" "$category" "$message"
+    if {[catch {
+      exec "[directories::prefix]/bin/tcs" "sendchat" "$category" "$message"
+    }]} {
+      log::warning "unable to send $category message \"$message\"."
+    }
   }
   
   ######################################################################

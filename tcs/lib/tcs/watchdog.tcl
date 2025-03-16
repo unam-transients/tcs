@@ -73,10 +73,16 @@ namespace eval "watchdog" {
       "watchdog: persistent problems since %s with: %s" \
       [utcclock::format $problemtimestamp 0] [join $problemservers " "] \
     ]
-    exec "[directories::prefix]/bin/tcs" "sendpushover" \
-      "-P" "emergency" \
-      "-s" "Watchdog" \
-      "emergency" "$message"
+    
+    log::info "sending emergency pushover message \"$message\"."
+    if {[catch {
+      exec "[directories::prefix]/bin/tcs" "sendpushover" \
+        "-P" "emergency" \
+        "-s" "Watchdog" \
+        "emergency" "$message"
+    }]} {
+      log::warning "unable to send emergency pushover message \"$message\"."
+    }
 
   }
   
@@ -171,6 +177,18 @@ namespace eval "watchdog" {
     return
   }
   
+  proc reset {} {
+    log::summary "resetting."
+    server::checkstatus
+    server::checkactivityforreset
+    variable problemservers
+    variable problemtimestamp
+    set problemservers   {}
+    set problemtimestamp ""
+    log::summary "finished resetting."
+    return
+  }
+
   ######################################################################
 
   set server::datalifeseconds 120
