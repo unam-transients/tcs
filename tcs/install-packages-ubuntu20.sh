@@ -152,6 +152,12 @@ sudo apt-get -y install tcllib
 
 ########################################################################
 
+# Install pygcn
+
+sudo pip install pygcn
+
+########################################################################
+
 # Install ligo.skymap
 
 exit

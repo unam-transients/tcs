@@ -22,7 +22,7 @@ def removelinecomments(s):
 
 def serversfilename():
     if "tcsprefix" in os.environ:
-        return os.environ["TCSPREFIX"] + "/etc/tcs/servers.json"
+        return os.environ["tcsprefix"] + "/etc/tcs/servers.json"
     else:
         return "/usr/local/etc/tcs/servers.json"
 
