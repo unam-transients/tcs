@@ -129,7 +129,7 @@ namespace eval "executor" {
   
   ######################################################################
 
-  variable trackstart
+  variable trackstart ""
   
   proc track {{alphaoffset 0} {deltaoffset 0} {aperture "default"}} {
     variable trackstart
@@ -187,18 +187,24 @@ namespace eval "executor" {
     client::request "telescope" "offset $alphaoffset $deltaoffset $aperture"
   } 
   
-  proc waituntiltracking {} {
+  proc waitfortelescope {} {
+    set start [utcclock::seconds]
+    log::info "waiting for telescope."
+    client::wait "telescope" 100
+    log::info [format "finished waiting for telescope after %.1f seconds." [utcclock::diff now $start]]
     variable trackstart
-    client::wait "telescope" 
-    log::info [format "tracking after %.1f seconds." [utcclock::diff now $trackstart]]
+    if {![string equal "" $trackstart]} {
+      log::info [format "tracking after %.1f seconds." [utcclock::diff now $trackstart]]
+      set trackstart ""
+    }
   }
-  
+
   ######################################################################
   
   proc movesecondarytoinitial {} {
+    waitfortelescope
     log::info "moving secondary to the initial postion."
     client::request "telescope" "movesecondary initialz0"
-    client::wait "telescope"
   }
 
   proc focussecondary {detector exposuretime {z0range 300} {z0step 20} {witness true} {initial false}} {
@@ -206,6 +212,7 @@ namespace eval "executor" {
     log::info "focusing secondary on $detector with range $z0range and step $z0step."
     if {$initial} {
       movesecondarytoinitial
+      waitfortelescope
     }
     client::update "secondary"
     set z0 [client::getdata "secondary" "requestedz0"]
@@ -316,7 +323,16 @@ namespace eval "executor" {
   
   ######################################################################
 
+  proc waitforinstrument {} {
+    set start [utcclock::seconds]
+    log::info "waiting for instrument."
+    client::wait "instrument" 100
+    log::info [format "finished waiting for instrument after %.1f seconds." [utcclock::diff now $start]]
+  }
+
   proc expose {type args} {
+    waitfortelescope
+    waitforinstrument
     set start [utcclock::seconds]
     variable exposure
     set exposuretimes $args
@@ -325,12 +341,14 @@ namespace eval "executor" {
     set fitsfiledir "[directories::vartoday]/executor/images/[project::fullidentifier [project]]/[block::identifier [block]]/[visit::identifier [visit]]"
     file mkdir $fitsfiledir
     client::request "instrument" "exposefull $type $fitsfiledir now $exposuretimes"
-    client::wait "instrument"
+    client::waituntil "instrument" "reading" 100
     log::info [format "finished exposing $type image (exposure $exposure) after %.1f seconds." [utcclock::diff now $start]]
     set exposure [expr {$exposure + 1}]
   }
   
   proc exposeafter {type starttime args} {
+    waitfortelescope
+    waitforinstrument
     set start [utcclock::seconds]
     variable exposure
     set exposuretimes $args
@@ -339,39 +357,41 @@ namespace eval "executor" {
     set fitsfiledir "[directories::vartoday]/executor/images/[project::fullidentifier [project]]/[block::identifier [block]]/[visit::identifier [visit]]"
     file mkdir $fitsfiledir
     client::request "instrument" "exposefull $type $fitsfiledir $starttime $exposuretimes"
-    client::wait "instrument"
+    client::waituntil "instrument" "reading" 100
     log::info [format "finished exposing $type image (exposure $exposure) after %.1f seconds." [utcclock::diff now $start]]
     set exposure [expr {$exposure + 1}]
   }
   
   proc analyze {args} {
+    waitforinstrument
     set start [utcclock::seconds]
     set types $args
     log::info "analyzing [join $types /]."
     client::request "instrument" "analyze $types"
-    client::wait "instrument"
+    waitforinstrument
     log::info [format "finished analyzing after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc setreadmode {args} {
+    waitforinstrument
     set start [utcclock::seconds]
     set modes $args
     log::info "setting read mode to [join $modes /]."
     client::request "instrument" "setreadmode $args"
-    client::wait "instrument"
     log::info [format "finished setting read modes after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc setwindow {args} {
+    waitforinstrument
     set start [utcclock::seconds]
     set windows $args
     log::info "setting window to [join $windows /]."
     client::request "instrument" "setwindow $windows"
-    client::wait "instrument"
     log::info [format "finished setting window after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc setbinning {args} {
+    waitforinstrument
     set start [utcclock::seconds]
     set binnings $args
     log::info "setting binning to [join $binnings /]."
@@ -381,39 +401,39 @@ namespace eval "executor" {
   }
 
   proc movefilterwheel {args} {
+    waitforinstrument
     set start [utcclock::seconds]
     set positions $args
     log::info "moving filter wheel to [join $positions /]."
     client::request "instrument" "movefilterwheel $positions"
     if {[server::withserver "secondary"]} {
+      waitfortelescope
       client::request "secondary"  "moveforfilter [lindex $positions 0]"
-    }
-    client::wait "instrument"
-    if {[server::withserver "secondary"]} {
       client::wait "secondary"
     }
     log::info [format "finished moving filter wheel after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc movefocuser {args} {
+    waitforinstrument
     set start [utcclock::seconds]
     set positions $args
     log::info "moving focuser to [join $positions /]."
     client::request "instrument" "movefocuser $positions"
-    client::wait "instrument"
     log::info [format "finished moving focuser after %.1f seconds." [utcclock::diff now $start]]
   }
   
   proc setfocuser {args} {
+    waitforinstrument
     set start [utcclock::seconds]
     set positions $args
     log::info "setting focuser to [join $positions /]."
     client::request "instrument" "setfocuser $positions"
-    client::wait "instrument"
     log::info [format "finished setting focuser after %.1f seconds." [utcclock::diff now $start]]
   }
   
   proc focusinstrument {exposuretime range step {witness false} {initial false}} {
+    waitforinstrument
     set start [utcclock::seconds]
     log::info "focusing with range $range and step $step."
     set projectfullidentifier [server::getdata "projectfullidentifier"]
@@ -426,6 +446,7 @@ namespace eval "executor" {
   }
   
   proc mapfocus {range step args} {
+    waitforinstrument
     set start [utcclock::seconds]
     log::info "mapping focus with range $range and step $step."
     set projectfullidentifier [server::getdata "projectfullidentifier"]
@@ -924,6 +945,7 @@ namespace eval "executor" {
         client::request "instrument" "stop"
         client::wait "instrument"
         eval [visit::command [visit]]
+        client::wait "instrument"        
       } result]} {
         log::error "while executing visit: $result"
         log::summary "aborting block."
