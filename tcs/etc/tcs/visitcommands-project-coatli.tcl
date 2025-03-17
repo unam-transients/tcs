@@ -82,8 +82,6 @@ proc alertvisit {{filters "r"} {readmode "conventionaldefault"}} {
   executor::setbinning "default"
   executor::movefilterwheel [lindex $filters 0]
 
-  executor::waituntiltracking
-
   set lastalpha   [alert::alpha [executor::alert]]
   set lastdelta   [alert::delta [executor::alert]]
   set lastequinox [alert::equinox [executor::alert]]
@@ -129,10 +127,8 @@ proc alertvisit {{filters "r"} {readmode "conventionaldefault"}} {
       log::summary [format "alertvisit: new alert coordinates are %s %s %s." [astrometry::formatalpha $alpha]  [astrometry::formatdelta $delta] $equinox]
       executor::setvisit [visit::updatevisittargetcoordinates [executor::visit] [visit::makeequatorialtargetcoordinates $alpha $delta $equinox]]
       executor::track $eastoffset $northoffset "default"
-      executor::waituntiltracking
     } else {
       executor::offset $eastoffset $northoffset "default"
-      executor::waituntiltracking
     }
 
     foreach filter $filters {
@@ -180,8 +176,7 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
   executor::setreadmode $readmode
   executor::setbinning "default"
 
-  executor::waituntiltracking
-  
+
   if {[llength $exposuretimes] == 1} {
     set exposuretimes [lrepeat [llength $filters] $exposuretimes]
   } elseif {[llength $exposuretimes] != [llength $filters]} {
@@ -209,7 +204,6 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
         executor::movefilterwheel $filter
         foreach {eastoffset northoffset} $dithers {
           executor::offset $eastoffset $northoffset "default"
-          executor::waituntiltracking
           set exposure 0
           while {$exposure < $exposurerepeats} {
             executor::expose object $exposuretime
@@ -220,7 +214,6 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
     } else {
       foreach {eastoffset northoffset} $dithers {
         executor::offset $eastoffset $northoffset "default"
-        executor::waituntiltracking
         foreach filter $filters exposuretime $exposuretimes {
           executor::movefilterwheel $filter
           set exposure 0
@@ -255,8 +248,6 @@ proc coarsefocusvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefa
   executor::setbinning 4
   executor::movefilterwheel "$filter"
 
-  executor::waituntiltracking
-
   log::summary "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning 4."
   executor::focus $exposuretime 300 30 false true
   executor::setfocused
@@ -282,8 +273,6 @@ proc focusvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefault"}} 
   executor::setbinning "default"
   executor::setwindow "default"
 
-  executor::waituntiltracking
-
   log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures."
   executor::focus $exposuretime 100 10 true false
   executor::setfocused
@@ -308,8 +297,6 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefa
   executor::setbinning "default"
   executor::setwindow "default"
 
-  executor::waituntiltracking
-  
   foreach filter {g r i z y w} {
   
    log::summary "focuswitnessvisit: taking images in $filter."
@@ -326,7 +313,6 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingdefa
 
     foreach {eastoffset northoffset} $dithers {
       executor::offset $eastoffset $northoffset "default"
-      executor::waituntiltracking
       executor::expose "object" $exposuretime
       executor::analyze "fwhmwitness"
     }
@@ -353,8 +339,6 @@ proc coarsefocusinstrumentvisit {{exposuretime 5} {filter "i"} {readmode "conven
   executor::setbinning 4
   executor::movefilterwheel $filter
 
-  executor::waituntiltracking
-
   executor::focusinstrument $exposuretime 100000 10000 true true
   executor::setfocused
 
@@ -376,8 +360,6 @@ proc focusinstrumentvisit {{exposuretime 5} {filter "i"} {readmode "fastguidingd
   executor::setwindow "default"
   executor::setbinning "default"
   executor::movefilterwheel $filter
-
-  executor::waituntiltracking
 
   executor::focusinstrument $exposuretime 60000 6000 true false
   executor::setfocused
@@ -402,8 +384,6 @@ proc initialpointingcorrectionvisit {{exposuretime 30} {filter "i"} {readmode "c
   executor::setbinning 2
   executor::movefilterwheel $filter
 
-  executor::waituntiltracking
-
   log::summary "initialpointingcorrectionvisit: correcting pointing."
   executor::correctpointing $exposuretime
 
@@ -427,8 +407,6 @@ proc pointingcorrectionvisit {{exposuretime 15} {filter "i"} {readmode "conventi
   executor::setbinning "default"
   executor::movefilterwheel $filter
 
-  executor::waituntiltracking
-
   log::summary "correctpointingvisit: correcting pointing."
   executor::correctpointing $exposuretime
 
@@ -451,8 +429,6 @@ proc donutvisit {{exposuretime 10} {filter "i"}} {
   executor::setbinning "default"
   executor::movefilterwheel $filter
 
-  executor::waituntiltracking
-  
   set n 3
 
   log::summary "donutvisit: moving focuser to intrafocal position."
@@ -498,7 +474,6 @@ proc pointingmapvisit {{exposuretime 5} {filter "i"} {readmode "conventionaldefa
   executor::setreadmode "default"
   executor::setbinning "default"
   executor::movefilterwheel $filter
-  executor::waituntiltracking
 
   executor::expose object $exposuretime
 
@@ -799,7 +774,6 @@ proc hartmanntestvisit {secondaryoffset {exposuretime 10} {filter "470/10"} {exp
 
   executor::setsecondaryoffset +$secondaryoffset
   executor::track
-  executor::waituntiltracking
   
   set dither [astrometry::parseoffset $dither]
   
@@ -808,7 +782,6 @@ proc hartmanntestvisit {secondaryoffset {exposuretime 10} {filter "470/10"} {exp
     set eastoffset [expr {$dither * (rand() - 0.5)}]
     set northoffset [expr {$dither * (rand() - 0.5)}]
     executor::offset $eastoffset $northoffset
-    executor::waituntiltracking
     executor::expose object $exposuretime
     incr exposure
   }
@@ -817,14 +790,12 @@ proc hartmanntestvisit {secondaryoffset {exposuretime 10} {filter "470/10"} {exp
 
   executor::setsecondaryoffset -$secondaryoffset
   executor::offset
-  executor::waituntiltracking
 
   set exposure 0
   while {$exposure < $exposures} {
     set eastoffset [expr {$dither * (rand() - 0.5)}]
     set northoffset [expr {$dither * (rand() - 0.5)}]
     executor::offset $eastoffset $northoffset
-    executor::waituntiltracking
     executor::expose object $exposuretime
     incr exposure
   }
@@ -852,7 +823,6 @@ proc satellitevisit {start exposures exposuretime} {
   executor::setreadmode "conventionaldefault"
   executor::setwindow "default"
   executor::setbinning "default"
-  executor::waituntiltracking
   
   log::summary "satellitevisit: waiting until $start."
   
