@@ -369,6 +369,15 @@ namespace eval "detector" {
   proc readexposure {} {
     log::debug "waiting to read the exposure."
     checkisopen
+    # This is a hack to allow the instrument time to notice the detector is
+    # being read.
+    variable readdelaymilliseconds
+    set delaymilliseconds 0
+    while {$delaymilliseconds < $readdelaymilliseconds} {
+      coroutine::after 100
+      set delaymilliseconds [expr {$delaymilliseconds + 100}]
+    }
+    detectorrawreaddelay
     while {![detectorrawgetreadytoberead]} {
       coroutine::after 100
     }

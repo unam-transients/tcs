@@ -30,6 +30,8 @@ namespace eval "detector" {
   variable bscale 1.0
   variable bzero  32768.0
 
+  variable readdelaymiliseconds 500
+
   proc detectorrawstart {} {
     if {[catch {exec "sudo" "/bin/chmod" "-R" "a=rwX" "/dev/bus/usb/"}]} {
       error "unable to change permissions of the USB devices."

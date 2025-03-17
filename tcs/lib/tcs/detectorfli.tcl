@@ -30,6 +30,8 @@ namespace eval "detector" {
   variable bscale 1.0
   variable bzero  32768.0
 
+  variable readdelaymilliseconds 500
+
   proc detectorrawstart {} {
     if {[catch {exec "sudo" "/sbin/modprobe" "fliusb" "buffersize=4194304"}]} {
       error "unable to load the fliusb kernel module."
@@ -44,7 +46,7 @@ namespace eval "detector" {
   proc detectorrawaugmentfitsheader {channel} {
     return "ok"
   }
-  
+    
 }
 
 source [file join [directories::prefix] "lib" "tcs" "detector.tcl"]
