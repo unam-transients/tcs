@@ -630,7 +630,6 @@ proc pointingcorrectionvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
 
 proc biasesvisit {{exposures 10} {binning "default"}} {
   log::summary "biasesvisit: starting."
-  executor::move
   executor::setwindow "default"
   executor::setbinning $binning
   set exposure 0
