@@ -940,10 +940,6 @@ namespace eval "executor" {
     setproject [block::project [block]]
     setalert   [block::alert [block]]
 
-    log::info "stopping instrument."
-    client::request "instrument" "stop"
-    client::wait "instrument"
-
     log::summary "executing block [block::identifier [block]] \"[block::name [block]]\" of project [project::identifier [project]] \"[project::name [block::project [block]]]\"."
     if {[string equal "alert" [filetype]]} {
       sendchat "observations" "executing alert block [block::identifier [block]] \"[block::name [block]]\"."
@@ -959,7 +955,6 @@ namespace eval "executor" {
       set visitstart [utcclock::seconds]
       if {[catch {
         client::request "instrument" "stop"
-        client::wait "instrument"
         eval [visit::command [visit]]
         client::wait "instrument"        
       } result]} {
