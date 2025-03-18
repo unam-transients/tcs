@@ -270,6 +270,10 @@ namespace eval "selector" {
           log::info "alert file \"[file tail $alertfile]\" matches by event timestamp."
           return [file tail $alertfile]
         }
+        if {[utcclock::diff $eventtimestamp $maxeventtimestamp] > $eventtimestamptoleranceseconds} {
+          log::info "will not continue to match older alert files."
+          break
+        }
       }
       log::debug "alert file \"[file tail $alertfile]\" is not a match."
     }
