@@ -377,7 +377,6 @@ namespace eval "detector" {
       coroutine::after 100
       set delaymilliseconds [expr {$delaymilliseconds + 100}]
     }
-    detectorrawreaddelay
     while {![detectorrawgetreadytoberead]} {
       coroutine::after 100
     }
