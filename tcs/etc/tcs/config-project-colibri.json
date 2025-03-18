@@ -52,7 +52,9 @@
       "3kx3k-ll": { "sx":   36, "sy":   22, "nx": 3072, "ny": 3072 },
       "3kx3k-lr": { "sx": 1060, "sy":   22, "nx": 3072, "ny": 3072 },
       "3kx3k-ul": { "sx":   36, "sy": 1046, "nx": 3072, "ny": 3072 },
-      "3kx3k-ur": { "sx": 1060, "sy": 1046, "nx": 3072, "ny": 3072 }
+      "3kx3k-ur": { "sx": 1060, "sy": 1046, "nx": 3072, "ny": 3072 },
+      // This window is the smallest conventional one larger than 6 arcmin.
+      "6am": "2kx2k"
     },
     "detectorfullunbinneddatawindow": {
       "sx": 36,
@@ -137,7 +139,9 @@
         "sy": 8,
         "nx": 4192,
         "ny": 4096
-      }
+      },
+      // This window is the smallest conventional one larger than 6 arcmin.
+      "6am": "1kx1k"
     },
     "detectorfullunbinneddatawindow": {
       "sx": 50,
@@ -236,7 +240,9 @@
         "sy": 8,
         "nx": 4192,
         "ny": 4096
-      }
+      },
+      // This window is the smallest conventional one larger than 6 arcmin.
+      "6am": "1kx1k"
     },
     "detectorboresight": { "x": 2048.0, "y": 2048.0 },
     "detectorfullunbinneddatawindow": {
