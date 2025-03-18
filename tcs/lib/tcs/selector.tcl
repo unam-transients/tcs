@@ -275,7 +275,7 @@ namespace eval "selector" {
           break
         }
       }
-      log::debug "alert file \"[file tail $alertfile]\" is not a match."
+      log::info "alert file \"[file tail $alertfile]\" is not a match."
     }
     log::info "no existing alert file matches."
     if {[string equal $eventtimestamp ""]} {
@@ -675,7 +675,7 @@ namespace eval "selector" {
       log::summary "not interrupting the executor: selector is disabled."
     } elseif {![string equal "" [server::getdata "priority"]] && ([server::getdata "priority"] < $priority)} {
       log::summary [format "not interrupting the executor: current priority is %d." [server::getdata "priority"]]
-    } elseif {[string equal [server::getdata "alertfile"] $fullalertfile]} {
+    } elseif {[string equal [server::getdata "filename"] $fullalertfile]} {
       log::summary [format "not interrupting the executor: already executing %s." $alertfile]
     } else {
       set why [isselectablealertfile $fullalertfile [utcclock::seconds] $priority]
