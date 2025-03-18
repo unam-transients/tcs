@@ -323,6 +323,11 @@ namespace eval "executor" {
   
   ######################################################################
 
+  variable lastreadmodes ""
+  variable lastwindows ""
+  variable lastbinnings ""
+  variable lastfilterpositions ""
+
   proc waitforinstrument {} {
     set start [utcclock::seconds]
     log::info "waiting for instrument."
@@ -371,13 +376,16 @@ namespace eval "executor" {
     waitforinstrument
     log::info [format "finished analyzing after %.1f seconds." [utcclock::diff now $start]]
   }
-
+  
   proc setreadmode {args} {
     waitforinstrument
     set start [utcclock::seconds]
-    set modes $args
-    log::info "setting read mode to [join $modes /]."
-    client::request "instrument" "setreadmode $args"
+    set readmodes $args
+    log::info "setting read mode to [join $readmodes /]."
+    variable lastreadmodes
+    if {![string equal $readmodes $lastreadmodes]} {
+      client::request "instrument" "setreadmode $readmodes"
+    }
     log::info [format "finished setting read modes after %.1f seconds." [utcclock::diff now $start]]
   }
 
@@ -386,7 +394,10 @@ namespace eval "executor" {
     set start [utcclock::seconds]
     set windows $args
     log::info "setting window to [join $windows /]."
-    client::request "instrument" "setwindow $windows"
+    variable lastwindows
+    if {![string equal $windows $lastwindows]} {
+      client::request "instrument" "setwindow $windows"
+    }
     log::info [format "finished setting window after %.1f seconds." [utcclock::diff now $start]]
   }
 
@@ -395,21 +406,26 @@ namespace eval "executor" {
     set start [utcclock::seconds]
     set binnings $args
     log::info "setting binning to [join $binnings /]."
-    client::request "instrument" "setbinning $binnings"
-    client::wait "instrument"
+    variable lastbinnings
+    if {![string equal $binnings $lastbinnings]} {
+      client::request "instrument" "setbinning $binnings"
+    }
     log::info [format "finished setting binning after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc movefilterwheel {args} {
     waitforinstrument
     set start [utcclock::seconds]
-    set positions $args
-    log::info "moving filter wheel to [join $positions /]."
-    client::request "instrument" "movefilterwheel $positions"
-    if {[server::withserver "secondary"]} {
-      waitfortelescope
-      client::request "secondary"  "moveforfilter [lindex $positions 0]"
-      client::wait "secondary"
+    set filterpositions $args
+    log::info "moving filter wheel to [join $filterpositions /]."
+    variable lastfilterpositions
+    if {![string equal $filterpositions $lastfilterpositions]} {
+      client::request "instrument" "movefilterwheel $filterpositions"
+      if {[server::withserver "secondary"]} {
+        waitfortelescope
+        client::request "secondary"  "moveforfilter [lindex $filterpositions 0]"
+        client::wait "secondary"
+      }
     }
     log::info [format "finished moving filter wheel after %.1f seconds." [utcclock::diff now $start]]
   }
@@ -1029,6 +1045,14 @@ namespace eval "executor" {
     catch {client::waituntilstarted "watchdog"}
     client::request "watchdog" "enable"
     client::wait "watchdog"
+    variable lastreadmodes
+    variable lastwindows
+    variable lastbinnings
+    variable lastfilterpositions
+    set lastreadmodes ""
+    set lastwindows ""
+    set lastbinnings ""
+    set lastfilterpositions ""
     foreach server {instrument telescope} {
       catch {client::waituntilstarted $server}
       client::request $server "initialize"
