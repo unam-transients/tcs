@@ -1102,7 +1102,7 @@ namespace eval "detector" {
 
   ######################################################################
   
-  variable readdelaymiliseconds 0
+  variable readdelaymilliseconds 0
 
   proc detectorrawread {} {
 
