@@ -67,26 +67,52 @@ proc alertvisit {filters} {
   set exposurerepeats [expr {int(16 / $nfilters)}]
   
   variable fieldsize
+  variable window
   
-  if {$alertdelay < 300 && $uncertainty <= 0.5 * $fieldsize} {
-  
+  if {$alertdelay <= 180 && $uncertainty <= [astrometry::parsedistance "6am"]} {
+
+    set window "6am"
     set exposuretime 10
     log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
 
-    gridvisit 1 1 $exposurerepeats 10 $filters
+    log::summary "alertvisit: no dithering."
+    gridvisit 1 1 $exposurerepeats $exposuretime $filters
+    
+  } elseif {$alertdelay <= 180 && $uncertainty <= 0.5 * $fieldsize} {
   
-  } else {
-
-    set exposuretime 60
+    set window "default"
+    set exposuretime 10
     log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
 
-    if {$uncertainty <= 1.0 * $fieldsize} {
-      log::summary "alertvisit: grid is 1 × 1 fields."
-      dithervisit $exposurerepeats $exposuretime $filters false
-    } elseif {$uncertainty <= 2.0 * $fieldsize} {
-      log::summary "alertvisit: grid is 2 × 2 fields."
-      quaddithervisit $exposurerepeats $exposuretime $filters false
-    }
+    log::summary "alertvisit: no dithering."
+    gridvisit 1 1 $exposurerepeats $exposuretime $filters
+  
+  } elseif {$alertdelay <= 480 && $uncertainty <= 0.5 * $fieldsize} {
+  
+    set window "default"
+    set exposuretime 30
+    log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
+
+    log::summary "alertvisit: dithering 1 × 1 fields."
+    dithervisit $exposurerepeats $exposuretime $filters false
+  
+  } elseif {$uncertainty <= 0.5 * $fieldsize} {
+
+    set window "default"
+    set exposuretime 60
+    log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
+ 
+    log::summary "alertvisit: dithering 1 × 1 fields."
+    dithervisit $exposurerepeats $exposuretime $filters false
+    
+  } else {
+
+    set window "default"
+    set exposuretime 60
+    log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
+ 
+    log::summary "alertvisit: dithering 2 × 2 fields."
+    quaddithervisit $exposurerepeats $exposuretime $filters false
 
   }
   
@@ -167,6 +193,20 @@ proc parsefilters {filters} {
 
 ########################################################################
 
+variable window "default"
+variable binning "default"
+
+proc setdetector {} {
+  variable window
+  executor::setwindow $window
+  set window "default"
+  variable binning
+  executor::setbinning $binning
+  set binning "default"
+}
+
+########################################################################
+
 proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {offsetfastest false}} {
 
   log::summary "gridvisit: starting."
@@ -183,8 +223,7 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
   executor::setsecondaryoffset 0
   executor::track
 
-  executor::setwindow "default"
-  executor::setbinning "default"
+  setdetector
 
   # Thus gives reasonable results for 1, 2, 4, 5, and 9 gridpoints.
   if {$gridpoints == 1} {
@@ -255,8 +294,7 @@ proc fullgridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters
   executor::setsecondaryoffset 0
   executor::track
 
-  executor::setwindow "default"
-  executor::setbinning "default"
+  setdetector
 
   # Thus gives reasonable results for 1, 2, 4, 5, and 9 gridpoints.
   if {$gridpoints == 1} {
@@ -351,8 +389,7 @@ proc dithervisit {dithers exposuretimes filters {offsetfastest false} {diameter 
     
   executor::setsecondaryoffset 0
 
-  executor::setwindow "default"
-  executor::setbinning "default"
+  setdetector
 
   set track true
   
@@ -424,8 +461,7 @@ proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest false
   executor::setsecondaryoffset 0
   executor::track
 
-  executor::setwindow "default"
-  executor::setbinning "default"
+  setdetector
 
   log::summary "quaddithervisit: dithering in a circle of diameter $diameter in a 2 × 2 grid."
   foreach filter $filters exposuretime $exposuretimes {
