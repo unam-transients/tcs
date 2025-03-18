@@ -73,12 +73,14 @@ namespace eval "selector" {
   ######################################################################
 
   proc sendchat {category message} {
+    set start [utcclock::seconds]
     log::info "sending $category message \"$message\"."
     if {[catch {
-      exec "[directories::prefix]/bin/tcs" "sendchat" "$category" "$message"
+      exec "[directories::prefix]/bin/tcs" "sendchat" "$category" "$message" &
     }]} {
       log::warning "unable to send $category message \"$message\"."
     }
+    log::summary [format "finished sending chat after %.1f seconds." [utcclock::diff now $start]]
   }
   
   ######################################################################
@@ -713,14 +715,14 @@ namespace eval "selector" {
     if {!$alertfileexists && ([string equal "" $enabled] || $enabled)} {
       log::info "running alertscript."
       if {[catch {
-        exec "[directories::etc]/alertscript" $name $origin $originidentifier $type
+        exec "[directories::etc]/alertscript" $name $origin $originidentifier $type &
       } message]} {
         log::warning "alertscript failed: $message."
       }
       log::info "finished running alertscript."
     }
-
-    makealertspage
+    
+    makealertspage true
 
     log::summary [format "finished responding to alert after %.1f seconds." [utcclock::diff now $start]]
     return
@@ -798,7 +800,7 @@ namespace eval "selector" {
     return
   }
   
-  proc makealertspage {} {
+  proc makealertspage {{inbackground false}} {
     set tmpfilename [file join [directories::var] "alerts.json.[pid]"]
     set channel [open $tmpfilename "w"]
     puts $channel "\["
@@ -813,7 +815,11 @@ namespace eval "selector" {
     puts $channel "\]"
     close $channel
     file rename -force -- $tmpfilename [file join [directories::var] "alerts.json"]
-    exec "[directories::prefix]/bin/tcs" "makealertspage"
+    if {$inbackground} {
+      exec "[directories::prefix]/bin/tcs" "makealertspage" &
+    } else {
+      exec "[directories::prefix]/bin/tcs" "makealertspage"
+    }
   }
   
   proc enablealert {identifier} {
