@@ -671,6 +671,8 @@ namespace eval "selector" {
       log::summary "not interrupting the executor: selector is disabled."
     } elseif {![string equal "" [server::getdata "priority"]] && ([server::getdata "priority"] < $priority)} {
       log::summary [format "not interrupting the executor: current priority is %d." [server::getdata "priority"]]
+    } elseif {[string equal [server::getdata "alertfile"] $fullalertfile]} {
+      log::summary [format "not interrupting the executor: already executing %s." $alertfile]
     } else {
       set why [isselectablealertfile $fullalertfile [utcclock::seconds] $priority]
       if {![string equal "" $why]} {
