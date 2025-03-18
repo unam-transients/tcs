@@ -53,6 +53,8 @@ namespace eval "selector" {
   variable priority       ""
   variable alertrollindex 0
 
+  variable interruptingalertfile ""
+
   ######################################################################
   
   proc updatedata {} {
@@ -384,7 +386,11 @@ namespace eval "selector" {
       if {$delay != 0} {
         log::debug "blockloop: waiting for $delay ms."
         server::setactivity "waiting"
-        coroutine::after $delay
+        set start [clock milliseconds]
+        variable interruptingalertfile
+        while {[clock milliseconds] < $start + $delay && [string equal $interruptingalertfile ""]} {
+          coroutine::after 100
+        }
       }
       
       if {[string equal $mode "disabled"]} {
@@ -404,23 +410,31 @@ namespace eval "selector" {
         continue
       }
       
-      set selectablealertfiles [getselectablealertfiles $seconds]
-      set selectableblockfiles [getselectableblockfiles $seconds]      
-      foreach priority {0 1 2 3 4 5 6 7 8 9 10} {
-        log::info "checking selectable alerts for priority $priority alerts."
-        set filename [selectalertfile $selectablealertfiles $seconds $priority]
-        if {![string equal $filename ""]} {
-          set filetype "alert"
-          variable alertrollindex
-          set alertrollindex [expr {$alertrollindex + 1}]
-          break
+      variable interruptingalertfile
+      if {[string equal $interruptingalertfile ""]} {
+        set selectablealertfiles [getselectablealertfiles $seconds]
+        set selectableblockfiles [getselectableblockfiles $seconds]      
+        foreach priority {0 1 2 3 4 5 6 7 8 9 10} {
+          log::info "checking selectable alerts for priority $priority alerts."
+          set filename [selectalertfile $selectablealertfiles $seconds $priority]
+          if {![string equal $filename ""]} {
+            set filetype "alert"
+            variable alertrollindex
+            set alertrollindex [expr {$alertrollindex + 1}]
+            break
+          }
+          log::info "checking selectable blocks for priority $priority blocks."
+          set filename [selectblockfile $selectableblockfiles $seconds $priority]
+          if {![string equal $filename ""]} {
+            set filetype "block"
+            break
+          }
         }
-        log::info "checking selectable blocks for priority $priority blocks."
-        set filename [selectblockfile $selectableblockfiles $seconds $priority]
-        if {![string equal $filename ""]} {
-          set filetype "block"
-          break
-        }
+      } else {
+        log::info "interrupting alert is [file tail $interruptingalertfile]."
+        set filename $interruptingalertfile
+        set filetype "alert"
+        set interruptingalertfile ""
       }
       updatedata
       
@@ -461,6 +475,7 @@ namespace eval "selector" {
       }
       log::summary "finished executing $filetype file \"[file tail $filename]\"."
       set delay 0
+      continue
     }
   
   }
@@ -533,6 +548,7 @@ namespace eval "selector" {
   } {
     variable mode
     
+    set start [utcclock::seconds]
     log::summary "responding to alert for $name."
 
     if {![string equal $alerttimestamp ""]} {
@@ -686,11 +702,13 @@ namespace eval "selector" {
         if {[catch {client::request "executor" "stop"} message]} {
           log::error "unable to interrupt the executor: $message"
         }
+        variable interruptingalertfile
+        set interruptingalertfile $fullalertfile 
         variable alertrollindex
         set alertrollindex 0
       }
     }
-    
+
     sendchat alerts "block $blockidentifier ($name): received a $type GCN Notice for $originidentifier."
     if {!$alertfileexists && ([string equal "" $enabled] || $enabled)} {
       log::info "running alertscript."
@@ -704,7 +722,7 @@ namespace eval "selector" {
 
     makealertspage
 
-    log::summary "finished responding to alert."
+    log::summary [format "finished responding to alert after %.1f seconds." [utcclock::diff now $start]]
     return
   }
   
