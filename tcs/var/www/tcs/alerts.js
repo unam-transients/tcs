@@ -66,7 +66,7 @@ function quote(s) {
 
 $(function () {
   $("form#alert-rugby").submit(function () {
-    alert("England 26 — 25 France");
+    alert("France won the Six Nations trophy. But they were still beaten by England. I know which result is more important to me.");
     return false;
   });
   $("form#alert-refresh").submit(function () {
