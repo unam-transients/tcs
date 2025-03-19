@@ -132,6 +132,7 @@ namespace eval "executor" {
   variable trackstart ""
   
   proc track {{alphaoffset 0} {deltaoffset 0} {aperture "default"}} {
+    waitfortelescope
     variable trackstart
     set trackstart [utcclock::seconds]
     log::info "moving to track."
@@ -174,6 +175,7 @@ namespace eval "executor" {
   }
   
   proc offset {{alphaoffset 0} {deltaoffset 0} {aperture "default"}} {
+    waitfortelescope
     variable trackstart
     set trackstart [utcclock::seconds]
     astrometry::parseoffset $alphaoffset
