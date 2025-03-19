@@ -21,7 +21,7 @@
 
 ########################################################################
 
-variable instrument "ogse"
+variable instrument "ddrago"
 
 if {[string equal $instrument "ogse"]} {
   variable fieldsize [astrometry::parsedistance "13am"]
