@@ -207,12 +207,17 @@ namespace eval "executor" {
     client::request "telescope" "movesecondary initialz0"
   }
 
+  proc movesecondary {z} {
+    waitfortelescope
+    log::info "moving secondary to $z."
+    client::request "telescope" "movesecondary $z"
+  }
+
   proc focussecondary {detector exposuretime {z0range 300} {z0step 20} {witness true} {initial false}} {
     set start [utcclock::seconds]
     log::info "focusing secondary on $detector with range $z0range and step $z0step."
     if {$initial} {
       movesecondarytoinitial
-      waitfortelescope
     }
     client::update "secondary"
     set z0 [client::getdata "secondary" "requestedz0"]
@@ -230,8 +235,7 @@ namespace eval "executor" {
       set z0list   {}
       set fwhmlist {}
       while {$z0 <= $z0max} {
-        client::request "telescope" "movesecondary $z0"
-        client::wait "telescope"
+        movesecondary $z0
         eval expose "focus" $exposuretimes
         eval analyze $analyzetypes
         client::update $detector
@@ -267,8 +271,8 @@ namespace eval "executor" {
       }
       log::info "focusing secondary again around $z0."
     }
-    client::request "telescope" "movesecondary $z0"
-    client::wait "telescope"
+    movesecondary $z0
+    waitfortelescope
     if {$witness} {
       set i 0
       set success true
