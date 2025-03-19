@@ -190,7 +190,7 @@ namespace eval "executor" {
   proc waitfortelescope {} {
     set start [utcclock::seconds]
     log::info "waiting for telescope."
-    client::wait "telescope" 100
+    client::wait "telescope"
     log::info [format "finished waiting for telescope after %.1f seconds." [utcclock::diff now $start]]
     variable trackstart
     if {![string equal "" $trackstart]} {
@@ -331,7 +331,7 @@ namespace eval "executor" {
   proc waitforinstrument {} {
     set start [utcclock::seconds]
     log::info "waiting for instrument."
-    client::wait "instrument" 100
+    client::wait "instrument"
     log::info [format "finished waiting for instrument after %.1f seconds." [utcclock::diff now $start]]
   }
 
@@ -346,7 +346,7 @@ namespace eval "executor" {
     set fitsfiledir "[directories::vartoday]/executor/images/[project::fullidentifier [project]]/[block::identifier [block]]/[visit::identifier [visit]]"
     file mkdir $fitsfiledir
     client::request "instrument" "exposefull $type $fitsfiledir now $exposuretimes"
-    client::waituntil "instrument" "reading" 100
+    client::waituntilnot "instrument" "exposing"
     log::info [format "finished exposing $type image (exposure $exposure) after %.1f seconds." [utcclock::diff now $start]]
     set exposure [expr {$exposure + 1}]
   }
@@ -362,7 +362,7 @@ namespace eval "executor" {
     set fitsfiledir "[directories::vartoday]/executor/images/[project::fullidentifier [project]]/[block::identifier [block]]/[visit::identifier [visit]]"
     file mkdir $fitsfiledir
     client::request "instrument" "exposefull $type $fitsfiledir $starttime $exposuretimes"
-    client::waituntil "instrument" "reading" 100
+    client::waituntilnot "instrument" "exposing"
     log::info [format "finished exposing $type image (exposure $exposure) after %.1f seconds." [utcclock::diff now $start]]
     set exposure [expr {$exposure + 1}]
   }
