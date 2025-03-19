@@ -351,7 +351,7 @@ namespace eval "selector" {
     }
     puts $channel [format "  \"lastmodifiedtimestamp\": \"%s\"" [utcclock::combinedformat now]]
     puts $channel [format "\}"]
-    close $channel 
+    close $channel
   }
   
   ######################################################################
@@ -548,7 +548,6 @@ namespace eval "selector" {
     originidentifier type alerttimestamp eventtimestamp enabled alpha delta equinox
     uncertainty class messenger fixedpriority preliminary
   } {
-    variable mode
     
     set start [utcclock::seconds]
     log::summary "responding to alert for $name."
@@ -689,28 +688,8 @@ namespace eval "selector" {
       set priority $fixedpriority
     }
     
-    if {[string equal $mode "disabled"]} {
-      log::summary "not interrupting the executor: selector is disabled."
-    } elseif {![string equal "" [server::getdata "priority"]] && ([server::getdata "priority"] < $priority)} {
-      log::summary [format "not interrupting the executor: current priority is %d." [server::getdata "priority"]]
-    } elseif {[string equal [server::getdata "filename"] $fullalertfile]} {
-      log::summary [format "not interrupting the executor: already executing %s." $alertfile]
-    } else {
-      set why [isselectablealertfile $fullalertfile [utcclock::seconds] $priority]
-      if {![string equal "" $why]} {
-        log::summary "not interrupting the executor: alert is not selectable: $why"
-      } else {
-        log::summary "interrupting the executor."
-        if {[catch {client::request "executor" "stop"} message]} {
-          log::error "unable to interrupt the executor: $message"
-        }
-        variable interruptingalertfile
-        set interruptingalertfile $fullalertfile 
-        variable alertrollindex
-        set alertrollindex 0
-      }
-    }
-
+    maybeinterrupt $fullalertfile $priority
+    
     sendchat alerts "block $blockidentifier ($name): received a $type GCN Notice for $originidentifier."
     if {!$alertfileexists && ([string equal "" $enabled] || $enabled)} {
       log::info "running alertscript."
@@ -728,6 +707,40 @@ namespace eval "selector" {
     return
   }
   
+  proc maybeinterrupt {fullalertfile priority} {
+  
+    variable mode
+
+    if {[string equal $mode "disabled"]} {
+      log::summary "not interrupting the executor: selector is disabled."
+      return
+    } 
+    
+    if {![string equal "" [server::getdata "priority"]] && ([server::getdata "priority"] < $priority)} {
+      log::summary [format "not interrupting the executor: current priority is %d." [server::getdata "priority"]]
+      return
+    }
+    
+    if {[string equal [server::getdata "filename"] $fullalertfile]} {
+      log::summary [format "not interrupting the executor: already executing %s." [file tail $fullalertfile]]
+      return
+    } 
+    
+    set why [isselectablealertfile $fullalertfile [utcclock::seconds] $priority]
+    if {![string equal "" $why]} {
+      log::summary "not interrupting the executor: alert is not selectable: $why"
+      return
+    }
+
+    log::summary "interrupting the executor."
+    if {[catch {client::request "executor" "stop"} message]} {
+       log::error "unable to interrupt the executor: $message"
+    }
+    variable interruptingalertfile
+    set interruptingalertfile $fullalertfile 
+
+  }
+
   proc respondtolvcalert {blockidentifier name origin
     originidentifier type alerttimestamp eventtimestamp enabled skymapurl class preliminary
   } {
