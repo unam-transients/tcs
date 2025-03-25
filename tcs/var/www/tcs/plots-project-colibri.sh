@@ -102,6 +102,11 @@ EOF
     cat $(ls [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/log/focus-C0-data.txt | sed -n "1,/$whendate/p" | tail -$(expr $days + 1)) | awk "NR % $lines == 0 { print; }"
   ) >focus-C0.dat
 
+  (
+    cd /usr/local/var/tcs
+    cat $(ls [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]/log/focus-C1-data.txt | sed -n "1,/$whendate/p" | tail -$(expr $days + 1)) | awk "NR % $lines == 0 { print; }"
+  ) >focus-C1.dat
+
 
   gnuplot <<EOF
 
@@ -344,8 +349,9 @@ EOF
     set ylabel "FWHM (arcsec)"
     set key on
     plot \
-      "seeing.dat"  using 1:2 title "Seeing" with points linestyle 1, \
-      "focus-C0.dat" using 1:2 title "C0 FWHM" with points linestyle 3
+      "seeing.dat"  using 1:2 title "Seeing"   with points linestyle 1, \
+      "focus-C0.dat" using 1:2 title "C0 FWHM" with points linestyle 3, \
+      "focus-C1.dat" using 1:2 title "C1 FWHM" with points linestyle 6
 
     set yrange [-15:30]
     set ytics -15,5,30
