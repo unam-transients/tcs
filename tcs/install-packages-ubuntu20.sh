@@ -51,6 +51,7 @@ sudo apt-get -y install apache2 apache2-utils
 sudo apt-get -y install cifs-utils
 sudo apt-get -y install imagemagick
 sudo apt-get -y install gnuplot
+sudo apt-get -y install python3-pip
 
 sudo apt-get -y autoclean
 sudo apt-get -y autoremove
