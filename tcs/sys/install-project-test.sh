@@ -88,6 +88,11 @@ EOF
     echo "gpio -i"
   fi
 
+  echo "tcs instrumentimageserver C0 &"
+  echo "tcs instrumentimageserver C0 localhost &"
+  echo "tcs instrumentimageserver C1 &"
+  echo "tcs instrumentimageserver C1 localhost &"
+
   echo "owserver -c /etc/owfs.conf"
   
   echo "mkdir -p /usr/local/var/tcs/reboot"

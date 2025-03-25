@@ -21,11 +21,11 @@ colibri)
 ddoti)
   hosts="ddoti-control ddoti-detectors0 ddoti-detectors1 ddoti-platform"
   ;;
-test-ubuntu-2004)
-  hosts="test-ubuntu-2004"
+cu-tcs-ubuntu-2004)
+  hosts="cu-tcs-ubuntu-2004"
   ;;
-test-ubuntu-2204)
-  hosts="test-ubuntu-2204"
+cu-tcs-ubuntu-2204)
+  hosts="cu-tcs-ubuntu-2204"
   ;;
 *)
   echo "ERROR: unknown project \"$project\"."

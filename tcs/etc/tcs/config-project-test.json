@@ -47,6 +47,7 @@
       "supervisor",
       "target",
       "telescope",
+      "watchdog",
       "weather"
     ]
   },
@@ -93,10 +94,23 @@
 
   "executor": {},
 
+  "target": {
+    "maxzenithdistancelimit": "75d",
+    "idleha": "5d",
+    "idledelta": "0d",
+    "ventilateha": "-4h",
+    "ventilatedelta": "30d",
+    "pointingapertures": {
+      "default": [
+        "+0.00d",
+        "+0.00d"
+      ]
+    }
+  },
+
   "telescope": {
     "type": "dummy",
-    "idleha": "0h",
-    "idledelta": "0d"
+    "closeexplicitly": "true"
   },
 
   "safetyswitch": {
@@ -123,6 +137,8 @@
     "activedetectors": [
       "C0", "C1"
     ],
+    "activefocusers": [
+    ],
     "idlefilterwheelpositions": [
       "gri", "zy"
     ],
@@ -143,6 +159,7 @@
       "closed" : "default",
       "default": ""
     },
+    "detectorboresight": "datawindowcenter",
     "detectorinitialsoftwaregain": 1,
     "detectordefaultbinning": 1,
     "detectorwindows": {
@@ -228,6 +245,7 @@
       "closed" : "default",
       "default": ""
     },
+    "detectorboresight": "datawindowcenter",
     "detectorinitialsoftwaregain": 1,
     "detectordefaultbinning": 1,
     "detectorwindows": {
@@ -298,12 +316,30 @@
     }
     
   },
+  
+  "mount": {
+    "maxcorrection": "10am"
+  },
 
   "weather": {
     "windaveragespeedlimit": "30"
   },
 
+  "selector": {
+    "priorities": {
+      "*-*-electromagnetic/gravitational/*": 2,
+      "*-*-electromagnetic/*/neutrino"     : 2,
+      "*-*-*/gravitational/neutrino"       : 2,
+      "lvc*-*"          : 4,
+      "fermilat*-*"     : 5,
+      "fermigbm*-sgrb"  : 6,
+      "svom*-*"         : 7,
+      "swift*-*"        : 8
+    }
+  },
+
   "sensors": {
+    "environmental-sensor-reference": "",
     "lognames": [
       "host-control-load",
       "host-control-disk-space-used",
@@ -406,6 +442,23 @@
         "firmware": ""
       }
     }
+  },
+
+  "watchdog": {
+    "monitoredservers": [
+      "executor",
+      "html",
+      "instrument",
+      "moon",
+      "selector",
+      "sensors",
+      "supervisor",
+      "sun",
+      "target",
+      "telescope",
+      "weather"
+    ],
+    "problemtoleranceseconds": 180
   }
 
 }

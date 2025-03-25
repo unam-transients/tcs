@@ -1130,7 +1130,9 @@ namespace eval "html" {
     if {[string equal [client::getstatus "sensors"] "ok"]} {
     
       set referencetemperaturename [config::getvalue "sensors" "environmental-sensor-reference"]
-      set referencetemperature [client::getdata "sensors" $referencetemperaturename]
+      if {![string equal $referencetemperaturename ""]} {
+        set referencetemperature [client::getdata "sensors" $referencetemperaturename]
+      }
     
       foreach name [dict keys $sensors] {
         if {[catch {
@@ -1149,10 +1151,12 @@ namespace eval "html" {
             set group [dict get $sensors $name "group"]
             switch -glob "$name:$unit:$group" {
               *-temperature:C:environmental-temperature {
-                  set difference [expr {$value - $referencetemperature}]
-                if {[string equal $name $referencetemperaturename]} {
+                if {[string equal $referencetemperaturename ""]} {
+                  writehtmlfullrowwithemph $name $emphasis "$timestamp [format "%+4.1f C" $value]"
+                } elseif {[string equal $name $referencetemperaturename]} {
                   writehtmlfullrowwithemph $name $emphasis "$timestamp [format "%+4.1f C" $value] reference"
                 } else {
+                  set difference [expr {$value - $referencetemperature}]
                   writehtmlfullrowwithemph $name $emphasis "$timestamp [format "%+5.1f C" $value] [format "%+5.1f C" $difference]"
                 }
               }

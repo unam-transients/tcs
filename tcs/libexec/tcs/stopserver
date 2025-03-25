@@ -76,7 +76,7 @@ colibri-instrument)
   ALLARGS=""
   ;;
 *)
-  allargs="supervisor selector executor instrument telescope C1 C0 seeing weather sensors sun moon target html log"
+  allargs="supervisor watchdog selector executor instrument telescope C1 C0 seeing weather sensors sun moon target html log"
   ALLARGS=""
   ;;
 esac

@@ -37,7 +37,7 @@ ServerName test.astroscu.unam.mx
   Require all granted
 </Directory>
 
-<VirtualHost *:81>
+<VirtualHost *:80>
 
   ServerName test.astroscu.unam.mx
   DocumentRoot /usr/local/var/www/

@@ -40,7 +40,8 @@ $(function () {
   interfacetype = "Operations"
   confirmrequest = true;
   refreshimage({
-    "C0-small"       : "instrument/C0/latest-small.jpg"
+    "C0-small"       : "instrument/C0/latest-small.jpg",
+    "C1-small"       : "instrument/C1/latest-small.jpg"
   });
   newcomponent("summary", "Summary");
 });
@@ -50,7 +51,7 @@ $(function () {
 
 <div id="images">
 <a href="C0.html"><img src="blank.png" alt="C0" id="C0-small" class="instrument-small"/></a>
-<a href="allsky.html"  ><img src="blank.png" alt="All-Sky Camera" id="allsky-small"   class="allsky-small"    /></a>
+<a href="C1.html"><img src="blank.png" alt="C0" id="C1-small" class="instrument-small"/></a>
 </div>
 
 <div id="navigation">
@@ -73,6 +74,7 @@ $(function () {
 <a href="" onclick='newcomponent("supervisor"   , "Supervisor"   ); return false;'>Supervisor</a> |
 <a href="" onclick='newcomponent("target"       , "Target"       ); return false;'>Target</a> |
 <a href="" onclick='newcomponent("telescope"    , "Telescope"    ); return false;'>Telescope</a> |
+<a href="" onclick='newcomponent("watchdog"     , "Watchdog"     ); return false;'>Watchdog</a> |
 <a href="" onclick='newcomponent("weather"      , "Weather"      ); return false;'>Weather</a>
 </div>
 

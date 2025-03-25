@@ -10,7 +10,7 @@ CC="ccache gcc -std=c99" CXX="ccache g++" F77="ccache gfortran" sh configure.sh
 make install
 
 case $(uname -n) in
-*-control)
+*-control|cu-tcs-*)
   cd ../www; sh configure.sh; make install
 esac
 
