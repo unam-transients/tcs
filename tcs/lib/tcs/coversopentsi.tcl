@@ -116,11 +116,11 @@ namespace eval "covers" {
     }
 
     set covers $primarycover
-    foreach portname [dict keys $ports] {
-      if {![string equal $covers [dict get $portcovers $portname]]} {
-        set covers "intermediate"
-      }
-    }
+    #foreach portname [dict keys $ports] {
+    #  if {![string equal $covers [dict get $portcovers $portname]]} {
+    #    set covers "intermediate"
+    #  }
+    #}
     
     server::setdata "timestamp"        $timestamp
     server::setdata "covers"           $covers
@@ -171,10 +171,10 @@ namespace eval "covers" {
     server::setdata "requestedcovers" "closed"
     opentsi::sendcommand [format "SET AUXILIARY.COVER.TARGETPOS=0"]
     # Port 3 is failing, so we do not close the ports.
-    variable ports
-    foreach portindex [dict values $ports] {
-      opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[%d\].TARGETPOS=0" $portindex]
-    }
+    #variable ports
+    #foreach portindex [dict values $ports] {
+    #  opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[%d\].TARGETPOS=0" $portindex]
+    #}
   }
   
   ######################################################################
