@@ -25,21 +25,6 @@ host=$(uname -n | sed 's/\..*//')
 
 ################################################################################
 
-# /etc/hosts
-
-(
-  sed '/^# Start of tcs epilog./q' /etc/hosts
-  cat <<"EOF"
-# Start of tcs epilog.
-192.168.1.201 test-control control
-EOF
-) | 
-sudo cp /dev/stdin /etc/hosts.tmp
-sudo chmod o=rw,go=r /etc/hosts.tmp
-sudo mv /etc/hosts.tmp /etc/hosts
-
-################################################################################
-
 # crontab
 
 (
