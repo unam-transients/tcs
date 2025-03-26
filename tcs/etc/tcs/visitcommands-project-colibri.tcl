@@ -69,7 +69,7 @@ proc alertvisit {filters} {
   variable fieldsize
   variable window
   
-  if {$alertdelay <= 180 && $uncertainty <= [astrometry::parsedistance "6am"]} {
+  if {$alertdelay <= 180 && $uncertainty <= [astrometry::parsedistance "3am"]} {
 
     set window "6am"
     set exposuretime 10
