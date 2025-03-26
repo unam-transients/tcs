@@ -1,0 +1,28 @@
+#!/bin/env python3
+
+from gcn_kafka import Consumer
+import os
+
+consumer = Consumer(
+    client_id="3l3uf986o0di0gnvrb5t6hsoul",
+    client_secret=os.environ.get("tcsgcnclientsecret"),
+)
+
+consumer.subscribe(
+    [
+        "gcn.heartbeat",
+        "gcn.notices.icecube.lvk_nu_track_search",
+        "igwn.gwalert",
+        "gcn.notices.swift.bat.guano",
+        "gcn.notices.einstein_probe.wxt.alert",
+    ]
+)
+
+while True:
+    for message in consumer.consume(timeout=1):
+        if message.error():
+            print(message.error())
+            continue
+        print(f"topic={message.topic()}, offset={message.offset()}")
+        value = message.value()
+        print(value)
