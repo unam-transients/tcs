@@ -24,8 +24,8 @@ ddoti)
 cu-tcs-ubuntu-2004)
   hosts="cu-tcs-ubuntu-2004"
   ;;
-cu-tcs-ubuntu-2204)
-  hosts="cu-tcs-ubuntu-2204"
+cu-tcs-*)
+  hosts="$project"
   ;;
 *)
   echo "ERROR: unknown project \"$project\"."
