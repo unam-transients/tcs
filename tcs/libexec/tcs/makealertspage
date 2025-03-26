@@ -82,7 +82,7 @@ def age(timestamp):
     now = datetime.now()
     age = now - event
     return age.days * 86400 + age.seconds
-    
+
 
 def maxage(alert):
     if alert["preliminary"] == "true":
