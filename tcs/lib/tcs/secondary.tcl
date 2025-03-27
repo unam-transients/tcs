@@ -113,13 +113,13 @@ namespace eval "secondary" {
     set delta          [client::getdata "target" "observeddelta"]
     set dzposition 0
     if {[dict exists $dzmodel "position" "dzdcoszenithdistance"]} {
-      set dzposition [expr {$dzposition + (cos($zenithdistance) - 1) * [dict get "position" "dzdcoszenithdistance"]}]
+      set dzposition [expr {$dzposition + (cos($zenithdistance) - 1) * [dict get $dzmodel "position" "dzdcoszenithdistance"]}]
     }
     if {[dict exists $dzmodel "position" "dzdha"]} {
-      set dzposition [expr {$dzposition + $ha * [dict get "position" "dzdha"]}]
+      set dzposition [expr {$dzposition + $ha * [dict get $dzmodel "position" "dzdha"]}]
     }
     if {[dict exists $dzmodel "position" "dzddelta"]} {
-      set dzposition [expr {$dzposition + ($delta - [astrometry::latitude]) * [dict get "position" "dzddelta"]}]
+      set dzposition [expr {$dzposition + ($delta - [astrometry::latitude]) * [dict get $dzmodel "position" "dzddelta"]}]
     }
     set dzposition [expr {int(round($dzposition))}]
     log::debug [format "dzposition: zenithdistance = %.1fd; ha = %+.1fd; delta = %.1fd; dzposition = %+d." \
