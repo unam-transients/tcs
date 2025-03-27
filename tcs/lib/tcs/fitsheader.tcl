@@ -389,6 +389,8 @@ namespace eval "fitsheader" {
     writekeysandvaluesforcomponent $channel secondary $prefix "SC" {
       requestedz0       RQZ0  double
       requestedz        RQZ   double
+      temperaturesensor TS    string
+      temperature       T     double                 
       dztemperature     DZT   double
       dzposition        DZP   double
       dzoffset          DZO   double
@@ -405,16 +407,16 @@ namespace eval "fitsheader" {
   
   proc writekeysandvaluesforsensors {channel prefix} {
     if {
-      [catch {client::update "sensors"} message] ||
-      [catch {client::getdata "sensors" "names"} names] ||
-      [catch {client::getdata "sensors" "keywords"} keywords]
+      [catch {client::update "sensors"} message]
     } {
-      set names {}
-      set keywords {}
+      log::warning "failed to update sensor data."
+      return
     }
+    set sensors [config::getvalue "sensors" "sensors"]
     set args {}
-    foreach name $names keyword $keywords {
-      if {![string equal $keyword ""]} {
+    foreach name [dict keys $sensors] {
+      if {[dict exists $sensors $name "keyword"]} {
+        set keyword [dict get $sensors $name "keyword"]
         lappend args $name
         lappend args $keyword
         set value [client::getdata "sensors" "$name"]
@@ -426,7 +428,7 @@ namespace eval "fitsheader" {
           lappend args "string"
         }
         lappend args "${name}-timestamp"
-        lappend args "${name}T"
+        lappend args "${keyword}T"
         lappend args "date"
       }
     }
