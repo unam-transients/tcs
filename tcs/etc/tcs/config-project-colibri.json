@@ -486,7 +486,9 @@
     "dztweak": "-1000",
     "temperaturesensor": "telescope-M1-rear-temperature",
     "dzmodel": {
-      "dzdcoszenithdistance": -67,
+      "position": {
+        "dzdcoszenithdistance": -67
+      },
       "filter": {}
     },
     "settlingseconds": 0
