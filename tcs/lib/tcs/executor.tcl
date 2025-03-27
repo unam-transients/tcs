@@ -301,14 +301,14 @@ namespace eval "executor" {
           log::putmessage $timestamp "focus-$detector" "data" "$timestamp\t[astrometry::radtoarcsec $fwhm]\t$filter\t$binning"
           if {[catch {
             client::update "secondary"
-            set T [client::getdata "secondary" "T"]
+            set temperature [client::getdata "secondary" "temperature"]
             set z [client::getdata "secondary" "z"]
             set dztemperature [client::getdata "secondary" "dztemperature"]
             set dzposition [client::getdata "secondary" "dzposition"]
             set channel [::open [file join [directories::vartoday] "focus.csv"] "a"]
             puts $channel [format \
               "\"%s\",%.2f,%d,%.1f,\"%s\",%.2f,%.0f,%.0f,%.0f" \
-              $fitsfilename $fwhm $binning $exposuretime $filter $T $z $dztemperature $dzposition \
+              $fitsfilename $fwhm $binning $exposuretime $filter $temperature $z $dztemperature $dzposition \
             ]
             ::close $channel
           } message]} {
