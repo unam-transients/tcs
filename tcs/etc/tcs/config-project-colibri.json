@@ -557,6 +557,7 @@
     "sensors": {
       "weather-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/weather-temperature",
+        "keyword": "WTTM",
         "prettyname": "temperature",
         "group": "environmental-temperature",
         "subsystem": "weather",
@@ -569,6 +570,7 @@
       },
       "observing-room-comet1-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/plc-comet1-temperature",
+        "keyword": "C1TM",
         "prettyname": "observing room temperature (comet 1)",
         "subsystem": "building",
         "component": "observing-room",
@@ -582,6 +584,7 @@
       },      
       "observing-room-comet2-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/plc-comet2-temperature",
+        "keyword": "C2TM",
         "prettyname": "observing room temperature (comet 2)",
         "subsystem": "building",
         "component": "observing-room",
@@ -594,6 +597,7 @@
         "firmware": ""
       },      
       "ogse-external-temperature": {
+        "keyword": "OETM",
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.A493A0000000/temperature",
         "prettyname": "ogse external temperature",
         "subsystem": "ogse",
@@ -608,6 +612,7 @@
       },
       "ddrago-external-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/7E.983100001000/EDS0068/temperature",
+        "keyword": "DETM",
         "prettyname": "ddrago external temperature",
         "subsystem": "ddrago",
         "component": "close-electronics",
@@ -620,6 +625,7 @@
       },
       "telescope-M1-rear-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/opentsi-3",
+        "keyword": "MRTM",
         "prettyname": "telescope M1 rear temperature",
         "group": "environmental-temperature",
         "subsystem": "telescope",
@@ -633,6 +639,7 @@
       },
       "telescope-M1-edge-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/opentsi-4",
+        "keyword": "METM",
         "prettyname": "telescope M1 edge temperature",
         "group": "environmental-temperature",
         "subsystem": "telescope",
@@ -646,6 +653,7 @@
       },
       "telescope-M2-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/opentsi-5",
+        "keyword": "M2TM",
         "prettyname": "telescope M2 temperature",
         "subsystem": "telescope",
         "component": "M2",
@@ -659,6 +667,7 @@
       },
       "telescope-M3-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/opentsi-6",
+        "keyword": "M3TM",
         "prettyname": "telescope M3 temperature",
         "group": "environmental-temperature",
         "subsystem": "telescope",
@@ -672,6 +681,7 @@
       },
       "telescope-spider-1-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/opentsi-7",
+        "keyword": "S1TM",
         "prettyname": "telescope spider 1 temperature",
         "group": "environmental-temperature",
         "subsystem": "telescope",
@@ -685,6 +695,7 @@
       },
       "telescope-spider-2-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/opentsi-8",
+        "keyword": "S2TM",
         "prettyname": "telescope spider 2 temperature",
         "group": "environmental-temperature",
         "subsystem": "telescope",
@@ -698,6 +709,7 @@
       },
       "telescope-pivot-box-1-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/opentsi-9",
+        "keyword": "P1TM",
         "prettyname": "telescope pivot box 1 temperature",
         "group": "environmental-temperature",
         "subsystem": "telescope",
@@ -711,6 +723,7 @@
       },
       "telescope-pivot-box-2-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/opentsi-10",
+        "keyword": "P2TM",
         "prettyname": "telescope pivot box 2 temperature",
         "group": "environmental-temperature",
         "subsystem": "telescope",
@@ -724,6 +737,7 @@
       },
       "telescope-front-ring-1-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/opentsi-11",
+        "keyword": "R1TM",
         "prettyname": "telescope front ring 1 temperature",
         "group": "environmental-temperature",
         "subsystem": "telescope",
@@ -736,6 +750,7 @@
       },
       "telescope-front-ring-2-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/opentsi-12",
+        "keyword": "R2TM",
         "prettyname": "telescope front ring 2 temperature",
         "group": "environmental-temperature",
         "subsystem": "telescope",
@@ -748,6 +763,7 @@
       },
       "telescope-fork-arm-1-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/opentsi-13",
+        "keyword": "A1TM",
         "prettyname": "telescope cabinet temperature",
         "group": "environmental-temperature",
         "subsystem": "telescope",
@@ -761,6 +777,7 @@
       },
       "telescope-fork-arm-2-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/opentsi-14",
+        "keyword": "A2TM",
         "prettyname": "telescope cabinet temperature",
         "group": "environmental-temperature",
         "subsystem": "telescope",
@@ -774,6 +791,7 @@
       },
       "ddrago-close-electronics-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.E9AE1A020000/temperature",
+        "keyword": "DCTM",
         "prettyname": "ddrago close electronics temperature",
         "subsystem": "ddrago",
         "component": "close electronics",
@@ -787,6 +805,7 @@
       },      
       "ddrago-internal-es3-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.EEB51A020000/temperature",
+        "keyword": "D3TM",
         "prettyname": "ddrago internal es3 temperature",
         "subsystem": "ddrago",
         "component": "main structure",
@@ -800,6 +819,7 @@
       },      
       "ddrago-internal-es4-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.5A971A020000/temperature",
+        "keyword": "D4TM",
         "prettyname": "ddrago internal es4 temperature",
         "subsystem": "ddrago",
         "component": "main structure",
@@ -813,6 +833,7 @@
       },      
       "ddrago-internal-es5-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.BCB01A020000/temperature",
+        "keyword": "D5TM",
         "prettyname": "ddrago internal es5 temperature",
         "subsystem": "ddrago",
         "component": "main structure",
@@ -826,6 +847,7 @@
       },      
       "ddrago-external-tunnel-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.6985E1010000/temperature",
+        "keyword": "DTTM",
         "prettyname": "ddrago external tunnel temperature",
         "subsystem": "ddrago",
         "component": "main structure",
@@ -839,6 +861,7 @@
       },      
       "column-middle-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.09FCD6010000/temperature",
+        "keyword": "CMTM",
         "prettyname": "column middle temperature",
         "subsystem": "building",
         "component": "column",
@@ -852,6 +875,7 @@
       },      
       "column-bottom-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.47A740010000/temperature",
+        "keyword": "CBTM",
         "prettyname": "column bottom temperature",
         "subsystem": "building",
         "component": "column",
@@ -865,6 +889,7 @@
       },      
       "control-room-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.7539F5000000/temperature",
+        "keyword": "CRTM",
         "prettyname": "control room temperature",
         "subsystem": "building",
         "component": "control-room",
@@ -1327,7 +1352,6 @@
       },
       "host-control-load": {
         "file": "/usr/local/var/tcs/sensors/control/load",
-        "keyword": "",
         "prettyname": "load on host control",
         "subsystem": "control-system",
         "component": "host-control",
@@ -1340,7 +1364,6 @@
       },
       "host-instrument-load": {
         "file": "/usr/local/var/tcs/sensors/instrument/load",
-        "keyword": "",
         "prettyname": "load on host instrument",
         "subsystem": "control-system",
         "component": "host-instrument",
@@ -1351,10 +1374,8 @@
         "identifier": "",
         "firmware": ""
       },
-
       "host-control-disk-space-used": {
         "file": "/usr/local/var/tcs/sensors/control/disk-space-used",
-        "keyword": "",
         "prettyname": "relative disk space used on host control",
         "subsystem": "control-system",
         "component": "host-control",
@@ -1367,7 +1388,6 @@
       },
       "host-instrument-disk-space-used": {
         "file": "/usr/local/var/tcs/sensors/instrument/disk-space-used",
-        "keyword": "",
         "prettyname": "relative disk space used on host instrument",
         "subsystem": "control-system",
         "component": "host-instrument",
@@ -1380,7 +1400,6 @@
       },
       "C0-detector-detector-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/C0-detector-detector-temperature",
-        "keyword": "",
         "prettyname": "C0 detector temperature",
         "subsystem": "ogse",
         "component": "C0-detector",
@@ -1393,7 +1412,6 @@
       },
       "C0-detector-cooler-set-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/C0-detector-cooler-set-temperature",
-        "keyword": "",
         "prettyname": "C0 cooler set temperature",
         "subsystem": "ogse",
         "component": "C0-detector",
@@ -1406,7 +1424,6 @@
       },
       "C0-detector-cooler-state": {
         "file": "/usr/local/var/tcs/sensors/instrument/C0-detector-cooler-state",
-        "keyword": "",
         "prettyname": "C0 cooler state",
         "subsystem": "ogse",
         "component": "C0-detector",
@@ -1419,7 +1436,6 @@
       },
       "C0-filter-wheel-position": {
         "file": "/usr/local/var/tcs/sensors/instrument/C0-filter-wheel-position",
-        "keyword": "",
         "prettyname": "C0 filter wheel position",
         "subsystem": "ogse",
         "component": "C0-filter-wheel",
@@ -1432,7 +1448,6 @@
       },
       "C1-detector-detector-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/C1-detector-detector-temperature",
-        "keyword": "",
         "prettyname": "C1 detector temperature",
         "subsystem": "ddrago",
         "component": "C1-detector",
@@ -1445,7 +1460,6 @@
       },
       "C1-detector-cooler-set-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/C1-detector-cooler-set-temperature",
-        "keyword": "",
         "prettyname": "C1 cooler set temperature",
         "subsystem": "ddrago",
         "component": "C1-detector",
@@ -1458,7 +1472,6 @@
       },
       "C1-detector-cooler-state": {
         "file": "/usr/local/var/tcs/sensors/instrument/C1-detector-cooler-state",
-        "keyword": "",
         "prettyname": "C1 cooler state",
         "subsystem": "ddrago",
         "component": "C1-detector",
@@ -1471,7 +1484,6 @@
       },
       "C1-filter-wheel-position": {
         "file": "/usr/local/var/tcs/sensors/instrument/C1-filter-wheel-position",
-        "keyword": "",
         "prettyname": "C1 filter wheel position",
         "subsystem": "ddrago",
         "component": "C1-filter-wheel",
@@ -1484,7 +1496,6 @@
       },
       "C2-detector-detector-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/C2-detector-detector-temperature",
-        "keyword": "",
         "prettyname": "C2 detector temperature",
         "subsystem": "ddrago",
         "component": "C2-detector",
@@ -1497,7 +1508,6 @@
       },
       "C2-detector-cooler-set-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/C2-detector-cooler-set-temperature",
-        "keyword": "",
         "prettyname": "C2 cooler set temperature",
         "subsystem": "ddrago",
         "component": "C2-detector",
@@ -1510,7 +1520,6 @@
       },
       "C2-detector-cooler-state": {
         "file": "/usr/local/var/tcs/sensors/instrument/C2-detector-cooler-state",
-        "keyword": "",
         "prettyname": "C2 cooler state",
         "subsystem": "ddrago",
         "component": "C2-detector",
@@ -1523,7 +1532,6 @@
       },
       "C2-filter-wheel-position": {
         "file": "/usr/local/var/tcs/sensors/instrument/C2-filter-wheel-position",
-        "keyword": "",
         "prettyname": "C2 filter wheel position",
         "subsystem": "ddrago",
         "component": "C2-filter-wheel",

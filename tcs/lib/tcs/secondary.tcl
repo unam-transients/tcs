@@ -28,7 +28,7 @@ package require "log"
 package require "coroutine"
 package require "server"
 
-config::setdefaultvalue "secondary" "dzdT"              0
+config::setdefaultvalue "secondary" "dzdtemperature"              0
 config::setdefaultvalue "secondary" "temperaturesensor" ""
 config::setdefaultvalue "secondary" "dzfilter"          {}
 
@@ -55,7 +55,8 @@ namespace eval "secondary" {
   server::setdata "requestedz0"       ""
   server::setdata "dzfilter"          0
   server::setdata "dzoffset"          0
-  server::setdata "T"                 ""
+  server::setdata "temperaturesensor" "$temperaturesensor"
+  server::setdata "temperature"       ""
   server::setdata "timestamp"         ""
   server::setdata "stoppedtimestamp"  ""
   server::setdata "settled"           false
@@ -63,37 +64,37 @@ namespace eval "secondary" {
 
   ######################################################################
   
-  variable T 0.0
+  variable temperature 0.0
   
   proc getsensorsdata {} {
-    variable T
+    variable temperature
     variable temperaturesensor
     if {[string equal $temperaturesensor ""]} {
       log::debug "getsensorsdata: no temperature sensor configured."
     } else {
-      log::debug "getsensorsdata: determining T from temperature sensor \"$temperaturesensor\"."
+      log::debug "getsensorsdata: determining temperature from temperature sensor \"$temperaturesensor\"."
       if {
         [catch {client::update "sensors"}] ||
-        [catch {set newT [client::getdata "sensors" "$temperaturesensor"]}] || 
-        [string equal $newT "unknown"]
+        [catch {set newtemperature [client::getdata "sensors" "$temperaturesensor"]}] || 
+        [string equal $newtemperature "unknown"]
       } {
         log::warning "getsensorsdata: unable to determine the sensors data."
       } else {
-        set T $newT
-        server::setdata "T" $newT
+        set temperature $newtemperature
+        server::setdata "temperature" $newtemperature
       }
-      log::debug "getsensorsdata: T is \"$T\"."
+      log::debug "getsensorsdata: temperature is \"$temperature\"."
     }
   }
   
   proc dztemperature {} {
     variable dzmodel
-    variable T
+    variable temperature
     getsensorsdata
     log::debug "dztemperature: dzmodel is $dzmodel."
-    if {[string is double -strict "$T"] && [dict exists $dzmodel "temperature" "dzdT"]} {
-      log::debug "dztemperature: dzdT is [dict get $dzmodel "temperature" "dzdT"]."
-      set dztemperature [expr {$T * [dict get $dzmodel "temperature" "dzdT"]}]
+    if {[string is double -strict "$temperature"] && [dict exists $dzmodel "temperature" "dzdtemperature"]} {
+      log::debug "dztemperature: dzdtemperature is [dict get $dzmodel "temperature" "dzdtemperature"]."
+      set dztemperature [expr {$temperature * [dict get $dzmodel "temperature" "dzdtemperature"]}]
       set dztemperature [expr {int(round($dztemperature))}]
     } else {
       set dztemperature 0
