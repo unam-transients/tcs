@@ -32,7 +32,7 @@ namespace eval "detector" {
   variable bscale 1.0
   variable bzero  32768.0
 
-  variable readdelaymiliseconds 500
+  variable readdelaymilliseconds 500
 
   proc detectorrawaugmentfitsheader {channel} {
     return "ok"
