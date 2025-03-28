@@ -345,6 +345,7 @@ namespace eval "fitsheader" {
       mounthaerror                MHAE  angle
       mountdeltaerror             MDEE  angle
       mountrotation               MRO   angle
+      mountderotatorangle         MDR   angle
       mountmeaneasttrackingerror  MNETE angle
       mountmeannorthtrackingerror MNNTE angle
       mountrmseasttrackingerror   RMETE angle
