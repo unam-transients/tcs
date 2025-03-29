@@ -456,12 +456,12 @@ namespace eval "instrument" {
               set worstfwhm $fwhm
             }
             if {![catch {client::update "secondary"}]} {
-              set T [client::getdata "secondary" "T"]
+              set temperature [client::getdata "secondary" "temperature"]
               set z [client::getdata "secondary" "z"]
               set dztemperature [client::getdata "secondary" "dztemperature"]
               set dzposition [client::getdata "secondary" "dzposition"]
             } else {
-              set T 0
+              set temperature 0
               set z 0
               set dztemperature 0
               set dzposition 0
@@ -469,7 +469,8 @@ namespace eval "instrument" {
             set channel [::open [file join [directories::vartoday] "fwhmwitness.csv"] "a"]
             puts $channel [format \
               "\"%s\",\"%s\",%.2f,%d,%.1f,\"%s\",%d,%.2f,%.0f,%.0f,%.0f" \
-              $detector $fitsfilename $fwhm $binning $exposuretime $filter $focuserposition $T $z $dztemperature $dzposition \
+              $detector $fitsfilename $fwhm $binning $exposuretime $filter $focuserposition \
+              $temperature $z $dztemperature $dzposition \
             ]
             ::close $channel
           }
