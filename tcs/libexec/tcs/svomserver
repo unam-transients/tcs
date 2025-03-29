@@ -274,7 +274,7 @@ def respond(alert):
     if alerttype == "svomeclairscatalog" or alerttype == "svomretraction":
         enabled = "false"
         preliminary = ""
-    elif alerttype == "svomslewing" or "svomnotslewing":
+    elif alerttype == "svomslewing" or alerttype == "svomnotslewing":
         enabled = ""
         preliminary = ""
     elif alerttype == "svomgrmpreliminary" or alerttype == "svomeclairspreliminary":
@@ -295,10 +295,12 @@ def respond(alert):
     equinox = "2000"
     logresponse("position is %s %s %s." % (alpha, delta, equinox))
     logresponse("90%% uncertainty is %s in radius." % uncertainty)
+    logresponse("enabled is %r." % enabled)
+    logresponse("preliminary is %r." % preliminary)
 
     logresponse("requesting selector to respond.")
 
-    print(
+    logresponse(
         "tcs request selector respondtoalert %r %r %r %r %r %r %r %r %r %r %r %r %r %r %r %r"
         % (
             blockidentifier,
@@ -316,7 +318,7 @@ def respond(alert):
             "grb",
             "electromagnetic",
             "",
-            "",
+            preliminary,
         )
     )
     subprocess.run(
