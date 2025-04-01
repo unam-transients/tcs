@@ -92,7 +92,7 @@ namespace eval "mount" {
     POSITION.EQUATORIAL.RA_CURRENT
     POSITION.EQUATORIAL.DEC_CURRENT
     POSITION.LOCAL.SIDEREAL_TIME
-    POSITION.INSTRUMENTAL.DEROTATOR[3].CURRPOS
+    POSITION.INSTRUMENTAL.DEROTATOR[3].REALPOS
     CURRENT.TRACK
     CURRENT.DEROTATOR_OFFSET
     POSITION.INSTRUMENTAL.PORT_SELECT.CURRPOS
@@ -189,7 +189,7 @@ namespace eval "mount" {
       set pendingmountzenithdistance [astrometry::degtorad $value]
       return false
     }
-    if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.DEROTATOR\[3\].CURRPOS=%f" value] == 1} {
+    if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.DEROTATOR\[3\].REALPOS=%f" value] == 1} {
       set pendingmountderotatorangle [astrometry::degtorad $value]
       return false
     }
