@@ -407,6 +407,7 @@
     // Value at OHP with DDRAGUITO: "derotatoroffsetunpark": "7.75d",
     // Value at OAN for OGSE: "derotatoroffsetunpark": "9.27d",
     // Value at OAN for DDRAGO "derotatoroffsetunpark": "15.85d",
+    // Value at OAN for DDRAGO with the detector axes rotated by 45 degrees: "derotatoroffsetunpark": "60.85d"
     "derotatoroffsetunpark": "15.85d",
     // When the PLC parks the telescope, it uses these positions. These are not
     // configuarable using OpenTSI.
