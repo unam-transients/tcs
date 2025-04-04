@@ -92,32 +92,32 @@ namespace eval "louvers" {
 
   ######################################################################
 
-  proc waitwhilemoving {} {
-    log::info "waiting until [server::getdata "requestedlouvers"]."
-    set startingdelay 5000
-    set settlingdelay 1000
-    coroutine::after $startingdelay
-    while {![string equal [server::getdata "louvers"] [server::getdata "requestedlouvers"]]} {
-      coroutine::after 1000
-    }
-    coroutine::after $settlingdelay
-    log::info "finished waiting until [server::getdata "requestedlouvers"]."
-  }
-
-  ######################################################################
-
   proc openhardware {} {
     if {[catch {client::request "plc" "special openlouvers"}]} {
-      log::warning "unable to open."
+      log::error "unable to open."
+      return
     }
-    waitwhilemoving
+    set start [utcclock::seconds]
+    while {![string equal [server::getdata "louvers"] [server::getdata "requestedlouvers"]] && [utcclock::diff now $start] < 30} {
+      coroutine::after 1000
+    }
+    if {![string equal [server::getdata "louvers"] [server::getdata "requestedlouvers"]]} {
+      log::error "unable to open."
+    }
   }
 
   proc closehardware {} {
     if {[catch {client::request "plc" "special closelouvers"}]} {
-      log::warning "unable to close."
+      error "unable to close."
+      return
     }
-    waitwhilemoving
+    set start [utcclock::seconds]
+    while {![string equal [server::getdata "louvers"] [server::getdata "requestedlouvers"]] && [utcclock::diff now $start] < 30} {
+      coroutine::after 1000
+    }
+    if {![string equal [server::getdata "louvers"] [server::getdata "requestedlouvers"]]} {
+      error "unable to close."
+    }
   }
 
   ######################################################################
