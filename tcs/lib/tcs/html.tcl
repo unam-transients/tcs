@@ -699,6 +699,9 @@ namespace eval "html" {
       writehtmlrow "Mode" [client::getdata "louvers" "mode"]
       writehtmlrow "Requested louvers" [client::getdata "louvers" "requestedlouvers"]
       writehtmlrow "Current louvers" [client::getdata "louvers" "louvers"]
+      foreach louver [client::getdata "louvers" "activelouvers"] {
+        writehtmlrow "Current louver$louver" [client::getdata "louvers" "louver$louver"]
+      }
       writehtmlfullrowwithemph "Must be closed" $emph [client::getdata "louvers" "mustbeclosed"]   
       writehtmlrow "External temperature" [formatifdouble "%+.1f C" [client::getdata "louvers" "externaltemperature"]]
       writehtmlrow "Internal temperature" [formatifdouble "%+.1f C" [client::getdata "louvers" "internaltemperature"]]

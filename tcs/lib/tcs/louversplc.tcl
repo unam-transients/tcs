@@ -45,6 +45,7 @@ namespace eval "louvers" {
     }
     
     variable activelouvers
+    server::setdata "activelouvers" $activelouvers
 
     foreach i $activelouvers {
       server::setdata "louver$i" [client::getdata "plc" "louver$i"]
@@ -63,6 +64,7 @@ namespace eval "louvers" {
         set louvers "intermediate"
         break
       }
+      logchange "louver$i" "louver$i"
     }
     server::setdata "louvers" $louvers
     logchange "louvers" "louvers"
