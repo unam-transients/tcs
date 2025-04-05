@@ -50,6 +50,8 @@ shift
 bindir="$(dirname "$0")"
 export tcsprefix="$bindir/.."
 
+export PATH="$tcsprefix"/libexec/tcs/venv/bin/:$PATH
+
 if test -x "$tcsprefix/libexec/tcs/$subcommand"
 then
   exec "$tcsprefix/libexec/tcs/$subcommand" "$@"

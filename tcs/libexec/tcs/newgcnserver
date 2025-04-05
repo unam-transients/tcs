@@ -1,28 +1,263 @@
 #!/bin/env python3
 
-from gcn_kafka import Consumer
+import socket
+import json
+import sys
 import os
+import re
+from datetime import datetime
+import subprocess
+
+################################################################################
+
+
+def removelinecomments(s):
+    r = re.compile("^[ \t]*//.*$", re.MULTILINE)
+    return re.sub(r, "", s)
+
+
+def serversfilename():
+    if "tcsprefix" in os.environ:
+        return os.environ["tcsprefix"] + "/etc/tcs/servers.json"
+    else:
+        return "/usr/local/etc/tcs/servers.json"
+
+
+def readserversfile():
+    filename = serversfilename()
+    if not os.path.exists(filename):
+        print("servers file does not exist: " + filename)
+        sys.exit(1)
+    try:
+        with open(filename) as f:
+            s = f.read(-1)
+            data = json.loads(removelinecomments(s))
+            return data
+    except:
+        print("servers file cannot be opened: " + filename)
+        sys.exit(1)
+
+
+def serverhost(serversdata, server):
+    try:
+        return str(serversdata[server]["host"])
+    except:
+        print("invalid server: " + server)
+        sys.exit(1)
+
+
+def serverport(serversdata, server):
+    try:
+        return int(serversdata[server]["port"])
+    except:
+        print("invalid server: " + server)
+        sys.exit(1)
+
+
+################################################################################
+
+who = "newgcnserver"
+
+
+def logerror(payload):
+    log("error", payload)
+
+
+def logwarning(payload):
+    log("warning", payload)
+
+
+def logsummary(payload):
+    log("summary", payload)
+
+
+def loginfo(payload):
+    log("info", payload)
+
+
+def logdebug(payload):
+    log("debug", payload)
+
+
+def log(type, payload):
+    server = "log"
+    timestamp = datetime.now().isoformat(" ", "milliseconds")
+    request = {
+        "method": "log",
+        "params": {
+            "who": who,
+            "type": type,
+            "payload": payload,
+            "timestamp": timestamp,
+        },
+        "jsonrpc": "2.0",
+    }
+    requeststring = json.dumps(request) + "\n"
+    requeststring = requeststring.encode(encoding="UTF-8", errors="strict")
+    serversdata = readserversfile()
+    host = serverhost(serversdata, server)
+    port = serverport(serversdata, server)
+    print("%s: %s: %s: %s" % (timestamp, who, type, payload), flush=True)
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((host, port))
+        s.sendall(requeststring)
+    except:
+        print("error while sending request", flush=True)
+
+
+################################################################################
+
+handleheartbeatcount = 0
+def handleheartbeatmessage(messagetype, messagevalue):
+    global handleheartbeatcount
+    handleheartbeatcount += 1
+    if handleheartbeatcount == 60:
+        handleheartbeatcount = 0
+        loginfo("received %s message." % messagetype)
+
+
+def handleswiftmessage(messagetype, messagevalue):
+    loginfo("swift message.")
+    loginfo("received %s message." % messagetype)
+    loginfo("value is %r" % messagevalue.decode("UTF-8"))
+
+
+def handlefermimessage(messagetype, messagevalue):
+    loginfo("fermi message.")
+    loginfo("received %s message." % messagetype)
+    loginfo("value is %r" % messagevalue.decode("UTF-8"))
+
+
+def handlemaximessage(messagetype, messagevalue):
+    loginfo("maxi message.")
+    loginfo("received %s message." % messagetype)
+    loginfo("value is %r" % messagevalue.decode("UTF-8"))
+
+
+def handlesvommessage(messagetype, messagevalue):
+    loginfo("svom message.")
+    loginfo("received %s message." % messagetype)
+    loginfo("raw value is %r" % messagevalue.decode("UTF-8"))
+    value = json.loads(messagevalue.decode("UTF-8"))
+    loginfo("value = %r" % value)
+
+
+def handleeinsteinprobemessage(messagetype, messagevalue):
+    loginfo("einsteinprobe message.")
+    loginfo("received %s message." % messagetype)
+    loginfo("value is %r" % messagevalue.decode("UTF-8"))
+    loginfo("raw value is %r" % messagevalue.decode("UTF-8"))
+    value = json.loads(messagevalue.decode("UTF-8"))
+    loginfo("value = %r" % value)
+
+
+################################################################################
+
+from gcn_kafka import Consumer
+
+credentials = json.load(open("/usr/local/etc/tcs/gcncredentials.json"))
 
 consumer = Consumer(
-    client_id="3l3uf986o0di0gnvrb5t6hsoul",
-    client_secret=os.environ.get("tcsgcnclientsecret"),
+    client_id=credentials["id"],
+    client_secret=credentials["secret"],
 )
 
-consumer.subscribe(
-    [
-        "gcn.heartbeat",
-        "gcn.notices.icecube.lvk_nu_track_search",
-        "igwn.gwalert",
-        "gcn.notices.swift.bat.guano",
-        "gcn.notices.einstein_probe.wxt.alert",
-    ]
-)
+topics = [
+    "gcn.heartbeat",
+    "gcn.notices.svom.voevent.grm",
+    "gcn.notices.svom.voevent.eclairs",
+    "gcn.notices.svom.voevent.mxt",
+    "gcn.notices.einstein_probe.wxt.alert",
+    "gcn.classic.voevent.SWIFT_ACTUAL_POINTDIR",
+    "gcn.classic.voevent.SWIFT_BAT_ALARM_LONG",
+    "gcn.classic.voevent.SWIFT_BAT_ALARM_SHORT",
+    "gcn.classic.voevent.SWIFT_BAT_GRB_ALERT",
+    "gcn.classic.voevent.SWIFT_BAT_GRB_LC",
+    "gcn.classic.voevent.SWIFT_BAT_GRB_LC_PROC",
+    "gcn.classic.voevent.SWIFT_BAT_GRB_POS_ACK",
+    "gcn.classic.voevent.SWIFT_BAT_GRB_POS_NACK",
+    "gcn.classic.voevent.SWIFT_BAT_GRB_POS_TEST",
+    "gcn.classic.voevent.SWIFT_BAT_KNOWN_SRC",
+    "gcn.classic.voevent.SWIFT_BAT_MONITOR",
+    "gcn.classic.voevent.SWIFT_BAT_QL_POS",
+    "gcn.classic.voevent.SWIFT_BAT_SCALEDMAP",
+    "gcn.classic.voevent.SWIFT_BAT_SLEW_POS",
+    "gcn.classic.voevent.SWIFT_BAT_SUB_THRESHOLD",
+    "gcn.classic.voevent.SWIFT_BAT_SUBSUB",
+    "gcn.classic.voevent.SWIFT_BAT_TRANS",
+    "gcn.classic.voevent.SWIFT_FOM_OBS",
+    "gcn.classic.voevent.SWIFT_FOM_PPT_ARG_ERR",
+    "gcn.classic.voevent.SWIFT_FOM_SAFE_POINT",
+    "gcn.classic.voevent.SWIFT_FOM_SLEW_ABORT",
+    "gcn.classic.voevent.SWIFT_POINTDIR",
+    "gcn.classic.voevent.SWIFT_SC_SLEW",
+    "gcn.classic.voevent.SWIFT_TOO_FOM",
+    "gcn.classic.voevent.SWIFT_TOO_SC_SLEW",
+    "gcn.classic.voevent.SWIFT_UVOT_DBURST",
+    "gcn.classic.voevent.SWIFT_UVOT_DBURST_PROC",
+    "gcn.classic.voevent.SWIFT_UVOT_EMERGENCY",
+    "gcn.classic.voevent.SWIFT_UVOT_FCHART",
+    "gcn.classic.voevent.SWIFT_UVOT_FCHART_PROC",
+    "gcn.classic.voevent.SWIFT_UVOT_POS",
+    "gcn.classic.voevent.SWIFT_UVOT_POS_NACK",
+    "gcn.classic.voevent.SWIFT_XRT_CENTROID",
+    "gcn.classic.voevent.SWIFT_XRT_EMERGENCY",
+    "gcn.classic.voevent.SWIFT_XRT_IMAGE",
+    "gcn.classic.voevent.SWIFT_XRT_IMAGE_PROC",
+    "gcn.classic.voevent.SWIFT_XRT_LC",
+    "gcn.classic.voevent.SWIFT_XRT_POSITION",
+    "gcn.classic.voevent.SWIFT_XRT_SPECTRUM",
+    "gcn.classic.voevent.SWIFT_XRT_SPECTRUM_PROC",
+    "gcn.classic.voevent.SWIFT_XRT_SPER",
+    "gcn.classic.voevent.SWIFT_XRT_SPER_PROC",
+    "gcn.classic.voevent.SWIFT_XRT_THRESHPIX",
+    "gcn.classic.voevent.SWIFT_XRT_THRESHPIX_PROC",
+    "gcn.classic.voevent.FERMI_GBM_ALERT",
+    "gcn.classic.voevent.FERMI_GBM_FIN_POS",
+    "gcn.classic.voevent.FERMI_GBM_FLT_POS",
+    "gcn.classic.voevent.FERMI_GBM_GND_POS",
+    "gcn.classic.voevent.FERMI_GBM_LC",
+    "gcn.classic.voevent.FERMI_GBM_POS_TEST",
+    "gcn.classic.voevent.FERMI_GBM_SUBTHRESH",
+    "gcn.classic.voevent.FERMI_GBM_TRANS",
+    "gcn.classic.voevent.FERMI_LAT_GND",
+    "gcn.classic.voevent.FERMI_LAT_MONITOR",
+    "gcn.classic.voevent.FERMI_LAT_OFFLINE",
+    "gcn.classic.voevent.FERMI_LAT_POS_DIAG",
+    "gcn.classic.voevent.FERMI_LAT_POS_INI",
+    "gcn.classic.voevent.FERMI_LAT_POS_TEST",
+    "gcn.classic.voevent.FERMI_LAT_POS_UPD",
+    "gcn.classic.voevent.FERMI_LAT_TRANS",
+    "gcn.classic.voevent.FERMI_POINTDIR",
+    "gcn.classic.voevent.FERMI_SC_SLEW",
+    "gcn.classic.voevent.MAXI_KNOWN",
+    "gcn.classic.voevent.MAXI_TEST",
+    "gcn.classic.voevent.MAXI_UNKNOWN",
+]
 
+consumer.subscribe(topics)
+
+loginfo("starting server.")
 while True:
-    for message in consumer.consume(timeout=1):
+    for message in consumer.consume(timeout=5):
         if message.error():
             print(message.error())
+            logerror(str(message.error()))
             continue
-        print(f"topic={message.topic()}, offset={message.offset()}")
-        value = message.value()
-        print(value)
+        messagetype = message.topic()
+        messagevalue = message.value()
+        if messagetype.startswith("gcn.heartbeat"):
+            handleheartbeatmessage(messagetype, messagevalue)
+        elif messagetype.startswith("gcn.classic.voevent.SWIFT"):
+            handleswiftmessage(messagetype, messagevalue)
+        elif messagetype.startswith("gcn.classic.voevent.MAXI"):
+            handlemaximessage(messagetype, messagevalue)
+        elif messagetype.startswith("gcn.classic.voevent.FERMI"):
+            handlefermimessage(messagetype, messagevalue)
+        elif messagetype.startswith("gcn.notices.svom.voevent"):
+            handlesvommessage(messagetype, messagevalue)
+        elif messagetype.startswith("gcn.notices.einstein_probe.wxt.alert"):
+            handleeinsteinprobemessage(messagetype, messagevalue)
+        else:
+            logwarning('unknown message type "%s".' % messagetype)
