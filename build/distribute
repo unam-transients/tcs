@@ -24,6 +24,9 @@ ddoti)
 cu-tcs-ubuntu-2004)
   hosts="cu-tcs-ubuntu-2004"
   ;;
+cu-tcs-ubuntu-2404)
+  hosts="cu-tcs-ubuntu-2404"
+  ;;
 cu-tcs-*)
   hosts="$project"
   ;;

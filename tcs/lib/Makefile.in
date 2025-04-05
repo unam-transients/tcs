@@ -37,11 +37,7 @@ UNAME_N=$(shell uname -n)
 
 ifeq ($(UNAME_M),x86_64)
 installs_project_test	    	:=	\
-	detectorsi.so			        \
-	detectorfli.so		         	\
 	detectordummy.so		        \
-	focuserfli.so		        	\
-	filterwheelfli.so               \
 	filterwheelnull.so              \
 	filterwheeldummy.so
 else
