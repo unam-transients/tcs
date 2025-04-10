@@ -21,15 +21,6 @@
 
 ########################################################################
 
-find . -name configure.ac |
-while read filename
-do
-  (
-    cd $(dirname $filename)
-    autoconf
-  )
-done
-
 host=$(uname -n | sed 's/\..*//')
 case $host in
 coatli-*)
