@@ -80,6 +80,7 @@ dst="$1"
 cd "$tcsprefix"/var/tcs
 while true
 do
+  # Assemble the FITS files from the .fits.hdr.tmp and .fits.px.tmp files.
   find . -name "*C[0-9]?c.fits.hdr.tmp" |
   while read hdr
   do
@@ -91,6 +92,8 @@ do
       rm -f $hdr $pix
     fi
   done
+  # Produce the .fits.txt file, compress the FITS files, and copy both to the
+  # destination.
   (
     find . -name "*C[0-9]?.fits"
     find . -name "*C[0-9]?c.fits"
@@ -101,6 +104,7 @@ do
     $compress $fits
     $rsync -aR --bwlimit=25M $fits.txt $fits.$suffix "$dst"
   done
+  # Copy any left-over .fits.txt and compressed files to the destination.
   (
     find . -name "*C[0-9]?.fits.txt"
     find . -name "*C[0-9]?.fits.$suffix"
