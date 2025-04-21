@@ -22,21 +22,6 @@
 ////////////////////////////////////////////////////////////////////////
 
 {
-
-// We name the channels by the telescopes.
-
-// C1 has the detector previously on C5 ML2341018
-// C2 has the detector previously on C0 ML2351018
-// C3 has the detector previously on C1 ML3442818
-// C4 has the detector previously on C4 ML2331018
-
-// We flipped the wedge of C1, so it now points more or less where C5 used to point.
-
-// On the sky the telescope are:
-//
-// C1 C4
-// C3 C2
-
   "C0": {
     "telescopedescription": "DDOTI 28-cm f/2.2",
     "detectortype": "fli",
@@ -554,7 +539,7 @@
       "C0", "C1", "C2", "C3", "C4", "C5"
     ],
     "pointingdetectors": [
-      "C1", "C2"
+      "C2", "C3"
     ],
     "outletgroups": []
   },
@@ -1489,28 +1474,28 @@
         "+0.00d"
       ],
       "NE": [
-        "+1.8d",
-        "+1.86d"
+        "+1.7d",
+        "+3.4d"
       ],
       "NW": [
-        "-1.8d",
-        "+1.8d"
+        "-1.7d",
+        "+3.4d"
       ],
       "E": [
-        "+1.8d",
+        "+1.7d",
         "+0.0d"
       ],
       "W": [
-        "-1.8d",
+        "-1.7d",
         "+0.0d"
       ],
       "SE": [
-        "+1.80d",
-        "-1.8d"
+        "+1.7d",
+        "-3.4d"
       ],
       "SW": [
-        "-1.8d",
-        "-1.8d"
+        "-1.7d",
+        "-3.4d"
       ]
     }
   },
