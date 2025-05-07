@@ -1,9 +1,13 @@
 #!/bin/sh
 
+if test $# == 0
+then
+  set -- $(git diff --name-only | grep "\.tcl$")
+fi
+
 NAGELFARDIR="$(dirname "$0")"
 NAGELFARTCL="$NAGELFARDIR"/nagelfar131/nagelfar.tcl
 NAGELFARHDR="$NAGELFARDIR"/header
-NAGELFAROUT="$NAGELFARDIR"/out
 
 find "$NAGELFARDIR"/../tcs -name "*.tcl" | 
 xargs tclsh "$NAGELFARTCL" -header "$NAGELFARHDR" >/dev/null
@@ -12,6 +16,4 @@ tclsh "$NAGELFARTCL" "$NAGELFARHDR" "$@" 2>&1 |
 sed '
   /^Checking file /d
   s/ Line  *//
-' | tee "$NAGELFAROUT" | bbresults -p '(?P<file>.+?):(?P<line>\d+):\s+(?P<type>[WEN])\s+(?P<msg>.*)$'
-
-
+'
