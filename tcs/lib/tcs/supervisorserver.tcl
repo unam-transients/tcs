@@ -50,6 +50,10 @@ namespace eval "supervisorserver" {
     supervisor::close
     return
   }
+
+  proc slaveabandonnight {} {
+    supervisor::abandonnight
+  }
   
   proc slaverequestaccess {} {
     supervisor::requestaccess
@@ -60,6 +64,7 @@ namespace eval "supervisorserver" {
     supervisor::emergencyclose
     return
   }
+
   
   ######################################################################
 
@@ -69,6 +74,7 @@ namespace eval "supervisorserver" {
     interp alias $slave disable        {} supervisorserver::slavedisable
     interp alias $slave open           {} supervisorserver::slaveopen
     interp alias $slave close          {} supervisorserver::slaveclose
+    interp alias $slave abandonnight   {} supervisorserver::slaveabandonnight
     interp alias $slave requestaccess  {} supervisorserver::slaverequestaccess
     interp alias $slave emergencyclose {} supervisorserver::slaveemergencyclose
     

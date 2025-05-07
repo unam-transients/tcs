@@ -63,7 +63,9 @@ ddoti-*)
   ;;
 colibri-*)
   source="COLIBRI"
-  url="https://mattermost.osupytheas.fr/hooks/8d36q11tzp8e7yxdnc7czhosdw"
+  ;;
+cu-tcs-*)
+  source="TEST"
   ;;
 *)
   echo 2>&1 "$program: error: chat is not configured for $(uname -n)."

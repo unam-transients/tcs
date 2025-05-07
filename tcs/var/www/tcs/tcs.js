@@ -243,6 +243,9 @@ $(function () {
   $("form#supervisor-close").submit(function () {
     return submitrequest("supervisor close");
   });
+  $("form#supervisor-abandonnight").submit(function () {
+    return submitrequest("supervisor abandonnight");
+  });
   $("form#supervisor-emergencyclose").submit(function () {
     return submitrequest("supervisor emergencyclose");
   });

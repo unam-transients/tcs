@@ -772,6 +772,18 @@ namespace eval "supervisor" {
     log::summary [format "finished setting mode to \"closed\" after %.1f seconds." [utcclock::diff now $start]]
     return
   }
+
+  proc abandonnight {} {
+    set start [utcclock::seconds]
+    log::summary "abandoning night."
+    log::summary "setting mode to disabled."
+    variable mode
+    set mode "disabled"
+    updatedata
+    sendchat "operations" "abandoning night."
+    log::summary [format "finished abandoning night after %.1f seconds." [utcclock::diff now $start]]
+    return
+  }
   
   proc requestaccess {} {
     set start [utcclock::seconds]
@@ -786,6 +798,7 @@ namespace eval "supervisor" {
     server::newactivitycommand "closing" "idle" \
       "supervisor::emergencycloseactivitycommand" 900e3
   }
+
 
   ######################################################################
 
