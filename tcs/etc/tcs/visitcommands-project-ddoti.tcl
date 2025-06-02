@@ -165,7 +165,6 @@ proc alertvisit {{filter "w"}} {
       set northoffset [expr {$northoffset + [astrometry::parseoffset $dithernorthoffset]}]
             
       executor::track $eastoffset $northoffset $aperture
-      executor::waituntiltracking
 
       set exposure 0
       while {$exposure < $exposuresperdither} {
@@ -204,7 +203,6 @@ proc alertprologvisit {} {
   log::summary "alertprologvisit: focusing with binning 8."
   executor::setwindow "2kx2k"
   executor::setbinning 8
-  executor::waituntiltracking
   executor::focus 1 2000 250 false true
 
   log::summary "alertprologvisit: focusing with binning 1."
@@ -271,7 +269,6 @@ proc starevisit {exposures exposuretime {filters "w"}} {
   ]
 
   executor::track
-  executor::waituntiltracking
   
   set exposure 0
   while {$exposure < $exposures} {
@@ -346,13 +343,11 @@ proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime {filters 
   }
   
   executor::track
-  executor::waituntiltracking
   
   set gridrepeat 0
   while {$gridrepeat < $gridrepeats} {
     foreach {eastoffset northoffset} $dithers {
       executor::offset $eastoffset $northoffset
-      executor::waituntiltracking
       set exposure 0
       while {$exposure < $exposuresperdither} {
         executor::expose object $exposuretime
@@ -394,14 +389,12 @@ proc steppedgridvisit {gridrepeats exposuresperdither exposuretime} {
   }
   
   executor::track
-  executor::waituntiltracking
   
   set gridrepeat 0
   while {$gridrepeat < $gridrepeats} {
     foreach {visitidentifier eastoffset northoffset} $dithers {
       executor::setvisit [visit::updatevisitidentifier [executor::visit] $visitidentifier]
       executor::offset $eastoffset $northoffset
-      executor::waituntiltracking
       set exposure 0
       while {$exposure < $exposuresperdither} {
         executor::expose object $exposuretime
@@ -441,14 +434,12 @@ proc allskyvisit {} {
   log::summary [format "allskyvisit: %d exposures per dither." $exposuresperdither]
 
   executor::track
-  executor::waituntiltracking
   
   set gridrepeat 0
   while {$gridrepeat < $gridrepeats} {
     foreach eastoffset $eastoffsets {
       foreach northoffset $northoffsets {
         executor::offset $eastoffset $northoffset
-        executor::waituntiltracking
         set exposure 0
         while {$exposure < $exposuresperdither} {
           executor::expose object $exposuretime
@@ -469,7 +460,6 @@ proc allskyprologvisit {} {
   log::summary "allskyprologvisit: starting."
 
   executor::track
-  executor::waituntiltracking
 
   # First refocus.
   
@@ -516,7 +506,6 @@ proc trackingtestvisit {exposures exposuretime} {
   executor::setbinning "default"
   
   executor::tracktopocentric
-  executor::waituntiltracking
   
   set exposure 0
   while {$exposure < $exposures} {
@@ -542,7 +531,6 @@ proc initialfocusvisit {} {
   log::summary "initialfocusvisit: focusing with binning 8."
   executor::setwindow "2kx2k"
   executor::setbinning 8
-  executor::waituntiltracking
   executor::focus 1 2000 250 false true
     
   log::summary "initialfocusvisit: focusing with binning 1."
@@ -573,7 +561,6 @@ proc correctpointingvisit {} {
   executor::tracktopocentric
   executor::setwindow "6kx6k"
   executor::setbinning "default"
-  executor::waituntiltracking
   log::summary "correctpointingvisit: correcting."
   executor::correctpointing 4
   log::summary "correctpointingvisit: finished."
@@ -592,7 +579,6 @@ proc focusvisit {} {
   log::summary "focusvisit: focusing with binning 8."
   executor::setwindow "2kx2k"
   executor::setbinning 8
-  executor::waituntiltracking
   executor::focus 1 2000 250 false true
 
   log::summary "focusvisit: focus witness with binning 4."
@@ -628,7 +614,6 @@ proc finefocusvisit {} {
   log::summary "focusvisit: focusing with binning 1."
   executor::setwindow "1kx1k"
   executor::setbinning 1
-  executor::waituntiltracking
   executor::focus 4 600 75 false false
 
   executor::setfocused
@@ -651,7 +636,6 @@ proc fullfocusvisit {range exposuretime} {
   executor::setreadmode 16MHz
   executor::setwindow "default"
   executor::setbinning 1
-  executor::waituntiltracking
   
   log::summary "fullfocusvisit: focusing with binning 1."
   executor::focus $exposuretime $range [expr {$range / 10}] false true
@@ -678,7 +662,6 @@ proc focusmapvisit {} {
   log::summary "focusmapvisit: focusing with binning 8."
   executor::setwindow "2kx2k"
   executor::setbinning 8
-  executor::waituntiltracking
   executor::focus 1 1000 125 false true
 
   log::summary "focusmapvisit: focus witness with binning 8."
@@ -726,8 +709,6 @@ proc focuswitnessvisit {} {
   executor::setwindow "6kx6k"
   executor::setbinning 1
 
-  executor::waituntiltracking
-  
   set dithers {
      0as  0as
     +5am +5am
@@ -738,7 +719,6 @@ proc focuswitnessvisit {} {
 
   foreach {eastoffset northoffset} $dithers {
     executor::offset $eastoffset $northoffset "default"
-    executor::waituntiltracking
     executor::expose "object" 4
     executor::analyze "fwhmwitness"
   }
@@ -760,7 +740,6 @@ proc pointingmapvisit {} {
 #   log::summary "focusmapvisit: focusing at $ha $delta."
 #   visit::settargetcoordinates fixed $ha $delta now
 #   executor::tracktopocentric  
-#   executor::waituntiltracking
 #   executor::setwindow "6kx6k"
 #   executor::setbinning 1
 #   executor::expose object 4
@@ -914,13 +893,11 @@ proc aperturesvisit {} {
   executor::setbinning 8
   executor::setwindow "default"
   executor::track
-  executor::waituntiltracking
   log::summary "aperturesvisit: correcting pointing."
   executor::correctpointing 4
   foreach aperture { "default" "W" "NW" "NE" "E" "SE" "SW" } {
     log::summary "aperturesvisit: checking aperture $aperture."
     executor::track 0 0 $aperture
-    executor::waituntiltracking
     executor::expose object 4
   }
   log::summary "aperturesvisit: finished."
@@ -935,7 +912,6 @@ proc satellitevisit {starttime exposures exposuretime} {
   executor::track 0 0 "default"
   executor::setbinning 1
   executor::setwindow "default"
-  executor::waituntiltracking
 
   log::summary "satellitevisit: waiting to take first exposure after [utcclock::format $starttime]."
 
