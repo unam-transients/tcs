@@ -804,6 +804,7 @@ proc twilightflatsvisit {} {
 
 proc domeflatsvisit {} {
   log::summary "domeflatsvisit: starting."
+  executor::move
   executor::setbinning 1
   executor::setwindow "default"
   set detectors [client::getdata instrument detectors]
@@ -854,6 +855,7 @@ proc domeflatsvisit {} {
 
 proc biasesvisit {{exposures 10}} {
   log::summary "biasesvisit: starting."
+  executor::move
   executor::setwindow "default"
   executor::setreadmode "16MHz"
   executor::setbinning 1
@@ -872,6 +874,7 @@ proc biasesvisit {{exposures 10}} {
 
 proc darksvisit {{exposures 10} {exposuretime 60}} {
   log::summary "darksvisit: starting."
+  executor::move
   executor::setwindow "default"
   executor::setreadmode "16MHz"
   executor::setbinning 1

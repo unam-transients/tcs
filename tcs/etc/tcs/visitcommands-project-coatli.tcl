@@ -488,7 +488,6 @@ proc twilightflatsvisit {targetngood filter} {
   log::summary "twilightflatsvisit: starting."
 
   executor::setsecondaryoffset 0
-
   executor::move
 
   executor::movefocuser "center"
@@ -546,6 +545,7 @@ proc domeflatsvisit {} {
   log::summary "domeflatsvisit: starting."
 
   executor::setsecondaryoffset 0
+  executor::move
 
   executor::movefocuser "center"
   executor::setreadmode "conventionaldefault"
@@ -617,6 +617,7 @@ proc biasesvisit {} {
   log::summary "biasesvisit: starting."
 
   executor::setsecondaryoffset 0
+  executor::move
 
   executor::movefocuser "center"
   executor::movefilterwheel "dark"
@@ -646,7 +647,6 @@ proc darksvisit {} {
   log::summary "darksvisit: starting."
 
   executor::setsecondaryoffset 0
-
   executor::move
 
   executor::movefocuser "center"
@@ -686,7 +686,6 @@ proc gainvisit {} {
   log::summary "gainvisit: starting."
 
   executor::setsecondaryoffset 0
-
   executor::move
 
   executor::movefocuser "center"
@@ -725,7 +724,6 @@ proc readnoisevisit {} {
   log::summary "readnoisevisit: starting."
 
   executor::setsecondaryoffset 0
-
   executor::move
 
   executor::movefocuser "center"
