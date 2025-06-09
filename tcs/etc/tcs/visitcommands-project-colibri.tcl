@@ -469,10 +469,10 @@ proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest false
     set exposure 0
     while {$exposure < $exposurerepeats} {
       foreach {visitidentifier eastcenteroffsetfactor northcenteroffsetfactor} {
-        0 +0.9 +0.9
-        1 -0.9 +0.9
-        2 +0.9 -0.9
-        3 -0.9 -0.9
+        0 +0.45 +0.45
+        1 -0.45 +0.45
+        2 +0.45 -0.45
+        3 -0.45 -0.45
       } {
         variable fieldsize
         set eastcenteroffset  [expr {$eastcenteroffsetfactor  * $fieldsize}]
