@@ -46,6 +46,7 @@ installbins			:=	                 \
 installs_project_coatli	:=		         \
 	allsky-project-coatli.html		     \
 	C0-project-coatli.html       	     \
+	C0-focuswitness-project-coatli.html  \
 	config-project-coatli.js		     \
 	observations-project-coatli.html	 \
 	operations-project-coatli.html	     \
@@ -66,6 +67,12 @@ installs_project_ddoti	:=		         \
 	C3-project-ddoti.html  	     	     \
 	C4-project-ddoti.html  	     	     \
 	C5-project-ddoti.html  	     	     \
+	C0-focuswitness-project-ddoti.html   \
+	C1-focuswitness-project-ddoti.html   \
+	C2-focuswitness-project-ddoti.html   \
+	C3-focuswitness-project-ddoti.html   \
+	C4-focuswitness-project-ddoti.html   \
+	C5-focuswitness-project-ddoti.html   \
 	config-project-ddoti.js		         \
 	observations-project-ddoti.html      \
 	operations-project-ddoti.html  	     \
@@ -84,6 +91,9 @@ installs_project_colibri	:=		     \
 	C0-project-colibri.html  	      	 \
 	C1-project-colibri.html  	      	 \
 	C2-project-colibri.html  	      	 \
+	C0-focuswitness-project-colibri.html \
+	C1-focuswitness-project-colibri.html \
+	C2-focuswitness-project-colibri.html \
 	config-project-colibri.js	         \
 	observations-project-colibri.html    \
 	operations-project-colibri.html      \
@@ -102,6 +112,7 @@ installs_project_test		:=		     \
 	operations-project-test.html		 \
 	engineering-project-test.html		 \
 	C0-project-test.html  	     		 \
+	C0-focuswitness-project-test.html    \
 	config-project-test.js			     \
 
 EXTRA_INSTALLS			:=	\

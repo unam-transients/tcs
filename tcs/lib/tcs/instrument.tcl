@@ -633,7 +633,7 @@ namespace eval "instrument" {
       }
       foreach detector $detectors exposuretime $exposuretimes {
         if {![string equal $exposuretime "none"] && [isactivefocuser $detector]} {
-          client::request $detector "analyze fwhm"
+          client::request $detector "analyze fwhmwitness"
         }
       }
       foreach detector $detectors exposuretime $exposuretimes {

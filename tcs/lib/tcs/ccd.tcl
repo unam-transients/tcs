@@ -815,6 +815,12 @@ namespace eval "ccd" {
       server::setdata "standarddeviation" [detector::getstandarddeviation]
       log::info [format "level is %.1f ± %.1f DN." [detector::getaverage] [detector::getstandarddeviation]]
     } elseif {[string equal $type "fwhm"] || [string equal $type "fwhmwitness"]} {
+      if {[string equal $type "fwhmwitness"]} {
+        set latestfwhmwitnessfilename [file join [directories::var] $identifier "latest-fwhmwitness.fits"]
+        catch {
+          exec /bin/ln -f $currentfilename $latestfwhmwitnessfilename
+        }
+      }
       variable fitsfwhmchannel
       variable fitsfwhmargs
       set binning [server::getdata "detectorbinning"]

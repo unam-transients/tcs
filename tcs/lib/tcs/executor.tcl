@@ -282,7 +282,7 @@ namespace eval "executor" {
         incr i
         set timestamp [utcclock::combinedformat now]
         eval expose "focus" [lrepeat [llength $detectors] $exposuretime]
-        eval analyze [lrepeat [llength $detectors] "fwhm"]
+        eval analyze [lrepeat [llength $detectors] "fwhmwitness"]
         client::update $detector
         set fitsfilename [file tail [client::getdata $detector "fitsfilename"]]
         set fwhm         [client::getdata $detector "fwhm"]

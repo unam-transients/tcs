@@ -70,8 +70,11 @@ then
   mkdir -p "$varwwwdir"
   cd "$varwwwdir"
   rm -f *.jpg
-  ln -sf "$vartcsdir"/latest.jpg .
-  ln -sf "$vartcsdir"/latest-small.jpg .
+  for suffix in "" "-fwhmwitness"
+  do
+    ln -sf "$vartcsdir"/latest$suffix.jpg .
+    ln -sf "$vartcsdir"/latest$suffix-small.jpg .
+  done
   exit 0
 fi
 
@@ -94,54 +97,59 @@ cd "$dir"
 while true
 do
 
-  if test -f latest.fits && (test ! -f previous.fits || ! cmp -s latest.fits previous.fits)
-  then
+  for suffix in "" "-fwhmwitness"
+  do
+
+    if test -f latest$suffix.fits && (test ! -f previous$suffix.fits || ! cmp -s latest$suffix.fits previous$suffix.fits)
+    then
   
-    IFS=" " set -- $(tcs fitsdatawindow latest.fits)
-    sx=$1
-    sy=$2
-    nx=$3
-    ny=$4
-    datacrop="${nx}x${ny}+${sx}+${sy}"
+      IFS=" " set -- $(tcs fitsdatawindow latest$suffix.fits)
+      sx=$1
+      sy=$2
+      nx=$3
+      ny=$4
+      datacrop="${nx}x${ny}+${sx}+${sy}"
 
-    cx=$(expr $nx / 2)
-    cy=$(expr $ny / 2)
-    cr=$(expr $ny / 40)
-    cw=$(expr $ny / 400 + 1)
+      cx=$(expr $nx / 2)
+      cy=$(expr $ny / 2)
+      cr=$(expr $ny / 40)
+      cw=$(expr $ny / 400 + 1)
 
-    dateandtime=$(tcs fitsheadervalue SDATE latest.fits | sed 's/T/ /')
-    date=$(date -u --date "$dateandtime" +"%Y-%m-%d")
-    time=$(date -u --date "$dateandtime" +"%H:%M:%S")
-    compactdate=$(date -u --date "$dateandtime" +"%Y%m%d")
-    compacttime=$(date -u --date "$dateandtime" +"%H%M%S")
-    compactdateandtime=$(date -u --date "$dateandtime" +"%Y%m%dT%H%M%S")
-  
-    convert \
-      -normalize -negate \
-      -crop $datacrop +repage \
-      latest.fits latest.png
-
-    convert \
-      -fill none -stroke red -strokewidth $cw -draw "circle $cx,$cy $cx,$(expr $cy + $cr)" \
-      -scale x512 \
-      -gravity southeast -fill white -undercolor black $fontargs -stroke none -annotate +1+0 "$camera $date $time" \
-      -quality 85 \
-      latest.png latest-new.jpg
-        
-    convert \
-      -scale x90 \
-      -gravity southeast -fill white -undercolor black $fontargs -annotate +1+0 "$camera $time" \
-      -quality 75 \
-      latest.png latest-small-new.jpg
-
-    mv latest-new.jpg latest.jpg
-    mv latest-small-new.jpg latest-small.jpg
-
-    ln -f latest.fits previous.fits
+      dateandtime=$(tcs fitsheadervalue SDATE latest$suffix.fits | sed 's/T/ /')
+      date=$(date -u --date "$dateandtime" +"%Y-%m-%d")
+      time=$(date -u --date "$dateandtime" +"%H:%M:%S")
+      compactdate=$(date -u --date "$dateandtime" +"%Y%m%d")
+      compacttime=$(date -u --date "$dateandtime" +"%H%M%S")
+      compactdateandtime=$(date -u --date "$dateandtime" +"%Y%m%dT%H%M%S")
     
-    rsync --timeout=10 *.jpg rsync://$host/tcs/$camera/ 2>/dev/null
-      
-  fi
+      convert \
+        -normalize -negate \
+        -crop $datacrop +repage \
+        latest$suffix.fits latest$suffix.png
+
+      convert \
+        -fill none -stroke red -strokewidth $cw -draw "circle $cx,$cy $cx,$(expr $cy + $cr)" \
+        -scale x512 \
+        -gravity southeast -fill white -undercolor black $fontargs -stroke none -annotate +1+0 "$camera $date $time" \
+        -quality 85 \
+        latest$suffix.png latest$suffix-new.jpg
+          
+      convert \
+        -scale x90 \
+        -gravity southeast -fill white -undercolor black $fontargs -annotate +1+0 "$camera $time" \
+        -quality 75 \
+        latest$suffix.png latest$suffix-small-new.jpg
+
+      mv latest$suffix-new.jpg latest$suffix.jpg
+      mv latest$suffix-small-new.jpg latest$suffix-small.jpg
+
+      ln -f latest$suffix.fits previous$suffix.fits
+              
+      rsync --timeout=10 *.jpg rsync://$host/tcs/$camera/ 2>/dev/null
+
+    fi
+
+  done
     
   sleep 1
   

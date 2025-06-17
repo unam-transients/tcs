@@ -544,11 +544,6 @@ proc initialfocusvisit {} {
 
   executor::setfocused
 
-  log::summary "initialfocusvisit: full focus witness with binning 1."
-  executor::setwindow "default"
-  executor::expose "object" 4
-  executor::analyze "fwhmwitness"
-
   log::summary "initialfocusvisit: finished."
 
   return false
