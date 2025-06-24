@@ -207,78 +207,18 @@ proc setdetector {} {
 
 ########################################################################
 
-proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {offsetfastest false}} {
-
-  log::summary "gridvisit: starting."
-
-  set filters [parsefilters $filters]
-  if {[llength $exposuretimes] == 1} {
-    set exposuretimes [lrepeat [llength $filters] $exposuretimes]
-  } elseif {[llength $filters] == 1} {
-    set filters [lrepeat [llength $exposuretimes] $filters]
-  } elseif {[llength $exposuretimes] != [llength $filters]} {
-    error "the exposuretimes and filters arguments have different lengths."
-  }
-
-  executor::setsecondaryoffset 0
-  executor::track
-
-  setdetector
-
-  # Thus gives reasonable results for 1, 2, 4, 5, and 9 gridpoints.
-  if {$gridpoints == 1} {
-    set dithers { 0as 0as }
+proc gridvisitoffset {gridsize eastoffsetfactor northoffsetfactor track} {
+  set gridsize [astrometry::parseoffset $gridsize]
+  set eastoffset  [expr {$eastoffsetfactor  * $gridsize}]
+  set northoffset [expr {$northoffsetfactor * $gridsize}]
+  if {$track} {
+    executor::track $eastoffset $northoffset "default"
   } else {
-    set dithers [lrange {
-          +30as +30as
-          -30as -30as
-          +30as -30as
-          -30as +30as
-            0as   0as
-          +30as   0as
-          -30as   0as
-            0as +30as
-            0as -30as
-        } 0 [expr {$gridpoints * 2 - 1}]]
+    executor::offset $eastoffset $northoffset "default"
   }
-
-  set gridrepeat 0
-  while {$gridrepeat < $gridrepeats} {
-    if {$offsetfastest} {
-      foreach filter $filters exposuretime $exposuretimes {
-        eval executor::movefilterwheel $filter
-        foreach {eastoffset northoffset} $dithers {
-          executor::offset $eastoffset $northoffset "default"
-          set exposure 0
-          while {$exposure < $exposurerepeats} {
-            executor::expose object $exposuretime
-            incr exposure
-          }
-        }
-      }
-    } else {
-      foreach {eastoffset northoffset} $dithers {
-        executor::offset $eastoffset $northoffset "default"
-        foreach filter $filters exposuretime $exposuretimes {
-          eval executor::movefilterwheel $filter
-          set exposure 0
-          while {$exposure < $exposurerepeats} {
-            executor::expose object $exposuretime
-            incr exposure
-          }
-        }
-      }
-    }
-    incr gridrepeat
-  }
-
-  log::summary "gridvisit: finished."
-  return true
 }
 
-########################################################################
-
-proc fullgridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {offsetfastest false}} {
+proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {gridsize 1am} {offsetfastest false}} {
 
   log::summary "gridvisit: starting."
 
@@ -290,55 +230,49 @@ proc fullgridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters
   } elseif {[llength $exposuretimes] != [llength $filters]} {
     error "the exposuretimes and filters arguments have different lengths."
   }
-  
+
   executor::setsecondaryoffset 0
-  executor::track
 
   setdetector
 
+  set track true
+
   # Thus gives reasonable results for 1, 2, 4, 5, and 9 gridpoints.
   if {$gridpoints == 1} {
-    set dithers { 0as 0as }
+    set ditherofsetfactors { 0 0 }
   } else {
-    set dithers [lrange {
-          +30as +30as
-          -30as -30as
-          +30as -30as
-          -30as +30as
-            0as   0as
-          +30as   0as
-          -30as   0as
-            0as +30as
-            0as -30as
+    set ditherofsetfactors [lrange {
+          +0.5 +0.5
+          -0.5 -0.5
+          +0.5 -0.5
+          -0.5 +0.5
+          +0.0 +0.0
+          +0.5 +0.0
+          -0.5 +0.0
+          +0.0 +0.5
+          +0.0 -0.5
         } 0 [expr {$gridpoints * 2 - 1}]]
   }
-
+  
   set gridrepeat 0
   while {$gridrepeat < $gridrepeats} {
     if {$offsetfastest} {
       foreach filter $filters exposuretime $exposuretimes {
         eval executor::movefilterwheel $filter
-        foreach {eastdither northdither} $dithers {
-          foreach {eaststep northstep} { 
-            "-6am" "-6am"
-            "+6am" "-6am"
-            "-6am" "+6am"
-            "+6am" "+6am"
-          } {
-            set eastoffset  [expr {[astrometry::parseoffset $eaststep ] + [astrometry::parseoffset $eastdither ]}]
-            set northoffset [expr {[astrometry::parseoffset $northstep] + [astrometry::parseoffset $northdither]}]
-            executor::offset $eastoffset $northoffset "default"
-            set exposure 0
-            while {$exposure < $exposurerepeats} {
-              executor::expose object $exposuretime
-              incr exposure
-            }
+        foreach {eastoffsetfactor northoffsetfactor} $ditherofsetfactors {
+          gridvisitoffset $gridsize $eastoffsetfactor $northoffsetfactor $track
+          set track false
+          set exposure 0
+          while {$exposure < $exposurerepeats} {
+            executor::expose object $exposuretime
+            incr exposure
           }
         }
       }
     } else {
-      foreach {eastoffset northoffset} $dithers {
-        executor::offset $eastoffset $northoffset "default"
+      foreach {eastoffsetfactor northoffsetfactor} $ditherofsetfactors {
+        gridvisitoffset $gridsize $eastoffsetfactor $northoffsetfactor $track
+        set track false
         foreach filter $filters exposuretime $exposuretimes {
           eval executor::movefilterwheel $filter
           set exposure 0
@@ -374,7 +308,7 @@ proc dithervisitoffset {diameter track} {
   }
 }
 
-proc dithervisit {dithers exposuretimes filters {offsetfastest false} {diameter "1am"}} {
+proc dithervisit {dithers exposuretimes filters {diameter "1am"} {offsetfastest false}} {
 
   log::summary "dithervisit: starting."
 
@@ -443,7 +377,6 @@ proc quaddithervisitoffset {diameter eastcenteroffset northcenteroffset} {
   set northoffset [expr {$northoffset + $northcenteroffset}]  
   executor::offset $eastoffset $northoffset "default"
 }
-
 
 proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest false} {diameter "1am"}} {
 
