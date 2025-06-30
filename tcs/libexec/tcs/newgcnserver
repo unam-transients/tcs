@@ -1,4 +1,4 @@
-#!/bin/env python3
+#!/usr/bin/env python3
 
 import socket
 import json
@@ -6,7 +6,7 @@ import sys
 import os
 import re
 from datetime import datetime
-import subprocess
+from datetime import timezone
 
 ################################################################################
 
@@ -110,12 +110,29 @@ def log(type, payload):
 
 handleheartbeatcount = 0
 def handleheartbeatmessage(messagetype, messagevalue):
+    """
+    Handle a heartbeat message.
+
+    :param messagetype: A string describing the message type. This must be `"gcn.heartbeat"`.
+    :param messagevalue: A string encoding the message value.
+    """
+
+    assert messagetype == "gcn.heartbeat"
+
     global handleheartbeatcount
     handleheartbeatcount += 1
     if handleheartbeatcount == 60:
         handleheartbeatcount = 0
         loginfo("received %s message." % messagetype)
+        value = json.loads(messagevalue.decode("UTF-8"))
+        alertisotimestamp = value["alert_datetime"]
+        alertdatetime = datetime.fromisoformat(alertisotimestamp)
+        nowdatetime = datetime.now(timezone.utc)
+        alertdelay = (nowdatetime - alertdatetime).total_seconds()
+        loginfo("%s: alert delay is %.3f seconds." % (messagetype, alertdelay))
 
+
+################################################################################
 
 def handleswiftmessage(messagetype, messagevalue):
     loginfo("swift message.")
@@ -139,9 +156,6 @@ def handlesvommessage(messagetype, messagevalue):
     loginfo("svom message.")
     loginfo("received %s message." % messagetype)
     loginfo("raw value is %r" % messagevalue.decode("UTF-8"))
-    value = json.loads(messagevalue.decode("UTF-8"))
-    loginfo("value = %r" % value)
-
 
 def handleeinsteinprobemessage(messagetype, messagevalue):
     loginfo("einsteinprobe message.")
