@@ -94,7 +94,7 @@ proc alertvisit {filters} {
     log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
 
     log::summary "alertvisit: dithering 1 × 1 fields."
-    dithervisit $exposurerepeats $exposuretime $filters false
+    dithervisit $exposurerepeats $exposuretime $filters
   
   } elseif {$uncertainty <= 0.5 * $fieldsize} {
 
@@ -103,7 +103,7 @@ proc alertvisit {filters} {
     log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
  
     log::summary "alertvisit: dithering 1 × 1 fields."
-    dithervisit $exposurerepeats $exposuretime $filters false
+    dithervisit $exposurerepeats $exposuretime $filters
     
   } else {
 
@@ -112,7 +112,7 @@ proc alertvisit {filters} {
     log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
  
     log::summary "alertvisit: dithering 2 × 2 fields."
-    quaddithervisit $exposurerepeats $exposuretime $filters false
+    quaddithervisit $exposurerepeats $exposuretime $filters
 
   }
   
