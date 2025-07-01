@@ -7,6 +7,7 @@ import os
 import re
 from datetime import datetime
 from datetime import timezone
+import subprocess
 
 ################################################################################
 
@@ -108,16 +109,149 @@ def log(type, payload):
 
 ################################################################################
 
+
+def compactmessagetype(messagetype):
+
+    compactmessagetype = messagetype
+    compactmessagetype = compactmessagetype.removeprefix("gcn.")
+    compactmessagetype = compactmessagetype.removeprefix("notices.")
+    compactmessagetype = compactmessagetype.replace("_", "")
+    compactmessagetype = compactmessagetype.replace(".", "")
+
+    return compactmessagetype
+
+
+################################################################################
+
+
+def respond(
+    alertisotimestamp,
+    eventorigin,
+    eventidentifier,
+    eventtype,
+    eventprefix,
+    eventisotimestamp,
+    eventalpha,
+    eventdelta,
+    eventequinox,
+    eventuncertainty,
+    eventclass,
+    eventmessenger,
+    enabled,
+    preliminary,
+):
+
+    def logresponse(s):
+        log("summary", "%s: %s" % (eventtype, s))
+        return
+
+    def trueorfalse(value):
+        if value:
+            return "true"
+        else:
+            return "false"
+
+    year = int(eventisotimestamp[2:4])
+    month = int(eventisotimestamp[5:7])
+    day = int(eventisotimestamp[8:10])
+    hours = int(eventisotimestamp[11:13])
+    minutes = int(eventisotimestamp[14:16])
+    seconds = int(eventisotimestamp[17:19])
+    dayfraction = (hours + minutes / 60 + seconds / 3600) / 24
+    eventname = "%s %02d%02d%02d.%03d" % (
+        eventprefix,
+        year,
+        month,
+        day,
+        int(dayfraction * 1000),
+    )
+    logresponse("event name is %s." % eventname)
+
+    logresponse(
+        "event origin/identifier/type are %s/%s/%s."
+        % (eventorigin, eventidentifier, eventtype)
+    )
+
+    logresponse("event time stamp is %s." % eventisotimestamp)
+    logresponse("alert time stamp is %s." % alertisotimestamp)
+    eventdatetime = datetime.fromisoformat(eventisotimestamp)
+    alertdatetime = datetime.fromisoformat(alertisotimestamp)
+    alertdelay = (alertdatetime - eventdatetime).total_seconds()
+    logresponse("alert delay is %.3f seconds." % alertdelay)
+
+    logresponse("position is %s %s %s." % (eventalpha, eventdelta, eventequinox))
+    logresponse("90%% uncertainty is %s in radius." % eventuncertainty)
+    logresponse("event %s enabled." % ("is" if enabled else "is not"))
+    logresponse("event %s preliminary." % ("is" if preliminary else "is not"))
+
+    logresponse("requesting selector to respond.")
+
+    # We don't really use the specified block identifier any more.
+    blockidentifier = "0"
+
+    logresponse(
+        "tcs request selector respondtoalert %r %r %r %r %r %r %r %r %r %r %r %r %r %r %r %r"
+        % (
+            blockidentifier,
+            eventname,
+            eventorigin,
+            eventidentifier,
+            eventtype,
+            alertisotimestamp,
+            eventisotimestamp,
+            trueorfalse(enabled),
+            eventalpha,
+            eventdelta,
+            eventequinox,
+            eventuncertainty,
+            eventclass,
+            eventmessenger,
+            "",
+            trueorfalse(preliminary),
+        )
+    )
+    subprocess.run(
+        [
+            "/usr/local/bin/tcs",
+            "request",
+            "selector",
+            "respondtoalert",
+            blockidentifier,
+            eventname,
+            eventorigin,
+            eventidentifier,
+            eventtype,
+            alertisotimestamp,
+            eventisotimestamp,
+            trueorfalse(enabled),
+            eventalpha,
+            eventdelta,
+            eventequinox,
+            eventuncertainty,
+            eventclass,
+            eventmessenger,
+            "",
+            trueorfalse(preliminary),
+        ]
+    )
+
+
+################################################################################
+
 handleheartbeatcount = 0
+
+
 def handleheartbeatmessage(messagetype, messagevalue):
     """
     Handle a heartbeat message.
 
-    :param messagetype: A string describing the message type. This must be `"gcn.heartbeat"`.
+    :param messagetype: A string describing the message type. This must be
+        `"gcn.heartbeat"`.
     :param messagevalue: A string encoding the message value.
     """
 
     assert messagetype == "gcn.heartbeat"
+    messagetype = compactmessagetype(messagetype)
 
     global handleheartbeatcount
     handleheartbeatcount += 1
@@ -125,14 +259,15 @@ def handleheartbeatmessage(messagetype, messagevalue):
         handleheartbeatcount = 0
         loginfo("received %s message." % messagetype)
         value = json.loads(messagevalue.decode("UTF-8"))
-        alertisotimestamp = value["alert_datetime"]
-        alertdatetime = datetime.fromisoformat(alertisotimestamp)
-        nowdatetime = datetime.now(timezone.utc)
-        alertdelay = (nowdatetime - alertdatetime).total_seconds()
+        eventisotimestamp = value["alert_datetime"]
+        eventdatetime = datetime.fromisoformat(eventisotimestamp)
+        alertdatetime = datetime.now(timezone.utc)
+        alertdelay = (alertdatetime - eventdatetime).total_seconds()
         loginfo("%s: alert delay is %.3f seconds." % (messagetype, alertdelay))
 
 
 ################################################################################
+
 
 def handleswiftmessage(messagetype, messagevalue):
     loginfo("swift message.")
@@ -157,13 +292,55 @@ def handlesvommessage(messagetype, messagevalue):
     loginfo("received %s message." % messagetype)
     loginfo("raw value is %r" % messagevalue.decode("UTF-8"))
 
+
 def handleeinsteinprobemessage(messagetype, messagevalue):
-    loginfo("einsteinprobe message.")
+    """
+    Handle a Einstein Probe message.
+
+    :param messagetype: A string describing the message type. This must be
+        `"gcn.notices.einstein_probe.wxt.alert"`.
+    :param messagevalue: A string encoding the message value.
+    """
+
+    assert messagetype == "gcn.notices.einstein_probe.wxt.alert"
+    messagetype = compactmessagetype(messagetype)
+
     loginfo("received %s message." % messagetype)
-    loginfo("value is %r" % messagevalue.decode("UTF-8"))
-    loginfo("raw value is %r" % messagevalue.decode("UTF-8"))
+
+    alertisotimestamp = datetime.isoformat(datetime.now(timezone.utc))
+
     value = json.loads(messagevalue.decode("UTF-8"))
-    loginfo("value = %r" % value)
+
+    eventorigin = "ep"
+    eventidentifier = value["id"][0]
+    eventtype = messagetype
+    eventisotimestamp = value["trigger_time"]
+    eventprefix = "EP"
+    eventalpha = "%.4fd" % value["ra"]
+    eventdelta = "%+.4fd" % value["dec"]
+    eventequinox = "2000.0"
+    eventuncertainty = "%.4fd" % value["ra_dec_error"]
+    enabled = True
+    eventclass = "xrt"
+    eventmessenger = "electromagnetic"
+    preliminary = False
+
+    respond(
+        alertisotimestamp,
+        eventorigin,
+        eventidentifier,
+        eventtype,
+        eventprefix,
+        eventisotimestamp,
+        eventalpha,
+        eventdelta,
+        eventequinox,
+        eventuncertainty,
+        eventclass,
+        eventmessenger,
+        enabled,
+        preliminary,
+    )
 
 
 ################################################################################
@@ -172,83 +349,91 @@ from gcn_kafka import Consumer
 
 credentials = json.load(open("/usr/local/etc/tcs/gcncredentials.json"))
 
+consumerconfig = {}
+
+# Use this config to download all of the events in the buffers. See https://github.com/nasa-gcn/gcn-kafka-python/blob/main/README.md
+if False:
+    consumerconfig.update({"auto.offset.reset": "earliest"})
+
 consumer = Consumer(
     client_id=credentials["id"],
     client_secret=credentials["secret"],
+    config=consumerconfig,
 )
 
 topics = [
     "gcn.heartbeat",
-    "gcn.notices.svom.voevent.grm",
-    "gcn.notices.svom.voevent.eclairs",
-    "gcn.notices.svom.voevent.mxt",
+    # "gcn.notices.svom.voevent.grm",
+    # "gcn.notices.svom.voevent.eclairs",
+    # "gcn.notices.svom.voevent.mxt",
     "gcn.notices.einstein_probe.wxt.alert",
-    "gcn.classic.voevent.SWIFT_ACTUAL_POINTDIR",
-    "gcn.classic.voevent.SWIFT_BAT_ALARM_LONG",
-    "gcn.classic.voevent.SWIFT_BAT_ALARM_SHORT",
-    "gcn.classic.voevent.SWIFT_BAT_GRB_ALERT",
-    "gcn.classic.voevent.SWIFT_BAT_GRB_LC",
-    "gcn.classic.voevent.SWIFT_BAT_GRB_LC_PROC",
-    "gcn.classic.voevent.SWIFT_BAT_GRB_POS_ACK",
-    "gcn.classic.voevent.SWIFT_BAT_GRB_POS_NACK",
-    "gcn.classic.voevent.SWIFT_BAT_GRB_POS_TEST",
-    "gcn.classic.voevent.SWIFT_BAT_KNOWN_SRC",
-    "gcn.classic.voevent.SWIFT_BAT_MONITOR",
-    "gcn.classic.voevent.SWIFT_BAT_QL_POS",
-    "gcn.classic.voevent.SWIFT_BAT_SCALEDMAP",
-    "gcn.classic.voevent.SWIFT_BAT_SLEW_POS",
-    "gcn.classic.voevent.SWIFT_BAT_SUB_THRESHOLD",
-    "gcn.classic.voevent.SWIFT_BAT_SUBSUB",
-    "gcn.classic.voevent.SWIFT_BAT_TRANS",
-    "gcn.classic.voevent.SWIFT_FOM_OBS",
-    "gcn.classic.voevent.SWIFT_FOM_PPT_ARG_ERR",
-    "gcn.classic.voevent.SWIFT_FOM_SAFE_POINT",
-    "gcn.classic.voevent.SWIFT_FOM_SLEW_ABORT",
-    "gcn.classic.voevent.SWIFT_POINTDIR",
-    "gcn.classic.voevent.SWIFT_SC_SLEW",
-    "gcn.classic.voevent.SWIFT_TOO_FOM",
-    "gcn.classic.voevent.SWIFT_TOO_SC_SLEW",
-    "gcn.classic.voevent.SWIFT_UVOT_DBURST",
-    "gcn.classic.voevent.SWIFT_UVOT_DBURST_PROC",
-    "gcn.classic.voevent.SWIFT_UVOT_EMERGENCY",
-    "gcn.classic.voevent.SWIFT_UVOT_FCHART",
-    "gcn.classic.voevent.SWIFT_UVOT_FCHART_PROC",
-    "gcn.classic.voevent.SWIFT_UVOT_POS",
-    "gcn.classic.voevent.SWIFT_UVOT_POS_NACK",
-    "gcn.classic.voevent.SWIFT_XRT_CENTROID",
-    "gcn.classic.voevent.SWIFT_XRT_EMERGENCY",
-    "gcn.classic.voevent.SWIFT_XRT_IMAGE",
-    "gcn.classic.voevent.SWIFT_XRT_IMAGE_PROC",
-    "gcn.classic.voevent.SWIFT_XRT_LC",
-    "gcn.classic.voevent.SWIFT_XRT_POSITION",
-    "gcn.classic.voevent.SWIFT_XRT_SPECTRUM",
-    "gcn.classic.voevent.SWIFT_XRT_SPECTRUM_PROC",
-    "gcn.classic.voevent.SWIFT_XRT_SPER",
-    "gcn.classic.voevent.SWIFT_XRT_SPER_PROC",
-    "gcn.classic.voevent.SWIFT_XRT_THRESHPIX",
-    "gcn.classic.voevent.SWIFT_XRT_THRESHPIX_PROC",
-    "gcn.classic.voevent.FERMI_GBM_ALERT",
-    "gcn.classic.voevent.FERMI_GBM_FIN_POS",
-    "gcn.classic.voevent.FERMI_GBM_FLT_POS",
-    "gcn.classic.voevent.FERMI_GBM_GND_POS",
-    "gcn.classic.voevent.FERMI_GBM_LC",
-    "gcn.classic.voevent.FERMI_GBM_POS_TEST",
-    "gcn.classic.voevent.FERMI_GBM_SUBTHRESH",
-    "gcn.classic.voevent.FERMI_GBM_TRANS",
-    "gcn.classic.voevent.FERMI_LAT_GND",
-    "gcn.classic.voevent.FERMI_LAT_MONITOR",
-    "gcn.classic.voevent.FERMI_LAT_OFFLINE",
-    "gcn.classic.voevent.FERMI_LAT_POS_DIAG",
-    "gcn.classic.voevent.FERMI_LAT_POS_INI",
-    "gcn.classic.voevent.FERMI_LAT_POS_TEST",
-    "gcn.classic.voevent.FERMI_LAT_POS_UPD",
-    "gcn.classic.voevent.FERMI_LAT_TRANS",
-    "gcn.classic.voevent.FERMI_POINTDIR",
-    "gcn.classic.voevent.FERMI_SC_SLEW",
-    "gcn.classic.voevent.MAXI_KNOWN",
-    "gcn.classic.voevent.MAXI_TEST",
-    "gcn.classic.voevent.MAXI_UNKNOWN",
+    # "gcn.classic.voevent.SWIFT_ACTUAL_POINTDIR",
+    # "gcn.classic.voevent.SWIFT_BAT_ALARM_LONG",
+    # "gcn.classic.voevent.SWIFT_BAT_ALARM_SHORT",
+    # "gcn.classic.voevent.SWIFT_BAT_GRB_ALERT",
+    # "gcn.classic.voevent.SWIFT_BAT_GRB_LC",
+    # "gcn.classic.voevent.SWIFT_BAT_GRB_LC_PROC",
+    # "gcn.classic.voevent.SWIFT_BAT_GRB_POS_ACK",
+    # "gcn.classic.voevent.SWIFT_BAT_GRB_POS_NACK",
+    # "gcn.classic.voevent.SWIFT_BAT_GRB_POS_TEST",
+    # "gcn.classic.voevent.SWIFT_BAT_KNOWN_SRC",
+    # "gcn.classic.voevent.SWIFT_BAT_MONITOR",
+    # "gcn.classic.voevent.SWIFT_BAT_QL_POS",
+    # "gcn.classic.voevent.SWIFT_BAT_SCALEDMAP",
+    # "gcn.classic.voevent.SWIFT_BAT_SLEW_POS",
+    # "gcn.classic.voevent.SWIFT_BAT_SUB_THRESHOLD",
+    # "gcn.classic.voevent.SWIFT_BAT_SUBSUB",
+    # "gcn.classic.voevent.SWIFT_BAT_TRANS",
+    # "gcn.classic.voevent.SWIFT_FOM_OBS",
+    # "gcn.classic.voevent.SWIFT_FOM_PPT_ARG_ERR",
+    # "gcn.classic.voevent.SWIFT_FOM_SAFE_POINT",
+    # "gcn.classic.voevent.SWIFT_FOM_SLEW_ABORT",
+    # "gcn.classic.voevent.SWIFT_POINTDIR",
+    # "gcn.classic.voevent.SWIFT_SC_SLEW",
+    # "gcn.classic.voevent.SWIFT_TOO_FOM",
+    # "gcn.classic.voevent.SWIFT_TOO_SC_SLEW",
+    # "gcn.classic.voevent.SWIFT_UVOT_DBURST",
+    # "gcn.classic.voevent.SWIFT_UVOT_DBURST_PROC",
+    # "gcn.classic.voevent.SWIFT_UVOT_EMERGENCY",
+    # "gcn.classic.voevent.SWIFT_UVOT_FCHART",
+    # "gcn.classic.voevent.SWIFT_UVOT_FCHART_PROC",
+    # "gcn.classic.voevent.SWIFT_UVOT_POS",
+    # "gcn.classic.voevent.SWIFT_UVOT_POS_NACK",
+    # "gcn.classic.voevent.SWIFT_XRT_CENTROID",
+    # "gcn.classic.voevent.SWIFT_XRT_EMERGENCY",
+    # "gcn.classic.voevent.SWIFT_XRT_IMAGE",
+    # "gcn.classic.voevent.SWIFT_XRT_IMAGE_PROC",
+    # "gcn.classic.voevent.SWIFT_XRT_LC",
+    # "gcn.classic.voevent.SWIFT_XRT_POSITION",
+    # "gcn.classic.voevent.SWIFT_XRT_SPECTRUM",
+    # "gcn.classic.voevent.SWIFT_XRT_SPECTRUM_PROC",
+    # "gcn.classic.voevent.SWIFT_XRT_SPER",
+    # "gcn.classic.voevent.SWIFT_XRT_SPER_PROC",
+    # "gcn.classic.voevent.SWIFT_XRT_THRESHPIX",
+    # "gcn.classic.voevent.SWIFT_XRT_THRESHPIX_PROC",
+    # "gcn.classic.voevent.FERMI_GBM_ALERT",
+    # "gcn.classic.voevent.FERMI_GBM_FIN_POS",
+    # "gcn.classic.voevent.FERMI_GBM_FLT_POS",
+    # "gcn.classic.voevent.FERMI_GBM_GND_POS",
+    # "gcn.classic.voevent.FERMI_GBM_LC",
+    # "gcn.classic.voevent.FERMI_GBM_POS_TEST",
+    # "gcn.classic.voevent.FERMI_GBM_SUBTHRESH",
+    # "gcn.classic.voevent.FERMI_GBM_TRANS",
+    # "gcn.classic.voevent.FERMI_LAT_GND",
+    # "gcn.classic.voevent.FERMI_LAT_MONITOR",
+    # "gcn.classic.voevent.FERMI_LAT_OFFLINE",
+    # "gcn.classic.voevent.FERMI_LAT_POS_DIAG",
+    # "gcn.classic.voevent.FERMI_LAT_POS_INI",
+    # "gcn.classic.voevent.FERMI_LAT_POS_TEST",
+    # "gcn.classic.voevent.FERMI_LAT_POS_UPD",
+    # "gcn.classic.voevent.FERMI_LAT_TRANS",
+    # "gcn.classic.voevent.FERMI_POINTDIR",
+    # "gcn.classic.voevent.FERMI_SC_SLEW",
+    # "gcn.classic.voevent.MAXI_KNOWN",
+    # "gcn.classic.voevent.MAXI_TEST",
+    # "gcn.classic.voevent.MAXI_UNKNOWN",
 ]
+
 
 consumer.subscribe(topics)
 
