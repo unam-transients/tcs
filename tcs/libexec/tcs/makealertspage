@@ -36,8 +36,8 @@ def writehtml(s):
 
 
 def formattimestamp(timestamp):
-    timestamp = re.sub("T", " ", timestamp)
-    timestamp = re.sub("\.[0-9]*$", "", timestamp)
+    timestamp = re.sub(r"T", " ", timestamp)
+    timestamp = re.sub(r"\.[0-9]*$", "", timestamp)
     return timestamp
 
 
@@ -77,7 +77,7 @@ def parseinterval(interval):
 
 
 def age(timestamp):
-    timestamp = re.sub("\.[0-9]*$", "", timestamp)
+    timestamp = re.sub(r"\.[0-9]*$", "", timestamp)
     event = datetime.fromisoformat(timestamp)
     now = datetime.now()
     age = now - event
