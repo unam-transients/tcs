@@ -50,11 +50,11 @@ shift
 bindir="$(dirname "$0")"
 export tcsprefix="$bindir/.."
 
-export PATH="$tcsprefix"/libexec/tcs/venv/bin/:$PATH
+export PATH="$tcsprefix"/opt/conda/bin/:$PATH
 
 if test -x "$tcsprefix/libexec/tcs/$subcommand"
 then
-  exec "$tcsprefix/libexec/tcs/$subcommand" "$@"
+  exec conda run -p "$tcsprefix/libexec/tcs/conda/" "$tcsprefix/libexec/tcs/$subcommand" "$@"
 else
   usageerror
 fi
