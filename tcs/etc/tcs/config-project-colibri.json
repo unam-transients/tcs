@@ -503,6 +503,7 @@
       "svommxt*-*"      : 5,
       "svomvt*-*"       : 5,
       "fermilat*-*"     : 6,
+      "einsteinprobe*-*": 7,
       "fermigbm*-sgrb"  : 7,
       "swift*-*"        : 8
     }
