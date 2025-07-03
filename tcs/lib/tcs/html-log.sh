@@ -21,8 +21,6 @@
 
 ########################################################################
 
-export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
-
 program=$(basename "$0")
 
 usageerror () {

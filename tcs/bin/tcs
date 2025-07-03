@@ -23,6 +23,8 @@
 
 ########################################################################
 
+set -x
+
 usageerror () {
   cat <<"EOF" 1>&2
 usage:
@@ -50,11 +52,14 @@ shift
 bindir="$(dirname "$0")"
 export tcsprefix="$bindir/.."
 
-export PATH="$tcsprefix"/opt/conda/bin/:$PATH
+export PATH=/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:"$tcsprefix"/opt/conda/bin/
 
-if test -x "$tcsprefix/libexec/tcs/$subcommand"
+if test ! -x "$tcsprefix/libexec/tcs/$subcommand"
 then
-  exec conda run -p "$tcsprefix/libexec/tcs/conda/" "$tcsprefix/libexec/tcs/$subcommand" "$@"
-else
   usageerror
+elif test "$CONDA_PREFIX" = "$tcsprefix/libexec/tcs/conda/"
+then
+  exec "$tcsprefix/libexec/tcs/$subcommand" "$@"
+else
+  exec conda run --no-capture-output -p "$tcsprefix/libexec/tcs/conda/" "$tcsprefix/libexec/tcs/$subcommand" "$@"
 fi

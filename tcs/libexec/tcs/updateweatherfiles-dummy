@@ -21,8 +21,6 @@
 # PERFORMANCE OF THIS SOFTWARE.
 
 ########################################################################
-
-export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
 export LC_ALL=C
 
 program="tcs $(basename "$0")"

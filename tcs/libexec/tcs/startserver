@@ -23,7 +23,9 @@
 
 ########################################################################
 
-export PATH=/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-getopt/bin:/bin:/usr/bin:/usr/local/bin
+set -x
+which python3
+sudo "PATH=$PATH" which python3
 
 sudo -v
 
@@ -160,9 +162,9 @@ do
       then
         if $foreground
         then
-          sudo tcsprefix="$tcsprefix" TCSLOGDEBUG=$debug TCSLOGTOSTDERR=true $fullserver
+          sudo PATH="$PATH" tcsprefix="$tcsprefix" TCSLOGDEBUG=$debug TCSLOGTOSTDERR=true $fullserver
         else
-          sudo tcsprefix="$tcsprefix" TCSLOGDEBUG=$debug nohup $fullserver >/dev/null 2>&1 &
+          sudo PATH="$PATH" tcsprefix="$tcsprefix" TCSLOGDEBUG=$debug nohup $fullserver >/dev/null 2>&1 &
           printf '%5d   %s\n' $! $arg
         fi
       else

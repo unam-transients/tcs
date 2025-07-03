@@ -160,7 +160,7 @@ sudo apt-get -y install tcllib
   wget -O Miniforge3.sh "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
   sudo rm -rf /usr/local/opt/conda
   sudo bash Miniforge3.sh -b -p /usr/local/opt/conda
-  rm Miniforge3sh
+  rm Miniforge3.sh
   sudo /usr/local/opt/conda/bin/conda update -y -n base -c conda-forge conda
 )
 
