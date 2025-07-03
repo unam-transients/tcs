@@ -49,6 +49,7 @@ installbins         :=            \
 	fitsheadervalue               \
 	fitsmean                      \
 	fitswcsvalue                  \
+	gcnserver                     \
 	gcntanserver                  \
 	getblockfiles                 \
 	getcatalogobject              \
@@ -70,7 +71,6 @@ installbins         :=            \
 	makeblockspage                \
 	moonserver                    \
 	mountserver                   \
-	newgcnserver                  \
 	newpgrp                       \
 	owsensorsserver               \
 	powerserver                   \

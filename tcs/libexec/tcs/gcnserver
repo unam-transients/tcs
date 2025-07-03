@@ -57,7 +57,7 @@ def serverport(serversdata, server):
 
 ################################################################################
 
-who = "newgcnserver"
+who = "gcnserver"
 
 
 def logerror(payload):
