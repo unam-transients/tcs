@@ -39,6 +39,7 @@
   "html": {
     "servers": [
       "executor",
+      "gcn",
       "instrument",
       "moon",
       "selector",
@@ -447,6 +448,7 @@
   "watchdog": {
     "monitoredservers": [
       "executor",
+      "gcn",
       "html",
       "instrument",
       "moon",
