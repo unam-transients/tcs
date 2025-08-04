@@ -205,7 +205,7 @@ namespace eval "executor" {
   
   proc movesecondarytoinitial {} {
     waitfortelescope
-    log::info "moving secondary to the initial postion."
+    log::info "moving secondary to the initial position."
     client::request "telescope" "movesecondary initialz0"
   }
 
