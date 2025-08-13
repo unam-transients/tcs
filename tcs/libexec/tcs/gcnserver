@@ -7,8 +7,8 @@ import os
 import re
 from datetime import datetime
 from datetime import timezone
-import subprocess
 import gcn_kafka
+import xmltodict
 
 ################################################################################
 
@@ -188,8 +188,11 @@ def compactmessagetype(messagetype):
     compactmessagetype = messagetype
     compactmessagetype = compactmessagetype.removeprefix("gcn.")
     compactmessagetype = compactmessagetype.removeprefix("notices.")
+    compactmessagetype = compactmessagetype.removeprefix("classic.")
+    compactmessagetype = compactmessagetype.removeprefix("voevent.")
     compactmessagetype = compactmessagetype.replace("_", "")
     compactmessagetype = compactmessagetype.replace(".", "")
+    compactmessagetype = compactmessagetype.lower()
 
     return compactmessagetype
 
@@ -306,6 +309,34 @@ def respond(
         ],
     )
 
+    logresponse("finished requesting selector to respond.")
+
+
+################################################################################
+
+
+def voeventtodict(messagevalue):
+    """
+    Convert a string containing XML representation of a VOEvent to a dictionary.
+
+    :param messagevalue: A string containing the XML representaion of the VOEvent.
+    :return: The dictionary representation of the VOEvent.
+    """
+    return xmltodict.parse(messagevalue.decode("UTF-8"))["voe:VOEvent"]
+
+
+def getvoeventalphadelta(value):
+    """
+    Return the alpha and delta values in the dictionary representation of a VOEvent.
+
+    :param value: The dictionary representation of the VOEvent.
+    :return: The alpha and delta values in degrees.
+    """
+    value2 = value["WhereWhen"]["ObsDataLocation"]["ObservationLocation"][
+        "AstroCoords"
+    ]["Position2D"]["Value2"]
+    return float(value2["C1"]), float(value2["C2"])
+
 
 ################################################################################
 
@@ -341,9 +372,24 @@ def handleheartbeatmessage(messagetype, messagevalue):
 
 
 def handleswiftmessage(messagetype, messagevalue):
-    loginfo("swift message.")
+    """
+    Handle a Swift message.
+
+    :param messagetype: A string describing the message type. This must be
+        `"gcn.classic.voevent.SWIFT_ACTUAL_POINTDIR"`.
+    :param messagevalue: A string encoding the message value.
+    """
+
+    assert messagetype == "gcn.classic.voevent.SWIFT_ACTUAL_POINTDIR"
+    messagetype = compactmessagetype(messagetype)
+
     loginfo("received %s message." % messagetype)
-    loginfo("value is %r" % messagevalue.decode("UTF-8"))
+
+    value = voeventtodict(messagevalue)
+
+    alpha, delta = getvoeventalphadelta(value)
+    equinox = "2000"
+    loginfo("%s: position is %.4fd %+.4fd %s." % (messagetype, alpha, delta, equinox))
 
 
 def handlefermimessage(messagetype, messagevalue):
@@ -437,7 +483,7 @@ consumerconfig = {}
 
 # Use this config to download all of the events in the buffers. See
 # https://github.com/nasa-gcn/gcn-kafka-python/blob/main/README.md
-testing = False
+testing = True
 if testing:
     consumerconfig.update({"auto.offset.reset": "earliest"})
 
@@ -452,7 +498,7 @@ topics = [
     # "gcn.notices.svom.voevent.eclairs",
     # "gcn.notices.svom.voevent.mxt",
     "gcn.notices.einstein_probe.wxt.alert",
-    # "gcn.classic.voevent.SWIFT_ACTUAL_POINTDIR",
+    "gcn.classic.voevent.SWIFT_ACTUAL_POINTDIR",
     # "gcn.classic.voevent.SWIFT_BAT_ALARM_LONG",
     # "gcn.classic.voevent.SWIFT_BAT_ALARM_SHORT",
     # "gcn.classic.voevent.SWIFT_BAT_GRB_ALERT",
