@@ -171,6 +171,7 @@ sudo apt-get -y install tcllib
   sudo /usr/local/opt/conda/bin/conda create -y -p /usr/local/libexec/tcs/conda
   # Used by gcnserver
   sudo /usr/local/opt/conda/bin/conda install -y -p /usr/local/libexec/tcs/conda gcn-kafka
+  sudo /usr/local/opt/conda/bin/conda install -y -p /usr/local/libexec/tcs/conda xmltodict
   # Used by svomserver
   sudo /usr/local/opt/conda/bin/conda install -y -p /usr/local/libexec/tcs/conda pygcn
 )
