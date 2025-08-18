@@ -649,12 +649,15 @@ proc twilightflatsvisit {targetngood filter} {
   set minlevel  5000
   set exposuretime 5
   
+  # set filters {
+  #   { r B   y  }
+  #   { r i   y  }
+  #   { r r   z  }
+  #   { r g   zy }
+  #   { r gri zy }
+  # }
   set filters {
-    { r B   y  }
     { r i   y  }
-    { r r   z  }
-    { r g   zy }
-    { r gri zy }
   }
   
   variable instrument
