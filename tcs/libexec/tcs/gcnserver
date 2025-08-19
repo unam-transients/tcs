@@ -5,6 +5,7 @@ import json
 import sys
 import os
 import re
+import time
 from datetime import datetime
 from datetime import timezone
 import gcn_kafka
@@ -231,33 +232,39 @@ def respond(
         else:
             return "false"
 
-    year = int(eventisotimestamp[2:4])
-    month = int(eventisotimestamp[5:7])
-    day = int(eventisotimestamp[8:10])
-    hours = int(eventisotimestamp[11:13])
-    minutes = int(eventisotimestamp[14:16])
-    seconds = int(eventisotimestamp[17:19])
-    dayfraction = (hours + minutes / 60 + seconds / 3600) / 24
-    eventname = "%s %02d%02d%02d.%03d" % (
-        eventprefix,
-        year,
-        month,
-        day,
-        int(dayfraction * 1000),
-    )
-    logresponse("event name is %s." % eventname)
+    if eventisotimestamp == "":
+        eventname = ""
+    else:
+        year = int(eventisotimestamp[2:4])
+        month = int(eventisotimestamp[5:7])
+        day = int(eventisotimestamp[8:10])
+        hours = int(eventisotimestamp[11:13])
+        minutes = int(eventisotimestamp[14:16])
+        seconds = int(eventisotimestamp[17:19])
+        dayfraction = (hours + minutes / 60 + seconds / 3600) / 24
+        eventname = "%s %02d%02d%02d.%03d" % (
+            eventprefix,
+            year,
+            month,
+            day,
+            int(dayfraction * 1000),
+        )
+    logresponse("event name is \"%s\"." % eventname)
 
     logresponse(
         "event origin/identifier/type are %s/%s/%s."
         % (eventorigin, eventidentifier, eventtype)
     )
 
-    logresponse("event time stamp is %s." % eventisotimestamp)
     logresponse("alert time stamp is %s." % alertisotimestamp)
-    eventdatetime = fromisoformat(eventisotimestamp)
-    alertdatetime = fromisoformat(alertisotimestamp)
-    alertdelay = (alertdatetime - eventdatetime).total_seconds()
-    logresponse("alert delay is %.3f seconds." % alertdelay)
+    if eventisotimestamp == "":
+        logresponse("no event time stamp.")
+    else:
+        logresponse("event time stamp is %s." % eventisotimestamp)
+        eventdatetime = fromisoformat(eventisotimestamp)
+        alertdatetime = fromisoformat(alertisotimestamp)
+        alertdelay = (alertdatetime - eventdatetime).total_seconds()
+        logresponse("alert delay is %.3f seconds." % alertdelay)
 
     logresponse("position is %s %s %s." % (eventalpha, eventdelta, eventequinox))
     logresponse("90%% uncertainty is %s in radius." % eventuncertainty)
@@ -291,7 +298,7 @@ def respond(
         )
     )
 
-    if not testing:
+    if not testing or True:
         request(
             "selector",
             "respondtoalert",
@@ -455,15 +462,19 @@ def handlesvommessage(messagetype, messagevalue):
     else:
         eventtype = eventtypedict[packettypenumber]
 
+
     eventidentifier = value.find(
         "./What/Group[@name='Svom_Identifiers']/Param[@name='Burst_Id']"
     ).get("value")[2:]
 
-    eventisotimestamp = value.find(
-        "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Time/TimeInstant/ISOTime"
-    ).text
-    if eventisotimestamp[-1] == "Z":
-        eventisotimestamp = eventisotimestamp[:-1]
+    if eventtype.startswith("svomeclairs") or eventtype.startswith("svomgrm"):
+        eventisotimestamp = value.find(
+            "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Time/TimeInstant/ISOTime"
+        ).text
+        if eventisotimestamp[-1] == "Z":
+            eventisotimestamp = eventisotimestamp[:-1]
+    else:
+        eventisotimestamp = ""
 
     if (
         value.find(
@@ -608,7 +619,6 @@ if testing:
         "gcn.notices.svom.voevent.grm",
         "gcn.notices.svom.voevent.eclairs",
         "gcn.notices.svom.voevent.mxt",
-        "gcn.classic.voevent.SWIFT_ACTUAL_POINTDIR",
     ]
 else:
     consumerconfig = {}
@@ -731,3 +741,5 @@ while True:
                 "timestamp": isoformat(),
             }
         )
+        if testing:
+            time.sleep(5)
