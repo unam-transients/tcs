@@ -165,7 +165,6 @@ EOF
     echo "mkdir -p /usr/local/var/tcs/reboot"
     echo "mkdir -p /usr/local/var/tcs/restart"
     echo "mkdir -p /usr/local/var/tcs/halt"
-    echo "tcs svomserver >>/usr/local/var/tcs/svomserver.txt 2>&1 &"
     ;;
   esac
   
