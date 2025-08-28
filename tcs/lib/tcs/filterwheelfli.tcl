@@ -45,30 +45,20 @@ namespace eval "filterwheel" {
     variable position
     variable maxposition
     if {[getpositionsingle $index] != $newposition} {
-      # FLI wheels only turns in one direction to higher position number.
-      # To move to a lower position number, we have to move past 0. If
-      # we are going to do this, we may as well home the wheel, which leaves
-      # the wheel in position 0 and will correct any lost steps.
+      # FLI wheels only turns in one direction to higher position number. To
+      # move to a lower position number, we have to move past 0. If we are going
+      # to do this, we may as well home the wheel, which will correct any lost
+      # steps.
+      log::debug "filterwheel: movesingle: ishomed is [getishomedsingle $index]."
       if {$newposition < [getpositionsingle $index]} {
         homesingle $index
       }
-      while {[getpositionsingle $index] != $newposition} {
-        # Move position by position. This is more reliable than
-        # commanding a move of several positions.
-        log::debug "filterwheel: movesingle: position is [getpositionsingle $index]."
+      log::debug "filterwheel: movesingle: moving to position $newposition."
+      set result [filterwheelrawmove $index $newposition]
+      while {![string equal $result ok]} {
+        log::debug "filterwheel: movesingle: move: moving again to position $newposition."
         coroutine::after 100
-        if {[getpositionsingle $index] == [getmaxpositionsingle $index]} {
-          set nextposition 0
-        } else {
-          set nextposition [expr {[getpositionsingle $index] + 1}]
-        }
-        log::debug "filterwheel: movesingle: moving to position $nextposition."
-        set result [filterwheelrawmove $index $nextposition]
-        while {![string equal $result ok]} {
-          log::debug "filterwheel: movesingle: move: moving again to position $nextposition."
-          coroutine::after 100
-          set result [filterwheelrawmove $index $nextposition]
-        }
+        set result [filterwheelrawmove $index $newposition]
       }
       log::debug "filterwheel: movesingle: position is [getpositionsingle $index]."
     }
@@ -98,24 +88,10 @@ namespace eval "filterwheel" {
         coroutine::after 100
       }
     }
-    log::debug "filterwheel $index: home: homed."
-    coroutine::after 100
-    log::debug "filterwheel $index: home: moving to position 0."
-    variable position
-    while {[getpositionsingle $index] != 0} {
-      log::debug "filterwheel $index: home: position is [getpositionsingle $index]."
-      coroutine::after 100
-      log::debug "filterwheel $index: home: moving to position 0."
-      set result [filterwheelrawmove $index 0]
-      while {![string equal $result ok]} {
-        log::debug "filterwheel $index: home: moving again to position 0."
-        coroutine::after 1000
-        set result [filterwheelrawmove $index 0]
-      }
-    }
+    log::debug "filterwheel $index: home: settling."
+    coroutine::after 1000
     log::debug "filterwheel $index: home: done."
   }
-    
   
 }
 
