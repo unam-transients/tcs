@@ -48,8 +48,7 @@ config::setdefaultvalue "mount" "axisddeltacorrection"       "0"
 config::setdefaultvalue "mount" "azimuthpark"                "0h"
 config::setdefaultvalue "mount" "zenithdistancepark"         "80d"
 config::setdefaultvalue "mount" "derotatoranglepark"         "0d"
-config::setdefaultvalue "mount" "derotatoroffsetpark"        "0d"
-config::setdefaultvalue "mount" "derotatoroffsetunpark"      "0d"
+config::setdefaultvalue "mount" "derotatoroffset"            "0d"
 config::setdefaultvalue "mount" "haunpark"                   "0h"
 config::setdefaultvalue "mount" "deltaunpark"                "0d"
 
@@ -57,18 +56,17 @@ namespace eval "mount" {
 
   ######################################################################
 
-  variable allowedpositionerror        [astrometry::parseangle [config::getvalue "mount" "allowedpositionerror"]]
+  variable allowedpositionerror        [astrometry::parseangle    [config::getvalue "mount" "allowedpositionerror"]]
   variable pointingmodelpolarhole      [astrometry::parsedistance [config::getvalue "mount" "pointingmodelpolarhole"]]
-  variable axisdhacorrection           [astrometry::parseoffset [config::getvalue "mount" "axisdhacorrection"]]
-  variable axisddeltacorrection        [astrometry::parseoffset [config::getvalue "mount" "axisddeltacorrection"]]
-  variable trackingsettledlimit        [astrometry::parseoffset [config::getvalue "mount" "trackingsettledlimit"]]
-  variable azimuthpark                 [astrometry::parseangle [config::getvalue "mount" "azimuthpark"]]
-  variable zenithdistancepark          [astrometry::parseangle [config::getvalue "mount" "zenithdistancepark"]]
-  variable derotatoranglepark          [astrometry::parseangle [config::getvalue "mount" "derotatoranglepark"]]
-  variable derotatoroffsetpark         [astrometry::parseangle [config::getvalue "mount" "derotatoroffsetpark"]]
-  variable derotatoroffsetunpark       [astrometry::parseangle [config::getvalue "mount" "derotatoroffsetunpark"]]
-  variable haunpark                    [astrometry::parseha    [config::getvalue "mount" "haunpark"]]
-  variable deltaunpark                 [astrometry::parsedelta [config::getvalue "mount" "deltaunpark"]]
+  variable axisdhacorrection           [astrometry::parseoffset   [config::getvalue "mount" "axisdhacorrection"]]
+  variable axisddeltacorrection        [astrometry::parseoffset   [config::getvalue "mount" "axisddeltacorrection"]]
+  variable trackingsettledlimit        [astrometry::parseoffset   [config::getvalue "mount" "trackingsettledlimit"]]
+  variable azimuthpark                 [astrometry::parseangle    [config::getvalue "mount" "azimuthpark"]]
+  variable zenithdistancepark          [astrometry::parseangle    [config::getvalue "mount" "zenithdistancepark"]]
+  variable derotatoranglepark          [astrometry::parseangle    [config::getvalue "mount" "derotatoranglepark"]]
+  variable derotatoroffset             [astrometry::parseangle    [config::getvalue "mount" "derotatoroffset"]]
+  variable haunpark                    [astrometry::parseha       [config::getvalue "mount" "haunpark"]]
+  variable deltaunpark                 [astrometry::parsedelta    [config::getvalue "mount" "deltaunpark"]]
   variable settlingseconds             [config::getvalue "mount" "settlingseconds"]
   
   variable usemountcoordinates false
@@ -336,29 +334,14 @@ namespace eval "mount" {
     variable azimuthpark
     variable zenithdistancepark
     variable derotatoranglepark
-    variable derotatoroffsetpark
     log::info "moving to park."
-    # Turn off derotator movement.
+    # Move to the parked position.
     opentsi::sendcommandandwait [format "SET [join {
-        "POINTING.SETUP.DEROTATOR.SYNCMODE=0"
+        "POSITION.INSTRUMENTAL.DEROTATOR\[3\].TARGETPOS=%.6f"
+        "POSITION.INSTRUMENTAL.AZ.TARGETPOS=%.6f"
+        "POSITION.INSTRUMENTAL.ZD.TARGETPOS=%.6f"
       } ";"]" \
-    ]
-    log::info [format "setting derotator offset to %+.2fd." [astrometry::radtodeg $derotatoroffsetpark]]
-    # Move the derotator to the parked position.
-    opentsi::sendcommandandwait [format "SET [join {
-        "POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=%.6f"
-        "POINTING.SETUP.DEROTATOR.OFFSET=%.6f"
-        "POINTING.SETUP.DEROTATOR.SYNCMODE=1"
-      } ";"]" \
-      [astrometry::radtodeg $derotatoroffsetpark] \
       [astrometry::radtodeg $derotatoranglepark ] \
-    ]
-    # Move the mount to the parked position.
-    opentsi::sendcommandandwait [format "SET [join {
-        "OBJECT.INSTRUMENTAL.AZ=%.6f"
-        "OBJECT.INSTRUMENTAL.ZD=%.6f"
-        "POINTING.TRACK=2"
-      } ";"]" \
       [astrometry::radtodeg $azimuthpark       ] \
       [astrometry::radtodeg $zenithdistancepark] \
     ]
@@ -369,23 +352,9 @@ namespace eval "mount" {
   proc unparkhardware {} {
     variable haunpark
     variable deltaunpark
-    variable derotatoroffsetunpark
     log::info "moving to unpark."
     set azimuthunpark        [astrometry::equatorialtoazimuth        $haunpark $deltaunpark]
     set zenithdistanceunpark [astrometry::equatorialtozenithdistance $haunpark $deltaunpark]
-    # Turn off derotator movement.
-    opentsi::sendcommandandwait [format "SET [join {
-        "POINTING.SETUP.DEROTATOR.SYNCMODE=0"
-      } ";"]" \
-    ]
-    # Turn on derotator syncronization.
-    log::info [format "setting derotator offset to %+.2fd." [astrometry::radtodeg $derotatoroffsetunpark]]
-    opentsi::sendcommandandwait [format "SET [join {
-        "POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=%.6f"
-        "POINTING.SETUP.DEROTATOR.SYNCMODE=5"
-      } ";"]" \
-      [astrometry::radtodeg $derotatoroffsetunpark] \
-    ]      
     # Move to unparked position.
     opentsi::sendcommandandwait [format "SET [join {
         "OBJECT.INSTRUMENTAL.AZ=%.6f"
@@ -418,23 +387,24 @@ namespace eval "mount" {
   ######################################################################
 
   proc startactivitycommand {} {
+    variable derotatoroffset
     set start [utcclock::seconds]
     log::info "starting."
     while {[string equal [server::getstatus] "starting"]} {
       coroutine::yield
     }
-    variable azimuthpark
-    variable zenithdistancepark
-    variable derotatoranglepark
-    opentsi::sendcommandandwait [format "SET TELESCOPE.CONFIG.AZ.PARK_POS=%.6f" [astrometry::radtodeg $azimuthpark]]
-    opentsi::sendcommandandwait [format "SET TELESCOPE.CONFIG.ZD.PARK_POS=%.6f" [astrometry::radtodeg $zenithdistancepark]]
-    opentsi::sendcommandandwait [format "SET TELESCOPE.CONFIG.PORT\[3\].DEROTATOR.PARK_POS=%.6f" [astrometry::radtodeg $derotatoranglepark]]
     set taiminusutc [utcclock::gettaiminusutc]
     log::info [format "setting TAI-UTC to %+d seconds." $taiminusutc]
     opentsi::sendcommandandwait [format "SET TELESCOPE.CONFIG.LOCAL.TAI-UTC=%d" $taiminusutc]
     set end [utcclock::seconds]
     opentsi::sendcommandandwait "SET POINTING.SETUP.OPTIMIZATION=1"
     opentsi::sendcommandandwait "SET POINTING.SETUP.MIN_TRACKTIME=600"
+    opentsi::sendcommandandwait [format "SET [join {
+        "POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=%.6f"
+        "POINTING.SETUP.DEROTATOR.SYNCMODE=5"
+      } ";"]" \
+      [astrometry::radtodeg $derotatoroffset] \
+    ]      
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
   }
 
@@ -516,8 +486,12 @@ namespace eval "mount" {
       log::info "moving to track."
     }
     updaterequestedpositiondata
-    opentsi::sendcommandandwait [format \
-      "SET OBJECT.EQUATORIAL.RA=%.6f;OBJECT.EQUATORIAL.DEC=%.6f;OBJECT.EQUATORIAL.EQUINOX=%.6f;POINTING.TRACK=1" \
+    opentsi::sendcommandandwait [format "SET [join {
+        "OBJECT.EQUATORIAL.RA=%.6f"
+        "OBJECT.EQUATORIAL.DEC=%.6f"
+        "OBJECT.EQUATORIAL.EQUINOX=%.3f"
+        "POINTING.TRACK=1"
+      } ";"]" \
       [astrometry::radtohr  [server::getdata "requestedstandardalpha"]] \
       [astrometry::radtodeg [server::getdata "requestedstandarddelta"]] \
       [server::getdata "requestedstandardequinox"] \
