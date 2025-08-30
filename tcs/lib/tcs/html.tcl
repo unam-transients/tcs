@@ -1029,6 +1029,8 @@ namespace eval "html" {
         [formatoffsetifdouble [client::getdata "mount" "lastcorrectiondalpha"]] \
         "" \
         [formatoffsetifdouble [client::getdata "mount" "lastcorrectionddelta"]]
+      writehtmlfullrow "Tracking remaining" \
+        [formatifdouble "%.0f seconds" [client::getdata "mount" "remainingtrackingseconds"]]
     }
 
     putshtml "</table>"

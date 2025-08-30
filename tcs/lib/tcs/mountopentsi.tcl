@@ -92,6 +92,7 @@ namespace eval "mount" {
     POSITION.LOCAL.SIDEREAL_TIME
     POSITION.INSTRUMENTAL.DEROTATOR[3].REALPOS
     CURRENT.TRACK
+    CURRENT.TRACKTIME
     CURRENT.DEROTATOR_OFFSET
     POSITION.INSTRUMENTAL.PORT_SELECT.CURRPOS
   } ";"]"
@@ -144,20 +145,23 @@ namespace eval "mount" {
   server::setdata "portposition"                ""
   server::setdata "port"                        ""
 
+  server::setdata "remainingtrackingseconds"    ""
+
   server::setdata "unparked"                    false
 
-  variable pendingmountazimuth         ""
-  variable pendingmountzenithdistance  ""
-  variable pendingmountderotatorangle  ""
-  variable pendingmountrotation        ""
-  variable pendingmountalpha           ""
-  variable pendingmountdelta           ""
-  variable pendingmountst              ""
-  variable pendingtelescopemotionstate ""
-  variable pendingportposition         ""
+  variable pendingmountazimuth             ""
+  variable pendingmountzenithdistance      ""
+  variable pendingmountderotatorangle      ""
+  variable pendingmountrotation            ""
+  variable pendingmountalpha               ""
+  variable pendingmountdelta               ""
+  variable pendingmountst                  ""
+  variable pendingtelescopemotionstate     ""
+  variable pendingportposition             ""
+  variable predingremainingtrackingseconds ""
   
-  variable telescopemotionstate        ""
-  variable ontarget                    ""
+  variable telescopemotionstate            ""
+  variable ontarget                        ""
 
   proc updatedata {response} {
 
@@ -170,6 +174,7 @@ namespace eval "mount" {
     variable pendingmountst
     variable pendingtelescopemotionstate
     variable pendingportposition
+    variable predingremainingtrackingseconds
 
     variable telescopemotionstate
     variable ontarget
@@ -214,6 +219,14 @@ namespace eval "mount" {
       }
       return false
     }
+    if {[scan $response "%*d DATA INLINE CURRENT.TRACKTIME=%s" value] == 1} {
+      if {[string equal $value "NULL"]} {
+        set predingremainingtrackingseconds ""
+      } else {
+        set predingremainingtrackingseconds $value
+      }
+      return false
+    }
     if {[scan $response "%*d DATA INLINE CURRENT.DEROTATOR_OFFSET=%f" value] == 1} {
       set pendingmountrotation [astrometry::degtorad $value]
       return false
@@ -240,6 +253,7 @@ namespace eval "mount" {
     set mountst                      $pendingmountst
     set mountha                      [astrometry::foldradsymmetric [expr {$mountst - $mountalpha}]]
     set portposition                 $pendingportposition
+    set remainingtrackingseconds     $predingremainingtrackingseconds
 
     set telescopemotionstate         $pendingtelescopemotionstate
     if {($telescopemotionstate >> 3) & 1} {
@@ -282,6 +296,7 @@ namespace eval "mount" {
     server::setdata "mountdelta"          $mountdelta
     server::setdata "portposition"        $portposition
     server::setdata "port"                $port
+    server::setdata "remainingtrackingseconds"        $remainingtrackingseconds
 
     updaterequestedpositiondata false
 
@@ -498,6 +513,7 @@ namespace eval "mount" {
     ]      
     waituntilontarget
     log::info [format "started tracking after %.1f seconds." [utcclock::diff now $start]]
+    log::info [format "%.0f seconds tracking remaining." [server::getdata "remainingtrackingseconds"]]
     server::setactivity "tracking"
     server::clearactivitytimeout
   }
