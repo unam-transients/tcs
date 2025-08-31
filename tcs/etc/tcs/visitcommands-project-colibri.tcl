@@ -632,7 +632,7 @@ proc darksvisit {{exposuretime 30} {exposures 10} {binning "default"}} {
 
 ########################################################################
 
-proc twilightflatsvisit {targetngood filter} {
+proc twilightflatsvisit {} {
 
   log::summary "twilightflatsvisit: starting."
 
@@ -648,6 +648,7 @@ proc twilightflatsvisit {targetngood filter} {
   # order to change from i to g earlier. We take the flats in the order y, z, i,
   # g, and finally r.
 
+  set targetngood 7
   set maxlevel 30000
   set minlevel  5000
   set exposuretime 5
@@ -659,9 +660,8 @@ proc twilightflatsvisit {targetngood filter} {
   #   { r g   zy }
   #   { r gri zy }
   # }
-  set filters {
-    { r i   y  }
-  }
+  set filters1 {B i r g gri}
+  set filters2 {y z zy}
   
   variable instrument
   if {[string equal $instrument "ogse"]} {
@@ -672,41 +672,75 @@ proc twilightflatsvisit {targetngood filter} {
     error "invalid instrument \"$instrument\"."
   }
 
-  foreach filter $filters {
-  
-      log::info "twilightflatsvisit: filter $filter."
-      eval executor::movefilterwheel $filter
-    
-      set ngood 0
-      set mingoodlevel $maxlevel
-      set maxgoodlevel $minlevel
-      while {true} {
-        executor::expose flat $exposuretime
-        executor::analyze levels
-        set level [executor::exposureaverage $detector]
-        log::info [format "twilightflatsvisit: level is %.1f DN in filter $filter in $exposuretime seconds." $level]
+  set finished1     false
+  set ngood1        0
+  set mingoodlevel1 $maxlevel
+  set maxgoodlevel1 $minlevel
+
+  set finished2     false
+  set ngood2        0
+  set mingoodlevel2 $maxlevel
+  set maxgoodlevel2 $minlevel      
+
+  while {!$finished1 || !$finished2} {
+
+    set filter1 [lindex $filters1 0]
+    set filter2 [lindex $filters2 0]
+    log::info "twilightflatsvisit: filters are $filter1/$filter2."
+    eval executor::movefilterwheel [list "r" $filter1 $filter2]
+
+    executor::expose flat $exposuretime
+    executor::analyze levels
+
+    foreach i {1 2} {
+
+      set finished     [set finished$i]
+      set filters      [set filters$i]
+      set ngood        [set ngood$i]
+      set mingoodlevel [set mingoodlevel$i]
+      set maxgoodlevel [set maxgoodlevel$i]
+
+      if {!$finished} {
+        set filter [lindex $filters 0]
+        set level [executor::exposureaverage "C$i"]
+        log::info [format "twilightflatsvisit: C$i: level is %.1f DN in $filter in $exposuretime seconds." $level]
         if {$level > $maxlevel} {
-          log::info "twilightflatsvisit: level is too bright."
+          log::info "twilightflatsvisit: C$i: level is too bright."
         } elseif {$level < $minlevel} {
-          log::info "twilightflatsvisit: level is too faint."
-          break
+          log::info "twilightflatsvisit: C$i: level is too faint."
         } else {
-          log::info "twilightflatsvisit: level is good."
+          log::info "twilightflatsvisit: C$i: level is good."
           incr ngood
           set mingoodlevel [expr {min($level,$mingoodlevel)}]
           set maxgoodlevel [expr {max($level,$maxgoodlevel)}]
-          if {$ngood == $targetngood} {
-            break
+        }
+
+        if {$level < $minlevel || $ngood == $targetngood} {
+          if {$ngood == 0} {
+            log::summary [format "twilightflatsvisit: C$i: $ngood good flats in filter $filter."]
+          } else {
+            log::summary [format "twilightflatsvisit: C$i: $ngood good flats in filter $filter (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
+          }
+          if {[llength $filters] > 1} {
+            set filters [lrange $filters 1 end]
+            set ngood 0
+            set mingoodlevel $maxlevel
+            set maxgoodlevel $minlevel
+          } else {
+            set finished true
           }
         }
+
       }
-    
-      if {$ngood == 0} {
-        log::summary [format "twilightflatsvisit: $ngood good flats in filter $filter."]
-      } else {
-        log::summary [format "twilightflatsvisit: $ngood good flats in filter $filter (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
-      }
-      
+
+      set finished$i     $finished
+      set filters$i      $filters
+      set ngood$i        $ngood
+      set mingoodlevel$i $mingoodlevel
+      set maxgoodlevel$i $maxgoodlevel
+
+    }
+
   }
 
   log::summary "twilightflatsvisit: finished."
