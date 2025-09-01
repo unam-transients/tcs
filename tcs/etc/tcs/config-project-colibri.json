@@ -462,7 +462,7 @@
   },
   "secondary": {
     "type": "opentsi",
-    "initialz0": "22750",
+    "initialz0": "22000",
     "minz": "0",
     "maxz": "40000",
     "allowedzerror": "2",
