@@ -127,70 +127,121 @@ proc alertvisit {filters} {
 
 proc parsefilters {filters} {
   switch $filters {
-    "gri" -
-    "gri/zy" {
-      set filters {{r gri zy}}
-    }
-    "g" -
-    "g/z" {
-      set filters {{r g z}}
-    }
-    "g/r" -
-    "g/r/z" {
-      set filters {{r g z} {r r z}}
-    }
-    "g/r/zy" {
-      set filters {{r g zy} {r r zy}}
-    }
-    "g/i" -
-    "g/i/z" {
-      set filters {{r g z} {r i z}}
-    }
-    "g/i/zy" {
-      set filters {{r g zy} {r i zy}}
+
+    "g/r/i/z/y" {
+      set filters {{r g z} {r r y} {r i y}}
     }
     "g/r/i" -
     "g/r/i/z" {
       set filters {{r g z} {r r z} {r i z}}
     }
+    "g/r/i/y" {
+      set filters {{r g y} {r r y} {r i y}}
+    }
     "g/r/i/zy" {
       set filters {{r g zy} {r r zy} {r i zy}}
     }
-    "g/r/i/z/y" {
-      set filters {{r g z} {r r y} {r i y}}
+    
+    "g/r/z/y" {
+      set filters {{r g z} {r r y} {r g y} {r r z} {r g y} {r r y}}
     }
-    "g/r/i/B" -
-    "g/r/i/B/z" {
-      set filters {{r g z} {r r z} {r i z} {r B z}}
+    "g/r" -
+    "g/r/z" {
+      set filters {{r g z} {r r z}}
     }
-    "r" -
-    "r/z" {
-      set filters {{r r z}}
+    "g/r/y" {
+      set filters {{r g y} {r r y}}
     }
-    "r/zy" {
-      set filters {{r r zy}}
+    "g/r/zy" {
+      set filters {{r g zy} {r r zy}}
+    }
+
+    "g/i/z/y" {
+      set filters {{r g z} {r i y} {r g y} {r i z} {r g y} {r i y}}
+    }
+    "g/i" -
+    "g/i/z" {
+      set filters {{r g z} {r i z}}
+    }
+    "g/i/y" {
+      set filters {{r g y} {r i y}}
+    }
+    "g/i/zy" {
+      set filters {{r g zy} {r i zy}}
+    }
+
+    "r/i/z/y" {
+      set filters {{r r z} {r i y} {r r y} {r i z} {r r y} {r i y}}
     }
     "r/i" -
     "r/i/z" {
       set filters {{r r z} {r i z}}
     }
-    "r/i/z/y" {
-      set filters {{r r z} {r i y}}
+    "r/i/y" {
+      set filters {{r r y} {r i y}}
     }
     "r/i/zy" {
       set filters {{r r zy} {r i zy}}
+    }
+
+    "g/z/y" {
+      set filters {{r g z} {r g y} {r g y}}
+    }
+    "g" -
+    "g/z" {
+      set filters {{r g z}}
+    }
+    "g/y" {
+      set filters {{r g y}}
+    }
+    "g/zy" {
+      set filters {{r g zy}}
+    }
+
+    "r/z/y" {
+      set filters {{r r z} {r r y} {r r y}}
+    }
+    "r" -
+    "r/z" {
+      set filters {{r r z}}
+    }
+    "r/y" {
+      set filters {{r r y}}
+    }
+    "r/zy" {
+      set filters {{r r zy}}
+    }
+
+    "i/z/y" {
+      set filters {{r i z} {r i y} {r i z}}
     }
     "i" -
     "i/z" {
       set filters {{r i z}}
     }
+    "i/y" {
+      set filters {{r i y}}
+    }
     "i/zy" {
       set filters {{r i zy}}
-    }    
-    "g/r/i/gri/B" {
-      set filters {{r g zy} {r r zy} {r i zy} {r gri zy} {r B zy}}
     }
+
+    "gri" -
+    "gri/zy" {
+      set filters {{r gri zy}}
+    }
+
+    "g/r/i/B" -
+    "g/r/i/B/z" {
+      set filters {{r g z} {r r z} {r i z} {r B z}}
+    }
+
+    "g/r/i/gri/B/z/y/zy" {
+      set filters {{r g z} {r r y} {r i y} {r gri zy} {r B zy}}
+    }
+
   }
+
   return $filters
 }
 
@@ -518,10 +569,10 @@ proc focustiltvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
   variable instrument
   if {[string equal $instrument "ogse"]} {
     set binning 2
-    set detector "C0"
+    set detectors "C0"
   } elseif {[string equal $instrument "ddrago"]} {
     set binning 1
-    set detector "C1"
+    set detectors {"C1" "C2"}
   } else {
     error "invalid instrument \"$instrument\"."
   }
@@ -532,13 +583,10 @@ proc focustiltvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
   executor::setbinning $binning
   eval executor::movefilterwheel "$filter"
 
-  log::summary [format \
-    "focustiltvisit: focusing in filter $filter with $exposuretime second exposures and binning %d." \
-    $binning \
-  ]
-  executor::setwindow "default"
-  executor::setbinning $binning
-  executor::focussecondary $detector $exposuretime 100 10 true false
+  foreach detector $detectors {
+    log::summary "focustiltvisit: focusing $detector in filter $filter with $exposuretime second exposures and binning $binning."
+    executor::focussecondary $detector $exposuretime 100 10 true false
+  }
   executor::setunfocused
   
   log::summary "focustiltvisit: finished."
