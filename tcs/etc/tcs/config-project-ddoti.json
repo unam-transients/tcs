@@ -979,19 +979,19 @@
         "identifier": "",
         "firmware": ""
       },
-//       "C0-detector-detector-temperature": {
-//         "file": "/usr/local/var/tcs/sensors/detectors0/C0-detector-detector-temperature",
-//         "keyword": "",
-//         "prettyname": "C0 detector temperature",
-//         "subsystem": "instrument",
-//         "component": "detector-C0",
-//         "group": "detector-temperature",
-//         "type": "float",
-//         "unit": "C",
-//         "model": "FLI ML50100",
-//         "identifier": "ML2351018",
-//         "firmware": ""
-//       },
+      "C0-detector-detector-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors0/C0-detector-detector-temperature",
+        "keyword": "",
+        "prettyname": "C0 detector temperature",
+        "subsystem": "instrument",
+        "component": "detector-C0",
+        "group": "detector-temperature",
+        "type": "float",
+        "unit": "C",
+        "model": "FLI ML50100",
+        "identifier": "ML2351018",
+        "firmware": ""
+      },
       "C1-detector-detector-temperature": {
         "file": "/usr/local/var/tcs/sensors/detectors1/C1-detector-detector-temperature",
         "keyword": "",
@@ -1044,32 +1044,32 @@
         "identifier": "ML2331018",
         "firmware": ""
       },
-//       "C5-detector-detector-temperature": {
-//         "file": "/usr/local/var/tcs/sensors/detectors1/C5-detector-detector-temperature",
-//         "keyword": "",
-//         "prettyname": "C5 detector temperature",
-//         "subsystem": "instrument",
-//         "component": "detector-C5",
-//         "group": "detector-temperature",
-//         "type": "float",
-//         "unit": "C",
-//         "model": "FLI ML50100",
-//         "identifier": "ML2341018",
-//         "firmware": ""
-//       },
-//       "C0-detector-housing-temperature": {
-//         "file": "/usr/local/var/tcs/sensors/detectors0/C0-detector-housing-temperature",
-//         "keyword": "",
-//         "prettyname": "C0 housing temperature",
-//         "subsystem": "instrument",
-//         "component": "detector-C0",
-//         "group": "detector-housing-temperature",
-//         "type": "float",
-//         "unit": "C",
-//         "model": "FLI ML50100",
-//         "identifier": "ML2351018",
-//         "firmware": ""
-//       },
+      "C5-detector-detector-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors1/C5-detector-detector-temperature",
+        "keyword": "",
+        "prettyname": "C5 detector temperature",
+        "subsystem": "instrument",
+        "component": "detector-C5",
+        "group": "detector-temperature",
+        "type": "float",
+        "unit": "C",
+        "model": "FLI ML50100",
+        "identifier": "ML2341018",
+        "firmware": ""
+      },
+      "C0-detector-housing-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors0/C0-detector-housing-temperature",
+        "keyword": "",
+        "prettyname": "C0 housing temperature",
+        "subsystem": "instrument",
+        "component": "detector-C0",
+        "group": "detector-housing-temperature",
+        "type": "float",
+        "unit": "C",
+        "model": "FLI ML50100",
+        "identifier": "ML2351018",
+        "firmware": ""
+      },
       "C1-detector-housing-temperature": {
         "file": "/usr/local/var/tcs/sensors/detectors1/C1-detector-housing-temperature",
         "keyword": "",
@@ -1122,32 +1122,32 @@
         "identifier": "ML2331018",
         "firmware": ""
       },
-//       "C5-detector-housing-temperature": {
-//         "file": "/usr/local/var/tcs/sensors/detectors1/C5-detector-housing-temperature",
-//         "keyword": "",
-//         "prettyname": "C5 housing temperature",
-//         "subsystem": "instrument",
-//         "component": "detector-C5",
-//         "group": "detector-housing-temperature",
-//         "type": "float",
-//         "unit": "C",
-//         "model": "FLI ML50100",
-//         "identifier": "ML2341018",
-//         "firmware": ""
-//       },
-//       "C0-detector-cooler-set-temperature": {
-//         "file": "/usr/local/var/tcs/sensors/detectors0/C0-detector-cooler-set-temperature",
-//         "keyword": "",
-//         "prettyname": "C0 cooler set temperature",
-//         "subsystem": "instrument",
-//         "component": "detector-C0",
-//         "group": "detector-cooler-set-temperature",
-//         "type": "float",
-//         "unit": "C",
-//         "model": "FLI ML50100",
-//         "identifier": "ML2351018",
-//         "firmware": ""
-//       },
+      "C5-detector-housing-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors1/C5-detector-housing-temperature",
+        "keyword": "",
+        "prettyname": "C5 housing temperature",
+        "subsystem": "instrument",
+        "component": "detector-C5",
+        "group": "detector-housing-temperature",
+        "type": "float",
+        "unit": "C",
+        "model": "FLI ML50100",
+        "identifier": "ML2341018",
+        "firmware": ""
+      },
+      "C0-detector-cooler-set-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors0/C0-detector-cooler-set-temperature",
+        "keyword": "",
+        "prettyname": "C0 cooler set temperature",
+        "subsystem": "instrument",
+        "component": "detector-C0",
+        "group": "detector-cooler-set-temperature",
+        "type": "float",
+        "unit": "C",
+        "model": "FLI ML50100",
+        "identifier": "ML2351018",
+        "firmware": ""
+      },
       "C1-detector-cooler-set-temperature": {
         "file": "/usr/local/var/tcs/sensors/detectors1/C1-detector-cooler-set-temperature",
         "keyword": "",
@@ -1200,32 +1200,32 @@
         "identifier": "ML2331018",
         "firmware": ""
       },
-//       "C5-detector-cooler-set-temperature": {
-//         "file": "/usr/local/var/tcs/sensors/detectors1/C5-detector-cooler-set-temperature",
-//         "keyword": "",
-//         "prettyname": "C5 cooler set temperature",
-//         "subsystem": "instrument",
-//         "component": "detector-C5",
-//         "group": "detector-cooler-set-temperature",
-//         "type": "float",
-//         "unit": "C",
-//         "model": "FLI ML50100",
-//         "identifier": "ML2341018",
-//         "firmware": ""
-//       },
-//       "C0-detector-cooler-power": {
-//         "file": "/usr/local/var/tcs/sensors/detectors0/C0-detector-cooler-power",
-//         "keyword": "",
-//         "prettyname": "C0 relative cooler power",
-//         "subsystem": "instrument",
-//         "component": "detector-C0",
-//         "group": "detector-cooler-power",
-//         "type": "float",
-//         "unit": "",
-//         "model": "FLI ML50100",
-//         "identifier": "ML2351018",
-//         "firmware": ""
-//       },
+      "C5-detector-cooler-set-temperature": {
+        "file": "/usr/local/var/tcs/sensors/detectors1/C5-detector-cooler-set-temperature",
+        "keyword": "",
+        "prettyname": "C5 cooler set temperature",
+        "subsystem": "instrument",
+        "component": "detector-C5",
+        "group": "detector-cooler-set-temperature",
+        "type": "float",
+        "unit": "C",
+        "model": "FLI ML50100",
+        "identifier": "ML2341018",
+        "firmware": ""
+      },
+      "C0-detector-cooler-power": {
+        "file": "/usr/local/var/tcs/sensors/detectors0/C0-detector-cooler-power",
+        "keyword": "",
+        "prettyname": "C0 relative cooler power",
+        "subsystem": "instrument",
+        "component": "detector-C0",
+        "group": "detector-cooler-power",
+        "type": "float",
+        "unit": "",
+        "model": "FLI ML50100",
+        "identifier": "ML2351018",
+        "firmware": ""
+      },
       "C1-detector-cooler-power": {
         "file": "/usr/local/var/tcs/sensors/detectors1/C1-detector-cooler-power",
         "keyword": "",
@@ -1278,32 +1278,32 @@
         "identifier": "ML2351018",
         "firmware": ""
       },
-//       "C5-detector-cooler-power": {
-//         "file": "/usr/local/var/tcs/sensors/detectors1/C5-detector-cooler-power",
-//         "keyword": "",
-//         "prettyname": "C5 relative cooler power",
-//         "subsystem": "instrument",
-//         "component": "detector-C5",
-//         "group": "detector-cooler-power",
-//         "type": "float",
-//         "unit": "",
-//         "model": "FLI ML50100",
-//         "identifier": "ML2341018",
-//         "firmware": ""
-//       },
-//       "C0-detector-cooler-state": {
-//         "file": "/usr/local/var/tcs/sensors/detectors0/C0-detector-cooler-state",
-//         "keyword": "",
-//         "prettyname": "C0 cooler state",
-//         "subsystem": "instrument",
-//         "component": "detector-C0",
-//         "group": "detector-cooler-state",
-//         "type": "string",
-//         "unit": "",
-//         "model": "FLI ML50100",
-//         "identifier": "ML2351018",
-//         "firmware": ""
-//       },
+      "C5-detector-cooler-power": {
+        "file": "/usr/local/var/tcs/sensors/detectors1/C5-detector-cooler-power",
+        "keyword": "",
+        "prettyname": "C5 relative cooler power",
+        "subsystem": "instrument",
+        "component": "detector-C5",
+        "group": "detector-cooler-power",
+        "type": "float",
+        "unit": "",
+        "model": "FLI ML50100",
+        "identifier": "ML2341018",
+        "firmware": ""
+      },
+      "C0-detector-cooler-state": {
+        "file": "/usr/local/var/tcs/sensors/detectors0/C0-detector-cooler-state",
+        "keyword": "",
+        "prettyname": "C0 cooler state",
+        "subsystem": "instrument",
+        "component": "detector-C0",
+        "group": "detector-cooler-state",
+        "type": "string",
+        "unit": "",
+        "model": "FLI ML50100",
+        "identifier": "ML2351018",
+        "firmware": ""
+      },
       "C1-detector-cooler-state": {
         "file": "/usr/local/var/tcs/sensors/detectors1/C1-detector-cooler-state",
         "keyword": "",
@@ -1356,32 +1356,32 @@
         "identifier": "ML2351018",
         "firmware": ""
       },
-//       "C5-detector-cooler-state": {
-//         "file": "/usr/local/var/tcs/sensors/detectors1/C5-detector-cooler-state",
-//         "keyword": "",
-//         "prettyname": "C5 cooler state",
-//         "subsystem": "instrument",
-//         "component": "detector-C5",
-//         "group": "detector-cooler-state",
-//         "type": "string",
-//         "unit": "",
-//         "model": "FLI ML50100",
-//         "identifier": "ML2341018",
-//         "firmware": ""
-//       },
-//       "C0-focuser-position": {
-//         "file": "/usr/local/var/tcs/sensors/detectors0/C0-focuser-position",
-//         "keyword": "",
-//         "prettyname": "C0 focuser position",
-//         "subsystem": "instrument",
-//         "component": "detector-C0",
-//         "group": "focuser-position",
-//         "type": "integer",
-//         "unit": "",
-//         "model": "Starlight Instruments Focus Boss II",
-//         "identifier": "",
-//         "firmware": ""
-//       },
+      "C5-detector-cooler-state": {
+        "file": "/usr/local/var/tcs/sensors/detectors1/C5-detector-cooler-state",
+        "keyword": "",
+        "prettyname": "C5 cooler state",
+        "subsystem": "instrument",
+        "component": "detector-C5",
+        "group": "detector-cooler-state",
+        "type": "string",
+        "unit": "",
+        "model": "FLI ML50100",
+        "identifier": "ML2341018",
+        "firmware": ""
+      },
+      "C0-focuser-position": {
+        "file": "/usr/local/var/tcs/sensors/detectors0/C0-focuser-position",
+        "keyword": "",
+        "prettyname": "C0 focuser position",
+        "subsystem": "instrument",
+        "component": "detector-C0",
+        "group": "focuser-position",
+        "type": "integer",
+        "unit": "",
+        "model": "Starlight Instruments Focus Boss II",
+        "identifier": "",
+        "firmware": ""
+      },
       "C1-focuser-position": {
         "file": "/usr/local/var/tcs/sensors/detectors1/C1-focuser-position",
         "keyword": "",
@@ -1433,21 +1433,20 @@
         "model": "Starlight Instruments Focus Boss II",
         "identifier": "",
         "firmware": ""
+      },
+      "C5-focuser-position": {
+        "file": "/usr/local/var/tcs/sensors/detectors1/C5-focuser-position",
+        "keyword": "",
+        "prettyname": "C5 focuser position",
+        "subsystem": "instrument",
+        "component": "detector-C5",
+        "group": "focuser-position",
+        "type": "integer",
+        "unit": "",
+        "model": "Starlight Instruments Focus Boss II",
+        "identifier": "",
+        "firmware": ""
       }
-//       ,
-//       "C5-focuser-position": {
-//         "file": "/usr/local/var/tcs/sensors/detectors1/C5-focuser-position",
-//         "keyword": "",
-//         "prettyname": "C5 focuser position",
-//         "subsystem": "instrument",
-//         "component": "detector-C5",
-//         "group": "focuser-position",
-//         "type": "integer",
-//         "unit": "",
-//         "model": "Starlight Instruments Focus Boss II",
-//         "identifier": "",
-//         "firmware": ""
-//       }
     }
   },
   "site": {
