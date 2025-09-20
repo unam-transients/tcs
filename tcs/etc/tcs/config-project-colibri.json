@@ -253,16 +253,16 @@
     "coolerclosedsetting": "last",
     "temperaturelimit": 45,
     "temperaturelimitoutletgroup": "red-service-cabinet",
-    "filterwheeltype": "fli",
     // The DDRAGO CFW-14-5 filter wheels are:
     // FW0011318 -- firmware serial number "CFW-14-5"
     // FW0021318 -- firmware serial number "FW0021318"
     // FW0031318 -- firmware serial number "FW0031318"
-    "filterwheelidentifier": "FW0031318",
+    "filterwheeltype": "fli",
+    "filterwheelidentifier": "CFW-14-5",
     "filters": {
       "z"      : "0",
       "y"      : "1",
-      "zy"     : "2",
+      "zy"     : "3",
       "initial": "z",
       "idle"   : "z",
       "closed" : "z"
