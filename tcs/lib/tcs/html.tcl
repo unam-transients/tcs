@@ -1458,21 +1458,6 @@ namespace eval "html" {
 
   }
 
-
-  proc writesvom {} {
-
-    putshtml "<table class=\"status\">"
-
-    writehtmlstatusblock "svom"
-
-    putshtml "</table>"
-
-    putshtml "<table class=\"status\">"
-    putshtml "</table>"
-
-  }
-
-
   proc writegcntan {} {
 
     putshtml "<table class=\"status\">"
@@ -1797,7 +1782,6 @@ if {false} {
       shutters            {Shutters}
       sun                 {Sun}
       supervisor          {Supervisor}
-      svom                {SVOM}
       target              {Target}
       telescope           {Telescope}
       weather             {Weather}
@@ -1878,7 +1862,7 @@ if {false} {
       
       set script [file join [directories::prefix] "lib" "tcs" "html-log.sh"]
 
-      foreach server [concat "info" "summary" "warning" "error" "svom" "gcn" $servers] {
+      foreach server [concat "info" "summary" "warning" "error" "gcn" $servers] {
 
         coroutine::after 1
 
