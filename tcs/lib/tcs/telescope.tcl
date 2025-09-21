@@ -943,6 +943,21 @@ namespace eval "telescope" {
     log::info [format "finished correcting the pointing model after %.1f seconds." [utcclock::diff now $start]]
   }
 
+  proc addtopointingmodel {truemountalpha truemountdelta equinox} {
+
+    server::checkstatus
+    astrometry::parsealpha $truemountalpha
+    astrometry::parsedelta $truemountdelta
+    astrometry::parseequinox $equinox
+
+    log::info "adding to the pointing model."
+    set start [utcclock::seconds]
+
+    client::request "mount" "addtopointingmodel $truemountalpha $truemountdelta $equinox"
+
+    log::info [format "finished adding to the pointing model after %.1f seconds." [utcclock::diff now $start]]
+  }
+
   ######################################################################
 
   proc reset {} {

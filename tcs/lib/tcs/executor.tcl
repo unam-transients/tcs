@@ -525,6 +525,49 @@ namespace eval "executor" {
     log::info [format "finished attempting to correct the pointing model after %.1f seconds." [utcclock::diff now $start]]
   }
 
+  proc addtopointingmodel {exposuretime} {
+    set start [utcclock::seconds]
+    variable pointingdetectors
+    log::info "attempting to add to the pointing model using $pointingdetectors."
+    variable detectors
+    set exposuretimes [lrepeat [llength $detectors] "none"]
+    set analyzetypes  [lrepeat [llength $detectors] "none"]
+    foreach detector $pointingdetectors {
+      lset exposuretimes [lsearch -exact $detectors $detector] $exposuretime
+      lset analyzetypes  [lsearch -exact $detectors $detector] "astrometry"
+    } 
+    if {$exposuretime != 0} {
+      eval expose "astrometry" $exposuretimes
+    }
+    eval analyze $analyzetypes
+    set alphalist {}
+    set deltalist {}
+    foreach detector $pointingdetectors {
+      client::update $detector
+      set alpha   [client::getdata $detector "solvedalpha"]
+      set delta   [client::getdata $detector "solveddelta"]
+      set equinox [client::getdata $detector "solvedequinox"]
+      if {[string equal $alpha ""]} {
+        log::warning "$detector pointing did not solve: unable to add to the pointing model."
+        client::resetifnecessary "telescope"
+        client::resetifnecessary "instrument"
+        client::wait "telescope"
+        client::wait "instrument"
+        log::info [format "finished attempting to add to the pointing model after %.1f seconds." [utcclock::diff now $start]]
+        return
+      }
+      log::info "solved $detector position is [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox."
+      lappend alphalist $alpha
+      lappend deltalist $delta
+    }
+    set alpha [astrometry::meanalpha $alphalist $deltalist]
+    set delta [astrometry::meandelta $alphalist $deltalist]
+    log::info "solved mean position is [astrometry::formatalpha $alpha] [astrometry::formatdelta $delta] $equinox."
+    client::request "telescope" "addtopointingmodel $alpha $delta $equinox"
+    client::wait "telescope"
+    log::info [format "finished attempting to add to the pointing model after %.1f seconds." [utcclock::diff now $start]]
+  }
+
   proc center {exposuretime {detector "C0"}} {
     set start [utcclock::seconds]
     variable pointingdetectors

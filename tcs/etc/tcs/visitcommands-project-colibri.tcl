@@ -954,25 +954,21 @@ proc nearfocustestvisit {{exposuretime 10} {filter {"r" "i" "z"}} {exposures 3}}
 
 ########################################################################
 
-proc pointingmapvisit {{exposuretime 15} {filter {"r" "i" "z"}}} {
+proc addtopointingmodelvisit {{exposuretime 10} {filter {"r" "i" "z"}}} {
 
-  log::summary "pointingmapvisit: starting."
+  log::summary "addtopointingmodelvisit: starting."
 
   executor::setsecondaryoffset 0
   executor::track
 
-  executor::setwindow "default"
+  executor::setwindow "2kx2k"
   executor::setbinning "default"
   
   eval executor::movefilterwheel $filter
   
-  executor::center $exposuretime
-  executor::center $exposuretime
+  executor::addtopointingmodel $exposuretime
 
-  log::summary "pointingmapvisit: taking long exposures."
-  executor::expose object 300
-
-  log::summary "pointingmapvisit: finished."
+  log::summary "addtopointingmodelvisit: finished."
   return true
 }
 

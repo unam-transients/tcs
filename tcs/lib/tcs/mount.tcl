@@ -966,11 +966,6 @@ namespace eval "mount" {
 
     set start [utcclock::seconds]
 
-    server::checkstatus
-    server::checkactivity "tracking"
-    checkunparked
-    checkhardwarefor "correct"
-
     set truealpha [astrometry::parsealpha $truealpha]
     set truedelta [astrometry::parsedelta $truedelta]
     set equinox [astrometry::parseequinox $equinox]
@@ -1126,6 +1121,13 @@ namespace eval "mount" {
       error "move cancelled because $message"
     }
     server::newactivitycommand "offsetting" "tracking" mount::offsetactivitycommand 120e3
+  }
+
+  proc addtopointingmodel {truealpha truedelta equinox} {
+    server::checkstatus
+    checkunparked
+    checkhardwarefor "correct"
+    server::newactivitycommand "adding" "tracking" "mount::addtopointingmodelactivitycommand $truealpha $truedelta $equinox" 120e3
   }
 
   ######################################################################

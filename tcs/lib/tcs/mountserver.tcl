@@ -91,6 +91,11 @@ namespace eval "mountserver" {
     return
   }
 
+  proc slaveaddtopointingmodel {truemountalpha truemountdelta equinox} {
+    mount::addtopointingmodel $truemountalpha $truemountdelta $equinox
+    return
+  }
+
   proc slavesetMAtozero {} {
     mount::setMAtozero
     return
@@ -119,6 +124,7 @@ namespace eval "mountserver" {
     interp alias $slave track               {} mountserver::slavetrack
     interp alias $slave offset              {} mountserver::slaveoffset
     interp alias $slave correct             {} mountserver::slavecorrect
+    interp alias $slave addtopointingmodel  {} mountserver::slaveaddtopointingmodel
     interp alias $slave setMAtozero         {} mountserver::slavesetMAtozero
     interp alias $slave setMEtozero         {} mountserver::slavesetMEtozero
     interp alias $slave setport             {} mountserver::slavesetport
