@@ -141,10 +141,7 @@
         "ny": 4096
       },
       // This window is the smallest conventional one larger than 6 arcmin.
-      "6am": "1kx1k",
-      // These are the derotator-centered windows.
-      "derotator-1kx1k": { "sx": 1490, "sy": 1685, "nx": 1024, "ny": 1024 },
-      "derotator-2kx2k": { "sx": 978, "sy": 1173, "nx": 2048, "ny": 2048 }
+      "6am": "1kx1k"
     },
     "detectorfullunbinneddatawindow": {
       "sx": 50,
@@ -236,10 +233,7 @@
         "ny": 4096
       },
       // This window is the smallest conventional one larger than 6 arcmin.
-      "6am": "1kx1k",
-      // These are dummy derotator-centered windows.
-      "derotator-1kx1k": "1kx1k",
-      "derotator-2kx2k": "2kx2k"
+      "6am": "1kx1k"
     },
     "detectorboresight": { "x": 2048.0, "y": 2048.0 },
     "detectorfullunbinneddatawindow": {
@@ -1595,18 +1589,6 @@
         "identifier": "",
         "firmware": ""
       },
-      "european-ups-battery-current": {
-        "file": "/usr/local/var/tcs/sensors/control/plc-european-ups-battery-current",
-        "prettyname": "european ups battery current",
-        "subsystem": "ups",
-        "component": "european-ups",
-        "group": "current",
-        "type": "float",
-        "unit": "A",
-        "model": "",
-        "identifier": "",
-        "firmware": ""
-      },
       "european-ups-battery-seconds": {
         "file": "/usr/local/var/tcs/sensors/control/plc-european-ups-battery-seconds",
         "prettyname": "european ups battery seconds",
@@ -1631,9 +1613,9 @@
         "identifier": "",
         "firmware": ""
       },
-      "european-ups-l12-voltage": {
-        "file": "/usr/local/var/tcs/sensors/control/plc-european-ups-l12-voltage",
-        "prettyname": "european ups l12 voltage",
+      "european-ups-l1-voltage": {
+        "file": "/usr/local/var/tcs/sensors/control/plc-european-ups-l1-voltage",
+        "prettyname": "european ups l1 voltage",
         "subsystem": "ups",
         "component": "european-ups",
         "group": "voltage",
@@ -1643,9 +1625,9 @@
         "identifier": "",
         "firmware": ""
       },
-      "european-ups-l23-voltage": {
-        "file": "/usr/local/var/tcs/sensors/control/plc-european-ups-l23-voltage",
-        "prettyname": "european ups l23 voltage",
+      "european-ups-l2-voltage": {
+        "file": "/usr/local/var/tcs/sensors/control/plc-european-ups-l2-voltage",
+        "prettyname": "european ups l2 voltage",
         "subsystem": "ups",
         "component": "european-ups",
         "group": "voltage",
@@ -1655,9 +1637,9 @@
         "identifier": "",
         "firmware": ""
       },
-      "european-ups-l13-voltage": {
-        "file": "/usr/local/var/tcs/sensors/control/plc-european-ups-l13-voltage",
-        "prettyname": "european ups l13 voltage",
+      "european-ups-l3-voltage": {
+        "file": "/usr/local/var/tcs/sensors/control/plc-european-ups-l3-voltage",
+        "prettyname": "european ups l3 voltage",
         "subsystem": "ups",
         "component": "european-ups",
         "group": "voltage",

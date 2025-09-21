@@ -269,15 +269,18 @@ namespace eval "plc" {
       server::setdata "europeanupsbatterychargelevel" [format "%.2f" [expr {0.01 * [lindex $field 36]}]]
       server::setdata "europeanupsbatterytemperature" [format "%.1f" [lindex $field 37]]
       server::setdata "europeanupsbatteryvoltage"     [format "%.0f" [lindex $field 38]]
-      server::setdata "europeanupsbatterycurrent"     [format "%.0f" [lindex $field 39]]
+      # Field 39 was the battery current with the original Schneider UPS, but is no longer used.
       server::setdata "europeanupsbatteryseconds"     [format "%.0f" [expr {60 * [lindex $field 40]}]]
-      server::setdata "europeanupsload"               [format "%.2f" [expr {0.01 * [lindex $field 41]}]]
-      server::setdata "europeanupsl12voltage"         [format "%.0f" [lindex $field 42]]
-      server::setdata "europeanupsl23voltage"         [format "%.0f" [lindex $field 43]]
-      server::setdata "europeanupsl13voltage"         [format "%.0f" [lindex $field 44]]
-      server::setdata "europeanupsl1current"          [format "%.0f" [lindex $field 45]]
-      server::setdata "europeanupsl2current"          [format "%.0f" [lindex $field 46]]
-      server::setdata "europeanupsl3current"          [format "%.0f" [lindex $field 47]]
+      # Field 41 was the load with the original Schneider UPS, but is no longer used. Instead, we average the loads of the three phases.
+      server::setdata "europeanupsload"               [format "%.2f" [expr {0.01 * max([lindex $field 45],[lindex $field 46],[lindex $field 47])}]]
+      # Voltages are now phase to neutral: L1-N, L2-N, L3-N
+      server::setdata "europeanupsl1voltage"          [format "%.0f" [lindex $field 42]]
+      server::setdata "europeanupsl2voltage"          [format "%.0f" [lindex $field 43]]
+      server::setdata "europeanupsl3voltage"          [format "%.0f" [lindex $field 44]]
+      # Fields 45 to 47 give the currents in percent of the nominal maximum, with 100% = 25 A
+      server::setdata "europeanupsl1current"          [format "%.1f" [expr {0.25 * [lindex $field 45]}]]
+      server::setdata "europeanupsl2current"          [format "%.1f" [expr {0.25 * [lindex $field 46]}]]
+      server::setdata "europeanupsl3current"          [format "%.1f" [expr {0.25 * [lindex $field 47]}]]
       server::setdata "europeanupsinputfrequency"     [format "%.0f" [lindex $field 48]]
       server::setdata "europeanupsoutputfrequency"    [format "%.0f" [lindex $field 49]]
     }]} {
@@ -307,11 +310,11 @@ namespace eval "plc" {
     server::setdata "keyswitch"                     $keyswitch
 
     if {[catch {
-      server::setdata "europeanupsbatteryexhausted"   [boolean [string index $responseb 24]]
+      server::setdata "europeanupsoverloaded"         [boolean [string index $responseb 24]]
       server::setdata "europeanupsbatterylow"         [boolean [string index $responseb 25]]
       server::setdata "europeanupsusingbattery"       [boolean [string index $responseb 26]]
       server::setdata "europeanupsfault"              [boolean [string index $responseb 27]]
-      server::setdata "europeanupsusinginverter"      [boolean [string index $responseb 28]]
+      server::setdata "europeanupsinputsupplypresent" [boolean [string index $responseb 28]]
       server::setdata "europeanupsloadprotected"      [boolean [string index $responseb 29]]
       server::setdata "europeanupscommunicationalarm" [boolean [string index $responseb 30]]
     }]} {
@@ -493,17 +496,7 @@ namespace eval "plc" {
       log::warning "unable to read bypass data."
     }
     
-    switch -- "[string index $responseb 95]" {
-      "0" { set status "unknown" }
-      "2" { set status "ok"  }
-      "4" { set status "warning alarm"  }
-      "8" { set status "critical alarm"  }
-      "default" {
-        log::warning "unable to read european ups data."
-          set status ""
-      }
-    }
-    server::setdata "europeanupsstatus"                $status
+    # 95 was the UPS status with the original Schneider UPS, but this is no longer used.
 
     switch -- "[string index $responseb 96]" {
       "0" { set fans "off" }
@@ -643,7 +636,8 @@ namespace eval "plc" {
       
       "info"    "motorpoweron"                  "motor power on"
 
-      "summary" "europeanupsstatus"             "european ups status"
+      "summary" "europeanupsoverloaded"         "european ups overloaded"
+      "summary" "europeanupsfault"              "european ups fault"
       "summary" "europeanupsusingbattery"       "european ups using battery"
       "summary" "europeanupscommunicationalarm" "european ups communication alarm"
       "summary" "americanupsstatus"             "american ups status"
@@ -708,12 +702,11 @@ namespace eval "plc" {
       european-ups-battery-charge-level europeanupsbatterychargelevel
       european-ups-battery-temperature  europeanupsbatterytemperature
       european-ups-battery-voltage      europeanupsbatteryvoltage
-      european-ups-battery-current      europeanupsbatterycurrent
       european-ups-battery-seconds      europeanupsbatteryseconds
       european-ups-load                 europeanupsload
-      european-ups-l12-voltage          europeanupsl12voltage
-      european-ups-l23-voltage          europeanupsl23voltage
-      european-ups-l13-voltage          europeanupsl13voltage
+      european-ups-l1-voltage           europeanupsl1voltage
+      european-ups-l2-voltage           europeanupsl2voltage
+      european-ups-l3-voltage           europeanupsl3voltage
       european-ups-l1-current           europeanupsl1current
       european-ups-l2-current           europeanupsl2current
       european-ups-l3-current           europeanupsl3current
@@ -808,10 +801,11 @@ namespace eval "plc" {
     if {!$vaisalaenabled} {
       log::warning "the vaisala is not enabled."
     }
-    controller::sendcommand "UnsafeTimer\{10\}\n"
+    controller::sendcommand "UnsafeTimer\{1\}\n"
     variable windspeedlimit
     controller::sendcommand "WindThreshold\{$windspeedlimit\}\n"
     server::setdata "windspeedlimit" $windspeedlimit
+    controller::sendcommand "UpsThreshold\{90\}\n"
     set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
   }
