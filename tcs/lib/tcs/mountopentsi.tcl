@@ -408,13 +408,29 @@ namespace eval "mount" {
     while {[string equal [server::getstatus] "starting"]} {
       coroutine::yield
     }
+
     set dtai [utcclock::gettaiminusutc]
     log::info [format "setting TAI-UTC to %+d seconds." $dtai]
     opentsi::sendcommandandwait [format "SET TELESCOPE.CONFIG.LOCAL.TAI-UTC=%d" $dtai]
-    # Predicted value for 2025-09-23
+
+    # Predicted value of DUT1for 2025-09-23, but this should be obtained
+    # automatically from Bulletin A.
+
     set dut1 0.09003 
     log::info [format "setting UT1-UTC to %+.3f seconds." $dut1]
     opentsi::sendcommandandwait [format "SET TELESCOPE.CONFIG.LOCAL.TAI-UTC=%.3f" $dut1]
+
+    # Typical values for September, but these should be obtained from the
+    # weather station and updated every few minutes.
+
+    set pressure 725
+    log::info [format "setting pressure to %.0f mbar." $pressure]
+    opentsi::sendcommandandwait [format "SET TELESCOPE.CONFIG.ENVIRONMENT.PRESSURE=%.0f" $pressure]
+
+    set temperature 10
+    log::info [format "setting temperature to %+.1f C." $temperature]
+    opentsi::sendcommandandwait [format "SET TELESCOPE.CONFIG.ENVIRONMENT.TEMPERATURE=%.1f" $temperature]
+
     opentsi::sendcommandandwait "SET POINTING.SETUP.OPTIMIZATION=1"
     opentsi::sendcommandandwait "SET POINTING.SETUP.MIN_TRACKTIME=600"
     opentsi::sendcommandandwait [format "SET [join {
