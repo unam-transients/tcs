@@ -408,10 +408,13 @@ namespace eval "mount" {
     while {[string equal [server::getstatus] "starting"]} {
       coroutine::yield
     }
-    set taiminusutc [utcclock::gettaiminusutc]
-    log::info [format "setting TAI-UTC to %+d seconds." $taiminusutc]
-    opentsi::sendcommandandwait [format "SET TELESCOPE.CONFIG.LOCAL.TAI-UTC=%d" $taiminusutc]
-    set end [utcclock::seconds]
+    set dtai [utcclock::gettaiminusutc]
+    log::info [format "setting TAI-UTC to %+d seconds." $dtai]
+    opentsi::sendcommandandwait [format "SET TELESCOPE.CONFIG.LOCAL.TAI-UTC=%d" $dtai]
+    # Predicted value for 2025-09-23
+    set dut1 0.09003 
+    log::info [format "setting UT1-UTC to %+.3f seconds." $dut1]
+    opentsi::sendcommandandwait [format "SET TELESCOPE.CONFIG.LOCAL.TAI-UTC=%.3f" $dut1]
     opentsi::sendcommandandwait "SET POINTING.SETUP.OPTIMIZATION=1"
     opentsi::sendcommandandwait "SET POINTING.SETUP.MIN_TRACKTIME=600"
     opentsi::sendcommandandwait [format "SET [join {
@@ -419,7 +422,8 @@ namespace eval "mount" {
         "POINTING.SETUP.DEROTATOR.SYNCMODE=5"
       } ";"]" \
       [astrometry::radtodeg $derotatoroffset] \
-    ]      
+    ]
+    set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
   }
 
