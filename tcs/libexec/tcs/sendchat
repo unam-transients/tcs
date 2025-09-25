@@ -71,6 +71,8 @@ cu-tcs-*)
   ;;
 esac
 
+escapedmessage="$(echo "$message" | sed 's/\(["\\]\)/\\\1/g')"
+
 test="https://chat.googleapis.com/v1/spaces/AAAAvPDdHcE/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=aj0Xc4tJMEI32XNmBcD70mZ0KzyziQNjLqH458UfgMU"
 coatlioan="https://chat.googleapis.com/v1/spaces/AAAAIjRMy3k/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=KmgPQ0Ccob9q92uy5RKm64F90EG4uk2vHKZ4DDLWh28"
 ddotioan=$coatlioan
@@ -99,7 +101,7 @@ colibri-*:observations)
   urls="$alerts"
   ;;
 *-*:test)
-  urls="$test"
+  urls="echo $test"
   ;;
 *)
   echo 2>&1 "$program: error: chat is not configure for category $category on $(uname -n)."
@@ -117,15 +119,18 @@ fi
 for url in $urls
 do
   case "$url" in
+  echo)
+    echo curl -s -X POST -H 'Content-Type: application/json' -d "{\"text\": \"$source: $escapedmessage\"}"
+    ;;
   *mattermost*)
-    if ! curl -s -X POST -H 'Content-Type: application/json' -d "{\"text\": \"$source: $message\"}" $url >/dev/null
+    if ! curl -s -X POST -H 'Content-Type: application/json' -d "{\"text\": \"$source: $escapedmessage\"}" $url >/dev/null
     then
       echo 2>&1 "$program: error: API call failed."
       exit 1
     fi
     ;;
   *googleapis*)
-    if ! curl -s -X POST -H "Content-Type: application/json" -d "{\"text\": \"$source: $message\"}" $url >/dev/null
+    if ! curl -s -X POST -H "Content-Type: application/json" -d "{\"text\": \"$source: $escapedmessage\"}" $url >/dev/null
     then
       echo 2>&1 "$program: error: API call failed."
       exit 1
