@@ -130,7 +130,31 @@ sudo apt-get -y install sextractor
 sudo apt-get -y install tcl-dev
 sudo apt-get -y install tcllib
 
-exit
+########################################################################
+
+# Install conda-forge
+
+(
+  cd /tmp
+  wget -O Miniforge3.sh "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+  sudo rm -rf /usr/local/opt/conda
+  sudo bash Miniforge3.sh -b -p /usr/local/opt/conda
+  rm Miniforge3.sh
+  sudo /usr/local/opt/conda/bin/conda update -y -n base -c conda-forge conda
+)
+
+# Create the tcs conda environment.
+
+(
+  sudo rm -rf /usr/local/libexec/tcs/conda
+  sudo /usr/local/opt/conda/bin/conda create -y -p /usr/local/libexec/tcs/conda
+  # Used by gcnserver
+  sudo /usr/local/opt/conda/bin/conda install -y -p /usr/local/libexec/tcs/conda gcn-kafka
+  sudo /usr/local/opt/conda/bin/conda install -y -p /usr/local/libexec/tcs/conda xmltodict
+)
 
 ########################################################################
 
+exit
+
+########################################################################
