@@ -249,7 +249,7 @@ def respond(
             day,
             int(dayfraction * 1000),
         )
-    logresponse("event name is \"%s\"." % eventname)
+    logresponse('event name is "%s".' % eventname)
 
     logresponse(
         "event origin/identifier/type are %s/%s/%s."
@@ -392,6 +392,101 @@ def handleswiftmessage(messagetype, messagevalue):
 ################################################################################
 
 
+def handleicecubemessage(messagetype, messagevalue):
+
+    assert messagetype in [
+        "gcn.classic.voevent.ICECUBE_ASTROTRACK_BRONZE",
+        "gcn.classic.voevent.ICECUBE_ASTROTRACK_GOLD",
+        "gcn.classic.voevent.ICECUBE_CASCADE",
+    ]
+
+    alertisotimestamp = isoformat()
+
+    messagetype = compactmessagetype(messagetype)
+    loginfo("received %s message." % messagetype)
+
+    print("%s" % messagevalue.decode("UTF-8"))
+    value = xml.etree.ElementTree.fromstring(messagevalue)
+
+    packettypenumber = int(value.find("./What/Param[@name='Packet_Type']").get("value"))
+    eventtypedict = {
+        173: "icecubeastrotrackgold",
+        174: "icecubeastrotrackbronze",
+        176: "amonicecubecascade",
+    }
+    if packettypenumber not in eventtypedict:
+        eventtype = "icecubreunknown%d" % packettypenumber
+    else:
+        eventtype = eventtypedict[packettypenumber]
+
+    eventorigin = "icecube"
+    eventprefix = "IceCube"
+    eventmessenger = "neutrino"
+
+    if eventtype == "icecubeastrotrackgold" or eventtype == "icecubeastrotrackbronze":
+        eventclass = "track"
+    else:
+        eventclass = "cascade"
+
+    eventidentifier = value.find("./What/Param[@name='AMON_ID']").get("value")
+
+    eventisotimestamp = value.find(
+        "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Time/TimeInstant/ISOTime"
+    ).text
+    if eventisotimestamp[-1] == "Z":
+        eventisotimestamp = eventisotimestamp[:-1]
+
+    eventalpha = "%.4fd" % float(
+        value.find(
+            "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Position2D/Value2/C1"
+        ).text
+    )
+    eventdelta = "%+.4fd" % float(
+        value.find(
+            "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Position2D/Value2/C2"
+        ).text
+    )
+    eventequinox = "2000"
+    eventuncertainty = "%.4fd" % float(
+        value.find(
+            "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Position2D/Error2Radius"
+        ).text
+    )
+
+    signalness = float(value.find("./What/Param[@name='signalness']").get("value"))
+    far = float(value.find("./What/Param[@name='FAR']").get("value"))
+    logsummary("%s: signalness is %.4f." % (eventtype, signalness))
+    logsummary("%s: far is %.4f per year." % (eventtype, far))
+
+    if eventtype == "icecubeastrotrackgold":
+        eventenabled = True
+    elif eventtype == "icecubeastrotrackbronze":
+        eventenabled = (signalness >= 0.50)
+    else:
+        eventenabled = False
+    eventpreliminary = False
+
+    respond(
+        alertisotimestamp,
+        eventtype,
+        eventorigin,
+        eventidentifier,
+        eventprefix,
+        eventisotimestamp,
+        eventalpha,
+        eventdelta,
+        eventequinox,
+        eventuncertainty,
+        eventclass,
+        eventmessenger,
+        eventenabled,
+        eventpreliminary,
+    )
+
+
+################################################################################
+
+
 def handlefermimessage(messagetype, messagevalue):
     loginfo("fermi message.")
     loginfo("received %s message." % messagetype)
@@ -420,18 +515,13 @@ def handlesvommessage(messagetype, messagevalue):
     """
 
     assert messagetype.startswith("gcn.notices.svom.voevent.")
-    messagetype = compactmessagetype(messagetype)
 
     alertisotimestamp = isoformat()
 
+    messagetype = compactmessagetype(messagetype)
     loginfo("received %s message." % messagetype)
 
     value = xml.etree.ElementTree.fromstring(messagevalue)
-
-    eventorigin = "svom"
-    eventprefix = "SVOM"
-    eventclass = "grb"
-    eventmessenger = "electromagnetic"
 
     packettypenumber = int(value.find("./What/Param[@name='Packet_Type']").get("value"))
     eventtypedict = {
@@ -462,6 +552,10 @@ def handlesvommessage(messagetype, messagevalue):
     else:
         eventtype = eventtypedict[packettypenumber]
 
+    eventorigin = "svom"
+    eventprefix = "SVOM"
+    eventclass = "grb"
+    eventmessenger = "electromagnetic"
 
     eventidentifier = value.find(
         "./What/Group[@name='Svom_Identifiers']/Param[@name='Burst_Id']"
@@ -508,17 +602,17 @@ def handlesvommessage(messagetype, messagevalue):
         eventequinox = "2000"
 
     if eventtype == "svomeclairscatalog" or eventtype == "svomretraction":
-        eventenabled = "false"
+        eventenabled = False
         eventpreliminary = ""
     elif eventtype == "svomslewing" or eventtype == "svomnotslewing":
         eventenabled = ""
         eventpreliminary = ""
     elif eventtype == "svomgrmpreliminary" or eventtype == "svomeclairspreliminary":
-        eventenabled = "true"
-        eventpreliminary = "true"
+        eventenabled = True
+        eventpreliminary = True
     else:
-        eventenabled = "true"
-        eventpreliminary = "false"
+        eventenabled = True
+        eventpreliminary = False
 
     respond(
         alertisotimestamp,
@@ -616,9 +710,9 @@ if testing:
     # https://github.com/nasa-gcn/gcn-kafka-python/blob/main/README.md
     consumerconfig = {"auto.offset.reset": "earliest"}
     topics = [
-        "gcn.notices.svom.voevent.grm",
-        "gcn.notices.svom.voevent.eclairs",
-        "gcn.notices.svom.voevent.mxt",
+        "gcn.classic.voevent.ICECUBE_ASTROTRACK_BRONZE",
+        "gcn.classic.voevent.ICECUBE_ASTROTRACK_GOLD",
+        "gcn.classic.voevent.ICECUBE_CASCADE",
     ]
 else:
     consumerconfig = {}
@@ -726,6 +820,8 @@ while True:
             handleheartbeatmessage(messagetype, messagevalue)
         elif messagetype.startswith("gcn.classic.voevent.SWIFT"):
             handleswiftmessage(messagetype, messagevalue)
+        elif messagetype.startswith("gcn.classic.voevent.ICECUBE"):
+            handleicecubemessage(messagetype, messagevalue)
         elif messagetype.startswith("gcn.classic.voevent.MAXI"):
             handlemaximessage(messagetype, messagevalue)
         elif messagetype.startswith("gcn.classic.voevent.FERMI"):

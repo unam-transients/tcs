@@ -286,6 +286,8 @@ namespace eval "gcntan" {
       "icecubecascade" {
         set log [logprocedure $packet]
         $log [format "received %s packet." $type]
+        # IceCube events are now handled by gcnserver.
+        return
         set blockidentifier    [icecubetrigger        $log $packet]
         set eventname          [icecubeeventname      $log $packet]
         set origin             "icecube"
