@@ -602,7 +602,7 @@ namespace eval "mount" {
           "TELESCOPE.MEASUREMENT.MODEL.NEW.UTC=%.0f"
           "TELESCOPE.MEASUREMENT.MODEL.NEW.ADD=2"
         } ";"]" \
-        [astrometry::radtodeg $truemountalpha] \
+        [astrometry::radtohr  $truemountalpha] \
         [astrometry::radtodeg $truemountdelta] \
         $equinox \
         $dseconds \
