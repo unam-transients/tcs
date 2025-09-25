@@ -213,14 +213,42 @@ if project == "coatli":
 elif project == "colibri":
     writehtml(
         """
-        <option>gri</option>
-        <option>g</option>
-        <option>g/r</option>
-        <option>g/r/i</option>
-        <option>g/i</option>
-        <option>r</option>
-        <option>r/i</option>
-        <option>i</option>
+        <option>g/r/i/z/y</option>
+        <option>g/r/i/z</option>
+        <option>g/r/i/y</option>
+        <option>g/r/i/zy</option>
+
+        <option>g/r/z/y</option>
+        <option>g/r/z</option>
+        <option>g/r/y</option>
+        <option>g/r/zy</option>
+
+        <option>g/i/z/y</option>
+        <option>g/i/z</option>
+        <option>g/i/y</option>
+        <option>g/i/zy</option>
+
+        <option>r/i/z/y</option>
+        <option>r/i/z</option>
+        <option>r/i/y</option>
+        <option>r/i/zy</option>
+
+        <option>g/z/y</option>
+        <option>g/z</option>
+        <option>g/y</option>
+        <option>g/zy</option>
+
+        <option>r/z/y</option>
+        <option>r/z</option>
+        <option>r/y</option>
+        <option>r/zy</option>
+
+        <option>i/z/y</option>
+        <option>i/z</option>
+        <option>i/y</option>
+        <option>i/zy</option>
+
+        <option>gri/zy</option>
     """
     )
 elif project == "ddoti":
