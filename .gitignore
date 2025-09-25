@@ -25,3 +25,4 @@ pointing/residuals-180.dat
 pointing/residuals-0.dat
 tcs/etc/tcs/version.json
 sandbox/
+.vscode/settings.json
