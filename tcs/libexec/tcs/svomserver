@@ -10,6 +10,7 @@ import sys
 import os
 import re
 from datetime import datetime
+from datetime import timezone
 import subprocess
 
 ################################################################################
@@ -56,6 +57,78 @@ def serverport(serversdata, server):
     except:
         print("invalid server: " + server)
         sys.exit(1)
+
+
+################################################################################
+
+idsequence = 0
+serversdata = readserversfile()
+
+
+def request(server, method, params):
+
+    global idsequence
+    hostname = os.uname()[1]
+    pid = os.getpid()
+    id = "%s/%s/%d/%d" % (hostname, who, pid, idsequence)
+    idsequence += 1
+    request = {
+        "jsonrpc": "2.0",
+        "id": id,
+        "method": method,
+        "params": params,
+    }
+    requeststring = json.dumps(request) + "\n"
+    requeststring = requeststring.encode(encoding="UTF-8", errors="strict")
+    host = serverhost(serversdata, server)
+    port = serverport(serversdata, server)
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((host, port))
+        s.sendall(requeststring)
+    except:
+        print("error while sending request", flush=True)
+
+
+################################################################################
+
+
+def isoformat(when=None, separator="T"):
+    """
+    Return the ISO representation of the current utc with millisecond precision.
+
+    :return: A string of the form "YYYY-MM-DDTHH:MM:SS.SSS".
+    """
+    if when == None:
+        when = now()
+    return when.isoformat(separator, "milliseconds")[0:23]
+
+
+def fromisoformat(when):
+    if len(when) >= 23:
+        return datetime.fromisoformat(when[0:23])
+    else:
+        return datetime.fromisoformat(when)
+
+
+def now():
+    return datetime.now()
+
+
+################################################################################
+
+statusdict = {}
+
+
+def pushstatus(statusupdatedict={}):
+
+    global statusdict
+    statusdict.update(statusupdatedict)
+
+    method = "pushstatus"
+    params = ["svom", json.dumps(statusdict)]
+    for server in ["html", "watchdog"]:
+        request(server, method, params)
 
 
 ################################################################################
@@ -378,9 +451,37 @@ def handler(payload, root):
     logdebug("handing: %r" % payload)
     alert = xmltodict(payload)
     respond(alert)
+    pushstatus(
+        {
+            "timestamp": isoformat(),
+        }
+    )
 
 
 loginfo("starting server.")
+pushstatus(
+    {
+        "pid": os.getpid(),
+        "starttimestamp": isoformat(),
+        "status": "starting",
+        "statustimestamp": isoformat(),
+        "activity": "starting",
+        "requestedactivity": "idle",
+        "requestedactivitytimestamp": isoformat(),
+        "timestamp": isoformat(),
+        "datalifeseconds": 7200,
+    }
+)
+
+pushstatus(
+    {
+        "status": "ok",
+        "starttimestamp": isoformat(),
+        "activity": "idle",
+        "activitytimestamp": isoformat(),
+        "timestamp": isoformat(),
+    }
+)
 gcn.listen(
     host="voevent.svom.eu",
     port=8099,

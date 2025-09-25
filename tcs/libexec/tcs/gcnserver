@@ -8,6 +8,7 @@ import re
 from datetime import datetime
 from datetime import timezone
 import subprocess
+import gcn_kafka
 
 ################################################################################
 
@@ -57,6 +58,78 @@ def serverport(serversdata, server):
 
 ################################################################################
 
+idsequence = 0
+serversdata = readserversfile()
+
+
+def request(server, method, params):
+
+    global idsequence
+    hostname = os.uname()[1]
+    pid = os.getpid()
+    id = "%s/%s/%d/%d" % (hostname, who, pid, idsequence)
+    idsequence += 1
+    request = {
+        "jsonrpc": "2.0",
+        "id": id,
+        "method": method,
+        "params": params,
+    }
+    requeststring = json.dumps(request) + "\n"
+    requeststring = requeststring.encode(encoding="UTF-8", errors="strict")
+    host = serverhost(serversdata, server)
+    port = serverport(serversdata, server)
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((host, port))
+        s.sendall(requeststring)
+    except:
+        print("error while sending request", flush=True)
+
+
+################################################################################
+
+
+def isoformat(when=None, separator="T"):
+    """
+    Return the ISO representation of the current utc with millisecond precision.
+
+    :return: A string of the form "YYYY-MM-DDTHH:MM:SS.SSS".
+    """
+    if when == None:
+        when = now()
+    return when.isoformat(separator, "milliseconds")[0:23]
+
+
+def fromisoformat(when):
+    if len(when) >= 23:
+        return datetime.fromisoformat(when[0:23])
+    else:
+        return datetime.fromisoformat(when)
+
+
+def now():
+    return datetime.now()
+
+
+################################################################################
+
+statusdict = {}
+
+
+def pushstatus(statusupdatedict={}):
+
+    global statusdict
+    statusdict.update(statusupdatedict)
+
+    method = "pushstatus"
+    params = ["gcn", json.dumps(statusdict)]
+    for server in ["html", "watchdog"]:
+        request(server, method, params)
+
+
+################################################################################
+
 who = "gcnserver"
 
 
@@ -82,7 +155,7 @@ def logdebug(payload):
 
 def log(type, payload):
     server = "log"
-    timestamp = datetime.now().isoformat(" ", "milliseconds")
+    timestamp = isoformat(separator=" ")
     request = {
         "method": "log",
         "params": {
@@ -174,8 +247,8 @@ def respond(
 
     logresponse("event time stamp is %s." % eventisotimestamp)
     logresponse("alert time stamp is %s." % alertisotimestamp)
-    eventdatetime = datetime.fromisoformat(eventisotimestamp)
-    alertdatetime = datetime.fromisoformat(alertisotimestamp)
+    eventdatetime = fromisoformat(eventisotimestamp)
+    alertdatetime = fromisoformat(alertisotimestamp)
     alertdelay = (alertdatetime - eventdatetime).total_seconds()
     logresponse("alert delay is %.3f seconds." % alertdelay)
 
@@ -210,12 +283,10 @@ def respond(
             trueorfalse(preliminary),
         )
     )
-    subprocess.run(
+    request(
+        "selector",
+        "respondtoalert",
         [
-            "/usr/local/bin/tcs",
-            "request",
-            "selector",
-            "respondtoalert",
             blockidentifier,
             eventname,
             eventorigin,
@@ -232,7 +303,7 @@ def respond(
             eventmessenger,
             "",
             trueorfalse(preliminary),
-        ]
+        ],
     )
 
 
@@ -260,8 +331,8 @@ def handleheartbeatmessage(messagetype, messagevalue):
         loginfo("received %s message." % messagetype)
         value = json.loads(messagevalue.decode("UTF-8"))
         eventisotimestamp = value["alert_datetime"]
-        eventdatetime = datetime.fromisoformat(eventisotimestamp)
-        alertdatetime = datetime.now(timezone.utc)
+        eventdatetime = fromisoformat(eventisotimestamp)
+        alertdatetime = now()
         alertdelay = (alertdatetime - eventdatetime).total_seconds()
         loginfo("%s: alert delay is %.3f seconds." % (messagetype, alertdelay))
 
@@ -307,7 +378,7 @@ def handleeinsteinprobemessage(messagetype, messagevalue):
 
     loginfo("received %s message." % messagetype)
 
-    alertisotimestamp = datetime.isoformat(datetime.now(timezone.utc))
+    alertisotimestamp = isoformat()
 
     value = json.loads(messagevalue.decode("UTF-8"))
 
@@ -345,24 +416,38 @@ def handleeinsteinprobemessage(messagetype, messagevalue):
 
 ################################################################################
 
-from gcn_kafka import Consumer
+loginfo("starting server.")
+pushstatus(
+    {
+        "pid": os.getpid(),
+        "starttimestamp": isoformat(),
+        "status": "starting",
+        "statustimestamp": isoformat(),
+        "activity": "starting",
+        "requestedactivity": "idle",
+        "requestedactivitytimestamp": isoformat(),
+        "timestamp": isoformat(),
+        "datalifeseconds": 10,
+    }
+)
 
 credentials = json.load(open("/usr/local/etc/tcs/gcncredentials.json"))
 
 consumerconfig = {}
 
-# Use this config to download all of the events in the buffers. See https://github.com/nasa-gcn/gcn-kafka-python/blob/main/README.md
-if False:
+# Use this config to download all of the events in the buffers. See
+# https://github.com/nasa-gcn/gcn-kafka-python/blob/main/README.md
+testing = False
+if testing:
     consumerconfig.update({"auto.offset.reset": "earliest"})
 
-consumer = Consumer(
+consumer = gcn_kafka.Consumer(
     client_id=credentials["id"],
     client_secret=credentials["secret"],
     config=consumerconfig,
 )
 
 topics = [
-    "gcn.heartbeat",
     # "gcn.notices.svom.voevent.grm",
     # "gcn.notices.svom.voevent.eclairs",
     # "gcn.notices.svom.voevent.mxt",
@@ -433,11 +518,21 @@ topics = [
     # "gcn.classic.voevent.MAXI_TEST",
     # "gcn.classic.voevent.MAXI_UNKNOWN",
 ]
-
+if not testing:
+    topics.append("gcn.heartbeat")
 
 consumer.subscribe(topics)
 
-loginfo("starting server.")
+pushstatus(
+    {
+        "status": "ok",
+        "starttimestamp": isoformat(),
+        "activity": "idle",
+        "activitytimestamp": isoformat(),
+        "timestamp": isoformat(),
+    }
+)
+
 while True:
     for message in consumer.consume(timeout=5):
         if message.error():
@@ -460,3 +555,8 @@ while True:
             handleeinsteinprobemessage(messagetype, messagevalue)
         else:
             logwarning('unknown message type "%s".' % messagetype)
+        pushstatus(
+            {
+                "timestamp": isoformat(),
+            }
+        )

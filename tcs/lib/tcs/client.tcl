@@ -85,20 +85,35 @@ namespace eval "client" {
   
   proc getstatusdict {server} {
     variable statusdicts
-    return [dict get $statusdicts $server]    
+    return [dict get $statusdicts $server]
+  }
+
+  variable pushservers {
+    "gcn"
+    "svom"
   }
 
   proc update {server} {
     variable statusdicts
-    if {[catch {rawrequest $server "status"} result]} {
+    variable pushservers
+    if {[lsearch -exact $pushservers $server] == -1} {
+      if {[catch {rawrequest $server "status"} result]} {
+        dict set statusdicts $server [createunknowndata]
+        error $result
+      }
+      dict set statusdicts $server $result
+    } elseif {![dict exists $statusdicts $server]} {
       dict set statusdicts $server [createunknowndata]
-      error $result
     }
-    dict set statusdicts $server $result
     set status [getstatus $server]
     if {![string equal $status "ok"]} {
       error "$server server status is \"$status\"."
     }
+  }
+
+  proc pushstatus {server statusdict} {
+    variable statusdicts
+    dict set statusdicts $server $statusdict
   }
   
   proc createunknowndata {} {
@@ -113,9 +128,24 @@ namespace eval "client" {
   ########################################################################
 
   proc getstatus {server} {
-    return [dict get [getstatusdict $server] "status"]
+    variable pushservers
+    set status [dict get [getstatusdict $server] "status"]
+    if {![string equal $status "ok"]} {
+      return $status
+    } elseif {[lsearch -exact $pushservers $server] == -1} {
+      return $status
+    } else {
+      set statusdict [getstatusdict $server]
+      set timestamp [dict get $statusdict "timestamp"]
+      set datalifeseconds [dict get $statusdict "datalifeseconds"]
+      if {[utcclock::diff "now" $timestamp] <= $datalifeseconds} {
+        return $status
+      } else {
+        return "stale"
+      }
+    }
   }
-  
+
   proc getstatustimestamp {server} {
     return [dict get [getstatusdict $server] "statustimestamp"]
   }

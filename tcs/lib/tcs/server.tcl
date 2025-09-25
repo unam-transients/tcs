@@ -25,6 +25,7 @@ package require "config"
 package require "log"
 
 package require "coroutine"
+package require "fromjson"
 package require "stack"
 package require "utcclock"
 package require "version"
@@ -341,6 +342,12 @@ namespace eval "server" {
     return
   }
 
+  proc handlepushstatus {server status} {
+    set statusdict [fromjson::parse $status]
+    client::pushstatus $server $statusdict
+    return
+  }
+
   ######################################################################
 
   variable name [dict create]
@@ -371,6 +378,7 @@ namespace eval "server" {
     interp alias [getslave $channel] status     {} server::handlestatus
     interp alias [getslave $channel] reset      {} server::handlereset
     interp alias [getslave $channel] forceerror {} server::handleforceerror
+    interp alias [getslave $channel] pushstatus {} server::handlepushstatus
     variable configureslave
     $configureslave [getslave $channel]
   }
