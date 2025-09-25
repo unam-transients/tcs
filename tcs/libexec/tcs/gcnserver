@@ -8,7 +8,11 @@ import re
 from datetime import datetime
 from datetime import timezone
 import gcn_kafka
-import xmltodict
+import xml.etree.ElementTree
+
+################################################################################
+
+testing = False
 
 ################################################################################
 
@@ -202,9 +206,9 @@ def compactmessagetype(messagetype):
 
 def respond(
     alertisotimestamp,
+    eventtype,
     eventorigin,
     eventidentifier,
-    eventtype,
     eventprefix,
     eventisotimestamp,
     eventalpha,
@@ -286,56 +290,32 @@ def respond(
             trueorfalse(preliminary),
         )
     )
-    request(
-        "selector",
-        "respondtoalert",
-        [
-            blockidentifier,
-            eventname,
-            eventorigin,
-            eventidentifier,
-            eventtype,
-            alertisotimestamp,
-            eventisotimestamp,
-            trueorfalse(enabled),
-            eventalpha,
-            eventdelta,
-            eventequinox,
-            eventuncertainty,
-            eventclass,
-            eventmessenger,
-            "",
-            trueorfalse(preliminary),
-        ],
-    )
+
+    if not testing:
+        request(
+            "selector",
+            "respondtoalert",
+            [
+                blockidentifier,
+                eventname,
+                eventorigin,
+                eventidentifier,
+                eventtype,
+                alertisotimestamp,
+                eventisotimestamp,
+                trueorfalse(enabled),
+                eventalpha,
+                eventdelta,
+                eventequinox,
+                eventuncertainty,
+                eventclass,
+                eventmessenger,
+                "",
+                trueorfalse(preliminary),
+            ],
+        )
 
     logresponse("finished requesting selector to respond.")
-
-
-################################################################################
-
-
-def voeventtodict(messagevalue):
-    """
-    Convert a string containing XML representation of a VOEvent to a dictionary.
-
-    :param messagevalue: A string containing the XML representaion of the VOEvent.
-    :return: The dictionary representation of the VOEvent.
-    """
-    return xmltodict.parse(messagevalue.decode("UTF-8"))["voe:VOEvent"]
-
-
-def getvoeventalphadelta(value):
-    """
-    Return the alpha and delta values in the dictionary representation of a VOEvent.
-
-    :param value: The dictionary representation of the VOEvent.
-    :return: The alpha and delta values in degrees.
-    """
-    value2 = value["WhereWhen"]["ObsDataLocation"]["ObservationLocation"][
-        "AstroCoords"
-    ]["Position2D"]["Value2"]
-    return float(value2["C1"]), float(value2["C2"])
 
 
 ################################################################################
@@ -385,11 +365,24 @@ def handleswiftmessage(messagetype, messagevalue):
 
     loginfo("received %s message." % messagetype)
 
-    value = voeventtodict(messagevalue)
+    value = xml.etree.ElementTree.fromstring(messagevalue)
 
-    alpha, delta = getvoeventalphadelta(value)
+    alpha = "%.4fd" % float(
+        value.find(
+            "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Position2D/Value2/C1"
+        ).text
+    )
+    delta = "%+.4fd" % float(
+        value.find(
+            "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Position2D/Value2/C2"
+        ).text
+    )
     equinox = "2000"
-    loginfo("%s: position is %.4fd %+.4fd %s." % (messagetype, alpha, delta, equinox))
+
+    loginfo("%s: position is %s %s %s." % (messagetype, alpha, delta, equinox))
+
+
+################################################################################
 
 
 def handlefermimessage(messagetype, messagevalue):
@@ -398,16 +391,143 @@ def handlefermimessage(messagetype, messagevalue):
     loginfo("value is %r" % messagevalue.decode("UTF-8"))
 
 
+################################################################################
+
+
 def handlemaximessage(messagetype, messagevalue):
     loginfo("maxi message.")
     loginfo("received %s message." % messagetype)
     loginfo("value is %r" % messagevalue.decode("UTF-8"))
 
 
+################################################################################
+
+
 def handlesvommessage(messagetype, messagevalue):
-    loginfo("svom message.")
+    """
+    Handle a SVOM message.
+
+    :param messagetype: A string describing the message type. This must be
+        `"gcn.notices.svom.voevent.eclairs"`.
+    :param messagevalue: A string encoding the message value.
+    """
+
+    assert messagetype.startswith("gcn.notices.svom.voevent.")
+    messagetype = compactmessagetype(messagetype)
+
+    alertisotimestamp = isoformat()
+
     loginfo("received %s message." % messagetype)
-    loginfo("raw value is %r" % messagevalue.decode("UTF-8"))
+
+    value = xml.etree.ElementTree.fromstring(messagevalue)
+
+    eventorigin = "svom"
+    eventprefix = "SVOM"
+    eventclass = "grb"
+    eventmessenger = "electromagnetic"
+
+    packettypenumber = int(value.find("./What/Param[@name='Packet_Type']").get("value"))
+    eventtypedict = {
+        199: "svomgrmpreliminary",
+        200: "svomeclairspreliminary",
+        201: "svomgrmtrigger",
+        202: "svomeclairswakeup",
+        203: "svomeclairscatalog",
+        204: "svomslewing",
+        205: "svomnotslewing",
+        206: "svomeclairsrefined",
+        207: "svomgrmrefined",
+        208: "svomeclairsgrmhr",
+        209: "svommxtinitialqfnumber",
+        210: "svommxtupdateqfnumber",
+        211: "svomvtcandidate",
+        212: "svomcgftcandidate",
+        213: "svomgwaccandidate",
+        214: "svomfgftcandidate",
+        215: "svomretraction",
+        216: "svomeclairsfinal",
+        217: "svomgrmfinal",
+        218: "svommxtfinal",
+        219: "svomvtfinal",
+    }
+    if packettypenumber not in eventtypedict:
+        eventtype = "svomunknown%d" % packettypenumber
+    else:
+        eventtype = eventtypedict[packettypenumber]
+
+    eventidentifier = value.find(
+        "./What/Group[@name='Svom_Identifiers']/Param[@name='Burst_Id']"
+    ).get("value")[2:]
+
+    eventisotimestamp = value.find(
+        "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Time/TimeInstant/ISOTime"
+    ).text
+    if eventisotimestamp[-1] == "Z":
+        eventisotimestamp = eventisotimestamp[:-1]
+
+    if (
+        value.find(
+            "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Position2D"
+        )
+        is not None
+    ):
+        eventalpha = "%.4fd" % float(
+            value.find(
+                "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Position2D/Value2/C1"
+            ).text
+        )
+        eventdelta = "%+.4fd" % float(
+            value.find(
+                "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Position2D/Value2/C2"
+            ).text
+        )
+        eventuncertainty = "%.4fd" % float(
+            value.find(
+                "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Position2D/Error2Radius"
+            ).text
+        )
+        # SVOM uses -1.0 for an unknown uncertainty.
+        if eventuncertainty[0] == "-":
+            eventuncertainty = "180d"
+        eventequinox = "2000"
+    else:
+        eventalpha = "0h"
+        eventdelta = "-90d"
+        eventuncertainty = "180d"
+        eventequinox = "2000"
+
+    if eventtype == "svomeclairscatalog" or eventtype == "svomretraction":
+        eventenabled = "false"
+        eventpreliminary = ""
+    elif eventtype == "svomslewing" or eventtype == "svomnotslewing":
+        eventenabled = ""
+        eventpreliminary = ""
+    elif eventtype == "svomgrmpreliminary" or eventtype == "svomeclairspreliminary":
+        eventenabled = "true"
+        eventpreliminary = "true"
+    else:
+        eventenabled = "true"
+        eventpreliminary = "false"
+
+    respond(
+        alertisotimestamp,
+        eventtype,
+        eventorigin,
+        eventidentifier,
+        eventprefix,
+        eventisotimestamp,
+        eventalpha,
+        eventdelta,
+        eventequinox,
+        eventuncertainty,
+        eventclass,
+        eventmessenger,
+        eventenabled,
+        eventpreliminary,
+    )
+
+
+################################################################################
 
 
 def handleeinsteinprobemessage(messagetype, messagevalue):
@@ -435,12 +555,12 @@ def handleeinsteinprobemessage(messagetype, messagevalue):
     eventprefix = "EP"
     eventalpha = "%.4fd" % value["ra"]
     eventdelta = "%+.4fd" % value["dec"]
-    eventequinox = "2000.0"
+    eventequinox = "2000"
     eventuncertainty = "%.4fd" % value["ra_dec_error"]
-    enabled = True
+    eventenabled = True
     eventclass = "xrt"
     eventmessenger = "electromagnetic"
-    preliminary = False
+    eventpreliminary = False
 
     respond(
         alertisotimestamp,
@@ -455,8 +575,8 @@ def handleeinsteinprobemessage(messagetype, messagevalue):
         eventuncertainty,
         eventclass,
         eventmessenger,
-        enabled,
-        preliminary,
+        eventenabled,
+        eventpreliminary,
     )
 
 
@@ -479,13 +599,91 @@ pushstatus(
 
 credentials = json.load(open("/usr/local/etc/tcs/gcncredentials.json"))
 
-consumerconfig = {}
 
-# Use this config to download all of the events in the buffers. See
-# https://github.com/nasa-gcn/gcn-kafka-python/blob/main/README.md
-testing = True
 if testing:
-    consumerconfig.update({"auto.offset.reset": "earliest"})
+    # Use this config to download all of the events in the buffers. See
+    # https://github.com/nasa-gcn/gcn-kafka-python/blob/main/README.md
+    consumerconfig = {"auto.offset.reset": "earliest"}
+    topics = [
+        "gcn.notices.svom.voevent.grm",
+        "gcn.notices.svom.voevent.eclairs",
+        "gcn.notices.svom.voevent.mxt",
+        "gcn.classic.voevent.SWIFT_ACTUAL_POINTDIR",
+    ]
+else:
+    consumerconfig = {}
+    topics = [
+        "gcn.heartbeat",
+        "gcn.notices.svom.voevent.grm",
+        "gcn.notices.svom.voevent.eclairs",
+        "gcn.notices.svom.voevent.mxt",
+        "gcn.notices.einstein_probe.wxt.alert",
+        "gcn.classic.voevent.SWIFT_ACTUAL_POINTDIR",
+        # "gcn.classic.voevent.SWIFT_BAT_ALARM_LONG",
+        # "gcn.classic.voevent.SWIFT_BAT_ALARM_SHORT",
+        # "gcn.classic.voevent.SWIFT_BAT_GRB_ALERT",
+        # "gcn.classic.voevent.SWIFT_BAT_GRB_LC",
+        # "gcn.classic.voevent.SWIFT_BAT_GRB_LC_PROC",
+        # "gcn.classic.voevent.SWIFT_BAT_GRB_POS_ACK",
+        # "gcn.classic.voevent.SWIFT_BAT_GRB_POS_NACK",
+        # "gcn.classic.voevent.SWIFT_BAT_GRB_POS_TEST",
+        # "gcn.classic.voevent.SWIFT_BAT_KNOWN_SRC",
+        # "gcn.classic.voevent.SWIFT_BAT_MONITOR",
+        # "gcn.classic.voevent.SWIFT_BAT_QL_POS",
+        # "gcn.classic.voevent.SWIFT_BAT_SCALEDMAP",
+        # "gcn.classic.voevent.SWIFT_BAT_SLEW_POS",
+        # "gcn.classic.voevent.SWIFT_BAT_SUB_THRESHOLD",
+        # "gcn.classic.voevent.SWIFT_BAT_SUBSUB",
+        # "gcn.classic.voevent.SWIFT_BAT_TRANS",
+        # "gcn.classic.voevent.SWIFT_FOM_OBS",
+        # "gcn.classic.voevent.SWIFT_FOM_PPT_ARG_ERR",
+        # "gcn.classic.voevent.SWIFT_FOM_SAFE_POINT",
+        # "gcn.classic.voevent.SWIFT_FOM_SLEW_ABORT",
+        # "gcn.classic.voevent.SWIFT_POINTDIR",
+        # "gcn.classic.voevent.SWIFT_SC_SLEW",
+        # "gcn.classic.voevent.SWIFT_TOO_FOM",
+        # "gcn.classic.voevent.SWIFT_TOO_SC_SLEW",
+        # "gcn.classic.voevent.SWIFT_UVOT_DBURST",
+        # "gcn.classic.voevent.SWIFT_UVOT_DBURST_PROC",
+        # "gcn.classic.voevent.SWIFT_UVOT_EMERGENCY",
+        # "gcn.classic.voevent.SWIFT_UVOT_FCHART",
+        # "gcn.classic.voevent.SWIFT_UVOT_FCHART_PROC",
+        # "gcn.classic.voevent.SWIFT_UVOT_POS",
+        # "gcn.classic.voevent.SWIFT_UVOT_POS_NACK",
+        # "gcn.classic.voevent.SWIFT_XRT_CENTROID",
+        # "gcn.classic.voevent.SWIFT_XRT_EMERGENCY",
+        # "gcn.classic.voevent.SWIFT_XRT_IMAGE",
+        # "gcn.classic.voevent.SWIFT_XRT_IMAGE_PROC",
+        # "gcn.classic.voevent.SWIFT_XRT_LC",
+        # "gcn.classic.voevent.SWIFT_XRT_POSITION",
+        # "gcn.classic.voevent.SWIFT_XRT_SPECTRUM",
+        # "gcn.classic.voevent.SWIFT_XRT_SPECTRUM_PROC",
+        # "gcn.classic.voevent.SWIFT_XRT_SPER",
+        # "gcn.classic.voevent.SWIFT_XRT_SPER_PROC",
+        # "gcn.classic.voevent.SWIFT_XRT_THRESHPIX",
+        # "gcn.classic.voevent.SWIFT_XRT_THRESHPIX_PROC",
+        # "gcn.classic.voevent.FERMI_GBM_ALERT",
+        # "gcn.classic.voevent.FERMI_GBM_FIN_POS",
+        # "gcn.classic.voevent.FERMI_GBM_FLT_POS",
+        # "gcn.classic.voevent.FERMI_GBM_GND_POS",
+        # "gcn.classic.voevent.FERMI_GBM_LC",
+        # "gcn.classic.voevent.FERMI_GBM_POS_TEST",
+        # "gcn.classic.voevent.FERMI_GBM_SUBTHRESH",
+        # "gcn.classic.voevent.FERMI_GBM_TRANS",
+        # "gcn.classic.voevent.FERMI_LAT_GND",
+        # "gcn.classic.voevent.FERMI_LAT_MONITOR",
+        # "gcn.classic.voevent.FERMI_LAT_OFFLINE",
+        # "gcn.classic.voevent.FERMI_LAT_POS_DIAG",
+        # "gcn.classic.voevent.FERMI_LAT_POS_INI",
+        # "gcn.classic.voevent.FERMI_LAT_POS_TEST",
+        # "gcn.classic.voevent.FERMI_LAT_POS_UPD",
+        # "gcn.classic.voevent.FERMI_LAT_TRANS",
+        # "gcn.classic.voevent.FERMI_POINTDIR",
+        # "gcn.classic.voevent.FERMI_SC_SLEW",
+        # "gcn.classic.voevent.MAXI_KNOWN",
+        # "gcn.classic.voevent.MAXI_TEST",
+        # "gcn.classic.voevent.MAXI_UNKNOWN",
+    ]
 
 consumer = gcn_kafka.Consumer(
     client_id=credentials["id"],
@@ -493,79 +691,6 @@ consumer = gcn_kafka.Consumer(
     config=consumerconfig,
 )
 
-topics = [
-    # "gcn.notices.svom.voevent.grm",
-    # "gcn.notices.svom.voevent.eclairs",
-    # "gcn.notices.svom.voevent.mxt",
-    "gcn.notices.einstein_probe.wxt.alert",
-    "gcn.classic.voevent.SWIFT_ACTUAL_POINTDIR",
-    # "gcn.classic.voevent.SWIFT_BAT_ALARM_LONG",
-    # "gcn.classic.voevent.SWIFT_BAT_ALARM_SHORT",
-    # "gcn.classic.voevent.SWIFT_BAT_GRB_ALERT",
-    # "gcn.classic.voevent.SWIFT_BAT_GRB_LC",
-    # "gcn.classic.voevent.SWIFT_BAT_GRB_LC_PROC",
-    # "gcn.classic.voevent.SWIFT_BAT_GRB_POS_ACK",
-    # "gcn.classic.voevent.SWIFT_BAT_GRB_POS_NACK",
-    # "gcn.classic.voevent.SWIFT_BAT_GRB_POS_TEST",
-    # "gcn.classic.voevent.SWIFT_BAT_KNOWN_SRC",
-    # "gcn.classic.voevent.SWIFT_BAT_MONITOR",
-    # "gcn.classic.voevent.SWIFT_BAT_QL_POS",
-    # "gcn.classic.voevent.SWIFT_BAT_SCALEDMAP",
-    # "gcn.classic.voevent.SWIFT_BAT_SLEW_POS",
-    # "gcn.classic.voevent.SWIFT_BAT_SUB_THRESHOLD",
-    # "gcn.classic.voevent.SWIFT_BAT_SUBSUB",
-    # "gcn.classic.voevent.SWIFT_BAT_TRANS",
-    # "gcn.classic.voevent.SWIFT_FOM_OBS",
-    # "gcn.classic.voevent.SWIFT_FOM_PPT_ARG_ERR",
-    # "gcn.classic.voevent.SWIFT_FOM_SAFE_POINT",
-    # "gcn.classic.voevent.SWIFT_FOM_SLEW_ABORT",
-    # "gcn.classic.voevent.SWIFT_POINTDIR",
-    # "gcn.classic.voevent.SWIFT_SC_SLEW",
-    # "gcn.classic.voevent.SWIFT_TOO_FOM",
-    # "gcn.classic.voevent.SWIFT_TOO_SC_SLEW",
-    # "gcn.classic.voevent.SWIFT_UVOT_DBURST",
-    # "gcn.classic.voevent.SWIFT_UVOT_DBURST_PROC",
-    # "gcn.classic.voevent.SWIFT_UVOT_EMERGENCY",
-    # "gcn.classic.voevent.SWIFT_UVOT_FCHART",
-    # "gcn.classic.voevent.SWIFT_UVOT_FCHART_PROC",
-    # "gcn.classic.voevent.SWIFT_UVOT_POS",
-    # "gcn.classic.voevent.SWIFT_UVOT_POS_NACK",
-    # "gcn.classic.voevent.SWIFT_XRT_CENTROID",
-    # "gcn.classic.voevent.SWIFT_XRT_EMERGENCY",
-    # "gcn.classic.voevent.SWIFT_XRT_IMAGE",
-    # "gcn.classic.voevent.SWIFT_XRT_IMAGE_PROC",
-    # "gcn.classic.voevent.SWIFT_XRT_LC",
-    # "gcn.classic.voevent.SWIFT_XRT_POSITION",
-    # "gcn.classic.voevent.SWIFT_XRT_SPECTRUM",
-    # "gcn.classic.voevent.SWIFT_XRT_SPECTRUM_PROC",
-    # "gcn.classic.voevent.SWIFT_XRT_SPER",
-    # "gcn.classic.voevent.SWIFT_XRT_SPER_PROC",
-    # "gcn.classic.voevent.SWIFT_XRT_THRESHPIX",
-    # "gcn.classic.voevent.SWIFT_XRT_THRESHPIX_PROC",
-    # "gcn.classic.voevent.FERMI_GBM_ALERT",
-    # "gcn.classic.voevent.FERMI_GBM_FIN_POS",
-    # "gcn.classic.voevent.FERMI_GBM_FLT_POS",
-    # "gcn.classic.voevent.FERMI_GBM_GND_POS",
-    # "gcn.classic.voevent.FERMI_GBM_LC",
-    # "gcn.classic.voevent.FERMI_GBM_POS_TEST",
-    # "gcn.classic.voevent.FERMI_GBM_SUBTHRESH",
-    # "gcn.classic.voevent.FERMI_GBM_TRANS",
-    # "gcn.classic.voevent.FERMI_LAT_GND",
-    # "gcn.classic.voevent.FERMI_LAT_MONITOR",
-    # "gcn.classic.voevent.FERMI_LAT_OFFLINE",
-    # "gcn.classic.voevent.FERMI_LAT_POS_DIAG",
-    # "gcn.classic.voevent.FERMI_LAT_POS_INI",
-    # "gcn.classic.voevent.FERMI_LAT_POS_TEST",
-    # "gcn.classic.voevent.FERMI_LAT_POS_UPD",
-    # "gcn.classic.voevent.FERMI_LAT_TRANS",
-    # "gcn.classic.voevent.FERMI_POINTDIR",
-    # "gcn.classic.voevent.FERMI_SC_SLEW",
-    # "gcn.classic.voevent.MAXI_KNOWN",
-    # "gcn.classic.voevent.MAXI_TEST",
-    # "gcn.classic.voevent.MAXI_UNKNOWN",
-]
-if not testing:
-    topics.append("gcn.heartbeat")
 
 consumer.subscribe(topics)
 
