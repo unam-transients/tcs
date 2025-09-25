@@ -99,7 +99,7 @@ namespace eval "fitsheader" {
         }
       }
       "integer" {
-        if {![string is integer -strict $value]} {
+        if {![string is wideinteger -strict $value]} {
           set value ""
         } else {
           set value "= [format "%20.20s" $value]"
@@ -194,7 +194,7 @@ namespace eval "fitsheader" {
       filename               FLNM   string
       blocktimestamp         BLKT   date
       visittimestamp         VSTT   date
-      projectidentifier      PRPID  string
+      projectidentifier      PRPID  integer
       blockidentifier        BLKID  integer
       visitidentifier        VSTID  integer
       projectname            PRPNM  string
@@ -202,7 +202,7 @@ namespace eval "fitsheader" {
       visitname              VSTNM  string
       alertname              ALNM   string
       alertorigin            ALOR   string
-      alertidentifier        ALID   string
+      alertidentifier        ALID   integer
       alertswiftidentifier   ALSWID string
       alertfermiidentifier   ALFRID string
       alertlvcidentifier     ALLVID string
