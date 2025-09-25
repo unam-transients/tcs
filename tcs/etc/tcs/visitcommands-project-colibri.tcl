@@ -174,6 +174,9 @@ proc parsefilters {filters} {
     "r/i/z" {
       set filters {{r r z} {r i z}}
     }
+    "r/i/z/y" {
+      set filters {{r r z} {r i y}}
+    }
     "r/i/zy" {
       set filters {{r r zy} {r i zy}}
     }
