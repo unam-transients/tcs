@@ -124,6 +124,10 @@ namespace eval "telescopeserver" {
   proc slavecorrect {{truemountalpha ""} {truemountdelta ""} {equinox ""}} {
     telescope::correct $truemountalpha $truemountdelta $equinox
   }
+
+  proc slaveaddtopointingmodel {{truemountalpha ""} {truemountdelta ""} {equinox ""}} {
+    telescope::addtopointingmodel $truemountalpha $truemountdelta $equinox
+  }
   
   proc slavemovesecondary {{z0 "z0"} {setasinitial false}} {
     telescope::movesecondary $z0 $setasinitial
@@ -144,7 +148,7 @@ namespace eval "telescopeserver" {
     interp alias $slave stop                        {} telescopeserver::slavestop
     interp alias $slave initialize                  {} telescopeserver::slaveinitialize
     interp alias $slave open                        {} telescopeserver::slaveopen
-    interp alias $slave opentoventilate                  {} telescopeserver::slaveopentoventilate
+    interp alias $slave opentoventilate             {} telescopeserver::slaveopentoventilate
     interp alias $slave close                       {} telescopeserver::slaveclose
     interp alias $slave emergencyclose              {} telescopeserver::slaveemergencyclose
     interp alias $slave move                        {} telescopeserver::slavemove
@@ -159,6 +163,7 @@ namespace eval "telescopeserver" {
     interp alias $slave offset                      {} telescopeserver::slaveoffset
     interp alias $slave setpointingaperture         {} telescopeserver::slavesetpointingaperture
     interp alias $slave correct                     {} telescopeserver::slavecorrect
+    interp alias $slave addtopointingmodel          {} telescopeserver::slaveaddtopointingmodel
     interp alias $slave movesecondary               {} telescopeserver::slavemovesecondary
     interp alias $slave setsecondaryoffset          {} telescopeserver::slavesetsecondaryoffset
     interp alias $slave emergencystop               {} telescopeserver::slaveemergencystop

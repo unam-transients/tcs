@@ -527,10 +527,52 @@ namespace eval "mount" {
     trackoroffsetactivitycommand false
   }
 
+  proc addtopointingmodelactivitycommand {truealpha truedelta equinox} {
+
+    log::info "adding to pointing model."
+    set start [utcclock::seconds]
+
+    set truealpha [astrometry::parsealpha $truealpha]
+    set truedelta [astrometry::parsedelta $truedelta]
+    set equinox [astrometry::parseequinox $equinox]
+    log::info "true position is [astrometry::formatalpha $truealpha] [astrometry::formatdelta $truedelta] $equinox"
+
+    set trueobservedalpha [astrometry::observedalpha $truealpha $truedelta $equinox]
+    set trueobserveddelta [astrometry::observeddelta $truealpha $truedelta $equinox]    
+    log::info "true observed position is [astrometry::formatalpha $trueobservedalpha] [astrometry::formatdelta $trueobserveddelta]."
+
+    set requestedobservedalpha [server::getdata "requestedobservedalpha"]
+    set requestedobserveddelta [server::getdata "requestedobserveddelta"]
+    log::info "requested observed position is [astrometry::formatalpha $requestedobservedalpha] [astrometry::formatdelta $requestedobserveddelta]."
+
+    set d [astrometry::distance $requestedobservedalpha $requestedobserveddelta $trueobservedalpha $trueobserveddelta]
+    log::info [format "correction is %s." [astrometry::formatdistance $d]]
+
+    set dalpha [astrometry::foldradsymmetric [expr {$requestedobservedalpha - $trueobservedalpha}]]
+    set ddelta [astrometry::foldradsymmetric [expr {$requestedobserveddelta - $trueobserveddelta}]]
+    set alphaoffset [expr {$dalpha * cos($trueobserveddelta)}]
+    set deltaoffset $ddelta
+    log::info [format "correction is %s E and %s N." [astrometry::formatoffset $alphaoffset] [astrometry::formatoffset $deltaoffset]]
+
+    variable maxcorrection
+    if {$d >= $maxcorrection} {
+
+      log::warning [format "ignoring correction: the correction distance of %s is larger than the maximum allowed of %s." [astrometry::formatdistance $d] [astrometry::formatdistance $maxcorrection]]
+
+    } else {
+
+      addtopointingmodelhardware $truealpha $truedelta $equinox $dalpha $ddelta
+      
+    }
+
+    log::info [format "finished adding to pointing model after %.1f seconds." [utcclock::diff now $start]]
+
+  }
+
   ######################################################################
 
-  proc correcthardware {truemountalpha truemountdelta equinox dalpha ddelta} {
-      
+  proc addtopointingmodelhardware {truemountalpha truemountdelta equinox dalpha ddelta} {
+
       set dseconds [utcclock::diff "now" "19700101T000000"]
 
       opentsi::sendcommandandwait [format "SET [join {
@@ -544,7 +586,7 @@ namespace eval "mount" {
         [astrometry::radtodeg $truemountdelta] \
         $equinox \
         $dseconds \
-      ]  
+      ]
 
   }
 
