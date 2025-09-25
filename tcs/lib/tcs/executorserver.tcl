@@ -101,6 +101,11 @@ namespace eval "executorserver" {
     return
   }
 
+  proc slaveinterrupt {} {
+    executor::interrupt
+    return
+  }
+  
   proc configureslave {slave} {
     interp alias $slave stop            {} executorserver::slavestop
     interp alias $slave reset           {} executorserver::slavereset
@@ -116,6 +121,7 @@ namespace eval "executorserver" {
     interp alias $slave execute         {} executorserver::slaveexecute
     interp alias $slave idle            {} executorserver::slaveidle
     interp alias $slave emergencystop   {} executorserver::slaveemergencystop
+    interp alias $slave interrupt       {} executorserver::slaveinterrupt
   }
 
   ######################################################################

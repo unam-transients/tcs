@@ -884,6 +884,19 @@ namespace eval "executor" {
     log::summary [format "finished stopping after %.1f seconds." [utcclock::diff now $start]]
   }
 
+  proc interruptactivitycommand {} {
+    set start [utcclock::seconds]
+    log::summary "interrupting."
+    foreach server {telescope instrument} {
+      client::request $server "stop"
+    }
+    sendchat "observations" "interrupting."
+    foreach server {telescope instrument} {
+      client::wait $server
+    }
+    log::summary [format "finished interrupting after %.1f seconds." [utcclock::diff now $start]]
+  }
+
   proc emergencystopactivitycommand {} {
     set start [utcclock::seconds]
     log::summary "emergency stopping."
@@ -895,6 +908,7 @@ namespace eval "executor" {
     }
     log::summary [format "finished emergency stopping after %.1f seconds." [utcclock::diff now $start]]
   }
+  
 
   proc executeactivitycommand {filetype filename} {
   
@@ -946,9 +960,12 @@ namespace eval "executor" {
     setproject [block::project [block]]
     setalert   [block::alert [block]]
 
-    log::summary "executing block [block::identifier [block]] \"[block::name [block]]\" of project [project::identifier [project]] \"[project::name [block::project [block]]]\"."
     if {[string equal "alert" [filetype]]} {
+      log::summary "executing alert block [block::identifier [block]] \"[block::name [block]]\"\"."
       sendchat "observations" "executing alert block [block::identifier [block]] \"[block::name [block]]\"."
+    } else {
+      log::summary "executing block [block::identifier [block]] \"[block::name [block]]\" of project [project::identifier [project]] \"[project::name [block::project [block]]]\"."
+      sendchat "observations" "executing block [block::identifier [block]] \"[block::name [block]]\" of project [project::identifier [project]] \"[project::name [block::project [block]]]\"."
     }
 
     foreach visit [block::visits [block]] {
@@ -992,6 +1009,8 @@ namespace eval "executor" {
     log::summary [format "finished executing [filetype] file \"[file tail [filename]]\" after %.1f seconds." [utcclock::diff now $blockstart]]
     if {[string equal "alert" [filetype]]} {
       sendchat "observations" "finished executing alert block [block::identifier [block]] \"[block::name [block]]\"."
+    } else {
+      sendchat "observations" "finished executing block [block::identifier [block]] \"[block::name [block]]\" of project [project::identifier [project]] \"[project::name [block::project [block]]]\"."
     }
   }
   
@@ -1175,6 +1194,14 @@ namespace eval "executor" {
     # Do not check status or activity.
     server::newactivitycommand "stopping" [server::getstoppedactivity] \
       "executor::emergencystopactivitycommand"
+  }
+
+  proc interrupt {} {
+    server::checkstatus
+    server::checkactivityforreset
+    setinitialactivity
+    server::newactivitycommand "stopping" [server::getstoppedactivity] \
+      "executor::interruptactivitycommand"
   }
 
   proc reset {} {

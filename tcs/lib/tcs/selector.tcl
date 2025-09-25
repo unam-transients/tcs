@@ -733,7 +733,7 @@ namespace eval "selector" {
     }
 
     log::summary "interrupting the executor."
-    if {[catch {client::request "executor" "stop"} message]} {
+    if {[catch {client::request "executor" "interrupt"} message]} {
        log::error "unable to interrupt the executor: $message"
     }
     variable interruptingalertfile
