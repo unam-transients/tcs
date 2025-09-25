@@ -5,11 +5,11 @@
 ////////////////////////////////////////////////////////////////////////
 
 // Copyright © 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
-/
+//
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
 // copyright notice and this permission notice appear in all copies.
-/
+//
 // THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
 // WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
 // WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
@@ -141,7 +141,10 @@
         "ny": 4096
       },
       // This window is the smallest conventional one larger than 6 arcmin.
-      "6am": "1kx1k"
+      "6am": "1kx1k",
+      // These are the derotator-centered windows.
+      "derotator-1kx1k": { "sx": 1490, "sy": 1685, "nx": 1024, "ny": 1024 },
+      "derotator-2kx2k": { "sx": 978, "sy": 1173, "nx": 2048, "ny": 2048 }
     },
     "detectorfullunbinneddatawindow": {
       "sx": 50,
@@ -155,7 +158,7 @@
       "nx": 50,
       "ny": 4112
     },
-    "detectorboresight": { "x": 2048.0, "y": 2048.0 },
+    "detectorboresight": { "x": 2000.2, "y": 2189.2 },
     "coolerstartsetting": "last",
     "cooleropensetting": "last",
     "coolerclosedsetting": "last",
@@ -233,7 +236,10 @@
         "ny": 4096
       },
       // This window is the smallest conventional one larger than 6 arcmin.
-      "6am": "1kx1k"
+      "6am": "1kx1k",
+      // These are dummy derotator-centered windows.
+      "derotator-1kx1k": "1kx1k",
+      "derotator-2kx2k": "2kx2k"
     },
     "detectorboresight": { "x": 2048.0, "y": 2048.0 },
     "detectorfullunbinneddatawindow": {
@@ -2011,7 +2017,6 @@
     "coolerclosedsetting": "following",
     "temperaturelimit": 40,
     "temperaturelimitoutletgroup": "",
-    "detectorunbinnedpixelscale": "0.381as",
 
     "filterwheeltype": "dummy",
     "filterwheelidentifier": [ "5" ],
