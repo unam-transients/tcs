@@ -142,7 +142,8 @@ namespace eval "mount" {
   server::setdata "lastcorrectiondalpha"        ""
   server::setdata "lastcorrectionddelta"        ""
   server::setdata "unparked"                    false
-  
+  server::setdata "remainingtrackingseconds"    ""
+
   server::setdata "port"          [config::getvalue "mount" "initialport"]
   server::setdata "requestedport" [config::getvalue "mount" "initialport"]
 
