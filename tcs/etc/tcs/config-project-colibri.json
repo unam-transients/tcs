@@ -104,7 +104,7 @@
 
   "C1": {
     "detectortype": "si",
-    "detectoridentifier": "red:2055",
+    "detectoridentifier": "blue:2055",
     "detectorunbinnedpixelscale": "0.381as",
     "detectorreadmodes": {
       "initial": "default",
@@ -161,31 +161,22 @@
     "coolerclosedsetting": "last",
     "temperaturelimit": 45,
     "temperaturelimitoutletgroup": "blue-service-cabinet",
-    "filterwheeltype": "null",
-    "filterwheelidentifier": "null",
-    "filters": {
-      "i"      : "0",
-      "initial": "i",
-      "idle"   : "i",
-      "closed" : "i"
-    },
-    //"filterwheeltype": "fli",
+    "filterwheeltype": "fli",
     // The DDRAGO CFW-14-5 filter wheels are:
     // FW0011318 -- firmware serial number "CFW-14-5"
     // FW0021318 -- firmware serial number "FW0021318"
     // FW0031318 -- firmware serial number "FW0031318"
-    //"filterwheelidentifier": "FW0021318",
-    //"filters": {
-    //  // 2021-09-13: r and g were accidentally installed in the wrong slots at OHP.
-    //  "g"      : "0",
-    //  "r"      : "1",
-    //  "i"      : "2",
-    //  "gri"    : "3",
-    //  "B"      : "4",
-    //  "initial": "r",
-    //  "idle"   : "r",
-    //  "closed" : "r"
-    //},
+    "filterwheelidentifier": "FW0021318",
+    "filters": {
+      "g"      : "0",
+      "r"      : "1",
+      "i"      : "2",
+      "gri"    : "3",
+      "B"      : "4",
+      "initial": "r",
+      "idle"   : "r",
+      "closed" : "r"
+    },
     "focusertype": "null",
     "focuseridentifier": "null",
     "focuserinitialposition": 0,
@@ -205,7 +196,7 @@
 
   "C2": {
     "detectortype": "si",
-    "detectoridentifier": "blue:2055",
+    "detectoridentifier": "red:2055",
     "detectorunbinnedpixelscale": "0.381as",
     "detectorreadmodes": {
       "initial": "default",
@@ -262,14 +253,6 @@
     "coolerclosedsetting": "last",
     "temperaturelimit": 45,
     "temperaturelimitoutletgroup": "red-service-cabinet",
-    //"filterwheeltype": "null",
-    //"filterwheelidentifier": "null",
-    //"filters": {
-    //  "w"      : "0",
-    //  "initial": "w",
-    //  "idle"   : "w",
-    //  "closed" : "w"
-    //},
     "filterwheeltype": "fli",
     // The DDRAGO CFW-14-5 filter wheels are:
     // FW0011318 -- firmware serial number "CFW-14-5"
@@ -377,15 +360,15 @@
       "C0", "C1", "C2"
     ],
     "monitoreddetectors": [
-      "C0", "C1"
+      "C0", "C1", "C2"
     ],
     "activedetectors": [
-      "C1"
+      "C1", "C2"
     ],
     "activefocusers": [
     ],
     "idlefilterwheelpositions": [
-      "0"
+      "0", "0"
     ],
     "pointingdetectors": [
       "C1"
