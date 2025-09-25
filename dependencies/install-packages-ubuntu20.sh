@@ -169,14 +169,11 @@ sudo apt-get -y install tcllib
 (
   sudo rm -rf /usr/local/libexec/tcs/conda
   sudo /usr/local/opt/conda/bin/conda create -y -p /usr/local/libexec/tcs/conda
+  # Used by gcnserver
   sudo /usr/local/opt/conda/bin/conda install -y -p /usr/local/libexec/tcs/conda gcn-kafka
+  # Used by svomserver
+  sudo /usr/local/opt/conda/bin/conda install -y -p /usr/local/libexec/tcs/conda pygcn
 )
-
-########################################################################
-
-# Install pygcn
-
-sudo pip install pygcn
 
 ########################################################################
 
