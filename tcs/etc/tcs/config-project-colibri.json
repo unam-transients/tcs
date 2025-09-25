@@ -386,14 +386,12 @@
   "mount": {
     "type": "opentsi",
     "configuration": "azimuth-zenithdistance",
-    // The parked derotator offset is with respect to the instrument structure.
-    "derotatoroffsetpark": "-5d.00",
     // The unparked derotator offset is with respect to the cardinal directions of the detector.
-    // Value at OHP with DDRAGUITO: "derotatoroffsetunpark": "7.75d",
-    // Value at OAN for OGSE: "derotatoroffsetunpark": "9.27d",
-    // Value at OAN for DDRAGO "derotatoroffsetunpark": "15.85d",
-    // Value at OAN for DDRAGO with the detector axes rotated by 45 degrees: "derotatoroffsetunpark": "60.85d"
-    "derotatoroffsetunpark": "15.85d",
+    // Value at OHP with DDRAGUITO: "derotatoroffset": "7.75d",
+    // Value at OAN for OGSE: "derotatoroffset": "9.27d",
+    // Value at OAN for DDRAGO "derotatoroffset": "15.85d",
+    // Value at OAN for DDRAGO with the detector axes rotated by 45 degrees: "derotatoroffset": "60.85d"
+    "derotatoroffset": "15.85d",
     // When the PLC parks the telescope, it uses these positions. These are not
     // configuarable using OpenTSI.
     // "azimuthpark": "-0.0025d",
@@ -402,7 +400,7 @@
     // Park to the south.
     "azimuthpark": "180d",
     "zenithdistancepark": "10d",
-    "derotatoranglepark": "0d",
+    "derotatoranglepark": "-50d",
     // Unpark to the south too.
     "haunpark": "0h",
     "deltaunpark": "0d",
