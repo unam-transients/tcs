@@ -1,0 +1,12 @@
+name: Problem issue for project ddoti
+description: Create a problem issue for the project ddoti
+projects: 
+  - unam-transients/4
+assignees:
+  - alanwatsonatwork
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      placeholder: Describe your problem here ...
