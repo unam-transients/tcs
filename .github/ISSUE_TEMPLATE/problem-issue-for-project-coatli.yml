@@ -1,0 +1,12 @@
+name: Problem issue for project coatli
+description: Create a problem issue for the project coatli
+projects: 
+  - unam-transients/3
+assignees:
+  - alanwatsonatwork
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      placeholder: Describe your problem here ...
