@@ -150,20 +150,57 @@ sudo apt-get -y install tcllib
 
 ########################################################################
 
-# Make a python environment.
+# Install conda-forge
 
-pythonenvdir="$prefix"/libexec/tcs/venv
-if test ! -d "$pythonenvdir"
-then
-  sudo python3 -m venv "$pythonenvdir"
-fi
-export PATH="$pythonenvdir/bin:$PATH"
+(
+  cd /tmp
+  wget -O Miniforge3.sh "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+  sudo rm -rf /usr/local/opt/conda
+  sudo bash Miniforge3.sh -b -p /usr/local/opt/conda
+  rm Miniforge3.sh
+  sudo /usr/local/opt/conda/bin/conda update -y -n base -c conda-forge conda
+)
+
+# Create the tcs conda environment.
+
+(
+  sudo rm -rf /usr/local/libexec/tcs/conda
+  sudo /usr/local/opt/conda/bin/conda create -y -p /usr/local/libexec/tcs/conda
+  # Used by gcnserver
+  sudo /usr/local/opt/conda/bin/conda install -y -p /usr/local/libexec/tcs/conda gcn-kafka
+  sudo /usr/local/opt/conda/bin/conda install -y -p /usr/local/libexec/tcs/conda xmltodict
+)
 
 ########################################################################
 
-# Install gcn-kafka
+# Install ligo.skymap
 
-sudo "$pythonenvdir"/bin/pip install gcn-kafka
+exit
+
+sudo apt-get -y install build-essential libpq-dev libssl-dev openssl libffi-dev zlib1g-dev
+#sudo apt-get -y install python3-pip python3-dev
+sudo apt-get -y install sqlite3 libsqlite3-dev
+
+# We used to install our own Python 3, but in newer versions of Ubuntu the
+# standard one now seems to work.
+
+#sudo rm -rf install-python3.6
+#mkdir install-python3.6
+#cd install-python3.6
+
+#wget https://www.python.org/ftp/python/3.6.3/Python-3.6.3.tgz
+#tar -xvf Python-3.6.3.tgz
+#cd Python-3.6.3
+#sudo ./configure --enable-optimizations
+#sudo make -j8
+#sudo make install
+
+sudo apt-get -y install python3-pip
+
+sudo -H pip3 install --upgrade pip
+sudo -H pip3 install wheel
+sudo -H pip3 install --upgrade setuptools
+sudo -H pip3 install ligo.skymap
 
 ########################################################################
 
