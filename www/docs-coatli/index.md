@@ -23,7 +23,7 @@ PERFORMANCE OF THIS SOFTWARE.
 
 # COATLI
 
-This is the mountain-top web site for the COATLI project at the
+This is the mountain-top website for the COATLI project at the
 [OAN/SPM](http://www.astrossp.unam.mx).
 
 * Interfaces

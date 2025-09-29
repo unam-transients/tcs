@@ -23,7 +23,7 @@ PERFORMANCE OF THIS SOFTWARE.
 
 # TEST
 
-This is the web site for the TEST project.
+This is the website for the TEST project.
 
 * [Interface](/tcs/operations.html)
 * Engineering Interfaces

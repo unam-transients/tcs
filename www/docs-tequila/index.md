@@ -23,7 +23,7 @@ PERFORMANCE OF THIS SOFTWARE.
 
 # TEQUILA
 
-This is the web site for the TEQUILA project.
+This is the website for the TEQUILA project.
 
 * [Interface](/tcs/operations.html)
 * Engineering Interfaces

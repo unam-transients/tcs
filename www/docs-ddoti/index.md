@@ -23,7 +23,7 @@ PERFORMANCE OF THIS SOFTWARE.
 
 # DDOTI
 
-This is the mountain-top web site for the DDOTI project at the
+This is the mountain-top website for the DDOTI project at the
 [OAN/SPM](http://www.astrossp.unam.mx).
 
 * Interfaces

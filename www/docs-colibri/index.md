@@ -23,7 +23,7 @@ PERFORMANCE OF THIS SOFTWARE.
 
 # COLIBRI
 
-This is the TCS web site for the COLIBRI telescope at OAN.
+This is the TCS website for the COLIBRI telescope at OAN.
 
 * Interfaces
   * [Observations Interface](/tcs/observations.html)
