@@ -52,10 +52,12 @@ export tcsprefix="$bindir/.."
 
 export PATH=/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:"$tcsprefix"/opt/conda/bin/
 
+TCS_CONDA_PREFIX="$(cd "$tcsprefix/libexec/tcs/conda"; pwd)"
+
 if test ! -x "$tcsprefix/libexec/tcs/$subcommand"
 then
   usageerror
-elif test "$CONDA_PREFIX" = "$tcsprefix/libexec/tcs/conda/"
+elif test "$CONDA_PREFIX" = "$TCS_CONDA_PREFIX"
 then
   exec "$tcsprefix/libexec/tcs/$subcommand" "$@"
 else
