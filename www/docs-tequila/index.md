@@ -21,7 +21,7 @@ PERFORMANCE OF THIS SOFTWARE.
 
 ----------------------------------------------------------------------->
 
-# TEST
+# TEQUILA
 
 This is the web site for the TEQUILA project.
 
