@@ -71,7 +71,7 @@ sudo systemctl mask sleep.target suspend.target hibernate.target
 
 # Run rsyncd
 
-systemctl enable rsync
+sudo systemctl enable rsync
 
 ########################################################################
 
@@ -86,6 +86,31 @@ cd /tmp/install-packages
 # Install cfitsio
 
 sudo apt-get -y install libcfitsio-dev libcfitsio-bin
+
+########################################################################
+
+# Install QHY SDK
+
+rm -rf sdk_*
+
+case $(uname -m) in
+aarch64)
+  wget https://www.qhyccd.com/file/repository/publish/SDK/25.09.29/sdk_Arm64_25.09.29.tgz
+  ;;
+x86_64)
+  wget https://www.qhyccd.com/file/repository/publish/SDK/25.09.29/sdk_linux64_25.09.29.tgz
+  ;;
+esac
+
+if test -f sdk_*
+then
+  tar -xf sdk_*.tar
+  cd sdk_*
+  sudo sh uninstall.sh
+  sudo sh install.sh
+fi
+
+rm -rf sdk_*
 
 ########################################################################
 
