@@ -524,6 +524,14 @@ namespace eval "plc" {
     }
     server::setdata "accessrequested"                  $accessrequested
 
+    if {[catch {
+      server::setdata "vaisalarainalarm"  [boolean [string index $responseb 101]]
+      server::setdata "boltwoodrainalarm" [boolean [string index $responseb 102]]
+      server::setdata "bletrainalarm"     [boolean [string index $responseb 102]]
+    }]} {
+      log::warning "unable to read individual rain alarm data."
+    }
+    
     # Process responsec.
 
     set field [string map {" " ""} $responsec]
@@ -645,6 +653,10 @@ namespace eval "plc" {
       "summary" "americanupscommunicationalarm" "american ups communication alarm"
 
       "warning" "riousingbattery"               "rio using battery"
+
+      "warning" "vaisalarainalarm"              "vaisala rain alarm"
+      "warning" "boltwoodrainalarm"             "boltwood rain alarm"
+      "warning" "bletrainalarm"                 "blet rain alarm"
 
       "warning" "riobatteryalarm"               "rio battery alarm"
       "warning" "rainalarm"                     "rain alarm"

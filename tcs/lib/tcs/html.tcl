@@ -841,6 +841,10 @@ proc writeplc {} {
         writealarm   "Vaisala communication alarm"   [client::getdata "plc" "riovaisalacommunicationalarm" ] [client::getdata "plc" "riovaisalacommunicationalarmdisabled"]
         writealarm   "Boltwood communication alarm"  [client::getdata "plc" "rioboltwoodcommunicationalarm"] [client::getdata "plc" "rioboltwoodcommunicationalarmdisabled"]
 
+        writealarm   "Vaisala rain alarm"            [client::getdata "plc" "vaisalarainalarm"]
+        writealarm   "Boltwood rain alarm"           [client::getdata "plc" "boltwoodrainalarm"]
+        writealarm   "Blet rain alarm"               [client::getdata "plc" "bletrainalarm"]
+
         catch {
           writehtmlrow "OAN wind average speed" \
             [formatifok "%.0f km/h" [client::getdata "sensors" "oan-wind-average-speed"]]
