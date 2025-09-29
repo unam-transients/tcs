@@ -74,6 +74,10 @@ colibri-instrument)
   allargs="C0 C1 C2 1 instrument"
   ALLARGS=""
   ;;
+tequila-detector)
+  allargs="log 1 html 1 sensors C0 1 instrument 1 watchdog"
+  ALLARGS=""
+  ;;
 *)
   allargs="log 1 html 1 target 1 moon sun sensors weather seeing C0 C1 1 telescope instrument 1 executor selector watchdog supervisor"
   ALLARGS="gcn"

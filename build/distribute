@@ -21,6 +21,9 @@ colibri)
 ddoti)
   hosts="ddoti-control ddoti-detectors0 ddoti-detectors1 ddoti-platform"
   ;;
+tequila)
+  hosts="tequila-detector"
+  ;;
 cu-tcs-ubuntu-2004)
   hosts="cu-tcs-ubuntu-2004"
   ;;

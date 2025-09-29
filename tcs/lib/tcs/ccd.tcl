@@ -968,22 +968,24 @@ namespace eval "ccd" {
   
   proc setfocuserdz {} {
 
+
+    variable focuserdzmodel
+    log::debug "focuser correction model is $focuserdzmodel."
+      
+
+    set filter [server::getdata "filter"]
+    if {[dict exists $focuserdzmodel "filter" $filter]} {
+      set dzfilter [dict get $focuserdzmodel "filter" $filter]
+    } else {
+      set dzfilter 0
+    }
+      
     if {[catch {client::update "target"}]} {
 
-      log::warning "unable to determine focuser correction."
-      set dzfilter 0
+      log::warning "unable to determine focuser position correction."
+      set dzposition 0
 
     } else {
-
-      variable focuserdzmodel
-      log::debug "focuser correction model is $focuserdzmodel."
-
-      set filter [server::getdata "filter"]
-      if {[dict exists $focuserdzmodel "filter" $filter]} {
-        set dzfilter [dict get $focuserdzmodel "filter" $filter]
-      } else {
-        set dzfilter 0
-      }
       
       set X [client::getdata "target" "observedairmass"]
       log::debug [format "determining focuser correction for X = %.2f." $X]

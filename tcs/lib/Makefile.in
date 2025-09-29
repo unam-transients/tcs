@@ -47,6 +47,11 @@ installs_project_test	    	:=	\
 	filterwheeldummy.so
 endif
 
+installs_project_tequila		:= \
+	detectordummy.so		      	\
+	filterwheelnull.so              \
+	filterwheeldummy.so
+
 ifeq ($(UNAME_N),coatli-instrument)
 installs_project_coatli	    :=	    \
 	detectorandor.so		    	\

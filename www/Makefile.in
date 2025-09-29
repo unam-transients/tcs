@@ -26,7 +26,7 @@ SITE						:=	@SITE@
 
 ########################################################################
 
-all						:	all-$(SITE)
+all							:	all-$(SITE)
 
 install						:	all install-$(SITE)
 
@@ -38,7 +38,7 @@ install						:	all install-$(SITE)
 	
 ########################################################################
 
-all-coatli				            :   \
+all-coatli				        :   \
     docs-coatli/index.html		        \
 	docs-coatli/documentation.html
 docs-coatli/index.html  		:	docs-coatli/index.md
@@ -74,6 +74,17 @@ install-colibri			:	install-linux
 
 clean-colibri				:
 	-rm -f docs-colibri/*.html
+	
+########################################################################
+
+all-tequila					:	\
+	docs-tequila/index.html
+docs-tequila/index.html		:	docs-tequila/index.md
+
+install-tequila				:	install-linux
+
+clean-test					:
+	-rm -f docs-test/*.html
 	
 ########################################################################
 

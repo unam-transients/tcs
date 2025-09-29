@@ -69,6 +69,12 @@ sudo systemctl mask sleep.target suspend.target hibernate.target
 
 ########################################################################
 
+# Run rsyncd
+
+systemctl enable rsync
+
+########################################################################
+
 rm -rf /tmp/install-packages
 mkdir -p /tmp/install-packages
 cd "$(dirname "$0")"

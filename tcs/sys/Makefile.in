@@ -37,4 +37,7 @@ install-project-colibri	:
 install-project-test		:
 	sh install-project-test.sh
 
+install-project-tequila		:
+	sh install-project-tequila.sh
+
 include ../Makefile.epilog

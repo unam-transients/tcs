@@ -128,7 +128,7 @@ installbins_project_ddoti :=      \
 	rebootmount                   \
 	updateseeingfiles-oan         \
 	updateweatherfiles-oan
-	
+
 installbins_project_colibri :=    \
     coversserver                  \
     domeserver                    \
@@ -141,7 +141,12 @@ installbins_project_colibri :=    \
 	telescopecontrollerserver     \
 	updateweatherfiles-oan        \
 	updateseeingfiles-colibri
-		
+
+installbins_project_tequila :=    \
+	C0server                      \
+	updateseeingfiles-oan         \
+	updateweatherfiles-oan
+
 CLEAN_FILES         :=  *.o newpgrp
 
 INSTALL_DIR         :=  $(prefix)/libexec/tcs

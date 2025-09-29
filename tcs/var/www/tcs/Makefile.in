@@ -115,6 +115,14 @@ installs_project_test		:=		     \
 	C0-focuswitness-project-test.html    \
 	config-project-test.js			     \
 
+
+installs_project_tequila	:=		     \
+	operations-project-tequila.html		 \
+	engineering-project-tequila.html	 \
+	C0-project-tequila.html  	   		 \
+	C0-focuswitness-project-tequila.html \
+	config-project-tequila.js			 \
+
 EXTRA_INSTALLS			:=	\
 	install-webcam-link
 

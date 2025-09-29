@@ -33,7 +33,7 @@ installs	:=				            \
 	fitssolvewcs.conv			        \
 	fitssolvewcs.param 			        \
 	fitssolvewcs.sex
-	
+
 installs_project_test		:=		    \
 	alert-project-test			        \
 	config-project-test.json		    \
@@ -69,6 +69,15 @@ installs_project_colibri	:=		    \
 	
 installbins_project_colibri	:=		    \
 	alertscript-project-colibri
+
+installs_project_tequila	:=		    \
+	alert-project-tequila		        \
+	config-project-tequila.json		    \
+	servers-project-tequila.json	    \
+	visitcommands-project-tequila.tcl
+	
+installbins_project_test	:=		    \
+	alertscript-project-equila
 
 INSTALL_DIR	:=	$(prefix)/etc/tcs/
 
