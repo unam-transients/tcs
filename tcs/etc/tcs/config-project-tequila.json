@@ -19,7 +19,7 @@
 {
     "C0": {
         "telescopedescription": "TEQUILA",
-        "detectortype": "dummy",
+        "detectortype": "qhy",
         "detectoridentifier": "",
         "detectorunbinnedpixelscale": "0.381as",
         "detectorreadmodes": {

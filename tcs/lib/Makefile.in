@@ -47,7 +47,8 @@ installs_project_test	    	:=	\
 	filterwheeldummy.so
 endif
 
-installs_project_tequila		:= \
+installs_project_tequila		:=	\
+	detectorqhy.so		      		\
 	detectordummy.so		      	\
 	filterwheelnull.so              \
 	filterwheeldummy.so
@@ -140,6 +141,15 @@ detectorfli.so			:	detectorwrap.o              \
 	  detectorwrap.o detector.o detectorfli.o           \
 	  $(LIBS) $(SWIGLIBS)
 
+detectorqhy.o			:	detectorqhy.cxx				\
+				        	detector.h
+detectorqhy.so			:	detectorwrap.o              \
+					        detector.o                  \
+        					detectorqhy.o
+	$(LD) $(LDFLAGS) $(LDSOFLAGS) -o detectorqhy.so   	\
+	  detectorwrap.o detector.o detectorqhy.o         	\
+	  -lqhyccd $(LIBS) $(SWIGLIBS)
+	
 detectorqsi.o			:	detectorqsi.cxx             \
 		        			detector.h
 detectorqsi.so			:	detectorwrap.o              \

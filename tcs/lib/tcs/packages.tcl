@@ -58,6 +58,8 @@ package ifneeded detectordummy         0.0 \
   [list source [file join [file dirname [info script]] detectordummy.tcl]]
 package ifneeded detectorfli           0.0 \
   [list source [file join [file dirname [info script]] detectorfli.tcl]]
+package ifneeded detectorqhy         0.0 \
+  [list source [file join [file dirname [info script]] detectorqhy.tcl]]
 package ifneeded detectorqsi           0.0 \
   [list source [file join [file dirname [info script]] detectorqsi.tcl]]
 package ifneeded detectorsi            0.0 \
