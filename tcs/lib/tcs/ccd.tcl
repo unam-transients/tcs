@@ -979,14 +979,18 @@ namespace eval "ccd" {
     } else {
       set dzfilter 0
     }
-      
-    if {[catch {client::update "target"}]} {
+
+    if {![server::withserver "target"]} {
+
+      set dzposition 0
+
+    } elseif {[catch {client::update "target"}]} {
 
       log::warning "unable to determine focuser position correction."
       set dzposition 0
 
     } else {
-      
+
       set X [client::getdata "target" "observedairmass"]
       log::debug [format "determining focuser correction for X = %.2f." $X]
       set dzposition 0
@@ -998,11 +1002,11 @@ namespace eval "ccd" {
       }
       if {[dict exists $focuserdzmodel "position" "XM2"]} {
         set dzposition [expr {$dzposition + [dict get $focuserdzmodel "position" "XM2"] * ($X - 1) * ($X - 1)}]
-      }            
+      }
       set dzposition [expr {int($dzposition)}]
 
     }
-    
+
     set dz [expr {$dzfilter + $dzposition}]
     log::debug "focuser correction is $dz."
     server::setdata "focuserdzfilter"   $dzfilter
