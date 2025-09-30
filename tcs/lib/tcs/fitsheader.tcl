@@ -185,6 +185,10 @@ namespace eval "fitsheader" {
 
   proc writekeysandvaluesforproject {channel} {
 
+    if {![server::withserver "executor"]} {
+      return
+    }
+
      if {[catch {client::update "executor"} message]} {
        log::debug "unable to update data for executor: $message"
      }
