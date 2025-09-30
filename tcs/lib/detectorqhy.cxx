@@ -35,7 +35,10 @@
 
 ////////////////////////////////////////////////////////////////////////
 
-static const char *description = "dummy";
+static qhyccd_handle *handle;
+
+static char description[DETECTOR_STR_BUFFER_SIZE] = "";
+
 static double detectortemperature = 0;
 static double housingtemperature = 0;
 static double coolerpower = 0;
@@ -43,9 +46,10 @@ static double coolersettemperature = 0;
 static const char *cooler = "";
 
 static char readmode[DETECTOR_STR_BUFFER_SIZE] = "";
+static uint32_t nreadmode;
 
-static unsigned long fullnx = 2048;
-static unsigned long fullny = 2048;
+static unsigned long fullnx = 0;
+static unsigned long fullny = 0;
 static unsigned long unbinnedwindowsx = 0;
 static unsigned long unbinnedwindowsy = 0;
 static unsigned long unbinnedwindownx = 0;
@@ -55,13 +59,13 @@ static unsigned long binning = 1;
 
 ////////////////////////////////////////////////////////////////////////
 
-static time_t exposureend = 0;
-
-////////////////////////////////////////////////////////////////////////
-
 const char *
 detectorrawstart(void)
 {
+  printf("initializing.\n");
+  if (InitQHYCCDResource() != QHYCCD_SUCCESS)
+    DETECTOR_ERROR("initialization failed.");
+  printf("finished initializing.\n");
   DETECTOR_OK();
 }
 
@@ -72,6 +76,76 @@ detectorrawopen(char *identifier)
 {
   if (detectorrawgetisopen())
     DETECTOR_ERROR("a detector is currently open.");
+
+  if (strcmp(identifier, "") == 0)
+  {
+    int ndetector;
+
+    fprintf(stderr, "scanning.\n");
+    ndetector = ScanQHYCCD();
+    fprintf(stderr, "found %d detectors.\n", ndetector);
+    if (ndetector == 0)
+    {
+      fprintf(stderr, "error: no detectors found.\n");
+      exit(1);
+    }
+    fprintf(stderr, "finished scanning.\n");
+
+    fprintf(stderr, "determining identifier.\n");
+    for (int i = 0; i < ndetector; ++i)
+    {
+      char identifier[32] = "";
+      if (GetQHYCCDId(i, identifier) != QHYCCD_SUCCESS)
+      {
+        fprintf(stderr, "error: unable to determine identifier of detector %d.\n", i);
+        exit(1);
+      }
+      fprintf(stderr, "detector %d has an identifier of \"%s\".\n", i, identifier);
+    }
+    fprintf(stderr, "finished determining identifier.\n");
+    exit(0);
+  }
+
+  fprintf(stderr, "opening detector \"%s\".\n", identifier);
+  handle = OpenQHYCCD(identifier);
+  if (handle == NULL)
+    DETECTOR_ERROR("unable to open detector.");
+
+  {
+    if (GetQHYCCDNumberOfReadModes(handle, &nreadmode) != QHYCCD_SUCCESS)
+      DETECTOR_ERROR("unable to determine number of read modes.");
+    fprintf(stderr, "%d read modes.\n", nreadmode);
+    for (uint32_t i = 0; i < nreadmode; ++i)
+    {
+      char name[80] = "";
+      if (GetQHYCCDReadModeName(handle, i, name) != QHYCCD_SUCCESS)
+        DETECTOR_ERROR("unable to determine read mode name.");
+      uint32_t nx, ny;
+      if (GetQHYCCDReadModeResolution(handle, i, &nx, &ny) != QHYCCD_SUCCESS)
+        DETECTOR_ERROR("unable to determine read mode resolution.");
+      fprintf(stderr, "read mode mode %lu: %lu x %lu: \"%s\".\n", (unsigned long)i, (unsigned long)nx, (unsigned long)ny, name);
+    }
+  }
+
+  snprintf(description, sizeof(description), "%s", identifier);
+
+  if (InitQHYCCD(handle) != QHYCCD_SUCCESS)
+    DETECTOR_ERROR("unable to initialize detector.");
+
+  if (SetQHYCCDStreamMode(handle, 0) != QHYCCD_SUCCESS)
+    DETECTOR_ERROR("unable to set single-frame mode.");
+
+  if (SetQHYCCDParam(handle, CONTROL_TRANSFERBIT, 16) != QHYCCD_SUCCESS)
+    DETECTOR_ERROR("unable to set 16-bit mode.");
+
+  uint32_t nx, ny, bpp;
+  double detectorx, detectory, pixelx, pixely;
+  if (GetQHYCCDChipInfo(handle, &detectorx, &detectory, &nx, &ny, &pixelx, &pixely, &bpp) != QHYCCD_SUCCESS)
+    DETECTOR_ERROR("unable to determine detector parameters.");
+  fullnx = nx;
+  fullny = ny;
+  fprintf(stderr, "fullnx = %lu fullny = %lu bpp = %lu.\n", (unsigned long)fullnx, (unsigned long)fullny, (unsigned long)bpp);
+
   detectorrawsetisopen(true);
   coolersettemperature = 0.0;
   cooler = "off";
@@ -83,6 +157,9 @@ detectorrawopen(char *identifier)
 const char *
 detectorrawclose(void)
 {
+  if (CloseQHYCCD(handle) != QHYCCD_SUCCESS)
+    DETECTOR_ERROR("unable to close detector.");
+  handle = NULL;
   detectorrawsetisopen(false);
   DETECTOR_OK();
 }
@@ -115,7 +192,12 @@ detectorrawexpose(double exposuretime, const char *shutter)
   DETECTOR_CHECK_OPEN();
   if (strcmp(shutter, "open") != 0 && strcmp(shutter, "closed") != 0)
     DETECTOR_ERROR("invalid shutter argument.");
-  exposureend = time(NULL) + exposuretime;
+  if (SetQHYCCDParam(handle, CONTROL_EXPOSURE, exposuretime * 1e6) != QHYCCD_SUCCESS)
+    DETECTOR_ERROR("invalid exposure time.");
+  if (CancelQHYCCDExposingAndReadout(handle) != QHYCCD_SUCCESS)
+    DETECTOR_ERROR("unable to cancel exposure.");
+  if (ExpQHYCCDSingleFrame(handle) != QHYCCD_SUCCESS)
+    DETECTOR_ERROR("unable to expose.");
   DETECTOR_OK();
 }
 
@@ -125,16 +207,16 @@ const char *
 detectorrawcancel(void)
 {
   DETECTOR_CHECK_OPEN();
-  exposureend = 0;
+  if (CancelQHYCCDExposingAndReadout(handle) != QHYCCD_SUCCESS)
+    DETECTOR_ERROR("unable to cancel exposure.");
   DETECTOR_OK();
 }
 
 ////////////////////////////////////////////////////////////////////////
 
-bool
-detectorrawgetreadytoberead(void)
+bool detectorrawgetreadytoberead(void)
 {
-  return time(NULL) > exposureend;
+  return GetQHYCCDExposureRemaining(handle) == 0;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -145,15 +227,32 @@ detectorrawread(void)
   DETECTOR_CHECK_OPEN();
   if (!detectorrawgetreadytoberead())
     DETECTOR_ERROR("the detector is not ready to be read.");
-  long pix = 0;
+
+  uint32_t nbyte = GetQHYCCDMemLength(handle);
+  if (nbyte == 0)
+    DETECTOR_ERROR("the unable to determine data length.");
+  unsigned short *data = (unsigned short *)malloc(nbyte);
+  memset(data, 0, nbyte);
+
+  {
+    uint32_t nx, ny, nchannel, bpp;
+    if (GetQHYCCDSingleFrame(handle, &nx, &ny, &bpp, &nchannel, (uint8_t *)data) != QHYCCD_SUCCESS)
+      DETECTOR_ERROR("unable to read exposure.");
+    fprintf(stderr, "%lu x %lu x %lu x %lu\n", (unsigned long)nx, (unsigned long)ny, (unsigned long)bpp, (unsigned long)nchannel);
+  }
+
   unsigned long nx = detectorrawgetpixnx();
   unsigned long ny = detectorrawgetpixny();
-  for (unsigned long iy = 0; iy < ny; ++iy) {
-    for (unsigned long ix = 0; ix < nx; ++ix) {
-      pix = ix;
-      detectorrawpixnext(&pix, 1);
-    }
+  fprintf(stderr, "%lu x %lu\n", (unsigned long)nx, (unsigned long)ny);
+  for (unsigned long iy = 0; iy < ny; ++iy)
+  {
+    unsigned short *usbuf = data + iy * nx;
+    long lbuf[nx];
+    for (unsigned long ix = 0; ix < nx; ++ix)
+      lbuf[ix] = usbuf[ix];
+    detectorrawpixnext(lbuf, nx);
   }
+  fprintf(stderr, "finished reading\n");
   DETECTOR_OK();
 }
 
@@ -163,11 +262,14 @@ const char *
 detectorrawsetreadmode(const char *newreadmode)
 {
   DETECTOR_CHECK_OPEN();
-  if (strcmp(newreadmode, "") == 0)
-    DETECTOR_OK();
-  if (strlen(newreadmode) >= DETECTOR_STR_BUFFER_SIZE) {
-    DETECTOR_ERROR("invalid detector read mode.");
-  }
+  char *end;
+  uint32_t newreadmodeindex = strtoul(newreadmode, &end, 10);
+  if (*end != 0)
+    DETECTOR_ERROR("invalid read mode.");
+  if (newreadmodeindex >= nreadmode)
+    DETECTOR_ERROR("invalid read mode.");
+  if (SetQHYCCDReadMode(handle, newreadmodeindex) != QHYCCD_SUCCESS)
+    DETECTOR_ERROR("unable to set read mode.");
   strcpy(readmode, newreadmode);
   DETECTOR_OK();
 }
@@ -178,17 +280,21 @@ const char *
 detectorrawsetunbinnedwindow(unsigned long newsx, unsigned long newsy, unsigned long newnx, unsigned long newny)
 {
   DETECTOR_CHECK_OPEN();
-  if (newsx == 0 && newnx == 0) {
+  if (newsx == 0 && newnx == 0)
+  {
     newnx = fullnx;
   }
-  if (newsy == 0 && newny == 0) {
+  if (newsy == 0 && newny == 0)
+  {
     newny = fullny;
   }
+  if (SetQHYCCDResolution(handle, newsx, newsy, newnx, newny) != QHYCCD_SUCCESS)
+    DETECTOR_ERROR("unable to set window.");
   unbinnedwindowsx = newsx;
   unbinnedwindowsy = newsy;
   unbinnedwindownx = newnx;
   unbinnedwindowny = newny;
-  return detectorrawsetbinning(1); 
+  return detectorrawsetbinning(1);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -197,6 +303,8 @@ const char *
 detectorrawsetbinning(unsigned long newbinning)
 {
   DETECTOR_CHECK_OPEN();
+  if (SetQHYCCDBinMode(handle, newbinning, newbinning) != QHYCCD_SUCCESS)
+    DETECTOR_ERROR("unable to set binning.");
   binning = newbinning;
   detectorrawsetpixnx((unbinnedwindownx + binning - 1) / binning);
   detectorrawsetpixny((unbinnedwindowny + binning - 1) / binning);
@@ -209,17 +317,27 @@ const char *
 detectorrawupdatestatus(void)
 {
   DETECTOR_CHECK_OPEN();
-  if (strcmp(cooler, "on") == 0) {
-    detectortemperature = coolersettemperature;
-    coolerpower = 1.0;
-  } else if (strcmp(cooler, "following") == 0) {
-    coolersettemperature = housingtemperature;
-    detectortemperature = coolersettemperature;
-    coolerpower = 0.5;
-  } else {
-    detectortemperature = housingtemperature + 10;
-    coolerpower = 0;
+
+  double value;
+
+  value = GetQHYCCDParam(handle, CONTROL_CURTEMP);
+  if (value != QHYCCD_ERROR)
+  {
+    fprintf(stderr, "detector temperature is %+.1f C.\n", value);
+    detectortemperature = value;
   }
+
+  value = GetQHYCCDParam(handle, CONTROL_COOLER);
+  if (value != QHYCCD_ERROR)
+  {
+    fprintf(stderr, "cooler set tempertaure is %+.1f C.\n", value);
+    coolersettemperature = value;
+  }
+
+  value = GetQHYCCDParam(handle, CONTROL_CURPWM);
+  if (value != QHYCCD_ERROR)
+    coolerpower = value / 255;
+
   DETECTOR_OK();
 }
 
@@ -228,7 +346,7 @@ detectorrawupdatestatus(void)
 const char *
 detectorrawgetvalue(const char *name)
 {
-  static char value[DETECTOR_STR_BUFFER_SIZE]; 
+  static char value[DETECTOR_STR_BUFFER_SIZE];
   if (strcmp(name, "description") == 0)
     snprintf(value, sizeof(value), "%s", description);
   else if (strcmp(name, "detectortemperature") == 0)
@@ -264,21 +382,41 @@ const char *
 detectorrawsetcooler(const char *newcooler)
 {
   DETECTOR_CHECK_OPEN();
-  if (strcmp(newcooler, "on") == 0) {
+
+  if (IsQHYCCDControlAvailable(handle, CONTROL_COOLER) != QHYCCD_SUCCESS)
+    DETECTOR_ERROR("unable to set cooler set temperature.");
+  if (IsQHYCCDControlAvailable(handle, CONTROL_MANULPWM) != QHYCCD_SUCCESS)
+    DETECTOR_ERROR("unable to set cooler power.");
+
+  if (strcmp(newcooler, "on") == 0)
+  {
+    if (ControlQHYCCDTemp(handle, coolersettemperature) != QHYCCD_SUCCESS)
+      DETECTOR_ERROR("unable to set cooler to on.");
+    if (SetQHYCCDParam(handle, CONTROL_MANULPWM, 128.0) != QHYCCD_SUCCESS)
+      DETECTOR_ERROR("unable to set cooler to 50%.");
     cooler = "on";
     DETECTOR_OK();
-  } else if (strcmp(newcooler, "off") == 0) {
+  }
+  else if (strcmp(newcooler, "off") == 0)
+  {
+    if (SetQHYCCDParam(handle, CONTROL_MANULPWM, 0.0) != QHYCCD_SUCCESS)
+      DETECTOR_ERROR("unable to set cooler to off.");
     cooler = "off";
+
     DETECTOR_OK();
-  } else if (strcmp(newcooler, "following") == 0) {
-    cooler = "following";    
-    coolersettemperature = housingtemperature;
-    DETECTOR_OK();
-  } else {
+  }
+  else if (strcmp(newcooler, "following") == 0)
+  {
+    DETECTOR_ERROR("cooler following is not supported.");
+  }
+  else
+  {
     char *end;
     coolersettemperature = strtod(newcooler, &end);
     if (*end != 0)
       DETECTOR_ERROR("invalid arguments.");
+    if (ControlQHYCCDTemp(handle, coolersettemperature) != QHYCCD_SUCCESS)
+      DETECTOR_ERROR("unable to set cooler to on.");
     cooler = "on";
     DETECTOR_OK();
   }

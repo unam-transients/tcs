@@ -26,22 +26,6 @@
         "host": "localhost",
         "port": 5001
     },
-    "moon": {
-        "host": "localhost",
-        "port": 5002
-    },
-    "sun": {
-        "host": "localhost",
-        "port": 5003
-    },
-    "target": {
-        "host": "localhost",
-        "port": 5004
-    },
-    "weather": {
-        "host": "localhost",
-        "port": 5005
-    },
     "C0": {
         "host": "localhost",
         "port": 5006
@@ -49,42 +33,6 @@
     "sensors": {
         "host": "localhost",
         "port": 5008
-    },
-    "instrument": {
-        "host": "localhost",
-        "port": 5009
-    },
-    "telescope": {
-        "host": "localhost",
-        "port": 5010
-    },
-    "executor": {
-        "host": "localhost",
-        "port": 5011
-    },
-    "selector": {
-        "host": "localhost",
-        "port": 5012
-    },
-    "supervisor": {
-        "host": "localhost",
-        "port": 5013
-    },
-    "gcntan": {
-        "host": "localhost",
-        "port": 5014
-    },
-    "lights": {
-        "host": "localhost",
-        "port": 5015
-    },
-    "heater": {
-        "host": "localhost",
-        "port": 5016
-    },
-    "seeing": {
-        "host": "localhost",
-        "port": 5017
     },
     "watchdog": {
         "host": "localhost",

@@ -64,9 +64,9 @@ namespace eval "detector" {
     }
     return
   }
-  
+
   proc reopen {} {
-    log::warning "reopening detector."      
+    log::warning "reopening detector."
     variable identifier
     while {[catch {
       coroutine::after 500
@@ -79,17 +79,17 @@ namespace eval "detector" {
     }
     return $result
   }
-      
+
   proc checkisopen {} {
     if {![isopen]} {
       error "no detector is currently open."
     }
   }
-  
+
   proc isopen {} {
     return [detectorrawgetisopen]
   }
-  
+
   ######################################################################
 
   proc reset {} {
@@ -99,7 +99,7 @@ namespace eval "detector" {
     }
     return
   }
-  
+
   ######################################################################
 
   proc rawcall {args} {
@@ -122,7 +122,7 @@ namespace eval "detector" {
     }
     detectorrawsetunbinnedwindow 0 0 0 0
   }
-  
+
   ######################################################################
 
   proc setsoftwaregain {detectorsoftwaregain} {
@@ -134,13 +134,13 @@ namespace eval "detector" {
     }
     return
   }
-  
+
   ######################################################################
-  
+
   proc getnframe {} {
     return [detectorrawgetpixnframe]
   }
-  
+
   ######################################################################
 
   variable fullunbinneddatawindow ""
@@ -150,12 +150,12 @@ namespace eval "detector" {
     variable fullunbinneddatawindow
     set fullunbinneddatawindow $window
   }
-  
+
   proc setfullunbinnedbiaswindow {window} {
     variable fullunbinnedbiaswindow
     set fullunbinnedbiaswindow $window
   }
-  
+
   proc getfullunbinneddatawindow {} {
     variable fullunbinneddatawindow
     return $fullunbinneddatawindow
@@ -173,12 +173,12 @@ namespace eval "detector" {
     variable unbinneddatawindow
     set unbinneddatawindow $window
   }
-  
+
   proc setunbinnedbiaswindow {window} {
     variable unbinnedbiaswindow
     set unbinnedbiaswindow $window
   }
-  
+
   proc getunbinneddatawindow {} {
     variable unbinneddatawindow
     return $unbinneddatawindow
@@ -191,7 +191,7 @@ namespace eval "detector" {
 
   variable datawindow ""
   variable biaswindow ""
-  
+
   proc setdatawindow {window} {
     variable datawindow
     set datawindow $window
@@ -209,7 +209,7 @@ namespace eval "detector" {
     variable biaswindow
     set biaswindow $window
   }
-  
+
   proc getdatawindow {} {
     variable datawindow
     return $datawindow
@@ -219,7 +219,7 @@ namespace eval "detector" {
     variable biaswindow
     return $biaswindow
   }
-  
+
   proc makebinnedwindow {window binning} {
     if {[string equal $window ""]} {
       return ""
@@ -235,35 +235,35 @@ namespace eval "detector" {
       return [dict create "sx" $sx "sy" $sy "nx" $nx "ny" $ny]
     }
   }
-  
+
   proc makeoverlappedwindow {window fullwindow} {
-  
+
     # Determine the corners of the two windows in the global frame.
-  
+
     set llx0 [dict get $window "sx"]
     set lly0 [dict get $window "sy"]
     set urx0 [expr {[dict get $window "sx"] + [dict get $window "nx"]}]
     set ury0 [expr {[dict get $window "sy"] + [dict get $window "ny"]}]
-    
+
     set llx1 [dict get $fullwindow "sx"]
     set lly1 [dict get $fullwindow "sy"]
     set urx1 [expr {[dict get $fullwindow "sx"] + [dict get $fullwindow "nx"]}]
     set ury1 [expr {[dict get $fullwindow "sy"] + [dict get $fullwindow "ny"]}]
-    
+
     # Determine the corners of the overlapped window in the global frame.
-    
+
     set llx [expr {max($llx0,$llx1)}]
     set lly [expr {max($lly0,$lly1)}]
     set urx [expr {min($urx0,$urx1)}]
     set ury [expr {min($ury0,$ury1)}]
-    
+
     # Shift the origin to the windowed frame and calculate the overlapped window size
-    
+
     set sx [expr {$llx - $llx0}]
     set sy [expr {$lly - $lly0}]
     set nx [expr {$urx - $llx}]
     set ny [expr {$ury - $lly}]
-    
+
     if {$nx > 0 && $ny > 0} {
       return [dict create "sx" $sx "sy" $sy "nx" $nx "ny" $ny]
     } else {
@@ -271,7 +271,7 @@ namespace eval "detector" {
     }
 
   }
-  
+
   proc setunbinnedwindow {window} {
     log::debug "setting detector window to \"$window\"."
     checkisopen
@@ -341,7 +341,7 @@ namespace eval "detector" {
       detectorrawcubepixstart $fitscubepixfilename
     }
   }
-  
+
   proc cancelexposure {} {
     log::debug "cancelling the exposure."
     checkisopen
@@ -365,7 +365,7 @@ namespace eval "detector" {
     }
     return
   }
-  
+
   proc readexposure {} {
     log::debug "waiting to read the exposure."
     checkisopen
@@ -394,33 +394,33 @@ namespace eval "detector" {
     log::debug "finished reading the exposure."
     return
   }
-  
+
   ######################################################################
 
   proc openfitsheader {fitsfilename} {
     variable bscale
     variable bzero
-    set nx [detectorrawgetpixnx] 
-    set ny [detectorrawgetpixny] 
+    set nx [detectorrawgetpixnx]
+    set ny [detectorrawgetpixny]
     set naxis [list $nx $ny]
     return [fitsheader::open $fitsfilename 16 $naxis $bscale $bzero]
   }
-  
+
   proc openfitscubeheader {fitsfilename} {
     variable bscale
     variable bzero
-    set nx [detectorrawgetpixnx] 
-    set ny [detectorrawgetpixny] 
+    set nx [detectorrawgetpixnx]
+    set ny [detectorrawgetpixny]
     set nz [getnframe]
     set naxis [list $nx $ny $nz]
     return [fitsheader::open $fitsfilename 16 $naxis $bscale $bzero]
   }
-  
+
   proc closefitsheader {channel} {
     detectorrawaugmentfitsheader $channel
     return [fitsheader::close $channel]
   }
-  
+
   proc writeexposure {partialfitsfilename finalfilename {latestfilename ""} {currentfilename ""} {partialfitscubehdrfilename ""}  {finalcubehdrfilename ""}  {partialfitscubepixfilename ""}  {finalcubepixfilename ""} {fork false}} {
     log::debug "writing the exposure."
     checkisopen
@@ -480,7 +480,7 @@ namespace eval "detector" {
     set result [detectorrawappendfitsdata $partialfitsfilename $finalfilename $latestfilename $currentfilename $dofork $bscale $bzero]
     if {![string equal $result "ok"]} {
       error "unable to write the exposure data: $result"
-    }    
+    }
     log::debug "finished writing the exposure."
     return
   }
@@ -559,12 +559,12 @@ namespace eval "detector" {
     variable emgain
     return $emgain
   }
-  
+
   proc getframetime {} {
     variable frametime
     return $frametime
   }
-  
+
   proc getcycletime {} {
     variable cycletime
     return $cycletime
@@ -669,19 +669,19 @@ namespace eval "detector" {
     variable standarddeviation
     return $standarddeviation
   }
-  
+
   proc getsaasigmax {} {
     variable saasigmax
     return $saasigmax
   }
-  
+
   proc getsaasigmay {} {
     variable saasigmay
     return $saasigmay
   }
-  
+
   proc updatestatus {} {
-    
+
     variable readmode
     variable adc
     variable amplifier
@@ -711,7 +711,7 @@ namespace eval "detector" {
     variable coolerlowflow
     variable saasigmax
     variable saasigmay
-    
+
     set readmode                 {}
     set adc                      {}
     set amplifier                {}
@@ -739,12 +739,12 @@ namespace eval "detector" {
     set coolerlowflow            {}
     set saasigmax                {}
     set saasigmay                {}
-    
+
     checkisopen
-    
+
     set result [rawcall detectorrawupdatestatus]
     if {![string equal $result "ok"]} {
-      log::warning "unable to update the detector: $result"      
+      log::warning "unable to update the detector: $result"
       return
     }
 
@@ -754,39 +754,39 @@ namespace eval "detector" {
       "nx" [detectorrawgetvalue "unbinnedwindownx"] \
       "ny" [detectorrawgetvalue "unbinnedwindowny"] \
     ]
-    set readmode                 [detectorrawgetvalue "readmode"]
-    set adc                      [detectorrawgetvalue "adc"]
-    set amplifier                [detectorrawgetvalue "amplifier"]
-    set vsspeed                  [detectorrawgetvalue "vsspeed"]
-    set hsspeed                  [detectorrawgetvalue "hsspeed"]
-    set gain                     [detectorrawgetvalue "gain"]
-    set emgain                   [detectorrawgetvalue "emgain"]
-    set frametime                [detectorrawgetvalue "frametime"]
-    set cycletime                [detectorrawgetvalue "cycletime"]
-    set binning                  [detectorrawgetvalue "binning"]
-    set detectortemperature      [detectorrawgetvalue "detectortemperature"]
-    set detectorheatercurrent    [detectorrawgetvalue "detectorheatercurrent"]
-    set housingtemperature       [detectorrawgetvalue "housingtemperature"]
-    set coldendtemperature       [detectorrawgetvalue "coldendtemperature"]
-    set coldendheatercurrent     [detectorrawgetvalue "coldendheatercurrent"]
-    set powersupplytemperature   [detectorrawgetvalue "powersupplytemperature"]
-    set chamberpressure          [detectorrawgetvalue "chamberpressure"]
-    set compressorreturnpressure [detectorrawgetvalue "compressorreturnpressure"]
-    set compressorsupplypressure [detectorrawgetvalue "compressorsupplypressure"]
-    set compressorcurrent        [detectorrawgetvalue "compressorcurrent"]
-    set coolerstate              [detectorrawgetvalue "cooler"]
-    set coolerlowflow            [detectorrawgetvalue "coolerlowflow"]
-    set coolersettemperature     [detectorrawgetvalue "coolersettemperature"]
-    set coolerpower              [detectorrawgetvalue "coolerpower"]
-    set softwaregain             [detectorrawgetvalue "softwaregain"]
-    set saasigmax                [detectorrawgetvalue "saasigmax"]
-    set saasigmay                [detectorrawgetvalue "saasigmay"]
+  set readmode                 [detectorrawgetvalue "readmode"]
+  set adc                      [detectorrawgetvalue "adc"]
+  set amplifier                [detectorrawgetvalue "amplifier"]
+  set vsspeed                  [detectorrawgetvalue "vsspeed"]
+  set hsspeed                  [detectorrawgetvalue "hsspeed"]
+  set gain                     [detectorrawgetvalue "gain"]
+  set emgain                   [detectorrawgetvalue "emgain"]
+  set frametime                [detectorrawgetvalue "frametime"]
+  set cycletime                [detectorrawgetvalue "cycletime"]
+  set binning                  [detectorrawgetvalue "binning"]
+  set detectortemperature      [detectorrawgetvalue "detectortemperature"]
+  set detectorheatercurrent    [detectorrawgetvalue "detectorheatercurrent"]
+  set housingtemperature       [detectorrawgetvalue "housingtemperature"]
+  set coldendtemperature       [detectorrawgetvalue "coldendtemperature"]
+  set coldendheatercurrent     [detectorrawgetvalue "coldendheatercurrent"]
+  set powersupplytemperature   [detectorrawgetvalue "powersupplytemperature"]
+  set chamberpressure          [detectorrawgetvalue "chamberpressure"]
+  set compressorreturnpressure [detectorrawgetvalue "compressorreturnpressure"]
+  set compressorsupplypressure [detectorrawgetvalue "compressorsupplypressure"]
+  set compressorcurrent        [detectorrawgetvalue "compressorcurrent"]
+  set coolerstate              [detectorrawgetvalue "cooler"]
+  set coolerlowflow            [detectorrawgetvalue "coolerlowflow"]
+  set coolersettemperature     [detectorrawgetvalue "coolersettemperature"]
+  set coolerpower              [detectorrawgetvalue "coolerpower"]
+  set softwaregain             [detectorrawgetvalue "softwaregain"]
+  set saasigmax                [detectorrawgetvalue "saasigmax"]
+  set saasigmay                [detectorrawgetvalue "saasigmay"]
 
-    variable rawsaturationlevel
-    set saturationlevel [expr {int($rawsaturationlevel / $softwaregain)}]
+  variable rawsaturationlevel
+  set saturationlevel [expr {int($rawsaturationlevel / $softwaregain)}]
 
-  }
+}
 
-  ######################################################################
+######################################################################
 
 }

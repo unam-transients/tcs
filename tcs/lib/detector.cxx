@@ -65,7 +65,7 @@ detectorrawgetdatavalue(const char *name)
 {
   static char value[DETECTOR_STR_BUFFER_SIZE];
   if (strcmp(name, "softwaregain") == 0)
-    snprintf(value, sizeof(value), "%u", (unsigned int) softwaregain);
+    snprintf(value, sizeof(value), "%u", (unsigned int)softwaregain);
   else if (strcmp(name, "amplifier") == 0)
     snprintf(value, sizeof(value), "%s", "conventional");
   else if (strcmp(name, "average") == 0)
@@ -86,8 +86,7 @@ detectorrawsetisopen(bool newisopen)
   DETECTOR_OK();
 }
 
-bool
-detectorrawgetisopen(void)
+bool detectorrawgetisopen(void)
 {
   return isopen;
 }
@@ -99,7 +98,7 @@ detectorrawpixstart(void)
 {
   pixi = 0;
   free(pix);
-  pix = (unsigned short *) malloc(pixnx * pixny * sizeof(*pix));
+  pix = (unsigned short *)malloc(pixnx * pixny * sizeof(*pix));
   if (pix == 0)
     DETECTOR_ERROR("unable to allocate memory for the detector pixel values.");
   DETECTOR_OK();
@@ -108,7 +107,8 @@ detectorrawpixstart(void)
 const char *
 detectorrawpixnext(const long *newpix, unsigned long n)
 {
-  for (unsigned long i = 0; i < n; ++i, ++pixi) {
+  for (unsigned long i = 0; i < n; ++i, ++pixi)
+  {
     if (pixi == pixnx * pixny)
       DETECTOR_ERROR("too much pixel data.");
     if (newpix[i] < 0)
@@ -124,30 +124,100 @@ detectorrawpixnext(const long *newpix, unsigned long n)
 static unsigned long
 hexvalue(char c)
 {
-  switch (c) {
-    case '0': { return 0; }
-    case '1': { return 1; }
-    case '2': { return 2; }
-    case '3': { return 3; }
-    case '4': { return 4; }
-    case '5': { return 5; }
-    case '6': { return 6; }
-    case '7': { return 7; }
-    case '8': { return 8; }
-    case '9': { return 9; }
-    case 'a': { return 10; }
-    case 'b': { return 11; }
-    case 'c': { return 12; }
-    case 'd': { return 13; }
-    case 'e': { return 14; }
-    case 'f': { return 15; }
-    case 'A': { return 10; }
-    case 'B': { return 11; }
-    case 'C': { return 12; }
-    case 'D': { return 13; }
-    case 'E': { return 14; }
-    case 'F': { return 15; }
-    default: { return 0; }
+  switch (c)
+  {
+  case '0':
+  {
+    return 0;
+  }
+  case '1':
+  {
+    return 1;
+  }
+  case '2':
+  {
+    return 2;
+  }
+  case '3':
+  {
+    return 3;
+  }
+  case '4':
+  {
+    return 4;
+  }
+  case '5':
+  {
+    return 5;
+  }
+  case '6':
+  {
+    return 6;
+  }
+  case '7':
+  {
+    return 7;
+  }
+  case '8':
+  {
+    return 8;
+  }
+  case '9':
+  {
+    return 9;
+  }
+  case 'a':
+  {
+    return 10;
+  }
+  case 'b':
+  {
+    return 11;
+  }
+  case 'c':
+  {
+    return 12;
+  }
+  case 'd':
+  {
+    return 13;
+  }
+  case 'e':
+  {
+    return 14;
+  }
+  case 'f':
+  {
+    return 15;
+  }
+  case 'A':
+  {
+    return 10;
+  }
+  case 'B':
+  {
+    return 11;
+  }
+  case 'C':
+  {
+    return 12;
+  }
+  case 'D':
+  {
+    return 13;
+  }
+  case 'E':
+  {
+    return 14;
+  }
+  case 'F':
+  {
+    return 15;
+  }
+  default:
+  {
+    return 0;
+  }
   }
 }
 
@@ -156,12 +226,13 @@ detectorrawpixnexthex(const char *newhexpix)
 {
   unsigned long n = strlen(newhexpix) / 4;
   long newpix[n];
-  for (unsigned long i = 0; i < n; ++i) {
-    newpix[i] = 
-      (hexvalue(newhexpix[4 * i + 0]) << 12) +
-      (hexvalue(newhexpix[4 * i + 1]) <<  8) +
-      (hexvalue(newhexpix[4 * i + 2]) <<  4) +
-      (hexvalue(newhexpix[4 * i + 3]) <<  0);
+  for (unsigned long i = 0; i < n; ++i)
+  {
+    newpix[i] =
+        (hexvalue(newhexpix[4 * i + 0]) << 12) +
+        (hexvalue(newhexpix[4 * i + 1]) << 8) +
+        (hexvalue(newhexpix[4 * i + 2]) << 4) +
+        (hexvalue(newhexpix[4 * i + 3]) << 0);
   }
   return detectorrawpixnext(newpix, n);
 }
@@ -239,19 +310,24 @@ detectorrawupdatestatistics(void)
   double s0 = 0;
   double s1 = 0;
   double s2 = 0;
-  
-  for (unsigned long iy = pixdataunbinnedwindowsy; iy < pixdataunbinnedwindowsy + pixdataunbinnedwindowny; ++iy) {
-    for (unsigned long ix = pixdataunbinnedwindowsx; ix < pixdataunbinnedwindowsx + pixdataunbinnedwindownx; ++ix) {
+
+  for (unsigned long iy = 0; iy < pixny; ++iy)
+  {
+    for (unsigned long ix = 0; ix < pixnx; ++ix)
+    {
       double z = pix[iy * pixnx + ix];
       s0 += 1;
       s1 += z;
       s2 += z * z;
     }
   }
-  if (s0 == 0) {
+  if (s0 == 0)
+  {
     average = 0;
     standarddeviation = 0;
-  } else {
+  }
+  else
+  {
     double variance;
     average = s1 / s0;
     variance = (s2 / s0) - (s1 / s0) * (s1 / s0);
@@ -275,14 +351,18 @@ detectorrawsetpixdatawindow(unsigned long sx, unsigned long sy, unsigned long nx
 
 ////////////////////////////////////////////////////////////////////////
 
-#define APPENDFITSDATA_ERROR(s) \
-  do { \
-    if (dofork) { \
+#define APPENDFITSDATA_ERROR(s)                                     \
+  do                                                                \
+  {                                                                 \
+    if (dofork)                                                     \
+    {                                                               \
       fprintf(stderr, "error: detectorrawappendfitsdata: %s\n", s); \
-      exit(1); \
-    } else { \
-      DETECTOR_ERROR(s); \
-    } \
+      exit(1);                                                      \
+    }                                                               \
+    else                                                            \
+    {                                                               \
+      DETECTOR_ERROR(s);                                            \
+    }                                                               \
   } while (0)
 
 static void
@@ -303,35 +383,40 @@ fputs16(short s, FILE *fp)
 
 const char *
 detectorrawappendfitsdata(
-  const char *partialfitsfilename, const char *finalfitsfilename, const char *latestfilename, const char *currentfilename,
-  int dofork, double bscale, double bzero
-)
+    const char *partialfitsfilename, const char *finalfitsfilename, const char *latestfilename, const char *currentfilename,
+    int dofork, double bscale, double bzero)
 {
   // Open the temporary file before potentially forking in order to be
   // able to report an error to the parent.
-  
+
   FILE *fp = fopen(partialfitsfilename, "ab");
-  if (fp == NULL) {
+  if (fp == NULL)
+  {
     DETECTOR_ERROR("unable to open the partial FITS file.");
   }
-  
+
   // Wait for any children, to prevent defunct processes.
   while (waitpid(-1, 0, WNOHANG) > 0)
     ;
-  
-  if (dofork) {
+
+  if (dofork)
+  {
     pid_t pid = fork();
-    if (pid == -1) {
+    if (pid == -1)
+    {
       DETECTOR_ERROR("unable to fork.");
-    } else if (pid != 0) {
+    }
+    else if (pid != 0)
+    {
       fclose(fp);
       DETECTOR_OK();
     }
   }
-    
+
   unsigned long pixn = pixnx * pixny;
-  for (unsigned long i = 0; i < pixn; ++i) {
-    short s16 = floor(((double) pix[i] - bzero) / bscale);
+  for (unsigned long i = 0; i < pixn; ++i)
+  {
+    short s16 = floor(((double)pix[i] - bzero) / bscale);
     fputs16(s16, fp);
   }
   for (unsigned long i = (pixn * 2) % 2880; i % 2880 != 0; ++i)
@@ -339,42 +424,48 @@ detectorrawappendfitsdata(
 
   if (fclose(fp) != 0)
     APPENDFITSDATA_ERROR("error writing the partial FITS file.");
-    
+
   // Create the latest link, if requested.
 
-  if (strcmp(latestfilename, "") != 0) {
+  if (strcmp(latestfilename, "") != 0)
+  {
     char tmplatestfilename[strlen(latestfilename) + strlen(".tmp") + 1];
     strcpy(tmplatestfilename, latestfilename);
     strcat(tmplatestfilename, ".tmp");
     unlink(tmplatestfilename);
-    if (link(partialfitsfilename, tmplatestfilename) == -1) {
+    if (link(partialfitsfilename, tmplatestfilename) == -1)
+    {
       unlink(tmplatestfilename);
       static char s[1024];
       sprintf(s, "unable to create a link to the latest file: %s.", strerror(errno));
       APPENDFITSDATA_ERROR(s);
     }
-    if (rename(tmplatestfilename, latestfilename) == -1) {
+    if (rename(tmplatestfilename, latestfilename) == -1)
+    {
       unlink(tmplatestfilename);
       static char s[1024];
       sprintf(s, "unable to rename the link to the latest file: %s.", strerror(errno));
       APPENDFITSDATA_ERROR(s);
     }
   }
-      
+
   // Create the current link, if requested.
-  
-  if (strcmp(currentfilename, "") != 0) {
+
+  if (strcmp(currentfilename, "") != 0)
+  {
     char tmpcurrentfilename[strlen(currentfilename) + strlen(".tmp") + 1];
     strcpy(tmpcurrentfilename, currentfilename);
     strcat(tmpcurrentfilename, ".tmp");
     unlink(tmpcurrentfilename);
-    if (link(partialfitsfilename, tmpcurrentfilename) == -1) {
+    if (link(partialfitsfilename, tmpcurrentfilename) == -1)
+    {
       unlink(tmpcurrentfilename);
       static char s[1024];
       sprintf(s, "unable to create a link to the current file: %s.", strerror(errno));
       APPENDFITSDATA_ERROR(s);
     }
-    if (rename(tmpcurrentfilename, currentfilename) == -1) {
+    if (rename(tmpcurrentfilename, currentfilename) == -1)
+    {
       unlink(tmpcurrentfilename);
       static char s[1024];
       sprintf(s, "unable to rename the link to the current file: %s.", strerror(errno));
@@ -391,7 +482,7 @@ detectorrawappendfitsdata(
     APPENDFITSDATA_ERROR("unable to create a link to the final FITS file.");
   if (unlink(partialfitsfilename) == -1)
     APPENDFITSDATA_ERROR("unable to unlink the temporary FITS file.");
-    
+
   if (dofork)
     _exit(0);
 
@@ -416,7 +507,8 @@ const char *
 detectorrawcubepixnext(const long *newpix, unsigned long n, double bzero, double bscale)
 {
   unsigned long long pixn = pixnx * pixny * pixnframe;
-  for (unsigned long i = 0; i < n; ++i, ++cubepixi) {
+  for (unsigned long i = 0; i < n; ++i, ++cubepixi)
+  {
     if (cubepixi == pixn)
       DETECTOR_ERROR("too much pixel data.");
     unsigned short upix;
@@ -426,7 +518,7 @@ detectorrawcubepixnext(const long *newpix, unsigned long n, double bzero, double
       upix = USHRT_MAX;
     else
       upix = newpix[i] / softwaregain;
-    short spix = floor(((double) upix - bzero) / bscale);
+    short spix = floor(((double)upix - bzero) / bscale);
     fputs16(spix, cubepixfp);
   }
   DETECTOR_OK();
@@ -446,4 +538,3 @@ detectorrawcubepixend(void)
 }
 
 ////////////////////////////////////////////////////////////////////////
-
