@@ -56,12 +56,12 @@ sudo mv /etc/hosts.tmp /etc/hosts
 00  18 *  *  *  tcs updateiersfiles
 00  18 *  *  *  tcs updateleapsecondsfile
 *   *  *  *  *  sleep 10; tcs updatesensorsfiles detector
-*   *  *  *  *  tcs updateweatherfiles-oan
-00  18 *  *  *  tcs updateweatherfiles-oan -a
+#*   *  *  *  *  tcs updateweatherfiles-oan
+#00  18 *  *  *  tcs updateweatherfiles-oan -a
 *   *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
 00  00 *  *  *  tcs updatevarlatestlink; rsync -aH /usr/local/etc/tcs/blocks /usr/local/var/tcs/latest/
 */5 *  *  *  *  tcs logsensors
-*   *  *  *  *  cd /usr/local/var/www/tcs/; sh plots.sh >plots.txt 2>&1
+#*   *  *  *  *  cd /usr/local/var/www/tcs/; sh plots.sh >plots.txt 2>&1
 EOF
   
 ) | sudo crontab
