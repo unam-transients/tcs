@@ -189,6 +189,8 @@ detectorrawmovefilterwheel(unsigned long position)
 const char *
 detectorrawexpose(double exposuretime, const char *shutter)
 {
+  fprintf(stderr, "detectorrawexpose: starting.\n");
+
   DETECTOR_CHECK_OPEN();
   if (strcmp(shutter, "open") != 0 && strcmp(shutter, "closed") != 0)
     DETECTOR_ERROR("invalid shutter argument.");
@@ -224,6 +226,8 @@ bool detectorrawgetreadytoberead(void)
 const char *
 detectorrawread(void)
 {
+  fprintf(stderr, "detectorrawread: starting.\n");
+
   DETECTOR_CHECK_OPEN();
   if (!detectorrawgetreadytoberead())
     DETECTOR_ERROR("the detector is not ready to be read.");

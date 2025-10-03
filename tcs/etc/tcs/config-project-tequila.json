@@ -46,7 +46,7 @@
             "ny": 0
         },
         "coolerstartsetting": "off",
-        "cooleropensetting": "+0",
+        "cooleropensetting": "-10",
         "coolerclosedsetting": "+20",
         "temperaturelimit": 50,
         "temperaturelimitoutletgroup": "",
