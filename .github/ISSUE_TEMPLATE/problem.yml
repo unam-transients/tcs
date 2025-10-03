@@ -1,0 +1,10 @@
+name: Problem issue
+description: Create a problem issue 
+assignees:
+  - alanwatsonatwork
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      placeholder: Describe your problem here ...
