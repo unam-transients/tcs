@@ -39,10 +39,6 @@ static qhyccd_handle *handle;
 
 static char description[DETECTOR_STR_BUFFER_SIZE] = "";
 
-static qhyccd_handle *handle;
-
-static char description[DETECTOR_STR_BUFFER_SIZE] = "";
-
 static double detectortemperature = 0;
 static double housingtemperature = 0;
 static double coolerpower = 0;
@@ -51,10 +47,7 @@ static const char *cooler = "";
 
 static char readmode[DETECTOR_STR_BUFFER_SIZE] = "";
 static uint32_t nreadmode;
-static uint32_t nreadmode;
 
-static unsigned long fullnx = 0;
-static unsigned long fullny = 0;
 static unsigned long fullnx = 0;
 static unsigned long fullny = 0;
 static unsigned long unbinnedwindowsx = 0;
@@ -177,7 +170,7 @@ detectorrawopen(char *identifier)
     fprintf(stderr, "detectorrawopen: gain: min = %f max = %f step = %f.\n", min, max, step);
 
     fprintf(stderr, "detectorrawopen: setting gain.\n");
-    if (SetQHYCCDParam(handle, CONTROL_GAIN, 1.0) != QHYCCD_SUCCESS)
+    if (SetQHYCCDParam(handle, CONTROL_GAIN, 30.0) != QHYCCD_SUCCESS)
       DETECTOR_ERROR("unable to set detector gain.");
 
     fprintf(stderr, "detectorrawopen: getting gain.\n");
@@ -219,9 +212,6 @@ detectorrawclose(void)
   if (CloseQHYCCD(handle) != QHYCCD_SUCCESS)
     DETECTOR_ERROR("unable to close detector.");
   handle = NULL;
-  if (CloseQHYCCD(handle) != QHYCCD_SUCCESS)
-    DETECTOR_ERROR("unable to close detector.");
-  handle = NULL;
   detectorrawsetisopen(false);
   DETECTOR_OK();
 }
@@ -253,14 +243,12 @@ detectorrawexpose(double exposuretime, const char *shutter)
 {
   fprintf(stderr, "detectorrawexpose: starting.\n");
 
-  fprintf(stderr, "detectorrawexpose: starting.\n");
-
   DETECTOR_CHECK_OPEN();
   if (strcmp(shutter, "open") != 0 && strcmp(shutter, "closed") != 0)
     DETECTOR_ERROR("invalid shutter argument.");
 
-  // if (CancelQHYCCDExposingAndReadout(handle) != QHYCCD_SUCCESS)
-  //  DETECTOR_ERROR("unable to cancel exposure.");
+  if (CancelQHYCCDExposingAndReadout(handle) != QHYCCD_SUCCESS)
+    DETECTOR_ERROR("unable to cancel exposure.");
 
   if (SetQHYCCDParam(handle, CONTROL_EXPOSURE, exposuretime * 1e6) != QHYCCD_SUCCESS)
     DETECTOR_ERROR("invalid exposure time.");
@@ -286,17 +274,13 @@ detectorrawcancel(void)
   DETECTOR_CHECK_OPEN();
   if (CancelQHYCCDExposingAndReadout(handle) != QHYCCD_SUCCESS)
     DETECTOR_ERROR("unable to cancel exposure.");
-  if (CancelQHYCCDExposingAndReadout(handle) != QHYCCD_SUCCESS)
-    DETECTOR_ERROR("unable to cancel exposure.");
   DETECTOR_OK();
 }
 
 ////////////////////////////////////////////////////////////////////////
 
 bool detectorrawgetreadytoberead(void)
-bool detectorrawgetreadytoberead(void)
 {
-  return GetQHYCCDExposureRemaining(handle) == 0;
   return GetQHYCCDExposureRemaining(handle) == 0;
 }
 
@@ -305,8 +289,6 @@ bool detectorrawgetreadytoberead(void)
 const char *
 detectorrawread(void)
 {
-  fprintf(stderr, "detectorrawread: starting.\n");
-
   fprintf(stderr, "detectorrawread: starting.\n");
 
   DETECTOR_CHECK_OPEN();
@@ -360,14 +342,6 @@ detectorrawsetreadmode(const char *newreadmode)
     DETECTOR_ERROR("invalid read mode.");
   if (SetQHYCCDReadMode(handle, newreadmodeindex) != QHYCCD_SUCCESS)
     DETECTOR_ERROR("unable to set read mode.");
-  char *end;
-  uint32_t newreadmodeindex = strtoul(newreadmode, &end, 10);
-  if (*end != 0)
-    DETECTOR_ERROR("invalid read mode.");
-  if (newreadmodeindex >= nreadmode)
-    DETECTOR_ERROR("invalid read mode.");
-  if (SetQHYCCDReadMode(handle, newreadmodeindex) != QHYCCD_SUCCESS)
-    DETECTOR_ERROR("unable to set read mode.");
   strcpy(readmode, newreadmode);
   DETECTOR_OK();
 }
@@ -380,18 +354,12 @@ detectorrawsetunbinnedwindow(unsigned long newsx, unsigned long newsy, unsigned 
   DETECTOR_CHECK_OPEN();
   if (newsx == 0 && newnx == 0)
   {
-  if (newsx == 0 && newnx == 0)
-  {
     newnx = fullnx;
   }
   if (newsy == 0 && newny == 0)
   {
-  if (newsy == 0 && newny == 0)
-  {
     newny = fullny;
   }
-  if (SetQHYCCDResolution(handle, newsx, newsy, newnx, newny) != QHYCCD_SUCCESS)
-    DETECTOR_ERROR("unable to set window.");
   if (SetQHYCCDResolution(handle, newsx, newsy, newnx, newny) != QHYCCD_SUCCESS)
     DETECTOR_ERROR("unable to set window.");
   unbinnedwindowsx = newsx;
@@ -407,8 +375,6 @@ const char *
 detectorrawsetbinning(unsigned long newbinning)
 {
   DETECTOR_CHECK_OPEN();
-  if (SetQHYCCDBinMode(handle, newbinning, newbinning) != QHYCCD_SUCCESS)
-    DETECTOR_ERROR("unable to set binning.");
   if (SetQHYCCDBinMode(handle, newbinning, newbinning) != QHYCCD_SUCCESS)
     DETECTOR_ERROR("unable to set binning.");
   binning = newbinning;
@@ -452,7 +418,6 @@ detectorrawupdatestatus(void)
 const char *
 detectorrawgetvalue(const char *name)
 {
-  static char value[DETECTOR_STR_BUFFER_SIZE];
   static char value[DETECTOR_STR_BUFFER_SIZE];
   if (strcmp(name, "description") == 0)
     snprintf(value, sizeof(value), "%s", description);
@@ -501,25 +466,8 @@ detectorrawsetcooler(const char *newcooler)
       DETECTOR_ERROR("unable to set cooler to on.");
     if (SetQHYCCDParam(handle, CONTROL_MANULPWM, 128.0) != QHYCCD_SUCCESS)
       DETECTOR_ERROR("unable to set cooler to 50%.");
-
-  if (IsQHYCCDControlAvailable(handle, CONTROL_COOLER) != QHYCCD_SUCCESS)
-    DETECTOR_ERROR("unable to set cooler set temperature.");
-  if (IsQHYCCDControlAvailable(handle, CONTROL_MANULPWM) != QHYCCD_SUCCESS)
-    DETECTOR_ERROR("unable to set cooler power.");
-
-  if (strcmp(newcooler, "on") == 0)
-  {
-    if (ControlQHYCCDTemp(handle, coolersettemperature) != QHYCCD_SUCCESS)
-      DETECTOR_ERROR("unable to set cooler to on.");
-    if (SetQHYCCDParam(handle, CONTROL_MANULPWM, 128.0) != QHYCCD_SUCCESS)
-      DETECTOR_ERROR("unable to set cooler to 50%.");
     cooler = "on";
     DETECTOR_OK();
-  }
-  else if (strcmp(newcooler, "off") == 0)
-  {
-    if (SetQHYCCDParam(handle, CONTROL_MANULPWM, 0.0) != QHYCCD_SUCCESS)
-      DETECTOR_ERROR("unable to set cooler to off.");
   }
   else if (strcmp(newcooler, "off") == 0)
   {
