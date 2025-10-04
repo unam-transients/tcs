@@ -77,7 +77,7 @@ installs_project_tequila	:=		    \
 	visitcommands-project-tequila.tcl
 	
 installbins_project_test	:=		    \
-	alertscript-project-equila
+	alertscript-project-test
 
 INSTALL_DIR	:=	$(prefix)/etc/tcs/
 

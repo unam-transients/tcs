@@ -30,42 +30,42 @@ package require log
 namespace eval "utcclock" {
 
   ######################################################################
-  
-  # taiminusutclist is a list that contains triples of entries corresponding to
+
+  # dtailist is a list that contains triples of entries corresponding to
   # leap seconds being added or removed. The first member of each pair is the
   # number of POSIX seconds, the seconds is the corresponding number of UTC
-  # seconds, and the third is the TAI-UTC offset valid from that moment. The
+  # seconds, and the third is the dTAI offset valid from that moment. The
   # list is in reverse order, with the latest entry being first.
-  
-  variable taiminusutclist {}
-  
+
+  variable dtailist {}
+
   proc parseleapsecondlines {lines} {
-    # The data lines have an NTP timestamp followed the value of TAI-UTC that is
+    # The data lines have an NTP timestamp followed the value of dTAI that is
     # valid from that point. NTP timestamps are second since 1900-01-01
-    # 00:00:00, ignoring leap seconds and other adjustments. 
-    log::debug "creating the TAI-UTC list."
-    variable taiminusutclist
+    # 00:00:00, ignoring leap seconds and other adjustments.
+    log::debug "creating the dTAU list."
+    variable dtailist
     set posixoffset [expr {(70 * 365 + 70/4) * 24 * 60 * 60}]
-    set taiminusutclist {}
+    set dtailist {}
     foreach line $lines {
-      if {[::scan $line "%d %d" ntpseconds taiminusutc] == 2} {
+      if {[::scan $line "%d %d" ntpseconds dtai] == 2} {
         set posixseconds [expr {$ntpseconds - $posixoffset}]
-        set utcseconds   [expr {$posixseconds + $taiminusutc - 10}]
-        lappend taiminusutclist $taiminusutc
-        lappend taiminusutclist $utcseconds
-        lappend taiminusutclist $posixseconds
+        set utcseconds   [expr {$posixseconds + $dtai - 10}]
+        lappend dtailist $dtai
+        lappend dtailist $utcseconds
+        lappend dtailist $posixseconds
       }
     }
-    set taiminusutclist [lreverse $taiminusutclist]  
-    foreach {posixseconds utcseconds taiminusutc} $taiminusutclist {
-      log::debug "from [format $utcseconds] UTC the value of TAI-UTC is $taiminusutc seconds."
+    set dtailist [lreverse $dtailist]
+    foreach {posixseconds utcseconds dtai} $dtailist {
+      log::debug "from [format $utcseconds] UTC the value of dTAI is $dtai seconds."
     }
-    log::debug "finished creating the TAI-UTC list."
+    log::debug "finished creating the dTAI list."
   }
-  
-  proc updatetaiminusutclist {} {
+
+  proc updatedtailist {} {
     set path "[directories::var]/iers/leapseconds"
-    log::debug "updating the TAI-UTC list from \"$path\"."
+    log::debug "updating the dTAI list from \"$path\"."
     if {[file exists $path]} {
       set lines {}
       if {[catch {
@@ -76,47 +76,120 @@ namespace eval "utcclock" {
         }
         catch {close $channel}
       } message]} {
-        catch {log::error "while reading TAI-UTC: $message"}
+        catch {log::error "while reading dTAI: $message"}
         return
       }
       parseleapsecondlines $lines
-    }    
-    log::debug "finished updating the TAI-UTC list."
+    }
+    log::debug "finished updating the dTAI list."
   }
-  
+
   proc posixtoutcseconds {seconds} {
-    variable taiminusutclist
-    foreach {posixseconds utcseconds taiminusutc} $taiminusutclist {
+    variable dtailist
+    foreach {posixseconds utcseconds dtai} $dtailist {
       if {$seconds >= $posixseconds} {
-        return [expr {$seconds + $taiminusutc - 10}]
+        return [expr {$seconds + $dtai - 10}]
       }
     }
     return $seconds
   }
-  
+
   proc utctoposixseconds {seconds} {
-    variable taiminusutclist
-    foreach {posixseconds utcseconds taiminusutc} $taiminusutclist {
+    variable dtailist
+    foreach {posixseconds utcseconds dtai} $dtailist {
       if {$seconds >= $utcseconds} {
-        return [expr {$seconds - $taiminusutc + 10}]
+        return [expr {$seconds - $dtai + 10}]
       }
     }
     return $seconds
   }
-  
-  proc gettaiminusutc {{seconds "now"}} {
+
+  proc getdtai {{seconds "now"}} {
     if {[string equal $seconds now]} {
       set seconds [seconds]
     }
-    variable taiminusutclist
-    foreach {posixseconds utcseconds taiminusutc} $taiminusutclist {
+    variable dtailist
+    foreach {posixseconds utcseconds dtai} $dtailist {
       if {$seconds >= $utcseconds} {
-        return $taiminusutc
+        return $dtai
       }
     }
     return 10
   }
-    
+
+  ######################################################################
+
+  # dut1list is a list of pairs of utcseconds and the predicted value of dut1 at
+  # the moment.
+
+  variable dut1list {}
+
+  proc parsebulletinAlines {lines} {
+    # The lines we are looking for are after a line containing "PREDICTIONS:"
+    # and have seven numerical fields. The fourth one is the MJD and the last
+    # one is dUT1.
+    log::debug "creating the dUT1 list."
+    variable dut1list
+    set dut1list {}
+    set predictions false
+    foreach line $lines {
+      set line [string trim $line]
+      if {[string equal $line "PREDICTIONS:"]} {
+        set predictions true
+      }
+      if {$predictions && [llength $line] == 7} {
+        set mjd [lindex $line 3]
+        set dut1 [lindex $line 6]
+        set utcseconds [frommjd $mjd]
+        lappend dut1list $dut1
+        lappend dut1list $utcseconds
+      }
+    }
+    set dut1list [lreverse $dut1list]
+    foreach {utcseconds dut1} $dut1list {
+      log::debug "from [format $utcseconds] UTC the value of dUT1 is $dut1 seconds."
+    }
+    log::debug "finished creating the dUT1 list."
+  }
+
+  proc updatedut1list {} {
+
+    set path "[directories::var]/iers/bulletinA.txt"
+    log::debug "updating the dUT1 list from \"$path\"."
+    if {[file exists $path]} {
+      set lines {}
+      if {[catch {
+        set channel [open $path "r"]
+        while {![eof $channel]} {
+          set line [gets $channel]
+          lappend lines $line
+        }
+        catch {close $channel}
+      } message]} {
+        catch {log::error "while reading dTAI: $message"}
+        return
+      }
+      parsebulletinAlines $lines
+    }
+    log::debug "finished updating the dUT1 list."
+
+  }
+
+  proc getdut1 {{seconds "now"}} {
+    if {[string equal $seconds now]} {
+      set seconds [seconds]
+    }
+    variable dut1list
+    # The list has dUT1 values every 24 hours. Return the first one within 12
+    # hours, otherwise the last one.
+    foreach {utcseconds dut1} $dut1list {
+      if {abs($seconds - $utcseconds) <= 12 * 3600} {
+        return $dut1
+      }
+    }
+    return $dut1
+  }
+
   ######################################################################
 
   variable resolution
@@ -155,7 +228,7 @@ namespace eval "utcclock" {
     }
     return $seconds
   }
-  
+
   proc posixmilliseconds {} {
     variable resolution
     if {$resolution == 1.0} {
@@ -165,16 +238,16 @@ namespace eval "utcclock" {
     }
     return $milliseconds
   }
-  
+
   ######################################################################
-  
+
   # The seconds and milliseconds procedures return the number of UTC seconds and
   # milliseconds since 1970-01-01 00:00:00 UTC, including leap seconds.
-  
+
   proc seconds {} {
     return [posixtoutcseconds [posixseconds]]
   }
-  
+
   proc milliseconds {} {
     set posixmilliseconds [posixmilliseconds]
     set posixseconds [expr {floor($posixmilliseconds / 1000)}]
@@ -186,21 +259,21 @@ namespace eval "utcclock" {
 
   variable epochmjd   40587.0
   variable epochjd  2440587.5
-  
+
   proc frommjd {mjd} {
     variable epochmjd
     set seconds [expr {($mjd - $epochmjd) * (24.0 * 60.0 * 60.0)}]
     set seconds [posixtoutcseconds $seconds]
     return $seconds
   }
-  
+
   proc mjd {{seconds "now"}} {
     variable epochmjd
     if {[string equal $seconds now]} {
       set seconds [seconds]
     } elseif {![string is double -strict $seconds]} {
       set seconds [scan $seconds]
-    }    
+    }
     set seconds [utctoposixseconds $seconds]
     expr {$seconds / (24.0 * 60.0 * 60.0) + $epochmjd}
   }
@@ -211,18 +284,18 @@ namespace eval "utcclock" {
     set seconds [posixtoutcseconds $seconds]
     return $seconds
   }
-  
+
   proc jd {seconds} {
     variable epochjd
     if {[string equal $seconds now]} {
       set seconds [seconds]
     } elseif {![string is double -strict $seconds]} {
       set seconds [scan $seconds]
-    }    
+    }
     set seconds [utctoposixseconds $seconds]
     return [expr {$seconds / (24.0 * 60.0 * 60.0) + $epochjd}]
   }
-  
+
   proc epoch {{seconds "now"}} {
     # See Lieske (1979, A&A, 73, 282).
     set jd [jd $seconds]
@@ -230,7 +303,7 @@ namespace eval "utcclock" {
   }
 
   ######################################################################
-  
+
   # These format procedures return the UTC time corresponding to a given number
   # of UTC seconds after 1970-01-01 00:00:00 UTC.
 
@@ -239,7 +312,7 @@ namespace eval "utcclock" {
       set seconds [seconds]
     } elseif {![string is double -strict $seconds]} {
       set seconds [scan $seconds]
-    }    
+    }
     set seconds [utctoposixseconds $seconds]
     set iseconds [expr {int(floor($seconds))}]
     set fseconds [expr {$seconds - $iseconds}]
@@ -290,7 +363,7 @@ namespace eval "utcclock" {
       generalformat $seconds $precision "%H%M%S"
     }
   }
-  
+
   proc formatinterval {seconds {extended true}} {
     if {$seconds < 60} {
       return [::format "%.1f seconds" $seconds]
@@ -316,10 +389,10 @@ namespace eval "utcclock" {
 
   proc scan {text} {
     if {[::scan $text "%4d-%2d-%2d %2d:%2d:%f" years months days hours minutes seconds] == 6 || \
-        [::scan $text "%4d-%2d-%2dT%2d:%2d:%f" years months days hours minutes seconds] == 6 || \
+      [::scan $text "%4d-%2d-%2dT%2d:%2d:%f" years months days hours minutes seconds] == 6 || \
         [::scan $text "%4d%2d%2d %2d%2d%f" years months days hours minutes seconds] == 6 || \
         [::scan $text "%4d%2d%2dT%2d%2d%f" years months days hours minutes seconds] == 6 } {
-      set iseconds [expr {int(floor($seconds))}]
+        set iseconds [expr {int(floor($seconds))}]
       set fseconds [expr {$seconds - $iseconds}]
       set itext [::format "%04d-%02d-%02d %02d:%02d:%02d" $years $months $days $hours $minutes $iseconds]
       set iseconds [clock scan $itext -gmt true]
@@ -367,7 +440,7 @@ namespace eval "utcclock" {
     }
     return $newinterval
   }
-  
+
   ######################################################################
 
   proc diff {a {b "now"}} {
@@ -433,11 +506,16 @@ namespace eval "utcclock" {
     "3644697600	36	# 1 Jul 2015"
     "3692217600	37	# 1 Jan 2017"
   }
-  
-  updatetaiminusutclist
+
+  updatedtailist
+  updatedut1list
+
+  log::debug [::format "dTAI is %.0f seconds." [getdtai]]
+  log::debug [::format "dUT1 is %.3f seconds." [getdut1]]
   after idle {
-    coroutine::afterandevery 3600000 catch utcclock::updatetaiminusutclist
-  }  
+    coroutine::afterandevery 3600000 catch utcclock::updatedtailist
+    coroutine::afterandevery 3600000 catch utcclock::updatedut1list
+  }
 
   ######################################################################
 
