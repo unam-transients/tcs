@@ -178,6 +178,26 @@ detectorrawopen(char *identifier)
     fprintf(stderr, "detectorrawopen: gain = %f.\n", gain);
   }
 
+  if (IsQHYCCDControlAvailable(handle, CONTROL_OFFSET) != QHYCCD_SUCCESS)
+  {
+    fprintf(stderr, "detectorrawopen: unable to control offset.");
+  }
+  else
+  {
+    double min, max, step;
+    if (GetQHYCCDParamMinMaxStep(handle, CONTROL_OFFSET, &min, &max, &step) != QHYCCD_SUCCESS)
+      DETECTOR_ERROR("unable to determine detector offset values.");
+    fprintf(stderr, "detectorrawopen: offset: min = %f max = %f step = %f.\n", min, max, step);
+
+    fprintf(stderr, "detectorrawopen: setting offset.\n");
+    if (SetQHYCCDParam(handle, CONTROL_OFFSET, 30.0) != QHYCCD_SUCCESS)
+      DETECTOR_ERROR("unable to set detector offset.");
+
+    fprintf(stderr, "detectorrawopen: getting offset.\n");
+    double offset = GetQHYCCDParam(handle, CONTROL_OFFSET);
+    fprintf(stderr, "detectorrawopen: offset = %f.\n", offset);
+  }
+
   if (IsQHYCCDControlAvailable(handle, CONTROL_SPEED) != QHYCCD_SUCCESS)
   {
     fprintf(stderr, "detectorrawopen: unable to control speed.");
@@ -281,6 +301,7 @@ detectorrawcancel(void)
 
 bool detectorrawgetreadytoberead(void)
 {
+  fprintf(stderr, "detectorrawgetreadytoberead: polling.\n");
   return GetQHYCCDExposureRemaining(handle) == 0;
 }
 
@@ -334,16 +355,29 @@ const char *
 detectorrawsetreadmode(const char *newreadmode)
 {
   DETECTOR_CHECK_OPEN();
-  char *end;
-  uint32_t newreadmodeindex = strtoul(newreadmode, &end, 10);
-  if (*end != 0)
+
+  unsigned int ireadmode, igain, ioffset;
+
+  if (sscanf(newreadmode, "%u-%u-%u", &ireadmode, &igain, &ioffset) != 3)
     DETECTOR_ERROR("invalid read mode.");
-  if (newreadmodeindex >= nreadmode)
-    DETECTOR_ERROR("invalid read mode.");
-  if (SetQHYCCDReadMode(handle, newreadmodeindex) != QHYCCD_SUCCESS)
+
+  if (SetQHYCCDReadMode(handle, ireadmode) != QHYCCD_SUCCESS)
     DETECTOR_ERROR("unable to set read mode.");
+  if (SetQHYCCDParam(handle, CONTROL_GAIN, igain) != QHYCCD_SUCCESS)
+    DETECTOR_ERROR("unable to set gain.");
+  if (SetQHYCCDParam(handle, CONTROL_GAIN, ioffset) != QHYCCD_SUCCESS)
+    DETECTOR_ERROR("unable to set offset.");
+
+  uint32_t nx, ny, bpp;
+  double detectorx, detectory, pixelx, pixely;
+  if (GetQHYCCDChipInfo(handle, &detectorx, &detectory, &nx, &ny, &pixelx, &pixely, &bpp) != QHYCCD_SUCCESS)
+    DETECTOR_ERROR("unable to determine detector parameters.");
+  fullnx = nx;
+  fullny = ny;
+
   strcpy(readmode, newreadmode);
-  DETECTOR_OK();
+
+  return detectorrawsetunbinnedwindow(0, 0, 0, 0);
 }
 
 ////////////////////////////////////////////////////////////////////////

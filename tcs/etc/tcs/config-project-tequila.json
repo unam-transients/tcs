@@ -24,14 +24,20 @@
         "detectorreadmodes": {
             "initial": "default",
             "closed": "default",
-            "default": "0"
+            "default": "0-128-1000"
         },
         "detectorboresight": "datawindowcenter",
         "detectorinitialsoftwaregain": 1,
         "detectordefaultbinning": 1,
         "detectorwindows": {
             "initial": "default",
-            "default": "full"
+            "default": "full",
+            "1kx1k": {
+                "sx": "1552",
+                "nx": "1024",
+                "sy": "987",
+                "ny": "1024"
+            }
         },
         "detectorfullunbinneddatawindow": {
             "sx": 0,
