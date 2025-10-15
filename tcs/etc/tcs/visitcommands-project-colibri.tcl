@@ -521,7 +521,7 @@ proc coarsefocusvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
 
 ########################################################################
 
-proc focusvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
+proc focusvisit {{exposuretime 5} {filter {"r" "i" "z"}} {detector "C1"}} {
 
   log::summary "focusvisit: starting."
   
@@ -533,7 +533,6 @@ proc focusvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
   } elseif {[string equal $instrument "ddrago"]} {
     set window "1kx1k"
     set binning 1
-    set detector "C1"
   } else {
     error "invalid instrument \"$instrument\"."
   }
