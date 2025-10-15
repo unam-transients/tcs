@@ -35,10 +35,10 @@ namespace eval "plc" {
   ######################################################################
 
   variable controllerhost             [config::getvalue "plc" "controllerhost"]
-  variable controllerport             [config::getvalue "plc" "controllerport"]  
+  variable controllerport             [config::getvalue "plc" "controllerport"]
   variable daylightalarmoffsetseconds [config::getvalue "plc" "daylightalarmoffsetseconds"]
   variable windspeedlimit             [config::getvalue "plc" "windspeedlimit"]
-  
+
   ######################################################################
 
   set controller::host                        $controllerhost
@@ -52,10 +52,10 @@ namespace eval "plc" {
   set server::datalifeseconds                 30
 
   ######################################################################
-  
+
   variable boltwoodenabled [config::getvalue "plc" "boltwoodenabled"]
   variable vaisalaenabled  [config::getvalue "plc" "vaisalaenabled"]
-  
+
   ######################################################################
 
   variable forcemustbeclosed false
@@ -76,7 +76,7 @@ namespace eval "plc" {
       return false
     }
   }
-  
+
   variable responsea ""
   variable responseb ""
   variable responsec ""
@@ -109,23 +109,23 @@ namespace eval "plc" {
       log::warning "unexpected response \"$response\"."
       return false
     }
-    
+
     if {[string match "* Cloud Sensor has been restarted *" $response]} {
       log::info "finished rebooting boltwood."
       return false
     }
-    
+
     if {[string match "* Weather Station has been restarted *" $response]} {
       log::info "finished rebooting vaisala."
       return false
     }
-    
+
     if {[string match "* Clarity II Software has been restarted *" $response]} {
       log::info "finished restarting boltwood software."
       return false
     }
-    
-    set letter [string index $response 0]    
+
+    set letter [string index $response 0]
     if {[string equal $letter "a"]} {
       set responsea $response
       return false
@@ -138,7 +138,7 @@ namespace eval "plc" {
       log::warning "unexpected response \"$response\"."
       return false
     }
-    
+
     if {
       [string equal $responsea ""] ||
       [string equal $responseb ""] ||
@@ -147,16 +147,16 @@ namespace eval "plc" {
       log::warning "missing at least one response."
       return false
     }
-    
+
     server::setdata "responsea" $responsea
     server::setdata "responseb" $responseb
     server::setdata "responsec" $responsec
-    
+
     # Process responsea.
-    
+
     set field [string map {" " ""} $responsea]
     set field [split $field ";"]
-    
+
     if {!$vaisalaenabled} {
       server::setdata "vaisalawindminazimuth"        ""
       server::setdata "vaisalawindaverageazimuth"    ""
@@ -223,7 +223,7 @@ namespace eval "plc" {
     }]} {
       log::warning "unable to read vaisala data."
     }
-    
+
     if {!$boltwoodenabled} {
       server::setdata "boltwoodskytemperature"        ""
       server::setdata "boltwoodairtemperature"        ""
@@ -253,7 +253,7 @@ namespace eval "plc" {
     }]} {
       log::warning "unable to read boltwood data."
     }
-    
+
     if {[catch {
       server::setdata "comet1temperature"             [format "%.1f" [lindex $field 30]]
       server::setdata "comet1humidity"                [format "%.3f" [expr {0.01 * [lindex $field 31]}]]
@@ -264,7 +264,7 @@ namespace eval "plc" {
     }]} {
       log::warning "unable to read comet data."
     }
-    
+
     if {[catch {
       server::setdata "europeanupsbatterychargelevel" [format "%.2f" [expr {0.01 * [lindex $field 36]}]]
       server::setdata "europeanupsbatterytemperature" [format "%.1f" [lindex $field 37]]
@@ -286,7 +286,7 @@ namespace eval "plc" {
     }]} {
       log::warning "unable to read european ups data."
     }
-    
+
     set rawmode [lindex $field 50]
 
     if {[catch {
@@ -333,12 +333,12 @@ namespace eval "plc" {
     }]} {
       log::warning "unable to read alarm data."
     }
-    
+
     variable forcemustbeclosed
     if {$forcemustbeclosed} {
-      server::setdata "mustbeclosed" true 
+      server::setdata "mustbeclosed" true
     }
-    
+
     switch -- "[string index $responseb 39]" {
       "0" { set localconfirmation "pending"   }
       "1" { set localconfirmation "confirmed" }
@@ -362,7 +362,7 @@ namespace eval "plc" {
     }]} {
       log::warning "unable to read intrusion alarm data."
     }
-    
+
     # Positions 44 and 45 are reserved.
 
     if {[catch {
@@ -388,7 +388,7 @@ namespace eval "plc" {
     }]} {
       log::warning "unable to read rio data."
     }
-    
+
     if {[catch {
       foreach i { 1 2 3 4 5 6 7 8 9 10 11 12 } {
         switch [string index $responseb [expr {59 + $i}]] {
@@ -405,7 +405,7 @@ namespace eval "plc" {
     }]} {
       log::warning "unable to read louver data."
     }
-    
+
     if {[catch {
       switch [string index $responseb 60] {
         "0" { set lights "off"  }
@@ -419,7 +419,7 @@ namespace eval "plc" {
     }]} {
       log::warning "unable to read lights data."
     }
-        
+
     switch -- "[string index $responseb 77][string index $responseb 78]" {
       "00" { set telescopemode "off"    }
       "01" { set telescopemode "remote"  }
@@ -441,7 +441,7 @@ namespace eval "plc" {
       }
     }
     server::setdata "domemode"                         $domemode
-    
+
     switch -- "[string index $responseb 80][string index $responseb 81]" {
       "00" { set shutters "error"         }
       "01" { set shutters "open"          }
@@ -480,7 +480,7 @@ namespace eval "plc" {
         }
       }
       server::setdata "requesteddomemode"              $domemode
-    }]} { 
+    }]} {
       log::warning "unable to read plc data."
     }
 
@@ -495,15 +495,15 @@ namespace eval "plc" {
     }]} {
       log::warning "unable to read bypass data."
     }
-    
+
     # 95 was the UPS status with the original Schneider UPS, but this is no longer used.
 
     switch -- "[string index $responseb 96]" {
       "0" { set fans "off" }
       "1" { set fans "on"  }
       "default" {
-         log::warning "unable to read fans data."
-         set fans ""
+        log::warning "unable to read fans data."
+        set fans ""
       }
     }
     server::setdata "fans"                             $fans
@@ -512,12 +512,12 @@ namespace eval "plc" {
       "0" { set telescopecabinetpower "off" }
       "1" { set telescopecabinetpower "on"  }
       "default" {
-         log::warning "unable to read telescope cabinet data."
-         set fans ""
+        log::warning "unable to read telescope cabinet data."
+        set fans ""
       }
     }
     server::setdata "telescopecabinetpower"            $telescopecabinetpower
-    
+
     switch -- "[string index $responseb 100]" {
       "0" { set accessrequested false }
       "1" { set accessrequested true  }
@@ -531,12 +531,12 @@ namespace eval "plc" {
     }]} {
       log::warning "unable to read individual rain alarm data."
     }
-    
+
     # Process responsec.
 
     set field [string map {" " ""} $responsec]
     set field [split $field ";"]
-    
+
     if {[catch {
       server::setdata "americanupsl1current"          [format "%.1f" [lindex $field 2]]
       server::setdata "americanupsl2current"          [format "%.1f" [lindex $field 3]]
@@ -578,7 +578,7 @@ namespace eval "plc" {
     server::setdata "humidityalarmdisabled"                 [boolean [expr {[server::getdata "bypasshumidityalarm"] || [server::getdata "bypassweatheralarms"]}]]
     server::setdata "cloudalarmdisabled"                    [boolean [expr {[server::getdata "bypasscloudalarm"]    || [server::getdata "bypassweatheralarms"]}]]
     server::setdata "daylightalarmdisabled"                 [server::getdata "bypassdaylightalarm"]
-    
+
     server::setdata "tcsalarmdisabled"                      [server::getdata "bypasstcsalarm"]
     server::setdata "upsalarmdisabled"                      [server::getdata "bypassupsalarm"]
 
@@ -588,7 +588,7 @@ namespace eval "plc" {
     server::setdata "riocommunicationalarmdisabled"         [server::getdata "bypassweatheralarms"]
     server::setdata "riovaisalacommunicationalarmdisabled"  [server::getdata "bypassweatheralarms"]
     server::setdata "rioboltwoodcommunicationalarmdisabled" [server::getdata "bypassweatheralarms"]
-    
+
     # The PLC is normally left in remote mode.
 
     switch -glob $rawmode/$requestedpark/$requestedclose {
@@ -603,7 +603,7 @@ namespace eval "plc" {
       "AUTO_PARK/*/*"         { set mode "must not operate" }
       "AUTO_INTRUSION/*/*"    { set mode "intrusion detected" }
       "ESTOP/*/*"             { set mode "emergency stop activated"}
-       default          { 
+      default          {
         log::warning "unable to read mode data: $rawmode/$requestedpark/$requestedclose."
         set mode ""
       }
@@ -613,607 +613,607 @@ namespace eval "plc" {
     set mustnotoperate [boolean [expr {
       ![string equal $mode "may open"] &&
       ![string equal $mode "must close"]
-    }]]
-    server::setdata "mustnotoperate" $mustnotoperate
-    
-    foreach {level name prettyname} {
+      }]]
+      server::setdata "mustnotoperate" $mustnotoperate
 
-      "info"    "fans"                          "fans"             
+      foreach {level name prettyname} {
 
-      "info"    "shutters"                      "shutters"
+        "info"    "fans"                          "fans"
 
-      "summary" "telescopecabinetpower"         "telescope cabinet power"
-      
-      "info"    "bypasskeyswitch"               "key switch bypass"
-      "info"    "bypassweatheralarms"           "weather alarms bypass"
-      "info"    "bypasswindalarm"               "wind alarm bypass"
-      "info"    "bypasshumidityalarm"           "dewpoint alarm bypass"
-      "info"    "bypasscloudalarm"              "cloud alarm bypass"
-      "info"    "bypassrainalarm"               "rain alarm bypass"
-      "info"    "bypassdaylightalarm"           "daylight alarm bypass"
-      "info"    "bypassupsalarm"                "ups alarm bypass"
-      "info"    "bypasstcsalarm"                "tcs alarm bypass"
-      
-      "summary" "rainalarmdisabled"             "rain alarm disabled"
-      "summary" "windalarmdisabled"             "wind alarm disabled"
-      "summary" "humidityalarmdisabled"         "humidity alarm disabled"
-      "summary" "cloudalarmdisabled"            "cloud alarm disabled"
-      "summary" "daylightalarmdisabled"         "daylight alarm disabled"
-      "summary" "tcsalarmdisabled"              "tcs alarm disabled"
-      "summary" "upsalarmdisabled"              "ups alarm disabled"
-      
-      "info"    "motorpoweron"                  "motor power on"
+        "info"    "shutters"                      "shutters"
 
-      "summary" "europeanupsoverloaded"         "european ups overloaded"
-      "summary" "europeanupsfault"              "european ups fault"
-      "summary" "europeanupsusingbattery"       "european ups using battery"
-      "summary" "europeanupscommunicationalarm" "european ups communication alarm"
-      "summary" "americanupsstatus"             "american ups status"
-      "summary" "americanupsusingbattery"       "american ups using battery"
-      "summary" "americanupscommunicationalarm" "american ups communication alarm"
+        "summary" "telescopecabinetpower"         "telescope cabinet power"
 
-      "warning" "riousingbattery"               "rio using battery"
+        "info"    "bypasskeyswitch"               "key switch bypass"
+        "info"    "bypassweatheralarms"           "weather alarms bypass"
+        "info"    "bypasswindalarm"               "wind alarm bypass"
+        "info"    "bypasshumidityalarm"           "dewpoint alarm bypass"
+        "info"    "bypasscloudalarm"              "cloud alarm bypass"
+        "info"    "bypassrainalarm"               "rain alarm bypass"
+        "info"    "bypassdaylightalarm"           "daylight alarm bypass"
+        "info"    "bypassupsalarm"                "ups alarm bypass"
+        "info"    "bypasstcsalarm"                "tcs alarm bypass"
 
-      "warning" "vaisalarainalarm"              "vaisala rain alarm"
-      "warning" "boltwoodrainalarm"             "boltwood rain alarm"
-      "warning" "bletrainalarm"                 "blet rain alarm"
+        "summary" "rainalarmdisabled"             "rain alarm disabled"
+        "summary" "windalarmdisabled"             "wind alarm disabled"
+        "summary" "humidityalarmdisabled"         "humidity alarm disabled"
+        "summary" "cloudalarmdisabled"            "cloud alarm disabled"
+        "summary" "daylightalarmdisabled"         "daylight alarm disabled"
+        "summary" "tcsalarmdisabled"              "tcs alarm disabled"
+        "summary" "upsalarmdisabled"              "ups alarm disabled"
 
-      "warning" "riobatteryalarm"               "rio battery alarm"
-      "warning" "rainalarm"                     "rain alarm"
-      "warning" "windalarm"                     "wind alarm"
-      "warning" "cloudalarm"                    "cloud alarm"
-      "warning" "daylightalarm"                 "daylight alarm"
-      "warning" "humidityalarm"                 "dewpoint alarm"
-      "warning" "tcsalarm"                      "tcs alarm"
-      "warning" "upsalarm"                      "ups alarm"
-      "warning" "intrusionalarm"                "intrusion alarm"
-      "warning" "riocommunicationalarm"         "rio communication alarm"
-      "warning" "riovaisalacommunicationalarm"  "rio vaisala communication alarm"
-      "warning" "rioboltwoodcommunicationalarm" "rio boltwoodcommunication alarm"
-      "warning" "emergencystopalarm"            "emergency stop alarm"
+        "info"    "motorpoweron"                  "motor power on"
 
-      "warning" "keyswitch"                     "key switch"
-      "warning" "mode"                          "mode"
+        "summary" "europeanupsoverloaded"         "european ups overloaded"
+        "summary" "europeanupsfault"              "european ups fault"
+        "summary" "europeanupsusingbattery"       "european ups using battery"
+        "summary" "europeanupscommunicationalarm" "european ups communication alarm"
+        "summary" "americanupsstatus"             "american ups status"
+        "summary" "americanupsusingbattery"       "american ups using battery"
+        "summary" "americanupscommunicationalarm" "american ups communication alarm"
 
-      "info"    "requestedtelescopemode"        "requested telescope mode"
-      "info"    "telescopemode"                 "telescope mode"
-      "info"    "requesteddomemode"             "requested dome mode"
-      "info"    "domemode"                      "dome mode"
+        "warning" "riousingbattery"               "rio using battery"
 
-      "warning" "requestedpark"                 "requested park"
-      "warning" "requestedclose"        "requested close shutters"
-      
-      "warning" "mustnotoperate"                "mustnotoperate"
-      "warning" "mustbeclosed"                  "mustbeclosed"
-      
-      "warning" "accessrequested"               "accessrequested"
+        "warning" "vaisalarainalarm"              "vaisala rain alarm"
+        "warning" "boltwoodrainalarm"             "boltwood rain alarm"
+        "warning" "bletrainalarm"                 "blet rain alarm"
 
-    } {
-      logchange $level $name $prettyname
-    }
-    
-    server::setdata "timestamp"           $timestamp
-    server::setstatus "ok"
+        "warning" "riobatteryalarm"               "rio battery alarm"
+        "warning" "rainalarm"                     "rain alarm"
+        "warning" "windalarm"                     "wind alarm"
+        "warning" "cloudalarm"                    "cloud alarm"
+        "warning" "daylightalarm"                 "daylight alarm"
+        "warning" "humidityalarm"                 "dewpoint alarm"
+        "warning" "tcsalarm"                      "tcs alarm"
+        "warning" "upsalarm"                      "ups alarm"
+        "warning" "intrusionalarm"                "intrusion alarm"
+        "warning" "riocommunicationalarm"         "rio communication alarm"
+        "warning" "riovaisalacommunicationalarm"  "rio vaisala communication alarm"
+        "warning" "rioboltwoodcommunicationalarm" "rio boltwoodcommunication alarm"
+        "warning" "emergencystopalarm"            "emergency stop alarm"
 
-    foreach {sensorname dataname} {
+        "warning" "keyswitch"                     "key switch"
+        "warning" "mode"                          "mode"
 
-      plc-cabinet-temperature    plccabinettemperature 
-      weather-cabinet-temperature weathercabinettemperature 
-      seeing-cabinet-temperature seeingcabinettemperature 
+        "info"    "requestedtelescopemode"        "requested telescope mode"
+        "info"    "telescopemode"                 "telescope mode"
+        "info"    "requesteddomemode"             "requested dome mode"
+        "info"    "domemode"                      "dome mode"
 
-      comet1-temperature         comet1temperature
-      comet2-temperature         comet2temperature
-      comet1-humidity            comet1humidity
-      comet2-humidity            comet2humidity
+        "warning" "requestedpark"                 "requested park"
+        "warning" "requestedclose"        "requested close shutters"
 
-      daylight-index             boltwooddaylightindex
-      rain-index                 boltwoodrainindex
-      wind-index                 boltwoodwindindex
-      cloud-index                boltwoodcloudindex
+        "warning" "mustnotoperate"                "mustnotoperate"
+        "warning" "mustbeclosed"                  "mustbeclosed"
 
-      european-ups-battery-charge-level europeanupsbatterychargelevel
-      european-ups-battery-temperature  europeanupsbatterytemperature
-      european-ups-battery-voltage      europeanupsbatteryvoltage
-      european-ups-battery-seconds      europeanupsbatteryseconds
-      european-ups-load                 europeanupsload
-      european-ups-l1-voltage           europeanupsl1voltage
-      european-ups-l2-voltage           europeanupsl2voltage
-      european-ups-l3-voltage           europeanupsl3voltage
-      european-ups-l1-current           europeanupsl1current
-      european-ups-l2-current           europeanupsl2current
-      european-ups-l3-current           europeanupsl3current
-      european-ups-input-frequency      europeanupsinputfrequency
-      european-ups-output-frequency     europeanupsoutputfrequency
-      
-      american-ups-battery-charge-level americanupsbatterychargelevel
-      american-ups-battery-temperature  americanupsbatterytemperature
-      american-ups-battery-voltage      americanupsbatteryvoltage
-      american-ups-battery-current      americanupsbatterycurrent
-      american-ups-load                 americanupsload
-      american-ups-l1-voltage           americanupsl1voltage
-      american-ups-l2-voltage           americanupsl2voltage
-      american-ups-l3-voltage           americanupsl3voltage
-      american-ups-l1-current           americanupsl1current
-      american-ups-l2-current           americanupsl2current
-      american-ups-l3-current           americanupsl3current
-      american-ups-output-frequency     americanupsoutputfrequency
+        "warning" "accessrequested"               "accessrequested"
 
-    } {
-      log::writesensorsfile "plc-$sensorname" [server::getdata $dataname] [server::getdata "timestamp"]
-    }
-
-    set lastresponsea $responsea
-    set lastresponseb $responseb
-    set lastresponsec $responsec
-    set responsea ""
-    set responseb ""
-    set responsec ""
-        
-    return true
-  }
-
-  proc logalarm {value lastvalue name} {
-    if {[string equal $lastvalue ""]} {
-      if {$value} {
-        log::info "the $name is on."
-      } else {
-        log::info "the $name is off."
+      } {
+        logchange $level $name $prettyname
       }
-    } elseif {![string equal $lastvalue $value]} {
-      if {$value} {
-        log::warning "the $name has changed from off to on."
-      } else {
-        log::summary "the $name has changed from on to off."
+
+      server::setdata "timestamp"           $timestamp
+      server::setstatus "ok"
+
+      foreach {sensorname dataname} {
+
+        plc-cabinet-temperature    plccabinettemperature
+        weather-cabinet-temperature weathercabinettemperature
+        seeing-cabinet-temperature seeingcabinettemperature
+
+        comet1-temperature         comet1temperature
+        comet2-temperature         comet2temperature
+        comet1-humidity            comet1humidity
+        comet2-humidity            comet2humidity
+
+        daylight-index             boltwooddaylightindex
+        rain-index                 boltwoodrainindex
+        wind-index                 boltwoodwindindex
+        cloud-index                boltwoodcloudindex
+
+        european-ups-battery-charge-level europeanupsbatterychargelevel
+        european-ups-battery-temperature  europeanupsbatterytemperature
+        european-ups-battery-voltage      europeanupsbatteryvoltage
+        european-ups-battery-seconds      europeanupsbatteryseconds
+        european-ups-load                 europeanupsload
+        european-ups-l1-voltage           europeanupsl1voltage
+        european-ups-l2-voltage           europeanupsl2voltage
+        european-ups-l3-voltage           europeanupsl3voltage
+        european-ups-l1-current           europeanupsl1current
+        european-ups-l2-current           europeanupsl2current
+        european-ups-l3-current           europeanupsl3current
+        european-ups-input-frequency      europeanupsinputfrequency
+        european-ups-output-frequency     europeanupsoutputfrequency
+
+        american-ups-battery-charge-level americanupsbatterychargelevel
+        american-ups-battery-temperature  americanupsbatterytemperature
+        american-ups-battery-voltage      americanupsbatteryvoltage
+        american-ups-battery-current      americanupsbatterycurrent
+        american-ups-load                 americanupsload
+        american-ups-l1-voltage           americanupsl1voltage
+        american-ups-l2-voltage           americanupsl2voltage
+        american-ups-l3-voltage           americanupsl3voltage
+        american-ups-l1-current           americanupsl1current
+        american-ups-l2-current           americanupsl2current
+        american-ups-l3-current           americanupsl3current
+        american-ups-output-frequency     americanupsoutputfrequency
+
+      } {
+        log::writesensorsfile "plc-$sensorname" [server::getdata $dataname] [server::getdata "timestamp"]
+      }
+
+      set lastresponsea $responsea
+      set lastresponseb $responseb
+      set lastresponsec $responsec
+      set responsea ""
+      set responseb ""
+      set responsec ""
+
+      return true
+    }
+
+    proc logalarm {value lastvalue name} {
+      if {[string equal $lastvalue ""]} {
+        if {$value} {
+          log::info "the $name is on."
+        } else {
+          log::info "the $name is off."
+        }
+      } elseif {![string equal $lastvalue $value]} {
+        if {$value} {
+          log::warning "the $name has changed from off to on."
+        } else {
+          log::summary "the $name has changed from on to off."
+        }
       }
     }
-  }
 
-  proc boolean {x} {
-    if {$x} {
-      return "true"
-    } else {
-      return "false"
+    proc boolean {x} {
+      if {$x} {
+        return "true"
+      } else {
+        return "false"
+      }
     }
-  }
-  
-  ######################################################################
-  
-  variable lastvalue {}
-  
-  proc logchange {level name prettyname} {
-    variable lastvalue
-    set value [server::getdata $name]
-    if {![dict exists $lastvalue $name]} {
-      log::$level [format "%s is %s." $prettyname $value]
-    } elseif {![string equal [dict get $lastvalue $name] $value]} {
-      log::$level [format "%s has changed from %s to %s." $prettyname [dict get $lastvalue $name] $value]
+
+    ######################################################################
+
+    variable lastvalue {}
+
+    proc logchange {level name prettyname} {
+      variable lastvalue
+      set value [server::getdata $name]
+      if {![dict exists $lastvalue $name]} {
+        log::$level [format "%s is %s." $prettyname $value]
+      } elseif {![string equal [dict get $lastvalue $name] $value]} {
+        log::$level [format "%s has changed from %s to %s." $prettyname [dict get $lastvalue $name] $value]
+      }
+      dict set lastvalue $name $value
     }
-    dict set lastvalue $name $value
-  }
-  
-  ######################################################################
 
-  proc parseinteger {old} {
-    if {[scan $old "%d" new] != 1} {
-      return ""
-    } else {
-      return $new
+    ######################################################################
+
+    proc parseinteger {old} {
+      if {[scan $old "%d" new] != 1} {
+        return ""
+      } else {
+        return $new
+      }
     }
-  }
-  ######################################################################
+    ######################################################################
 
-  proc startactivitycommand {} {
-    set start [utcclock::seconds]
-    log::info "starting."
-    variable boltwoodenabled
-    variable vaisalaenabled
-    if {!$boltwoodenabled} {
-      log::warning "the boltwood is not enabled."
+    proc startactivitycommand {} {
+      set start [utcclock::seconds]
+      log::info "starting."
+      variable boltwoodenabled
+      variable vaisalaenabled
+      if {!$boltwoodenabled} {
+        log::warning "the boltwood is not enabled."
+      }
+      if {!$vaisalaenabled} {
+        log::warning "the vaisala is not enabled."
+      }
+      controller::sendcommand "UnsafeTimer\{10\}\n"
+      variable windspeedlimit
+      controller::sendcommand "WindThreshold\{$windspeedlimit\}\n"
+      server::setdata "windspeedlimit" $windspeedlimit
+      controller::sendcommand "UpsThreshold\{90\}\n"
+      set end [utcclock::seconds]
+      log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
     }
-    if {!$vaisalaenabled} {
-      log::warning "the vaisala is not enabled."
+
+    proc initializeactivitycommand {} {
+      set start [utcclock::seconds]
+      log::info "initializing."
+      log::info [format "finished initializing after %.1f seconds." [utcclock::diff now $start]]
     }
-    controller::sendcommand "UnsafeTimer\{1\}\n"
-    variable windspeedlimit
-    controller::sendcommand "WindThreshold\{$windspeedlimit\}\n"
-    server::setdata "windspeedlimit" $windspeedlimit
-    controller::sendcommand "UpsThreshold\{90\}\n"
-    set end [utcclock::seconds]
-    log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
-  }
 
-  proc initializeactivitycommand {} {
-    set start [utcclock::seconds]
-    log::info "initializing."
-    log::info [format "finished initializing after %.1f seconds." [utcclock::diff now $start]]
-  }
+    proc openactivitycommand {} {
+      set start [utcclock::seconds]
+      log::info "opening."
+      log::info [format "finished opening after %.1f seconds." [utcclock::diff now $start]]
+    }
 
-  proc openactivitycommand {} {
-    set start [utcclock::seconds]
-    log::info "opening."
-    log::info [format "finished opening after %.1f seconds." [utcclock::diff now $start]]
-  }
+    proc closeactivitycommand {} {
+      set start [utcclock::seconds]
+      log::info "closing."
+      log::info [format "finished closing after %.1f seconds." [utcclock::diff now $start]]
+    }
 
-  proc closeactivitycommand {} {
-    set start [utcclock::seconds]
-    log::info "closing."
-    log::info [format "finished closing after %.1f seconds." [utcclock::diff now $start]]
-  }
-
-  proc resetactivitycommand {} {
-    set start [utcclock::seconds]
-    log::info "resetting."
-    controller::flushcommandqueue
-    log::info [format "finished resetting after %.1f seconds." [utcclock::diff now $start]]
-  }
-
-  proc stopactivitycommand {} {
-    set start [utcclock::seconds]
-    log::info "stopping."
-    set activity [server::getactivity]
-    if {
-      [string equal $activity "initializing"] || 
-      [string equal $activity "opening"] || 
-      [string equal $activity "closing"]
-    } {
+    proc resetactivitycommand {} {
+      set start [utcclock::seconds]
+      log::info "resetting."
       controller::flushcommandqueue
+      log::info [format "finished resetting after %.1f seconds." [utcclock::diff now $start]]
     }
-    log::info [format "finished stopping after %.1f seconds." [utcclock::diff now $start]]
-  }
 
-  ######################################################################
-  
-  proc checkremote {} {
-    if {![string equal [server::getdata "keyswitch"] "remote"]} {
-      error "the PLC is not in remote keyswitch."
+    proc stopactivitycommand {} {
+      set start [utcclock::seconds]
+      log::info "stopping."
+      set activity [server::getactivity]
+      if {
+        [string equal $activity "initializing"] ||
+        [string equal $activity "opening"] ||
+        [string equal $activity "closing"]
+      } {
+        controller::flushcommandqueue
+      }
+      log::info [format "finished stopping after %.1f seconds." [utcclock::diff now $start]]
     }
-  }
 
-  proc checkrainsensor {} {
-  }
-  
-  proc checkformove {} {
-  }
+    ######################################################################
 
-  proc initialize {} {
-    server::checkstatus
-    server::checkactivityforinitialize
-    checkremote
-    server::newactivitycommand "initializing" "idle" plc::initializeactivitycommand
-  }
+    proc checkremote {} {
+      if {![string equal [server::getdata "keyswitch"] "remote"]} {
+        error "the PLC is not in remote keyswitch."
+      }
+    }
 
-  proc stop {} {
-    server::checkstatus
-    server::checkactivityforstop
-    checkremote
-    server::newactivitycommand "stopping" [server::getstoppedactivity] plc::stopactivitycommand
-  }
+    proc checkrainsensor {} {
+    }
 
-  proc reset {} {
-    server::checkstatus
-    server::checkactivityforreset
-    checkremote
-    server::newactivitycommand "resetting" [server::getstoppedactivity] plc::resetactivitycommand
-  }
+    proc checkformove {} {
+    }
 
-  proc open {} {
-    server::checkstatus
-    server::checkactivityformove
-    checkremote
-    checkrainsensor
-    checkformove
-    server::newactivitycommand "opening" "idle" "plc::openactivitycommand"
-  }
+    proc initialize {} {
+      server::checkstatus
+      server::checkactivityforinitialize
+      checkremote
+      server::newactivitycommand "initializing" "idle" plc::initializeactivitycommand
+    }
 
-  proc close {} {
-    server::checkstatus
-    server::checkactivityformove
-    checkremote
-    checkformove
-    server::newactivitycommand "closing" "idle" plc::closeactivitycommand
-  }
-  
-  proc specialupdateweather {} {
-    server::checkstatus
-    variable lastresponsea
-    if {[string equal "" $lastresponsea]} {
-      log::warning "unable to update weather: no data."
+    proc stop {} {
+      server::checkstatus
+      server::checkactivityforstop
+      checkremote
+      server::newactivitycommand "stopping" [server::getstoppedactivity] plc::stopactivitycommand
+    }
+
+    proc reset {} {
+      server::checkstatus
+      server::checkactivityforreset
+      checkremote
+      server::newactivitycommand "resetting" [server::getstoppedactivity] plc::resetactivitycommand
+    }
+
+    proc open {} {
+      server::checkstatus
+      server::checkactivityformove
+      checkremote
+      checkrainsensor
+      checkformove
+      server::newactivitycommand "opening" "idle" "plc::openactivitycommand"
+    }
+
+    proc close {} {
+      server::checkstatus
+      server::checkactivityformove
+      checkremote
+      checkformove
+      server::newactivitycommand "closing" "idle" plc::closeactivitycommand
+    }
+
+    proc specialupdateweather {} {
+      server::checkstatus
+      variable lastresponsea
+      if {[string equal "" $lastresponsea]} {
+        log::warning "unable to update weather: no data."
+        return
+      }
+      set timestamp   [server::getdata "timestamp"]
+      set date        [utcclock::formatdate $timestamp]
+      set time        [utcclock::formattime $timestamp]
+      set compactdate [utcclock::formatdate $timestamp false]
+      set line "b.1 $date $time $lastresponsea"
+      set line [string map {";" " "} $line]
+      set directorypath [file join [directories::var] "weather"]
+      if {[catch {
+        file mkdir $directorypath
+        set filepath [file join $directorypath "$date.txt"]
+        set channel [::open $filepath "a"]
+        puts $channel $line
+        ::close $channel
+      }]} {
+        log::warning "unable to update weather: cannot write to file."
+      }
       return
     }
-    set timestamp   [server::getdata "timestamp"]
-    set date        [utcclock::formatdate $timestamp]
-    set time        [utcclock::formattime $timestamp]
-    set compactdate [utcclock::formatdate $timestamp false]
-    set line "b.1 $date $time $lastresponsea"
-    set line [string map {";" " "} $line]
-    set directorypath [file join [directories::var] "weather"]
-    if {[catch {
-      file mkdir $directorypath
-      set filepath [file join $directorypath "$date.txt"]
-      set channel [::open $filepath "a"]
-      puts $channel $line
-      ::close $channel      
-    }]} {
-      log::warning "unable to update weather: cannot write to file."
-    }
-    return
-  }
-  
-  ######################################################################
 
-  proc enablealarmactivitycommand {alarm} {
-    set start [utcclock::seconds]
-    log::summary "enabling the $alarm alarm."
-    switch $alarm { 
-      "weather"  { set command "ByPassWeather\{OFF\}\n" }
-      "rain"     { set command "RainAlarm\{ON\}\n" }
-      "wind"     { set command "WindThreshold\{ON\}\n" }
-      "cloud"    { set command "CloudThreshold\{ON\}\n" }
-      "humidity" { set command "HumidityThreshold\{ON\}\n" }
-      "daylight" { set command "DayLightThreshold\{ON\}\n" }
-      "ups"      { set command "UpsThreshold\{ON\}\n" }
-      "tcs"      { set command "ComThreshold\{ON\}\n" }
-      default {
-        error "unknown alarm \"$alarm\"."
+    ######################################################################
+
+    proc enablealarmactivitycommand {alarm} {
+      set start [utcclock::seconds]
+      log::summary "enabling the $alarm alarm."
+      switch $alarm {
+        "weather"  { set command "ByPassWeather\{OFF\}\n" }
+        "rain"     { set command "RainAlarm\{ON\}\n" }
+        "wind"     { set command "WindThreshold\{ON\}\n" }
+        "cloud"    { set command "CloudThreshold\{ON\}\n" }
+        "humidity" { set command "HumidityThreshold\{ON\}\n" }
+        "daylight" { set command "DayLightThreshold\{ON\}\n" }
+        "ups"      { set command "UpsThreshold\{ON\}\n" }
+        "tcs"      { set command "ComThreshold\{ON\}\n" }
+        default {
+          error "unknown alarm \"$alarm\"."
+        }
       }
+      controller::sendcommand $command
+      log::summary [format "finished enabling the $alarm alarm after %.1f seconds." [utcclock::diff now $start]]
     }
-    controller::sendcommand $command
-    log::summary [format "finished enabling the $alarm alarm after %.1f seconds." [utcclock::diff now $start]]
-  }
 
-  proc disablealarmactivitycommand {alarm} {
-    set start [utcclock::seconds]
-    log::summary "disabling the $alarm alarm."
-    switch $alarm { 
-      "weather"  { set command "ByPassWeather\{ON\}\n" }
-      "rain"     { set command "RainAlarm\{OFF\}\n" }
-      "wind"     { set command "WindThreshold\{OFF\}\n" }
-      "cloud"    { set command "CloudThreshold\{OFF\}\n" }
-      "humidity" { set command "HumidityThreshold\{OFF\}\n" }
-      "daylight" { set command "DayLightThreshold\{OFF\}\n" }
-      "ups"      { set command "UpsThreshold\{OFF\}\n" }
-      "tcs"      { set command "ComThreshold\{OFF\}\n" }
-      default {
-        error "unknown alarm \"$alarm\"."
+    proc disablealarmactivitycommand {alarm} {
+      set start [utcclock::seconds]
+      log::summary "disabling the $alarm alarm."
+      switch $alarm {
+        "weather"  { set command "ByPassWeather\{ON\}\n" }
+        "rain"     { set command "RainAlarm\{OFF\}\n" }
+        "wind"     { set command "WindThreshold\{OFF\}\n" }
+        "cloud"    { set command "CloudThreshold\{OFF\}\n" }
+        "humidity" { set command "HumidityThreshold\{OFF\}\n" }
+        "daylight" { set command "DayLightThreshold\{OFF\}\n" }
+        "ups"      { set command "UpsThreshold\{OFF\}\n" }
+        "tcs"      { set command "ComThreshold\{OFF\}\n" }
+        default {
+          error "unknown alarm \"$alarm\"."
+        }
       }
+      controller::sendcommand $command
+      log::summary [format "finished disabling the $alarm alarm after %.1f seconds." [utcclock::diff now $start]]
     }
-    controller::sendcommand $command
-    log::summary [format "finished disabling the $alarm alarm after %.1f seconds." [utcclock::diff now $start]]
-  }
 
-  proc grantaccessactivitycommand {} {
-    set start [utcclock::seconds]
-    log::info "granting access."
-    controller::sendcommand "Telescope\{STOP\}\n"
-    log::info [format "finished granting access after %.1f seconds." [utcclock::diff now $start]]
-  }
-
-  proc rebootactivitycommand {} {
-    set start [utcclock::seconds]
-    log::summary "rebooting."
-    variable boltwoodenabled
-    if {$boltwoodenabled} {
-      log::info "rebooting boltwood."
-      controller::sendcommand "CloudSensorRestart{RESTART}\n"
-      log::info "restarting boltwood software."
-      controller::sendcommand "CX5140{BoltwoodRestart}\n"
+    proc grantaccessactivitycommand {} {
+      set start [utcclock::seconds]
+      log::info "granting access."
+      controller::sendcommand "Telescope\{STOP\}\n"
+      log::info [format "finished granting access after %.1f seconds." [utcclock::diff now $start]]
     }
-    variable vaisalaenabled
-    if {$vaisalaenabled} {
-      log::info "rebooting vaisala."
-      controller::sendcommand "WeatherStationRestart{RESTART}\n"
-    }    
-    log::summary [format "finished rebooting after %.1f seconds." [utcclock::diff now $start]]
-  }
 
-  ######################################################################
-  
-  proc daylightalarmloop {} {
-  
-    if {[catch {
+    proc rebootactivitycommand {} {
+      set start [utcclock::seconds]
+      log::summary "rebooting."
+      variable boltwoodenabled
+      if {$boltwoodenabled} {
+        log::info "rebooting boltwood."
+        controller::sendcommand "CloudSensorRestart{RESTART}\n"
+        log::info "restarting boltwood software."
+        controller::sendcommand "CX5140{BoltwoodRestart}\n"
+      }
+      variable vaisalaenabled
+      if {$vaisalaenabled} {
+        log::info "rebooting vaisala."
+        controller::sendcommand "WeatherStationRestart{RESTART}\n"
+      }
+      log::summary [format "finished rebooting after %.1f seconds." [utcclock::diff now $start]]
+    }
+
+    ######################################################################
+
+    proc daylightalarmloop {} {
+
+      if {[catch {
 
         variable daylightalarmoffsetseconds
-      
+
         while {true} {
-      
-            log::debug "daylightalarmloop: waiting"
-    
-            coroutine::after 10000
-    
-            log::debug "daylightalarmloop: updating sun data"
-    
-            if {[catch {client::update "sun"} message]} {
-                log::debug "daylightalarmloop: unable to update sun data: $message"
-                continue
+
+          log::debug "daylightalarmloop: waiting"
+
+          coroutine::after 10000
+
+          log::debug "daylightalarmloop: updating sun data"
+
+          if {[catch {client::update "sun"} message]} {
+            log::debug "daylightalarmloop: unable to update sun data: $message"
+            continue
+          }
+
+          set skystate [client::getdata "sun" "skystate"]
+          set observedha [client::getdata "sun" "observedha"]
+          if {$observedha > 0} {
+            set evening true
+          } else {
+            set evening false
+          }
+          set seconds         [utcclock::seconds]
+          set endofdayseconds [utcclock::scan [client::getdata "sun" "endofday"]]
+
+          log::debug "daylightalarmloop: skystate is $skystate."
+          log::debug "daylightalarmloop: evening is $evening."
+          log::debug [format "daylightalarmloop: end of day in %.0f seconds." [expr {$endofdayseconds - $seconds}]]
+
+          log::debug [format "daylightalarmloop: daylightalarmdisabled is %s." [server::getdata "daylightalarmdisabled"]]
+
+          if {[server::getdata "daylightalarmdisabled"]} {
+            log::debug "daylightalarmloop: checking if the daylight alarm should be enabled."
+            if {[string equal "night" $skystate] || (!$evening && [string match "*twilight" $skystate])} {
+              log::summary "automatically enabling the daylight alarm."
+              controller::sendcommand "DayLightThreshold\{ON\}\n"
+              log::summary "finished automatically enabling daylight alarm."
             }
-            
-            set skystate [client::getdata "sun" "skystate"]
-            set observedha [client::getdata "sun" "observedha"]
-            if {$observedha > 0} {
-              set evening true
-            } else {
-              set evening false
-            }
+          } else {
+            log::debug "daylightalarmloop: checking if the daylight alarm should be disabled."
             set seconds         [utcclock::seconds]
             set endofdayseconds [utcclock::scan [client::getdata "sun" "endofday"]]
-
-            log::debug "daylightalarmloop: skystate is $skystate." 
-            log::debug "daylightalarmloop: evening is $evening." 
-            log::debug [format "daylightalarmloop: end of day in %.0f seconds." [expr {$endofdayseconds - $seconds}]]
-
-            log::debug [format "daylightalarmloop: daylightalarmdisabled is %s." [server::getdata "daylightalarmdisabled"]]
-
-            if {[server::getdata "daylightalarmdisabled"]} {
-                log::debug "daylightalarmloop: checking if the daylight alarm should be enabled."
-                if {[string equal "night" $skystate] || (!$evening && [string match "*twilight" $skystate])} {
-                    log::summary "automatically enabling the daylight alarm."
-                    controller::sendcommand "DayLightThreshold\{ON\}\n"
-                    log::summary "finished automatically enabling daylight alarm."
-                }
-            } else {
-                log::debug "daylightalarmloop: checking if the daylight alarm should be disabled."
-                set seconds         [utcclock::seconds]
-                set endofdayseconds [utcclock::scan [client::getdata "sun" "endofday"]]
-                if {$endofdayseconds - $seconds < $daylightalarmoffsetseconds || ($evening && [string match "*twilight" $skystate])} {
-                    log::summary "automatically disabling the daylight alarm."
-                    controller::sendcommand "DayLightThreshold\{OFF\}\n"
-                    log::summary "finished automatically disabling daylight alarm."
-                }
+            if {$endofdayseconds - $seconds < $daylightalarmoffsetseconds || ($evening && [string match "*twilight" $skystate])} {
+              log::summary "automatically disabling the daylight alarm."
+              controller::sendcommand "DayLightThreshold\{OFF\}\n"
+              log::summary "finished automatically disabling daylight alarm."
             }
-            
+          }
+
         }
 
-    } message]} {
-      log::error "in daylight alarm loop: $message."
+      } message]} {
+        log::error "in daylight alarm loop: $message."
+      }
+
     }
-  
-  }
-  
-  ######################################################################
-  
-  proc checkalarm {alarm} {
-    switch $alarm {
-      "weather"  { return }
-      "rain"     { return }
-      "wind"     { return }
-      "cloud"    { return }
-      "humidity" { return }
-      "daylight" { return }
-      "ups"      { return }
-      "tcs"      { return }
-      default { 
-        error "unknown alarm \"$alarm\"."      
+
+    ######################################################################
+
+    proc checkalarm {alarm} {
+      switch $alarm {
+        "weather"  { return }
+        "rain"     { return }
+        "wind"     { return }
+        "cloud"    { return }
+        "humidity" { return }
+        "daylight" { return }
+        "ups"      { return }
+        "tcs"      { return }
+        default {
+          error "unknown alarm \"$alarm\"."
+        }
       }
     }
-  }
-  
-  proc specialenablealarm {alarm} {
-    set start [utcclock::seconds]
-    server::checkstatus
-    checkalarm $alarm
-    server::newactivitycommand "enabling" "idle" "plc::enablealarmactivitycommand $alarm"
-  }
 
-  proc specialdisablealarm {alarm} {
-    set start [utcclock::seconds]
-    server::checkstatus
-    checkalarm $alarm
-    server::newactivitycommand "disabling" "idle" "plc::disablealarmactivitycommand $alarm"
-  }
-
-  ######################################################################
-
-  proc specialgrantaccess {} {
-    set start [utcclock::seconds]
-    server::checkstatus
-    server::newactivitycommand "granting" "idle" "plc::grantaccessactivitycommand"
-  }
-
-  ######################################################################
-
-  proc specialreboot {} {
-    set start [utcclock::seconds]
-    server::checkstatus
-    server::newactivitycommand "rebooting" "idle" "plc::rebootactivitycommand"
-  }
-
-  ######################################################################
-
-  proc specialswitchonlights {} {
-    server::checkstatus
-    log::info "switching on lights."
-    controller::pushcommand "ObsRoomLight{ON}\n"
-    return
-  }
-
-  proc specialswitchofflights {} {
-    server::checkstatus
-    log::info "switching off lights."
-    controller::pushcommand "ObsRoomLight{OFF}\n"
-    return
-  }
-
-  ######################################################################
-
-  proc specialswitchonfans {} {
-    server::checkstatus
-    log::info "switching on fans."
-    controller::pushcommand "Fans{ON}\n"
-    return
-  }
-
-  proc specialswitchofffans {} {
-    server::checkstatus
-    log::info "switching off fans."
-    controller::pushcommand "Fans{OFF}\n"
-    return
-  }
-
-  ######################################################################
-
-  proc specialopenlouvers {} {
-    server::checkstatus
-    log::info "opening louvers."
-    controller::pushcommand "Louver{ALL,OPEN}\n"
-    return
-  }
-
-  proc specialcloselouvers {} {
-    server::checkstatus
-    log::info "closing louvers."
-    controller::pushcommand "Louver{ALL,CLOSE}\n"
-    return
-  }
-
-  ######################################################################
-  
-  proc specialenablelocalconfirmation {} {
-    log::warning "enabling local confirmation."
-    controller::pushcommand "LocalStaff{RESET}\n"
-    return
-  }
-  
-  proc specialdisablelocalconfirmation {} {
-    log::warning "disabling local confirmation."
-    controller::pushcommand "LocalStaff{ON}\n"
-    return
-  }
-  
-  ######################################################################
-  
-  proc specialsetwindspeedlimit {limit} {
-    log::info "setting wind speed limit to $limit."
-    controller::pushcommand "WindThreshold{$limit}\n"
-    server::setdata "windspeedlimit" $limit
-    return
-  }
-  
-  ######################################################################
-  
-  proc setforcemustbeclosed {value} {
-    log::info "setting forcemustbeclosed to $value."
-    variable forcemustbeclosed
-    set forcemustbeclosed $value
-    return
-  }
-  
-  ######################################################################
-
-  proc special {command commandargs} {
-    eval special$command $commandargs 
-    return
-  }
-
-  ######################################################################
-
-  proc start {} {
-    set controller::connectiontype "persistent"
-    controller::startcommandloop
-    controller::startstatusloop
-    server::newactivitycommand "starting" "idle" plc::startactivitycommand
-    after idle {
-      coroutine ::plc::sunloopcoroutine plc::daylightalarmloop
+    proc specialenablealarm {alarm} {
+      set start [utcclock::seconds]
+      server::checkstatus
+      checkalarm $alarm
+      server::newactivitycommand "enabling" "idle" "plc::enablealarmactivitycommand $alarm"
     }
-  }
 
-}
+    proc specialdisablealarm {alarm} {
+      set start [utcclock::seconds]
+      server::checkstatus
+      checkalarm $alarm
+      server::newactivitycommand "disabling" "idle" "plc::disablealarmactivitycommand $alarm"
+    }
+
+    ######################################################################
+
+    proc specialgrantaccess {} {
+      set start [utcclock::seconds]
+      server::checkstatus
+      server::newactivitycommand "granting" "idle" "plc::grantaccessactivitycommand"
+    }
+
+    ######################################################################
+
+    proc specialreboot {} {
+      set start [utcclock::seconds]
+      server::checkstatus
+      server::newactivitycommand "rebooting" "idle" "plc::rebootactivitycommand"
+    }
+
+    ######################################################################
+
+    proc specialswitchonlights {} {
+      server::checkstatus
+      log::info "switching on lights."
+      controller::pushcommand "ObsRoomLight{ON}\n"
+      return
+    }
+
+    proc specialswitchofflights {} {
+      server::checkstatus
+      log::info "switching off lights."
+      controller::pushcommand "ObsRoomLight{OFF}\n"
+      return
+    }
+
+    ######################################################################
+
+    proc specialswitchonfans {} {
+      server::checkstatus
+      log::info "switching on fans."
+      controller::pushcommand "Fans{ON}\n"
+      return
+    }
+
+    proc specialswitchofffans {} {
+      server::checkstatus
+      log::info "switching off fans."
+      controller::pushcommand "Fans{OFF}\n"
+      return
+    }
+
+    ######################################################################
+
+    proc specialopenlouvers {} {
+      server::checkstatus
+      log::info "opening louvers."
+      controller::pushcommand "Louver{ALL,OPEN}\n"
+      return
+    }
+
+    proc specialcloselouvers {} {
+      server::checkstatus
+      log::info "closing louvers."
+      controller::pushcommand "Louver{ALL,CLOSE}\n"
+      return
+    }
+
+    ######################################################################
+
+    proc specialenablelocalconfirmation {} {
+      log::warning "enabling local confirmation."
+      controller::pushcommand "LocalStaff{RESET}\n"
+      return
+    }
+
+    proc specialdisablelocalconfirmation {} {
+      log::warning "disabling local confirmation."
+      controller::pushcommand "LocalStaff{ON}\n"
+      return
+    }
+
+    ######################################################################
+
+    proc specialsetwindspeedlimit {limit} {
+      log::info "setting wind speed limit to $limit."
+      controller::pushcommand "WindThreshold{$limit}\n"
+      server::setdata "windspeedlimit" $limit
+      return
+    }
+
+    ######################################################################
+
+    proc setforcemustbeclosed {value} {
+      log::info "setting forcemustbeclosed to $value."
+      variable forcemustbeclosed
+      set forcemustbeclosed $value
+      return
+    }
+
+    ######################################################################
+
+    proc special {command commandargs} {
+      eval special$command $commandargs
+      return
+    }
+
+    ######################################################################
+
+    proc start {} {
+      set controller::connectiontype "persistent"
+      controller::startcommandloop
+      controller::startstatusloop
+      server::newactivitycommand "starting" "idle" plc::startactivitycommand
+      after idle {
+        coroutine ::plc::sunloopcoroutine plc::daylightalarmloop
+      }
+    }
+
+  }
