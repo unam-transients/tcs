@@ -113,7 +113,7 @@ do
     undercolor=red
   fi
     
-  convert \
+  nice -n +20 convert \
     $rotateargs \
     -gravity northwest $cropargs +repage \
     -scale x512 +repage \
@@ -121,7 +121,7 @@ do
     -quality 75 \
     raw.jpg $compactdateandtime.jpg
 
-  convert \
+  nice -n +20 convert \
     $rotateargs \
     -gravity northwest $cropargs +repage \
     -scale x90 +repage \

@@ -120,19 +120,19 @@ do
       compacttime=$(date -u --date "$dateandtime" +"%H%M%S")
       compactdateandtime=$(date -u --date "$dateandtime" +"%Y%m%dT%H%M%S")
     
-      convert \
+      nice -n +20 convert \
         -normalize -negate \
         -crop $datacrop +repage \
         latest$suffix.fits latest$suffix.png
 
-      convert \
+      nice -n +20 convert \
         -fill none -stroke red -strokewidth $cw -draw "circle $cx,$cy $cx,$(expr $cy + $cr)" \
         -scale x512 \
         -gravity southeast -fill white -undercolor black $fontargs -stroke none -annotate +1+0 "$camera $date $time" \
         -quality 85 \
         latest$suffix.png latest$suffix-new.jpg
           
-      convert \
+      nice -n +20 convert \
         -scale x90 \
         -gravity southeast -fill white -undercolor black $fontargs -annotate +1+0 "$camera $time" \
         -quality 75 \
