@@ -38,6 +38,7 @@ namespace eval "plc" {
   variable controllerport             [config::getvalue "plc" "controllerport"]
   variable daylightalarmoffsetseconds [config::getvalue "plc" "daylightalarmoffsetseconds"]
   variable windspeedlimit             [config::getvalue "plc" "windspeedlimit"]
+  server::setdata "windspeedlimit" $windspeedlimit
 
   ######################################################################
 
@@ -648,9 +649,11 @@ namespace eval "plc" {
         "summary" "europeanupsfault"              "european ups fault"
         "summary" "europeanupsusingbattery"       "european ups using battery"
         "summary" "europeanupscommunicationalarm" "european ups communication alarm"
+        "summary" "europeanupsbatterychargelevel" "european ups battery level"
         "summary" "americanupsstatus"             "american ups status"
         "summary" "americanupsusingbattery"       "american ups using battery"
         "summary" "americanupscommunicationalarm" "american ups communication alarm"
+        "summary" "americanupsbatterychargelevel" "american ups battery charge level"
 
         "warning" "riousingbattery"               "rio using battery"
 
@@ -783,6 +786,11 @@ namespace eval "plc" {
     proc logchange {level name prettyname} {
       variable lastvalue
       set value [server::getdata $name]
+      switch -glob $name {
+        "*upsbatterychargelevel" {
+          set value [format "%.0f%%" [expr {$value * 100}]]
+        }
+      }
       if {![dict exists $lastvalue $name]} {
         log::$level [format "%s is %s." $prettyname $value]
       } elseif {![string equal [dict get $lastvalue $name] $value]} {
@@ -813,10 +821,10 @@ namespace eval "plc" {
       if {!$vaisalaenabled} {
         log::warning "the vaisala is not enabled."
       }
-      controller::sendcommand "UnsafeTimer\{10\}\n"
       variable windspeedlimit
-      controller::sendcommand "WindThreshold\{$windspeedlimit\}\n"
       server::setdata "windspeedlimit" $windspeedlimit
+      controller::sendcommand "WindThreshold\{$windspeedlimit\}\n"
+      controller::sendcommand "UnsafeTimer\{10\}\n"
       controller::sendcommand "UpsThreshold\{90\}\n"
       set end [utcclock::seconds]
       log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
@@ -1075,7 +1083,7 @@ namespace eval "plc" {
       switch $alarm {
         "weather"  { return }
         "rain"     { return }
-        "wind"     { return }
+        "wind"     { return }<
         "cloud"    { return }
         "humidity" { return }
         "daylight" { return }
@@ -1183,8 +1191,8 @@ namespace eval "plc" {
 
     proc specialsetwindspeedlimit {limit} {
       log::info "setting wind speed limit to $limit."
-      controller::pushcommand "WindThreshold{$limit}\n"
       server::setdata "windspeedlimit" $limit
+      controller::pushcommand "WindThreshold{$limit}\n"
       return
     }
 

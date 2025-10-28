@@ -864,6 +864,9 @@ proc writeplc {} {
         writehtmlrow "Weather cabinet temperature"   [format "%+.1f C" [client::getdata "plc" "weathercabinettemperature"]]
         writehtmlrow "Seeing cabinet temperature"    [format "%+.1f C" [client::getdata "plc" "seeingcabinettemperature"]]
 
+        writehtmlrow "American UPS battery charge level"   [format "%.0f%%" [expr {[client::getdata "plc" "americanupsbatterychargelevel"] * 100}]]
+        writehtmlrow "European UPS battery charge level"   [format "%.0f%%" [expr {[client::getdata "plc" "europeanupsbatterychargelevel"] * 100}]]
+
       }
     }
   }
