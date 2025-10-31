@@ -519,7 +519,11 @@ namespace eval "mount" {
         [server::getdata "requestedstandardequinox"] \
       ]
     waituntilontarget
-    log::info [format "started tracking after %.1f seconds." [utcclock::diff now $start]]
+    set interval  [utcclock::diff now $start]
+    log::info [format "started tracking after %.1f seconds." $interval]
+    if {!$move && $interval >= 20} {
+      log::warning [format "offsetting took %.1f seconds." $interval]
+    }
     log::info [format "%.0f seconds tracking remaining." [server::getdata "remainingtrackingseconds"]]
     server::setactivity "tracking"
     server::clearactivitytimeout
