@@ -165,15 +165,35 @@ detectorrawopen(char *identifier)
   else
   {
     double min, max, step;
+    if (GetQHYCCDParamMinMaxStep(handle, CONTROL_EXPOSURE, &min, &max, &step) != QHYCCD_SUCCESS)
+      DETECTOR_ERROR("unable to determine detector exposure time values.");
+    fprintf(stderr, "detectorrawopen: exposure time: min = %f max = %f step = %f.\n", min, max, step);
+
+    fprintf(stderr, "detectorrawopen: setting detector exposure time.\n");
+    if (SetQHYCCDParam(handle, CONTROL_EXPOSURE, 1.0 * 1e6) != QHYCCD_SUCCESS)
+      DETECTOR_ERROR("unable to set detector exposure time.");
+
+    fprintf(stderr, "detectorrawopen: getting detector exposure time.\n");
+    double value = GetQHYCCDParam(handle, CONTROL_EXPOSURE);
+    fprintf(stderr, "detectorrawopen: detector exposure time = %f.\n", value / 1e6);
+  }
+
+  if (IsQHYCCDControlAvailable(handle, CONTROL_GAIN) != QHYCCD_SUCCESS)
+  {
+    fprintf(stderr, "detectorrawopen: unable to control gain.");
+  }
+  else
+  {
+    double min, max, step;
     if (GetQHYCCDParamMinMaxStep(handle, CONTROL_GAIN, &min, &max, &step) != QHYCCD_SUCCESS)
       DETECTOR_ERROR("unable to determine detector gain values.");
     fprintf(stderr, "detectorrawopen: gain: min = %f max = %f step = %f.\n", min, max, step);
 
-    fprintf(stderr, "detectorrawopen: setting gain.\n");
+    fprintf(stderr, "detectorrawopen: setting detectir gain.\n");
     if (SetQHYCCDParam(handle, CONTROL_GAIN, 30.0) != QHYCCD_SUCCESS)
       DETECTOR_ERROR("unable to set detector gain.");
 
-    fprintf(stderr, "detectorrawopen: getting gain.\n");
+    fprintf(stderr, "detectorrawopen: getting detector gain.\n");
     double gain = GetQHYCCDParam(handle, CONTROL_GAIN);
     fprintf(stderr, "detectorrawopen: gain = %f.\n", gain);
   }
@@ -189,11 +209,11 @@ detectorrawopen(char *identifier)
       DETECTOR_ERROR("unable to determine detector offset values.");
     fprintf(stderr, "detectorrawopen: offset: min = %f max = %f step = %f.\n", min, max, step);
 
-    fprintf(stderr, "detectorrawopen: setting offset.\n");
+    fprintf(stderr, "detectorrawopen: setting detector offset.\n");
     if (SetQHYCCDParam(handle, CONTROL_OFFSET, 30.0) != QHYCCD_SUCCESS)
       DETECTOR_ERROR("unable to set detector offset.");
 
-    fprintf(stderr, "detectorrawopen: getting offset.\n");
+    fprintf(stderr, "detectorrawopen: getting detector offset.\n");
     double offset = GetQHYCCDParam(handle, CONTROL_OFFSET);
     fprintf(stderr, "detectorrawopen: offset = %f.\n", offset);
   }
@@ -272,9 +292,6 @@ detectorrawexpose(double exposuretime, const char *shutter)
 
   if (SetQHYCCDParam(handle, CONTROL_EXPOSURE, exposuretime * 1e6) != QHYCCD_SUCCESS)
     DETECTOR_ERROR("invalid exposure time.");
-
-  if (InitQHYCCD(handle) != QHYCCD_SUCCESS)
-    DETECTOR_ERROR("unable to prepare detector for exposure.");
 
   if (ExpQHYCCDSingleFrame(handle) != QHYCCD_SUCCESS)
   {
