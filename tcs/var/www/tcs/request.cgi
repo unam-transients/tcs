@@ -46,6 +46,9 @@ proc request {request} {
   } elseif {[string equal $request "loadblocks"]} {
     exec -ignorestderr "sudo" "-n" "$prefix/bin/tcs" "loadblocks"
     return ""
+  } elseif {[string equal $request "notifyemergency"]} {
+    exec -ignorestderr "$prefix/bin/tcs" "sendpushover" "-P" "emergency" "-s" "Web Interface" "emergency" "There is an emergency."
+    return ""
   } elseif {[string equal $request "emergencystop"]} {
     exec -ignorestderr "sudo" "-n" "$prefix/bin/tcs" "emergencystop"
     set server supervisor

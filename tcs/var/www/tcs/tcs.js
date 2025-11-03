@@ -180,6 +180,9 @@ function submitrequest(request) {
 }
 
 $(function () {
+  $("form#system-notifyemergency").submit(function () {
+    return submitrequest("notifyemergency");
+  });
   $("form#system-restart").submit(function () {
     return submitrequest("restart");
   });
