@@ -103,18 +103,21 @@ def isoformat(when=None, separator="T"):
     """
     if when == None:
         when = now()
-    return when.isoformat(separator, "milliseconds")[0:23]
+    return when.isoformat(separator, "milliseconds")
 
 
 def fromisoformat(when):
-    if len(when) >= 23:
-        return datetime.fromisoformat(when[0:23])
-    else:
-        return datetime.fromisoformat(when)
+    if when.endswith("Z"):
+        when = when[:-1]
+    return datetime.fromisoformat(when)
 
 
 def now():
     return datetime.now()
+
+
+def parseisoformat(when):
+    return isoformat(fromisoformat(when))
 
 
 ################################################################################
@@ -348,7 +351,7 @@ def handleheartbeatmessage(messagetype, messagevalue):
         handleheartbeatcount = 0
         loginfo("received %s message." % messagetype)
         value = json.loads(messagevalue.decode("UTF-8"))
-        eventisotimestamp = value["alert_datetime"]
+        eventisotimestamp = parseisoformat(value["alert_datetime"])
         eventdatetime = fromisoformat(eventisotimestamp)
         alertdatetime = now()
         alertdelay = (alertdatetime - eventdatetime).total_seconds()
@@ -430,11 +433,9 @@ def handleicecubemessage(messagetype, messagevalue):
 
     eventidentifier = value.find("./What/Param[@name='AMON_ID']").get("value")
 
-    eventisotimestamp = value.find(
+    eventisotimestamp = parseisoformat(value.find(
         "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Time/TimeInstant/ISOTime"
-    ).text
-    if eventisotimestamp[-1] == "Z":
-        eventisotimestamp = eventisotimestamp[:-1]
+    ).text)
 
     eventalpha = "%.4fd" % float(
         value.find(
@@ -461,7 +462,7 @@ def handleicecubemessage(messagetype, messagevalue):
     if eventtype == "icecubeastrotrackgold":
         eventenabled = True
     elif eventtype == "icecubeastrotrackbronze":
-        eventenabled = (signalness >= 0.50)
+        eventenabled = signalness >= 0.50
     else:
         eventenabled = False
     eventpreliminary = False
@@ -562,11 +563,9 @@ def handlesvommessage(messagetype, messagevalue):
     ).get("value")[2:]
 
     if eventtype.startswith("svomeclairs") or eventtype.startswith("svomgrm"):
-        eventisotimestamp = value.find(
+        eventisotimestamp = parseisoformat(value.find(
             "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Time/TimeInstant/ISOTime"
-        ).text
-        if eventisotimestamp[-1] == "Z":
-            eventisotimestamp = eventisotimestamp[:-1]
+        ).text)
     else:
         eventisotimestamp = ""
 
@@ -656,7 +655,7 @@ def handleeinsteinprobemessage(messagetype, messagevalue):
     eventorigin = "ep"
     eventidentifier = value["id"][0]
     eventtype = messagetype
-    eventisotimestamp = value["trigger_time"]
+    eventisotimestamp = parseisoformat(value["trigger_time"])
     eventprefix = "EP"
     eventalpha = "%.4fd" % value["ra"]
     eventdelta = "%+.4fd" % value["dec"]
@@ -710,9 +709,7 @@ if testing:
     # https://github.com/nasa-gcn/gcn-kafka-python/blob/main/README.md
     consumerconfig = {"auto.offset.reset": "earliest"}
     topics = [
-        "gcn.classic.voevent.ICECUBE_ASTROTRACK_BRONZE",
-        "gcn.classic.voevent.ICECUBE_ASTROTRACK_GOLD",
-        "gcn.classic.voevent.ICECUBE_CASCADE",
+        "gcn.notices.einstein_probe.wxt.alert",
     ]
 else:
     consumerconfig = {}
