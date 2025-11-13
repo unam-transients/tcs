@@ -377,12 +377,16 @@ detectorrawsetreadmode(const char *newreadmode)
 
   if (sscanf(newreadmode, "%u-%u-%u", &ireadmode, &igain, &ioffset) != 3)
     DETECTOR_ERROR("invalid read mode.");
+  fprintf(stderr, "detectorrawsetreadmode: new readmode is %s.\n", newreadmode);
+  fprintf(stderr, "detectorrawsetreadmode: new ireadmode is %u.\n", ireadmode);
+  fprintf(stderr, "detectorrawsetreadmode: new igain is %u.\n", igain);
+  fprintf(stderr, "detectorrawsetreadmode: new ioffset is %u.\n", ioffset);
 
   if (SetQHYCCDReadMode(handle, ireadmode) != QHYCCD_SUCCESS)
     DETECTOR_ERROR("unable to set read mode.");
   if (SetQHYCCDParam(handle, CONTROL_GAIN, igain) != QHYCCD_SUCCESS)
     DETECTOR_ERROR("unable to set gain.");
-  if (SetQHYCCDParam(handle, CONTROL_GAIN, ioffset) != QHYCCD_SUCCESS)
+  if (SetQHYCCDParam(handle, CONTROL_OFFSET, ioffset) != QHYCCD_SUCCESS)
     DETECTOR_ERROR("unable to set offset.");
 
   uint32_t nx, ny, bpp;
@@ -392,7 +396,14 @@ detectorrawsetreadmode(const char *newreadmode)
   fullnx = nx;
   fullny = ny;
 
-  strcpy(readmode, newreadmode);
+  double gain = GetQHYCCDParam(handle, CONTROL_GAIN);
+  double offset = GetQHYCCDParam(handle, CONTROL_OFFSET);
+
+  snprintf(readmode, sizeof(readmode), "%u-%u-%u", (unsigned)ireadmode, (unsigned)gain, (unsigned)offset);
+
+  fprintf(stderr, "detectorrawsetreadmode: readmode is %s.\n", readmode);
+  fprintf(stderr, "detectorrawsetreadmode: retrieved igain is %u.\n", (unsigned)gain);
+  fprintf(stderr, "detectorrawsetreadmode: retrieved ioffset is %u.\n", (unsigned)ioffset);
 
   return detectorrawsetunbinnedwindow(0, 0, 0, 0);
 }
