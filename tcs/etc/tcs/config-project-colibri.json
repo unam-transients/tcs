@@ -1,9 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
-
 // This file is part of the UNAM telescope control system.
-
 ////////////////////////////////////////////////////////////////////////
-
 // Copyright © 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
 //
 // Permission to use, copy, modify, and distribute this software for any
@@ -18,10 +15,7 @@
 // PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 // TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 // PERFORMANCE OF THIS SOFTWARE.
-
 ////////////////////////////////////////////////////////////////////////
-
-
 {
   "C0": {
     "telescopedescription": "OAN COLIBRI 1.3-m",
@@ -30,7 +24,7 @@
     "detectorunbinnedpixelscale": "0.198as",
     "detectorreadmodes": {
       "initial": "default",
-      "closed" : "default",
+      "closed": "default",
       "default": "8MHz"
     },
     "detectorinitialsoftwaregain": 1,
@@ -40,19 +34,69 @@
       "default": "full",
       "4kx4k": "full",
       // These windows are centered on the data window.
-      "3kx3k": { "sx":  548, "sy":  534, "nx": 3072, "ny": 3072 },
-      "2kx2k": { "sx": 1060, "sy": 1046, "nx": 2048, "ny": 2048 },
-      "1kx1k": { "sx": 1572, "sy": 1558, "nx": 1024, "ny": 1024 },
+      "3kx3k": {
+        "sx": 548,
+        "sy": 534,
+        "nx": 3072,
+        "ny": 3072
+      },
+      "2kx2k": {
+        "sx": 1060,
+        "sy": 1046,
+        "nx": 2048,
+        "ny": 2048
+      },
+      "1kx1k": {
+        "sx": 1572,
+        "sy": 1558,
+        "nx": 1024,
+        "ny": 1024
+      },
       // These windows are centered on the boresight.
-      "3kx3k-boresight"  : { "sx":  461, "sy":  492, "nx": 3072, "ny": 3072 },
-      "2kx2k-boresight"  : { "sx":  973, "sy": 1004, "nx": 2048, "ny": 2048 },
-      "1kx1k-boresight"  : { "sx": 1485, "sy": 1516, "nx": 1024, "ny": 1024 },
+      "3kx3k-boresight": {
+        "sx": 461,
+        "sy": 492,
+        "nx": 3072,
+        "ny": 3072
+      },
+      "2kx2k-boresight": {
+        "sx": 973,
+        "sy": 1004,
+        "nx": 2048,
+        "ny": 2048
+      },
+      "1kx1k-boresight": {
+        "sx": 1485,
+        "sy": 1516,
+        "nx": 1024,
+        "ny": 1024
+      },
       // These windows are just for testing the boresight position in windowed
       // images.
-      "3kx3k-ll": { "sx":   36, "sy":   22, "nx": 3072, "ny": 3072 },
-      "3kx3k-lr": { "sx": 1060, "sy":   22, "nx": 3072, "ny": 3072 },
-      "3kx3k-ul": { "sx":   36, "sy": 1046, "nx": 3072, "ny": 3072 },
-      "3kx3k-ur": { "sx": 1060, "sy": 1046, "nx": 3072, "ny": 3072 },
+      "3kx3k-ll": {
+        "sx": 36,
+        "sy": 22,
+        "nx": 3072,
+        "ny": 3072
+      },
+      "3kx3k-lr": {
+        "sx": 1060,
+        "sy": 22,
+        "nx": 3072,
+        "ny": 3072
+      },
+      "3kx3k-ul": {
+        "sx": 36,
+        "sy": 1046,
+        "nx": 3072,
+        "ny": 3072
+      },
+      "3kx3k-ur": {
+        "sx": 1060,
+        "sy": 1046,
+        "nx": 3072,
+        "ny": 3072
+      },
       // This window is the smallest conventional one larger than 6 arcmin.
       "6am": "2kx2k"
     },
@@ -65,13 +109,16 @@
     "detectorfullunbinnedbiaswindow": {
       "sx": 0,
       "sy": 22,
-      "nx": 11,   
+      "nx": 11,
       "ny": 4096
     },
     // The center of rotation of the derotator was calculated to be
     // (1996.5, 2029.2) in 1-based coordinates in the full window on 2024-06-21.
     // We need to give the corresponding 0-based coordinates here.
-    "detectorboresight": { "x": 1995.5, "y": 2028.2 },
+    "detectorboresight": {
+      "x": 1995.5,
+      "y": 2028.2
+    },
     "coolerstartsetting": "following",
     "cooleropensetting": "-20",
     "coolerclosedsetting": "following",
@@ -80,10 +127,10 @@
     "filterwheelidentifier": "null",
     "filterwheeltype": "null",
     "filters": {
-      "r"      : "0",
+      "r": "0",
       "initial": "r",
-      "idle"   : "r",
-      "closed" : "r"
+      "idle": "r",
+      "closed": "r"
     },
     "focusertype": "null",
     "focuseridentifier": "null",
@@ -100,15 +147,13 @@
       "16": "-A"
     }
   },
-
-
   "C1": {
     "detectortype": "si",
     "detectoridentifier": "blue:2055",
     "detectorunbinnedpixelscale": "0.381as",
     "detectorreadmodes": {
       "initial": "default",
-      "closed" : "default",
+      "closed": "default",
       "default": "0"
     },
     "detectorinitialsoftwaregain": 1,
@@ -155,7 +200,10 @@
       "nx": 50,
       "ny": 4112
     },
-    "detectorboresight": { "x": 2000.2, "y": 2189.2 },
+    "detectorboresight": {
+      "x": 2000.2,
+      "y": 2189.2
+    },
     "coolerstartsetting": "last",
     "cooleropensetting": "last",
     "coolerclosedsetting": "last",
@@ -168,14 +216,14 @@
     // FW0031318 -- firmware serial number "FW0031318"
     "filterwheelidentifier": "FW0021318",
     "filters": {
-      "g"      : "0",
-      "r"      : "1",
-      "i"      : "2",
-      "gri"    : "3",
-      "B"      : "4",
+      "g": "0",
+      "r": "1",
+      "i": "2",
+      "gri": "3",
+      "B": "4",
       "initial": "r",
-      "idle"   : "r",
-      "closed" : "r"
+      "idle": "r",
+      "closed": "r"
     },
     "focusertype": "null",
     "focuseridentifier": "null",
@@ -193,14 +241,13 @@
       "16": "-A"
     }
   },
-
   "C2": {
     "detectortype": "si",
     "detectoridentifier": "red:2055",
     "detectorunbinnedpixelscale": "0.381as",
     "detectorreadmodes": {
       "initial": "default",
-      "closed" : "default",
+      "closed": "default",
       "default": "0"
     },
     "detectorinitialsoftwaregain": 1,
@@ -235,7 +282,10 @@
       // This window is the smallest conventional one larger than 6 arcmin.
       "6am": "1kx1k"
     },
-    "detectorboresight": { "x": 2048.0, "y": 2048.0 },
+    "detectorboresight": {
+      "x": 2048.0,
+      "y": 2048.0
+    },
     "detectorfullunbinneddatawindow": {
       "sx": 50,
       "sy": 0,
@@ -260,12 +310,12 @@
     "filterwheeltype": "fli",
     "filterwheelidentifier": "CFW-14-5",
     "filters": {
-      "z"      : "0",
-      "y"      : "1",
-      "zy"     : "3",
+      "z": "0",
+      "y": "1",
+      "zy": "3",
       "initial": "z",
-      "idle"   : "z",
-      "closed" : "z"
+      "idle": "z",
+      "closed": "z"
     },
     "focusertype": "null",
     "focuseridentifier": "null",
@@ -283,7 +333,6 @@
       "16": "-A"
     }
   },
-
   "covers": {
     "type": "opentsi",
     "ports": {
@@ -324,7 +373,7 @@
     ]
   },
   "gcntan": {
-    "serverpacketport"              : "5358"
+    "serverpacketport": "5358"
   },
   "html": {
     "servers": [
@@ -356,18 +405,22 @@
   },
   "instrument": {
     "detectors": [
-      "C0", "C1", "C2"
+      "C0",
+      "C1",
+      "C2"
     ],
     "monitoreddetectors": [
-      "C0", "C1", "C2"
+      "C1",
+      "C2"
     ],
     "activedetectors": [
-      "C1", "C2"
+      "C1",
+      "C2"
     ],
-    "activefocusers": [
-    ],
+    "activefocusers": [],
     "idlefilterwheelpositions": [
-      "0", "0"
+      "0",
+      "0"
     ],
     "pointingdetectors": [
       "C1"
@@ -379,7 +432,19 @@
   },
   "louvers": {
     "type": "plc",
-    "activelouvers": [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+    "activelouvers": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
     "internaltemperaturesensor": "observing-room-comet1-temperature"
   },
   "mount": {
@@ -410,12 +475,12 @@
     "maxcorrection": "0.25d",
     "initialport": "ddrago",
     "ports": {
-      "new":     "port2",
-      "old":     "port3",
-      "ogse":    "port2",
-      "ddrago":  "port3",
-      "port2":   "2",
-      "port3":   "3"
+      "new": "port2",
+      "old": "port3",
+      "ogse": "port2",
+      "ddrago": "port3",
+      "port2": "2",
+      "port3": "3"
     },
     "settlingseconds": 1
   },
@@ -447,13 +512,55 @@
       }
     },
     "outletgroupaddresses": {
-      "instrument"              : [[ "pdu0", "a", "1" ]],
-      "blue"                    : [[ "pdu2", "a", "1" ]],
-      "red"                     : [[ "pdu2", "a", "2" ]],
-      "close-electronics"       : [[ "pdu1", "a", "1" ]],
-      "close-electronics-spare" : [[ "pdu1", "a", "2" ]],
-      "red-service-cabinet"     : [[ "pdu1", "a", "4" ]],
-      "blue-service-cabinet"    : [[ "pdu1", "a", "3" ]]
+      "instrument": [
+        [
+          "pdu0",
+          "a",
+          "1"
+        ]
+      ],
+      "blue": [
+        [
+          "pdu2",
+          "a",
+          "1"
+        ]
+      ],
+      "red": [
+        [
+          "pdu2",
+          "a",
+          "2"
+        ]
+      ],
+      "close-electronics": [
+        [
+          "pdu1",
+          "a",
+          "1"
+        ]
+      ],
+      "close-electronics-spare": [
+        [
+          "pdu1",
+          "a",
+          "2"
+        ]
+      ],
+      "red-service-cabinet": [
+        [
+          "pdu1",
+          "a",
+          "4"
+        ]
+      ],
+      "blue-service-cabinet": [
+        [
+          "pdu1",
+          "a",
+          "3"
+        ]
+      ]
     }
   },
   "safetyswitch": {
@@ -479,15 +586,15 @@
   "selector": {
     "priorities": {
       "*-*-electromagnetic/gravitational/*": 2,
-      "*-*-electromagnetic/*/neutrino"     : 2,
-      "*-*-*/gravitational/neutrino"       : 2,
-      "svomeclairs*-*"  : 5,
-      "svommxt*-*"      : 5,
-      "svomvt*-*"       : 5,
-      "fermilat*-*"     : 6,
+      "*-*-electromagnetic/*/neutrino": 2,
+      "*-*-*/gravitational/neutrino": 2,
+      "svomeclairs*-*": 5,
+      "svommxt*-*": 5,
+      "svomvt*-*": 5,
+      "fermilat*-*": 6,
       "einsteinprobe*-*": 7,
-      "fermigbm*-sgrb"  : 7,
-      "swift*-*"        : 8
+      "fermigbm*-sgrb": 7,
+      "swift*-*": 8
     }
   },
   "sensors": {
@@ -568,7 +675,7 @@
         "model": "",
         "identifier": "",
         "firmware": ""
-      },      
+      },
       "observing-room-comet2-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/plc-comet2-temperature",
         "keyword": "C2TM",
@@ -582,7 +689,7 @@
         "model": "",
         "identifier": "",
         "firmware": ""
-      },      
+      },
       "ogse-external-temperature": {
         "keyword": "OETM",
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.A493A0000000/temperature",
@@ -789,7 +896,7 @@
         "model": "iButtonLink MS-TH",
         "identifier": "26.E9AE1A020000",
         "firmware": ""
-      },      
+      },
       "ddrago-internal-es3-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.EEB51A020000/temperature",
         "keyword": "D3TM",
@@ -803,7 +910,7 @@
         "model": "iButtonLink MS-TH",
         "identifier": "26.EEB51A020000",
         "firmware": ""
-      },      
+      },
       "ddrago-internal-es4-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.5A971A020000/temperature",
         "keyword": "D4TM",
@@ -817,7 +924,7 @@
         "model": "iButtonLink MS-TH",
         "identifier": "26.5A971A020000",
         "firmware": ""
-      },      
+      },
       "ddrago-internal-es5-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.BCB01A020000/temperature",
         "keyword": "D5TM",
@@ -831,7 +938,7 @@
         "model": "iButtonLink MS-TH",
         "identifier": "26.BCB01A020000",
         "firmware": ""
-      },      
+      },
       "ddrago-external-tunnel-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.6985E1010000/temperature",
         "keyword": "DTTM",
@@ -845,7 +952,7 @@
         "model": "iButtonLink MS-TH",
         "identifier": "26.6985E1010000",
         "firmware": ""
-      },      
+      },
       "column-middle-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.09FCD6010000/temperature",
         "keyword": "CMTM",
@@ -859,7 +966,7 @@
         "model": "iButtonLink MS-T",
         "identifier": "26.09FCD6010000",
         "firmware": ""
-      },      
+      },
       "column-bottom-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.47A740010000/temperature",
         "keyword": "CBTM",
@@ -873,7 +980,7 @@
         "model": "iButtonLink MS-TL",
         "identifier": "26.47A740010000",
         "firmware": ""
-      },      
+      },
       "control-room-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.7539F5000000/temperature",
         "keyword": "CRTM",
@@ -887,7 +994,7 @@
         "model": "iButtonLink MS-TL",
         "identifier": "26.7539F5000000",
         "firmware": ""
-      },      
+      },
       "ddrago-bdsc-external-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.C7961A020000/temperature",
         "prettyname": "blue detector service cabinet external temperature",
@@ -900,7 +1007,7 @@
         "model": "iButtonLink MS-TL",
         "identifier": "26.C7961A020000",
         "firmware": ""
-      },      
+      },
       "ddrago-bdsc-internal-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.15971A020000/temperature",
         "prettyname": "blue detector service cabinet internal temperature",
@@ -913,7 +1020,7 @@
         "model": "iButtonLink MS-TL",
         "identifier": "26.15971A020000",
         "firmware": ""
-      },      
+      },
       "ddrago-rdsc-external-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.FE7D1A020000/temperature",
         "prettyname": "red detector service cabinet external temperature",
@@ -926,7 +1033,7 @@
         "model": "iButtonLink MS-TL",
         "identifier": "26.FE7D1A020000",
         "firmware": ""
-      },      
+      },
       "ddrago-rdsc-internal-temperature": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.F3961A020000/temperature",
         "prettyname": "red detector service cabinet internal temperature",
@@ -939,7 +1046,7 @@
         "model": "iButtonLink MS-TL",
         "identifier": "26.F3961A020000",
         "firmware": ""
-      },      
+      },
       "telescope-cabinet-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/opentsi-0",
         "prettyname": "telescope cabinet temperature",
@@ -964,7 +1071,7 @@
         "model": "",
         "identifier": "",
         "firmware": ""
-      },      
+      },
       "weather-cabinet-temperature": {
         "file": "/usr/local/var/tcs/sensors/control/plc-weather-cabinet-temperature",
         "prettyname": "weather station cabinet temperature)",
@@ -1027,7 +1134,7 @@
         "model": "",
         "identifier": "",
         "firmware": ""
-      },      
+      },
       "observing-room-comet2-humidity": {
         "file": "/usr/local/var/tcs/sensors/control/plc-comet2-humidity",
         "prettyname": "observing room humidity (comet 2)",
@@ -1040,7 +1147,7 @@
         "model": "",
         "identifier": "",
         "firmware": ""
-      },      
+      },
       "ogse-external-humidity": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.A493A0000000/HIH4000/humidity",
         "prettyname": "ogse external humidity",
@@ -1080,7 +1187,7 @@
         "model": "iButtonLink MS-TH",
         "identifier": "26.E9AE1A020000",
         "firmware": ""
-      },      
+      },
       "ddrago-internal-es3-humidity": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.EEB51A020000/HIH4000/humidity",
         "prettyname": "ddrago internal es3 humidity",
@@ -1093,7 +1200,7 @@
         "model": "iButtonLink MS-TH",
         "identifier": "26.EEB51A020000",
         "firmware": ""
-      },      
+      },
       "ddrago-internal-es4-humidity": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.5A971A020000/HIH4000/humidity",
         "prettyname": "ddrago internal es4 humidity",
@@ -1106,7 +1213,7 @@
         "model": "iButtonLink MS-TH",
         "identifier": "26.5A971A020000",
         "firmware": ""
-      },      
+      },
       "ddrago-internal-es5-humidity": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.BCB01A020000/HIH4000/humidity",
         "prettyname": "ddrago internal es5 humidity",
@@ -1119,7 +1226,7 @@
         "model": "iButtonLink MS-TH",
         "identifier": "26.BCB01A020000",
         "firmware": ""
-      },      
+      },
       "ddrago-external-tunnel-humidity": {
         "file": "/usr/local/var/tcs/sensors/instrument/ow/26.6985E1010000/HIH4000/humidity",
         "prettyname": "ddrago external tunnel humidity",
@@ -1132,7 +1239,7 @@
         "model": "iButtonLink MS-TH",
         "identifier": "26.6985E1010000",
         "firmware": ""
-      },      
+      },
       "weather-dewpoint": {
         "file": "/usr/local/var/tcs/sensors/control/weather-dewpoint",
         "prettyname": "dewpoint",
@@ -1922,7 +2029,6 @@
   "weather": {
     "windaveragespeedlimit": "55"
   },
-
   // To use the dummy telescope, remove the "dummy-" prefixes below.
   "dummy-telescope": {
     "type": "dummy",
@@ -1952,7 +2058,7 @@
     "detectorunbinnedpixelscale": "0.381as",
     "detectorreadmodes": {
       "initial": "default",
-      "closed" : "default",
+      "closed": "default",
       "default": ""
     },
     "detectorinitialsoftwaregain": 1,
@@ -1964,7 +2070,6 @@
       "1kx1k": {
         "sx": 1536,
         "sy": 1536,
-
         "nx": 1024,
         "ny": 1024
       },
@@ -1993,32 +2098,34 @@
       "nx": 0,
       "ny": 0
     },
-    "detectorboresight": { "x": 2048.0, "y": 2048.0 },
+    "detectorboresight": {
+      "x": 2048.0,
+      "y": 2048.0
+    },
     "coolerstartsetting": "off",
     "cooleropensetting": "-80",
     "coolerclosedsetting": "following",
     "temperaturelimit": 40,
     "temperaturelimitoutletgroup": "",
-
     "filterwheeltype": "dummy",
-    "filterwheelidentifier": [ "5" ],
+    "filterwheelidentifier": [
+      "5"
+    ],
     "filters": {
       "initial": "r",
-      "idle"   : "r",
-      "closed" : "r",
-      "g"      : "0",
-      "r"      : "1",
-      "i"      : "2",
-      "gri"    : "3",
-      "B"      : "4"
+      "idle": "r",
+      "closed": "r",
+      "g": "0",
+      "r": "1",
+      "i": "2",
+      "gri": "3",
+      "B": "4"
     },
-
     "focusertype": "null",
     "focuseridentifier": "null",
     "focuserinitialposition": 0,
     "focuserbacklashoffset": 0,
     "focuserdzmodel": {},
-
     "pointingmodelparameters": {},
     "isstandalone": false,
     "fitsfwhmargs": {
@@ -2027,5 +2134,4 @@
       "4": "-A"
     }
   }
-
 }

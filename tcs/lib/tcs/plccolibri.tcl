@@ -31,31 +31,30 @@ package require "utcclock"
 package provide "plccolibri" 0.0
 
 namespace eval "plc" {
-
   ######################################################################
 
-  variable controllerhost             [config::getvalue "plc" "controllerhost"]
-  variable controllerport             [config::getvalue "plc" "controllerport"]
+  variable controllerhost [config::getvalue "plc" "controllerhost"]
+  variable controllerport [config::getvalue "plc" "controllerport"]
   variable daylightalarmoffsetseconds [config::getvalue "plc" "daylightalarmoffsetseconds"]
-  variable windspeedlimit             [config::getvalue "plc" "windspeedlimit"]
+  variable windspeedlimit [config::getvalue "plc" "windspeedlimit"]
   server::setdata "windspeedlimit" $windspeedlimit
 
   ######################################################################
 
-  set controller::host                        $controllerhost
-  set controller::port                        $controllerport
-  set controller::statuscommand               "StatusA\nStatusB\nStatusC\n"
-  set controller::timeoutmilliseconds         5000
-  set controller::intervalmilliseconds        500
-  set controller::updatedata                  plc::updatedata
-  set controller::statusintervalmilliseconds  1000
+  set controller::host $controllerhost
+  set controller::port $controllerport
+  set controller::statuscommand "StatusA\nStatusB\nStatusC\n"
+  set controller::timeoutmilliseconds 5000
+  set controller::intervalmilliseconds 500
+  set controller::updatedata plc::updatedata
+  set controller::statusintervalmilliseconds 1000
 
-  set server::datalifeseconds                 30
+  set server::datalifeseconds 30
 
   ######################################################################
 
   variable boltwoodenabled [config::getvalue "plc" "boltwoodenabled"]
-  variable vaisalaenabled  [config::getvalue "plc" "vaisalaenabled"]
+  variable vaisalaenabled [config::getvalue "plc" "vaisalaenabled"]
 
   ######################################################################
 
@@ -63,7 +62,7 @@ namespace eval "plc" {
 
   ######################################################################
 
-  server::setdata "timestamp"         ""
+  server::setdata "timestamp" ""
 
   variable settledelayseconds 5
 
@@ -87,7 +86,6 @@ namespace eval "plc" {
   variable lastresponsec ""
 
   proc updatedata {response} {
-
     variable responsea
     variable responseb
     variable responsec
@@ -159,179 +157,193 @@ namespace eval "plc" {
     set field [split $field ";"]
 
     if {!$vaisalaenabled} {
-      server::setdata "vaisalawindminazimuth"        ""
-      server::setdata "vaisalawindaverageazimuth"    ""
-      server::setdata "vaisalawindmaxzimuth"         ""
-      server::setdata "vaisalawindminspeed"          ""
-      server::setdata "vaisalawindaveragespeed"      ""
-      server::setdata "vaisalawindmaxspeed"          ""
-      server::setdata "vaisalatemperature"           ""
-      server::setdata "vaisalahumidity"              ""
-      server::setdata "vaisalapressure"              ""
-      server::setdata "vaisalarainaccumulation"      ""
-      server::setdata "vaisalarainseconds"           ""
-      server::setdata "vaisalarainrate"              ""
-      server::setdata "vaisalaheatingtemperature"    ""
-      server::setdata "vaisalaheatingcoltage"        ""
-      server::setdata "vaisalahsupplyvoltage"        ""
-      server::setdata "vaisalareferencevoltage"      ""
-    } elseif {[catch {
-      # The wind data from the Vaisala contains # if the sensor is inoperative.
-      set value [lindex $field 2]
-      if {[string first "#" [lindex $field 2]] != -1} {
-        server::setdata "vaisalawindminazimuth"     ""
-      } else {
-        server::setdata "vaisalawindminazimuth"     [format "%d"   [parseinteger [lindex $field 2]]]
-      }
-      if {[string first "#" [lindex $field 3]] != -1} {
-        server::setdata "vaisalawindaverageazimuth" ""
-      } else {
-        server::setdata "vaisalawindaverageazimuth" [format "%d"   [parseinteger [lindex $field 3]]]
-      }
-      if {[string first "#" [lindex $field 4]] != -1} {
-        server::setdata "vaisalawindmaxzimuth"      ""
-      } else {
-        server::setdata "vaisalawindmaxzimuth"      [format "%d"   [parseinteger [lindex $field 4]]]
-      }
-      if {[string first "#" [lindex $field 5]] != -1} {
-        server::setdata "vaisalawindminspeed"       ""
-      } else {
-        # Convert the Vaisala speeds from m/s to km/h.
-        server::setdata "vaisalawindminspeed"       [format "%.1f" [expr {[lindex $field 5] * 3.6}]]
-      }
-      if {[string first "#" [lindex $field 6]] != -1} {
-        server::setdata "vaisalawindaveragespeed"   ""
-      } else {
-        # Convert the Vaisala speeds from m/s to km/h.
-        server::setdata "vaisalawindaveragespeed"   [format "%.1f" [expr {[lindex $field 6] * 3.6}]]
-      }
-      if {[string first "#" [lindex $field 7]] != -1} {
-        server::setdata "vaisalawindmaxspeed"        ""
-      } else {
-        # Convert the Vaisala speeds from m/s to km/h.
-        server::setdata "vaisalawindmaxspeed"       [format "%.1f" [expr {[lindex $field 7] * 3.6}]]
-      }
-      server::setdata "vaisalatemperature"           [format "%.1f" [lindex $field 8]]
-      server::setdata "vaisalahumidity"              [format "%.3f" [expr {0.01 * [lindex $field 9]}]]
-      server::setdata "vaisalapressure"              [format "%.1f" [lindex $field 10]]
-      server::setdata "vaisalarainaccumulation"      [format "%.1f" [lindex $field 11]]
-      server::setdata "vaisalarainseconds"           [format "%d"   [parseinteger [lindex $field 12]]]
-      server::setdata "vaisalarainrate"              [format "%.1f" [lindex $field 13]]
-      server::setdata "vaisalaheatingtemperature"    [format "%.1f" [lindex $field 14]]
-      server::setdata "vaisalaheatingcoltage"        [format "%.1f" [lindex $field 15]]
-      server::setdata "vaisalahsupplyvoltage"        [format "%.1f" [lindex $field 16]]
-      server::setdata "vaisalareferencevoltage"      [format "%.1f" [lindex $field 17]]
-    }]} {
+      server::setdata "vaisalawindminazimuth" ""
+      server::setdata "vaisalawindaverageazimuth" ""
+      server::setdata "vaisalawindmaxzimuth" ""
+      server::setdata "vaisalawindminspeed" ""
+      server::setdata "vaisalawindaveragespeed" ""
+      server::setdata "vaisalawindmaxspeed" ""
+      server::setdata "vaisalatemperature" ""
+      server::setdata "vaisalahumidity" ""
+      server::setdata "vaisalapressure" ""
+      server::setdata "vaisalarainaccumulation" ""
+      server::setdata "vaisalarainseconds" ""
+      server::setdata "vaisalarainrate" ""
+      server::setdata "vaisalaheatingtemperature" ""
+      server::setdata "vaisalaheatingcoltage" ""
+      server::setdata "vaisalahsupplyvoltage" ""
+      server::setdata "vaisalareferencevoltage" ""
+    } elseif {
+      [catch {
+        # The wind data from the Vaisala contains # if the sensor is inoperative.
+        set value [lindex $field 2]
+        if {[string first "#" [lindex $field 2]] != -1} {
+          server::setdata "vaisalawindminazimuth" ""
+        } else {
+          server::setdata "vaisalawindminazimuth" [format "%d" [parseinteger [lindex $field 2]]]
+        }
+        if {[string first "#" [lindex $field 3]] != -1} {
+          server::setdata "vaisalawindaverageazimuth" ""
+        } else {
+          server::setdata "vaisalawindaverageazimuth" [format "%d" [parseinteger [lindex $field 3]]]
+        }
+        if {[string first "#" [lindex $field 4]] != -1} {
+          server::setdata "vaisalawindmaxzimuth" ""
+        } else {
+          server::setdata "vaisalawindmaxzimuth" [format "%d" [parseinteger [lindex $field 4]]]
+        }
+        if {[string first "#" [lindex $field 5]] != -1} {
+          server::setdata "vaisalawindminspeed" ""
+        } else {
+          # Convert the Vaisala speeds from m/s to km/h.
+          server::setdata "vaisalawindminspeed" [format "%.1f" [expr {[lindex $field 5] * 3.6}]]
+        }
+        if {[string first "#" [lindex $field 6]] != -1} {
+          server::setdata "vaisalawindaveragespeed" ""
+        } else {
+          # Convert the Vaisala speeds from m/s to km/h.
+          server::setdata "vaisalawindaveragespeed" [format "%.1f" [expr {[lindex $field 6] * 3.6}]]
+        }
+        if {[string first "#" [lindex $field 7]] != -1} {
+          server::setdata "vaisalawindmaxspeed" ""
+        } else {
+          # Convert the Vaisala speeds from m/s to km/h.
+          server::setdata "vaisalawindmaxspeed" [format "%.1f" [expr {[lindex $field 7] * 3.6}]]
+        }
+        server::setdata "vaisalatemperature" [format "%.1f" [lindex $field 8]]
+        server::setdata "vaisalahumidity" [format "%.3f" [expr {0.01 * [lindex $field 9]}]]
+        server::setdata "vaisalapressure" [format "%.1f" [lindex $field 10]]
+        server::setdata "vaisalarainaccumulation" [format "%.1f" [lindex $field 11]]
+        server::setdata "vaisalarainseconds" [format "%d" [parseinteger [lindex $field 12]]]
+        server::setdata "vaisalarainrate" [format "%.1f" [lindex $field 13]]
+        server::setdata "vaisalaheatingtemperature" [format "%.1f" [lindex $field 14]]
+        server::setdata "vaisalaheatingcoltage" [format "%.1f" [lindex $field 15]]
+        server::setdata "vaisalahsupplyvoltage" [format "%.1f" [lindex $field 16]]
+        server::setdata "vaisalareferencevoltage" [format "%.1f" [lindex $field 17]]
+      }]
+    } {
       log::warning "unable to read vaisala data."
     }
 
     if {!$boltwoodenabled} {
-      server::setdata "boltwoodskytemperature"        ""
-      server::setdata "boltwoodairtemperature"        ""
-      server::setdata "boltwoodwindspeed"             ""
-      server::setdata "boltwoodhumidity"              ""
-      server::setdata "boltwooddewpoint"              ""
-      server::setdata "boltwoodheatersetting"         ""
-      server::setdata "boltwoodrainindex"             ""
-      server::setdata "boltwoodwetnessindex"          ""
-      server::setdata "boltwoodcloudindex"            ""
-      server::setdata "boltwoodwindindex"             ""
-      server::setdata "boltwooddaylightindex"         ""
-      server::setdata "boltwoodroofindex"             ""
-    } elseif {[catch {
-      server::setdata "boltwoodskytemperature"        [format "%.1f" [lindex $field 18]]
-      server::setdata "boltwoodairtemperature"        [format "%.1f" [lindex $field 19]]
-      server::setdata "boltwoodwindspeed"             [format "%.1f" [lindex $field 20]]
-      server::setdata "boltwoodhumidity"              [format "%.3f" [expr {0.01 * [lindex $field 21]}]]
-      server::setdata "boltwooddewpoint"              [format "%.1f" [lindex $field 22]]
-      server::setdata "boltwoodheatersetting"         [format "%.1f" [lindex $field 23]]
-      server::setdata "boltwoodrainindex"             [format "%d"   [parseinteger [lindex $field 24]]]
-      server::setdata "boltwoodwetnessindex"          [format "%d"   [parseinteger [lindex $field 25]]]
-      server::setdata "boltwoodcloudindex"            [format "%d"   [parseinteger [lindex $field 26]]]
-      server::setdata "boltwoodwindindex"             [format "%d"   [parseinteger [lindex $field 27]]]
-      server::setdata "boltwooddaylightindex"         [format "%d"   [parseinteger [lindex $field 28]]]
-      server::setdata "boltwoodroofindex"             [format "%d"   [parseinteger [lindex $field 29]]]
-    }]} {
+      server::setdata "boltwoodskytemperature" ""
+      server::setdata "boltwoodairtemperature" ""
+      server::setdata "boltwoodwindspeed" ""
+      server::setdata "boltwoodhumidity" ""
+      server::setdata "boltwooddewpoint" ""
+      server::setdata "boltwoodheatersetting" ""
+      server::setdata "boltwoodrainindex" ""
+      server::setdata "boltwoodwetnessindex" ""
+      server::setdata "boltwoodcloudindex" ""
+      server::setdata "boltwoodwindindex" ""
+      server::setdata "boltwooddaylightindex" ""
+      server::setdata "boltwoodroofindex" ""
+    } elseif {
+      [catch {
+        server::setdata "boltwoodskytemperature" [format "%.1f" [lindex $field 18]]
+        server::setdata "boltwoodairtemperature" [format "%.1f" [lindex $field 19]]
+        server::setdata "boltwoodwindspeed" [format "%.1f" [lindex $field 20]]
+        server::setdata "boltwoodhumidity" [format "%.3f" [expr {0.01 * [lindex $field 21]}]]
+        server::setdata "boltwooddewpoint" [format "%.1f" [lindex $field 22]]
+        server::setdata "boltwoodheatersetting" [format "%.1f" [lindex $field 23]]
+        server::setdata "boltwoodrainindex" [format "%d" [parseinteger [lindex $field 24]]]
+        server::setdata "boltwoodwetnessindex" [format "%d" [parseinteger [lindex $field 25]]]
+        server::setdata "boltwoodcloudindex" [format "%d" [parseinteger [lindex $field 26]]]
+        server::setdata "boltwoodwindindex" [format "%d" [parseinteger [lindex $field 27]]]
+        server::setdata "boltwooddaylightindex" [format "%d" [parseinteger [lindex $field 28]]]
+        server::setdata "boltwoodroofindex" [format "%d" [parseinteger [lindex $field 29]]]
+      }]
+    } {
       log::warning "unable to read boltwood data."
     }
 
-    if {[catch {
-      server::setdata "comet1temperature"             [format "%.1f" [lindex $field 30]]
-      server::setdata "comet1humidity"                [format "%.3f" [expr {0.01 * [lindex $field 31]}]]
-      server::setdata "comet2temperature"             [format "%.1f" [lindex $field 32]]
-      server::setdata "comet2humidity"                [format "%.3f" [expr {0.01 * [lindex $field 33]}]]
-      server::setdata "comet3temperature"             [format "%.1f" [lindex $field 34]]
-      server::setdata "comet3humidity"                [format "%.3f" [expr {0.01 * [lindex $field 35]}]]
-    }]} {
+    if {
+      [catch {
+        server::setdata "comet1temperature" [format "%.1f" [lindex $field 30]]
+        server::setdata "comet1humidity" [format "%.3f" [expr {0.01 * [lindex $field 31]}]]
+        server::setdata "comet2temperature" [format "%.1f" [lindex $field 32]]
+        server::setdata "comet2humidity" [format "%.3f" [expr {0.01 * [lindex $field 33]}]]
+        server::setdata "comet3temperature" [format "%.1f" [lindex $field 34]]
+        server::setdata "comet3humidity" [format "%.3f" [expr {0.01 * [lindex $field 35]}]]
+      }]
+    } {
       log::warning "unable to read comet data."
     }
 
-    if {[catch {
-      server::setdata "europeanupsbatterychargelevel" [format "%.2f" [expr {0.01 * [lindex $field 36]}]]
-      server::setdata "europeanupsbatterytemperature" [format "%.1f" [lindex $field 37]]
-      server::setdata "europeanupsbatteryvoltage"     [format "%.0f" [lindex $field 38]]
-      # Field 39 was the battery current with the original Schneider UPS, but is no longer used.
-      server::setdata "europeanupsbatteryseconds"     [format "%.0f" [expr {60 * [lindex $field 40]}]]
-      # Field 41 was the load with the original Schneider UPS, but is no longer used. Instead, we average the loads of the three phases.
-      server::setdata "europeanupsload"               [format "%.2f" [expr {0.01 * max([lindex $field 45],[lindex $field 46],[lindex $field 47])}]]
-      # Voltages are now phase to neutral: L1-N, L2-N, L3-N
-      server::setdata "europeanupsl1voltage"          [format "%.0f" [lindex $field 42]]
-      server::setdata "europeanupsl2voltage"          [format "%.0f" [lindex $field 43]]
-      server::setdata "europeanupsl3voltage"          [format "%.0f" [lindex $field 44]]
-      # Fields 45 to 47 give the currents in percent of the nominal maximum, with 100% = 25 A
-      server::setdata "europeanupsl1current"          [format "%.1f" [expr {0.25 * [lindex $field 45]}]]
-      server::setdata "europeanupsl2current"          [format "%.1f" [expr {0.25 * [lindex $field 46]}]]
-      server::setdata "europeanupsl3current"          [format "%.1f" [expr {0.25 * [lindex $field 47]}]]
-      server::setdata "europeanupsinputfrequency"     [format "%.0f" [lindex $field 48]]
-      server::setdata "europeanupsoutputfrequency"    [format "%.0f" [lindex $field 49]]
-    }]} {
+    if {
+      [catch {
+        server::setdata "europeanupsbatterychargelevel" [format "%.2f" [expr {0.01 * [lindex $field 36]}]]
+        server::setdata "europeanupsbatterytemperature" [format "%.1f" [lindex $field 37]]
+        server::setdata "europeanupsbatteryvoltage" [format "%.0f" [lindex $field 38]]
+        # Field 39 was the battery current with the original Schneider UPS, but is no longer used.
+        server::setdata "europeanupsbatteryseconds" [format "%.0f" [expr {60 * [lindex $field 40]}]]
+        # Field 41 was the load with the original Schneider UPS, but is no longer used. Instead, we average the loads of the three phases.
+        server::setdata "europeanupsload" [format "%.2f" [expr {0.01 * max([lindex $field 45], [lindex $field 46], [lindex $field 47])}]]
+        # Voltages are now phase to neutral: L1-N, L2-N, L3-N
+        server::setdata "europeanupsl1voltage" [format "%.0f" [lindex $field 42]]
+        server::setdata "europeanupsl2voltage" [format "%.0f" [lindex $field 43]]
+        server::setdata "europeanupsl3voltage" [format "%.0f" [lindex $field 44]]
+        # Fields 45 to 47 give the currents in percent of the nominal maximum, with 100% = 25 A
+        server::setdata "europeanupsl1current" [format "%.1f" [expr {0.25 * [lindex $field 45]}]]
+        server::setdata "europeanupsl2current" [format "%.1f" [expr {0.25 * [lindex $field 46]}]]
+        server::setdata "europeanupsl3current" [format "%.1f" [expr {0.25 * [lindex $field 47]}]]
+        server::setdata "europeanupsinputfrequency" [format "%.0f" [lindex $field 48]]
+        server::setdata "europeanupsoutputfrequency" [format "%.0f" [lindex $field 49]]
+      }]
+    } {
       log::warning "unable to read european ups data."
     }
 
     set rawmode [lindex $field 50]
 
-    if {[catch {
-      server::setdata "unsafeseconds"                 [format "%d" [parseinteger [lindex $field 51]]]
-    }]} {
+    if {
+      [catch {
+        server::setdata "unsafeseconds" [format "%d" [parseinteger [lindex $field 51]]]
+      }]
+    } {
       log::warning "unable to read unsafe seconds data."
     }
 
     # Process responseb.
 
     switch -- "[string index $responseb 22][string index $responseb 23]" {
-      "00" { set keyswitch "off"    }
-      "01" { set keyswitch "remote" }
-      "10" { set keyswitch "local"  }
-      "11" { set keyswitch "error"  }
+      "00" {set keyswitch "off"}
+      "01" {set keyswitch "remote"}
+      "10" {set keyswitch "local"}
+      "11" {set keyswitch "error"}
       "default" {
         log::warning "unable to read key switch data."
         set keyswitch ""
       }
     }
-    server::setdata "keyswitch"                     $keyswitch
+    server::setdata "keyswitch" $keyswitch
 
-    if {[catch {
-      server::setdata "europeanupsoverloaded"         [boolean [string index $responseb 24]]
-      server::setdata "europeanupsbatterylow"         [boolean [string index $responseb 25]]
-      server::setdata "europeanupsusingbattery"       [boolean [string index $responseb 26]]
-      server::setdata "europeanupsfault"              [boolean [string index $responseb 27]]
-      server::setdata "europeanupsinputsupplypresent" [boolean [string index $responseb 28]]
-      server::setdata "europeanupsloadprotected"      [boolean [string index $responseb 29]]
-      server::setdata "europeanupscommunicationalarm" [boolean [string index $responseb 30]]
-    }]} {
+    if {
+      [catch {
+        server::setdata "europeanupsoverloaded" [boolean [string index $responseb 24]]
+        server::setdata "europeanupsbatterylow" [boolean [string index $responseb 25]]
+        server::setdata "europeanupsusingbattery" [boolean [string index $responseb 26]]
+        server::setdata "europeanupsfault" [boolean [string index $responseb 27]]
+        server::setdata "europeanupsinputsupplypresent" [boolean [string index $responseb 28]]
+        server::setdata "europeanupsloadprotected" [boolean [string index $responseb 29]]
+        server::setdata "europeanupscommunicationalarm" [boolean [string index $responseb 30]]
+      }]
+    } {
       log::warning "unable to read european ups data."
     }
 
-    if {[catch {
-      server::setdata "mustbeclosed"                  [boolean [string index $responseb 31]]
-      server::setdata "rainalarm"                     [boolean [string index $responseb 32]]
-      server::setdata "windalarm"                     [boolean [string index $responseb 33]]
-      server::setdata "cloudalarm"                    [boolean [string index $responseb 34]]
-      server::setdata "daylightalarm"                 [boolean [string index $responseb 35]]
-      server::setdata "humidityalarm"                 [boolean [string index $responseb 36]]
-      server::setdata "tcsalarm"                      [boolean [string index $responseb 37]]
-      server::setdata "upsalarm"                      [boolean [string index $responseb 38]]
-    }]} {
+    if {
+      [catch {
+        server::setdata "mustbeclosed" [boolean [string index $responseb 31]]
+        server::setdata "rainalarm" [boolean [string index $responseb 32]]
+        server::setdata "windalarm" [boolean [string index $responseb 33]]
+        server::setdata "cloudalarm" [boolean [string index $responseb 34]]
+        server::setdata "daylightalarm" [boolean [string index $responseb 35]]
+        server::setdata "humidityalarm" [boolean [string index $responseb 36]]
+        server::setdata "tcsalarm" [boolean [string index $responseb 37]]
+        server::setdata "upsalarm" [boolean [string index $responseb 38]]
+      }]
+    } {
       log::warning "unable to read alarm data."
     }
 
@@ -341,195 +353,213 @@ namespace eval "plc" {
     }
 
     switch -- "[string index $responseb 39]" {
-      "0" { set localconfirmation "pending"   }
-      "1" { set localconfirmation "confirmed" }
+      "0" {set localconfirmation "pending"}
+      "1" {set localconfirmation "confirmed"}
       "default" {
         log::warning "unable to read local confirmation data."
         set localconfirmation ""
       }
     }
-    server::setdata "localconfirmation"               $localconfirmation
+    server::setdata "localconfirmation" $localconfirmation
 
-    if {[catch {
-      server::setdata "emergencystopalarm"            [boolean [string index $responseb 40]]
-      server::setdata "emergencystoplogiclevel"       [boolean [string index $responseb 41]]
-      server::setdata "motorpoweron"                  [boolean [string index $responseb 42]]
-    }]} {
+    if {
+      [catch {
+        server::setdata "emergencystopalarm" [boolean [string index $responseb 40]]
+        server::setdata "emergencystoplogiclevel" [boolean [string index $responseb 41]]
+        server::setdata "motorpoweron" [boolean [string index $responseb 42]]
+      }]
+    } {
       log::warning "unable to read emergency stop data."
     }
 
-    if {[catch {
-      server::setdata "intrusionalarm"                [boolean [string index $responseb 43]]
-    }]} {
+    if {
+      [catch {
+        server::setdata "intrusionalarm" [boolean [string index $responseb 43]]
+      }]
+    } {
       log::warning "unable to read intrusion alarm data."
     }
 
     # Positions 44 and 45 are reserved.
 
-    if {[catch {
-      server::setdata "bypasskeyswitch"                [boolean [string index $responseb 46]]
-      server::setdata "bypassweatheralarms"            [boolean [string index $responseb 47]]
-    }]} {
+    if {
+      [catch {
+        server::setdata "bypasskeyswitch" [boolean [string index $responseb 46]]
+        server::setdata "bypassweatheralarms" [boolean [string index $responseb 47]]
+      }]
+    } {
       log::warning "unable to read bypass data."
     }
 
-    if {[catch {
-      server::setdata "riocommunicationalarm"          [boolean [string index $responseb 48]]
-      server::setdata "riovaisalapowersupply"          [boolean [string index $responseb 49]]
-      server::setdata "rioboltwoodpowersupply"         [boolean [string index $responseb 50]]
-      server::setdata "rioboltwoodcommunicationalarm"  [boolean [string index $responseb 51]]
-      server::setdata "riovaisalacommunicationalarm"   [boolean [string index $responseb 52]]
-      server::setdata "rioicronpowersupplyalarm"       [boolean [string index $responseb 53]]
-      server::setdata "riomainbreakerclosed"           [boolean [string index $responseb 54]]
-      server::setdata "rioswitchbreakerclosed"         [boolean [string index $responseb 55]]
-      server::setdata "riopowerbreakerclosed"          [boolean [string index $responseb 56]]
-      server::setdata "riousingbattery"                [boolean [string index $responseb 57]]
-      server::setdata "riobatteryalarm"                [boolean [string index $responseb 58]]
-      server::setdata "riobatterycharged"              [boolean [string index $responseb 59]]
-    }]} {
+    if {
+      [catch {
+        server::setdata "riocommunicationalarm" [boolean [string index $responseb 48]]
+        server::setdata "riovaisalapowersupply" [boolean [string index $responseb 49]]
+        server::setdata "rioboltwoodpowersupply" [boolean [string index $responseb 50]]
+        server::setdata "rioboltwoodcommunicationalarm" [boolean [string index $responseb 51]]
+        server::setdata "riovaisalacommunicationalarm" [boolean [string index $responseb 52]]
+        server::setdata "rioicronpowersupplyalarm" [boolean [string index $responseb 53]]
+        server::setdata "riomainbreakerclosed" [boolean [string index $responseb 54]]
+        server::setdata "rioswitchbreakerclosed" [boolean [string index $responseb 55]]
+        server::setdata "riopowerbreakerclosed" [boolean [string index $responseb 56]]
+        server::setdata "riousingbattery" [boolean [string index $responseb 57]]
+        server::setdata "riobatteryalarm" [boolean [string index $responseb 58]]
+        server::setdata "riobatterycharged" [boolean [string index $responseb 59]]
+      }]
+    } {
       log::warning "unable to read rio data."
     }
 
-    if {[catch {
-      foreach i { 1 2 3 4 5 6 7 8 9 10 11 12 } {
-        switch [string index $responseb [expr {59 + $i}]] {
-          "0" { set louver "closed" }
-          "1" { set louver "open"   }
-          "2" { set louver "error"  }
-          default {
-            log::warning "unable to read louver data."
-            set louver ""
+    if {
+      [catch {
+        foreach i { 1 2 3 4 5 6 7 8 9 10 11 12 } {
+          switch [string index $responseb [expr {59 + $i}]] {
+            "0" {set louver "closed"}
+            "1" {set louver "open"}
+            "2" {set louver "error"}
+            default {
+              log::warning "unable to read louver data."
+              set louver ""
+            }
           }
+          server::setdata "louver$i" $louver
         }
-        server::setdata "louver$i"                      $louver
-      }
-    }]} {
+      }]
+    } {
       log::warning "unable to read louver data."
     }
 
-    if {[catch {
-      switch [string index $responseb 60] {
-        "0" { set lights "off"  }
-        "1" { set lights "on"  }
-        default {
-          log::warning "unable to read lights data."
-          set lights ""
+    if {
+      [catch {
+        switch [string index $responseb 60] {
+          "0" {set lights "off"}
+          "1" {set lights "on"}
+          default {
+            log::warning "unable to read lights data."
+            set lights ""
+          }
         }
-      }
-      server::setdata "lights"                         $lights
-    }]} {
+        server::setdata "lights" $lights
+      }]
+    } {
       log::warning "unable to read lights data."
     }
 
     switch -- "[string index $responseb 77][string index $responseb 78]" {
-      "00" { set telescopemode "off"    }
-      "01" { set telescopemode "remote"  }
-      "10" { set telescopemode "local" }
-      "11" { set telescopemode "error"  }
+      "00" {set telescopemode "off"}
+      "01" {set telescopemode "remote"}
+      "10" {set telescopemode "local"}
+      "11" {set telescopemode "error"}
       "default" {
         log::warning "unable to read telescope mode data."
         set telescopemode ""
       }
     }
-    server::setdata "telescopemode"                    $telescopemode
+    server::setdata "telescopemode" $telescopemode
 
     switch -- "[string index $responseb 79]" {
-      "0" { set domemode "local" }
-      "1" { set domemode "remote"  }
+      "0" {set domemode "local"}
+      "1" {set domemode "remote"}
       "default" {
         log::warning "unable to read dome mode data."
         set domemode ""
       }
     }
-    server::setdata "domemode"                         $domemode
+    server::setdata "domemode" $domemode
 
     switch -- "[string index $responseb 80][string index $responseb 81]" {
-      "00" { set shutters "error"         }
-      "01" { set shutters "open"          }
-      "10" { set shutters "closed"        }
-      "11" { set shutters "intermediate"  }
+      "00" {set shutters "error"}
+      "01" {set shutters "open"}
+      "10" {set shutters "closed"}
+      "11" {set shutters "intermediate"}
       "default" {
         log::warning "unable to read shutters data."
         set shutters ""
       }
     }
-    server::setdata "shutters"                         $shutters
+    server::setdata "shutters" $shutters
 
-    if {[catch {
-      switch -- "[string index $responseb 82][string index $responseb 83]" {
-        "00" { set telescopemode "off"    }
-        "01" { set telescopemode "remote"  }
-        "10" { set telescopemode "local" }
-        "default" {
-          log::warning "unable to read plc data."
-          set telescopemode ""
+    if {
+      [catch {
+        switch -- "[string index $responseb 82][string index $responseb 83]" {
+          "00" {set telescopemode "off"}
+          "01" {set telescopemode "remote"}
+          "10" {set telescopemode "local"}
+          "default" {
+            log::warning "unable to read plc data."
+            set telescopemode ""
+          }
         }
-      }
-      server::setdata "requestedtelescopemode"         $telescopemode
+        server::setdata "requestedtelescopemode" $telescopemode
 
-      set requestedpark [boolean [expr {![string index $responseb 84]}]]
-      server::setdata "requestedpark" $requestedpark
-      set requestedclose [boolean [expr {![string index $responseb 85]}]]
-      server::setdata "requestedclose" $requestedclose
+        set requestedpark [boolean [expr {![string index $responseb 84]}]]
+        server::setdata "requestedpark" $requestedpark
+        set requestedclose [boolean [expr {![string index $responseb 85]}]]
+        server::setdata "requestedclose" $requestedclose
 
-      switch -- "[string index $responseb 86]" {
-        "0" { set domemode "remote" }
-        "1" { set domemode "local"  }
-        "default" {
-          log::warning "unable to read plc data."
-          set domemode ""
+        switch -- "[string index $responseb 86]" {
+          "0" {set domemode "remote"}
+          "1" {set domemode "local"}
+          "default" {
+            log::warning "unable to read plc data."
+            set domemode ""
+          }
         }
-      }
-      server::setdata "requesteddomemode"              $domemode
-    }]} {
+        server::setdata "requesteddomemode" $domemode
+      }]
+    } {
       log::warning "unable to read plc data."
     }
 
-    if {[catch {
-      server::setdata "bypassdaylightalarm"            [boolean [string index $responseb 87]]
-      server::setdata "bypasswindalarm"                [boolean [string index $responseb 89]]
-      server::setdata "bypasshumidityalarm"            [boolean [string index $responseb 90]]
-      server::setdata "bypasscloudalarm"               [boolean [string index $responseb 91]]
-      server::setdata "bypassrainalarm"                [boolean [string index $responseb 92]]
-      server::setdata "bypassupsalarm"                 [boolean [string index $responseb 93]]
-      server::setdata "bypasstcsalarm"                 [boolean [string index $responseb 94]]
-    }]} {
+    if {
+      [catch {
+        server::setdata "bypassdaylightalarm" [boolean [string index $responseb 87]]
+        server::setdata "bypasswindalarm" [boolean [string index $responseb 89]]
+        server::setdata "bypasshumidityalarm" [boolean [string index $responseb 90]]
+        server::setdata "bypasscloudalarm" [boolean [string index $responseb 91]]
+        server::setdata "bypassrainalarm" [boolean [string index $responseb 92]]
+        server::setdata "bypassupsalarm" [boolean [string index $responseb 93]]
+        server::setdata "bypasstcsalarm" [boolean [string index $responseb 94]]
+      }]
+    } {
       log::warning "unable to read bypass data."
     }
 
     # 95 was the UPS status with the original Schneider UPS, but this is no longer used.
 
     switch -- "[string index $responseb 96]" {
-      "0" { set fans "off" }
-      "1" { set fans "on"  }
+      "0" {set fans "off"}
+      "1" {set fans "on"}
       "default" {
         log::warning "unable to read fans data."
         set fans ""
       }
     }
-    server::setdata "fans"                             $fans
+    server::setdata "fans" $fans
 
     switch -- "[string index $responseb 97]" {
-      "0" { set telescopecabinetpower "off" }
-      "1" { set telescopecabinetpower "on"  }
+      "0" {set telescopecabinetpower "off"}
+      "1" {set telescopecabinetpower "on"}
       "default" {
         log::warning "unable to read telescope cabinet data."
         set fans ""
       }
     }
-    server::setdata "telescopecabinetpower"            $telescopecabinetpower
+    server::setdata "telescopecabinetpower" $telescopecabinetpower
 
     switch -- "[string index $responseb 100]" {
-      "0" { set accessrequested false }
-      "1" { set accessrequested true  }
+      "0" {set accessrequested false}
+      "1" {set accessrequested true}
     }
-    server::setdata "accessrequested"                  $accessrequested
+    server::setdata "accessrequested" $accessrequested
 
-    if {[catch {
-      server::setdata "vaisalarainalarm"  [boolean [string index $responseb 101]]
-      server::setdata "boltwoodrainalarm" [boolean [string index $responseb 102]]
-      server::setdata "bletrainalarm"     [boolean [string index $responseb 102]]
-    }]} {
+    if {
+      [catch {
+        server::setdata "vaisalarainalarm" [boolean [string index $responseb 101]]
+        server::setdata "boltwoodrainalarm" [boolean [string index $responseb 102]]
+        server::setdata "bletrainalarm" [boolean [string index $responseb 102]]
+      }]
+    } {
       log::warning "unable to read individual rain alarm data."
     }
 
@@ -538,73 +568,77 @@ namespace eval "plc" {
     set field [string map {" " ""} $responsec]
     set field [split $field ";"]
 
-    if {[catch {
-      server::setdata "americanupsl1current"          [format "%.1f" [lindex $field 2]]
-      server::setdata "americanupsl2current"          [format "%.1f" [lindex $field 3]]
-      server::setdata "americanupsl3current"          [format "%.1f" [lindex $field 4]]
-      server::setdata "americanupsl1voltage"          [format "%.1f" [lindex $field 5]]
-      server::setdata "americanupsl2voltage"          [format "%.1f" [lindex $field 6]]
-      server::setdata "americanupsl3voltage"          [format "%.1f" [lindex $field 7]]
-      server::setdata "americanupsload"               [format "%.2f" [expr {0.01 * [lindex $field 8]}]]
-      server::setdata "americanupsoutputfrequency"    [format "%.1f" [lindex $field 9]]
-      server::setdata "americanupsbatterytemperature" [format "%.1f" [lindex $field 10]]
-      server::setdata "americanupsbatterychargelevel" [format "%.2f" [expr {0.01 * [lindex $field 11]}]]
-      server::setdata "americanupsbatteryvoltage"     [format "%.1f" [lindex $field 12]]
-      server::setdata "americanupsbatterycurrent"     [format "%.1f" [lindex $field 13]]
-      set statusword [lindex $field 14]
-      server::setdata "americanupsusingbattery"       [boolean [expr {$statusword & 1}]]
-      set status ""
-      if {$statusword & (1 <<  2)} { set status "$status/on bypass"          }
-      if {$statusword & (1 <<  9)} { set status "$status/inoperable battery" }
-      if {$statusword & (1 << 13)} { set status "$status/information alarm"  }
-      if {$statusword & (1 << 14)} { set status "$status/warning alarm"      }
-      if {$statusword & (1 << 15)} { set status "$status/critical alarm"     }
-      set status [string range $status 1 end]
-      server::setdata "americanupsstatus"             $status
-      server::setdata "americanupscommunicationalarm" [boolean [lindex $field 15]]
-    }]} {
+    if {
+      [catch {
+        server::setdata "americanupsl1current" [format "%.1f" [lindex $field 2]]
+        server::setdata "americanupsl2current" [format "%.1f" [lindex $field 3]]
+        server::setdata "americanupsl3current" [format "%.1f" [lindex $field 4]]
+        server::setdata "americanupsl1voltage" [format "%.1f" [lindex $field 5]]
+        server::setdata "americanupsl2voltage" [format "%.1f" [lindex $field 6]]
+        server::setdata "americanupsl3voltage" [format "%.1f" [lindex $field 7]]
+        server::setdata "americanupsload" [format "%.2f" [expr {0.01 * [lindex $field 8]}]]
+        server::setdata "americanupsoutputfrequency" [format "%.1f" [lindex $field 9]]
+        server::setdata "americanupsbatterytemperature" [format "%.1f" [lindex $field 10]]
+        server::setdata "americanupsbatterychargelevel" [format "%.2f" [expr {0.01 * [lindex $field 11]}]]
+        server::setdata "americanupsbatteryvoltage" [format "%.1f" [lindex $field 12]]
+        server::setdata "americanupsbatterycurrent" [format "%.1f" [lindex $field 13]]
+        set statusword [lindex $field 14]
+        server::setdata "americanupsusingbattery" [boolean [expr {$statusword & 1}]]
+        set status ""
+        if {$statusword & (1 << 2)} {set status "$status/on bypass"}
+        if {$statusword & (1 << 9)} {set status "$status/inoperable battery"}
+        if {$statusword & (1 << 13)} {set status "$status/information alarm"}
+        if {$statusword & (1 << 14)} {set status "$status/warning alarm"}
+        if {$statusword & (1 << 15)} {set status "$status/critical alarm"}
+        set status [string range $status 1 end]
+        server::setdata "americanupsstatus" $status
+        server::setdata "americanupscommunicationalarm" [boolean [lindex $field 15]]
+      }]
+    } {
       log::warning "unable to read american ups data."
     }
 
-    if {[catch {
-      server::setdata "plccabinettemperature"            [format "%.1f" [lindex $field 16]]
-      server::setdata "weathercabinettemperature" [format "%.1f" [lindex $field 17]]
-      server::setdata "seeingcabinettemperature"         [format "%.1f" [lindex $field 18]]
-    }]} {
+    if {
+      [catch {
+        server::setdata "plccabinettemperature" [format "%.1f" [lindex $field 16]]
+        server::setdata "weathercabinettemperature" [format "%.1f" [lindex $field 17]]
+        server::setdata "seeingcabinettemperature" [format "%.1f" [lindex $field 18]]
+      }]
+    } {
       log::warning "unable to read cabinet temperature data."
     }
 
-    server::setdata "rainalarmdisabled"                     [boolean [expr {[server::getdata "bypassrainalarm"]     || [server::getdata "bypassweatheralarms"]}]]
-    server::setdata "windalarmdisabled"                     [boolean [expr {[server::getdata "bypasswindalarm"]     || [server::getdata "bypassweatheralarms"]}]]
-    server::setdata "humidityalarmdisabled"                 [boolean [expr {[server::getdata "bypasshumidityalarm"] || [server::getdata "bypassweatheralarms"]}]]
-    server::setdata "cloudalarmdisabled"                    [boolean [expr {[server::getdata "bypasscloudalarm"]    || [server::getdata "bypassweatheralarms"]}]]
-    server::setdata "daylightalarmdisabled"                 [server::getdata "bypassdaylightalarm"]
+    server::setdata "rainalarmdisabled" [boolean [expr {[server::getdata "bypassrainalarm"] || [server::getdata "bypassweatheralarms"]}]]
+    server::setdata "windalarmdisabled" [boolean [expr {[server::getdata "bypasswindalarm"] || [server::getdata "bypassweatheralarms"]}]]
+    server::setdata "humidityalarmdisabled" [boolean [expr {[server::getdata "bypasshumidityalarm"] || [server::getdata "bypassweatheralarms"]}]]
+    server::setdata "cloudalarmdisabled" [boolean [expr {[server::getdata "bypasscloudalarm"] || [server::getdata "bypassweatheralarms"]}]]
+    server::setdata "daylightalarmdisabled" [server::getdata "bypassdaylightalarm"]
 
-    server::setdata "tcsalarmdisabled"                      [server::getdata "bypasstcsalarm"]
-    server::setdata "upsalarmdisabled"                      [server::getdata "bypassupsalarm"]
+    server::setdata "tcsalarmdisabled" [server::getdata "bypasstcsalarm"]
+    server::setdata "upsalarmdisabled" [server::getdata "bypassupsalarm"]
 
-    server::setdata "emergencystopalarmdisabled"            false
-    server::setdata "intrusionalarmdisabled"                false
+    server::setdata "emergencystopalarmdisabled" false
+    server::setdata "intrusionalarmdisabled" false
 
-    server::setdata "riocommunicationalarmdisabled"         [server::getdata "bypassweatheralarms"]
-    server::setdata "riovaisalacommunicationalarmdisabled"  [server::getdata "bypassweatheralarms"]
+    server::setdata "riocommunicationalarmdisabled" [server::getdata "bypassweatheralarms"]
+    server::setdata "riovaisalacommunicationalarmdisabled" [server::getdata "bypassweatheralarms"]
     server::setdata "rioboltwoodcommunicationalarmdisabled" [server::getdata "bypassweatheralarms"]
 
     # The PLC is normally left in remote mode.
 
     switch -glob $rawmode/$requestedpark/$requestedclose {
-      "MANU/*/*"              { set mode "local" }
-      "WAIT_MANU/*/*"         { set mode "local" }
-      "OFF/*/*"               { set mode "off"   }
-      "WAIT_OFF/*/*"          { set mode "off" }
-      "WAIT_AUTO/*/*"         { set mode "waiting for telescope to be switched to remote" }
-      "WAIT_ACK/*/*"          { set mode "waiting for local confirmation"}
-      "AUTO/*/*"              { set mode "may open" }
-      "AUTO_PARK/false/false" { set mode "must close" }
-      "AUTO_PARK/*/*"         { set mode "must not operate" }
-      "AUTO_INTRUSION/*/*"    { set mode "intrusion detected" }
-      "ESTOP/*/*"             { set mode "emergency stop activated"}
-      default          {
+      "MANU/*/*" {set mode "local"}
+      "WAIT_MANU/*/*" {set mode "local"}
+      "OFF/*/*" {set mode "off"}
+      "WAIT_OFF/*/*" {set mode "off"}
+      "WAIT_AUTO/*/*" {set mode "waiting for telescope to be switched to remote"}
+      "WAIT_ACK/*/*" {set mode "waiting for local confirmation"}
+      "AUTO/*/*" {set mode "may open"}
+      "AUTO_PARK/false/false" {set mode "must close"}
+      "AUTO_PARK/*/*" {set mode "must not operate"}
+      "AUTO_INTRUSION/*/*" {set mode "intrusion detected"}
+      "ESTOP/*/*" {set mode "emergency stop activated"}
+      default {
         log::warning "unable to read mode data: $rawmode/$requestedpark/$requestedclose."
         set mode ""
       }
@@ -614,10 +648,10 @@ namespace eval "plc" {
     set mustnotoperate [boolean [expr {
       ![string equal $mode "may open"] &&
       ![string equal $mode "must close"]
-      }]]
-      server::setdata "mustnotoperate" $mustnotoperate
+    }]]
+    server::setdata "mustnotoperate" $mustnotoperate
 
-      foreach {level name prettyname} {
+    foreach {level name prettyname} {
 
         "info"    "fans"                          "fans"
 
@@ -692,13 +726,13 @@ namespace eval "plc" {
         "warning" "accessrequested"               "accessrequested"
 
       } {
-        logchange $level $name $prettyname
-      }
+      logchange $level $name $prettyname
+    }
 
-      server::setdata "timestamp"           $timestamp
-      server::setstatus "ok"
+    server::setdata "timestamp" $timestamp
+    server::setstatus "ok"
 
-      foreach {sensorname dataname} {
+    foreach {sensorname dataname} {
 
         plc-cabinet-temperature    plccabinettemperature
         weather-cabinet-temperature weathercabinettemperature
@@ -742,288 +776,290 @@ namespace eval "plc" {
         american-ups-output-frequency     americanupsoutputfrequency
 
       } {
-        log::writesensorsfile "plc-$sensorname" [server::getdata $dataname] [server::getdata "timestamp"]
-      }
-
-      set lastresponsea $responsea
-      set lastresponseb $responseb
-      set lastresponsec $responsec
-      set responsea ""
-      set responseb ""
-      set responsec ""
-
-      return true
+      log::writesensorsfile "plc-$sensorname" [server::getdata $dataname] [server::getdata "timestamp"]
     }
 
-    proc logalarm {value lastvalue name} {
-      if {[string equal $lastvalue ""]} {
-        if {$value} {
-          log::info "the $name is on."
-        } else {
-          log::info "the $name is off."
-        }
-      } elseif {![string equal $lastvalue $value]} {
-        if {$value} {
-          log::warning "the $name has changed from off to on."
-        } else {
-          log::summary "the $name has changed from on to off."
-        }
-      }
-    }
+    set lastresponsea $responsea
+    set lastresponseb $responseb
+    set lastresponsec $responsec
+    set responsea ""
+    set responseb ""
+    set responsec ""
 
-    proc boolean {x} {
-      if {$x} {
-        return "true"
+    return true
+  }
+
+  proc logalarm {value lastvalue name} {
+    if {[string equal $lastvalue ""]} {
+      if {$value} {
+        log::info "the $name is on."
       } else {
-        return "false"
+        log::info "the $name is off."
       }
-    }
-
-    ######################################################################
-
-    variable lastvalue {}
-
-    proc logchange {level name prettyname} {
-      variable lastvalue
-      set value [server::getdata $name]
-      switch -glob $name {
-        "*upsbatterychargelevel" {
-          set value [format "%.0f%%" [expr {$value * 100}]]
-        }
-      }
-      if {![dict exists $lastvalue $name]} {
-        log::$level [format "%s is %s." $prettyname $value]
-      } elseif {![string equal [dict get $lastvalue $name] $value]} {
-        log::$level [format "%s has changed from %s to %s." $prettyname [dict get $lastvalue $name] $value]
-      }
-      dict set lastvalue $name $value
-    }
-
-    ######################################################################
-
-    proc parseinteger {old} {
-      if {[scan $old "%d" new] != 1} {
-        return ""
+    } elseif {![string equal $lastvalue $value]} {
+      if {$value} {
+        log::warning "the $name has changed from off to on."
       } else {
-        return $new
+        log::summary "the $name has changed from on to off."
       }
     }
-    ######################################################################
+  }
 
-    proc startactivitycommand {} {
-      set start [utcclock::seconds]
-      log::info "starting."
-      variable boltwoodenabled
-      variable vaisalaenabled
-      if {!$boltwoodenabled} {
-        log::warning "the boltwood is not enabled."
+  proc boolean {x} {
+    if {$x} {
+      return "true"
+    } else {
+      return "false"
+    }
+  }
+
+  ######################################################################
+
+  variable lastvalue {}
+
+  proc logchange {level name prettyname} {
+    variable lastvalue
+    set value [server::getdata $name]
+    switch -glob $name {
+      "*upsbatterychargelevel" {
+        set value [format "%.0f%%" [expr {$value * 100}]]
       }
-      if {!$vaisalaenabled} {
-        log::warning "the vaisala is not enabled."
-      }
-      variable windspeedlimit
-      server::setdata "windspeedlimit" $windspeedlimit
-      controller::sendcommand "WindThreshold\{$windspeedlimit\}\n"
-      controller::sendcommand "UnsafeTimer\{10\}\n"
-      controller::sendcommand "UpsThreshold\{90\}\n"
-      set end [utcclock::seconds]
-      log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
     }
-
-    proc initializeactivitycommand {} {
-      set start [utcclock::seconds]
-      log::info "initializing."
-      log::info [format "finished initializing after %.1f seconds." [utcclock::diff now $start]]
+    if {![dict exists $lastvalue $name]} {
+      log::$level [format "%s is %s." $prettyname $value]
+    } elseif {![string equal [dict get $lastvalue $name] $value]} {
+      log::$level [format "%s has changed from %s to %s." $prettyname [dict get $lastvalue $name] $value]
     }
+    dict set lastvalue $name $value
+  }
 
-    proc openactivitycommand {} {
-      set start [utcclock::seconds]
-      log::info "opening."
-      log::info [format "finished opening after %.1f seconds." [utcclock::diff now $start]]
+  ######################################################################
+
+  proc parseinteger {old} {
+    if {[scan $old "%d" new] != 1} {
+      return ""
+    } else {
+      return $new
     }
+  }
+  ######################################################################
 
-    proc closeactivitycommand {} {
-      set start [utcclock::seconds]
-      log::info "closing."
-      log::info [format "finished closing after %.1f seconds." [utcclock::diff now $start]]
+  proc startactivitycommand {} {
+    set start [utcclock::seconds]
+    log::info "starting."
+    variable boltwoodenabled
+    variable vaisalaenabled
+    if {!$boltwoodenabled} {
+      log::warning "the boltwood is not enabled."
     }
+    if {!$vaisalaenabled} {
+      log::warning "the vaisala is not enabled."
+    }
+    variable windspeedlimit
+    server::setdata "windspeedlimit" $windspeedlimit
+    controller::sendcommand "WindThreshold\{$windspeedlimit\}\n"
+    controller::sendcommand "UnsafeTimer\{10\}\n"
+    controller::sendcommand "UpsThreshold\{90\}\n"
+    set end [utcclock::seconds]
+    log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
+  }
 
-    proc resetactivitycommand {} {
-      set start [utcclock::seconds]
-      log::info "resetting."
+  proc initializeactivitycommand {} {
+    set start [utcclock::seconds]
+    log::info "initializing."
+    log::info [format "finished initializing after %.1f seconds." [utcclock::diff now $start]]
+  }
+
+  proc openactivitycommand {} {
+    set start [utcclock::seconds]
+    log::info "opening."
+    log::info [format "finished opening after %.1f seconds." [utcclock::diff now $start]]
+  }
+
+  proc closeactivitycommand {} {
+    set start [utcclock::seconds]
+    log::info "closing."
+    log::info [format "finished closing after %.1f seconds." [utcclock::diff now $start]]
+  }
+
+  proc resetactivitycommand {} {
+    set start [utcclock::seconds]
+    log::info "resetting."
+    controller::flushcommandqueue
+    log::info [format "finished resetting after %.1f seconds." [utcclock::diff now $start]]
+  }
+
+  proc stopactivitycommand {} {
+    set start [utcclock::seconds]
+    log::info "stopping."
+    set activity [server::getactivity]
+    if {
+      [string equal $activity "initializing"] ||
+      [string equal $activity "opening"] ||
+      [string equal $activity "closing"]
+    } {
       controller::flushcommandqueue
-      log::info [format "finished resetting after %.1f seconds." [utcclock::diff now $start]]
     }
+    log::info [format "finished stopping after %.1f seconds." [utcclock::diff now $start]]
+  }
 
-    proc stopactivitycommand {} {
-      set start [utcclock::seconds]
-      log::info "stopping."
-      set activity [server::getactivity]
-      if {
-        [string equal $activity "initializing"] ||
-        [string equal $activity "opening"] ||
-        [string equal $activity "closing"]
-      } {
-        controller::flushcommandqueue
-      }
-      log::info [format "finished stopping after %.1f seconds." [utcclock::diff now $start]]
+  ######################################################################
+
+  proc checkremote {} {
+    if {![string equal [server::getdata "keyswitch"] "remote"]} {
+      error "the PLC is not in remote keyswitch."
     }
+  }
 
-    ######################################################################
+  proc checkrainsensor {} {
 
-    proc checkremote {} {
-      if {![string equal [server::getdata "keyswitch"] "remote"]} {
-        error "the PLC is not in remote keyswitch."
-      }
+  }
+
+  proc checkformove {} {
+
+  }
+
+  proc initialize {} {
+    server::checkstatus
+    server::checkactivityforinitialize
+    checkremote
+    server::newactivitycommand "initializing" "idle" plc::initializeactivitycommand
+  }
+
+  proc stop {} {
+    server::checkstatus
+    server::checkactivityforstop
+    checkremote
+    server::newactivitycommand "stopping" [server::getstoppedactivity] plc::stopactivitycommand
+  }
+
+  proc reset {} {
+    server::checkstatus
+    server::checkactivityforreset
+    checkremote
+    server::newactivitycommand "resetting" [server::getstoppedactivity] plc::resetactivitycommand
+  }
+
+  proc open {} {
+    server::checkstatus
+    server::checkactivityformove
+    checkremote
+    checkrainsensor
+    checkformove
+    server::newactivitycommand "opening" "idle" "plc::openactivitycommand"
+  }
+
+  proc close {} {
+    server::checkstatus
+    server::checkactivityformove
+    checkremote
+    checkformove
+    server::newactivitycommand "closing" "idle" plc::closeactivitycommand
+  }
+
+  proc specialupdateweather {} {
+    server::checkstatus
+    variable lastresponsea
+    if {[string equal "" $lastresponsea]} {
+      log::warning "unable to update weather: no data."
+      return
     }
-
-    proc checkrainsensor {} {
-    }
-
-    proc checkformove {} {
-    }
-
-    proc initialize {} {
-      server::checkstatus
-      server::checkactivityforinitialize
-      checkremote
-      server::newactivitycommand "initializing" "idle" plc::initializeactivitycommand
-    }
-
-    proc stop {} {
-      server::checkstatus
-      server::checkactivityforstop
-      checkremote
-      server::newactivitycommand "stopping" [server::getstoppedactivity] plc::stopactivitycommand
-    }
-
-    proc reset {} {
-      server::checkstatus
-      server::checkactivityforreset
-      checkremote
-      server::newactivitycommand "resetting" [server::getstoppedactivity] plc::resetactivitycommand
-    }
-
-    proc open {} {
-      server::checkstatus
-      server::checkactivityformove
-      checkremote
-      checkrainsensor
-      checkformove
-      server::newactivitycommand "opening" "idle" "plc::openactivitycommand"
-    }
-
-    proc close {} {
-      server::checkstatus
-      server::checkactivityformove
-      checkremote
-      checkformove
-      server::newactivitycommand "closing" "idle" plc::closeactivitycommand
-    }
-
-    proc specialupdateweather {} {
-      server::checkstatus
-      variable lastresponsea
-      if {[string equal "" $lastresponsea]} {
-        log::warning "unable to update weather: no data."
-        return
-      }
-      set timestamp   [server::getdata "timestamp"]
-      set date        [utcclock::formatdate $timestamp]
-      set time        [utcclock::formattime $timestamp]
-      set compactdate [utcclock::formatdate $timestamp false]
-      set line "b.1 $date $time $lastresponsea"
-      set line [string map {";" " "} $line]
-      set directorypath [file join [directories::var] "weather"]
-      if {[catch {
+    set timestamp [server::getdata "timestamp"]
+    set date [utcclock::formatdate $timestamp]
+    set time [utcclock::formattime $timestamp]
+    set compactdate [utcclock::formatdate $timestamp false]
+    set line "b.1 $date $time $lastresponsea"
+    set line [string map {";" " "} $line]
+    set directorypath [file join [directories::var] "weather"]
+    if {
+      [catch {
         file mkdir $directorypath
         set filepath [file join $directorypath "$date.txt"]
         set channel [::open $filepath "a"]
         puts $channel $line
         ::close $channel
-      }]} {
-        log::warning "unable to update weather: cannot write to file."
-      }
-      return
+      }]
+    } {
+      log::warning "unable to update weather: cannot write to file."
     }
+    return
+  }
 
-    ######################################################################
+  ######################################################################
 
-    proc enablealarmactivitycommand {alarm} {
-      set start [utcclock::seconds]
-      log::summary "enabling the $alarm alarm."
-      switch $alarm {
-        "weather"  { set command "ByPassWeather\{OFF\}\n" }
-        "rain"     { set command "RainAlarm\{ON\}\n" }
-        "wind"     { set command "WindThreshold\{ON\}\n" }
-        "cloud"    { set command "CloudThreshold\{ON\}\n" }
-        "humidity" { set command "HumidityThreshold\{ON\}\n" }
-        "daylight" { set command "DayLightThreshold\{ON\}\n" }
-        "ups"      { set command "UpsThreshold\{ON\}\n" }
-        "tcs"      { set command "ComThreshold\{ON\}\n" }
-        default {
-          error "unknown alarm \"$alarm\"."
-        }
+  proc enablealarmactivitycommand {alarm} {
+    set start [utcclock::seconds]
+    log::summary "enabling the $alarm alarm."
+    switch $alarm {
+      "weather" {set command "ByPassWeather\{OFF\}\n"}
+      "rain" {set command "RainAlarm\{ON\}\n"}
+      "wind" {set command "WindThreshold\{ON\}\n"}
+      "cloud" {set command "CloudThreshold\{ON\}\n"}
+      "humidity" {set command "HumidityThreshold\{ON\}\n"}
+      "daylight" {set command "DayLightThreshold\{ON\}\n"}
+      "ups" {set command "UpsThreshold\{ON\}\n"}
+      "tcs" {set command "ComThreshold\{ON\}\n"}
+      default {
+        error "unknown alarm \"$alarm\"."
       }
-      controller::sendcommand $command
-      log::summary [format "finished enabling the $alarm alarm after %.1f seconds." [utcclock::diff now $start]]
     }
+    controller::sendcommand $command
+    log::summary [format "finished enabling the $alarm alarm after %.1f seconds." [utcclock::diff now $start]]
+  }
 
-    proc disablealarmactivitycommand {alarm} {
-      set start [utcclock::seconds]
-      log::summary "disabling the $alarm alarm."
-      switch $alarm {
-        "weather"  { set command "ByPassWeather\{ON\}\n" }
-        "rain"     { set command "RainAlarm\{OFF\}\n" }
-        "wind"     { set command "WindThreshold\{OFF\}\n" }
-        "cloud"    { set command "CloudThreshold\{OFF\}\n" }
-        "humidity" { set command "HumidityThreshold\{OFF\}\n" }
-        "daylight" { set command "DayLightThreshold\{OFF\}\n" }
-        "ups"      { set command "UpsThreshold\{OFF\}\n" }
-        "tcs"      { set command "ComThreshold\{OFF\}\n" }
-        default {
-          error "unknown alarm \"$alarm\"."
-        }
+  proc disablealarmactivitycommand {alarm} {
+    set start [utcclock::seconds]
+    log::summary "disabling the $alarm alarm."
+    switch $alarm {
+      "weather" {set command "ByPassWeather\{ON\}\n"}
+      "rain" {set command "RainAlarm\{OFF\}\n"}
+      "wind" {set command "WindThreshold\{OFF\}\n"}
+      "cloud" {set command "CloudThreshold\{OFF\}\n"}
+      "humidity" {set command "HumidityThreshold\{OFF\}\n"}
+      "daylight" {set command "DayLightThreshold\{OFF\}\n"}
+      "ups" {set command "UpsThreshold\{OFF\}\n"}
+      "tcs" {set command "ComThreshold\{OFF\}\n"}
+      default {
+        error "unknown alarm \"$alarm\"."
       }
-      controller::sendcommand $command
-      log::summary [format "finished disabling the $alarm alarm after %.1f seconds." [utcclock::diff now $start]]
     }
+    controller::sendcommand $command
+    log::summary [format "finished disabling the $alarm alarm after %.1f seconds." [utcclock::diff now $start]]
+  }
 
-    proc grantaccessactivitycommand {} {
-      set start [utcclock::seconds]
-      log::info "granting access."
-      controller::sendcommand "Telescope\{STOP\}\n"
-      log::info [format "finished granting access after %.1f seconds." [utcclock::diff now $start]]
+  proc grantaccessactivitycommand {} {
+    set start [utcclock::seconds]
+    log::info "granting access."
+    controller::sendcommand "Telescope\{STOP\}\n"
+    log::info [format "finished granting access after %.1f seconds." [utcclock::diff now $start]]
+  }
+
+  proc rebootactivitycommand {} {
+    set start [utcclock::seconds]
+    log::summary "rebooting."
+    variable boltwoodenabled
+    if {$boltwoodenabled} {
+      log::info "rebooting boltwood."
+      controller::sendcommand "CloudSensorRestart{RESTART}\n"
+      log::info "restarting boltwood software."
+      controller::sendcommand "CX5140{BoltwoodRestart}\n"
     }
-
-    proc rebootactivitycommand {} {
-      set start [utcclock::seconds]
-      log::summary "rebooting."
-      variable boltwoodenabled
-      if {$boltwoodenabled} {
-        log::info "rebooting boltwood."
-        controller::sendcommand "CloudSensorRestart{RESTART}\n"
-        log::info "restarting boltwood software."
-        controller::sendcommand "CX5140{BoltwoodRestart}\n"
-      }
-      variable vaisalaenabled
-      if {$vaisalaenabled} {
-        log::info "rebooting vaisala."
-        controller::sendcommand "WeatherStationRestart{RESTART}\n"
-      }
-      log::summary [format "finished rebooting after %.1f seconds." [utcclock::diff now $start]]
+    variable vaisalaenabled
+    if {$vaisalaenabled} {
+      log::info "rebooting vaisala."
+      controller::sendcommand "WeatherStationRestart{RESTART}\n"
     }
+    log::summary [format "finished rebooting after %.1f seconds." [utcclock::diff now $start]]
+  }
 
-    ######################################################################
+  ######################################################################
 
-    proc daylightalarmloop {} {
-
-      if {[catch {
-
+  proc daylightalarmloop {} {
+    if {
+      [catch {
         variable daylightalarmoffsetseconds
 
         while {true} {
-
           log::debug "daylightalarmloop: waiting"
 
           coroutine::after 10000
@@ -1042,7 +1078,7 @@ namespace eval "plc" {
           } else {
             set evening false
           }
-          set seconds         [utcclock::seconds]
+          set seconds [utcclock::seconds]
           set endofdayseconds [utcclock::scan [client::getdata "sun" "endofday"]]
 
           log::debug "daylightalarmloop: skystate is $skystate."
@@ -1060,7 +1096,7 @@ namespace eval "plc" {
             }
           } else {
             log::debug "daylightalarmloop: checking if the daylight alarm should be disabled."
-            set seconds         [utcclock::seconds]
+            set seconds [utcclock::seconds]
             set endofdayseconds [utcclock::scan [client::getdata "sun" "endofday"]]
             if {$endofdayseconds - $seconds < $daylightalarmoffsetseconds || ($evening && [string match "*twilight" $skystate])} {
               log::summary "automatically disabling the daylight alarm."
@@ -1068,160 +1104,157 @@ namespace eval "plc" {
               log::summary "finished automatically disabling daylight alarm."
             }
           }
-
         }
-
-      } message]} {
-        log::error "in daylight alarm loop: $message."
-      }
-
+      } message]
+    } {
+      log::error "in daylight alarm loop: $message."
     }
-
-    ######################################################################
-
-    proc checkalarm {alarm} {
-      switch $alarm {
-        "weather"  { return }
-        "rain"     { return }
-        "wind"     { return }<
-        "cloud"    { return }
-        "humidity" { return }
-        "daylight" { return }
-        "ups"      { return }
-        "tcs"      { return }
-        default {
-          error "unknown alarm \"$alarm\"."
-        }
-      }
-    }
-
-    proc specialenablealarm {alarm} {
-      set start [utcclock::seconds]
-      server::checkstatus
-      checkalarm $alarm
-      server::newactivitycommand "enabling" "idle" "plc::enablealarmactivitycommand $alarm"
-    }
-
-    proc specialdisablealarm {alarm} {
-      set start [utcclock::seconds]
-      server::checkstatus
-      checkalarm $alarm
-      server::newactivitycommand "disabling" "idle" "plc::disablealarmactivitycommand $alarm"
-    }
-
-    ######################################################################
-
-    proc specialgrantaccess {} {
-      set start [utcclock::seconds]
-      server::checkstatus
-      server::newactivitycommand "granting" "idle" "plc::grantaccessactivitycommand"
-    }
-
-    ######################################################################
-
-    proc specialreboot {} {
-      set start [utcclock::seconds]
-      server::checkstatus
-      server::newactivitycommand "rebooting" "idle" "plc::rebootactivitycommand"
-    }
-
-    ######################################################################
-
-    proc specialswitchonlights {} {
-      server::checkstatus
-      log::info "switching on lights."
-      controller::pushcommand "ObsRoomLight{ON}\n"
-      return
-    }
-
-    proc specialswitchofflights {} {
-      server::checkstatus
-      log::info "switching off lights."
-      controller::pushcommand "ObsRoomLight{OFF}\n"
-      return
-    }
-
-    ######################################################################
-
-    proc specialswitchonfans {} {
-      server::checkstatus
-      log::info "switching on fans."
-      controller::pushcommand "Fans{ON}\n"
-      return
-    }
-
-    proc specialswitchofffans {} {
-      server::checkstatus
-      log::info "switching off fans."
-      controller::pushcommand "Fans{OFF}\n"
-      return
-    }
-
-    ######################################################################
-
-    proc specialopenlouvers {} {
-      server::checkstatus
-      log::info "opening louvers."
-      controller::pushcommand "Louver{ALL,OPEN}\n"
-      return
-    }
-
-    proc specialcloselouvers {} {
-      server::checkstatus
-      log::info "closing louvers."
-      controller::pushcommand "Louver{ALL,CLOSE}\n"
-      return
-    }
-
-    ######################################################################
-
-    proc specialenablelocalconfirmation {} {
-      log::warning "enabling local confirmation."
-      controller::pushcommand "LocalStaff{RESET}\n"
-      return
-    }
-
-    proc specialdisablelocalconfirmation {} {
-      log::warning "disabling local confirmation."
-      controller::pushcommand "LocalStaff{ON}\n"
-      return
-    }
-
-    ######################################################################
-
-    proc specialsetwindspeedlimit {limit} {
-      log::info "setting wind speed limit to $limit."
-      server::setdata "windspeedlimit" $limit
-      controller::pushcommand "WindThreshold{$limit}\n"
-      return
-    }
-
-    ######################################################################
-
-    proc setforcemustbeclosed {value} {
-      log::info "setting forcemustbeclosed to $value."
-      variable forcemustbeclosed
-      set forcemustbeclosed $value
-      return
-    }
-
-    ######################################################################
-
-    proc special {command commandargs} {
-      eval special$command $commandargs
-      return
-    }
-
-    ######################################################################
-
-    proc start {} {
-      set controller::connectiontype "persistent"
-      controller::startcommandloop
-      controller::startstatusloop
-      server::newactivitycommand "starting" "idle" plc::startactivitycommand
-      after idle {
-        coroutine ::plc::sunloopcoroutine plc::daylightalarmloop
-      }
-    }
-
   }
+
+  ######################################################################
+
+  proc checkalarm {alarm} {
+    switch $alarm {
+      "weather" {return}
+      "rain" {return}
+      "wind" {return}
+      "cloud" {return}
+      "humidity" {return}
+      "daylight" {return}
+      "ups" {return}
+      "tcs" {return}
+      default {
+        error "unknown alarm \"$alarm\"."
+      }
+    }
+  }
+
+  proc specialenablealarm {alarm} {
+    set start [utcclock::seconds]
+    server::checkstatus
+    checkalarm $alarm
+    server::newactivitycommand "enabling" "idle" "plc::enablealarmactivitycommand $alarm"
+  }
+
+  proc specialdisablealarm {alarm} {
+    set start [utcclock::seconds]
+    server::checkstatus
+    checkalarm $alarm
+    server::newactivitycommand "disabling" "idle" "plc::disablealarmactivitycommand $alarm"
+  }
+
+  ######################################################################
+
+  proc specialgrantaccess {} {
+    set start [utcclock::seconds]
+    server::checkstatus
+    server::newactivitycommand "granting" "idle" "plc::grantaccessactivitycommand"
+  }
+
+  ######################################################################
+
+  proc specialreboot {} {
+    set start [utcclock::seconds]
+    server::checkstatus
+    server::newactivitycommand "rebooting" "idle" "plc::rebootactivitycommand"
+  }
+
+  ######################################################################
+
+  proc specialswitchonlights {} {
+    server::checkstatus
+    log::info "switching on lights."
+    controller::pushcommand "ObsRoomLight{ON}\n"
+    return
+  }
+
+  proc specialswitchofflights {} {
+    server::checkstatus
+    log::info "switching off lights."
+    controller::pushcommand "ObsRoomLight{OFF}\n"
+    return
+  }
+
+  ######################################################################
+
+  proc specialswitchonfans {} {
+    server::checkstatus
+    log::info "switching on fans."
+    controller::pushcommand "Fans{ON}\n"
+    return
+  }
+
+  proc specialswitchofffans {} {
+    server::checkstatus
+    log::info "switching off fans."
+    controller::pushcommand "Fans{OFF}\n"
+    return
+  }
+
+  ######################################################################
+
+  proc specialopenlouvers {} {
+    server::checkstatus
+    log::info "opening louvers."
+    controller::pushcommand "Louver{ALL,OPEN}\n"
+    return
+  }
+
+  proc specialcloselouvers {} {
+    server::checkstatus
+    log::info "closing louvers."
+    controller::pushcommand "Louver{ALL,CLOSE}\n"
+    return
+  }
+
+  ######################################################################
+
+  proc specialenablelocalconfirmation {} {
+    log::warning "enabling local confirmation."
+    controller::pushcommand "LocalStaff{RESET}\n"
+    return
+  }
+
+  proc specialdisablelocalconfirmation {} {
+    log::warning "disabling local confirmation."
+    controller::pushcommand "LocalStaff{ON}\n"
+    return
+  }
+
+  ######################################################################
+
+  proc specialsetwindspeedlimit {limit} {
+    log::info "setting wind speed limit to $limit."
+    server::setdata "windspeedlimit" $limit
+    controller::pushcommand "WindThreshold{$limit}\n"
+    return
+  }
+
+  ######################################################################
+
+  proc setforcemustbeclosed {value} {
+    log::info "setting forcemustbeclosed to $value."
+    variable forcemustbeclosed
+    set forcemustbeclosed $value
+    return
+  }
+
+  ######################################################################
+
+  proc special {command commandargs} {
+    eval special$command $commandargs
+    return
+  }
+
+  ######################################################################
+
+  proc start {} {
+    set controller::connectiontype "persistent"
+    controller::startcommandloop
+    controller::startstatusloop
+    server::newactivitycommand "starting" "idle" plc::startactivitycommand
+    after idle {
+      coroutine ::plc::sunloopcoroutine plc::daylightalarmloop
+    }
+  }
+}
