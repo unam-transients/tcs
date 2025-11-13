@@ -62,10 +62,10 @@
             "1"
         ],
         "filters": {
-            "initial": "w",
-            "idle": "w",
-            "closed": "w",
-            "w": "0"
+            "initial": "r",
+            "idle": "r",
+            "closed": "r",
+            "r": "0"
         },
         "focusertype": "null",
         "focuseridentifier": "null",
