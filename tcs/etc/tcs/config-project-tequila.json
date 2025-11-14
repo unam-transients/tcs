@@ -56,7 +56,7 @@
         "coolerclosedsetting": "+20",
         "temperaturelimit": 50,
         "temperaturelimitoutletgroup": "",
-        "detectorunbinnedpixelscale": "0.381as",
+        "detectorunbinnedpixelscale": "0.076as",
         "filterwheeltype": "dummy",
         "filterwheelidentifier": [
             "1"
