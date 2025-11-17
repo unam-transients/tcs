@@ -41,6 +41,7 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 192.168.100.28    plc                     colibri-plc
 192.168.100.29    european-ups            colibri-european-ups
 192.168.100.30    american-ups            colibri-american-ups
+192.168.100.44    redux                   colibri-redux
 192.168.100.47    blue                    colibri-blue
 192.168.100.48    red                     colibri-red
 192.168.100.49    data                    colibri-data
@@ -56,6 +57,7 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 192.168.100.59    host2                   colibri-host2
 192.168.100.61    marmex                  colibri-marmex
 192.168.100.62    marsvom2                colibri-marsvom2
+192.168.100.63    host3                   colibri-host3
 192.168.100.70    webcam-a                colibri-webcam-a
 192.168.100.71    webcam-b                colibri-webcam-b
 192.168.100.72    webcam-spare-a          colibri-webcam-spare-a
