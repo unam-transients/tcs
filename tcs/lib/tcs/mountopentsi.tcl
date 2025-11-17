@@ -90,6 +90,7 @@ namespace eval "mount" {
     POSITION.EQUATORIAL.RA_CURRENT
     POSITION.EQUATORIAL.DEC_CURRENT
     POSITION.LOCAL.SIDEREAL_TIME
+    POSITION.INSTRUMENTAL.DEROTATOR[2].REALPOS
     POSITION.INSTRUMENTAL.DEROTATOR[3].REALPOS
     CURRENT.TRACK
     CURRENT.TRACKTIME
@@ -193,7 +194,11 @@ namespace eval "mount" {
       set pendingmountzenithdistance [astrometry::degtorad $value]
       return false
     }
-    if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.DEROTATOR\[3\].REALPOS=%f" value] == 1} {
+    if {[string equal [server::getdata "portposition"] "2"] && [scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.DEROTATOR\[2\].REALPOS=%f" value] == 1} {
+      set pendingmountderotatorangle [astrometry::degtorad $value]
+      return false
+    }
+    if {[string equal [server::getdata "portposition"] "3"] && [scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.DEROTATOR\[3\].REALPOS=%f" value] == 1} {
       set pendingmountderotatorangle [astrometry::degtorad $value]
       return false
     }
@@ -233,7 +238,7 @@ namespace eval "mount" {
       return false
     }
     if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.PORT_SELECT.CURRPOS=%f" value] == 1} {
-      set pendingportposition $value
+      set pendingportposition [expr {int($value)}]
       return false
     }
     if {[regexp {[0-9]+ DATA INLINE } $response] == 1} {
@@ -353,7 +358,7 @@ namespace eval "mount" {
     log::info "moving to park."
     # Move to the parked position.
     opentsi::sendcommandandwait [format "SET [join {
-      "POSITION.INSTRUMENTAL.DEROTATOR\[3\].TARGETPOS=%.6f"
+      "POSITION.INSTRUMENTAL.DEROTATOR\[2\].TARGETPOS=%.6f"
       "POSITION.INSTRUMENTAL.AZ.TARGETPOS=%.6f"
       "POSITION.INSTRUMENTAL.ZD.TARGETPOS=%.6f"
       } ";"]" \
@@ -420,7 +425,7 @@ namespace eval "mount" {
     opentsi::sendcommandandwait "SET POINTING.SETUP.OPTIMIZATION=1"
     opentsi::sendcommandandwait "SET POINTING.SETUP.MIN_TRACKTIME=600"
     opentsi::sendcommandandwait [format "SET [join {
-      "POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=%.6f"
+      "POSITION.INSTRUMENTAL.DEROTATOR\[2\].OFFSET=%.6f"
       "POINTING.SETUP.DEROTATOR.SYNCMODE=5"
       } ";"]" \
         [astrometry::radtodeg $derotatoroffset] \
