@@ -57,10 +57,10 @@ config::setdefaultvalue "mount" "northdeltalimit"         "+57:59:59"
 config::setdefaultvalue "mount" "southdeltalimit"         "-33:15:00"
 config::setdefaultvalue "mount" "zenithdistancelimit"     "79.5d"
 
-config::setdefaultvalue "mount" "hapark"                  "0h"
-config::setdefaultvalue "mount" "deltapark"               [astrometry::latitude]
-config::setdefaultvalue "mount" "haunpark"                "0h"
-config::setdefaultvalue "mount" "deltaunpark"             [astrometry::latitude]
+config::setdefaultvalue "mount" "parkha"                  "0h"
+config::setdefaultvalue "mount" "parkdelta"               [astrometry::latitude]
+config::setdefaultvalue "mount" "unparkha"                "0h"
+config::setdefaultvalue "mount" "unparkdelta"             [astrometry::latitude]
 config::setdefaultvalue "mount" "maxcorrection"           "1d"
 
 namespace eval "mount" {
@@ -78,10 +78,10 @@ namespace eval "mount" {
   variable northdeltalimit         [astrometry::parseangle [config::getvalue "mount" "northdeltalimit"] "dms"]
   variable southdeltalimit         [astrometry::parseangle [config::getvalue "mount" "southdeltalimit"] "dms"]
   variable zenithdistancelimit     [astrometry::parseangle [config::getvalue "mount" "zenithdistancelimit"]]
-  variable hapark                  [astrometry::parseangle [config::getvalue "mount" "hapark"]]
-  variable deltapark               [astrometry::parseangle [config::getvalue "mount" "deltapark"]]
-  variable haunpark                [astrometry::parseangle [config::getvalue "mount" "haunpark"]]
-  variable deltaunpark             [astrometry::parseangle [config::getvalue "mount" "deltaunpark"]]
+  variable parkha                  [astrometry::parseangle [config::getvalue "mount" "parkha"]]
+  variable parkdelta               [astrometry::parseangle [config::getvalue "mount" "parkdelta"]]
+  variable unparkha                [astrometry::parseangle [config::getvalue "mount" "unparkha"]]
+  variable unparkdelta             [astrometry::parseangle [config::getvalue "mount" "unparkdelta"]]
   variable maxcorrection           [astrometry::parseangle [config::getvalue "mount" "maxcorrection"]]
 
   variable usemountcoordinates true
@@ -930,9 +930,9 @@ namespace eval "mount" {
     set start [utcclock::seconds]
     log::info "parking."
     server::setdata "unparked" false
-    variable hapark
-    variable deltapark
-    controller::sendcommand "AH [formatcontrollerha $hapark] FIJO_DEC [formatcontrollerdelta $deltapark]\n"
+    variable parkha
+    variable parkdelta
+    controller::sendcommand "AH [formatcontrollerha $parkha] FIJO_DEC [formatcontrollerdelta $parkdelta]\n"
     server::setdata "mounttracking" false
     settle
     set end [utcclock::seconds]
@@ -942,9 +942,9 @@ namespace eval "mount" {
   proc unparkactivitycommand {} {
     set start [utcclock::seconds]
     log::info "unparking."
-    variable haunpark
-    variable deltaunpark
-    controller::sendcommand "AH [formatcontrollerha $haunpark] FIJO_DEC [formatcontrollerdelta $deltaunpark]\n"
+    variable unparkha
+    variable unparkdelta
+    controller::sendcommand "AH [formatcontrollerha $unparkha] FIJO_DEC [formatcontrollerdelta $unparkdelta]\n"
     server::setdata "mounttracking" false
     settle
     server::setdata "unparked" true

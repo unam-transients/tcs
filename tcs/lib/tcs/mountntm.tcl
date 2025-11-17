@@ -45,10 +45,10 @@ config::setdefaultvalue "mount" "pointingmodelIH180"         "0"
 config::setdefaultvalue "mount" "pointingmodelpolarhole"     "0"
 config::setdefaultvalue "mount" "axisdhacorrection"          "0"
 config::setdefaultvalue "mount" "axisddeltacorrection"       "0"
-config::setdefaultvalue "mount" "hapark"                     "0h"
-config::setdefaultvalue "mount" "deltapark"                  "90h"
-config::setdefaultvalue "mount" "haunpark"                   "0h"
-config::setdefaultvalue "mount" "deltaunpark"                "0d"
+config::setdefaultvalue "mount" "parkha"                     "0h"
+config::setdefaultvalue "mount" "parkdelta"                  "90h"
+config::setdefaultvalue "mount" "unparkha"                   "0h"
+config::setdefaultvalue "mount" "unparkdelta"                "0d"
 
 namespace eval "mount" {
 
@@ -59,10 +59,10 @@ namespace eval "mount" {
   variable pointingmodelpolarhole      [astrometry::parsedistance [config::getvalue "mount" "pointingmodelpolarhole"]]
   variable axisdhacorrection           [astrometry::parseoffset [config::getvalue "mount" "axisdhacorrection"]]
   variable axisddeltacorrection        [astrometry::parseoffset [config::getvalue "mount" "axisddeltacorrection"]]
-  variable hapark                      [astrometry::parseangle [config::getvalue "mount" "hapark"]]
-  variable deltapark                   [astrometry::parseangle [config::getvalue "mount" "deltapark"]]
-  variable haunpark                    [astrometry::parseangle [config::getvalue "mount" "haunpark"]]
-  variable deltaunpark                 [astrometry::parseangle [config::getvalue "mount" "deltaunpark"]]
+  variable parkha                      [astrometry::parseangle [config::getvalue "mount" "parkha"]]
+  variable parkdelta                   [astrometry::parseangle [config::getvalue "mount" "parkdelta"]]
+  variable unparkha                    [astrometry::parseangle [config::getvalue "mount" "unparkha"]]
+  variable unparkdelta                 [astrometry::parseangle [config::getvalue "mount" "unparkdelta"]]
 
   variable usemountcoordinates true
 
@@ -808,31 +808,31 @@ namespace eval "mount" {
 }
 
 proc parkhardware {} {
-  variable hapark
-  variable deltapark
+  variable parkha
+  variable parkdelta
   server::setdata "unparked" false
   log::info "moving in δ to pole."
   sendcommandandwait "SET DEC.TARGETPOS=90"
   waitwhilemoving
-  log::info [format "moving in HA to park at %+.1fd." [astrometry::radtodeg $hapark]]
-  sendcommandandwait "SET HA.TARGETPOS=[astrometry::radtodeg $hapark]"
+  log::info [format "moving in HA to park at %+.1fd." [astrometry::radtodeg $parkha]]
+  sendcommandandwait "SET HA.TARGETPOS=[astrometry::radtodeg $parkha]"
   waitwhilemoving
-  log::info [format "moving in δ to park at %+.1fd." [astrometry::radtodeg $deltapark]]
-  sendcommandandwait "SET DEC.TARGETPOS=[astrometry::radtodeg $deltapark]"
+  log::info [format "moving in δ to park at %+.1fd." [astrometry::radtodeg $parkdelta]]
+  sendcommandandwait "SET DEC.TARGETPOS=[astrometry::radtodeg $parkdelta]"
   waitwhilemoving
 }
 
 proc unparkhardware {} {
-  variable haunpark
-  variable deltaunpark
+  variable unparkha
+  variable unparkdelta
   log::info "moving in δ to pole."
   sendcommandandwait "SET DEC.TARGETPOS=90"
   waitwhilemoving
-  log::info [format "moving in HA to unpark at %+.1fd." [astrometry::radtodeg $haunpark]]
-  sendcommandandwait "SET HA.TARGETPOS=[astrometry::radtodeg $haunpark]"
+  log::info [format "moving in HA to unpark at %+.1fd." [astrometry::radtodeg $unparkha]]
+  sendcommandandwait "SET HA.TARGETPOS=[astrometry::radtodeg $unparkha]"
   waitwhilemoving
-  log::info [format "moving in δ to unpark at %+.1fd." [astrometry::radtodeg $deltaunpark]]
-  sendcommandandwait "SET DEC.TARGETPOS=[astrometry::radtodeg $deltaunpark]"
+  log::info [format "moving in δ to unpark at %+.1fd." [astrometry::radtodeg $unparkdelta]]
+  sendcommandandwait "SET DEC.TARGETPOS=[astrometry::radtodeg $unparkdelta]"
   waitwhilemoving
   server::setdata "unparked" true
 }

@@ -454,20 +454,26 @@
     // Value at OHP with DDRAGUITO: "derotatoroffset": "7.75d",
     // Value at OAN for OGSE: "derotatoroffset": "9.27d",
     // Value at OAN for DDRAGO "derotatoroffset": "15.85d",
-    // Value at OAN for DDRAGO with the detector axes rotated by 45 degrees: "derotatoroffset": "60.85d"
-    "derotatoroffset": "15.85d",
+    // Value at OAN for DDRAGO with the detector axes rotated by 45 degrees: "29.15d"
+    "derotatoroffsets": {
+      "2": "0",
+      "3": "-15.85d"
+    },
     // When the PLC parks the telescope, it uses these positions. These are not
     // configuarable using OpenTSI.
-    // "azimuthpark": "-0.0025d",
-    // "zenithdistancepark": "0.0036d",
+    // "parkazimuth": "-0.0025d",
+    // "parkzenithdistance": "0.0036d",
     // "derotatoranglepark": "0d",
     // Park to the south.
-    "azimuthpark": "180d",
-    "zenithdistancepark": "10d",
-    "derotatoranglepark": "-50d",
+    "parkazimuth": "180d",
+    "parkzenithdistance": "10d",
+    "parkderotatorangles": {
+      "2": "0",
+      "3": "-34.15d"
+    },
     // Unpark to the south too.
-    "haunpark": "0h",
-    "deltaunpark": "0d",
+    "unparkha": "0h",
+    "unparkdelta": "0d",
     "minzenithdistancelimit": "0.5d",
     // The telescope has a hard limit on zenith distance
     // of 75d (email from ASTELCO on 2024-09-16).

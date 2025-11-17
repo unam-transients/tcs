@@ -978,7 +978,9 @@ proc writemount {} {
       [formatradtodegifdouble "%.2f°" [client::getdata "mount" "requestedobservedzenithdistance"]]
 
     if {![string equal "" [client::getdata "mount" "port"]]} {
-      writehtmlrow "Requested port" [client::getdata "mount" "requestedport"]
+      writehtmlrow "Requested port" \
+        [client::getdata "mount" "requestedport"] \
+        [client::getdata "mount" "requestedportposition"]
     }
     writehtmlrow "Requested mount rotation" \
       [formatradtodegifdouble "%.2f°"  [client::getdata "mount" "requestedmountrotation"]]
@@ -992,7 +994,9 @@ proc writemount {} {
       [formatrateifdouble [client::getdata "mount" "requestedmountdeltarate"]]
 
     if {![string equal "" [client::getdata "mount" "port"]]} {
-      writehtmlrow "Current port" [client::getdata "mount" "port"]
+      writehtmlrow "Current port" \
+        [client::getdata "mount" "port"] \
+        [client::getdata "mount" "portposition"]
     }
     writehtmlrow "Current mount rotation" \
       [formatradtodegifdouble "%.2f°"  [client::getdata "mount" "mountrotation"]]

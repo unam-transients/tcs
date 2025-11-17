@@ -45,12 +45,12 @@ config::setdefaultvalue "mount" "pointingmodelIH180"         "0"
 config::setdefaultvalue "mount" "trackingsettledlimit"       "1as"
 config::setdefaultvalue "mount" "axisdhacorrection"          "0"
 config::setdefaultvalue "mount" "axisddeltacorrection"       "0"
-config::setdefaultvalue "mount" "azimuthpark"                "0h"
-config::setdefaultvalue "mount" "zenithdistancepark"         "80d"
-config::setdefaultvalue "mount" "derotatoranglepark"         "0d"
-config::setdefaultvalue "mount" "derotatoroffset"            "0d"
-config::setdefaultvalue "mount" "haunpark"                   "0h"
-config::setdefaultvalue "mount" "deltaunpark"                "0d"
+config::setdefaultvalue "mount" "parkazimuth"                "0h"
+config::setdefaultvalue "mount" "parkzenithdistance"         "80d"
+config::setdefaultvalue "mount" "parkderotatorangles"        [dict create]
+config::setdefaultvalue "mount" "derotatoroffsets"           [dict create]
+config::setdefaultvalue "mount" "unparkha"                   "0h"
+config::setdefaultvalue "mount" "unparkdelta"                "0d"
 
 namespace eval "mount" {
 
@@ -61,12 +61,12 @@ namespace eval "mount" {
   variable axisdhacorrection           [astrometry::parseoffset   [config::getvalue "mount" "axisdhacorrection"]]
   variable axisddeltacorrection        [astrometry::parseoffset   [config::getvalue "mount" "axisddeltacorrection"]]
   variable trackingsettledlimit        [astrometry::parseoffset   [config::getvalue "mount" "trackingsettledlimit"]]
-  variable azimuthpark                 [astrometry::parseangle    [config::getvalue "mount" "azimuthpark"]]
-  variable zenithdistancepark          [astrometry::parseangle    [config::getvalue "mount" "zenithdistancepark"]]
-  variable derotatoranglepark          [astrometry::parseangle    [config::getvalue "mount" "derotatoranglepark"]]
-  variable derotatoroffset             [astrometry::parseangle    [config::getvalue "mount" "derotatoroffset"]]
-  variable haunpark                    [astrometry::parseha       [config::getvalue "mount" "haunpark"]]
-  variable deltaunpark                 [astrometry::parsedelta    [config::getvalue "mount" "deltaunpark"]]
+  variable parkazimuth                 [astrometry::parseangle    [config::getvalue "mount" "parkazimuth"]]
+  variable parkzenithdistance          [astrometry::parseangle    [config::getvalue "mount" "parkzenithdistance"]]
+  variable parkderotatorangles         [config::getvalue "mount" "parkderotatorangles"]
+  variable derotatoroffsets            [config::getvalue "mount" "derotatoroffsets"]
+  variable unparkha                    [astrometry::parseha       [config::getvalue "mount" "unparkha"]]
+  variable unparkdelta                 [astrometry::parsedelta    [config::getvalue "mount" "unparkdelta"]]
   variable settlingseconds             [config::getvalue "mount" "settlingseconds"]
 
   variable usemountcoordinates false
@@ -346,46 +346,63 @@ namespace eval "mount" {
     }
   }
 
-  proc setportpositionhardware {portposition} {
-    server::setdata "requestedportposition" $portposition
-    opentsi::sendcommandandwait [format "SET POINTING.SETUP.USE_PORT=%d" $portposition]
+  proc setporthardware {port} {
+
+    opentsi::sendcommandandwait [format "SET POINTING.SETUP.USE_PORT=%d" $port]
+
+    variable derotatoroffsets
+    if {[dict exists $derotatoroffsets $port]} {
+      set value [dict get $derotatoroffsets $port]
+    } else {
+      set value "0"
+    }
+    set value [astrometry::parseangle $value]
+    opentsi::sendcommandandwait [format \
+      "SET POINTING.SETUP.DEROTATOR.OFFSET=%.3f" \
+      [astrometry::radtodeg $value] \
+    ]
+
   }
 
   proc parkhardware {} {
-    variable azimuthpark
-    variable zenithdistancepark
-    variable derotatoranglepark
+    variable parkazimuth
+    variable parkzenithdistance
+    variable parkderotatorangles
     log::info "moving to park."
-    # Move to the parked position.
-    opentsi::sendcommandandwait [format "SET [join {
-      "POSITION.INSTRUMENTAL.DEROTATOR\[2\].TARGETPOS=%.6f"
-      "POSITION.INSTRUMENTAL.AZ.TARGETPOS=%.6f"
-      "POSITION.INSTRUMENTAL.ZD.TARGETPOS=%.6f"
-      } ";"]" \
-        [astrometry::radtodeg $derotatoranglepark ] \
-        [astrometry::radtodeg $azimuthpark       ] \
-        [astrometry::radtodeg $zenithdistancepark] \
+    opentsi::sendcommandandwait [format \
+      "SET POSITION.INSTRUMENTAL.AZ.TARGETPOS=%.6f;POSITION.INSTRUMENTAL.ZD.TARGETPOS=%.6f" \
+      [astrometry::radtodeg $parkazimuth       ] \
+      [astrometry::radtodeg $parkzenithdistance] \
+    ]
+    foreach port [dict keys $parkderotatorangles] {
+      set derotatorangle [dict get $parkderotatorangles $port]
+      set derotatorangle [astrometry::parseangle $derotatorangle]
+      opentsi::sendcommandandwait [format \
+        "SET POSITION.INSTRUMENTAL.DEROTATOR\[%s\].TARGETPOS=%.6f" \
+        $port \
+        [astrometry::radtodeg $derotatorangle] \
       ]
+    }
     waituntilontarget
     server::setdata "unparked" false
   }
 
   proc unparkhardware {} {
-    variable haunpark
-    variable deltaunpark
+    variable unparkha
+    variable unparkdelta
     updatedtai
     updatedut1
     # Move to unparked position.
     log::info "moving to unpark."
-    set azimuthunpark        [astrometry::equatorialtoazimuth        $haunpark $deltaunpark]
-    set zenithdistanceunpark [astrometry::equatorialtozenithdistance $haunpark $deltaunpark]
+    set unparkazimuth        [astrometry::equatorialtoazimuth        $unparkha $unparkdelta]
+    set unparkzenithdistance [astrometry::equatorialtozenithdistance $unparkha $unparkdelta]
     opentsi::sendcommandandwait [format "SET [join {
       "OBJECT.INSTRUMENTAL.AZ=%.6f"
       "OBJECT.INSTRUMENTAL.ZD=%.6f"
       "POINTING.TRACK=2"
       } ";"]" \
-        [astrometry::radtodeg $azimuthunpark       ] \
-        [astrometry::radtodeg $zenithdistanceunpark] \
+        [astrometry::radtodeg $unparkazimuth       ] \
+        [astrometry::radtodeg $unparkzenithdistance] \
       ]
     waituntilontarget
     server::setdata "unparked" true
@@ -410,7 +427,6 @@ namespace eval "mount" {
   ######################################################################
 
   proc startactivitycommand {} {
-    variable derotatoroffset
     set start [utcclock::seconds]
 
     log::info "starting."
@@ -424,12 +440,10 @@ namespace eval "mount" {
 
     opentsi::sendcommandandwait "SET POINTING.SETUP.OPTIMIZATION=1"
     opentsi::sendcommandandwait "SET POINTING.SETUP.MIN_TRACKTIME=600"
-    opentsi::sendcommandandwait [format "SET [join {
-      "POSITION.INSTRUMENTAL.DEROTATOR\[2\].OFFSET=%.6f"
-      "POINTING.SETUP.DEROTATOR.SYNCMODE=5"
-      } ";"]" \
-        [astrometry::radtodeg $derotatoroffset] \
-      ]
+    opentsi::sendcommandandwait "SET POINTING.SETUP.DEROTATOR.SYNCMODE=5"
+    opentsi::sendcommandandwait "SET POSITION.INSTRUMENTAL.DEROTATOR\[2\].OFFSET=0"
+    opentsi::sendcommandandwait "SET POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=0"
+
     set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
   }
@@ -438,7 +452,7 @@ namespace eval "mount" {
     set start [utcclock::seconds]
     log::info "initializing."
     variable initialport
-    setport $initialport
+    setportactivitycommand $initialport
     parkhardware
     set end [utcclock::seconds]
     log::info [format "finished initializing after %.1f seconds." [utcclock::diff $end $start]]
@@ -461,13 +475,27 @@ namespace eval "mount" {
     set start [utcclock::seconds]
     log::info "resetting."
     set end [utcclock::seconds]
-    log::info [format "finished resetting after %.1f seconds." [utcclock::diff $end $start]]
+    log::info [format "fini<shed resetting after %.1f seconds." [utcclock::diff $end $start]]
   }
 
   proc preparetomoveactivitycommand {} {
   }
 
   proc checktarget {activity expectedactivity} {
+  }
+
+  proc setportactivitycommand {port} {
+    set start [utcclock::seconds]
+    log::info "setting port to $port."
+    server::setdata "requestedport" $port
+    variable ports
+    while {[dict exists $ports $port]} {
+      set port [dict get $ports $port]
+    }
+    server::setdata "requestedportposition" $port
+    setporthardware $port
+    set end [utcclock::seconds]
+    log::info [format "finished setting port after %.1f seconds." [utcclock::diff $end $start]]
   }
 
   proc moveactivitycommand {} {

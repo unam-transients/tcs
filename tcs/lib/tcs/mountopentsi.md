@@ -14,12 +14,12 @@ Current derotator positions for DDRAGO are:
 
 |alpha|delta|rotation|
 |---|---|---|
-|parked|parked|+20.43d|
-|unparked|unparked|-2.00d|
-|+6h|+60d|+39.70d|
-|+0h|+60d|+0.93d|
-|-6h|+60d|-16.72d|
-|-4h|+0d|+0.24d|
-|+0h|+0d|-0.95d|
-|+4h|+0d|+20.53d|
-|+0h|-30d|-30.95d|
+|parked|parked|-34.15d|
+|unparked|unparked|-16.15d|
+|+6h|+60d|+25.55d|
+|+0h|+60d|-13.20d|
+|-6h|+60d|+59.13d|
+|-4h|+0d|-13.89d|
+|+0h|+0d|-15.08d|
+|+4h|+0d|+6.40d|
+|+0h|-30d|-45.10d|

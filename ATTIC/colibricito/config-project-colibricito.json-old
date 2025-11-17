@@ -115,10 +115,10 @@
 //
 //    "mounttype": "ntm",
 //
-//    "mounthapark": "8h",
-//    "mountdeltapark": "-50d",
-//    "mounthaunpark": "12h",
-//    "mountdeltaunpark": "135d",
+//    "mountparkha": "8h",
+//    "mountparkdelta": "-50d",
+//    "mountunparkha": "12h",
+//    "mountunparkdelta": "135d",
 //
 //    "mountsouthdeltalimit": "-90:00:00",
 //    "mountnorthdeltalimit": "+90:00:00",

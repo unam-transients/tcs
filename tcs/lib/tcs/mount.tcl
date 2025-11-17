@@ -1042,12 +1042,7 @@ namespace eval "mount" {
     if {![dict exists $ports $port]} {
       error "invalid port \"$port\"."
     }
-    server::setdata "requestedport" $port
-    while {[dict exists $ports $port]} {
-      set port [dict get $ports $port]
-    }
-    server::setdata "requestedportposition" $port
-    setportpositionhardware $port
+    server::newactivitycommand "settingport" "idle" "mount::setportactivitycommand $port"
   }
 
   proc preparetomove {} {
