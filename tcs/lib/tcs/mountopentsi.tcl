@@ -549,7 +549,11 @@ namespace eval "mount" {
     set port [server::getdata "requestedportposition"]
     if {$pupiltracking} {
       set zenithdistance [server::getdata "requestedobservedzenithdistance"]
-      set derotatorangle [expr {[astrometry::parseangle 45d] - $zenithdistance}]
+      if {$port == 3} {
+        set derotatorangle [expr {[astrometry::parseangle 45d] - $zenithdistance}]
+      } elseif {$port == 2} {
+        set derotatorangle [expr {$zenithdistance - [astrometry::parseangle 45d]}]
+      }
       opentsi::sendcommandandwait [format \
         "SET POINTING.SETUP.DEROTATOR.SYNCMODE=0;POSITION.INSTRUMENTAL.DEROTATOR\[%s\].TARGETPOS=%.6f" \
         $port \
