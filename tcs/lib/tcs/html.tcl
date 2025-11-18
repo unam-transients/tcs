@@ -1034,6 +1034,9 @@ proc writemount {} {
     writehtmlrow "Unparked" \
       [client::getdata "mount" "unparked"]
 
+    writehtmlrow "Pupil tracking" \
+      [client::getdata "mount" "pupiltracking"]
+  
     writehtmltimestampedrow "Last correction" \
       [client::getdata "mount" "lastcorrectiontimestamp"]
     writehtmlrow "Last correction (α,δ)" \

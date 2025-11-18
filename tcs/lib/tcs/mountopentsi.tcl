@@ -541,6 +541,29 @@ namespace eval "mount" {
       updateweatherdata
     }
     updaterequestedpositiondata
+    variable pupiltracking
+    set port [server::getdata "requestedportposition"]
+    if {$pupiltracking} {
+      set zenithdistance [server::getdata "requestedobservedzenithdistance"]
+      set derotatorangle [expr {[astrometry::parseangle 45d] - $zenithdistance}]
+      opentsi::sendcommandandwait [format \
+        "SET POINTING.SETUP.DEROTATOR.SYNCMODE=0;POSITION.INSTRUMENTAL.DEROTATOR\[%s\].TARGETPOS=%.6f" \
+        $port \
+        [astrometry::radtodeg $derotatorangle] \
+      ]
+    } else {
+      variable derotatoroffsets
+      if {[dict exists $derotatoroffsets $port]} {
+        set value [dict get $derotatoroffsets $port]
+      } else {
+        set value "0"
+      }
+      set value [astrometry::parseangle $value]
+      opentsi::sendcommandandwait [format \
+        "SET POINTING.SETUP.DEROTATOR.OFFSET=%.3f;POINTING.SETUP.DEROTATOR.SYNCMODE=5" \
+        [astrometry::radtodeg $value] \
+      ]
+    }
     opentsi::sendcommandandwait [format "SET [join {
       "OBJECT.EQUATORIAL.RA=%.6f"
       "OBJECT.EQUATORIAL.DEC=%.6f"

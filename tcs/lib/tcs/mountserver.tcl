@@ -105,9 +105,14 @@ namespace eval "mountserver" {
     mount::setMEtozero
     return
   }
-  
+
   proc slavesetport {port} {
     mount::setport $port
+    return
+  }
+
+  proc slavesetpupiltracking {value} {
+    mount::setpupiltracking $value
     return
   }
 
@@ -128,6 +133,7 @@ namespace eval "mountserver" {
     interp alias $slave setMAtozero         {} mountserver::slavesetMAtozero
     interp alias $slave setMEtozero         {} mountserver::slavesetMEtozero
     interp alias $slave setport             {} mountserver::slavesetport
+    interp alias $slave setpupiltracking    {} mountserver::slavesetpupiltracking
   }
 
   ######################################################################

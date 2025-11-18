@@ -38,6 +38,7 @@ config::setdefaultvalue "mount" "polardeltalimit"            ""
 config::setdefaultvalue "mount" "minzenithdistancelimit"     ""
 config::setdefaultvalue "mount" "maxzenithdistancelimit"     ""
 config::setdefaultvalue "mount" "maxcorrection"              "1d"
+config::setdefaultvalue "mount" "pupiltracking"              "false"
 
 namespace eval "mount" {
 
@@ -52,7 +53,8 @@ namespace eval "mount" {
   variable maxcorrection                [astrometry::parseangle [config::getvalue "mount" "maxcorrection"]]
   variable ports                        [config::getvalue "mount" "ports"]
   variable initialport                  [config::getvalue "mount" "initialport"]
-  
+  variable pupiltracking                [config::getvalue "mount" "pupiltracking"]
+
   ######################################################################
 
   variable easthalimit
@@ -115,6 +117,7 @@ namespace eval "mount" {
   ######################################################################
 
   server::setdata "configuration" $configuration
+  server::setdata "pupiltracking" $pupiltracking
 
   ######################################################################
 
@@ -1116,6 +1119,19 @@ namespace eval "mount" {
       error "move cancelled because $message"
     }
     server::newactivitycommand "offsetting" "tracking" mount::offsetactivitycommand 120e3
+  }
+
+  proc setpupiltracking {value} {
+    variable pupiltracking
+    if {[string equal $value "true"]} {
+      set pupiltracking true
+    } elseif {[string equal $value "false"]} {
+      set pupiltracking false
+    } else {
+      error "invalid argument \"$value\" to setpupiltracking."
+    }
+    log::summary "pupil tracking is $pupiltracking."
+    server::setdata "pupiltracking" $pupiltracking
   }
 
   proc addtopointingmodel {truealpha truedelta equinox} {
