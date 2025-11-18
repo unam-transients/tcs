@@ -118,6 +118,7 @@ namespace eval "mount" {
   server::setdata "mountazimuth"                ""
   server::setdata "mountzenithdistance"         ""
   server::setdata "mountderotatorangle"         ""
+  server::setdata "mountderotatoroffset"        "0"
   server::setdata "mountrotation"               ""
   server::setdata "state"                       ""
   server::setdata "timestamp"                   ""
@@ -234,7 +235,12 @@ namespace eval "mount" {
       return false
     }
     if {[scan $response "%*d DATA INLINE CURRENT.DEROTATOR_OFFSET=%f" value] == 1} {
-      set pendingmountrotation [astrometry::degtorad $value]
+      variable pupiltracking
+      if {$pupiltracking} {
+        set pendingmountrotation ""
+      } else {
+        set pendingmountrotation [expr {[astrometry::degtorad $value] - [server::getdata "mountderotatoroffset"]}]
+      }
       return false
     }
     if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.PORT_SELECT.CURRPOS=%f" value] == 1} {
@@ -352,14 +358,15 @@ namespace eval "mount" {
 
     variable derotatoroffsets
     if {[dict exists $derotatoroffsets $port]} {
-      set value [dict get $derotatoroffsets $port]
+      set derotatoroffset [dict get $derotatoroffsets $port]
     } else {
-      set value "0"
+      set derotatoroffset "0"
     }
-    set value [astrometry::parseangle $value]
+    set derotatoroffset [astrometry::parseangle $derotatoroffset]
+    server::setdata "mountderotatoroffset" $derotatoroffset
     opentsi::sendcommandandwait [format \
       "SET POINTING.SETUP.DEROTATOR.OFFSET=%.3f" \
-      [astrometry::radtodeg $value] \
+      [astrometry::radtodeg $derotatoroffset] \
     ]
 
   }
@@ -440,9 +447,6 @@ namespace eval "mount" {
 
     opentsi::sendcommandandwait "SET POINTING.SETUP.OPTIMIZATION=1"
     opentsi::sendcommandandwait "SET POINTING.SETUP.MIN_TRACKTIME=600"
-    opentsi::sendcommandandwait "SET POINTING.SETUP.DEROTATOR.SYNCMODE=5"
-    opentsi::sendcommandandwait "SET POSITION.INSTRUMENTAL.DEROTATOR\[2\].OFFSET=0"
-    opentsi::sendcommandandwait "SET POSITION.INSTRUMENTAL.DEROTATOR\[3\].OFFSET=0"
 
     set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
@@ -554,14 +558,15 @@ namespace eval "mount" {
     } else {
       variable derotatoroffsets
       if {[dict exists $derotatoroffsets $port]} {
-        set value [dict get $derotatoroffsets $port]
+        set derotatoroffset [dict get $derotatoroffsets $port]
       } else {
-        set value "0"
+        set derotatoroffset "0"
       }
-      set value [astrometry::parseangle $value]
+      set derotatoroffset [astrometry::parseangle $derotatoroffset]
+      server::setdata "mountderotatoroffset" $derotatoroffset
       opentsi::sendcommandandwait [format \
         "SET POINTING.SETUP.DEROTATOR.OFFSET=%.3f;POINTING.SETUP.DEROTATOR.SYNCMODE=5" \
-        [astrometry::radtodeg $value] \
+        [astrometry::radtodeg $derotatoroffset] \
       ]
     }
     opentsi::sendcommandandwait [format "SET [join {
