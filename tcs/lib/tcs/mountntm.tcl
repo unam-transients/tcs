@@ -144,8 +144,11 @@ namespace eval "mount" {
     server::setdata "unparked"                    false
     server::setdata "remainingtrackingseconds"    ""
 
-    server::setdata "port"          [config::getvalue "mount" "initialport"]
-    server::setdata "requestedport" [config::getvalue "mount" "initialport"]
+
+  server::setdata "requestedport"               ""
+  server::setdata "requestedportposition"       ""
+  server::setdata "portposition"                ""
+  server::setdata "port"                        ""    
 
     variable hamotionstate    ""
     variable deltamotionstate ""
