@@ -34,6 +34,9 @@ ddoti-control)
 colibri-control)
   ./configure SITE=colibri
   ;;
+tequila-control)
+  ./configure SITE=tequila
+  ;;
 *)
   ./configure SITE=test
   ;;

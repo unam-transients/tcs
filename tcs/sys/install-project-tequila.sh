@@ -49,19 +49,8 @@ sudo mv /etc/hosts.tmp /etc/hosts
   cat <<"EOF"
 00  21 *  *  *  tcs cleanfiles
 *   *  *  *  *  tcs updatevarlatestlink
-*   *  *  *  *  tcs updatelocalsensorsfiles
-*   *  *  *  *  tcs checkreboot
-*   *  *  *  *  tcs checkrestart
-*   *  *  *  *  tcs checkhalt
 00  18 *  *  *  tcs updateiersfiles
 00  18 *  *  *  tcs updateleapsecondsfile
-*   *  *  *  *  sleep 10; tcs updatesensorsfiles detector
-#*   *  *  *  *  tcs updateweatherfiles-oan
-#00  18 *  *  *  tcs updateweatherfiles-oan -a
-*   *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/. /usr/local/var/tcs/oldalerts/.
-00  00 *  *  *  tcs updatevarlatestlink; rsync -aH /usr/local/etc/tcs/blocks /usr/local/var/tcs/latest/
-*/5 *  *  *  *  tcs logsensors
-#*   *  *  *  *  cd /usr/local/var/www/tcs/; sh plots.sh >plots.txt 2>&1
 EOF
   
 ) | sudo crontab
@@ -75,28 +64,28 @@ EOF
   echo "#!/bin/sh"
   echo "PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
-  # The Minnowboard Turbos come up with / read-only after power cycling.
-  # Don't know why, but it causes all sorts of problems.
-  if dmesg | grep -iq minnowboard
-  then
-    echo "test -w /etc || mount -o remount,rw /"
-  fi
+  case $host in
+  tequila-control)
+    # Start the log server as soon as possible.
+    echo "tcs startserver log &"
+  esac
 
-  # Enable gpios on Minnowboards
-  if dmesg | grep -iq minnowboard
-  then
-    echo "gpio -i"
-  fi
+  case $host in
+  tequila-control)
+    echo "tcs instrumentimageserver C0 &"
+    ;;
+  tequila-detector)
+    echo "tcs instrumentimageserver C0 tequila-control &"
+    echo "tcs instrumentdataserver -f -d rsync://tequila-control/tcs/ &"
+    ;;
+  esac
 
-  echo "tcs instrumentimageserver C0 &"
-  echo "tcs instrumentimageserver C0 localhost &"
-
-  echo "owserver -c /etc/owfs.conf"
-  
-  echo "mkdir -p /usr/local/var/tcs/reboot"
-  echo "mkdir -p /usr/local/var/tcs/restart"
-  echo "mkdir -p /usr/local/var/tcs/halt"
+  echo "service rsync start"
   echo "tcs startserver -A &"  
+
+  echo "sleep 10"
+  echo "tcs log boot summary \"finished booting tcs on $host.\""
+
   echo "exit 0"
 
 ) |
@@ -127,14 +116,14 @@ use chroot = yes
 read only = yes
 [ow]
         path = /var/ow/
-        read only = true
+        read only = yes
         filter = + 01.* + 26.* + temperature + humidity + VAD + VDD + HIH3600 + HIH4000 - *
         uid = 0
         gid = 0
 [tcs]
         path = /usr/local/var/tcs
         exclude = *.tmp
-        read only = false
+        read only = no
         uid = 0
         gid = 0
 EOF

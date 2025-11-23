@@ -74,7 +74,7 @@ colibri-instrument)
   ALLARGS=""
   ;;
 tequila-dectector)
-  allargs="watchdog C0 sensors html log"
+  allargs="C0 log"
   ALLARGS=""
   ;;
 *)

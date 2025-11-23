@@ -34,6 +34,7 @@ AC_CONFIG_FILES(
   httpd.conf-coatli
   httpd.conf-ddoti
   httpd.conf-colibri
+  httpd.conf-tequila
   httpd.conf-test
 )
 AC_OUTPUT
