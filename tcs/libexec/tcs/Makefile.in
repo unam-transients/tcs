@@ -90,6 +90,7 @@ installbins         :=            \
 	stopserver                    \
 	supervisorserver              \
 	sunserver                     \
+	svomserver                    \
 	targetserver                  \
 	telescopeserver               \
     updateiersfiles               \

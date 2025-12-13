@@ -90,6 +90,7 @@ namespace eval "client" {
 
   variable pushservers {
     "gcn"
+    "svom"
   }
 
   proc update {server} {

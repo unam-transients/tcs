@@ -939,6 +939,19 @@ proc writesupervisor {} {
 
 }
 
+proc writesvom {} {
+
+  putshtml "<table class=\"status\">"
+
+  writehtmlstatusblock "svom"
+
+  putshtml "</table>"
+
+  putshtml "<table class=\"status\">"
+  putshtml "</table>"
+
+}
+
 proc writemount {} {
 
   putshtml "<table class=\"status\">"
@@ -1796,6 +1809,7 @@ proc writeinfo {} {
     shutters            {Shutters}
     sun                 {Sun}
     supervisor          {Supervisor}
+    svom                {SVOM}
     target              {Target}
     telescope           {Telescope}
     weather             {Weather}
