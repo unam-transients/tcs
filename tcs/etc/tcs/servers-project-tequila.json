@@ -22,6 +22,10 @@
         "host": "localhost",
         "port": 5000
     },
+    "html": {
+        "host": "localhost",
+        "port": 5001
+    },
     "C0": {
         "host": "localhost",
         "port": 5006

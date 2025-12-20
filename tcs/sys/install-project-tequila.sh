@@ -47,10 +47,14 @@ sudo mv /etc/hosts.tmp /etc/hosts
   echo 'MAILTO=""'
 
   cat <<"EOF"
-00  21 *  *  *  tcs cleanfiles
-*   *  *  *  *  tcs updatevarlatestlink
-00  18 *  *  *  tcs updateiersfiles
-00  18 *  *  *  tcs updateleapsecondsfile
+00     18 *  *  *  tcs cleanfiles
+*      *  *  *  *  tcs updatevarlatestlink
+*      *  *  *  *  tcs updatelocalsensorsfiles
+*      *  *  *  *  tcs checkreboot
+*      *  *  *  *  tcs checkrestart
+*      *  *  *  *  tcs checkhalt
+00     18 *  *  *  tcs updateiersfiles
+00     18 *  *  *  tcs updateleapsecondsfile
 EOF
   
 ) | sudo crontab
@@ -65,18 +69,11 @@ EOF
   echo "PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
   case $host in
-  tequila-control)
-    # Start the log server as soon as possible.
-    echo "tcs startserver log &"
-  esac
-
-  case $host in
-  tequila-control)
-    echo "tcs instrumentimageserver C0 &"
-    ;;
   tequila-detector)
-    echo "tcs instrumentimageserver C0 tequila-control &"
-    echo "tcs instrumentdataserver -f -d rsync://tequila-control/tcs/ &"
+      # Start the log server as soon as possible.
+      echo "tcs startserver log &"
+      echo "tcs instrumentimageserver C0 &"
+      echo "tcs instrumentimageserver C0 tequila-detector &"
     ;;
   esac
 
