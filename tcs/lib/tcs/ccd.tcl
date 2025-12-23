@@ -222,6 +222,8 @@ namespace eval "ccd" {
     server::setdata "detectoremgain"                   [detector::getemgain]
     server::setdata "detectorframetime"                [detector::getframetime]
     server::setdata "detectorcycletime"                [detector::getcycletime]
+    server::setdata "detectorminexposuretime"          [detector::getminexposuretime]
+    server::setdata "detectormaxexposuretime"          [detector::getmaxexposuretime]
     server::setdata "detectordetectortemperature"      $detectortemperature
     server::setdata "detectordetectorheatercurrent"    [detector::getdetectorheatercurrent]
     server::setdata "detectorhousingtemperature"       $housingtemperature
@@ -1123,6 +1125,12 @@ namespace eval "ccd" {
       ![string equal $exposuretype "focus"           ]
     } {
       error "invalid exposure type \"$exposuretype\"."
+    }
+    if {$exposuretime < [server::getdata "detectorminexposuretime"]} {
+      error "invalid exposure time \"$exposuretime\"."
+    }
+    if {[server::getdata "detectormaxexposuretime"] > 0 && $exposuretime > [server::getdata "detectormaxexposuretime"]} {
+      error "invalid exposure time \"$exposuretime\"."
     }
     if {[string equal $fitsfileprefix ""]} {
       variable identifier

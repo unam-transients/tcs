@@ -57,6 +57,9 @@ static unsigned long unbinnedwindowny = 0;
 
 static unsigned long binning = 1;
 
+static double minexposuretime = 0;
+static double maxexposuretime = 0;
+
 ////////////////////////////////////////////////////////////////////////
 
 const char *
@@ -165,26 +168,6 @@ detectorrawopen(char *identifier)
   else
   {
     double min, max, step;
-    if (GetQHYCCDParamMinMaxStep(handle, CONTROL_EXPOSURE, &min, &max, &step) != QHYCCD_SUCCESS)
-      DETECTOR_ERROR("unable to determine detector exposure time values.");
-    fprintf(stderr, "detectorrawopen: exposure time: min = %f max = %f step = %f.\n", min, max, step);
-
-    fprintf(stderr, "detectorrawopen: setting detector exposure time.\n");
-    if (SetQHYCCDParam(handle, CONTROL_EXPOSURE, 1.0 * 1e6) != QHYCCD_SUCCESS)
-      DETECTOR_ERROR("unable to set detector exposure time.");
-
-    fprintf(stderr, "detectorrawopen: getting detector exposure time.\n");
-    double value = GetQHYCCDParam(handle, CONTROL_EXPOSURE);
-    fprintf(stderr, "detectorrawopen: detector exposure time = %f.\n", value / 1e6);
-  }
-
-  if (IsQHYCCDControlAvailable(handle, CONTROL_GAIN) != QHYCCD_SUCCESS)
-  {
-    fprintf(stderr, "detectorrawopen: unable to control gain.");
-  }
-  else
-  {
-    double min, max, step;
     if (GetQHYCCDParamMinMaxStep(handle, CONTROL_GAIN, &min, &max, &step) != QHYCCD_SUCCESS)
       DETECTOR_ERROR("unable to determine detector gain values.");
     fprintf(stderr, "detectorrawopen: gain: min = %f max = %f step = %f.\n", min, max, step);
@@ -238,6 +221,30 @@ detectorrawopen(char *identifier)
     fprintf(stderr, "detectorrawopen: speed = %f.\n", speed);
   }
 
+  if (IsQHYCCDControlAvailable(handle, CONTROL_GAIN) != QHYCCD_SUCCESS)
+  {
+    fprintf(stderr, "detectorrawopen: unable to control gain.");
+  }
+  else
+  {
+    double min, max, step;
+    if (GetQHYCCDParamMinMaxStep(handle, CONTROL_EXPOSURE, &min, &max, &step) != QHYCCD_SUCCESS)
+      DETECTOR_ERROR("unable to determine detector exposure time values.");
+    fprintf(stderr, "detectorrawopen: exposure time: min = %f max = %f step = %f microseconds.\n", min, max, step);
+
+    minexposuretime = min * 1e-6;
+    maxexposuretime = max * 1e-6;
+    fprintf(stderr, "detectorrawopen: exposure time: min = %.6f max = %.6f seconds\n", minexposuretime, maxexposuretime);
+
+    fprintf(stderr, "detectorrawopen: setting detector exposure time.\n");
+    if (SetQHYCCDParam(handle, CONTROL_EXPOSURE, 1.0 * 1e6) != QHYCCD_SUCCESS)
+      DETECTOR_ERROR("unable to set detector exposure time.");
+
+    fprintf(stderr, "detectorrawopen: getting detector exposure time.\n");
+    double value = GetQHYCCDParam(handle, CONTROL_EXPOSURE);
+    fprintf(stderr, "detectorrawopen: detector exposure time = %f.\n", value / 1e6);
+  }
+
   detectorrawsetisopen(true);
   coolersettemperature = 0.0;
   cooler = "off";
@@ -286,6 +293,9 @@ detectorrawexpose(double exposuretime, const char *shutter)
   DETECTOR_CHECK_OPEN();
   if (strcmp(shutter, "open") != 0 && strcmp(shutter, "closed") != 0)
     DETECTOR_ERROR("invalid shutter argument.");
+
+  if (exposuretime < minexposuretime || exposuretime > maxexposuretime)
+      DETECTOR_ERROR("invalid exposure time argument.");
 
   if (CancelQHYCCDExposingAndReadout(handle) != QHYCCD_SUCCESS)
     DETECTOR_ERROR("unable to cancel exposure.");
@@ -505,6 +515,10 @@ detectorrawgetvalue(const char *name)
     snprintf(value, sizeof(value), "%lu", unbinnedwindowny);
   else if (strcmp(name, "binning") == 0)
     snprintf(value, sizeof(value), "%lu", binning);
+  else if (strcmp(name, "minexposuretime") == 0)
+    snprintf(value, sizeof(value), "%.6f", minexposuretime);
+  else if (strcmp(name, "maxexposuretime") == 0)
+    snprintf(value, sizeof(value), "%.6f", maxexposuretime);
   else
     snprintf(value, sizeof(value), "%s", detectorrawgetdatavalue(name));
   return value;

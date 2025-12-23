@@ -334,7 +334,7 @@ namespace eval "detector" {
     checkisopen
     set result [detectorrawexpose $exposuretime $shutter]
     if {![string equal $result ok]} {
-      error "unable to start the exposure."
+      error "unable to start the exposure: $result."
     }
     detectorrawpixstart
     if {![string equal $fitscubepixfilename ""]} {
@@ -497,6 +497,8 @@ namespace eval "detector" {
   variable emgain                   {}
   variable frametime                {}
   variable cycletime                {}
+  variable minexposuretime          {}
+  variable maxexposuretime          {}
   variable softwaregain             {}
   variable rawsaturationlevel       65535
   variable saturationlevel          {}
@@ -568,6 +570,16 @@ namespace eval "detector" {
   proc getcycletime {} {
     variable cycletime
     return $cycletime
+  }
+
+  proc getminexposuretime {} {
+    variable minexposuretime
+    return $minexposuretime
+  }
+
+  proc getmaxexposuretime {} {
+    variable maxexposuretime
+    return $maxexposuretime
   }
 
   proc getsoftwaregain {} {
@@ -691,6 +703,8 @@ namespace eval "detector" {
     variable emgain
     variable frametime
     variable cycletime
+    variable minexposuretime
+    variable maxexposuretime
     variable softwaregain
     variable saturationlevel
     variable unbinnedwindow
@@ -721,6 +735,8 @@ namespace eval "detector" {
     set emgain                   {}
     set frametime                {}
     set cycletime                {}
+    set minexposuretime          {}
+    set maxexposuretime          {}
     set softwaregain             {}
     set saturationlevel          {}
     set window                   {}
@@ -763,6 +779,8 @@ namespace eval "detector" {
   set emgain                   [detectorrawgetvalue "emgain"]
   set frametime                [detectorrawgetvalue "frametime"]
   set cycletime                [detectorrawgetvalue "cycletime"]
+  set minexposuretime          [detectorrawgetvalue "minexposuretime"]
+  set maxexposuretime          [detectorrawgetvalue "maxexposuretime"]
   set binning                  [detectorrawgetvalue "binning"]
   set detectortemperature      [detectorrawgetvalue "detectortemperature"]
   set detectorheatercurrent    [detectorrawgetvalue "detectorheatercurrent"]

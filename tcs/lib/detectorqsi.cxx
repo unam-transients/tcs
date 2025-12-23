@@ -51,6 +51,9 @@ static const char *cooler;
 static double detectortemperature = 0;
 static double housingtemperature = 0;
 
+static double minexposuretime = 0;
+static double maxexposuretime = 0;
+
 ////////////////////////////////////////////////////////////////////////
 
 #define CHECK_QSI_CALL(f,e) \
@@ -386,6 +389,10 @@ detectorrawgetvalue(const char *name)
     snprintf(value, sizeof(value), "%lu", unbinnedwindowny);
   else if (strcmp(name, "binning") == 0)
     snprintf(value, sizeof(value), "%lu", binning);
+  else if (strcmp(name, "minexposuretime") == 0)
+    snprintf(value, sizeof(value), "%.6f", minexposuretime);
+  else if (strcmp(name, "maxexposuretime") == 0)
+    snprintf(value, sizeof(value), "%.6f", maxexposuretime);
   else
     snprintf(value, sizeof(value), "%s", detectorrawgetdatavalue(name));
   return value;

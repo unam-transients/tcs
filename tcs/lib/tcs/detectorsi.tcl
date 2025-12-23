@@ -842,6 +842,12 @@ namespace eval "detector" {
         variable rawbinning
         return $rawbinning
       }
+      "minexposuretime" {
+        return 0
+      }
+      "maxexposuretime" {
+        return 0
+      }
       default {
         return [detectorrawgetdatavalue $name]
       }

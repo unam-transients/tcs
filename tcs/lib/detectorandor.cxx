@@ -74,6 +74,9 @@ static void detectorframestart(void);
 static void detectorframenext(unsigned long);
 static void detectorframeend(void);
 
+static double minexposuretime = 0;
+static double maxexposuretime = 0;
+
 ////////////////////////////////////////////////////////////////////////
 
 #include "atmcdLXd.h"
@@ -949,6 +952,10 @@ detectorrawgetvalue(const char *name)
     snprintf(value, sizeof(value), "%.2f", saasigmax);
   else if (strcmp(name, "saasigmay") == 0)
     snprintf(value, sizeof(value), "%.2f", saasigmay);
+  else if (strcmp(name, "minexposuretime") == 0)
+    snprintf(value, sizeof(value), "%.6f", minexposuretime);
+  else if (strcmp(name, "maxexposuretime") == 0)
+    snprintf(value, sizeof(value), "%.6f", maxexposuretime);
   else
     snprintf(value, sizeof(value), "%s", detectorrawgetdatavalue(name));
   return value;

@@ -51,6 +51,9 @@ static unsigned long unbinnedwindowny = 0;
 
 static unsigned long binning = 1;
 
+static double minexposuretime = 0;
+static double maxexposuretime = 0;
+
 ////////////////////////////////////////////////////////////////////////
 
 static time_t exposureend = 0;
@@ -251,6 +254,10 @@ detectorrawgetvalue(const char *name)
     snprintf(value, sizeof(value), "%lu", unbinnedwindowny);
   else if (strcmp(name, "binning") == 0)
     snprintf(value, sizeof(value), "%lu", binning);
+  else if (strcmp(name, "minexposuretime") == 0)
+    snprintf(value, sizeof(value), "%.6f", minexposuretime);
+  else if (strcmp(name, "maxexposuretime") == 0)
+    snprintf(value, sizeof(value), "%.6f", maxexposuretime);
   else
     snprintf(value, sizeof(value), "%s", detectorrawgetdatavalue(name));
   return value;

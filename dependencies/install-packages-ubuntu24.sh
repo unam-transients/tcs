@@ -104,7 +104,7 @@ esac
 
 if test -f sdk_*
 then
-  tar -xf sdk_*.tar
+  tar -xzf sdk_*.tgz
   cd sdk_*
   sudo sh uninstall.sh
   sudo sh install.sh
