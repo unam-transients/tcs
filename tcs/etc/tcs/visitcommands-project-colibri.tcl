@@ -486,7 +486,7 @@ proc coarsefocusvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
   executor::setsecondaryoffset 0
   executor::track
   executor::setwindow "default"
-  executor::setbinning 8
+  executor::setbinning 4
   eval executor::movefilterwheel $filter
 
   log::summary "coarsefocusvisit: centering."
@@ -499,7 +499,7 @@ proc coarsefocusvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
     set detector "C0"
   } elseif {[string equal $instrument "ddrago"]} {
     set window "2kx2k"
-    set binning 8
+    set binning 4
     set detector "C1"
   } else {
     error "invalid instrument \"$instrument\"."
