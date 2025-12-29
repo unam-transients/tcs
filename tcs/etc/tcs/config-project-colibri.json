@@ -343,10 +343,10 @@
   },
   "dome": {
     "type": "opentsi",
-    // Open, close, and park to the north.
-    "openazimuth": "0d",
-    "closeazimuth": "0d",
-    "parkazimuth": "0d",
+    // Open, close, and park to the south.
+    "openazimuth": "180d",
+    "closeazimuth": "180d",
+    "parkazimuth": "180d",
     // The COLIBRI dome aperture is 2.30 meters wide. The dome is 7.50
     // meters in diameter. Thus, if the dome were perfectly aligned, it
     // could accept 7.66 degrees of tolerance. We will reduce this to
@@ -466,16 +466,16 @@
     // "parkazimuth": "-0.0025d",
     // "parkzenithdistance": "0.0036d",
     // "derotatoranglepark": "0d",
-    // Park to the south.
-    "parkazimuth": "180d",
+    // Park to the north.
+    "parkazimuth": "0d",
     "parkzenithdistance": "10d",
     "parkderotatorangles": {
       "2": "0",
       "3": "-34.15d"
     },
-    // Unpark to the south too.
+    // Unpark to the north.
     "unparkha": "0h",
-    "unparkdelta": "0d",
+    "unparkdelta": "60d",
     "minzenithdistancelimit": "0.5d",
     // The telescope has a hard limit on zenith distance
     // of 75d (email from ASTELCO on 2024-09-16).
