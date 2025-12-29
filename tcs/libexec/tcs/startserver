@@ -71,7 +71,7 @@ colibri-control)
   ALLARGS="gcntan gcn svom"
   ;;
 colibri-instrument)
-  allargs="C0 C1 C2 1 instrument"
+  allargs="C1 C2 1 instrument"
   ALLARGS=""
   ;;
 tequila-detector)
