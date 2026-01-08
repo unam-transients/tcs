@@ -177,34 +177,34 @@ namespace eval "plc" {
       [catch {
         # The wind data from the Vaisala contains # if the sensor is inoperative.
         set value [lindex $field 2]
-        if {[string first "#" [lindex $field 2]] != -1} {
+        if {[string equal [lindex $field 2] "NA"]} {
           server::setdata "vaisalawindminazimuth" ""
         } else {
           server::setdata "vaisalawindminazimuth" [format "%d" [parseinteger [lindex $field 2]]]
         }
-        if {[string first "#" [lindex $field 3]] != -1} {
+        if {[string equal [lindex $field 3] "NA"]} {
           server::setdata "vaisalawindaverageazimuth" ""
         } else {
           server::setdata "vaisalawindaverageazimuth" [format "%d" [parseinteger [lindex $field 3]]]
         }
-        if {[string first "#" [lindex $field 4]] != -1} {
+        if {[string equal [lindex $field 4] "NA"]} {
           server::setdata "vaisalawindmaxzimuth" ""
         } else {
           server::setdata "vaisalawindmaxzimuth" [format "%d" [parseinteger [lindex $field 4]]]
         }
-        if {[string first "#" [lindex $field 5]] != -1} {
+        if {[string equal [lindex $field 5] "NA"]} {
           server::setdata "vaisalawindminspeed" ""
         } else {
           # Convert the Vaisala speeds from m/s to km/h.
           server::setdata "vaisalawindminspeed" [format "%.1f" [expr {[lindex $field 5] * 3.6}]]
         }
-        if {[string first "#" [lindex $field 6]] != -1} {
+        if {[string equal [lindex $field 6] "NA"]} {
           server::setdata "vaisalawindaveragespeed" ""
         } else {
           # Convert the Vaisala speeds from m/s to km/h.
           server::setdata "vaisalawindaveragespeed" [format "%.1f" [expr {[lindex $field 6] * 3.6}]]
         }
-        if {[string first "#" [lindex $field 7]] != -1} {
+        if {[string equal [lindex $field 7] "NA"]} {
           server::setdata "vaisalawindmaxspeed" ""
         } else {
           # Convert the Vaisala speeds from m/s to km/h.
