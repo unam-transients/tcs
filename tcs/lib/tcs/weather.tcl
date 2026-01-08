@@ -154,14 +154,21 @@ namespace eval "weather" {
         $pendingtemperature        < -100 ||
         $pendinghumidity           < -100 ||
         $pendingdewpoint           < -100 ||
-        $pendingwindaveragespeed   < -100 ||
-        $pendingwindgustspeed      < -100 ||
-        $pendingwindaverageazimuth < -100 ||
         $pendingrainrate           < -100 ||
         $pendingpressure           < -100
       } {
         log::debug "invalid data: \"$dataline\""
         continue
+      }
+
+      if {
+        $pendingwindaveragespeed   < -100 ||
+        $pendingwindgustspeed      < -100 ||
+        $pendingwindaverageazimuth < -100    
+      } {
+        set pendingwindaveragespeed   "unknown"
+        set pendingwindgustspeed      "unknown"
+        set pendingwindaverageazimuth "unknown"
       }
 
       set date               $pendingdate
