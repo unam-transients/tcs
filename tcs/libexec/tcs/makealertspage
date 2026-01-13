@@ -331,7 +331,7 @@ for alert in alerts:
     else:
         selectablealerts.append(alert)
 
-nalertstablecolumns = 18
+nalertstablecolumns = 19
 
 
 def writealertstable(alerts, name):
@@ -361,6 +361,7 @@ def writealertstable(alerts, name):
             "SVOM Identifier",
             "Swift Identifier",
             "Fermi Identifier",
+            "EP Identifier",
             "LVC Identifier",
         ]:
             writehtml('<th class="alertstable">%s</th>' % text)
@@ -385,6 +386,7 @@ def writealertstable(alerts, name):
                 "svomidentifier",
                 "swiftidentifier",
                 "fermiidentifier",
+                "epidentifier",
                 "lvcidentifier",
             ]:
                 writehtml('<td class="alertstable">')
