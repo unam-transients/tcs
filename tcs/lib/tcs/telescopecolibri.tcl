@@ -36,7 +36,7 @@ namespace eval "telescope" {
   variable mechanisms  { telescopecontroller covers dome fans louvers mount secondary }
   variable withlights  true
   variable withheater  false
-  variable withlouvers true
+  variable withlouvers false
   variable withfans    true
 
   ######################################################################
