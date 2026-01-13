@@ -80,33 +80,44 @@ ServerName colibri-services
     Require valid-user
   </Location>
 
-  <LocationMatch "^/proxy/">
+  ############################################################
+
+  <LocationMatch "^/pdu/">
     AuthType Basic
     AuthName "COLIBRI Engineering"
     AuthUserFile @prefix@/etc/htpasswd/colibri-engineering
     Require valid-user
   </LocationMatch>
-
-  ############################################################
   
   LogLevel info proxy:debug
 
-  <Location /proxy/pdu1/>
+  <Location /pdu/pdu1/>
     ProxyPass         http://pdu1/
     ProxyPassReverse  /
     ProxyHTMLEnable   On
-    ProxyHTMLURLMap   http://pdu1 /proxy/pdu1/
-    ProxyHTMLURLMap   /           /proxy/pdu1/
+    ProxyHTMLURLMap   http://pdu1 /pdu/pdu1/
+    ProxyHTMLURLMap   /           /pdu/pdu1/
     RequestHeader    unset  Accept-Encoding
   </Location>
 
-  <Location /proxy/pdu2/>
+  <Location /pdu/pdu2/>
     ProxyPass         http://pdu2/
     ProxyPassReverse  /
     ProxyHTMLEnable   On
-    ProxyHTMLURLMap   http://pdu2 /proxy/pdu2/
-    ProxyHTMLURLMap   /           /proxy/pdu2/
+    ProxyHTMLURLMap   http://pdu2 /pdu/pdu2/
+    ProxyHTMLURLMap   /           /pdu/pdu2/
     RequestHeader    unset  Accept-Encoding
+  </Location>
+
+  ############################################################
+
+  <Location /redux-cppm/>
+    ProxyPass         http://192.168.100.61/shared/redux/
+    ProxyPassReverse  /
+    ProxyHTMLEnable   On
+    ProxyHTMLURLMap   http://192.168.100.61/shared/redux/ /redux-cppm/
+    ProxyHTMLURLMap   /                                   /redux-cppm/
+    RequestHeader     unset  Accept-Encoding
   </Location>
 
   ############################################################

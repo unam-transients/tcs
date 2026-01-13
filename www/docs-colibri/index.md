@@ -46,7 +46,9 @@ This is the TCS website for the COLIBRI telescope at OAN.
   * [Meteoblue](https://www.meteoblue.com/en/weather/forecast/meteogramweb/parque-nacional-san-pedro-m%c3%a1rtir_mexico_3983083)
 * Data
   * [ASU pipeline](nas/redux-colibri)
-  * [CPPM pipeline](https://www.colibri-obs.org/wp-includes/redux/)
-  * [LAM STDWeb](https://stdweb.colibri-obs.org/)
+  * CPPM pipeline:
+     * [At OAN](redux-cppm/)
+     * [At LAM](https://www.colibri-obs.org/wp-includes/redux/)
+  * [STDWeb at LAM](https://stdweb.colibri-obs.org/)
 
 <hr/>
