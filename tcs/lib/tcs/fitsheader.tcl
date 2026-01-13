@@ -529,10 +529,10 @@ namespace eval "fitsheader" {
     writecomment $channel "Start of TCS section \"$prefix\"."
     writekeyandvalue $channel "${prefix}DATE" date   $seconds "date TCS section written"
     writekeyandvalue $channel "${prefix}MJD"  double [format "%.8f" [utcclock::mjd $seconds]] "MJD TCS section written"
-    #variable servers
-    #foreach server $servers {
-    #  writekeysandvaluesfor$server $channel $prefix
-    #}
+    variable servers
+    foreach server $servers {
+      writekeysandvaluesfor$server $channel $prefix
+    }
     writecomment $channel "End of TCS section \"$prefix\"."
   }
   
