@@ -120,6 +120,15 @@ ServerName colibri-services
     RequestHeader     unset  Accept-Encoding
   </Location>
 
+  <Location /redux-lam/>
+    ProxyPass         http://192.168.100.62:5000/
+    ProxyPassReverse  /
+    ProxyHTMLEnable   On
+    ProxyHTMLURLMap   http://192.168.100.62:5000/ /redux-lam/
+    ProxyHTMLURLMap   /                           /redux-lam/
+    RequestHeader     unset  Accept-Encoding
+  </Location>
+
   ############################################################
 
 </VirtualHost>

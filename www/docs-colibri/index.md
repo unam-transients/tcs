@@ -49,6 +49,7 @@ This is the TCS website for the COLIBRI telescope at OAN.
   * CPPM pipeline:
      * [At OAN](redux-cppm/)
      * [At LAM](https://www.colibri-obs.org/wp-includes/redux/)
+  * [LAM Lightcurve Generator](redux-lam/lightcurve_generator.html)
   * [STDWeb at LAM](https://stdweb.colibri-obs.org/)
 
 <hr/>
