@@ -85,19 +85,20 @@ EOF
   case $host in
   control)
     cat <<"EOF"
-*  *  *  *  *  rsync -ah rsync://coatli-control/tcs/alerts/. /usr/local/var/tcs/alerts/.    
-*  *  *  *  *  sleep 10; tcs updatesensorsfiles control platform instrument
-*  *  *  *  *  tcs updateseeingfiles-oan
-*  *  *  *  *  tcs updateweatherfiles-oan
-00 18 *  *  *  tcs updateweatherfiles-oan -a
-*  *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
-00 00 *  *  *  tcs loadblocks -F
-01 00 *  *  *  tcs loadblocks -L
-*   *  * *  *  sh /usr/local/var/www/tcs/plots.sh
-*/5 *  * *  *  tcs logsensors
-*      *  *  *  *  mkdir -p /usr/local/var/www/tcs/alerts/; rsync --delete --dirs /usr/local/var/tcs/alerts/ /usr/local/var/www/tcs/alerts/
-*      *  *  *  *  mkdir -p /usr/local/var/www/tcs/blocks/; rsync --delete --dirs /usr/local/var/tcs/blocks/ /usr/local/var/www/tcs/blocks/
-*      *  *  *  *  tcs request selector makealertspage
+*   *  *  *  *  rsync -ah rsync://coatli-control/tcs/alerts/. /usr/local/var/tcs/alerts/.    
+*   *  *  *  *  sleep 10; tcs updatesensorsfiles control platform instrument
+*   *  *  *  *  tcs updateseeingfiles-oan
+*   *  *  *  *  tcs updateweatherfiles-oan
+00 18  *  *  *  tcs updateweatherfiles-oan -a
+*   *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
+00 00  *  *  *  tcs loadblocks -F
+01 00  *  *  *  tcs loadblocks -L
+*   *  *  *  *  tcs makeblockspage
+*   *  *  *  *  sh /usr/local/var/www/tcs/plots.sh
+*/5 *  *  *  *  tcs logsensors
+*   *  *  *  *  mkdir -p /usr/local/var/www/tcs/alerts/; rsync --delete --dirs /usr/local/var/tcs/alerts/ /usr/local/var/www/tcs/alerts/
+*   *  *  *  *  mkdir -p /usr/local/var/www/tcs/blocks/; rsync --delete --dirs /usr/local/var/tcs/blocks/ /usr/local/var/www/tcs/blocks/
+*   *  *  *  *  tcs request selector makealertspage
 EOF
     ;;
   instrument)

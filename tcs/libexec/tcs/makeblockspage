@@ -1,51 +1,152 @@
-#!/bin/sh
+#!/usr/bin/env python3
 
-#!/bin/sh
+import os
+from datetime import datetime
+from datetime import timezone
+import json
+import re
+import platform
+import glob
 
-program="tcs $(basename "$0")"
+if platform.node().startswith("coatli"):
+    project = "coatli"
+    projectname = "COATLI"
+elif platform.node().startswith("colibri"):
+    project = "colibri"
+    projectname = "COLIBRÍ"
+elif platform.node().startswith("ddoti"):
+    project = "ddoti"
+    projectname = "DDOTI"
+else:
+    raise RuntimeError("unknown project.")
 
-usageerror () {
-  echo 1>&2 "usage: $program"
-  exit 1
-}
+htmlfilename = "/usr/local/var/www/tcs/blocks.html"
+newhtmlfilename = htmlfilename + ".new"
+blocksdirectory = "/usr/local/var/tcs/blocks/"
 
-error () {
-  log error "$@"
-  exit 1
-}
+newhtmlfile = open(newhtmlfilename, "w")
 
-log () {
-  level=$1
-  shift
-  tcs log "$program" $level "$*"
-  echo 1>&2 "$(date -u '+%F %T'): $program: $level: $*"
-}
 
-optstring=
-if ! getopt -qQ -- "$optstring" "$@"
-then
-  usageerror
-fi
-eval set -- "$(getopt -q -- "$optstring" "$@")"
-while test "$1" != "--"
-do
-  case "$1" in
-  *)
-    usageerror
-    ;;
-  esac
-done
-shift
-if test $# != 0
-then
-  usageerror
-fi
+def readjson(filename):
+    with open(filename, "r") as f:
+        return json.loads(f.read(-1))
 
-################################################################################
 
-sudo mkdir -p /usr/local/var/www/tcs/blocks
-sudo rsync --delete -ah /usr/local/var/tcs/blocks/ /usr/local/var/www/tcs/blocks/
+def writehtml(s):
+    print(s, file=newhtmlfile)
 
-exit 0
 
-################################################################################
+def formattimestamp(timestamp):
+    timestamp = re.sub(r"T", " ", timestamp)
+    timestamp = re.sub(r"\.[0-9]*$", "", timestamp)
+    return timestamp
+
+def writeprolog():
+    writehtml(
+        """
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<link rel="stylesheet" href="style.css" type="text/css"/>
+<title>%s: Blocks</title>
+</head>
+
+<body>
+
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="config.js"></script>
+<script type="text/javascript" src="alerts.js"></script>
+
+<div id="title">
+<h1>%s: Blocks</h1>
+<hr/>
+</div>
+
+<div id="body">
+<table class="blockstable">
+"""
+        % (projectname, projectname)
+    )
+
+    writehtml(
+        """
+
+<p>
+<a href="/index.html">Home</a> |
+<a href="alerts.html">Alerts</a>
+</p>
+
+<hr/>
+"""
+    )
+
+    writehtml("<tr>")
+    for text in [
+        "Project ID",
+        "Block ID",
+        "Project Name",
+        "Block Name",
+        "Block File",
+    ]:
+        writehtml('<th class="blockstable">%s</th>' % text)
+    writehtml("</tr>")
+
+
+def writeepilog():
+    writehtml("</table>")
+    writehtml(
+        """
+    </div>
+
+    <div>
+    <hr/>
+    Updated: %s UTC
+    </div>
+
+    </body>
+
+
+    </html>
+    """
+        % datetime.now(timezone.utc).replace(tzinfo=None).isoformat(" ", timespec="seconds")
+    )
+
+def writeblock(path, data):
+    writehtml('<tr>')
+    for key in [
+        "projectidentifier",
+        "blockidentifier",
+        "projectname",
+        "blockname",
+        "filename",
+    ]:
+        if key == "filename":
+            pathhead, pathtail = os.path.split(path)
+            s = '<a href="blocks/%s">%s</a>' % (pathtail, pathtail)
+        elif key == "projectidentifier":
+            s = data["project"]["identifier"]
+        elif key == "projectname":
+            s = data["project"]["name"]
+        elif key == "blockidentifier":
+            s = data["identifier"]
+        elif key == "blockname":
+            s = data["name"]
+        if key == "projectname" or key == "blockname":
+          if not s[0].isupper():
+            s = s.capitalize()
+        writehtml('<td class="blockstable">%s</td>' % s)
+    writehtml('</tr>')
+
+writeprolog()
+
+for blockpath in sorted(glob.glob(blocksdirectory + "*.json")):
+    blockdata = readjson(blockpath)
+    writeblock(blockpath, blockdata)
+
+writeepilog()
+
+newhtmlfile.close()
+
+os.rename(newhtmlfilename, htmlfilename)

@@ -125,6 +125,7 @@ writehtml(
 
 <p>
 <a href="/index.html">Home</a> |
+<a href="blocks.html">Blocks</a> |
 <a href="https://github.com/unam-transients/tcs/wiki/Creating-and-Modifying-Alerts-Manually">Help</a>
 </p>
 

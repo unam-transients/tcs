@@ -147,12 +147,22 @@ td.control {
   padding:            0.2em;
 }
 
+table.blockstable, tr.blockstable, th.blockstable, td.blockstable {
+  padding-left:       0.5em;
+  padding-right:      0.5em;
+  padding-top:        0.2em;
+  padding-bottom:     0.2em;
+  line-height:        1.4;
+  text-align: left;
+}
+
 table.alertstable, tr.alertstable, th.alertstable, td.alertstable {
   padding-left:       0.5em;
   padding-right:      0.5em;
   padding-top:        0.2em;
   padding-bottom:     0.2em;
-  line-height:        1.6;
+  line-height:        1.4;
+  text-align: left;
 }
 
 table.alertsinputs, tr.alertsinputs, th.alertsinputs, td.alertsinputs {
