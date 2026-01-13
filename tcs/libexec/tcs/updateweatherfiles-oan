@@ -81,12 +81,12 @@ do
   # Give priority to weather-a.
   (
     (
-      test -f "$tcsprefix"/var/tcs/weather-b/"$file" && head --lines=2 "$tcsprefix"/var/tcs/weather-b/"$file"
       test -f "$tcsprefix"/var/tcs/weather-a/"$file" && head --lines=2 "$tcsprefix"/var/tcs/weather-a/"$file"
+      test -f "$tcsprefix"/var/tcs/weather-b/"$file" && head --lines=2 "$tcsprefix"/var/tcs/weather-b/"$file"
     ) | head --lines=2
     (
-      test -f "$tcsprefix"/var/tcs/weather-b/"$file" && tail --lines=+3 "$tcsprefix"/var/tcs/weather-b/"$file"
       test -f "$tcsprefix"/var/tcs/weather-a/"$file" && tail --lines=+3 "$tcsprefix"/var/tcs/weather-a/"$file"
+      test -f "$tcsprefix"/var/tcs/weather-b/"$file" && tail --lines=+3 "$tcsprefix"/var/tcs/weather-b/"$file"
     ) |
     sort -u -k1,2
   ) >"$file".tmp.$$
