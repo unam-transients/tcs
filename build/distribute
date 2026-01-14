@@ -6,7 +6,6 @@ project="$1"
 
 echo "distribute: project is \"$project\"."
 
-
 version="$(git describe --dirty)"
 echo "distribute: version is \"$version\"."
 echo "\"$version\"" >tcs/etc/tcs/version.json
@@ -41,10 +40,18 @@ esac
 for host in $hosts
 do
   printf "distribute: rsyncing to \"$host\" ... "
-  rsync --exclude=.git/ -ah --delete . ${host}:src
+  rsync \
+    --exclude=.conda/     \
+    --exclude=.git/       \
+    --exclude=.github/    \
+    --exclude=.gitignore  \
+    --exclude=.vscode/    \
+    --exclude=ATTIC/      \
+    --exclude=sandbox/    \
+    -ah --delete . ${host}:src
   printf "done.\n"
 done
-  
+
 exit 0
 
 
