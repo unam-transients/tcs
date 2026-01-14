@@ -214,6 +214,7 @@ def respond(
     eventorigin,
     eventidentifier,
     eventprefix,
+    eventsuffix,
     eventisotimestamp,
     eventalpha,
     eventdelta,
@@ -252,6 +253,8 @@ def respond(
             day,
             int(dayfraction * 1000),
         )
+    if eventsuffix is not None:
+        eventname = "%s (%s)" % (eventname, eventsuffix)
     logresponse('event name is "%s".' % eventname)
 
     logresponse(
@@ -426,16 +429,23 @@ def handleicecubemessage(messagetype, messagevalue):
     eventprefix = "IceCube"
     eventmessenger = "neutrino"
 
-    if eventtype == "icecubeastrotrackgold" or eventtype == "icecubeastrotrackbronze":
+    if eventtype == "icecubeastrotrackgold":
         eventclass = "track"
+        eventsuffix = "gold"
+    elif eventtype == "icecubeastrotrackbronze":
+        eventclass = "track"
+        eventsuffix = "bronze"
     else:
         eventclass = "cascade"
+        eventsuffix = "cascade"
 
     eventidentifier = value.find("./What/Param[@name='AMON_ID']").get("value")
 
-    eventisotimestamp = parseisoformat(value.find(
-        "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Time/TimeInstant/ISOTime"
-    ).text)
+    eventisotimestamp = parseisoformat(
+        value.find(
+            "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Time/TimeInstant/ISOTime"
+        ).text
+    )
 
     eventalpha = "%.4fd" % float(
         value.find(
@@ -454,15 +464,22 @@ def handleicecubemessage(messagetype, messagevalue):
         ).text
     )
 
-    signalness = float(value.find("./What/Param[@name='signalness']").get("value"))
     far = float(value.find("./What/Param[@name='FAR']").get("value"))
-    logsummary("%s: signalness is %.4f." % (eventtype, signalness))
     logsummary("%s: far is %.4f per year." % (eventtype, far))
+
+    signalness = float(value.find("./What/Param[@name='signalness']").get("value"))
+    logsummary("%s: signalness is %.4f." % (eventtype, signalness))
 
     if eventtype == "icecubeastrotrackgold":
         eventenabled = True
     elif eventtype == "icecubeastrotrackbronze":
-        eventenabled = signalness >= 0.50
+        signalnessthreshhold = 0.50
+        if signalness >= signalnessthreshhold:
+            logsummary("%s: signalness is at or above the threshold of %.4f." % (eventtype, signalnessthreshhold))
+            eventenabled = True
+        else:
+            logsummary("%s: signalness is below the threshold of %.4f." % (eventtype, signalnessthreshhold))
+            eventenabled = False
     else:
         eventenabled = False
     eventpreliminary = False
@@ -473,6 +490,7 @@ def handleicecubemessage(messagetype, messagevalue):
         eventorigin,
         eventidentifier,
         eventprefix,
+        eventsuffix,
         eventisotimestamp,
         eventalpha,
         eventdelta,
@@ -563,9 +581,11 @@ def handlesvommessage(messagetype, messagevalue):
     ).get("value")[2:]
 
     if eventtype.startswith("svomeclairs") or eventtype.startswith("svomgrm"):
-        eventisotimestamp = parseisoformat(value.find(
-            "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Time/TimeInstant/ISOTime"
-        ).text)
+        eventisotimestamp = parseisoformat(
+            value.find(
+                "./WhereWhen/ObsDataLocation/ObservationLocation/AstroCoords/Time/TimeInstant/ISOTime"
+            ).text
+        )
     else:
         eventisotimestamp = ""
 
@@ -619,6 +639,7 @@ def handlesvommessage(messagetype, messagevalue):
         eventorigin,
         eventidentifier,
         eventprefix,
+        eventsuffix,
         eventisotimestamp,
         eventalpha,
         eventdelta,
@@ -672,6 +693,7 @@ def handleeinsteinprobemessage(messagetype, messagevalue):
         eventorigin,
         eventidentifier,
         eventprefix,
+        eventsuffix,
         eventisotimestamp,
         eventalpha,
         eventdelta,
@@ -709,7 +731,9 @@ if testing:
     # https://github.com/nasa-gcn/gcn-kafka-python/blob/main/README.md
     consumerconfig = {"auto.offset.reset": "earliest"}
     topics = [
-        "gcn.notices.einstein_probe.wxt.alert",
+        "gcn.classic.voevent.ICECUBE_ASTROTRACK_BRONZE",
+        "gcn.classic.voevent.ICECUBE_ASTROTRACK_GOLD",
+        "gcn.classic.voevent.ICECUBE_CASCADE",
     ]
 else:
     consumerconfig = {}

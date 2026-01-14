@@ -649,6 +649,7 @@
       "fermilat*-*"     : 5,
       "fermigbm*-sgrb"  : 6,
       "einsteinprobe*-*": 7,
+      "icecube*-*"      : 7,
       "svom*-*"         : 8,
       "swift*-*"        : 8
     }

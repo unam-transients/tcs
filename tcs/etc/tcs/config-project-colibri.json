@@ -600,8 +600,9 @@
       "svommxt*-*": 5,
       "svomvt*-*": 5,
       "fermilat*-*": 6,
-      "einsteinprobe*-*": 7,
-      "fermigbm*-sgrb": 7,
+      "einsteinprobe*-*": 6,
+      "icecube*-*": 6,
+      "*-sgrb": 7,
       "swift*-*": 8
     }
   },

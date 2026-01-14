@@ -331,7 +331,8 @@ for alert in alerts:
     else:
         selectablealerts.append(alert)
 
-nalertstablecolumns = 19
+nalertstablecolumns = 20
+nalertstableinitialcolumns = 13
 
 
 def writealertstable(alerts, name):
@@ -340,8 +341,10 @@ def writealertstable(alerts, name):
         writehtml('<tr><td colspan="%d"><hr/></td></tr>' % nalertstablecolumns)
         return
     else:
-        writehtml('<tr><th colspan="%d">%s</th></tr>' % (nalertstablecolumns, name))
+        writehtml('<tr><th colspan="%d" style="text-align:center">%s</th></tr>' % (nalertstablecolumns, name))
         writehtml('<tr><td colspan="%d"><hr/></td></tr>' % nalertstablecolumns)
+        writehtml('<tr><th colspan="%d"></th><th colspan="%d" style="text-align:center">Identifiers</th></tr>' % (nalertstableinitialcolumns, nalertstablecolumns - nalertstableinitialcolumns))
+        writehtml('<tr><td colspan="%d"></td><td colspan="%d"><hr/></td></tr>' % (nalertstableinitialcolumns, nalertstablecolumns - nalertstableinitialcolumns))
         writehtml("<tr>")
         for text in [
             "Name",
@@ -357,15 +360,17 @@ def writealertstable(alerts, name):
             "Priority",
             "Enabled",
             "Filters",
-            "Identifier",
-            "SVOM Identifier",
-            "Swift Identifier",
-            "Fermi Identifier",
-            "EP Identifier",
-            "LVC Identifier",
+            "Block",
+            "SVOM",
+            "Swift",
+            "Fermi",
+            "EP",
+            "IceCube",
+            "LVC",
         ]:
             writehtml('<th class="alertstable">%s</th>' % text)
         writehtml("</tr>")
+        writehtml('<tr><td colspan="%d"><hr/></td></tr>' % nalertstablecolumns)
         for alert in alerts:
             writehtml("<tr>")
             for key in [
@@ -387,6 +392,7 @@ def writealertstable(alerts, name):
                 "swiftidentifier",
                 "fermiidentifier",
                 "epidentifier",
+                "icecubeidentifier",
                 "lvcidentifier",
             ]:
                 writehtml('<td class="alertstable">')
