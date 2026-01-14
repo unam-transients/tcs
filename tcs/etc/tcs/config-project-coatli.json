@@ -202,6 +202,7 @@
     "servers": [
       "enclosure",
       "executor",
+      "gcn",
       "gcntan",
       "heater",
       "instrument",
@@ -700,6 +701,7 @@
     "monitoredservers": [
       "enclosure",
       "executor",
+      "gcn",
       "gcntan",
       "heater",
       "instrument",
