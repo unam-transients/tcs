@@ -81,35 +81,51 @@ sudo mv /etc/hosts.tmp /etc/hosts
   echo 'MAILTO=""'
 
   cat <<"EOF"
-00     21 *  *  *  tcs cleanfiles
+
+00    18 *  *  1   reboot
+00    18 *  *  2-7 tcs restartserver -A
+
+00    17 *  *  *   tcs cleanfiles
+00    17 *  *  *   tcs updateiersfiles
+00    17 *  *  *   tcs updateleapsecondsfile
+
 *      *  *  *  *  tcs updatevarlatestlink
+
 *      *  *  *  *  tcs updatelocalsensorsfiles
+
 *      *  *  *  *  tcs checkreboot
 *      *  *  *  *  tcs checkrestart
 *      *  *  *  *  tcs checkhalt
-00     18 *  *  *  tcs updateiersfiles
-00     18 *  *  *  tcs updateleapsecondsfile
+
 00     *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="*.jpg" --exclude="*.fits" --exclude="*.fits.*" /usr/local/var/tcs/ rsync://colibri-rsync/colibri-raw/
 01-59  *  *  *  *  rsync -aH --exclude="*.tmp" --exclude="debug*.txt" --include="*.txt" --include="*.json" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://colibri-rsync/colibri-raw/
 *      *  *  *  *  rsync -aH --remove-source-files --exclude="*.tmp" --include="*.fits.*" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://colibri-rsync/colibri-raw/
+
 EOF
   
   case $host in
   control)
     cat <<"EOF"
-*   *  *  *  *  sleep 10; tcs updatesensorsfiles control instrument
-*   *  *  *  *  tcs updateseeingfiles-colibri
-*   *  *  *  *  tcs request plc special updateweather
-*   *  *  *  *  rsync -a rsync://132.248.4.141/weather/Archive/. /usr/local/var/tcs/weather-b/. ; cd /usr/local/var/tcs/weather-b/; tail -1 $(ls *.txt | sort -r | head -1) | awk '{ print $8; }' >/usr/local/var/tcs/sensors/local/oan-wind-average-speed ; tail -1 $(ls *.txt | sort -r | head -1) | awk '{ print $9; }' >/usr/local/var/tcs/sensors/local/oan-wind-gust-speed
-*   *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
-00  00 *  *  *  tcs loadblocks -F
-01  00 *  *  *  tcs loadblocks -L
-*   *  *  *  *  tcs makeblockspage
-*   *  *  *  *  cd /usr/local/var/www/tcs/; sh plots.sh >plots.txt 2>&1
-*/5 *  *  *  *  tcs logsensors
-*   *  *  *  *  mkdir -p /usr/local/var/www/tcs/alerts/; rsync --delete --dirs /usr/local/var/tcs/alerts/ /usr/local/var/www/tcs/alerts/
-*   *  *  *  *  mkdir -p /usr/local/var/www/tcs/blocks/; rsync --delete --dirs /usr/local/var/tcs/blocks/ /usr/local/var/www/tcs/blocks/
-*   *  *  *  *  tcs request selector makealertspage
+
+*      *  *  *  *  tcs updateseeingfiles-colibri
+*      *  *  *  *  tcs request plc special updateweather
+
+*      *  *  *  *  sleep 10; tcs updatesensorsfiles control instrument
+*/5    *  *  *  *  tcs logsensors
+
+*      *  *  *  *  cd /usr/local/var/www/tcs/; sh plots.sh >plots.txt 2>&1
+
+*      *  *  *  *  rsync -a rsync://132.248.4.141/weather/Archive/. /usr/local/var/tcs/weather-b/. ; cd /usr/local/var/tcs/weather-b/; tail -1 $(ls *.txt | sort -r | head -1) | awk '{ print $8; }' >/usr/local/var/tcs/sensors/local/oan-wind-average-speed ; tail -1 $(ls *.txt | sort -r | head -1) | awk '{ print $9; }' >/usr/local/var/tcs/sensors/local/oan-wind-gust-speed
+
+*      *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
+*      *  *  *  *  tcs request selector makealertspage
+*      *  *  *  *  mkdir -p /usr/local/var/www/tcs/alerts/; rsync --delete --dirs /usr/local/var/tcs/alerts/ /usr/local/var/www/tcs/alerts/
+
+00     00 *  *  *  tcs loadblocks -F
+01     00 *  *  *  tcs loadblocks -L
+*      *  *  *  *  tcs makeblockspage
+*      *  *  *  *  mkdir -p /usr/local/var/www/tcs/blocks/; rsync --delete --dirs /usr/local/var/tcs/blocks/ /usr/local/var/www/tcs/blocks/
+
 EOF
     ;;
   esac
