@@ -22,3 +22,5 @@ PERFORMANCE OF THIS SOFTWARE.
 ----------------------------------------------------------------------->
 
 # COLIBRI: Documentation
+
+* [Wiki](https://projets.lam.fr/projects/svom-colibri/wiki)

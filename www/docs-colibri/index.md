@@ -53,5 +53,8 @@ This is the TCS website for the COLIBRI telescope at OAN.
      * [Lightcurve Generator at OAN](redux-lam/lightcurve_generator.html)
   * STDWeb:
      * [At LAM](https://stdweb.colibri-obs.org/)
-
+* Shifts
+  * [Guidelines](https://projets.lam.fr/projects/svom-colibri/wiki/Operations)
+  * [Calendar](https://docs.google.com/spreadsheets/d/1NjtByyEY0vQNsOzBk9FyVZ3_SIjHwc7e9dA60l5Fm3U/edit?usp=sharing)
+  * [Log](https://projets.lam.fr/projects/svom-colibri/wiki/Observations_Log)
 <hr/>
