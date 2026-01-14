@@ -647,7 +647,8 @@
       "lvc*-*"          : 4,
       "fermilat*-*"     : 5,
       "fermigbm*-sgrb"  : 6,
-      "svom*-*"         : 7,
+      "einsteinprobe*-*": 7,
+      "svom*-*"         : 8,
       "swift*-*"        : 8
     }
   },
