@@ -71,7 +71,8 @@ sudo mv /etc/hosts.tmp /etc/hosts
   cat <<"EOF"
 
 00    18 *  *  1   reboot
-00    18 *  *  2-7 tcs restartserver -A
+00    18 *  *  2-7 tcs stopserver
+01    18 *  *  2-7 tcs restartserver -A
 
 00    17 *  *  *   tcs cleanfiles
 00    17 *  *  *   tcs updateiersfiles
