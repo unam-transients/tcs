@@ -143,7 +143,7 @@ then
 fi
 if $ALL
 then
-  set -- $allargs $ALLARGS
+  set -- $ALLARGS $allargs
 fi
 
 for arg in "$@"
