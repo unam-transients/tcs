@@ -39,10 +39,12 @@ install						:	all install-$(SITE)
 ########################################################################
 
 all-coatli				        :   \
-    docs-coatli/index.html		        \
-	docs-coatli/documentation.html
+    docs-coatli/index.html		    \
+    docs-coatli/engineering.html	\
+	docs-coatli/license.html
 docs-coatli/index.html  		:	docs-coatli/index.md
-docs-coatli/documentation.html	:	docs-coatli/documentation.md
+docs-coatli/engineering.html	:	docs-coatli/engineering.md
+docs-coatli/license.html		:	docs-coatli/license.md
 
 install-coatli			:	install-linux
 
@@ -53,9 +55,11 @@ clean-coatli			:
 
 all-ddoti				        :	\
     docs-ddoti/index.html		    \
-	docs-ddoti/documentation.html
+	docs-ddoti/engineering.html	\
+	docs-coatli/license.html
 docs-ddoti/index.html	    	:	docs-ddoti/index.md
-docs-ddoti/documentation.html	:	docs-ddoti/documentation.md
+docs-ddoti/engineering.html		:	docs-ddoti/engineering.md
+docs-ddoti/license.html			:	docs-ddoti/license.md
 
 install-ddoti			:	install-linux
 
@@ -66,9 +70,11 @@ clean-ddoti				:
 
 all-colibri			    	    :	\
     docs-colibri/index.html 		\
-	docs-colibri/documentation.html
+	docs-colibri/engineering.html	\
+	docs-colibri/license.html
 docs-colibri/index.html		    :	docs-colibri/index.md
-docs-colibri/documentation.html	:	docs-colibri/documentation.md
+docs-colibri/engineering.html	:	docs-colibri/engineering.md
+docs-colibri/license.html		:	docs-colibri/license.md
 
 install-colibri			:	install-linux
 

@@ -1,10 +1,6 @@
-<!----------------------------------------------------------------------
+# License
 
-This file is part of the UNAM telescope control system.
-
-------------------------------------------------------------------------
-
-Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
+---
 
 Permission to use, copy, modify, and distribute this software for any
 purpose with or without fee is hereby granted, provided that the above
@@ -19,10 +15,9 @@ PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 
------------------------------------------------------------------------>
+---
 
-# DDOTI: Documentation
+[Home](index.html) |
+[License](license.html)
 
-## Technical Manual
-
-* [Technical Manual](documentation/technical-manual.pdf)
+Copyright © 2018, 2019, 2025, 2026 Alan M. Watson <alan@astro.unam.mx>
