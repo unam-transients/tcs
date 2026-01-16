@@ -398,7 +398,7 @@ def handleswiftmessage(messagetype, messagevalue):
 ################################################################################
 
 
-def handleicecubemessage(messagetype, messagevalue):
+def handleclassicicecubemessage(messagetype, messagevalue):
 
     assert messagetype in [
         "gcn.classic.voevent.ICECUBE_ASTROTRACK_BRONZE",
@@ -475,10 +475,107 @@ def handleicecubemessage(messagetype, messagevalue):
     elif eventtype == "icecubeastrotrackbronze":
         signalnessthreshhold = 0.50
         if signalness >= signalnessthreshhold:
-            logsummary("%s: signalness is at or above the threshold of %.4f." % (eventtype, signalnessthreshhold))
+            logsummary(
+                "%s: signalness is at or above the threshold of %.4f."
+                % (eventtype, signalnessthreshhold)
+            )
             eventenabled = True
         else:
-            logsummary("%s: signalness is below the threshold of %.4f." % (eventtype, signalnessthreshhold))
+            logsummary(
+                "%s: signalness is below the threshold of %.4f."
+                % (eventtype, signalnessthreshhold)
+            )
+            eventenabled = False
+    else:
+        eventenabled = False
+    eventpreliminary = False
+
+    respond(
+        alertisotimestamp,
+        eventtype,
+        eventorigin,
+        eventidentifier,
+        eventprefix,
+        eventsuffix,
+        eventisotimestamp,
+        eventalpha,
+        eventdelta,
+        eventequinox,
+        eventuncertainty,
+        eventclass,
+        eventmessenger,
+        eventenabled,
+        eventpreliminary,
+    )
+
+
+################################################################################
+
+
+def handleicecubemessage(messagetype, messagevalue):
+
+    assert messagetype in [
+        "gcn.notices.icecube.gold_bronze_track_alerts",
+    ]
+
+    alertisotimestamp = isoformat()
+
+    messagetype = compactmessagetype(messagetype)
+    loginfo("received %s message." % messagetype)
+
+    value = json.loads(messagevalue.decode("UTF-8"))
+
+    eventorigin = "icecube"
+    eventprefix = "IceCube"
+    eventmessenger = "neutrino"
+    
+    if value["pipeline"] == "Gold Track Alert":
+        eventtype = "icecubegoldtrack"
+        eventclass = "track"
+        eventsuffix = "gold"
+    elif value["pipeline"] == "Bronze Track Alert":
+        eventtype = "icecubebronzetrack"
+        eventclass = "track"
+        eventsuffix = "bronze"
+    elif value["pipeline"] == "Cascade Alert":
+        eventtype = "icecubecascade"
+        eventclass = "cascade"
+        eventsuffix = "cascade"
+    else:
+        eventtype = "icecubeunknown"
+        eventclass = "unknown"
+        eventsuffix = "casunknowncade"
+
+    eventidentifier = value["id"][0]
+
+    eventisotimestamp = parseisoformat(value["trigger_time"])
+
+    eventalpha = "%.4fd" % float(value["ra"])
+    eventdelta = "%+.4fd" % float(value["dec"])
+    eventequinox = "2000"
+    eventuncertainty = "%.4fd" % float(value["ra_dec_error"])
+
+    far = float(value["far"]) * 60 * 60 * 24 * 365
+    logsummary("%s: far is %.2f per year." % (eventtype, far))
+
+    signalness = float(value["p_astro"])
+    logsummary("%s: signalness is %.3f." % (eventtype, signalness))
+
+    if eventtype == "icecubegoldtrack":
+        eventenabled = True
+    elif eventtype == "icecubebronzetrack":
+        signalnessthreshhold = 0.50
+        if signalness >= signalnessthreshhold:
+            logsummary(
+                "%s: signalness is at or above the threshold of %.3f."
+                % (eventtype, signalnessthreshhold)
+            )
+            eventenabled = True
+        else:
+            logsummary(
+                "%s: signalness is below the threshold of %.3f."
+                % (eventtype, signalnessthreshhold)
+            )
             eventenabled = False
     else:
         eventenabled = False
@@ -573,6 +670,7 @@ def handlesvommessage(messagetype, messagevalue):
 
     eventorigin = "svom"
     eventprefix = "SVOM"
+    eventsuffix = ""
     eventclass = "grb"
     eventmessenger = "electromagnetic"
 
@@ -678,6 +776,7 @@ def handleeinsteinprobemessage(messagetype, messagevalue):
     eventtype = messagetype
     eventisotimestamp = parseisoformat(value["trigger_time"])
     eventprefix = "EP"
+    eventsuffix = ""
     eventalpha = "%.4fd" % value["ra"]
     eventdelta = "%+.4fd" % value["dec"]
     eventequinox = "2000"
@@ -731,9 +830,7 @@ if testing:
     # https://github.com/nasa-gcn/gcn-kafka-python/blob/main/README.md
     consumerconfig = {"auto.offset.reset": "earliest"}
     topics = [
-        "gcn.classic.voevent.ICECUBE_ASTROTRACK_BRONZE",
-        "gcn.classic.voevent.ICECUBE_ASTROTRACK_GOLD",
-        "gcn.classic.voevent.ICECUBE_CASCADE",
+        "gcn.notices.icecube.gold_bronze_track_alerts",
     ]
 else:
     consumerconfig = {}
@@ -743,6 +840,16 @@ else:
         "gcn.notices.svom.voevent.eclairs",
         "gcn.notices.svom.voevent.mxt",
         "gcn.notices.einstein_probe.wxt.alert",
+        # IceCube. We used to use the gcn.classic streams for both tracks and
+        # cascade events. However, tracks are now distributed via a gcn.notices
+        # stream (https://gcn.nasa.gov/circulars/43419) and the gcn.classic
+        # stream will cease at some point. It is not clear to me what the plans
+        # are for cascade events. We currently use the gcn.notices stream for
+        # tracks and the gcn.classic stream for cascades.
+        "gcn.notices.icecube.gold_bronze_track_alerts",
+        # "gcn.classic.voevent.ICECUBE_ASTROTRACK_BRONZE",
+        # "gcn.classic.voevent.ICECUBE_ASTROTRACK_GOLD",
+        "gcn.classic.voevent.ICECUBE_CASCADE",
         "gcn.classic.voevent.SWIFT_ACTUAL_POINTDIR",
         # "gcn.classic.voevent.SWIFT_BAT_ALARM_LONG",
         # "gcn.classic.voevent.SWIFT_BAT_ALARM_SHORT",
@@ -841,8 +948,10 @@ while True:
             handleheartbeatmessage(messagetype, messagevalue)
         elif messagetype.startswith("gcn.classic.voevent.SWIFT"):
             handleswiftmessage(messagetype, messagevalue)
-        elif messagetype.startswith("gcn.classic.voevent.ICECUBE"):
+        elif messagetype.startswith("gcn.notices.icecube.gold_bronze_track_alerts"):
             handleicecubemessage(messagetype, messagevalue)
+        elif messagetype.startswith("gcn.classic.voevent.ICECUBE"):
+            handleclassicicecubemessage(messagetype, messagevalue)
         elif messagetype.startswith("gcn.classic.voevent.MAXI"):
             handlemaximessage(messagetype, messagevalue)
         elif messagetype.startswith("gcn.classic.voevent.FERMI"):
