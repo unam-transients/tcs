@@ -79,7 +79,7 @@ namespace eval "supervisor" {
   proc sendchat {category message} {
     log::info "sending $category message \"$message\"."
     if {[catch {
-      exec "[directories::prefix]/bin/tcs" "sendchat" "$category" "$message"
+      exec "[directories::prefix]/bin/tcs" "sendchat" "$category" "$message" &
     }]} {
       log::warning "unable to send $category message \"$message\"."
     }
