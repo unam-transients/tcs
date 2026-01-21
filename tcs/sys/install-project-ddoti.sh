@@ -63,7 +63,7 @@ sudo mv /etc/hosts.tmp /etc/hosts
 # crontab
 
 (
-  echo 'PATH=/usr/local/bin:/usr/bin:/bin'
+  echo 'PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin'
   echo 'MAILTO=""'
 
   cat <<"EOF"
@@ -83,10 +83,6 @@ sudo mv /etc/hosts.tmp /etc/hosts
 *     *  *  *  *   tcs checkreboot
 *     *  *  *  *   tcs checkrestart
 *     *  *  *  *   tcs checkhalt
-
-00    *  *  *  *   rsync -aH --exclude="*.tmp" --exclude="*.jpg" --exclude="*.fits" --exclude="*.fits.*" /usr/local/var/tcs/ rsync://oan-rsync/ddoti-raw/
-01-59 *  *  *  *   rsync -aH --exclude="*.tmp" --exclude="debug*.txt" --include="*.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://oan-rsync/ddoti-raw/
-*      *  *  *  *  rsync -aH --remove-source-files --exclude="*.tmp" --include="*.fits.*" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://oan-rsync/ddoti-raw/
 
 EOF
   
@@ -190,6 +186,10 @@ EOF
   esac
 
   echo "service rsync start"
+
+  echo "tcs loop -d 600 'rsync -aH --exclude=\"*.tmp\" --exclude=\"*.jpg\" --exclude=\"*.fits\" --exclude=\"*.fits.*\" /usr/local/var/tcs/ rsync://oan-rsync/ddoti-raw/' &"
+  echo "tcs loop -d 60  'rsync -aH --exclude=\"*.tmp\" --exclude=\"debug*.txt\" --include=\"*.txt\" --include=\"*/\" --exclude=\"*\" /usr/local/var/tcs/ rsync://oan-rsync/ddoti-raw/' &"
+  echo "tcs loop -d 10  'rsync -aH --exclude=\"*.tmp\" --include=\"*.fits.*\" --include=\"*/\" --exclude=\"*\" --remove-source-files /usr/local/var/tcs/ rsync://oan-rsync/ddoti-raw/' &"
 
   echo "tcs startserver -A &"
   

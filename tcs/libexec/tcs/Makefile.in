@@ -62,6 +62,7 @@ installbins         :=            \
 	instrumentimageserver         \
 	instrumentserver              \
 	lightsserver                  \
+	loop                          \
 	loadblocks                    \
 	log                           \
 	logsensors                    \

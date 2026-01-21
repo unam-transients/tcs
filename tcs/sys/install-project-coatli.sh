@@ -86,10 +86,6 @@ sudo mv /etc/hosts.tmp /etc/hosts
 *     *  *  *  *   tcs checkrestart
 *     *  *  *  *   tcs checkhalt
 
-00    *  *  *  *   rsync -aH --exclude="*.tmp" --exclude="*.jpg" --exclude="*.fits" --exclude="*.fits.*" /usr/local/var/tcs/ rsync://oan-rsync/coatli-raw/
-01-59 *  *  *  *   rsync -aH --exclude="*.tmp" --exclude="debug*.txt" --include="*.txt" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://oan-rsync/coatli-raw/
-*      *  *  *  *  rsync -aH --remove-source-files --exclude="*.tmp" --include="*.fits.*" --include="*/" --exclude="*" /usr/local/var/tcs/ rsync://oan-rsync/coatli-raw/
-
 EOF
 
   case $host in
@@ -187,6 +183,10 @@ EOF
   
   echo "service rsync start"
 
+  echo "tcs loop -d 600 'rsync -aH --exclude=\"*.tmp\" --exclude=\"*.jpg\" --exclude=\"*.fits\" --exclude=\"*.fits.*\" /usr/local/var/tcs/ rsync://oan-rsync/ddoti-raw/' &"
+  echo "tcs loop -d 60  'rsync -aH --exclude=\"*.tmp\" --exclude=\"debug*.txt\" --include=\"*.txt\" --include=\"*/\" --exclude=\"*\" /usr/local/var/tcs/ rsync://oan-rsync/ddoti-raw/' &"
+  echo "tcs loop -d 10  'rsync -aH --exclude=\"*.tmp\" --include=\"*.fits.*\" --include=\"*/\" --exclude=\"*\" --remove-source-files /usr/local/var/tcs/ rsync://oan-rsync/ddoti-raw/' &"
+  olib
   echo "tcs startserver -A &"
   
   echo "sleep 10"
