@@ -45,7 +45,6 @@
  "supervisor"         : { "host": "control"   , "port": 5020 },
  "lights"             : { "host": "control"   , "port": 5021 },
  "dome"               : { "host": "control"   , "port": 5022 },
- "power"              : { "host": "control"   , "port": 5023 },
  "louvers"            : { "host": "control"   , "port": 5024 },
  "seeing"             : { "host": "control"   , "port": 5025 },
  "fans"               : { "host": "control"   , "port": 5026 },
