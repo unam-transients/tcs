@@ -38,6 +38,7 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 192.168.100.17    qnap-prod               colibri-qnap-prod
 192.168.100.23    astelco-pc              colibri-astelco-pc opentsi
 192.168.100.23    astelco-mini-pc         colibri-astelco-mini-pc
+192.168.100.24    tequila                 colibri-tequila
 192.168.100.28    plc                     colibri-plc
 192.168.100.29    european-ups            colibri-european-ups
 192.168.100.30    american-ups            colibri-american-ups
@@ -107,7 +108,7 @@ EOF
 *      *  *  *  *  tcs updateseeingfiles-colibri
 *      *  *  *  *  tcs request plc special updateweather
 
-*      *  *  *  *  sleep 10; tcs updatesensorsfiles control instrument
+*      *  *  *  *  sleep 10; tcs updatesensorsfiles control instrument tequila
 */5    *  *  *  *  tcs logsensors
 
 *      *  *  *  *  cd /usr/local/var/www/tcs/; sh plots.sh >plots.txt 2>&1
