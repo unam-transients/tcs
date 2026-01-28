@@ -74,8 +74,8 @@ colibri-ddrago)
   allargs="C1 C2 1 instrument"
   ALLARGS=""
   ;;
-tequila-detector)
-  allargs="log 1 html 1 C0"
+colibri-tequila)
+  allargs="C3"
   ALLARGS=""
   ;;
 *)

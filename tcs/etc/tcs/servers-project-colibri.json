@@ -51,5 +51,6 @@
  "fans"               : { "host": "control"   , "port": 5026 },
  "gcntan"             : { "host": "control"   , "port": 5027 },
  "C2"                 : { "host": "ddrago"    , "port": 5028 },
- "watchdog"           : { "host": "control"   , "port": 5029 }
+ "watchdog"           : { "host": "control"   , "port": 5029 },
+ "C3"                 : { "host": "tequila"   , "port": 5030 }
 }

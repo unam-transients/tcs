@@ -91,9 +91,11 @@ installs_project_colibri	:=		     \
 	C0-project-colibri.html  	      	 \
 	C1-project-colibri.html  	      	 \
 	C2-project-colibri.html  	      	 \
+	C3-project-colibri.html  	      	 \
 	C0-focuswitness-project-colibri.html \
 	C1-focuswitness-project-colibri.html \
 	C2-focuswitness-project-colibri.html \
+	C3-focuswitness-project-colibri.html \
 	config-project-colibri.js	         \
 	observations-project-colibri.html    \
 	operations-project-colibri.html      \

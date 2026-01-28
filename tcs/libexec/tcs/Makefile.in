@@ -137,6 +137,7 @@ installbins_project_colibri :=    \
 	C0server                      \
 	C1server                      \
 	C2server                      \
+	C3server                      \
 	louversserver                 \
 	plcserver                     \
 	secondaryserver               \
