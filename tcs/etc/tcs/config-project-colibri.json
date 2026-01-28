@@ -765,7 +765,7 @@
       },
       "ogse-external-temperature": {
         "keyword": "OETM",
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.A493A0000000/temperature",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/26.A493A0000000/temperature",
         "prettyname": "ogse external temperature",
         "subsystem": "ogse",
         "component": "close-electronics",
@@ -778,7 +778,7 @@
         "firmware": ""
       },
       "ddrago-external-temperature": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/7E.983100001000/EDS0068/temperature",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/7E.983100001000/EDS0068/temperature",
         "keyword": "DETM",
         "prettyname": "ddrago external temperature",
         "subsystem": "ddrago",
@@ -957,7 +957,7 @@
         "firmware": ""
       },
       "ddrago-close-electronics-temperature": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.E9AE1A020000/temperature",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/26.E9AE1A020000/temperature",
         "keyword": "DCTM",
         "prettyname": "ddrago close electronics temperature",
         "subsystem": "ddrago",
@@ -971,7 +971,7 @@
         "firmware": ""
       },
       "ddrago-internal-es3-temperature": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.EEB51A020000/temperature",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/26.EEB51A020000/temperature",
         "keyword": "D3TM",
         "prettyname": "ddrago internal es3 temperature",
         "subsystem": "ddrago",
@@ -985,7 +985,7 @@
         "firmware": ""
       },
       "ddrago-internal-es4-temperature": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.5A971A020000/temperature",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/26.5A971A020000/temperature",
         "keyword": "D4TM",
         "prettyname": "ddrago internal es4 temperature",
         "subsystem": "ddrago",
@@ -999,7 +999,7 @@
         "firmware": ""
       },
       "ddrago-internal-es5-temperature": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.BCB01A020000/temperature",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/26.BCB01A020000/temperature",
         "keyword": "D5TM",
         "prettyname": "ddrago internal es5 temperature",
         "subsystem": "ddrago",
@@ -1013,7 +1013,7 @@
         "firmware": ""
       },
       "ddrago-external-tunnel-temperature": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.6985E1010000/temperature",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/26.6985E1010000/temperature",
         "keyword": "DTTM",
         "prettyname": "ddrago external tunnel temperature",
         "subsystem": "ddrago",
@@ -1027,7 +1027,7 @@
         "firmware": ""
       },
       "column-middle-temperature": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.09FCD6010000/temperature",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/26.09FCD6010000/temperature",
         "keyword": "CMTM",
         "prettyname": "column middle temperature",
         "subsystem": "building",
@@ -1041,7 +1041,7 @@
         "firmware": ""
       },
       "column-bottom-temperature": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.47A740010000/temperature",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/26.47A740010000/temperature",
         "keyword": "CBTM",
         "prettyname": "column bottom temperature",
         "subsystem": "building",
@@ -1055,7 +1055,7 @@
         "firmware": ""
       },
       "control-room-temperature": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.7539F5000000/temperature",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/26.7539F5000000/temperature",
         "keyword": "CRTM",
         "prettyname": "control room temperature",
         "subsystem": "building",
@@ -1069,7 +1069,7 @@
         "firmware": ""
       },
       "ddrago-bdsc-external-temperature": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.C7961A020000/temperature",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/26.C7961A020000/temperature",
         "prettyname": "blue detector service cabinet external temperature",
         "subsystem": "building",
         "component": "control-room",
@@ -1082,7 +1082,7 @@
         "firmware": ""
       },
       "ddrago-bdsc-internal-temperature": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.15971A020000/temperature",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/26.15971A020000/temperature",
         "prettyname": "blue detector service cabinet internal temperature",
         "subsystem": "building",
         "component": "control-room",
@@ -1095,7 +1095,7 @@
         "firmware": ""
       },
       "ddrago-rdsc-external-temperature": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.FE7D1A020000/temperature",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/26.FE7D1A020000/temperature",
         "prettyname": "red detector service cabinet external temperature",
         "subsystem": "building",
         "component": "control-room",
@@ -1108,7 +1108,7 @@
         "firmware": ""
       },
       "ddrago-rdsc-internal-temperature": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.F3961A020000/temperature",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/26.F3961A020000/temperature",
         "prettyname": "red detector service cabinet internal temperature",
         "subsystem": "building",
         "component": "control-room",
@@ -1222,7 +1222,7 @@
         "firmware": ""
       },
       "ogse-external-humidity": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.A493A0000000/HIH4000/humidity",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/26.A493A0000000/HIH4000/humidity",
         "prettyname": "ogse external humidity",
         "subsystem": "ogse",
         "component": "close-electronics",
@@ -1235,7 +1235,7 @@
         "firmware": ""
       },
       "ddrago-external-humidity": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/7E.983100001000/EDS0068/humidity",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/7E.983100001000/EDS0068/humidity",
         "prettyname": "ddrago external humidity",
         "subsystem": "ddrago",
         "component": "close-electronics",
@@ -1249,7 +1249,7 @@
         "firmware": ""
       },
       "ddrago-close-electronics-humidity": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.E9AE1A020000/HIH4000/humidity",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/26.E9AE1A020000/HIH4000/humidity",
         "prettyname": "ddrago close electronics humidity",
         "subsystem": "ddrago",
         "component": "close electronics",
@@ -1262,7 +1262,7 @@
         "firmware": ""
       },
       "ddrago-internal-es3-humidity": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.EEB51A020000/HIH4000/humidity",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/26.EEB51A020000/HIH4000/humidity",
         "prettyname": "ddrago internal es3 humidity",
         "subsystem": "ddrago",
         "component": "main structure",
@@ -1275,7 +1275,7 @@
         "firmware": ""
       },
       "ddrago-internal-es4-humidity": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.5A971A020000/HIH4000/humidity",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/26.5A971A020000/HIH4000/humidity",
         "prettyname": "ddrago internal es4 humidity",
         "subsystem": "ddrago",
         "component": "main structure",
@@ -1288,7 +1288,7 @@
         "firmware": ""
       },
       "ddrago-internal-es5-humidity": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.BCB01A020000/HIH4000/humidity",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/26.BCB01A020000/HIH4000/humidity",
         "prettyname": "ddrago internal es5 humidity",
         "subsystem": "ddrago",
         "component": "main structure",
@@ -1301,7 +1301,7 @@
         "firmware": ""
       },
       "ddrago-external-tunnel-humidity": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.6985E1010000/HIH4000/humidity",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/26.6985E1010000/HIH4000/humidity",
         "prettyname": "ddrago external tunnel humidity",
         "subsystem": "ddrago",
         "component": "main structure",
@@ -1470,7 +1470,7 @@
         "firmware": ""
       },
       "ogse-external-light-level": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.B5A940010000/VAD",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/26.B5A940010000/VAD",
         "prettyname": "ogse external light level",
         "subsystem": "ogse",
         "component": "close-electronics",
@@ -1482,7 +1482,7 @@
         "firmware": ""
       },
       "ddrago-external-light-level": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/7E.983100001000/EDS0068/light",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/7E.983100001000/EDS0068/light",
         "prettyname": "ddrago external light level",
         "subsystem": "ddrago",
         "component": "close-electronics",
@@ -1494,7 +1494,7 @@
         "firmware": ""
       },
       "control-room-light-level": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.7539F5000000/VAD",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/26.7539F5000000/VAD",
         "prettyname": "control room light level",
         "subsystem": "building",
         "component": "control-room",
@@ -1506,7 +1506,7 @@
         "firmware": ""
       },
       "ddrago-external-pressure": {
-        "file": "/usr/local/var/tcs/sensors/instrument/ow/7E.983100001000/EDS0068/pressure",
+        "file": "/usr/local/var/tcs/sensors/ddrago/ow/7E.983100001000/EDS0068/pressure",
         "prettyname": "ddrago external pressure",
         "subsystem": "ddrago",
         "component": "close-electronics",
@@ -1529,11 +1529,23 @@
         "identifier": "",
         "firmware": ""
       },
-      "host-instrument-load": {
-        "file": "/usr/local/var/tcs/sensors/instrument/load",
-        "prettyname": "load on host instrument",
+      "host-ddrago-load": {
+        "file": "/usr/local/var/tcs/sensors/ddrago/load",
+        "prettyname": "load on host ddrago",
         "subsystem": "control-system",
-        "component": "host-instrument",
+        "component": "host-ddrago",
+        "group": "host-load",
+        "type": "float",
+        "unit": "processes",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-tequila-load": {
+        "file": "/usr/local/var/tcs/sensors/tequila/load",
+        "prettyname": "load on host tequila",
+        "subsystem": "control-system",
+        "component": "host-tequila",
         "group": "host-load",
         "type": "float",
         "unit": "processes",
@@ -1553,11 +1565,23 @@
         "identifier": "",
         "firmware": ""
       },
-      "host-instrument-disk-space-used": {
-        "file": "/usr/local/var/tcs/sensors/instrument/disk-space-used",
-        "prettyname": "relative disk space used on host instrument",
+      "host-ddrago-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/ddrago/disk-space-used",
+        "prettyname": "relative disk space used on host ddrago",
         "subsystem": "control-system",
-        "component": "host-instrument",
+        "component": "host-ddrago",
+        "group": "host-disk-space",
+        "type": "float",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "host-tequila-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/tequila/disk-space-used",
+        "prettyname": "relative disk space used on host tequila",
+        "subsystem": "control-system",
+        "component": "host-tequila",
         "group": "host-disk-space",
         "type": "float",
         "unit": "",
@@ -1566,7 +1590,7 @@
         "firmware": ""
       },
       "C0-detector-detector-temperature": {
-        "file": "/usr/local/var/tcs/sensors/instrument/C0-detector-detector-temperature",
+        "file": "/usr/local/var/tcs/sensors/ddrago/C0-detector-detector-temperature",
         "prettyname": "C0 detector temperature",
         "subsystem": "ogse",
         "component": "C0-detector",
@@ -1578,7 +1602,7 @@
         "firmware": ""
       },
       "C0-detector-cooler-set-temperature": {
-        "file": "/usr/local/var/tcs/sensors/instrument/C0-detector-cooler-set-temperature",
+        "file": "/usr/local/var/tcs/sensors/ddrago/C0-detector-cooler-set-temperature",
         "prettyname": "C0 cooler set temperature",
         "subsystem": "ogse",
         "component": "C0-detector",
@@ -1590,7 +1614,7 @@
         "firmware": ""
       },
       "C0-detector-cooler-state": {
-        "file": "/usr/local/var/tcs/sensors/instrument/C0-detector-cooler-state",
+        "file": "/usr/local/var/tcs/sensors/ddrago/C0-detector-cooler-state",
         "prettyname": "C0 cooler state",
         "subsystem": "ogse",
         "component": "C0-detector",
@@ -1602,7 +1626,7 @@
         "firmware": ""
       },
       "C0-filter-wheel-position": {
-        "file": "/usr/local/var/tcs/sensors/instrument/C0-filter-wheel-position",
+        "file": "/usr/local/var/tcs/sensors/ddrago/C0-filter-wheel-position",
         "prettyname": "C0 filter wheel position",
         "subsystem": "ogse",
         "component": "C0-filter-wheel",
@@ -1614,7 +1638,7 @@
         "firmware": ""
       },
       "C1-detector-detector-temperature": {
-        "file": "/usr/local/var/tcs/sensors/instrument/C1-detector-detector-temperature",
+        "file": "/usr/local/var/tcs/sensors/ddrago/C1-detector-detector-temperature",
         "prettyname": "C1 detector temperature",
         "subsystem": "ddrago",
         "component": "C1-detector",
@@ -1626,7 +1650,7 @@
         "firmware": ""
       },
       "C1-detector-cooler-set-temperature": {
-        "file": "/usr/local/var/tcs/sensors/instrument/C1-detector-cooler-set-temperature",
+        "file": "/usr/local/var/tcs/sensors/ddrago/C1-detector-cooler-set-temperature",
         "prettyname": "C1 cooler set temperature",
         "subsystem": "ddrago",
         "component": "C1-detector",
@@ -1638,7 +1662,7 @@
         "firmware": ""
       },
       "C1-detector-cooler-state": {
-        "file": "/usr/local/var/tcs/sensors/instrument/C1-detector-cooler-state",
+        "file": "/usr/local/var/tcs/sensors/ddrago/C1-detector-cooler-state",
         "prettyname": "C1 cooler state",
         "subsystem": "ddrago",
         "component": "C1-detector",
@@ -1650,7 +1674,7 @@
         "firmware": ""
       },
       "C1-filter-wheel-position": {
-        "file": "/usr/local/var/tcs/sensors/instrument/C1-filter-wheel-position",
+        "file": "/usr/local/var/tcs/sensors/ddrago/C1-filter-wheel-position",
         "prettyname": "C1 filter wheel position",
         "subsystem": "ddrago",
         "component": "C1-filter-wheel",
@@ -1662,7 +1686,7 @@
         "firmware": ""
       },
       "C2-detector-detector-temperature": {
-        "file": "/usr/local/var/tcs/sensors/instrument/C2-detector-detector-temperature",
+        "file": "/usr/local/var/tcs/sensors/ddrago/C2-detector-detector-temperature",
         "prettyname": "C2 detector temperature",
         "subsystem": "ddrago",
         "component": "C2-detector",
@@ -1674,7 +1698,7 @@
         "firmware": ""
       },
       "C2-detector-cooler-set-temperature": {
-        "file": "/usr/local/var/tcs/sensors/instrument/C2-detector-cooler-set-temperature",
+        "file": "/usr/local/var/tcs/sensors/ddrago/C2-detector-cooler-set-temperature",
         "prettyname": "C2 cooler set temperature",
         "subsystem": "ddrago",
         "component": "C2-detector",
@@ -1686,7 +1710,7 @@
         "firmware": ""
       },
       "C2-detector-cooler-state": {
-        "file": "/usr/local/var/tcs/sensors/instrument/C2-detector-cooler-state",
+        "file": "/usr/local/var/tcs/sensors/ddrago/C2-detector-cooler-state",
         "prettyname": "C2 cooler state",
         "subsystem": "ddrago",
         "component": "C2-detector",
@@ -1698,10 +1722,58 @@
         "firmware": ""
       },
       "C2-filter-wheel-position": {
-        "file": "/usr/local/var/tcs/sensors/instrument/C2-filter-wheel-position",
+        "file": "/usr/local/var/tcs/sensors/ddrago/C2-filter-wheel-position",
         "prettyname": "C2 filter wheel position",
         "subsystem": "ddrago",
         "component": "C2-filter-wheel",
+        "group": "filter-wheel-position",
+        "type": "string",
+        "unit": "",
+        "model": "",
+        "identifier": "",
+        "firmware": ""
+      },
+      "C3-detector-detector-temperature": {
+        "file": "/usr/local/var/tcs/sensors/tequila/C3-detector-detector-temperature",
+        "prettyname": "C3 detector temperature",
+        "subsystem": "tequila",
+        "component": "C3-detector",
+        "group": "detector-temperature",
+        "type": "float",
+        "unit": "C",
+        "model": "QHY1253",
+        "identifier": "QHY1253-a4e11cacf45d7aaeb",
+        "firmware": ""
+      },
+      "C3-detector-cooler-set-temperature": {
+        "file": "/usr/local/var/tcs/sensors/tequila/C3-detector-cooler-set-temperature",
+        "prettyname": "C3 cooler set temperature",
+        "subsystem": "tequila",
+        "component": "C3-detector",
+        "group": "detector-cooler-set-temperature",
+        "type": "float",
+        "unit": "C",
+        "model": "QHY1253",
+        "identifier": "QHY1253-a4e11cacf45d7aaeb",
+        "firmware": ""
+      },
+      "C3-detector-cooler-state": {
+        "file": "/usr/local/var/tcs/sensors/tequila/C3-detector-cooler-state",
+        "prettyname": "C3 cooler state",
+        "subsystem": "tequila",
+        "component": "C3-detector",
+        "group": "detector-cooler-state",
+        "type": "string",
+        "unit": "state",
+        "model": "QHY1253",
+        "identifier": "QHY1253-a4e11cacf45d7aaeb",
+        "firmware": ""
+      },
+      "C3-filter-wheel-position": {
+        "file": "/usr/local/var/tcs/sensors/tequila/C3-filter-wheel-position",
+        "prettyname": "C3 filter wheel position",
+        "subsystem": "tequila",
+        "component": "C3-filter-wheel",
         "group": "filter-wheel-position",
         "type": "string",
         "unit": "",
