@@ -47,7 +47,7 @@ installs_project_test	    	:=	\
 	filterwheeldummy.so
 endif
 
-ifeq ($(UNAME_N),tequila-detector)
+ifeq ($(UNAME_N),colibri-tequila)
 installs_project_tequila		:=	\
 	detectorqhy.so		      		\
 	detectordummy.so		      	\

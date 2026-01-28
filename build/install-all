@@ -7,7 +7,7 @@ coatli)
   hosts="control instrument platform"
   ;;
 colibri)
-  hosts="control instrument"
+  hosts="control ddrago tequila"
   ;;
 ddoti)
   hosts="control detectors0 detectors1 platform"

@@ -52,7 +52,7 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 192.168.100.53    sparepdu                colibri-sparepdu
 192.168.100.54    control                 colibri-control
 192.168.100.55    rsync                   colibri-rsync
-192.168.100.56    instrument              colibri-instrument
+192.168.100.56    ddrago                  colibri-ddrago
 192.168.100.57    host0                   colibri-host0
 192.168.100.58    host1                   colibri-host1
 192.168.100.59    host2                   colibri-host2
@@ -108,7 +108,7 @@ EOF
 *      *  *  *  *  tcs updateseeingfiles-colibri
 *      *  *  *  *  tcs request plc special updateweather
 
-*      *  *  *  *  sleep 10; tcs updatesensorsfiles control instrument tequila
+*      *  *  *  *  sleep 10; tcs updatesensorsfiles control ddrago tequila
 */5    *  *  *  *  tcs logsensors
 
 *      *  *  *  *  cd /usr/local/var/www/tcs/; sh plots.sh >plots.txt 2>&1
@@ -161,7 +161,7 @@ EOF
   echo "done"  
 
   case $host in
-  instrument)
+  ddrago)
     echo "owserver -d /dev/ttyFTDI-ow-ddrago-close-electronics -d /dev/ttyFTDI-ow-ddrago-control-room -d /dev/ttyFTDI-ow-ogse"
     echo "tcs instrumentimageserver C0 control &"
     echo "tcs instrumentimageserver C1 control &"
