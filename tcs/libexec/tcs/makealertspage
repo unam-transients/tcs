@@ -7,6 +7,9 @@ import json
 import re
 import math
 import platform
+import urllib.parse
+
+import astropy.coordinates
 
 if platform.node().startswith("coatli"):
     project = "coatli"
@@ -22,6 +25,8 @@ else:
 
 htmlfilename = "/usr/local/var/www/tcs/alerts.html"
 jsonfilename = "/usr/local/var/tcs/alerts.json"
+alertpagesdirectorypath = "/usr/local/var/www/tcs/alertpages/"
+
 
 htmlfile = open(htmlfilename, "w")
 
@@ -337,14 +342,32 @@ nalertstableinitialcolumns = 13
 
 def writealertstable(alerts, name):
     if len(alerts) == 0:
-        writehtml('<tr><th colspan="%d">No %s</th></tr>' % (nalertstablecolumns, name))
+        writehtml(
+            '<tr><th colspan="%d" style="text-align:center">No %s</th></tr>'
+            % (nalertstablecolumns, name)
+        )
         writehtml('<tr><td colspan="%d"><hr/></td></tr>' % nalertstablecolumns)
         return
     else:
-        writehtml('<tr><th colspan="%d" style="text-align:center">%s</th></tr>' % (nalertstablecolumns, name))
+        writehtml(
+            '<tr><th colspan="%d" style="text-align:center">%s</th></tr>'
+            % (nalertstablecolumns, name)
+        )
         writehtml('<tr><td colspan="%d"><hr/></td></tr>' % nalertstablecolumns)
-        writehtml('<tr><th colspan="%d"></th><th colspan="%d" style="text-align:center">Identifiers</th></tr>' % (nalertstableinitialcolumns, nalertstablecolumns - nalertstableinitialcolumns))
-        writehtml('<tr><td colspan="%d"></td><td colspan="%d"><hr/></td></tr>' % (nalertstableinitialcolumns, nalertstablecolumns - nalertstableinitialcolumns))
+        writehtml(
+            '<tr><th colspan="%d"></th><th colspan="%d" style="text-align:center">Identifiers</th></tr>'
+            % (
+                nalertstableinitialcolumns,
+                nalertstablecolumns - nalertstableinitialcolumns,
+            )
+        )
+        writehtml(
+            '<tr><td colspan="%d"></td><td colspan="%d"><hr/></td></tr>'
+            % (
+                nalertstableinitialcolumns,
+                nalertstablecolumns - nalertstableinitialcolumns,
+            )
+        )
         writehtml("<tr>")
         for text in [
             "Name",
@@ -409,7 +432,7 @@ def writealertstable(alerts, name):
                     writehtml("—")
                 elif key == "identifier":
                     writehtml(
-                        '<a href="alerts/%s">%s</a>'
+                        '<a href="alertpages/%s.html">%s</a>'
                         % (alert["identifier"], alert["identifier"])
                     )
                 elif key == "name":
@@ -430,6 +453,113 @@ def writealertstable(alerts, name):
                     writehtml(alert[key])
                 writehtml("</td>")
             writehtml("</tr>")
+
+            if not os.path.exists(alertpagesdirectorypath):
+                os.makedirs(alertpagesdirectorypath)
+
+            alertpagepath = os.path.join(
+                alertpagesdirectorypath, alert["identifier"] + ".html"
+            )
+            with open(alertpagepath, "w") as alertpagefile:
+
+                def writealertpage(s):
+                    print(s, file=alertpagefile)
+
+                writealertpage(
+                    """
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<link rel="stylesheet" href="../../style.css" type="text/css"/>
+<title>Alert: %s</title>
+</head>
+
+<body>
+
+<div id="title">
+<h1>Alert: %s</h1>
+<hr/>
+</div>
+
+<div id="body">
+<ul>
+                                   """
+                    % (alert["identifier"], alert["identifier"])
+                )
+
+                writealertpage(
+                    '<li><a href="../alerts/%s">Alert File</a></li>'
+                    % alert["identifier"]
+                )
+
+                writealertpage(
+                    "<li>Event Time: %s</li>" % formattimestamp(alert["eventtimestamp"])
+                )
+
+                alpha = astropy.coordinates.Angle(
+                    alert["alpha"], unit="hourangle"
+                ).degree
+                delta = astropy.coordinates.Angle(alert["delta"], unit="degree").degree
+
+                writealertpage(
+                    "<li>Position: %s %s</li>" % (alert["alpha"], alert["delta"])
+                )
+                writealertpage("<li>Position: %.5f %+.5f</li>" % (alpha, delta))
+                writealertpage("<li>Uncertainty: %s </li>" % (alert["uncertainty"]))
+
+                if alert["uncertainty"].endswith("as"):
+                    uncertainty = float(alert["uncertainty"][:-3]) / 3600
+                elif alert["uncertainty"].endswith("am"):
+                    uncertainty = float(alert["uncertainty"][:-3]) / 60
+                elif alert["uncertainty"].endswith("d"):
+                    uncertainty = float(alert["uncertainty"][:-2])
+                else:
+                    uncertainty = 0
+                writealertpage("<li>Uncertainty: %.5f </li>" % uncertainty)
+
+                lsviewerurl = "https://www.legacysurvey.org/viewer?ra=%.5f&dec=%.5f&pixscale=0.500"
+                lsfitsurl = "https://www.legacysurvey.org/viewer/cutout.fits?ra=%.5f&dec=%.5f&pixscale=0.38&bands=%s&size=1200"
+                writealertpage("<li>Legacy Survey<ul>")
+                writealertpage(
+                    '<li><a href="%s">Viewer</a></li>' % (lsviewerurl % (alpha, delta))
+                )
+                writealertpage(
+                    '<li><a href="%s">FITS g</a></li>'
+                    % (lsfitsurl % (alpha, delta, "g"))
+                )
+                writealertpage(
+                    '<li><a href="%s">FITS r</a></li>'
+                    % (lsfitsurl % (alpha, delta, "r"))
+                )
+                writealertpage(
+                    '<li><a href="%s">FITS i</a></li>'
+                    % (lsfitsurl % (alpha, delta, "i"))
+                )
+                writealertpage(
+                    '<li><a href="%s">FITS z</a></li>'
+                    % (lsfitsurl % (alpha, delta, "z"))
+                )
+                writealertpage("</ul></li>")
+
+                psviewerurl = "https://ps1images.stsci.edu/cgi-bin/ps1cutouts?pos=%s&filter=color&filter=g&filter=r&filter=i&filter=z&filter=y&filetypes=stack&auxiliary=data&size=1680&output_size=256&verbose=0&autoscale=99.500000&catlist="
+                pscoordinates = urllib.parse.quote("%.5f %+.5f" % (alpha, delta))
+                writealertpage("<li>PanSTARRS<ul>")
+                writealertpage(
+                    '<li><a href="%s">Viewer</a></li>' % (psviewerurl % (pscoordinates))
+                )
+                writealertpage("</ul></li>")
+
+
+                writealertpage(
+                    """
+</ul>
+</div>
+</body>
+</html>
+                                   """
+                )
 
 
 writehtml('<table class="alertstable">')
