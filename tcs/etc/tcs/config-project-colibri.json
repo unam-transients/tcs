@@ -584,7 +584,14 @@
       }
     },
     "outletgroupaddresses": {
-      "instrument": [
+      "ogse": [
+        [
+          "pdu0",
+          "a",
+          "1"
+        ]
+      ],
+      "tequila": [
         [
           "pdu0",
           "a",
