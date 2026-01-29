@@ -421,10 +421,10 @@
   "executor": {
     "type": "colibri",
     "instruments": [
-      "instrument",
+      "ddrago",
       "tequila"
     ],
-    "initialinstrument": "instrument"
+    "initialinstrument": "ddrago"
   },
   "fans": {
     "type": "plc"
@@ -445,13 +445,16 @@
   },
   "html": {
     "servers": [
+      "C1",
+      "C2",
+      "C3",
       "covers",
       "dome",
+      "ddrago",
       "executor",
       "fans",
       "gcn",
       "gcntan",
-      "instrument",
       "lights",
       "louvers",
       "moon",
@@ -469,13 +472,13 @@
       "telescope",
       "telescopecontroller",
       "tequila",
-      "C3",
       "watchdog",
       "weather"
     ]
   },
-  "instrument": {
+  "ddrago": {
     "detectors": [
+      "C0",
       "C1",
       "C2"
     ],
@@ -576,7 +579,6 @@
       "ogse": "port2",
       "tequila": "port2",
       "ddrago": "port3",
-      "instrument": "port3",
       "port2": "2",
       "port3": "3"
     },
@@ -2178,6 +2180,9 @@
   },
   "watchdog": {
     "monitoredservers": [
+      "C1",
+      "C2",
+      "C3",
       "covers",
       "dome",
       "executor",
@@ -2185,7 +2190,7 @@
       "gcn",
       "gcntan",
       "html",
-      "instrument",
+      "ddrago",
       "lights",
       "louvers",
       "moon",
@@ -2217,7 +2222,7 @@
   "dummy-html": {
     "servers": [
       "executor",
-      "instrument",
+      "ddrago",
       "lights",
       "moon",
       "power",

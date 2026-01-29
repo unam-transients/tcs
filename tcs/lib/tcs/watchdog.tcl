@@ -31,10 +31,7 @@ package provide "watchdog" 0.0
 
 namespace eval "watchdog" {
 
-  variable servers [concat \
-    [config::getvalue "watchdog" "monitoredservers"] \
-    [config::getvalue "instrument" "monitoreddetectors"] \
-  ]
+  variable servers [config::getvalue "watchdog" "monitoredservers"]
   variable problemtoleranceseconds [config::getvalue "watchdog" "problemtoleranceseconds"]
 
   ######################################################################

@@ -132,17 +132,18 @@ installbins_project_ddoti :=      \
 	updateweatherfiles-oan
 
 installbins_project_colibri :=    \
-    coversserver                  \
-    domeserver                    \
-	tequilaserver                 \
 	C0server                      \
 	C1server                      \
 	C2server                      \
 	C3server                      \
+    coversserver                  \
+    domeserver                    \
+	ddragoserver                  \
 	louversserver                 \
 	plcserver                     \
 	secondaryserver               \
 	telescopecontrollerserver     \
+	tequilaserver                 \
 	updateweatherfiles-oan        \
 	updateseeingfiles-colibri
 

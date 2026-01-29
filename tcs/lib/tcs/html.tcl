@@ -39,7 +39,6 @@ namespace eval "html" {
   variable servers [concat \
     { "html" } \
     [config::getvalue "html" "servers"] \
-    [config::getvalue "instrument" "monitoreddetectors"] \
   ]
 variable sensors                   [config::getvalue "sensors" "sensors"]
 variable powerhosts                [config::getvalue "power" "hosts"]
@@ -1089,6 +1088,10 @@ proc writetequila {} {
   writeinstrument "tequila"
 }
 
+proc writeddrago {} {
+  writeinstrument "ddrago"
+}
+
 proc writepower {} {
 
   variable powerhosts
@@ -1791,6 +1794,7 @@ proc writeinfo {} {
     C5                  {C5}
     covers              {Covers}
     dome                {Dome}
+    ddrago              {DDRAGO}
     enclosure           {Enclosure}
     executor            {Executor}
     fans                {Fans}
