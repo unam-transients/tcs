@@ -21,10 +21,23 @@
 
 ########################################################################
 
-package require "fans[config::getvalue "fans" "type"]"
 package require "config"
 package require "log"
 package require "server"
+
+set fanstype [config::getvalue "fans" "type"]
+switch -exact $fanstype {
+  "gpio" {
+    package require "fansgpio"
+  }
+  "plc" {
+    package require "fansplc"
+  }
+  default {
+    error "invalid fans type \"$fanstype\"."
+  }
+}
+
 
 package provide "fansserver" 0.0
 
