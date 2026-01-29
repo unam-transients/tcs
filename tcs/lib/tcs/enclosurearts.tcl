@@ -340,7 +340,7 @@ namespace eval "enclosure" {
     }
   }
   
-  proc checkformove {type} {
+  proc checkformove {} {
     checkremote
     if {![string equal [server::getdata "errorflag"] "ok"]} {
       error "the enclosure controller has an error."
@@ -352,7 +352,7 @@ namespace eval "enclosure" {
   }
   
   proc checkforopen {} {
-    checkformove "open"
+    checkformove
     checkrainsensor
   }
   
