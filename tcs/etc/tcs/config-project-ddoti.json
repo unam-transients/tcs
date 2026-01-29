@@ -1,9 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
-
 // This file is part of the UNAM telescope control system.
-
 ////////////////////////////////////////////////////////////////////////
-
 // Copyright © 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
 //
 // Permission to use, copy, modify, and distribute this software for any
@@ -18,9 +15,7 @@
 // PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 // TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 // PERFORMANCE OF THIS SOFTWARE.
-
 ////////////////////////////////////////////////////////////////////////
-
 {
   "C0": {
     "telescopedescription": "DDOTI 28-cm f/2.2",
@@ -29,7 +24,7 @@
     "detectorunbinnedpixelscale": "2.0as",
     "detectorreadmodes": {
       "initial": "default",
-      "closed" : "default",
+      "closed": "default",
       "default": "16MHz"
     },
     "detectorinitialsoftwaregain": "16",
@@ -77,10 +72,10 @@
     "filterwheeltype": "null",
     "filterwheelidentifier": "null",
     "filters": {
-      "w"      : "0",
+      "w": "0",
       "initial": "w",
-      "idle"   : "w",
-      "closed" : "w"
+      "idle": "w",
+      "closed": "w"
     },
     "focusertype": "celestron",
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:5:1.0",
@@ -105,7 +100,7 @@
     "detectorunbinnedpixelscale": "2.0as",
     "detectorreadmodes": {
       "initial": "default",
-      "closed" : "default",
+      "closed": "default",
       "default": "16MHz"
     },
     "detectorinitialsoftwaregain": "16",
@@ -153,10 +148,10 @@
     "filterwheeltype": "null",
     "filterwheelidentifier": "null",
     "filters": {
-      "w"      : "0",
+      "w": "0",
       "initial": "w",
-      "idle"   : "w",
-      "closed" : "w"
+      "idle": "w",
+      "closed": "w"
     },
     // Controller A (red)
     "focusertype": "ddoti",
@@ -181,7 +176,7 @@
     "detectorunbinnedpixelscale": "2.0as",
     "detectorreadmodes": {
       "initial": "default",
-      "closed" : "default",
+      "closed": "default",
       "default": "16MHz"
     },
     "detectorinitialsoftwaregain": "16",
@@ -229,10 +224,10 @@
     "filterwheeltype": "null",
     "filterwheelidentifier": "null",
     "filters": {
-      "w"      : "0",
+      "w": "0",
       "initial": "w",
-      "idle"   : "w",
-      "closed" : "w"
+      "idle": "w",
+      "closed": "w"
     },
     // Controller E (yellow)
     "focusertype": "ddoti",
@@ -257,7 +252,7 @@
     "detectorunbinnedpixelscale": "2.0as",
     "detectorreadmodes": {
       "initial": "default",
-      "closed" : "default",
+      "closed": "default",
       "default": "16MHz"
     },
     "detectorinitialsoftwaregain": "16",
@@ -305,10 +300,10 @@
     "filterwheeltype": "null",
     "filterwheelidentifier": "null",
     "filters": {
-      "w"      : "0",
+      "w": "0",
       "initial": "w",
-      "idle"   : "w",
-      "closed" : "w"
+      "idle": "w",
+      "closed": "w"
     },
     // Controller B (yellow)
     "focusertype": "ddoti",
@@ -333,7 +328,7 @@
     "detectorunbinnedpixelscale": "2.0as",
     "detectorreadmodes": {
       "initial": "default",
-      "closed" : "default",
+      "closed": "default",
       "default": "16MHz"
     },
     "detectorinitialsoftwaregain": "16",
@@ -381,10 +376,10 @@
     "filterwheeltype": "null",
     "filterwheelidentifier": "null",
     "filters": {
-      "w"      : "0",
+      "w": "0",
       "initial": "w",
-      "idle"   : "w",
-      "closed" : "w"
+      "idle": "w",
+      "closed": "w"
     },
     "focusertype": "ddoti",
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:8:1.0",
@@ -408,7 +403,7 @@
     "detectorunbinnedpixelscale": "2.0as",
     "detectorreadmodes": {
       "initial": "default",
-      "closed" : "default",
+      "closed": "default",
       "default": "16MHz"
     },
     "detectorinitialsoftwaregain": "16",
@@ -456,10 +451,10 @@
     "filterwheeltype": "null",
     "filterwheelidentifier": "null",
     "filters": {
-      "w"      : "0",
+      "w": "0",
       "initial": "w",
-      "idle"   : "w",
-      "closed" : "w"
+      "idle": "w",
+      "closed": "w"
     },
     "focusertype": "celestron",
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:5:1.0",
@@ -506,6 +501,12 @@
   },
   "html": {
     "servers": [
+      "C0",
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
       "enclosure",
       "executor",
       "gcn",
@@ -528,19 +529,40 @@
   },
   "instrument": {
     "detectors": [
-      "C0", "C1", "C2", "C3", "C4", "C5"
+      "C0",
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5"
     ],
     "monitoreddetectors": [
-      "C0", "C1", "C2", "C3", "C4", "C5"
+      "C0",
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5"
     ],
     "activedetectors": [
-      "C0", "C1", "C2", "C3", "C4", "C5"
+      "C0",
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5"
     ],
     "activefocusers": [
-      "C0", "C1", "C2", "C3", "C4", "C5"
+      "C0",
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5"
     ],
     "pointingdetectors": [
-      "C2", "C3"
+      "C2",
+      "C3"
     ],
     "outletgroups": []
   },
@@ -570,46 +592,46 @@
     "movingsettlingdelayseconds": "0",
     "trackingsettlingdelayseconds": "2",
     "trackingpositionerrorlimit": "1as",
-   // Pointing model from 20210315.
+    // Pointing model from 20210315.
     "pointingmodelparameters0": {
-      "IH":      "-0.006080",
-      "ID":      "-0.010572",
-      "CH":      "-0.001212",
-      "NP":      "+0.004468",
-      "MA":      "-0.002076",
-      "ME":      "-0.004217",
-      "TF":      "+0.000000",
-      "FO":      "+0.000000",
-      "DAF":     "+0.009734",
-      "HHSH":    "-0.002206",
-      "HHCH":    "+0.006720",
-      "HHSH2":   "+0.000120",
-      "HHCH2":   "-0.000064",
-      "HDSD":    "+0.000381",
-      "HDCD":    "+0.000813",
-      "HDSD2":   "-0.000549",
-      "HDCD2":   "-0.000068",
-      "DICD":    "+0.000400"
+      "IH": "-0.006080",
+      "ID": "-0.010572",
+      "CH": "-0.001212",
+      "NP": "+0.004468",
+      "MA": "-0.002076",
+      "ME": "-0.004217",
+      "TF": "+0.000000",
+      "FO": "+0.000000",
+      "DAF": "+0.009734",
+      "HHSH": "-0.002206",
+      "HHCH": "+0.006720",
+      "HHSH2": "+0.000120",
+      "HHCH2": "-0.000064",
+      "HDSD": "+0.000381",
+      "HDCD": "+0.000813",
+      "HDSD2": "-0.000549",
+      "HDCD2": "-0.000068",
+      "DICD": "+0.000400"
     },
-      "pointingmodelparameters180": {
-      "IH":      "-0.009044",
-      "ID":      "+0.009819",
-      "CH":      "+0.001139",
-      "NP":      "+0.001506",
-      "MA":      "-0.002322",
-      "ME":      "-0.003847",
-      "TF":      "+0.000000",
-      "FO":      "+0.000000",
-      "DAF":     "+0.001592",
-      "HHSH":    "-0.002739",
-      "HHCH":    "+0.003159",
-      "HHSH2":   "+0.000303",
-      "HHCH2":   "+0.000059",
-      "HDSD":    "+0.000396",
-      "HDCD":    "+0.000983",
-      "HDSD2":   "-0.000375",
-      "HDCD2":   "-0.000225",
-      "DICD":    "+0.000387"
+    "pointingmodelparameters180": {
+      "IH": "-0.009044",
+      "ID": "+0.009819",
+      "CH": "+0.001139",
+      "NP": "+0.001506",
+      "MA": "-0.002322",
+      "ME": "-0.003847",
+      "TF": "+0.000000",
+      "FO": "+0.000000",
+      "DAF": "+0.001592",
+      "HHSH": "-0.002739",
+      "HHCH": "+0.003159",
+      "HHSH2": "+0.000303",
+      "HHCH2": "+0.000059",
+      "HDSD": "+0.000396",
+      "HDCD": "+0.000983",
+      "HDSD2": "-0.000375",
+      "HDCD2": "-0.000225",
+      "DICD": "+0.000387"
     },
     "maxcorrection": "3.0d"
   },
@@ -627,15 +649,63 @@
       }
     },
     "outletgroupaddresses": {
-      "firewall":           [["ibb-127", "a", "5"]],
-      "access":             [["ibb-127", "a", "2"]],
-      "control":            [["ibb-127", "a", "7"]],
-      "mount":              [["ibb-127", "a", "4"]],
-      "serial":             [["ibb-127", "a", "8"]],
-      "enclosure":          [["ibb-220", "a", "1"]],
-      "platform":           [["ibb-127", "a", "1"]],
-      "instrument":         [["ibb-127", "a", "3"]]
-    } 
+      "firewall": [
+        [
+          "ibb-127",
+          "a",
+          "5"
+        ]
+      ],
+      "access": [
+        [
+          "ibb-127",
+          "a",
+          "2"
+        ]
+      ],
+      "control": [
+        [
+          "ibb-127",
+          "a",
+          "7"
+        ]
+      ],
+      "mount": [
+        [
+          "ibb-127",
+          "a",
+          "4"
+        ]
+      ],
+      "serial": [
+        [
+          "ibb-127",
+          "a",
+          "8"
+        ]
+      ],
+      "enclosure": [
+        [
+          "ibb-220",
+          "a",
+          "1"
+        ]
+      ],
+      "platform": [
+        [
+          "ibb-127",
+          "a",
+          "1"
+        ]
+      ],
+      "instrument": [
+        [
+          "ibb-127",
+          "a",
+          "3"
+        ]
+      ]
+    }
   },
   "safetyswitch": {
     "type": "arts"
@@ -643,15 +713,15 @@
   "selector": {
     "priorities": {
       "*-*-electromagnetic/gravitational/*": 2,
-      "*-*-electromagnetic/*/neutrino"     : 2,
-      "*-*-*/gravitational/neutrino"       : 2,
-      "lvc*-*"          : 4,
-      "fermilat*-*"     : 5,
-      "fermigbm*-sgrb"  : 6,
+      "*-*-electromagnetic/*/neutrino": 2,
+      "*-*-*/gravitational/neutrino": 2,
+      "lvc*-*": 4,
+      "fermilat*-*": 5,
+      "fermigbm*-sgrb": 6,
       "einsteinprobe*-*": 7,
-      "icecube*-*"      : 7,
-      "svom*-*"         : 8,
-      "swift*-*"        : 8
+      "icecube*-*": 7,
+      "svom*-*": 8,
+      "swift*-*": 8
     }
   },
   "sensors": {
@@ -1508,6 +1578,12 @@
   },
   "watchdog": {
     "monitoredservers": [
+      "C0",
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5",
       "enclosure",
       "executor",
       "gcn",

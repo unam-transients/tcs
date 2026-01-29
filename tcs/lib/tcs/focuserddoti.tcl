@@ -103,14 +103,19 @@ namespace eval "focuser" {
     return $reply
   }
 
-  proc sendcommand {command} {
+  proc sendcommand {command args} {
     variable channel
     variable rawposition
     variable rawdescription
     variable positionfactor
-    log::debug "sendcommand: sending \"$command\"."
+    if {[string equal $args ""]} {
+      set fullcommand $command
+    } else {
+      set fullcommand "$command $args"
+    }
+    log::debug "sendcommand: sending \"$fullcommand\"."
     flush $channel
-    puts $channel $command
+    puts $channel $fullcommand
     switch $command {
       "PO" {
         set reply [getreply]
@@ -145,7 +150,7 @@ namespace eval "focuser" {
       }
     }
     set reply [getreply]
-    if {![string equal $reply "OK: $command"]} {
+    if {![string equal $reply "OK: $fullcommand"]} {
       flush $channel
       error "unexpected reply: $reply"
     }
@@ -169,7 +174,7 @@ namespace eval "focuser" {
     }
     sendcommand "AB"
     set newposition [expr {int($newposition * $positionfactor)}]
-    sendcommand [format "ST %d" $newposition]
+    sendcommand "ST" $newposition
     sendcommand "PO"
     log::debug "focuserrawsetposition: done."
     return "ok"
@@ -198,7 +203,7 @@ namespace eval "focuser" {
     }
     sendcommand "AB"
     set newposition [expr {int($newposition * $positionfactor)}]
-    sendcommand [format "MA %d" $newposition]
+    sendcommand "MA" $newposition
     log::debug "focuserrawmove: done."
     return "ok"
   }
