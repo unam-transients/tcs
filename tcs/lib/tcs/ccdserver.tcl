@@ -83,14 +83,6 @@ namespace eval "ccdserver" {
     ccd::setreadmode $readmode
   }
 
-  proc slavefocus {exposuretime {fitsfileprefix ""} {range 400} {step 50}} {
-    ccd::focus $exposuretime $fitsfileprefix $range $step
-  }
-
-  proc slavemapfocus {exposuretime {fitsfileprefix ""} {range 400} {step 50}} {
-    ccd::mapfocus $exposuretime $fitsfileprefix $range $step
-  }
-
   proc slavecorrect {alpha delta equinox} {
     ccd::correct $alpha $delta $equinox
   }
@@ -109,7 +101,6 @@ namespace eval "ccdserver" {
     interp alias $slave setwindow       {} ccdserver::slavesetwindow
     interp alias $slave setbinning      {} ccdserver::slavesetbinning
     interp alias $slave setreadmode     {} ccdserver::slavesetreadmode
-    interp alias $slave mapfocus        {} ccdserver::slavemapfocus
     interp alias $slave correct         {} ccdserver::slavecorrect
   }
   

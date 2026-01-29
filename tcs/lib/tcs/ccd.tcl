@@ -1467,25 +1467,6 @@ namespace eval "ccd" {
     return
   }
   
-  proc mapfocus {exposuretime fitsfileprefix range step} {
-    server::checkstatus
-    server::checkactivity "idle"
-    if {
-      ![string is double -strict $exposuretime] ||
-      $exposuretime < 0
-    } {
-      error "invalid exposure time."
-    }
-    if {![string is integer -strict $range]} {
-      error "invalid range."
-    }
-    if {![string is integer -strict $step]} {
-      error "invalid step."
-    }
-    server::newactivitycommand "mappingfocus" "idle" \
-      "ccd::mapfocusactivitycommand $exposuretime $fitsfileprefix $range $step" false
-  }
-  
   proc correct {truemountalpha truemountdelta equinox} {
     set start [utcclock::seconds]
     server::checkstatus
