@@ -49,10 +49,10 @@ namespace eval "executor" {
 
   variable initialinstrument [config::getvalue "executor" "initialinstrument"]
 
-  variable instrumentname $initialinstrument
-  server::setdata "instrument" $instrumentname
-  variable detectors [config::getvalue $instrumentname "detectors"]
-  variable pointingdetectors [config::getvalue $instrumentname "pointingdetectors"]
+  variable instrument $initialinstrument
+  server::setdata "instrument" $instrument
+  variable detectors [config::getvalue $instrument "detectors"]
+  variable pointingdetectors [config::getvalue $instrument "pointingdetectors"]
 
   variable maxcorrection [astrometry::parseangle [config::getvalue "mount" "maxcorrection"]]
 
@@ -347,15 +347,15 @@ namespace eval "executor" {
   variable lastfilterpositions ""
 
   proc waitforinstrument {} {
-    variable instrumentname
+    variable instrument
     set start [utcclock::seconds]
     log::info "waiting for instrument."
-    client::wait $instrumentname
+    client::wait $instrument
     log::info [format "finished waiting for instrument after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc expose {type args} {
-    variable instrumentname
+    variable instrument
     waitfortelescope
     waitforinstrument
     set start [utcclock::seconds]
@@ -365,14 +365,14 @@ namespace eval "executor" {
     set projectfullidentifier [server::getdata "projectfullidentifier"]
     set fitsfiledir "[directories::vartoday]/executor/images/[project::fullidentifier [project]]/[block::identifier [block]]/[visit::identifier [visit]]"
     file mkdir $fitsfiledir
-    client::request $instrumentname "exposefull $type $fitsfiledir now $exposuretimes"
-    client::waituntilnot $instrumentname "exposing"
+    client::request $instrument "exposefull $type $fitsfiledir now $exposuretimes"
+    client::waituntilnot $instrument "exposing"
     log::info [format "finished exposing $type image (exposure $exposure) after %.1f seconds." [utcclock::diff now $start]]
     set exposure [expr {$exposure + 1}]
   }
   
   proc exposeafter {type starttime args} {
-    variable instrumentname
+    variable instrument
     waitfortelescope
     waitforinstrument
     set start [utcclock::seconds]
@@ -382,71 +382,71 @@ namespace eval "executor" {
     set projectfullidentifier [server::getdata "projectfullidentifier"]
     set fitsfiledir "[directories::vartoday]/executor/images/[project::fullidentifier [project]]/[block::identifier [block]]/[visit::identifier [visit]]"
     file mkdir $fitsfiledir
-    client::request $instrumentname "exposefull $type $fitsfiledir $starttime $exposuretimes"
-    client::waituntilnot $instrumentname "exposing"
+    client::request $instrument "exposefull $type $fitsfiledir $starttime $exposuretimes"
+    client::waituntilnot $instrument "exposing"
     log::info [format "finished exposing $type image (exposure $exposure) after %.1f seconds." [utcclock::diff now $start]]
     set exposure [expr {$exposure + 1}]
   }
   
   proc analyze {args} {
-    variable instrumentname
+    variable instrument
     waitforinstrument
     set start [utcclock::seconds]
     set types $args
     log::info "analyzing [join $types /]."
-    client::request $instrumentname "analyze $types"
+    client::request $instrument "analyze $types"
     waitforinstrument
     log::info [format "finished analyzing after %.1f seconds." [utcclock::diff now $start]]
   }
   
   proc setreadmode {args} {
-    variable instrumentname
+    variable instrument
     waitforinstrument
     set start [utcclock::seconds]
     set readmodes $args
     log::info "setting read mode to [join $readmodes /]."
     variable lastreadmodes
     if {![string equal $readmodes $lastreadmodes]} {
-      client::request $instrumentname "setreadmode $readmodes"
+      client::request $instrument "setreadmode $readmodes"
     }
     log::info [format "finished setting read modes after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc setwindow {args} {
-    variable instrumentname
+    variable instrument
     waitforinstrument
     set start [utcclock::seconds]
     set windows $args
     log::info "setting window to [join $windows /]."
     variable lastwindows
     if {![string equal $windows $lastwindows]} {
-      client::request $instrumentname "setwindow $windows"
+      client::request $instrument "setwindow $windows"
     }
     log::info [format "finished setting window after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc setbinning {args} {
-    variable instrumentname
+    variable instrument
     waitforinstrument
     set start [utcclock::seconds]
     set binnings $args
     log::info "setting binning to [join $binnings /]."
     variable lastbinnings
     if {![string equal $binnings $lastbinnings]} {
-      client::request $instrumentname "setbinning $binnings"
+      client::request $instrument "setbinning $binnings"
     }
     log::info [format "finished setting binning after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc movefilterwheel {args} {
-    variable instrumentname
+    variable instrument
     waitforinstrument
     set start [utcclock::seconds]
     set filterpositions $args
     log::info "moving filter wheel to [join $filterpositions /]."
     variable lastfilterpositions
     if {![string equal $filterpositions $lastfilterpositions]} {
-      client::request $instrumentname "movefilterwheel $filterpositions"
+      client::request $instrument "movefilterwheel $filterpositions"
       if {[server::withserver "secondary"]} {
         waitfortelescope
         client::request "secondary"  "moveforfilter [lindex $filterpositions 0]"
@@ -457,27 +457,27 @@ namespace eval "executor" {
   }
 
   proc movefocuser {args} {
-    variable instrumentname
+    variable instrument
     waitforinstrument
     set start [utcclock::seconds]
     set positions $args
     log::info "moving focuser to [join $positions /]."
-    client::request $instrumentname "movefocuser $positions"
+    client::request $instrument "movefocuser $positions"
     log::info [format "finished moving focuser after %.1f seconds." [utcclock::diff now $start]]
   }
   
   proc setfocuser {args} {
-    variable instrumentname
+    variable instrument
     waitforinstrument
     set start [utcclock::seconds]
     set positions $args
     log::info "setting focuser to [join $positions /]."
-    client::request $instrumentname "setfocuser $positions"
+    client::request $instrument "setfocuser $positions"
     log::info [format "finished setting focuser after %.1f seconds." [utcclock::diff now $start]]
   }
   
   proc focusinstrument {exposuretime range step {witness false} {initial false}} {
-    variable instrumentname
+    variable instrument
     waitforinstrument
     set start [utcclock::seconds]
     log::info "focusing with range $range and step $step."
@@ -485,13 +485,13 @@ namespace eval "executor" {
     set fitsfileprefix "[directories::vartoday]/executor/images/[project::fullidentifier [project]]/[block::identifier [block]]/[visit::identifier [visit]]/"
     log::info "FITS file prefix is $fitsfileprefix."
     file mkdir [file dirname $fitsfileprefix]
-    client::request $instrumentname "focus $fitsfileprefix $range $step $witness $initial $exposuretime"
-    client::wait $instrumentname
+    client::request $instrument "focus $fitsfileprefix $range $step $witness $initial $exposuretime"
+    client::wait $instrument
     log::info [format "finished focusing after %.1f seconds." [utcclock::diff now $start]]
   }
   
   proc mapfocus {range step args} {
-    variable instrumentname
+    variable instrument
     waitforinstrument
     set start [utcclock::seconds]
     log::info "mapping focus with range $range and step $step."
@@ -499,15 +499,15 @@ namespace eval "executor" {
     set fitsfileprefix "[directories::vartoday]/executor/images/[project::fullidentifier [project]]/[block::identifier [block]]/[visit::identifier [visit]]/"
     log::info "FITS file prefix is $fitsfileprefix."
     file mkdir [file dirname $fitsfileprefix]
-    client::request $instrumentname "mapfocus $fitsfileprefix $range $step $args"
-    client::wait $instrumentname
+    client::request $instrument "mapfocus $fitsfileprefix $range $step $args"
+    client::wait $instrument
     log::info [format "finished mapping focus after %.1f seconds." [utcclock::diff now $start]]
   }
   
   ######################################################################
 
   proc correctpointing {exposuretime} {
-    variable instrumentname
+    variable instrument
     set start [utcclock::seconds]
     variable pointingdetectors
     log::info "attempting to correct the pointing model using $pointingdetectors."
@@ -532,9 +532,9 @@ namespace eval "executor" {
       if {[string equal $alpha ""]} {
         log::warning "$detector pointing did not solve: unable to correct pointing."
         client::resetifnecessary "telescope"
-        client::resetifnecessary $instrumentname
+        client::resetifnecessary $instrument
         client::wait "telescope"
-        client::wait $instrumentname
+        client::wait $instrument
         log::info [format "finished attempting to correct the pointing model after %.1f seconds." [utcclock::diff now $start]]
         return
       }
@@ -551,7 +551,7 @@ namespace eval "executor" {
   }
 
   proc addtopointingmodel {exposuretime} {
-    variable instrumentname
+    variable instrument
     set start [utcclock::seconds]
     variable pointingdetectors
     log::info "attempting to add to the pointing model using $pointingdetectors."
@@ -576,9 +576,9 @@ namespace eval "executor" {
       if {[string equal $alpha ""]} {
         log::warning "$detector pointing did not solve: unable to add to the pointing model."
         client::resetifnecessary "telescope"
-        client::resetifnecessary $instrumentname
+        client::resetifnecessary $instrument
         client::wait "telescope"
-        client::wait $instrumentname
+        client::wait $instrument
         log::info [format "finished attempting to add to the pointing model after %.1f seconds." [utcclock::diff now $start]]
         return
       }
@@ -595,7 +595,7 @@ namespace eval "executor" {
   }
 
   proc center {exposuretime {detector "C0"}} {
-    variable instrumentname
+    variable instrument
     set start [utcclock::seconds]
     variable pointingdetectors
     log::info "attempting to correct the pointing model using $pointingdetectors."
@@ -620,9 +620,9 @@ namespace eval "executor" {
       if {[string equal $alpha ""]} {
         log::warning "$detector pointing did not solve: unable to correct pointing."
         client::resetifnecessary "telescope"
-        client::resetifnecessary $instrumentname
+        client::resetifnecessary $instrument
         client::wait "telescope"
-        client::wait $instrumentname
+        client::wait $instrument
         log::info [format "finished attempting to correct the pointing model after %.1f seconds." [utcclock::diff now $start]]
         return
       }
@@ -673,7 +673,7 @@ namespace eval "executor" {
   
 
   proc centerstar {exposuretime {detector "C0"}} {
-    variable instrumentname
+    variable instrument
     set start [utcclock::seconds]
     log::info "attempting to center the brightest source in the field of $detector."
     variable detectors
@@ -690,8 +690,8 @@ namespace eval "executor" {
     set deltaoffset [client::getdata $detector "deltaoffset"]
     if {[string equal $alphaoffset ""]} {
       log::warning "unable to center the brightest source."
-      client::resetifnecessary $instrumentname
-      client::wait $instrumentname
+      client::resetifnecessary $instrument
+      client::wait $instrument
       log::info [format "finished attempting to center the brightest source in the field of $detector after %.1f seconds." [utcclock::diff now $start]]
       return
     }
@@ -894,7 +894,7 @@ namespace eval "executor" {
   
   proc recoverifnecessary {recovertoopen} {
 
-    variable instrumentname
+    variable instrument
 
     variable initialactivity
     if {
@@ -913,7 +913,7 @@ namespace eval "executor" {
       set start [utcclock::seconds]
       log::summary [format "finished resetting after %.1f seconds." [utcclock::diff now $start]]
       server::setactivity "recovering"
-      foreach server [list telescope $instrumentname] {
+      foreach server [list telescope $instrument] {
         client::request $server "recover"
         client::wait $server
       }
@@ -928,7 +928,7 @@ namespace eval "executor" {
       log::summary "opening after recovery."
       server::setactivity "opening"
       if {[catch {
-        foreach server [list $instrumentname telescope] {
+        foreach server [list $instrument telescope] {
           client::request $server "open"
           client::wait $server
         }
@@ -945,34 +945,34 @@ namespace eval "executor" {
   ######################################################################
 
   proc stopactivitycommand {} {
-    variable instrumentname
+    variable instrument
     set start [utcclock::seconds]
     log::summary "stopping."
-    foreach server [list telescope $instrumentname] {
+    foreach server [list telescope $instrument] {
       client::request $server "stop"
     }
-    foreach server [list telescope $instrumentname] {
+    foreach server [list telescope $instrument] {
       client::wait $server
     }
     log::summary [format "finished stopping after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc interruptactivitycommand {} {
-    variable instrumentname
+    variable instrument
     set start [utcclock::seconds]
     log::summary "interrupting."
-    foreach server [list telescope $instrumentname] {
+    foreach server [list telescope $instrument] {
       client::request $server "stop"
     }
     sendchat "observations" "interrupting."
-    foreach server [list telescope $instrumentname] {
+    foreach server [list telescope $instrument] {
       client::wait $server
     }
     log::summary [format "finished interrupting after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc emergencystopactivitycommand {} {
-    variable instrumentname
+    variable instrument
     set start [utcclock::seconds]
     log::summary "emergency stopping."
     foreach server {telescope} {
@@ -987,7 +987,7 @@ namespace eval "executor" {
 
   proc executeactivitycommand {filetype filename} {
   
-    variable instrumentname
+    variable instrument
 
     recoverifnecessary true
 
@@ -1054,18 +1054,18 @@ namespace eval "executor" {
       
       set visitstart [utcclock::seconds]
       if {[catch {
-        client::request $instrumentname "stop"
+        client::request $instrument "stop"
         eval [visit::command [visit]]
-        client::wait $instrumentname        
+        client::wait $instrument        
       } result]} {
         log::error "while executing visit: $result"
         log::summary "aborting block."
         log::summary "recovering."
-        foreach server [list telescope $instrumentname] {
+        foreach server [list telescope $instrument] {
           client::request $server "recover"
           client::wait $server
         }
-        foreach server [list $instrumentname telescope] {
+        foreach server [list $instrument telescope] {
           client::request $server "open"
           client::wait $server
         }
@@ -1092,10 +1092,10 @@ namespace eval "executor" {
   }
   
   proc resetactivitycommand {} {
-    variable instrumentname
+    variable instrument
     set start [utcclock::seconds]
     log::summary "resetting."
-    foreach server [list telescope $instrumentname] {
+    foreach server [list telescope $instrument] {
       catch {client::waituntilstarted $server}
       client::request $server "reset"
       client::wait $server
@@ -1104,13 +1104,13 @@ namespace eval "executor" {
   }
 
   proc recovertoclosedactivitycommand {} {
-    variable instrumentname
+    variable instrument
     set start [utcclock::seconds]
     log::summary "recovering to closed."
     catch {client::waituntilstarted "watchdog"}
     client::request "watchdog" "enable"
     client::wait "watchdog"
-    foreach server [list telescope $instrumentname] {
+    foreach server [list telescope $instrument] {
       catch {client::waituntilstarted $server}
       client::request $server "recover"
       client::wait $server
@@ -1119,19 +1119,19 @@ namespace eval "executor" {
   }
 
   proc recovertoopenactivitycommand {} {
-    variable instrumentname
+    variable instrument
     set start [utcclock::seconds]
     log::summary "recovering to open."
     catch {client::waituntilstarted "watchdog"}
     client::request "watchdog" "enable"
     client::wait "watchdog"
-    foreach server [list telescope $instrumentname] {
+    foreach server [list telescope $instrument] {
       catch {client::waituntilstarted $server}
       client::request $server "recover"
       client::wait $server
     }
     log::summary "opening after recovery."
-    foreach server [list $instrumentname telescope] {
+    foreach server [list $instrument telescope] {
       catch {client::waituntilstarted $server}
       client::request $server "open"
       client::wait $server
@@ -1140,7 +1140,7 @@ namespace eval "executor" {
   }
 
   proc initializeactivitycommand {} {
-    variable instrumentname
+    variable instrument
     variable initialinstrument
 
     set start [utcclock::seconds]
@@ -1149,10 +1149,12 @@ namespace eval "executor" {
     client::request "watchdog" "enable"
     client::wait "watchdog"
 
+
     catch {client::waituntilstarted telescope}
     log::summary "initializing telescope."
-    client::request telescope "initialize"    
-
+    client::request telescope "initialize"
+    client::wait telescope
+  
     variable lastreadmodes
     variable lastwindows
     variable lastbinnings
@@ -1170,41 +1172,37 @@ namespace eval "executor" {
 
       log::summary "initializing $instrument."
 
-      set instrumentname $instrument
-
-      server::setdata instrument $instrumentname
-      server::setdata "instrument" $instrumentname
-      set detectors [config::getvalue $instrumentname "detectors"]
-      set pointingdetectors [config::getvalue $instrumentname "pointingdetectors"]
+      server::setdata instrument $instrument
+      server::setdata "instrument" $instrument
+      set detectors [config::getvalue $instrument "detectors"]
+      set pointingdetectors [config::getvalue $instrument "pointingdetectors"]
     
-      catch {client::waituntilstarted $instrumentname}
-      client::request $instrumentname "initialize"
-      client::wait $instrumentname
+      catch {client::waituntilstarted $instrument}
+      client::request $instrument "initialize"
+      client::wait $instrument
 
     }
 
-    client::wait telescope
+    log::summary "setting the instrument to $instrument."
+    set instrument $initialinstrument
 
-    log::summary "changing to $instrument."
-    set instrumentname $initialinstrument
-
-    server::setdata instrument $instrumentname
-    server::setdata "instrument" $instrumentname
-    set detectors [config::getvalue $instrumentname "detectors"]
-    set pointingdetectors [config::getvalue $instrumentname "pointingdetectors"]
+    server::setdata instrument $instrument
+    server::setdata "instrument" $instrument
+    set detectors [config::getvalue $instrument "detectors"]
+    set pointingdetectors [config::getvalue $instrument "pointingdetectors"]
       
-    client::request telescope "setport $instrumentname"
+    client::request telescope "setport $instrument"
     client::wait telescope
 
     log::summary [format "finished initializing after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc openactivitycommand {} {
-    variable instrumentname
+    variable instrument
     recoverifnecessary false
     set start [utcclock::seconds]
     log::summary "opening."
-    foreach server [list $instrumentname telescope] {
+    foreach server [list $instrument telescope] {
       catch {client::waituntilstarted $server}
       client::request $server "open"
       client::wait $server
@@ -1213,11 +1211,11 @@ namespace eval "executor" {
   }
 
   proc opentoventilateactivitycommand {} {
-    variable instrumentname
+    variable instrument
     recoverifnecessary false
     set start [utcclock::seconds]
     log::summary "opening to ventilate."
-    foreach server [list $instrumentname telescope] {
+    foreach server [list $instrument telescope] {
       catch {client::waituntilstarted $server}
       client::request $server "opentoventilate"
       client::wait $server
@@ -1226,12 +1224,12 @@ namespace eval "executor" {
   }
 
   proc closeactivitycommand {} {
-    variable instrumentname
+    variable instrument
     recoverifnecessary false
     set start [utcclock::seconds]
     log::summary "closing."
     set error false
-    foreach server [list telescope $instrumentname] {
+    foreach server [list telescope $instrument] {
       if {[catch {
         client::waituntilstarted $server
         client::request $server "close"
@@ -1249,10 +1247,10 @@ namespace eval "executor" {
   }
 
   proc emergencycloseactivitycommand {} {
-    variable instrumentname
+    variable instrument
     set start [utcclock::seconds]
     log::summary "emergency closing."
-    foreach server [list telescope $instrumentname] {
+    foreach server [list telescope $instrument] {
       catch {client::waituntilstarted $server}
       catch {client::request $server "emergencyclose"}
       catch {client::wait $server}
@@ -1262,7 +1260,7 @@ namespace eval "executor" {
   }
 
   proc parkactivitycommand {} {
-    variable instrumentname
+    variable instrument
     recoverifnecessary false
     set start [utcclock::seconds]
     log::summary "parking."
@@ -1275,7 +1273,7 @@ namespace eval "executor" {
   }
 
   proc unparkactivitycommand {} {
-    variable instrumentname
+    variable instrument
     recoverifnecessary false
     set start [utcclock::seconds]
     log::summary "unparking."
@@ -1288,53 +1286,53 @@ namespace eval "executor" {
   }
 
   proc idleactivitycommand {} {
-    variable instrumentname
+    variable instrument
     recoverifnecessary true
     set start [utcclock::seconds]
     log::info "idling."
-    foreach server [list telescope $instrumentname] {
+    foreach server [list telescope $instrument] {
       catch {client::waituntilstarted $server}
       client::request $server "reset"
       client::wait $server
     }
     client::request "telescope" "movetoidle"
-    client::request $instrumentname "idle"
-    foreach server [list telescope $instrumentname] {
+    client::request $instrument "idle"
+    foreach server [list telescope $instrument] {
       client::wait $server
     }
     log::info [format "finished idling after %.1f seconds." [utcclock::diff now $start]]
   }
 
-  proc setinstrumentactivitycommand {newinstrumentname} {
+  proc setinstrumentactivitycommand {newinstrument} {
 
-    variable instrumentname
+    variable instrument
 
     set start [utcclock::seconds]
-    log::summary "setting instrument to $newinstrumentname."
+    log::summary "setting instrument to $newinstrument."
 
     recoverifnecessary true
-    foreach server [list telescope $instrumentname] {
+    foreach server [list telescope $instrument] {
       client::request $server "stop"
     }
-    foreach server [list telescope $instrumentname] {
+    foreach server [list telescope $instrument] {
       client::wait $server
     }
 
     variable detectors
     variable pointingdetectors
 
-    set instrumentname $newinstrumentname
-    server::setdata "instrument" $instrumentname
-    set detectors [config::getvalue $instrumentname "detectors"]
-    set pointingdetectors [config::getvalue $instrumentname "pointingdetectors"]
+    set instrument $newinstrument
+    server::setdata "instrument" $instrument
+    set detectors [config::getvalue $instrument "detectors"]
+    set pointingdetectors [config::getvalue $instrument "pointingdetectors"]
 
     recoverifnecessary true
-    client::request telescope "setport $instrumentname"
-    client::request $instrumentname "stop"
+    client::request telescope "setport $instrument"
+    client::request $instrument "stop"
     client::wait telescope
-    client::wait $instrumentname
+    client::wait $instrument
 
-    log::info [format "finished setting instrument to $newinstrumentname after %.1f seconds." [utcclock::diff now $start]]
+    log::info [format "finished setting instrument to $newinstrument after %.1f seconds." [utcclock::diff now $start]]
   }
 
   ######################################################################
@@ -1455,16 +1453,16 @@ namespace eval "executor" {
       "executor::idleactivitycommand"
   }
 
-  proc setinstrument {newinstrumentname} {
+  proc setinstrument {newinstrument} {
     server::checkstatus
     server::checkactivityforreset
     setinitialactivity
     variable instruments
-    if {[lsearch -exact $instruments $newinstrumentname] == -1} {
-      error "invalid instrument \"$newinstrumentname\"."
+    if {[lsearch -exact $instruments $newinstrument] == -1} {
+      error "invalid instrument \"$newinstrument\"."
     }
     server::newactivitycommand "setting instrument" [server::getstoppedactivity] \
-      "executor::setinstrumentactivitycommand $newinstrumentname"
+      "executor::setinstrumentactivitycommand $newinstrument"
   }
   
   ######################################################################
@@ -1472,9 +1470,9 @@ namespace eval "executor" {
   set server::datalifeseconds 0
 
   proc start {} {
-    variable instrumentname
+    variable instrument
     server::setrequestedactivity "started"
-    server::setdata "instrument" $instrumentname
+    server::setdata "instrument" $instrument
     server::setdata "timestamp" [utcclock::combinedformat]
     updateprojectdata
     updateblockdata

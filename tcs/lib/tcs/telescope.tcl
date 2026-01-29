@@ -1137,7 +1137,7 @@ namespace eval "telescope" {
   proc setport {port} {
     server::checkstatus
     safetyswitch::checksafetyswitch
-    server::newactivitycommand "setting port" "idle" \
+    server::newactivitycommand "settingport" "idle" \
       "telescope::setportactivitycommand $port"
   }
 
