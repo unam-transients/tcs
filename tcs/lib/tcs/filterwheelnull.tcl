@@ -36,11 +36,7 @@ namespace eval "filterwheel" {
   proc movesingle {index newposition} {
     return "ok"
   }
-
-  proc homesingle {index} {
-    return "ok"
-  }
-
+  
 }
 
 source [file join [directories::prefix] "lib" "tcs" "filterwheel.tcl"]

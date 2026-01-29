@@ -36,10 +36,6 @@ namespace eval "filterwheel" {
   proc movesingle {index newposition} {
     return [filterwheelrawmove $index $newposition]
   }
-
-  proc homesingle {} {
-    return [filterwheelrawhome $index]
-  }
     
 }
 
