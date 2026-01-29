@@ -90,6 +90,10 @@ namespace eval "executorserver" {
     executor::execute $filetype $filename
     return
   }
+
+  proc slaveexecutecommand {command} {
+      executor::executecommand $command
+  }
   
   proc slaveidle {} {
     executor::idle
@@ -124,6 +128,7 @@ namespace eval "executorserver" {
     interp alias $slave park             {} executorserver::slavepark
     interp alias $slave unpark           {} executorserver::slaveunpark
     interp alias $slave execute          {} executorserver::slaveexecute
+    interp alias $slave executecommand   {} executorserver::slaveexecutecommand
     interp alias $slave idle             {} executorserver::slaveidle
     interp alias $slave emergencystop    {} executorserver::slaveemergencystop
     interp alias $slave interrupt        {} executorserver::slaveinterrupt

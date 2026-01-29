@@ -1139,6 +1139,17 @@ namespace eval "executor" {
     log::summary [format "finished recovering to open after %.1f seconds." [utcclock::diff now $start]]
   }
 
+  proc executecommandactivitycommand {command} {
+
+    set start [utcclock::seconds]
+    log::summary "executing command \"$command\"."
+
+    eval $command
+
+    log::summary [format "finished executing command after %.1f seconds." [utcclock::diff now $start]]
+    
+  }
+
   proc initializeactivitycommand {} {
     variable instrument
     variable initialinstrument
@@ -1443,6 +1454,14 @@ namespace eval "executor" {
     setinitialactivity
     server::newactivitycommand "executing" "idle" \
       "executor::executeactivitycommand $filetype $filename" 7200e3
+  }
+
+  proc executecommand {command} {
+    server::checkstatus
+    server::checkactivityforreset
+    setinitialactivity
+    server::newactivitycommand "executing" "idle" \
+      "executor::executecommandactivitycommand \"$command\"" 7200e3
   }
   
   proc idle {} {
