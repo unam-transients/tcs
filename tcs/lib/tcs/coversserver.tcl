@@ -25,7 +25,15 @@ package require "config"
 package require "log"
 package require "server"
 
-package require "covers[config::getvalue "covers" "type"]"
+set coverstype [config::getvalue "covers" "type"]
+switch -exact $coverstype {
+  "opentsi" {
+    package require "coversopentsi"
+  }
+  default {
+    error "invalid covers type \"$coverstype\"."
+  }
+}
 
 package provide "coversserver" 0.0
 
