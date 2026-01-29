@@ -683,6 +683,7 @@ proc twilightflatsvisit {} {
 
   log::summary "twilightflatsvisit: starting."
 
+  executor::setinstrument "ddrago"
   executor::setsecondaryoffset 0
   executor::move
 
@@ -734,7 +735,7 @@ proc twilightflatsvisit {} {
     set filter1 [lindex $filters1 0]
     set filter2 [lindex $filters2 0]
     log::info "twilightflatsvisit: filters are $filter1/$filter2."
-    eval executor::movefilterwheel [list "r" $filter1 $filter2]
+    eval executor::movefilterwheel [list $filter1 $filter2]
 
     executor::expose flat $exposuretime
     executor::analyze levels
@@ -791,6 +792,97 @@ proc twilightflatsvisit {} {
   }
 
   log::summary "twilightflatsvisit: finished."
+
+  return true
+}
+########################################################################
+
+proc tequilatwilightflatsvisit {} {
+
+  log::summary "tequilatwilightflatsvisit: starting."
+
+  executor::setsecondaryoffset 0
+  executor::setinstrument "tequila"
+  executor::move
+
+  executor::setwindow "default"
+  executor::setbinning "default"
+
+  set targetngood 7
+  set maxlevel 3000
+  set minlevel 0
+  set exposuretime 10
+  
+  set filters3 {r}
+  
+  set detector "C3"
+
+  set finished3     false
+  set ngood3        0
+  set mingoodlevel3 $maxlevel
+  set maxgoodlevel3 $minlevel
+
+  while {!$finished3} {
+
+    set filter3 [lindex $filters3 0]
+    log::info "tequilatwilightflatsvisit: filters is $filter3."
+    eval executor::movefilterwheel [list $filter3]
+
+    executor::expose flat $exposuretime
+    executor::analyze levels
+
+    foreach i {1 2} {
+
+      set finished     [set finished$i]
+      set filters      [set filters$i]
+      set ngood        [set ngood$i]
+      set mingoodlevel [set mingoodlevel$i]
+      set maxgoodlevel [set maxgoodlevel$i]
+
+      if {!$finished} {
+        set filter [lindex $filters 0]
+        set level [executor::exposureaverage "C$i"]
+        log::info [format "tequilatwilightflatsvisit: C$i: level is %.1f DN in $filter in $exposuretime seconds." $level]
+        if {$level > $maxlevel} {
+          log::info "tequilatwilightflatsvisit: C$i: level is too bright."
+        } elseif {$level < $minlevel} {
+          log::info "tequilatwilightflatsvisit: C$i: level is too faint."
+        } else {
+          log::info "tequilatwilightflatsvisit: C$i: level is good."
+          incr ngood
+          set mingoodlevel [expr {min($level,$mingoodlevel)}]
+          set maxgoodlevel [expr {max($level,$maxgoodlevel)}]
+        }
+
+        if {$level < $minlevel || $ngood == $targetngood} {
+          if {$ngood == 0} {
+            log::summary [format "tequilatwilightflatsvisit: C$i: $ngood good flats in filter $filter."]
+          } else {
+            log::summary [format "tequilatwilightflatsvisit: C$i: $ngood good flats in filter $filter (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
+          }
+          if {[llength $filters] > 1} {
+            set filters [lrange $filters 1 end]
+            set ngood 0
+            set mingoodlevel $maxlevel
+            set maxgoodlevel $minlevel
+          } else {
+            set finished true
+          }
+        }
+
+      }
+
+      set finished$i     $finished
+      set filters$i      $filters
+      set ngood$i        $ngood
+      set mingoodlevel$i $mingoodlevel
+      set maxgoodlevel$i $maxgoodlevel
+
+    }
+
+  }
+
+  log::summary "tequilatwilightflatsvisit: finished."
 
   return true
 }

@@ -515,7 +515,45 @@ namespace eval "executor" {
     client::wait $instrument
     log::info [format "finished mapping focus after %.1f seconds." [utcclock::diff now $start]]
   }
+
+  proc setinstrument {newinstrument} {
+
+    variable instrument
+
+    set start [utcclock::seconds]
+    log::summary "setting instrument to $newinstrument."
+
+    variable instruments
+    if {[lsearch -exact $instruments $newinstrument] == -1} {
+      error "invalid instrument \"$newinstrument\"."
+    }
   
+    recoverifnecessary true
+    foreach server [list telescope $instrument] {
+      client::request $server "stop"
+    }
+    foreach server [list telescope $instrument] {
+      client::wait $server
+    }
+
+    variable detectors
+    variable pointingdetectors
+
+    set instrument $newinstrument
+    server::setdata "instrument" $instrument
+    set detectors [config::getvalue $instrument "detectors"]
+    set pointingdetectors [config::getvalue $instrument "pointingdetectors"]
+
+    recoverifnecessary true
+    client::request telescope "setport $instrument"
+    client::request $instrument "stop"
+    client::wait telescope
+    client::wait $instrument
+
+    log::info [format "finished setting instrument to $newinstrument after %.1f seconds." [utcclock::diff now $start]]
+  
+  }
+
   ######################################################################
 
   proc correctpointing {exposuretime} {
@@ -1324,38 +1362,6 @@ namespace eval "executor" {
     log::info [format "finished idling after %.1f seconds." [utcclock::diff now $start]]
   }
 
-  proc setinstrumentactivitycommand {newinstrument} {
-
-    variable instrument
-
-    set start [utcclock::seconds]
-    log::summary "setting instrument to $newinstrument."
-
-    recoverifnecessary true
-    foreach server [list telescope $instrument] {
-      client::request $server "stop"
-    }
-    foreach server [list telescope $instrument] {
-      client::wait $server
-    }
-
-    variable detectors
-    variable pointingdetectors
-
-    set instrument $newinstrument
-    server::setdata "instrument" $instrument
-    set detectors [config::getvalue $instrument "detectors"]
-    set pointingdetectors [config::getvalue $instrument "pointingdetectors"]
-
-    recoverifnecessary true
-    client::request telescope "setport $instrument"
-    client::request $instrument "stop"
-    client::wait telescope
-    client::wait $instrument
-
-    log::info [format "finished setting instrument to $newinstrument after %.1f seconds." [utcclock::diff now $start]]
-  }
-
   ######################################################################
 
   proc stop {} {
@@ -1480,18 +1486,6 @@ namespace eval "executor" {
     setinitialactivity
     server::newactivitycommand "executing" "idle" \
       "executor::idleactivitycommand"
-  }
-
-  proc setinstrument {newinstrument} {
-    server::checkstatus
-    server::checkactivityforreset
-    setinitialactivity
-    variable instruments
-    if {[lsearch -exact $instruments $newinstrument] == -1} {
-      error "invalid instrument \"$newinstrument\"."
-    }
-    server::newactivitycommand "setting instrument" [server::getstoppedactivity] \
-      "executor::setinstrumentactivitycommand $newinstrument"
   }
   
   ######################################################################
