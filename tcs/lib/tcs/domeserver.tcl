@@ -25,7 +25,16 @@ package require "config"
 package require "log"
 package require "server"
 
-package require "dome[config::getvalue "dome" "type"]"
+
+set dometype [config::getvalue "dome" "type"]
+switch -exact $dometype {
+  "opentsi" {
+    package require "domeopentsi"
+  }
+  default {
+    error "invalid dome type \"$dometype\"."
+  }
+}
 
 package provide "domeserver" 0.0
 
