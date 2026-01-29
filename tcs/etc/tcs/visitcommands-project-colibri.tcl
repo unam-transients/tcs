@@ -680,8 +680,18 @@ proc darksvisit {{exposuretime 30} {exposures 10} {binning "default"}} {
 ########################################################################
 
 proc twilightflatsvisit {} {
-
   log::summary "twilightflatsvisit: starting."
+  tequilatwilightflatsvisit
+  ddragotwilightflatsvisit
+  log::summary "twilightflatsvisit: finished."
+  return true
+}
+
+########################################################################
+
+proc ddragotwilightflatsvisit {} {
+
+  log::summary "ddragotwilightflatsvisit: starting."
 
   executor::setinstrument "ddrago"
   executor::setsecondaryoffset 0
@@ -700,25 +710,11 @@ proc twilightflatsvisit {} {
   set maxlevel 30000
   set minlevel  5000
   set exposuretime 5
-  
-  # set filters {
-  #   { B   y  }
-  #   { i   y  }
-  #   { r   z  }
-  #   { g   zy }
-  #   { gri zy }
-  # }
+
   set filters1 {B i r g gri}
   set filters2 {y z zy}
-  
-  variable instrument
-  if {[string equal $instrument "ogse"]} {
-    set detector "C0"
-  } elseif {[string equal $instrument "ddrago"]} {
-    set detector "C1"
-  } else {
-    error "invalid instrument \"$instrument\"."
-  }
+
+  set detector "C1"
 
   set finished1     false
   set ngood1        0
@@ -734,7 +730,7 @@ proc twilightflatsvisit {} {
 
     set filter1 [lindex $filters1 0]
     set filter2 [lindex $filters2 0]
-    log::info "twilightflatsvisit: filters are $filter1/$filter2."
+    log::info "ddragotwilightflatsvisit: filters are $filter1/$filter2."
     eval executor::movefilterwheel [list $filter1 $filter2]
 
     executor::expose flat $exposuretime
@@ -751,13 +747,13 @@ proc twilightflatsvisit {} {
       if {!$finished} {
         set filter [lindex $filters 0]
         set level [executor::exposureaverage "C$i"]
-        log::info [format "twilightflatsvisit: C$i: level is %.1f DN in $filter in $exposuretime seconds." $level]
+        log::info [format "ddragotwilightflatsvisit: C$i: level is %.1f DN in $filter in $exposuretime seconds." $level]
         if {$level > $maxlevel} {
-          log::info "twilightflatsvisit: C$i: level is too bright."
+          log::info "ddragotwilightflatsvisit: C$i: level is too bright."
         } elseif {$level < $minlevel} {
-          log::info "twilightflatsvisit: C$i: level is too faint."
+          log::info "ddragotwilightflatsvisit: C$i: level is too faint."
         } else {
-          log::info "twilightflatsvisit: C$i: level is good."
+          log::info "ddragotwilightflatsvisit: C$i: level is good."
           incr ngood
           set mingoodlevel [expr {min($level,$mingoodlevel)}]
           set maxgoodlevel [expr {max($level,$maxgoodlevel)}]
@@ -765,9 +761,9 @@ proc twilightflatsvisit {} {
 
         if {$level < $minlevel || $ngood == $targetngood} {
           if {$ngood == 0} {
-            log::summary [format "twilightflatsvisit: C$i: $ngood good flats in filter $filter."]
+            log::summary [format "ddragotwilightflatsvisit: C$i: $ngood good flats in filter $filter."]
           } else {
-            log::summary [format "twilightflatsvisit: C$i: $ngood good flats in filter $filter (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
+            log::summary [format "ddragotwilightflatsvisit: C$i: $ngood good flats in filter $filter (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
           }
           if {[llength $filters] > 1} {
             set filters [lrange $filters 1 end]
@@ -791,10 +787,11 @@ proc twilightflatsvisit {} {
 
   }
 
-  log::summary "twilightflatsvisit: finished."
+  log::summary "ddragotwilightflatsvisit: finished."
 
   return true
 }
+
 ########################################################################
 
 proc tequilatwilightflatsvisit {} {
@@ -831,7 +828,7 @@ proc tequilatwilightflatsvisit {} {
     executor::expose flat $exposuretime
     executor::analyze levels
 
-    foreach i {1 2} {
+    foreach i {3} {
 
       set finished     [set finished$i]
       set filters      [set filters$i]
