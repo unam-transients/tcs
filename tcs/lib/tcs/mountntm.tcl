@@ -840,6 +840,14 @@ proc unparkhardware {} {
   server::setdata "unparked" true
 }
 
+proc setporthardware {port} {
+  # NTM mounts only have one port.
+  if {![string equal $port "default"]} {
+    error "invalid port \"$port\"."
+  }
+  server::setdata "port" $port
+}
+
 proc checkhardwarefor {action} {
   variable state
   switch $action {
@@ -900,6 +908,8 @@ proc initializeactivitycommand {} {
   }
   sendcommandandwait "SET DEC.OFFSET=0"
   sendcommandandwait "SET HA.OFFSET=0"
+  variable initialport
+  setportactivitycommand $initialport
   parkhardware
   set end [utcclock::seconds]
   variable initialized
@@ -1144,6 +1154,20 @@ proc offsetactivitycommand {} {
   trackoroffsetactivitycommand $move
 }
 
+proc setportactivitycommand {port} {
+  set start [utcclock::seconds]
+  log::info "setting port to $port."
+  server::setdata "requestedport" $port
+  variable ports
+  while {[dict exists $ports $port]} {
+    set port [dict get $ports $port]
+  }
+  server::setdata "requestedportposition" $port
+  setporthardware $port
+  set end [utcclock::seconds]
+  log::info [format "finished setting port after %.1f seconds." [utcclock::diff $end $start]]
+}
+  
 ######################################################################
 
 proc correcthardware {truealpha truedelta equinox dalpha ddelta} {

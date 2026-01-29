@@ -262,8 +262,6 @@
     "polardeltalimit": "+65d",
     "pointingmodelpolarhole": "1d",
     "maxcorrection": "0.25d",
-    "initialport": "cassegrain",
-    "ports": {},
    // Pointing model "20211103"b.
     "pointingmodelparameters0": {
       "IH": "-0.005214",
@@ -302,6 +300,11 @@
       "HDCD": "-0.000491",
       "HDSD2": "+0.000023",
       "HDCD2": "+0.000129"
+    },
+    "initialport": "cassegrain",
+    "ports": {
+      "instrument": "cassegrain",
+      "cassegrain": "default"
     }
   },
   "power": {

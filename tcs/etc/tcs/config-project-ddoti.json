@@ -587,8 +587,6 @@
     "meridianhalimit": "+00:30:00",
     "polardeltalimit": "+65d",
     "pointingmodelpolarhole": "1d",
-    "initialport": "prime",
-    "ports": {},
     "movingsettlingdelayseconds": "0",
     "trackingsettlingdelayseconds": "2",
     "trackingpositionerrorlimit": "1as",
@@ -633,7 +631,12 @@
       "HDCD2": "-0.000225",
       "DICD": "+0.000387"
     },
-    "maxcorrection": "3.0d"
+    "maxcorrection": "3.0d",
+    "initialport": "instrument",
+    "ports": {
+      "instrument": "prime",
+      "prime": "default"
+    }
   },
   "power": {
     "hosts": {
