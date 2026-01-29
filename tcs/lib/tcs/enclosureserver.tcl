@@ -22,9 +22,23 @@
 ########################################################################
 
 package require "config"
-package require "enclosure[config::getvalue "enclosure" "type"]"
+
+
 package require "log"
 package require "server"
+
+set enclosuretype [config::getvalue "enclosure" "type"]
+switch -exact $enclosuretype {
+  "arts" {
+    package require "enclosurearts"
+  }
+  "plc" {
+    package require "enclosureplc"
+  }
+  default {
+    error "invalid enclosure type \"$enclosuretype\"."
+  }
+}
 
 package provide "enclosureserver" 0.0
 
