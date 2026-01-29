@@ -131,7 +131,7 @@ namespace eval "instrumentserver" {
   proc configureslave {slave} {
     interp alias $slave initialize           {} instrumentserver::slaveinitialize
     interp alias $slave open                 {} instrumentserver::slaveopen
-    interp alias $slave opentoventilate           {} instrumentserver::slaveopentoventilate
+    interp alias $slave opentoventilate      {} instrumentserver::slaveopentoventilate
     interp alias $slave close                {} instrumentserver::slaveclose
     interp alias $slave emergencyclose       {} instrumentserver::slaveemergencyclose
     interp alias $slave stop                 {} instrumentserver::slavestop
@@ -155,8 +155,9 @@ namespace eval "instrumentserver" {
   ######################################################################
 
   proc start {} {
+    global instrumentname
     instrument::start
-    server::listen instrument instrumentserver::configureslave
+    server::listen $instrumentname instrumentserver::configureslave
   }
 
   ######################################################################

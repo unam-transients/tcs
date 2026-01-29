@@ -463,6 +463,8 @@
       "target",
       "telescope",
       "telescopecontroller",
+      "tequila",
+      "C3",
       "watchdog",
       "weather"
     ]
@@ -470,13 +472,11 @@
   "instrument": {
     "detectors": [
       "C1",
-      "C2",
-      "C3"
+      "C2"
     ],
     "monitoreddetectors": [
       "C1",
-      "C2",
-      "C3"
+      "C2"
     ],
     "activedetectors": [
       "C1",
@@ -489,6 +489,25 @@
     ],
     "pointingdetectors": [
       "C1"
+    ],
+    "outletgroups": []
+  },
+  "tequila": {
+    "detectors": [
+      "C3"
+    ],
+    "monitoreddetectors": [
+      "C3"
+    ],
+    "activedetectors": [
+      "C3"
+    ],
+    "activefocusers": [],
+    "idlefilterwheelpositions": [
+      "0"
+    ],
+    "pointingdetectors": [
+      "C3"
     ],
     "outletgroups": []
   },
@@ -2174,6 +2193,7 @@
       "target",
       "telescope",
       "telescopecontroller",
+      "tequila",
       "weather"
     ],
     "problemtoleranceseconds": 180

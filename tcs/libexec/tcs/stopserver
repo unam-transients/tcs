@@ -74,7 +74,7 @@ colibri-ddrago)
   ALLARGS=""
   ;;
 colibri-tequila)
-  allargs="C3"
+  allargs="tequila C3"
   ALLARGS=""
   ;;
 *)

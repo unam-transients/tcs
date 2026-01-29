@@ -29,7 +29,7 @@ umask 0; exec /usr/bin/tclsh8.6 -encoding "utf-8" "$0" ${1+"$@"}
 source [file join $::env(tcsprefix) "lib" "tcs" "packages.tcl"]
 
 package require "server"
-set instrumentname "instrument"
+set instrumentname "tequila"
 server::start {
   package require instrumentserver
   instrumentserver::start

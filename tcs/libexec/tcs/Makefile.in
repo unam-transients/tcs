@@ -134,6 +134,7 @@ installbins_project_ddoti :=      \
 installbins_project_colibri :=    \
     coversserver                  \
     domeserver                    \
+	tequilaserver                 \
 	C0server                      \
 	C1server                      \
 	C2server                      \

@@ -1064,25 +1064,29 @@ proc writemount {} {
 
 }
 
-proc writeinstrument {} {
+proc writeinstrument {{server "instrument"}} {
 
   putshtml "<table class=\"status\">"
 
-  writehtmlstatusblock "instrument"
+  writehtmlstatusblock $server
 
   putshtml "</table>"
 
   putshtml "<table class=\"status\">"
 
-  if {[string equal [client::getstatus "instrument"] "ok"]} {
-    writehtmlfullrow "Detectors" [join [client::getdata "instrument" "detectors"]]
-    writehtmlfullrow "Monitored detectors" [join [client::getdata "instrument" "monitoreddetectors"]]
-    writehtmlfullrow "Active detectors" [join [client::getdata "instrument" "activedetectors"]]
-    writehtmlfullrow "Active focusers" [join [client::getdata "instrument" "activefocusers"]]
+  if {[string equal [client::getstatus $server] "ok"]} {
+    writehtmlfullrow "Detectors" [join [client::getdata $server "detectors"]]
+    writehtmlfullrow "Monitored detectors" [join [client::getdata $server "monitoreddetectors"]]
+    writehtmlfullrow "Active detectors" [join [client::getdata $server "activedetectors"]]
+    writehtmlfullrow "Active focusers" [join [client::getdata $server "activefocusers"]]
   }
 
   putshtml "</table>"
 
+}
+
+proc writetequila {} {
+  writeinstrument "tequila"
 }
 
 proc writepower {} {
@@ -1811,6 +1815,7 @@ proc writeinfo {} {
     supervisor          {Supervisor}
     svom                {SVOM}
     target              {Target}
+    tequila             {TEQUILA}
     telescope           {Telescope}
     weather             {Weather}
   }

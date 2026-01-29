@@ -28,19 +28,21 @@ package require "server"
 
 package provide "instrument" 0.0
 
-config::setdefaultvalue "instrument" "restartdetectorstorecover" "false"
+config::setdefaultvalue $instrumentname "restartdetectorstorecover" "false"
 
 namespace eval "instrument" {
 
+  global instrumentname
+
   ######################################################################
 
-  variable detectors                 [config::getvalue "instrument" "detectors"]
-  variable monitoreddetectors        [config::getvalue "instrument" "monitoreddetectors"]
-  variable activefocusers            [config::getvalue "instrument" "activefocusers"]
-  variable activedetectors           [config::getvalue "instrument" "activedetectors"]
-  variable pointingdetectors         [config::getvalue "instrument" "pointingdetectors"]
-  variable outletgroups              [config::getvalue "instrument" "outletgroups"]
-  variable restartdetectorstorecover [config::getvalue "instrument" "restartdetectorstorecover"]
+  variable detectors                 [config::getvalue $instrumentname "detectors"]
+  variable monitoreddetectors        [config::getvalue $instrumentname "monitoreddetectors"]
+  variable activefocusers            [config::getvalue $instrumentname "activefocusers"]
+  variable activedetectors           [config::getvalue $instrumentname "activedetectors"]
+  variable pointingdetectors         [config::getvalue $instrumentname "pointingdetectors"]
+  variable outletgroups              [config::getvalue $instrumentname "outletgroups"]
+  variable restartdetectorstorecover [config::getvalue $instrumentname "restartdetectorstorecover"]
   
   ######################################################################
   
