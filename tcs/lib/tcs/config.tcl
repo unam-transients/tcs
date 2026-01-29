@@ -87,7 +87,7 @@ namespace eval "config" {
 
     set channel [open "$varconfigfilename.[pid]" "w"]
     puts $channel [format "// Written at %s." [utcclock::format now]]
-    puts $channel "{"
+    puts $channel "\{"
     set first true
     foreach key [dict keys $varvaluedict] {
       if {!$first} {
@@ -96,7 +96,7 @@ namespace eval "config" {
       set first false
       puts $channel [format "  %s: %s" [tojson::string $key] [tojson::object [dict get $varvaluedict $key] tojson::string]]
     }
-    puts $channel "}"
+    puts $channel "\}"
     close $channel
     file rename -force -- "$varconfigfilename.[pid]" "$varconfigfilename"    
   }
