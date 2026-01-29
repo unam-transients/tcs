@@ -807,7 +807,7 @@ proc tequilatwilightflatsvisit {} {
 
   set targetngood 7
   set maxlevel 3000
-  set minlevel 0
+  set minlevel 1500
   set exposuretime 10
   
   set filters3 {r}
