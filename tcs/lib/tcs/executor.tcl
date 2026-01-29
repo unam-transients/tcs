@@ -1257,11 +1257,11 @@ namespace eval "executor" {
   }
 
   proc openactivitycommand {} {
-    variable instrument
+    variable instruments
     recoverifnecessary false
     set start [utcclock::seconds]
     log::summary "opening."
-    foreach server [list $instrument telescope] {
+    foreach server [concat $instruments telescope] {
       catch {client::waituntilstarted $server}
       client::request $server "open"
       client::wait $server
@@ -1270,11 +1270,11 @@ namespace eval "executor" {
   }
 
   proc opentoventilateactivitycommand {} {
-    variable instrument
+    variable instruments
     recoverifnecessary false
     set start [utcclock::seconds]
     log::summary "opening to ventilate."
-    foreach server [list $instrument telescope] {
+    foreach server [concat $instruments telescope] {
       catch {client::waituntilstarted $server}
       client::request $server "opentoventilate"
       client::wait $server
@@ -1283,12 +1283,12 @@ namespace eval "executor" {
   }
 
   proc closeactivitycommand {} {
-    variable instrument
+    variable instruments
     recoverifnecessary false
     set start [utcclock::seconds]
     log::summary "closing."
     set error false
-    foreach server [list telescope $instrument] {
+    foreach server [concat telescope $instruments] {
       if {[catch {
         client::waituntilstarted $server
         client::request $server "close"
@@ -1306,10 +1306,10 @@ namespace eval "executor" {
   }
 
   proc emergencycloseactivitycommand {} {
-    variable instrument
+    variable instruments
     set start [utcclock::seconds]
     log::summary "emergency closing."
-    foreach server [list telescope $instrument] {
+    foreach server [concat telescope $instruments] {
       catch {client::waituntilstarted $server}
       catch {client::request $server "emergencyclose"}
       catch {client::wait $server}
