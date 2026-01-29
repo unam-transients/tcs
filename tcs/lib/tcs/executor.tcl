@@ -1193,8 +1193,8 @@ namespace eval "executor" {
     set detectors [config::getvalue $instrumentname "detectors"]
     set pointingdetectors [config::getvalue $instrumentname "pointingdetectors"]
       
-    #client::request telescope "setport $instrumentname"
-    #client::wait telescope
+    client::request telescope "setport $instrumentname"
+    client::wait telescope
 
     log::summary [format "finished initializing after %.1f seconds." [utcclock::diff now $start]]
   }
@@ -1305,12 +1305,12 @@ namespace eval "executor" {
     log::info [format "finished idling after %.1f seconds." [utcclock::diff now $start]]
   }
 
-  proc changeinstrumentactivitycommand {newinstrumentname} {
+  proc setinstrumentactivitycommand {newinstrumentname} {
 
     variable instrumentname
 
     set start [utcclock::seconds]
-    log::summary "changing instrument to $newinstrumentname."
+    log::summary "setting instrument to $newinstrumentname."
 
     recoverifnecessary true
     foreach server [list telescope $instrumentname] {
@@ -1329,12 +1329,12 @@ namespace eval "executor" {
     set pointingdetectors [config::getvalue $instrumentname "pointingdetectors"]
 
     recoverifnecessary true
-    #client::request telescope "setport $instrumentname"
+    client::request telescope "setport $instrumentname"
     client::request $instrumentname "stop"
-    #client::wait telescope
+    client::wait telescope
     client::wait $instrumentname
 
-    log::info [format "finished changing instrument to $newinstrumentname after %.1f seconds." [utcclock::diff now $start]]
+    log::info [format "finished setting instrument to $newinstrumentname after %.1f seconds." [utcclock::diff now $start]]
   }
 
   ######################################################################
@@ -1455,16 +1455,16 @@ namespace eval "executor" {
       "executor::idleactivitycommand"
   }
 
-  proc changeinstrument {newinstrumentname} {
+  proc setinstrument {newinstrumentname} {
     server::checkstatus
     server::checkactivityforreset
     setinitialactivity
     variable instruments
-    if {[lsearch $newinstrumentname $instruments] == -1} {
+    if {[lsearch -exact $instruments $newinstrumentname] == -1} {
       error "invalid instrument \"$newinstrumentname\"."
     }
-    server::newactivitycommand "stopping" [server::getstoppedactivity] \
-      "executor::changeinstrumentactivitycommand $newinstrumentname"
+    server::newactivitycommand "setting instrument" [server::getstoppedactivity] \
+      "executor::setinstrumentactivitycommand $newinstrumentname"
   }
   
   ######################################################################

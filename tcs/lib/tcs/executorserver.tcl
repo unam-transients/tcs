@@ -106,8 +106,8 @@ namespace eval "executorserver" {
     return
   }
 
-  proc slavechangeinstrument {newinstrumentname} {
-    executor::changeinstrument $newinstrumentname
+  proc slavesetinstrument {newinstrumentname} {
+    executor::setinstrument $newinstrumentname
     return
   }
   
@@ -127,7 +127,7 @@ namespace eval "executorserver" {
     interp alias $slave idle             {} executorserver::slaveidle
     interp alias $slave emergencystop    {} executorserver::slaveemergencystop
     interp alias $slave interrupt        {} executorserver::slaveinterrupt
-    interp alias $slave changeinstrument {} executorserver::slavechangeinstrument
+    interp alias $slave setinstrument    {} executorserver::slavesetinstrument
   }
 
   ######################################################################

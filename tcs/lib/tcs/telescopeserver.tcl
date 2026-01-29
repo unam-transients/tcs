@@ -136,6 +136,10 @@ namespace eval "telescopeserver" {
   proc slavesetsecondaryoffset {dz} {
     telescope::setsecondaryoffset $dz
   }
+
+  proc slavesetport {port} {
+    telescope::setport $port
+  }
   
   ######################################################################
 
@@ -167,6 +171,7 @@ namespace eval "telescopeserver" {
     interp alias $slave movesecondary               {} telescopeserver::slavemovesecondary
     interp alias $slave setsecondaryoffset          {} telescopeserver::slavesetsecondaryoffset
     interp alias $slave emergencystop               {} telescopeserver::slaveemergencystop
+    interp alias $slave setport                     {} telescopeserver::slavesetport
 
   }
 
