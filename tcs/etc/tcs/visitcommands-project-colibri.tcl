@@ -129,115 +129,115 @@ proc parsefilters {filters} {
   switch $filters {
 
     "g/r/i/z/y" {
-      set filters {{r g z} {r r y} {r i y}}
+      set filters {{g z} {r y} {i y}}
     }
     "g/r/i" -
     "g/r/i/z" {
-      set filters {{r g z} {r r z} {r i z}}
+      set filters {{g z} {r z} {i z}}
     }
     "g/r/i/y" {
-      set filters {{r g y} {r r y} {r i y}}
+      set filters {{g y} {r y} {i y}}
     }
     "g/r/i/zy" {
-      set filters {{r g zy} {r r zy} {r i zy}}
+      set filters {{g zy} {r zy} {i zy}}
     }
     
     "g/r/z/y" {
-      set filters {{r g z} {r r y} {r g y} {r r z} {r g y} {r r y}}
+      set filters {{g z} {r y} {g y} {r z} {g y} {r y}}
     }
     "g/r" -
     "g/r/z" {
-      set filters {{r g z} {r r z}}
+      set filters {{g z} {r z}}
     }
     "g/r/y" {
-      set filters {{r g y} {r r y}}
+      set filters {{g y} {r y}}
     }
     "g/r/zy" {
-      set filters {{r g zy} {r r zy}}
+      set filters {{g zy} {r zy}}
     }
 
     "g/i/z/y" {
-      set filters {{r g z} {r i y} {r g y} {r i z} {r g y} {r i y}}
+      set filters {{g z} {i y} {g y} {i z} {g y} {i y}}
     }
     "g/i" -
     "g/i/z" {
-      set filters {{r g z} {r i z}}
+      set filters {{g z} {i z}}
     }
     "g/i/y" {
-      set filters {{r g y} {r i y}}
+      set filters {{g y} {i y}}
     }
     "g/i/zy" {
-      set filters {{r g zy} {r i zy}}
+      set filters {{g zy} {i zy}}
     }
 
     "r/i/z/y" {
-      set filters {{r r z} {r i y} {r r y} {r i z} {r r y} {r i y}}
+      set filters {{r z} {i y} {r y} {i z} {r y} {i y}}
     }
     "r/i" -
     "r/i/z" {
-      set filters {{r r z} {r i z}}
+      set filters {{r z} {i z}}
     }
     "r/i/y" {
-      set filters {{r r y} {r i y}}
+      set filters {{r y} {i y}}
     }
     "r/i/zy" {
-      set filters {{r r zy} {r i zy}}
+      set filters {{r zy} {i zy}}
     }
 
     "g/z/y" {
-      set filters {{r g z} {r g y} {r g y}}
+      set filters {{g z} {g y} {g y}}
     }
     "g" -
     "g/z" {
-      set filters {{r g z}}
+      set filters {{g z}}
     }
     "g/y" {
-      set filters {{r g y}}
+      set filters {{g y}}
     }
     "g/zy" {
-      set filters {{r g zy}}
+      set filters {{g zy}}
     }
 
     "r/z/y" {
-      set filters {{r r z} {r r y} {r r y}}
+      set filters {{r z} {r y} {r y}}
     }
     "r" -
     "r/z" {
-      set filters {{r r z}}
+      set filters {{r z}}
     }
     "r/y" {
-      set filters {{r r y}}
+      set filters {{r y}}
     }
     "r/zy" {
-      set filters {{r r zy}}
+      set filters {{r zy}}
     }
 
     "i/z/y" {
-      set filters {{r i z} {r i y} {r i z}}
+      set filters {{i z} {i y} {i z}}
     }
     "i" -
     "i/z" {
-      set filters {{r i z}}
+      set filters {{i z}}
     }
     "i/y" {
-      set filters {{r i y}}
+      set filters {{i y}}
     }
     "i/zy" {
-      set filters {{r i zy}}
+      set filters {{i zy}}
     }
 
     "gri" -
     "gri/zy" {
-      set filters {{r gri zy}}
+      set filters {{gri zy}}
     }
 
     "g/r/i/B" -
     "g/r/i/B/z" {
-      set filters {{r g z} {r r z} {r i z} {r B z}}
+      set filters {{g z} {r z} {i z} {B z}}
     }
 
     "g/r/i/gri/B/z/y/zy" {
-      set filters {{r g z} {r r y} {r i y} {r gri zy} {r B zy}}
+      set filters {{g z} {r y} {i y} {gri zy} {B zy}}
     }
 
   }
@@ -479,7 +479,7 @@ proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest false
 
 ########################################################################
 
-proc coarsefocusvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
+proc coarsefocusvisit {{exposuretime 5} {filter {i z}}} {
 
   log::summary "coarsefocusvisit: starting."
   
@@ -521,7 +521,7 @@ proc coarsefocusvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
 
 ########################################################################
 
-proc focusvisit {{exposuretime 5} {filter {"r" "i" "z"}} {detector "C1"}} {
+proc focusvisit {{exposuretime 5} {filter {i z}} {detector "C1"}} {
 
   log::summary "focusvisit: starting."
   
@@ -561,7 +561,7 @@ proc focusvisit {{exposuretime 5} {filter {"r" "i" "z"}} {detector "C1"}} {
 
 ########################################################################
 
-proc focustiltvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
+proc focustiltvisit {{exposuretime 5} {filter {i z}}} {
 
   log::summary "focustiltvisit: starting."
   
@@ -595,7 +595,7 @@ proc focustiltvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
 
 ########################################################################
 
-proc focuswitnessvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
+proc focuswitnessvisit {{exposuretime 5} {filter {i z}}} {
 
   log::summary "focuswitnessvisit: starting."
 
@@ -626,7 +626,7 @@ proc focuswitnessvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
 
 ########################################################################
 
-proc pointingcorrectionvisit {{exposuretime 5} {filter {"r" "i" "z"}}} {
+proc pointingcorrectionvisit {{exposuretime 5} {filter {i z}}} {
 
   log::summary "correctpointingvisit: starting."
 
@@ -701,11 +701,11 @@ proc twilightflatsvisit {} {
   set exposuretime 5
   
   # set filters {
-  #   { r B   y  }
-  #   { r i   y  }
-  #   { r r   z  }
-  #   { r g   zy }
-  #   { r gri zy }
+  #   { B   y  }
+  #   { i   y  }
+  #   { r   z  }
+  #   { g   zy }
+  #   { gri zy }
   # }
   set filters1 {B i r g gri}
   set filters2 {y z zy}
@@ -797,7 +797,7 @@ proc twilightflatsvisit {} {
 
 ########################################################################
 
-proc brightstarvisit {{offset 10am} {exposuretime 5} {filter {"r" "i" "z"}}} {
+proc brightstarvisit {{offset 10am} {exposuretime 5} {filter {i z}}} {
 
   log::summary "brightstarvisit: starting."
 
@@ -833,7 +833,7 @@ proc brightstarvisit {{offset 10am} {exposuretime 5} {filter {"r" "i" "z"}}} {
 
 ########################################################################
 
-proc hartmanntestvisit {secondaryoffset {eastoffset 0am} {northoffset 0am} {exposuretime 10} {filter {"r" "g" "z"}} {exposures 10}} {
+proc hartmanntestvisit {secondaryoffset {eastoffset 0am} {northoffset 0am} {exposuretime 10} {filter {g z}} {exposures 10}} {
 
   log::summary "hartmanntestvisit: starting."
 
@@ -875,7 +875,7 @@ proc hartmanntestvisit {secondaryoffset {eastoffset 0am} {northoffset 0am} {expo
 
 ########################################################################
 
-proc tokovinintestvisit {{eastoffset 0am} {northoffset 0am} {exposuretime 10} {filter {"r" "i" "z"}} {exposures 10}} {
+proc tokovinintestvisit {{eastoffset 0am} {northoffset 0am} {exposuretime 10} {filter {i z}} {exposures 10}} {
 
   log::summary "tokovinintestvisit: starting."
 
@@ -915,7 +915,7 @@ proc tokovinintestvisit {{eastoffset 0am} {northoffset 0am} {exposuretime 10} {f
 
 ########################################################################
 
-proc nearfocustestvisit {{exposuretime 10} {filter {"r" "i" "z"}} {exposures 3}} {
+proc nearfocustestvisit {{exposuretime 10} {filter {i z}} {exposures 3}} {
 
   log::summary "nearfocustestvisit: starting."
 
@@ -953,7 +953,7 @@ proc nearfocustestvisit {{exposuretime 10} {filter {"r" "i" "z"}} {exposures 3}}
 
 ########################################################################
 
-proc addtopointingmodelvisit {{exposuretime 10} {filter {"r" "i" "z"}}} {
+proc addtopointingmodelvisit {{exposuretime 10} {filter {i z}}} {
 
   log::summary "addtopointingmodelvisit: starting."
 
