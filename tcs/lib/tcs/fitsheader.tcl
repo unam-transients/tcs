@@ -269,23 +269,23 @@ namespace eval "fitsheader" {
   ######################################################################
 
   proc writekeysandvaluesforC0 {channel prefix} {
-    writekeysandvaluesforccd $channel C0 $prefix "C0"
+    writekeysandvaluesforccd $channel "C0" $prefix "C0"
   }
   
   proc writekeysandvaluesforC1 {channel prefix} {
-    writekeysandvaluesforccd $channel C1 $prefix "C1"
+    writekeysandvaluesforccd $channel "C1" $prefix "C1"
   }
   
   proc writekeysandvaluesforC2 {channel prefix} {
-    writekeysandvaluesforccd $channel C2 $prefix "C2"
+    writekeysandvaluesforccd $channel "C2" $prefix "C2"
   }
   
   proc writekeysandvaluesforC3 {channel prefix} {
-    writekeysandvaluesforccd $channel C3 $prefix "C3"
+    writekeysandvaluesforccd $channel "C3" $prefix "C3"
   }
   
   proc writekeysandvaluesforcovers {channel prefix} {
-    writekeysandvaluesforcomponent $channel covers $prefix "CV" {
+    writekeysandvaluesforcomponent $channel "covers" $prefix "CV" {
       requestedcovers       RQCV  string
       covers                CV    string
       settled               SE    boolean
@@ -294,7 +294,7 @@ namespace eval "fitsheader" {
   }
   
   proc writekeysandvaluesforexecutor {channel prefix} {
-    writekeysandvaluesforcomponent $channel executor $prefix "EX" {
+    writekeysandvaluesforcomponent $channel "executor" $prefix "EX" {
       filetype               FLTP  string
       filename               FLNM  string
       projectidentifier      PRPID string
@@ -315,7 +315,7 @@ namespace eval "fitsheader" {
   }
   
   proc writekeysandvaluesformoon {channel prefix} {
-    writekeysandvaluesforcomponent $channel moon $prefix "MN" {
+    writekeysandvaluesforcomponent $channel "moon" $prefix "MN" {
       observedalpha          RA angle
       observedha             HA angle
       observeddelta          DE angle
@@ -328,7 +328,7 @@ namespace eval "fitsheader" {
   }
   
   proc writekeysandvaluesformount {channel prefix} {
-    writekeysandvaluesforcomponent $channel mount $prefix "MT" {
+    writekeysandvaluesforcomponent $channel "mount" $prefix "MT" {
       mountlst                    LS    angle
       mountlsterror               LSE   angle
       mounttracking               TR    boolean
@@ -364,7 +364,7 @@ namespace eval "fitsheader" {
   }
   
   proc writekeysandvaluesforseeing {channel prefix} {
-    writekeysandvaluesforcomponent $channel seeing $prefix "SG" {
+    writekeysandvaluesforcomponent $channel "seeing" $prefix "SG" {
       seeing                      SG    angle
       timestamp                   SGTS  string
       seeinga                     SGA   angle
@@ -387,11 +387,11 @@ namespace eval "fitsheader" {
       lappend args $keyword
       lappend args "double"
     }
-    writekeysandvaluesforcomponent $channel owsensors $prefix "OW" $args
+    writekeysandvaluesforcomponent $channel "owsensors" $prefix "OW" $args
   }
 
   proc writekeysandvaluesforsecondary {channel prefix} {
-    writekeysandvaluesforcomponent $channel secondary $prefix "SC" {
+    writekeysandvaluesforcomponent $channel "secondary" $prefix "SC" {
       requestedz0       RQZ0  double
       requestedz        RQZ   double
       temperaturesensor TS    string
@@ -437,11 +437,11 @@ namespace eval "fitsheader" {
         lappend args "date"
       }
     }
-    writekeysandvaluesforcomponent $channel sensors $prefix "SE" $args
+    writekeysandvaluesforcomponent $channel "sensors" $prefix "SE" $args
   }
 
   proc writekeysandvaluesforsun {channel prefix} {
-    writekeysandvaluesforcomponent $channel sun $prefix "SN" {
+    writekeysandvaluesforcomponent $channel "sun" $prefix "SN" {
       observedalpha           RA   angle
       observedha              HA   angle
       observeddelta           DE   angle
@@ -458,7 +458,7 @@ namespace eval "fitsheader" {
   }
   
   proc writekeysandvaluesfortarget {channel prefix} {
-    writekeysandvaluesforcomponent $channel target $prefix "TR" {
+    writekeysandvaluesforcomponent $channel "target" $prefix "TR" {
       last                      LS    angle
       requestedalpha            RQRA  angle
       requestedha               RQHA  angle
@@ -493,13 +493,13 @@ namespace eval "fitsheader" {
   }
   
   proc writekeysandvaluesfortelescope {channel prefix} {
-    writekeysandvaluesforcomponent $channel telescope $prefix "TL" {
+    writekeysandvaluesforcomponent $channel "telescope" $prefix "TL" {
       operationmode         OPMD  string
     }
   }
   
   proc writekeysandvaluesforweather {channel prefix} {
-    writekeysandvaluesforcomponent $channel weather $prefix "WT" {
+    writekeysandvaluesforcomponent $channel "weather" $prefix "WT" {
       temperature             TM   double
       temperaturetrend        TMTR string
       dewpoint                DW   double
