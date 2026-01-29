@@ -31,9 +31,71 @@ package require "pointing"
 package require "server"
 package require "target"
 
-package require "detector[config::getvalue [config::getvalue "ccd" "identifier"] "detectortype"]"
-package require "focuser[config::getvalue [config::getvalue "ccd" "identifier"] "focusertype"]"
-package require "filterwheel[config::getvalue [config::getvalue "ccd" "identifier"] "filterwheeltype"]"
+set detectortype [config::getvalue [config::getvalue "ccd" "identifier"] "detectortype"]
+switch -exact $detectortype {
+  "andor" {
+    package require "detectorando"
+  }
+  "dummy" {
+    package require "detectordummy"
+  }
+  "fli" {
+    package require "detectorfli"
+  }
+  "qhy" {
+    package require "detectorqhy"
+  }
+  "qsi" {
+    package require "detectorqsi"
+  }
+  "si" {
+    package require "detectorsi"
+  }
+  default {
+    error "unknown detector type \"$detectortype\"."
+  }
+}
+
+set focusertype [config::getvalue [config::getvalue "ccd" "identifier"] "focusertype"]
+switch -exact $focusertype {
+  "celestron" {
+    package require "focusercelestron"
+  }
+  "ddoti" {
+    package require "focuserddoti"
+  }
+  "fli" {
+    package require "focuserfli"
+  }
+  "gemini" {
+    package require "focusergemini"
+  }
+  "null" {
+    package require "focusernull"
+  }
+  default {
+    error "unknown focuser type \"$focusertype\"."
+  }
+}
+
+set filterwheeltype [config::getvalue [config::getvalue "ccd" "identifier"] "filterwheeltype"]
+switch -exact $filterwheeltype {
+  "dummy" {
+    package require "filterwheeldummy"
+  }
+  "fli" {
+    package require "filterwheelfli"
+  }
+  "null" {
+    package require "filterwheelnull"
+  }
+  "qsi" {
+    package require "filterwheelqsi"
+  }
+  default {
+    error "unknown focuser type \"$filterwheeltype\"."
+  }
+}
 
 package provide "ccd" 0.0
 
