@@ -4,7 +4,7 @@
 
 ########################################################################
 
-# Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
+# Copyright ï¿½ 2019 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -376,27 +376,6 @@ namespace eval "alert" {
     return [dict exists $alert $messenger]
   }
     
-  ######################################################################
-
-  proc makealert {name origin identifier type alpha delta equinox uncertainty eventtimestamp alerttimestamp command enabled preliminary} {
-    return [dict create                    \
-      "name"            $name              \
-      "origin"          $origin            \
-      "identifier"      $identifier        \
-      "type"            $type              \
-      "alpha"           $alpha             \
-      "delta"           $delta             \
-      "equinox"         $equinox           \
-      "uncertainty"     $uncertainty       \
-      "eventtimestamp"  $eventtimestamp    \
-      "alerttimestamp"  $alerttimestamp    \
-      "command"         $command           \
-      "enabled"         $enabled           \
-      "priority"        $priority          \
-      "preliminary"     $preliminary       \
-    ]
-  } 
-  
   ######################################################################
 
 }
