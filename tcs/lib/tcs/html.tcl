@@ -1425,6 +1425,7 @@ proc writeexecutor {} {
 
   putshtml "<table class=\"status\">"
   if {[string equal [client::getstatus "executor"] "ok"]} {
+    writehtmlfullrow "Instrument"             [client::getdata "executor" "instrument"]
     writehtmlfullrow "File type"              [client::getdata "executor" "filetype"]
     writehtmlfullrow "File name"              [client::getdata "executor" "filename"]
     writehtmlfullrow "Project identifier"     [client::getdata "executor" "projectidentifier"]

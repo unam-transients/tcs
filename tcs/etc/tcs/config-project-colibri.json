@@ -419,7 +419,12 @@
     "settlingseconds": 1
   },
   "executor": {
-    "type": "colibri"
+    "type": "colibri",
+    "instruments": [
+      "instrument",
+      "tequila"
+    ],
+    "initialinstrument": "instrument"
   },
   "fans": {
     "type": "plc"
@@ -569,7 +574,9 @@
       "new": "port2",
       "old": "port3",
       "ogse": "port2",
+      "tequila": "port2",
       "ddrago": "port3",
+      "instrument": "port3",
       "port2": "2",
       "port3": "3"
     },

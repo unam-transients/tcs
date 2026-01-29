@@ -105,23 +105,29 @@ namespace eval "executorserver" {
     executor::interrupt
     return
   }
+
+  proc slavechangeinstrument {newinstrumentname} {
+    executor::changeinstrument $newinstrumentname
+    return
+  }
   
   proc configureslave {slave} {
-    interp alias $slave stop            {} executorserver::slavestop
-    interp alias $slave reset           {} executorserver::slavereset
-    interp alias $slave recovertoopen   {} executorserver::slaverecovertoopen
-    interp alias $slave recovertoclosed {} executorserver::slaverecovertoclosed
-    interp alias $slave initialize      {} executorserver::slaveinitialize
-    interp alias $slave open            {} executorserver::slaveopen
-    interp alias $slave opentoventilate {} executorserver::slaveopentoventilate
-    interp alias $slave close           {} executorserver::slaveclose
-    interp alias $slave emergencyclose  {} executorserver::slaveemergencyclose
-    interp alias $slave park            {} executorserver::slavepark
-    interp alias $slave unpark          {} executorserver::slaveunpark
-    interp alias $slave execute         {} executorserver::slaveexecute
-    interp alias $slave idle            {} executorserver::slaveidle
-    interp alias $slave emergencystop   {} executorserver::slaveemergencystop
-    interp alias $slave interrupt       {} executorserver::slaveinterrupt
+    interp alias $slave stop             {} executorserver::slavestop
+    interp alias $slave reset            {} executorserver::slavereset
+    interp alias $slave recovertoopen    {} executorserver::slaverecovertoopen
+    interp alias $slave recovertoclosed  {} executorserver::slaverecovertoclosed
+    interp alias $slave initialize       {} executorserver::slaveinitialize
+    interp alias $slave open             {} executorserver::slaveopen
+    interp alias $slave opentoventilate  {} executorserver::slaveopentoventilate
+    interp alias $slave close            {} executorserver::slaveclose
+    interp alias $slave emergencyclose   {} executorserver::slaveemergencyclose
+    interp alias $slave park             {} executorserver::slavepark
+    interp alias $slave unpark           {} executorserver::slaveunpark
+    interp alias $slave execute          {} executorserver::slaveexecute
+    interp alias $slave idle             {} executorserver::slaveidle
+    interp alias $slave emergencystop    {} executorserver::slaveemergencystop
+    interp alias $slave interrupt        {} executorserver::slaveinterrupt
+    interp alias $slave changeinstrument {} executorserver::slavechangeinstrument
   }
 
   ######################################################################
