@@ -31,8 +31,20 @@ package require "project"
 package require "server"
 package require "visit"
 
-if  {![string equal [config::getvalue "executor" "type"] ""]} {
-  package require executor[config::getvalue "executor" "type"] 
+set executortype [config::getvalue "executor" "type"]
+switch -exact $executortype {
+  "coatli" {
+    package require "executorcoatli"
+  }
+  "colibri" {
+    package require "executorcolibri"
+  }
+  "ddoti" {
+    package require "executorddoti"
+  }
+  default {
+    error "invalid executor type \"$executortype\"."
+  }
 }
 
 config::setdefaultvalue "executor" "instruments"       {"instrument"}
@@ -45,7 +57,7 @@ namespace eval "executor" {
   ######################################################################
   
   variable instruments [config::getvalue "executor" "instruments"]
-  server::setdata instruments $instruments
+  server::setdata "instruments" $instruments
 
   variable initialinstrument [config::getvalue "executor" "initialinstrument"]
 
@@ -1183,7 +1195,6 @@ namespace eval "executor" {
 
       log::summary "initializing $instrument."
 
-      server::setdata instrument $instrument
       server::setdata "instrument" $instrument
       set detectors [config::getvalue $instrument "detectors"]
       set pointingdetectors [config::getvalue $instrument "pointingdetectors"]
@@ -1195,9 +1206,8 @@ namespace eval "executor" {
     }
 
     log::summary "setting the instrument to $instrument."
-    set instrument $initialinstrument
+    set "instrument" $initialinstrument
 
-    server::setdata instrument $instrument
     server::setdata "instrument" $instrument
     set detectors [config::getvalue $instrument "detectors"]
     set pointingdetectors [config::getvalue $instrument "pointingdetectors"]
