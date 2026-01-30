@@ -570,6 +570,13 @@
       "2": "0",
       "3": "-15.85d"
     },
+    "derotatorpupiltrackingoffsets": {
+      "2": "-90d",
+      "3": "45d",
+      "ddrago": "45d",
+      "tequila": "-90d",
+      "ogse": "-90d"
+    },
     // When the PLC parks the telescope, it uses these positions. These are not
     // configuarable using OpenTSI.
     // "parkazimuth": "-0.0025d",

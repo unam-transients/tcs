@@ -992,7 +992,7 @@ proc writemount {} {
     if {![string equal "" [client::getdata "mount" "port"]]} {
       writehtmlrow "Requested port" \
         [client::getdata "mount" "requestedport"] \
-        [client::getdata "mount" "requestedportposition"]
+        [client::getdata "mount" "requestedportindex"]
     }
     writehtmlrow "Requested mount rotation" \
       [formatradtodegifdouble "%.2f°"  [client::getdata "mount" "requestedmountrotation"]]
@@ -1008,7 +1008,7 @@ proc writemount {} {
     if {![string equal "" [client::getdata "mount" "port"]]} {
       writehtmlrow "Current port" \
         [client::getdata "mount" "port"] \
-        [client::getdata "mount" "portposition"]
+        [client::getdata "mount" "portindex"]
     }
     writehtmlrow "Current mount rotation" \
       [formatradtodegifdouble "%.2f°"  [client::getdata "mount" "mountrotation"]]

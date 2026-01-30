@@ -56,18 +56,19 @@ namespace eval "mount" {
 
   ######################################################################
 
-  variable allowedpositionerror        [astrometry::parseangle    [config::getvalue "mount" "allowedpositionerror"]]
-  variable pointingmodelpolarhole      [astrometry::parsedistance [config::getvalue "mount" "pointingmodelpolarhole"]]
-  variable axisdhacorrection           [astrometry::parseoffset   [config::getvalue "mount" "axisdhacorrection"]]
-  variable axisddeltacorrection        [astrometry::parseoffset   [config::getvalue "mount" "axisddeltacorrection"]]
-  variable trackingsettledlimit        [astrometry::parseoffset   [config::getvalue "mount" "trackingsettledlimit"]]
-  variable parkazimuth                 [astrometry::parseangle    [config::getvalue "mount" "parkazimuth"]]
-  variable parkzenithdistance          [astrometry::parseangle    [config::getvalue "mount" "parkzenithdistance"]]
-  variable parkderotatorangles         [config::getvalue "mount" "parkderotatorangles"]
-  variable derotatoroffsets            [config::getvalue "mount" "derotatoroffsets"]
-  variable unparkha                    [astrometry::parseha       [config::getvalue "mount" "unparkha"]]
-  variable unparkdelta                 [astrometry::parsedelta    [config::getvalue "mount" "unparkdelta"]]
-  variable settlingseconds             [config::getvalue "mount" "settlingseconds"]
+  variable allowedpositionerror          [astrometry::parseangle    [config::getvalue "mount" "allowedpositionerror"]]
+  variable pointingmodelpolarhole        [astrometry::parsedistance [config::getvalue "mount" "pointingmodelpolarhole"]]
+  variable axisdhacorrection             [astrometry::parseoffset   [config::getvalue "mount" "axisdhacorrection"]]
+  variable axisddeltacorrection          [astrometry::parseoffset   [config::getvalue "mount" "axisddeltacorrection"]]
+  variable trackingsettledlimit          [astrometry::parseoffset   [config::getvalue "mount" "trackingsettledlimit"]]
+  variable parkazimuth                   [astrometry::parseangle    [config::getvalue "mount" "parkazimuth"]]
+  variable parkzenithdistance            [astrometry::parseangle    [config::getvalue "mount" "parkzenithdistance"]]
+  variable parkderotatorangles           [config::getvalue "mount" "parkderotatorangles"]
+  variable derotatoroffsets              [config::getvalue "mount" "derotatoroffsets"]
+  variable derotatorpupiltrackingoffsets [config::getvalue "mount" "derotatorpupiltrackingoffsets"]
+  variable unparkha                      [astrometry::parseha       [config::getvalue "mount" "unparkha"]]
+  variable unparkdelta                   [astrometry::parsedelta    [config::getvalue "mount" "unparkdelta"]]
+  variable settlingseconds               [config::getvalue "mount" "settlingseconds"]
 
   variable usemountcoordinates false
 
@@ -118,8 +119,8 @@ namespace eval "mount" {
   server::setdata "mountazimuth"                ""
   server::setdata "mountzenithdistance"         ""
   server::setdata "mountderotatorangle"         ""
-  server::setdata "mountderotatoroffset"        "0"
   server::setdata "mountrotation"               ""
+  server::setdata "mountderotatoroffset"        ""
   server::setdata "state"                       ""
   server::setdata "timestamp"                   ""
   server::setdata "lastcorrectiontimestamp"     ""
@@ -144,8 +145,8 @@ namespace eval "mount" {
   server::setdata "mounthaerror"                ""
 
   server::setdata "requestedport"               ""
-  server::setdata "requestedportposition"       ""
-  server::setdata "portposition"                ""
+  server::setdata "requestedportindex"          ""
+  server::setdata "portindex"                   ""
   server::setdata "port"                        ""
 
   server::setdata "remainingtrackingseconds"    ""
@@ -160,7 +161,7 @@ namespace eval "mount" {
   variable pendingmountdelta               ""
   variable pendingmountst                  ""
   variable pendingtelescopemotionstate     ""
-  variable pendingportposition             ""
+  variable pendingportindex             ""
   variable predingremainingtrackingseconds ""
 
   variable telescopemotionstate            ""
@@ -176,7 +177,7 @@ namespace eval "mount" {
     variable pendingmountdelta
     variable pendingmountst
     variable pendingtelescopemotionstate
-    variable pendingportposition
+    variable pendingportindex
     variable predingremainingtrackingseconds
 
     variable telescopemotionstate
@@ -195,11 +196,11 @@ namespace eval "mount" {
       set pendingmountzenithdistance [astrometry::degtorad $value]
       return false
     }
-    if {[string equal [server::getdata "portposition"] "2"] && [scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.DEROTATOR\[2\].REALPOS=%f" value] == 1} {
+    if {[string equal [server::getdata "portindex"] "2"] && [scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.DEROTATOR\[2\].REALPOS=%f" value] == 1} {
       set pendingmountderotatorangle [astrometry::degtorad $value]
       return false
     }
-    if {[string equal [server::getdata "portposition"] "3"] && [scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.DEROTATOR\[3\].REALPOS=%f" value] == 1} {
+    if {[string equal [server::getdata "portindex"] "3"] && [scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.DEROTATOR\[3\].REALPOS=%f" value] == 1} {
       set pendingmountderotatorangle [astrometry::degtorad $value]
       return false
     }
@@ -236,7 +237,7 @@ namespace eval "mount" {
     }
     if {[scan $response "%*d DATA INLINE CURRENT.DEROTATOR_OFFSET=%f" value] == 1} {
       variable pupiltracking
-      if {$pupiltracking} {
+      if {$pupiltracking || [string equal [server::getdata "mountderotatoroffset"] ""]} {
         set pendingmountrotation ""
       } else {
         set pendingmountrotation [expr {[astrometry::degtorad $value] - [server::getdata "mountderotatoroffset"]}]
@@ -244,7 +245,7 @@ namespace eval "mount" {
       return false
     }
     if {[scan $response "%*d DATA INLINE POSITION.INSTRUMENTAL.PORT_SELECT.CURRPOS=%f" value] == 1} {
-      set pendingportposition [expr {int($value)}]
+      set pendingportindex [expr {int($value)}]
       return false
     }
     if {[regexp {[0-9]+ DATA INLINE } $response] == 1} {
@@ -264,7 +265,7 @@ namespace eval "mount" {
     set mountdelta                   $pendingmountdelta
     set mountst                      $pendingmountst
     set mountha                      [astrometry::foldradsymmetric [expr {$mountst - $mountalpha}]]
-    set portposition                 $pendingportposition
+    set portindex                    $pendingportindex
     set remainingtrackingseconds     $predingremainingtrackingseconds
 
     set telescopemotionstate         $pendingtelescopemotionstate
@@ -274,22 +275,22 @@ namespace eval "mount" {
       set ontarget false
     }
 
-    set requestedportposition [server::getdata "requestedportposition"]
-    set requestedport         [server::getdata "requestedport"        ]
-    if {$portposition == $requestedportposition} {
+    set requestedportindex [server::getdata "requestedportindex"]
+    set requestedport      [server::getdata "requestedport"]
+    if {$portindex == $requestedportindex} {
       set port $requestedport
-    } elseif {$portposition == 2} {
+    } elseif {$portindex == 2} {
       set port "port2"
-    } elseif {$portposition == 3} {
+    } elseif {$portindex == 3} {
       set port "port3"
     } else {
       set port "intermediate"
     }
 
-    set lastportposition [server::getdata "portposition"]
-    set lastport         [server::getdata "port"]
-    if {![string equal $lastportposition ""] && $lastportposition != $portposition} {
-      log::debug "port position changed from $lastportposition to $portposition."
+    set lastportindex [server::getdata "portindex"]
+    set lastport      [server::getdata "port"]
+    if {![string equal $lastportindex ""] && $lastportindex != $portindex} {
+      log::debug "port position changed from $lastportindex to $portindex."
       if {![string equal $lastport ""] && ![string equal $lastport $port]} {
         log::info "port changed from \"$lastport\" to \"$port\"."
       }
@@ -306,7 +307,7 @@ namespace eval "mount" {
     server::setdata "mountalpha"          $mountalpha
     server::setdata "mountha"             $mountha
     server::setdata "mountdelta"          $mountdelta
-    server::setdata "portposition"        $portposition
+    server::setdata "portindex"           $portindex
     server::setdata "port"                $port
     server::setdata "remainingtrackingseconds"        $remainingtrackingseconds
 
@@ -352,22 +353,9 @@ namespace eval "mount" {
     }
   }
 
-  proc setporthardware {port} {
+  proc setporthardware {portindex} {
 
-    opentsi::sendcommandandwait [format "SET POINTING.SETUP.USE_PORT=%d" $port]
-
-    variable derotatoroffsets
-    if {[dict exists $derotatoroffsets $port]} {
-      set derotatoroffset [dict get $derotatoroffsets $port]
-    } else {
-      set derotatoroffset "0"
-    }
-    set derotatoroffset [astrometry::parseangle $derotatoroffset]
-    server::setdata "mountderotatoroffset" $derotatoroffset
-    opentsi::sendcommandandwait [format \
-      "SET POINTING.SETUP.DEROTATOR.OFFSET=%.3f" \
-      [astrometry::radtodeg $derotatoroffset] \
-    ]
+    opentsi::sendcommandandwait [format "SET POINTING.SETUP.USE_PORT=%d" $portindex]
 
   }
 
@@ -491,13 +479,18 @@ namespace eval "mount" {
   proc setportactivitycommand {port} {
     set start [utcclock::seconds]
     log::info "setting port to $port."
+
     server::setdata "requestedport" $port
+
+    set portindex $port
     variable ports
-    while {[dict exists $ports $port]} {
-      set port [dict get $ports $port]
+    while {[dict exists $ports $portindex]} {
+      set portindex [dict get $ports $portindex]
     }
-    server::setdata "requestedportposition" $port
-    setporthardware $port
+    server::setdata "requestedportindex" $portindex
+
+    setporthardware $portindex
+
     set end [utcclock::seconds]
     log::info [format "finished setting port after %.1f seconds." [utcclock::diff $end $start]]
   }
@@ -546,20 +539,33 @@ namespace eval "mount" {
     }
     updaterequestedpositiondata
     variable pupiltracking
-    set port [server::getdata "requestedportposition"]
+    set port [server::getdata "requestedport"]
+    set portindex [server::getdata "requestedportindex"]
+
     if {$pupiltracking} {
-      set zenithdistance [server::getdata "requestedobservedzenithdistance"]
-      if {$port == 3} {
-        set derotatorangle [expr {[astrometry::parseangle 45d] - $zenithdistance}]
-      } elseif {$port == 2} {
-        set derotatorangle [expr {$zenithdistance - [astrometry::parseangle 45d]}]
+
+      variable derotatorpupiltrackingoffsets
+      if {[dict exists $derotatorpupiltrackingoffsets $port]} {
+        set derotatorpupiltrackingoffset [dict get $derotatorpupiltrackingoffsets $port]
+      } else {
+        set derotatorpupiltrackingoffset "0"
       }
+      set derotatorpupiltrackingoffset [astrometry::parseangle $derotatorpupiltrackingoffset]
+      set zenithdistance [server::getdata "requestedobservedzenithdistance"]
+      if {$portindex == 3} {
+        set derotatorangle [expr {$derotatorpupiltrackingoffset - $zenithdistance}]
+      } elseif {$portindex == 2} {
+        set derotatorangle [expr {$derotatorpupiltrackingoffset + $zenithdistance}]
+      }
+      server::setdata "mountderotatoroffset" ""
       opentsi::sendcommandandwait [format \
         "SET POINTING.SETUP.DEROTATOR.SYNCMODE=0;POSITION.INSTRUMENTAL.DEROTATOR\[%s\].TARGETPOS=%.6f" \
-        $port \
+        $portindex \
         [astrometry::radtodeg $derotatorangle] \
       ]
+
     } else {
+
       variable derotatoroffsets
       if {[dict exists $derotatoroffsets $port]} {
         set derotatoroffset [dict get $derotatoroffsets $port]
@@ -572,7 +578,9 @@ namespace eval "mount" {
         "SET POINTING.SETUP.DEROTATOR.OFFSET=%.3f;POINTING.SETUP.DEROTATOR.SYNCMODE=5" \
         [astrometry::radtodeg $derotatoroffset] \
       ]
+
     }
+
     opentsi::sendcommandandwait [format "SET [join {
       "OBJECT.EQUATORIAL.RA=%.6f"
       "OBJECT.EQUATORIAL.DEC=%.6f"
