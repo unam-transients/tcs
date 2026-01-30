@@ -1007,39 +1007,45 @@ proc hartmanntestvisit {secondaryoffset {eastoffset 0am} {northoffset 0am} {expo
 
 ########################################################################
 
-proc tokovinintestvisit {{eastoffset 0am} {northoffset 0am} {exposuretime 10} {filter {i z}} {exposures 10}} {
+proc tokovinintestvisit {{exposures 1} {exposuretime 10} {filter {i z}} {absolutesecondaryoffset 1000} {offsetsize 8am}} {
 
   log::summary "tokovinintestvisit: starting."
 
-
   executor::setinstrument "ddrago"
-  executor::setpupiltracking false
+  executor::setpupiltracking true
   executor::setsecondaryoffset 0
+  executor::track
   
-  log::summary "tokovinintestvisit: offset is $eastoffset $northoffset."
-
   executor::setwindow "default"
   executor::setbinning "default"
   eval executor::movefilterwheel $filter
 
-  executor::track $eastoffset $northoffset
-
-  #log::summary "tokovinintestvisit: correcting pointing."
-  #executor::correctpointing $exposuretime
-
-  foreach secondaryoffset {-1000 +1000} {
-
-    log::summary "tokovinintestvisit: images with secondary offset of $secondaryoffset."
-
-    executor::setsecondaryoffset $secondaryoffset
-    executor::offset  $eastoffset $northoffset
-      
-    set exposure 0
-    while {$exposure < $exposures} {
-      executor::expose object $exposuretime
-      incr exposure
+  foreach {alphaoffsetfactor deltaoffsetfactor} {
+    +0.0 +0.0
+    +1.0 +0.0
+    +0.7 +0.7
+    +0.0 +1.0
+    -0.7 +0.7
+    -1.0 +0.0
+    -0.7 -0.7
+    +0.0 -1.0
+    +0.7 -0.7
+    +0.0 +0.0
+  } {
+    set offsetsize [astrometry::parsedistance $offsetsize]
+    set alphaoffset [astrometry::formatoffset [expr {$offsetsize * $alphaoffsetfactor}]]
+    set deltaoffset [astrometry::formatoffset [expr {$offsetsize * $deltaoffsetfactor}]]
+    log::summary [format "tokovinintestvisit: offset is %s E and %s N." $alphaoffset $deltaoffset]
+    foreach secondaryoffset [list +$absolutesecondaryoffset -$absolutesecondaryoffset] {
+      log::summary "tokovinintestvisit: images with secondary offset of $secondaryoffset."
+      executor::setsecondaryoffset $secondaryoffset
+      executor::offset $alphaoffset $deltaoffset
+      set exposure 0
+      while {$exposure < $exposures} {
+        executor::expose object $exposuretime
+        incr exposure
+      }
     }
-  
   }
 
   executor::setsecondaryoffset 0
