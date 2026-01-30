@@ -1085,6 +1085,10 @@ proc writeinstrument {{server "instrument"}} {
 }
 
 proc writetequila {} {
+  writeinstrument "ogse"
+}
+
+proc writetequila {} {
   writeinstrument "tequila"
 }
 
@@ -1809,7 +1813,7 @@ proc writeinfo {} {
     louvers             {Louvers}
     moon                {Moon}
     mount               {Mount}
-    watchdog            {Watchdog}
+    ogse                {OGSE}
     plc                 {PLC}
     seeing              {Seeing}
     secondary           {Secondary}
@@ -1822,6 +1826,7 @@ proc writeinfo {} {
     target              {Target}
     tequila             {TEQUILA}
     telescope           {Telescope}
+    watchdog            {Watchdog}
     weather             {Weather}
   }
   variable servers

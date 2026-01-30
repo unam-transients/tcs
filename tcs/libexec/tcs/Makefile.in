@@ -140,6 +140,7 @@ installbins_project_colibri :=    \
     domeserver                    \
 	ddragoserver                  \
 	louversserver                 \
+	ogseserver                 	  \
 	plcserver                     \
 	secondaryserver               \
 	telescopecontrollerserver     \

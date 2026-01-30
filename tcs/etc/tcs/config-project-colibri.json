@@ -476,6 +476,25 @@
       "weather"
     ]
   },
+  "ogse": {
+    "detectors": [
+      "C0"
+    ],
+    "monitoreddetectors": [
+      "C0"
+    ],
+    "activedetectors": [
+      "C0"
+    ],
+    "activefocusers": [],
+    "idlefilterwheelpositions": [
+      "0"
+    ],
+    "pointingdetectors": [
+      "C0"
+    ],
+    "outletgroups": []
+  },
   "ddrago": {
     "detectors": [
       "C1",
