@@ -551,7 +551,17 @@ namespace eval "executor" {
     client::wait $instrument
 
     log::info [format "finished setting instrument to $newinstrument after %.1f seconds." [utcclock::diff now $start]]
-  
+  }
+
+  proc setpupiltracking {value} {
+
+    set start [utcclock::seconds]
+    log::summary "setting pupil tracking to $value."
+
+    client::request telescope "setpupiltracking $value"
+    client::wait telescope
+
+    log::info [format "finished setting pupil tracking after %.1f seconds." [utcclock::diff now $start]]
   }
 
   ######################################################################

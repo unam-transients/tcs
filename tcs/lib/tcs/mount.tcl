@@ -1130,7 +1130,7 @@ namespace eval "mount" {
     } else {
       error "invalid argument \"$value\" to setpupiltracking."
     }
-    log::summary "pupil tracking is $pupiltracking."
+    log::summary "setting pupil tracking to $pupiltracking."
     server::setdata "pupiltracking" $pupiltracking
   }
 

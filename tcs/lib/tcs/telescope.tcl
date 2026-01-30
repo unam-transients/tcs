@@ -861,7 +861,6 @@ namespace eval "telescope" {
     log::info "tracking."
   }
 
-
   proc setportactivitycommand {port} {
     set start [utcclock::seconds]
     log::info "setting port to $port."
@@ -873,6 +872,16 @@ namespace eval "telescope" {
     log::info [format "finished setting port after %.1f seconds." [utcclock::diff now $start]]
   }
 
+  proc setpupiltrackingactivitycommand {value} {
+    set start [utcclock::seconds]
+    log::info "setting pupil tracking to $value."
+    variable withmount
+    if {$withmount} {
+      client::request "mount" "setpupiltracking $value"
+      client::wait "mount"
+    }
+    log::info [format "finished setting pupil tracking after %.1f seconds." [utcclock::diff now $start]]
+  }
   
   ######################################################################
 
@@ -1137,8 +1146,15 @@ namespace eval "telescope" {
   proc setport {port} {
     server::checkstatus
     safetyswitch::checksafetyswitch
-    server::newactivitycommand "settingport" "idle" \
+    server::newactivitycommand "settingport" [server::getactivity] \
       "telescope::setportactivitycommand $port"
+  }
+
+  proc setpupiltracking {value} {
+    server::checkstatus
+    safetyswitch::checksafetyswitch
+    server::newactivitycommand "settingpupiltracking" [server::getactivity] \
+      "telescope::setpupiltrackingactivitycommand $value"
   }
 
   set server::datalifeseconds 0
