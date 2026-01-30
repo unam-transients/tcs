@@ -34,7 +34,7 @@ if {[string equal $instrument "ogse"]} {
 proc alertvisit {filters} {
   
   log::summary "alertvisit: starting."
-  
+ 
   set alpha   [visit::alpha   [executor::visit]]
   set delta   [visit::delta   [executor::visit]]
   set equinox [visit::equinox [executor::visit]]
@@ -285,6 +285,8 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {gr
     error "the exposuretimes and filters arguments have different lengths."
   }
 
+  executor::setinstrument "ddrago"
+  executor::setpupiltracking false
   executor::setsecondaryoffset 0
 
   setdetector
@@ -374,7 +376,9 @@ proc dithervisit {dithers exposuretimes filters {diameter "1am"} {offsetfastest 
   } elseif {[llength $exposuretimes] != [llength $filters]} {
     error "the exposuretimes and filters arguments have different lengths."
   }
-    
+
+  executor::setinstrument "ddrago"
+  executor::setpupiltracking false
   executor::setsecondaryoffset 0
 
   setdetector
@@ -445,6 +449,8 @@ proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest false
     error "the exposuretimes and filters arguments have different lengths."
   }
   
+  executor::setinstrument "ddrago"
+  executor::setpupiltracking false
   executor::setsecondaryoffset 0
   executor::track
 
@@ -482,9 +488,12 @@ proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest false
 proc coarsefocusvisit {{exposuretime 5} {filter {i z}}} {
 
   log::summary "coarsefocusvisit: starting."
-  
+
+  executor::setinstrument "ddrago"
+  executor::setpupiltracking false
   executor::setsecondaryoffset 0
   executor::track
+
   executor::setwindow "default"
   executor::setbinning 4
   eval executor::movefilterwheel $filter
@@ -537,8 +546,11 @@ proc focusvisit {{exposuretime 5} {filter {i z}} {detector "C1"}} {
     error "invalid instrument \"$instrument\"."
   }
 
+  executor::setinstrument "ddrago"
+  executor::setpupiltracking false
   executor::setsecondaryoffset 0
   executor::track
+
   executor::setwindow "default"
   executor::setbinning "default"
   eval executor::movefilterwheel "$filter"
@@ -576,8 +588,11 @@ proc focustiltvisit {{exposuretime 5} {filter {i z}}} {
     error "invalid instrument \"$instrument\"."
   }
 
+  executor::setinstrument "ddrago"
+  executor::setpupiltracking false
   executor::setsecondaryoffset 0
   executor::track
+
   executor::setwindow "default"
   executor::setbinning $binning
   eval executor::movefilterwheel "$filter"
@@ -599,8 +614,11 @@ proc focuswitnessvisit {{exposuretime 5} {filter {i z}}} {
 
   log::summary "focuswitnessvisit: starting."
 
+  executor::setinstrument "ddrago"
+  executor::setpupiltracking false
   executor::setsecondaryoffset 0
   executor::track
+
   executor::setwindow "default"
   executor::setbinning "default"
   eval executor::movefilterwheel $filter
@@ -630,8 +648,9 @@ proc pointingcorrectionvisit {{exposuretime 5} {filter {i z}}} {
 
   log::summary "correctpointingvisit: starting."
 
+  executor::setinstrument "ddrago"
+  executor::setpupiltracking false
   executor::setsecondaryoffset 0
-
   executor::track
 
   executor::setwindow "default"
@@ -648,8 +667,14 @@ proc pointingcorrectionvisit {{exposuretime 5} {filter {i z}}} {
 ########################################################################
 
 proc biasesvisit {{exposures 10} {binning "default"}} {
+
   log::summary "biasesvisit: starting."
+
+  executor::setinstrument "ddrago"
+  executor::setpupiltracking false
+  executor::setsecondaryoffset 0
   executor::move
+
   executor::setwindow "default"
   executor::setbinning $binning
   set exposure 0
@@ -657,6 +682,7 @@ proc biasesvisit {{exposures 10} {binning "default"}} {
     executor::expose bias 0
     incr exposure
   }
+
   log::summary "biasesvisit: finished."
   return true
 }
@@ -664,15 +690,23 @@ proc biasesvisit {{exposures 10} {binning "default"}} {
 ########################################################################
 
 proc darksvisit {{exposuretime 30} {exposures 10} {binning "default"}} {
+
   log::summary "darksvisit: starting."
+
+  executor::setinstrument "ddrago"
+  executor::setpupiltracking false
+  executor::setsecondaryoffset 0
   executor::move
+
   executor::setwindow "default"
   executor::setbinning $binning
+
   set exposure 0
   while {$exposure < $exposures} {
     executor::expose dark $exposuretime
     incr exposure
   }
+
   log::summary "darksvisit: finished."
   return true
 }
@@ -694,6 +728,7 @@ proc ddragotwilightflatsvisit {} {
   log::summary "ddragotwilightflatsvisit: starting."
 
   executor::setinstrument "ddrago"
+  executor::setpupiltracking false
   executor::setsecondaryoffset 0
   executor::move
 
@@ -798,8 +833,8 @@ proc tequilatwilightflatsvisit {} {
 
   log::summary "tequilatwilightflatsvisit: starting."
 
-  executor::setsecondaryoffset 0
   executor::setinstrument "tequila"
+  executor::setsecondaryoffset 0
   executor::move
 
   executor::setwindow "default"
@@ -890,8 +925,12 @@ proc brightstarvisit {{offset 10am} {exposuretime 5} {filter {i z}}} {
 
   log::summary "brightstarvisit: starting."
 
+
+  executor::setinstrument "ddrago"
+  executor::setpupiltracking false
   executor::setsecondaryoffset 0
   executor::track
+
   executor::setwindow "default"
   executor::setbinning "default"
   eval executor::movefilterwheel $filter
@@ -926,6 +965,10 @@ proc hartmanntestvisit {secondaryoffset {eastoffset 0am} {northoffset 0am} {expo
 
   log::summary "hartmanntestvisit: starting."
 
+  executor::setinstrument "ddrago"
+  executor::setpupiltracking false
+  executor::setsecondaryoffset 0
+  
   log::summary "hartmanntestvisit: offset is $eastoffset $northoffset."
 
   executor::setwindow "default"
@@ -968,6 +1011,11 @@ proc tokovinintestvisit {{eastoffset 0am} {northoffset 0am} {exposuretime 10} {f
 
   log::summary "tokovinintestvisit: starting."
 
+
+  executor::setinstrument "ddrago"
+  executor::setpupiltracking false
+  executor::setsecondaryoffset 0
+  
   log::summary "tokovinintestvisit: offset is $eastoffset $northoffset."
 
   executor::setwindow "default"
@@ -1008,6 +1056,10 @@ proc nearfocustestvisit {{exposuretime 10} {filter {i z}} {exposures 3}} {
 
   log::summary "nearfocustestvisit: starting."
 
+  executor::setinstrument "ddrago"
+  executor::setpupiltracking false
+  executor::setsecondaryoffset 0
+  
   executor::setwindow "default"
   executor::setbinning "default"
   eval executor::movefilterwheel $filter
@@ -1046,6 +1098,9 @@ proc addtopointingmodelvisit {{exposuretime 10} {filter {i z}}} {
 
   log::summary "addtopointingmodelvisit: starting."
 
+
+  executor::setinstrument "ddrago"
+  executor::setpupiltracking false
   executor::setsecondaryoffset 0
   executor::track
 
