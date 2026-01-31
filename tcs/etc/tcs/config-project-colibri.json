@@ -567,8 +567,7 @@
     // Value at OAN for DDRAGO "derotatoroffset": "15.85d",
     // Value at OAN for DDRAGO with the detector axes rotated by 45 degrees: "29.15d"
     "derotatoroffsets": {
-      "2": "0",
-      "3": "-15.85d"
+      "ddrago":  "-15.85d"
     },
     "derotatorpupiltrackingoffsets": {
       "2": "-90d",
