@@ -63,17 +63,20 @@ else
 installs_project_ddoti	    :=
 endif
 
-ifeq ($(UNAME_M),x86_64)
+ifeq ($(UNAME_N),colibri-tequila)
+installs_project_colibri	    :=	\
+	detectorqhy.so			        \
+	detectordummy.so		        \
+	filterwheelnull.so              \
+	filterwheeldummy.so
+else
 installs_project_colibri	    :=	\
 	detectorsi.so			        \
-	detectorqhy.so                  \
 	detectorfli.so                  \
 	detectordummy.so		        \
 	filterwheelnull.so              \
 	filterwheelfli.so               \
 	filterwheeldummy.so
-else
-installs_project_colibri	    :=
 endif
 	
 ########################################################################

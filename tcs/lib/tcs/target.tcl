@@ -222,7 +222,8 @@ namespace eval "target" {
       set observedzenithdistancerate ""
     }
     
-    set observedairmass        [astrometry::airmass $observedzenithdistance]
+    set observedairmass          [astrometry::airmass $observedzenithdistance]
+    set observedparallacticangle [astrometry::parallacticangle $observedha $observeddelta]
 
     set lastwithinlimits [server::getdata "withinlimits"]
     variable easthalimit
@@ -266,6 +267,7 @@ namespace eval "target" {
     server::setdata "observedha"                 $observedha
     server::setdata "observedazimuth"            $observedazimuth
     server::setdata "observedzenithdistance"     $observedzenithdistance
+    server::setdata "observedparallacticangle"   $observedparallacticangle
     server::setdata "observedairmass"            $observedairmass
     server::setdata "observedalpharate"          $observedalpharate
     server::setdata "observeddeltarate"          $observeddeltarate

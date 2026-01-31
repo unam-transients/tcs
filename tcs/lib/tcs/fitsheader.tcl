@@ -488,6 +488,7 @@ namespace eval "fitsheader" {
       observedazimuth           OBAZ  angle
       observedzenithdistance    OBZ   angle
       observedairmass           OBAM  double
+      observedparallacticangle  OBPA  angle
       withinlimits              WL    boolean
     }
   }

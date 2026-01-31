@@ -650,6 +650,8 @@ proc writetarget {} {
     writehtmlrow "Observed rate (A,z)" \
       [formatrateifdouble [client::getdata "target" "observedazimuthrate"]] \
       [formatrateifdouble [client::getdata "target" "observedzenithdistancerate"]]
+    writehtmlrow "Observed parallactic angle" \
+      [formatradtodegifdouble "%.2f°" [client::getdata "target" "observedparallacticangle"]] \      
     writehtmlrow "Within limits" \
       [client::getdata "target" "withinlimits"]
   }
