@@ -47,16 +47,6 @@ installs_project_test	    	:=	\
 	filterwheeldummy.so
 endif
 
-ifeq ($(UNAME_N),colibri-tequila)
-installs_project_tequila		:=	\
-	detectorqhy.so		      		\
-	detectordummy.so		      	\
-	filterwheelnull.so              \
-	filterwheeldummy.so
-else
-installs_project_tequila    	:=
-endif
-
 ifeq ($(UNAME_N),coatli-instrument)
 installs_project_coatli	    :=	    \
 	detectorandor.so		    	\
@@ -76,6 +66,7 @@ endif
 ifeq ($(UNAME_M),x86_64)
 installs_project_colibri	    :=	\
 	detectorsi.so			        \
+	detectorqhy.so                  \
 	detectorfli.so                  \
 	detectordummy.so		        \
 	filterwheelnull.so              \

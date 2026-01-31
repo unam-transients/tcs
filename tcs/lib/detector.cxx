@@ -311,9 +311,9 @@ detectorrawupdatestatistics(void)
   double s1 = 0;
   double s2 = 0;
 
-  for (unsigned long iy = 0; iy < pixny; ++iy)
+  for (unsigned long iy = pixny / 4; iy < 3 * pixny / 4; ++iy)
   {
-    for (unsigned long ix = 0; ix < pixnx; ++ix)
+    for (unsigned long ix = pixnx / 4; ix < 3 * pixnx / 4; ++ix)
     {
       double z = pix[iy * pixnx + ix];
       s0 += 1;
