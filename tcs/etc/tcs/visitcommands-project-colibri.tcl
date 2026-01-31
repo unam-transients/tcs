@@ -532,9 +532,19 @@ proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest false
 
 proc coarsefocusvisit {{exposuretime 5}} {
 
+  variable instrument
+
   log::summary "coarsefocusvisit: starting."
 
-  variable instrument
+  if {[string equal $instrument "tequila"]} {
+      log::summary "coarsefocusvisit: switching to ddrago for coarse focus."
+      executor::setinstrument "ddrago"
+      coarsefocus $exposuretime
+      log::summary "coarsefocusvisit: switching back to tequila."
+      executor::setinstrument "tequila"
+      return true
+  }
+
   if {[string equal $instrument "ogse"]} {
     set window "2kx2k"
     set binning 8
@@ -549,36 +559,20 @@ proc coarsefocusvisit {{exposuretime 5}} {
     set filter {i z}
     executor::setsecondaryoffset 0
     executor::setpupiltracking false
-  } elseif {[string equal $instrument "tequila"]} {
-    log::summary "coarsefocusvisit: skipping coarse focus."
-    log::summary "coarsefocusvisit: finished."
-    return true
-    set window "default"
-    set binning 1
-    set detector "C3"
-    set filter {r}
-    executor::setsecondaryoffset 0
-    executor::setpupiltracking true
   } else {
     error "invalid instrument \"$instrument\"."
   }
 
   executor::track
 
-  executor::setwindow "default"
+  executor::setwindow $window
   executor::setbinning $binning
   eval executor::movefilterwheel $filter
-
-  log::summary "coarsefocusvisit: centering."
-  executor::center $exposuretime
 
   log::summary [format \
     "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning %d." \
     $binning \
   ]
-
-  executor::setwindow $window
-  executor::setbinning $binning
   executor::focussecondary $detector $exposuretime 1000 100 false true
 
   log::summary "coarsefocusvisit: finished."
@@ -620,17 +614,11 @@ proc focusvisit {{exposuretime 5}} {
 
   executor::track
 
-  executor::setwindow "default"
-  executor::setbinning "default"
-  eval executor::movefilterwheel $filter
-
-  log::summary "focusvisit: centering."
-  executor::center $exposuretime
-
   log::summary [format \
     "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning %d." \
     $binning \
   ]
+  eval executor::movefilterwheel $filter
   executor::setwindow $window
   executor::setbinning $binning
   executor::focussecondary $detector $exposuretime 100 10 true false
