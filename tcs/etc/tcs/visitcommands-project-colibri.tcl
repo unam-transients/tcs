@@ -21,17 +21,9 @@
 
 ########################################################################
 
-variable instrument "ddrago"
-
-if {[string equal $instrument "ogse"]} {
-  variable fieldsize [astrometry::parsedistance "13am"]
-} elseif {[string equal $instrument "ddrago"]} {
-  variable fieldsize [astrometry::parsedistance "26am"]
-} else {
-  error "invalid instrument \"$instrument\"."
-}
-
 proc alertvisit {filters} {
+
+  variable instrument
   
   log::summary "alertvisit: starting."
  
@@ -40,6 +32,14 @@ proc alertvisit {filters} {
   set equinox [visit::equinox [executor::visit]]
 
   log::summary [format "alertvisit: alert coordinates are %s %s %s." [astrometry::formatalpha $alpha]  [astrometry::formatdelta $delta] $equinox]
+
+  if {[string equal $instrument "ogse"]} {
+   set fieldsize [astrometry::parsedistance "13am"]
+  } elseif {[string equal $instrument "ddrago"]} {
+    set fieldsize [astrometry::parsedistance "26am"]
+  } else {
+    error "invalid instrument \"$instrument\"."
+  }
 
   log::info "alertvisit: reading alert."
 
@@ -66,7 +66,6 @@ proc alertvisit {filters} {
   set nfilters [llength [parsefilters $filters]]
   set exposurerepeats [expr {int(16 / $nfilters)}]
   
-  variable fieldsize
   variable window
   
   if {$alertdelay <= 180 && $uncertainty <= [astrometry::parsedistance "3am"]} {
@@ -346,6 +345,52 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {gr
   return true
 }
 
+
+proc tequilagridvisit {gridrepeats gridpoints exposurerepeats exposuretime {gridsize 1am}} {
+
+  log::summary "tequilagridvisit: starting."
+
+  executor::setinstrument "tequila"
+  executor::setpupiltracking true
+  executor::setsecondaryoffset 0
+
+  set track true
+
+  # Thus gives reasonable results for 1, 2, 4, 5, and 9 gridpoints.
+  if {$gridpoints == 1} {
+    set ditherofsetfactors { 0 0 }
+  } else {
+    set ditherofsetfactors [lrange {
+          +0.5 +0.5
+          -0.5 -0.5
+          +0.5 -0.5
+          -0.5 +0.5
+          +0.0 +0.0
+          +0.5 +0.0
+          -0.5 +0.0
+          +0.0 +0.5
+          +0.0 -0.5
+        } 0 [expr {$gridpoints * 2 - 1}]]
+  }
+  
+  set gridrepeat 0
+  while {$gridrepeat < $gridrepeats} {
+    foreach {eastoffsetfactor northoffsetfactor} $ditherofsetfactors {
+      gridvisitoffset $gridsize $eastoffsetfactor $northoffsetfactor $track
+      set track false
+      set exposure 0
+      while {$exposure < $exposurerepeats} {
+        executor::expose object $exposuretime
+        incr exposure
+      }
+    }
+    incr gridrepeat
+  }
+
+  log::summary "tequilagridvisit: finished."
+  return true
+}
+
 ########################################################################
 
 proc dithervisitoffset {diameter track} {
@@ -505,6 +550,9 @@ proc coarsefocusvisit {{exposuretime 5}} {
     executor::setsecondaryoffset 0
     executor::setpupiltracking false
   } elseif {[string equal $instrument "tequila"]} {
+    log::summary "coarsefocusvisit: skipping coarse focus."
+    log::summary "coarsefocusvisit: finished."
+    return true
     set window "default"
     set binning 1
     set detector "C3"
