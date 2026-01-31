@@ -485,35 +485,45 @@ proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest false
 
 ########################################################################
 
-proc coarsefocusvisit {{exposuretime 5} {filter {i z}}} {
+proc coarsefocusvisit {{exposuretime 5}} {
 
   log::summary "coarsefocusvisit: starting."
 
-  executor::setinstrument "ddrago"
-  executor::setpupiltracking false
-  executor::setsecondaryoffset 0
+  variable instrument
+  if {[string equal $instrument "ogse"]} {
+    set window "2kx2k"
+    set binning 8
+    set detector "C0"
+    set filter {r}
+    executor::setsecondaryoffset 0
+    executor::setpupiltracking false
+  } elseif {[string equal $instrument "ddrago"]} {
+    set window "2kx2k"
+    set binning 4
+    set detector "C1"
+    set filter {i z}
+    executor::setsecondaryoffset 0
+    executor::setpupiltracking false
+  } elseif {[string equal $instrument "tequila"]} {
+    set window "default"
+    set binning 1
+    set detector "C3"
+    set filter {r}
+    executor::setsecondaryoffset 0
+    executor::setpupiltracking true
+  } else {
+    error "invalid instrument \"$instrument\"."
+  }
+
   executor::track
 
   executor::setwindow "default"
-  executor::setbinning 4
+  executor::setbinning $binning
   eval executor::movefilterwheel $filter
 
   log::summary "coarsefocusvisit: centering."
   executor::center $exposuretime
 
-  variable instrument
-  if {[string equal $instrument "ogse"]} {
-    set window "2kx2k"
-    set binning 16
-    set detector "C0"
-  } elseif {[string equal $instrument "ddrago"]} {
-    set window "2kx2k"
-    set binning 4
-    set detector "C1"
-  } else {
-    error "invalid instrument \"$instrument\"."
-  }
-  
   log::summary [format \
     "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning %d." \
     $binning \
@@ -530,7 +540,7 @@ proc coarsefocusvisit {{exposuretime 5} {filter {i z}}} {
 
 ########################################################################
 
-proc focusvisit {{exposuretime 5} {filter {i z}} {detector "C1"}} {
+proc focusvisit {{exposuretime 5}} {
 
   log::summary "focusvisit: starting."
   
@@ -539,21 +549,32 @@ proc focusvisit {{exposuretime 5} {filter {i z}} {detector "C1"}} {
     set window "1kx1k"
     set binning 2
     set detector "C0"
+    set filter {r}
+    executor::setsecondaryoffset 0
+    executor::setpupiltracking false
   } elseif {[string equal $instrument "ddrago"]} {
     set window "1kx1k"
     set binning 1
+    set detector "C1"
+    set filter {i z}
+    executor::setsecondaryoffset 0
+    executor::setpupiltracking false
+  } elseif {[string equal $instrument "tequila"]} {
+    set window "default"
+    set binning 1
+    set detector "C3"
+    set filter {r}
+    executor::setsecondaryoffset 0
+    executor::setpupiltracking true
   } else {
     error "invalid instrument \"$instrument\"."
   }
 
-  executor::setinstrument "ddrago"
-  executor::setpupiltracking false
-  executor::setsecondaryoffset 0
   executor::track
 
   executor::setwindow "default"
   executor::setbinning "default"
-  eval executor::movefilterwheel "$filter"
+  eval executor::movefilterwheel $filter
 
   log::summary "focusvisit: centering."
   executor::center $exposuretime
