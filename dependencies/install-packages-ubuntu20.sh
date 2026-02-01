@@ -173,6 +173,8 @@ sudo apt-get -y install tcllib
   sudo /usr/local/opt/conda/bin/conda install -y -p /usr/local/libexec/tcs/conda gcn-kafka
   sudo /usr/local/opt/conda/bin/conda install -y -p /usr/local/libexec/tcs/conda xmltodict
   sudo /usr/local/opt/conda/bin/conda install -y -p /usr/local/libexec/tcs/conda astropy
+  # Used by svomserver
+  sudo /usr/local/opt/conda/bin/conda install -y -p /usr/local/libexec/tcs/conda pygcn
 )
 
 ########################################################################
