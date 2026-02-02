@@ -719,14 +719,14 @@
       "*-*-electromagnetic/gravitational/*": 2,
       "*-*-electromagnetic/*/neutrino": 2,
       "*-*-*/gravitational/neutrino": 2,
-      "svomeclairs*-*": 5,
-      "svommxt*-*": 5,
-      "svomvt*-*": 5,
-      "fermilat*-*": 6,
-      "einsteinprobe*-*": 6,
-      "icecube*-*": 6,
-      "*-sgrb": 7,
-      "swift*-*": 8
+      "svomeclairs*-*-*": 5,
+      "svommxt*-*-*": 5,
+      "svomvt*-*-*": 5,
+      "fermilat*-*-*": 6,
+      "einsteinprobe*-*-*": 6,
+      "icecube*-*-*": 6,
+      "*-sgrb-*": 7,
+      "swift*-*-*": 8
     }
   },
   "sensors": {
