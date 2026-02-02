@@ -33,6 +33,7 @@ proc alertvisit {filters} {
 
   log::summary [format "alertvisit: alert coordinates are %s %s %s." [astrometry::formatalpha $alpha]  [astrometry::formatdelta $delta] $equinox]
 
+  setinstrument "ddrago"
   if {[string equal $instrument "ogse"]} {
    set fieldsize [astrometry::parsedistance "13am"]
   } elseif {[string equal $instrument "ddrago"]} {
@@ -346,13 +347,13 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {gr
 }
 
 
-proc tequilagridvisit {gridrepeats gridpoints exposurerepeats exposuretime {gridsize 1am}} {
+proc tequilagridvisit {gridrepeats gridpoints exposurerepeats exposuretime {gridsize 30as}} {
 
   log::summary "tequilagridvisit: starting."
 
   executor::setinstrument "tequila"
   executor::setpupiltracking true
-  executor::setsecondaryoffset 0
+  executor::setsecondaryoffset +50
 
   set track true
 
@@ -485,6 +486,15 @@ proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest false
 
   log::summary "quaddithervisit: starting."
 
+  setinstrument "ddrago"
+  if {[string equal $instrument "ogse"]} {
+   set fieldsize [astrometry::parsedistance "13am"]
+  } elseif {[string equal $instrument "ddrago"]} {
+    set fieldsize [astrometry::parsedistance "26am"]
+  } else {
+    error "invalid instrument \"$instrument\"."
+  }
+  
   set filters [parsefilters $filters]
   if {[llength $exposuretimes] == 1} {
     set exposuretimes [lrepeat [llength $filters] $exposuretimes]
@@ -535,15 +545,18 @@ proc coarsefocusvisit {{exposuretime 5}} {
   variable instrument
 
   log::summary "coarsefocusvisit: starting."
+  setinstrument "ddrago"
 
   if {[string equal $instrument "tequila"]} {
       log::summary "coarsefocusvisit: switching to ddrago for coarse focus."
       executor::setinstrument "ddrago"
-      coarsefocus $exposuretime
+      coarsefocusvisit $exposuretime
       log::summary "coarsefocusvisit: switching back to tequila."
       executor::setinstrument "tequila"
       return true
   }
+
+  setinstrument "ddrago"
 
   if {[string equal $instrument "ogse"]} {
     set window "2kx2k"
@@ -586,6 +599,7 @@ proc focusvisit {{exposuretime 5}} {
 
   log::summary "focusvisit: starting."
   
+  setinstrument "ddrago"
   variable instrument
   if {[string equal $instrument "ogse"]} {
     set window "1kx1k"
@@ -606,7 +620,7 @@ proc focusvisit {{exposuretime 5}} {
     set binning 1
     set detector "C3"
     set filter {r}
-    executor::setsecondaryoffset 0
+    executor::setsecondaryoffset +50
     executor::setpupiltracking true
   } else {
     error "invalid instrument \"$instrument\"."
