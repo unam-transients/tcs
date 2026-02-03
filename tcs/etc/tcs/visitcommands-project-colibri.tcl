@@ -784,16 +784,6 @@ proc darksvisit {{exposuretime 30} {exposures 10} {binning "default"}} {
 
 ########################################################################
 
-proc twilightflatsvisit {} {
-  log::summary "twilightflatsvisit: starting."
-  tequilatwilightflatsvisit
-  ddragotwilightflatsvisit
-  log::summary "twilightflatsvisit: finished."
-  return true
-}
-
-########################################################################
-
 proc ddragotwilightflatsvisit {} {
 
   log::summary "ddragotwilightflatsvisit: starting."
