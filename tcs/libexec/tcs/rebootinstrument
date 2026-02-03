@@ -45,27 +45,55 @@ if test $# = 0
 then
   case "$host" in
   coatli-control)
-    set instrument
+    instrument=huitzi
     ;;
   ddoti-control)
-    set detectors0 detectors1
+    instrument=ddoti
+    ;;
+  colibri-control)
+    instrument=tequila
     ;;
   *)
     echo 2>&1 "$program: error: unknown host."
     exit 1
     ;;
   esac
+elif test $# = 1
+then
+  instrument="$1"
+else
+  echo 2>&1 "usage: $program [instrument]"
+  exit 1
 fi
 
-tcs log "tcs rebootinstrument" summary "rebooting instrument."
+case "$instrument" in
+  huitzi)
+    hosts=instrument
+    powers=instrument
+    ;;
+  ddoti)
+    hosts="detectors0 detectors1"
+    powers="instrument"
+    ;;
+  tequila)
+    hosts="tequila"
+    powers="tequila"
+    ;;
+  *)
+    echo 2>&1 "$program: error: unknown instrument \"$instrument\"."
+    exit 1
+    ;;
+esac
 
-for host in "$@"
+tcs log "tcs rebootinstrument" summary "rebooting $instrument."
+
+for host in "$hosts"
 do
   tcs log "tcs rebootinstrument" summary "requesting $host to halt."
   sudo tcs halt $host
 done
 
-for host in "$@"
+for host in $hosts
 do
   tcs log "tcs rebootinstrument" summary "waiting for $host to halt."
   while ping -c 1 -W 1 $host >/dev/null 2>&1
@@ -75,17 +103,23 @@ do
 done
 sudo rm -f /usr/local/var/tcs/halt/*
 
-tcs log "tcs rebootinstrument" summary "switching off instrument."
-tcs request power switchoff instrument
+for power in $powers
+do
+  tcs log "tcs rebootinstrument" summary "switching off $power."
+  tcs request power switchoff $power
+done
 
 # We wait for 2 minutes to give the capacitors a chance to discharge.
 tcs log "tcs rebootinstrument" summary "waiting for 2 minutes."
 sleep 120
 
-tcs log "tcs rebootinstrument" summary "switching on instrument."
-tcs request power switchon instrument
+for power in $powers
+do
+  tcs log "tcs rebootinstrument" summary "switching on $power."
+  tcs request power switchon $power
+done
 
-for host in "$@"
+for host in $hosts
 do
   tcs log "tcs rebootinstrument" summary "waiting for $host to reboot."
   while ! ping -c 1 -W 1 $host >/dev/null 2>&1
@@ -94,11 +128,11 @@ do
   done
 done
 
-for host in "$@"
+for host in $hosts
 do
   tcs log "tcs rebootinstrument" summary "tcs will now boot on $host."
 done
 
-tcs log "tcs rebootinstrument" summary "finished rebooting instrument."
+tcs log "tcs rebootinstrument" summary "finished rebooting $instrument."
 
 exit 0

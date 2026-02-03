@@ -192,6 +192,9 @@ $(function () {
   $("form#system-rebootinstrument").submit(function () {
     return submitrequest("rebootinstrument");
   });
+  $("form#system-rebootinstrument-tequila").submit(function () {
+    return submitrequest("rebootinstrument tequila");
+  });
   $("form#system-rebootplatform").submit(function () {
     return submitrequest("rebootplatform");
   });

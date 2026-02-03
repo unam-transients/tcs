@@ -352,6 +352,9 @@ sudo rm -f /tmp/sudoers-tcs
   control)
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs reboot'
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs restart'
+    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs rebootinstrument'
+    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs rebootinstrument tequila'
+    echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs loadblocks'
     ;;
   esac
 ) >/tmp/sudoers-tcs

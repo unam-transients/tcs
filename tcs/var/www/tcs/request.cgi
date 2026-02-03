@@ -37,6 +37,10 @@ proc request {request} {
   } elseif {[string equal $request "rebootinstrument"]} {
     exec -ignorestderr "sudo" "-n" "$prefix/bin/tcs" "rebootinstrument"
     return ""
+  } elseif {[string equal $request "rebootinstrument tequila"]} {
+    log::summary "about to reboot tequila." "web"
+    exec -ignorestderr "sudo" "-n" "$prefix/bin/tcs" "rebootinstrument"
+    return ""
   } elseif {[string equal $request "rebootplatform"]} {
     exec -ignorestderr "sudo" "-n" "$prefix/bin/tcs" "rebootplatform"
     return ""
