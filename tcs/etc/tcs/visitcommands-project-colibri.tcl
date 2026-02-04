@@ -63,56 +63,69 @@ proc alertvisit {filters} {
   set uncertainty [astrometry::parsedistance [alert::uncertainty [executor::alert]]]
   log::summary [format "alertvisit: uncertainty is %s." [astrometry::formatdistance $uncertainty 2]]
 
-  log::summary [format "alertvisit: filters are %s." $filters]
-  set nfilters [llength [parsefilters $filters]]
-  set exposurerepeats [expr {int(16 / $nfilters)}]
-  
-  variable window
-  
-  if {$alertdelay <= 180 && $uncertainty <= [astrometry::parsedistance "3am"]} {
 
-    set window "6am"
-    set exposuretime 10
-    log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
+  if {[string equal $filters "tequila"]} {
 
-    log::summary "alertvisit: no dithering."
-    gridvisit 1 1 $exposurerepeats $exposuretime $filters
-    
-  } elseif {$alertdelay <= 180 && $uncertainty <= 0.5 * $fieldsize} {
-  
-    set window "default"
-    set exposuretime 10
-    log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
-
-    log::summary "alertvisit: no dithering."
-    gridvisit 1 1 $exposurerepeats $exposuretime $filters
-  
-  } elseif {$alertdelay <= 480 && $uncertainty <= 0.5 * $fieldsize} {
-  
-    set window "default"
-    set exposuretime 30
-    log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
-
-    log::summary "alertvisit: dithering 1 × 1 fields."
-    dithervisit $exposurerepeats $exposuretime $filters
-  
-  } elseif {$uncertainty <= 0.5 * $fieldsize} {
-
-    set window "default"
+    log::summary [format "alertvisit: observing with tequila."]
+    set exposurerepeats 9
     set exposuretime 60
     log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
- 
-    log::summary "alertvisit: dithering 1 × 1 fields."
-    dithervisit $exposurerepeats $exposuretime $filters
-    
+    tequilagridvisit 1 9 1 60
+
   } else {
 
-    set window "default"
-    set exposuretime 60
-    log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
- 
-    log::summary "alertvisit: dithering 2 × 2 fields."
-    quaddithervisit $exposurerepeats $exposuretime $filters
+    log::summary [format "alertvisit: filters are %s." $filters]
+    set nfilters [llength [parsefilters $filters]]
+    set exposurerepeats [expr {int(16 / $nfilters)}]
+
+    variable window
+
+    if {$alertdelay <= 180 && $uncertainty <= [astrometry::parsedistance "3am"]} {
+
+      set window "6am"
+      set exposuretime 10
+      log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
+
+      log::summary "alertvisit: no dithering."
+      gridvisit 1 1 $exposurerepeats $exposuretime $filters
+      
+    } elseif {$alertdelay <= 180 && $uncertainty <= 0.5 * $fieldsize} {
+    
+      set window "default"
+      set exposuretime 10
+      log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
+
+      log::summary "alertvisit: no dithering."
+      gridvisit 1 1 $exposurerepeats $exposuretime $filters
+    
+    } elseif {$alertdelay <= 480 && $uncertainty <= 0.5 * $fieldsize} {
+    
+      set window "default"
+      set exposuretime 30
+      log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
+
+      log::summary "alertvisit: dithering 1 × 1 fields."
+      dithervisit $exposurerepeats $exposuretime $filters
+    
+    } elseif {$uncertainty <= 0.5 * $fieldsize} {
+
+      set window "default"
+      set exposuretime 60
+      log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
+  
+      log::summary "alertvisit: dithering 1 × 1 fields."
+      dithervisit $exposurerepeats $exposuretime $filters
+      
+    } else {
+
+      set window "default"
+      set exposuretime 60
+      log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
+  
+      log::summary "alertvisit: dithering 2 × 2 fields."
+      quaddithervisit $exposurerepeats $exposuretime $filters
+
+    }
 
   }
   

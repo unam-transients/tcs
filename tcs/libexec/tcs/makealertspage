@@ -255,6 +255,8 @@ elif project == "colibri":
         <option>i/zy</option>
 
         <option>gri/zy</option>
+
+        <option>tequila</option>
     """
     )
 elif project == "ddoti":
