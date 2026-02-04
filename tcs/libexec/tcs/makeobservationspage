@@ -1,0 +1,186 @@
+#!/usr/bin/env python3
+
+import glob
+from datetime import datetime
+from datetime import timezone
+import platform
+import re
+
+observationsdict = {}
+
+prefix = "/usr/local/var/tcs/"
+for path in glob.glob(prefix + "latest/executor/images/*/*/*/*fits.txt"):
+    try:
+        with open(path) as f:
+            s = f.read()
+
+            m = re.search(r"^PRPID *= *0*([0-9]+)", s, flags=re.MULTILINE)
+            proposalidentifier = int(m.group(1)) if m is not None else 0
+            proposalidentifier = "%04d" % proposalidentifier
+
+            m = re.search(r"^BLKID *= *0*([0-9]+)", s, flags=re.MULTILINE)
+            blockidentifier = int(m.group(1)) if m is not None else 0
+            blockidentifier = "%04d" % blockidentifier
+
+            m = re.search(r"^BLKNM *= *'([^']*)", s, flags=re.MULTILINE)
+            blockname = m.group(1) if m is not None else ""
+
+            m = re.search(r"^FILTER *= *'([^']*)", s, flags=re.MULTILINE)
+            filter = m.group(1) if m is not None else ""      
+
+            m = re.search(r"^CCD_NAME *= *'([^']*)", s, flags=re.MULTILINE)
+            detector = m.group(1) if m is not None else ""      
+
+            m = re.search(r"^EXPTIME *= *([0-9.]+)", s, flags=re.MULTILINE)
+            exposuretime = float(m.group(1)) if m is not None else ""
+
+            m = re.search(r"^SDATE *= *'([^']*)", s, flags=re.MULTILINE)
+            startdate = m.group(1)[11:19] if m is not None else ""          
+
+            m = re.search(r"^EDATE *= *'([^']*)", s, flags=re.MULTILINE)
+            enddate = m.group(1)[11:19] if m is not None else ""            
+
+            key = "%s/%s" % (proposalidentifier, blockidentifier)
+
+            if key not in observationsdict:
+                observationsdict[key] = {
+                    "proposalidentifier": proposalidentifier,
+                    "blockidentifier": blockidentifier,
+                    "blockname": blockname,
+                    "exposuretime": 0,
+                    "exposuretimeB": 0,
+                    "exposuretimeg": 0,
+                    "exposuretimer": 0,
+                    "exposuretimei": 0,
+                    "exposuretimegri": 0,
+                    "exposuretimez": 0,
+                    "exposuretimey": 0,
+                    "exposuretimezy": 0,
+                    "exposuretimeC0": 0,
+                    "exposuretimeC1": 0,
+                    "exposuretimeC2": 0,
+                    "exposuretimeC3": 0,
+                    "startdate": startdate,
+                    "enddate": enddate,
+                }
+            observationsdict[key]["exposuretime"] += exposuretime
+            if filter != "":
+                observationsdict[key]["exposuretime" + filter] += exposuretime
+            if detector != "":
+                observationsdict[key]["exposuretime" + detector] += exposuretime
+            if startdate != "" and startdate < observationsdict[key]["startdate"]:
+                observationsdict[key]["startdate"] = startdate
+            if enddate != "" and enddate > observationsdict[key]["enddate"]:
+                observationsdict[key]["enddate"] = enddate
+    except:
+        pass
+
+if platform.node().startswith("coatli"):
+    project = "coatli"
+    projectname = "COATLI"
+elif platform.node().startswith("colibri"):
+    project = "colibri"
+    projectname = "COLIBRÍ"
+elif platform.node().startswith("ddoti"):
+    project = "ddoti"
+    projectname = "DDOTI"
+else:
+    raise RuntimeError("unknown project.")
+
+htmlfilename = "/usr/local/var/www/tcs/observations-list.html"
+
+htmlfile = open(htmlfilename, "w")
+
+
+def writehtml(s):
+    print(s, file=htmlfile)
+
+
+writehtml(
+    """
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<link rel="stylesheet" href="style.css" type="text/css"/>
+<title>%s: Observations</title>
+</head>
+
+<body>
+
+<div id="title">
+<h1>%s: Observations</h1>
+<hr/>
+</div>
+
+<div id="body">
+"""
+    % (projectname, projectname)
+)
+
+
+writehtml('<table class="observationstable">')
+writehtml("<tr>")
+writehtml("<th></th>")
+writehtml("<th></th>")
+writehtml('<th class="observationstable" colspan="13" style="text-align:center">Exposure Time (s)</th>')
+writehtml("</tr>")
+
+writehtml("<tr>")
+for text in ["Program", "Block", "Total", "C0", "C1", "C2", "C3", "B", "g", "r", "i", "gri", "z", "y", "zy", "Start", "End", "Block Name"]:
+    writehtml('<th class="observationstable">%s</th>' % text)
+writehtml("</tr>")
+
+for key in sorted(observationsdict.keys()):
+
+    writehtml("<tr>")
+    writehtml(
+        '<td class="observationstable">%s</td>'
+        % observationsdict[key]["proposalidentifier"]
+    )
+    writehtml(
+        '<td class="observationstable">%s</td>'
+        % observationsdict[key]["blockidentifier"]
+    )
+    for exposuresuffix in [ "", "C0", "C1", "C2", "C3", "B", "g", "r", "i", "gri", "z", "y", "zy"]:
+        writehtml(
+            '<td class="observationstable">%.0f</td>'
+            % observationsdict[key]["exposuretime" + exposuresuffix]
+        )
+    writehtml(
+        '<td class="observationstable">%s</td>'
+        % observationsdict[key]["startdate"]
+    )
+    writehtml(
+        '<td class="observationstable">%s</td>'
+        % observationsdict[key]["enddate"]
+    )
+    writehtml(
+        '<td class="observationstable">%s</td>' % observationsdict[key]["blockname"]
+    )
+    writehtml("</tr>")
+
+writehtml(
+    """
+</table>
+"""
+)
+
+
+writehtml(
+    """
+</div>
+
+<div>
+<hr/>
+Updated: %s UTC
+</div>
+
+</body>
+
+
+</html>
+"""
+    % datetime.now(timezone.utc).replace(tzinfo=None).isoformat(" ", timespec="seconds")
+)

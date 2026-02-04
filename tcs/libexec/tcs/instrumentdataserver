@@ -36,6 +36,7 @@ optstring=fjzd
 compress="bzip2 -1kf"
 rsync="rsync"
 suffix="bz2"
+deletefits=false
 if ! getopt -qQ -- "$optstring" "$@"
 then
   usageerror
@@ -60,7 +61,7 @@ do
     shift
     ;;
   -d)
-    rsync="rsync --remove-source-files"
+    deletefits=true
     shift
     ;;
   *)
@@ -105,10 +106,20 @@ do
   # Copy any left-over .fits.txt and compressed files to the destination.
   (
     find . -name "*C[0-9]?.fits.txt"
-    find . -name "*C[0-9]?.fits.$suffix"
   ) | while read file
   do
     $rsync -aR --bwlimit=25M $file "$dst"
+  done
+  (
+    find . -name "*C[0-9]?.fits.$suffix"
+  ) | while read file
+  do
+    if $deletefits
+    then
+      $rsync -aR --bwlimit=25M --remove-source.files $file "$dst"
+    else
+      $rsync -aR --bwlimit=25M $file "$dst"
+    fi
   done
   rsync -l latest "$dst"
   sleep 5

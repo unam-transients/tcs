@@ -70,6 +70,7 @@ installbins         :=            \
 	lvcskymapfindpeak             \
 	makealertspage                \
 	makeblockspage                \
+	makeobservationspage		  \
 	moonserver                    \
 	mountserver                   \
 	newpgrp                       \

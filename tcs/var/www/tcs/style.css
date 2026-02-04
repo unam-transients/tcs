@@ -156,6 +156,15 @@ table.blockstable, tr.blockstable, th.blockstable, td.blockstable {
   text-align: left;
 }
 
+table.observationstable, tr.observationstable, th.observationstable, td.observationstable {
+  padding-left:       0.5em;
+  padding-right:      0.5em;
+  padding-top:        0.2em;
+  padding-bottom:     0.2em;
+  line-height:        1.4;
+  text-align: left;
+}
+
 table.alertstable, tr.alertstable, th.alertstable, td.alertstable {
   padding-left:       0.5em;
   padding-right:      0.5em;
