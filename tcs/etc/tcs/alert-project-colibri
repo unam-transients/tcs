@@ -34,7 +34,7 @@
   "visitidentifier": "0",
 
   "maxskybrightness": "nauticaltwilight",
-  "minmoondistance": "15d",
+  "minmoondistance": "5d",
   "maxalertuncertainty": "45am",
   
   "maxfocusdelay": "1h",
