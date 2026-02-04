@@ -129,6 +129,15 @@ ServerName colibri-services
     RequestHeader     unset  Accept-Encoding
   </Location>
 
+  <Location /grb-table-lam/>
+    ProxyPass         http://192.168.100.62:5001/
+    ProxyPassReverse  /
+    ProxyHTMLEnable   On
+    ProxyHTMLURLMap   http://192.168.100.62:5001/ /grb-table-lam/
+    ProxyHTMLURLMap   /                           /grb-table-lam/
+    RequestHeader     unset  Accept-Encoding
+  </Location>
+
   ############################################################
 
 </VirtualHost>

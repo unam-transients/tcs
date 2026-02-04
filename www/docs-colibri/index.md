@@ -25,6 +25,7 @@ This is the mountain-top TCS web-site for the COLIBRÍ telescope at the [OAN/SPM
         * [Light-curve Generator at OAN](redux-lam/lightcurve_generator.html)
     * STDWeb:
         * [At LAM](https://stdweb.colibri-obs.org/)
+    * [GRB Table](grb-table-lam/)
 * [Engineering](engineering.html)
 
 ---
