@@ -558,7 +558,6 @@ proc coarsefocusvisit {{exposuretime 5}} {
   variable instrument
 
   log::summary "coarsefocusvisit: starting."
-  setinstrument "ddrago"
 
   if {[string equal $instrument "tequila"]} {
       log::summary "coarsefocusvisit: switching to ddrago for coarse focus."
@@ -612,7 +611,6 @@ proc focusvisit {{exposuretime 5}} {
 
   log::summary "focusvisit: starting."
   
-  setinstrument "ddrago"
   variable instrument
   if {[string equal $instrument "ogse"]} {
     set window "1kx1k"
