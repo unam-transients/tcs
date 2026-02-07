@@ -222,6 +222,7 @@ def xmltodict(s):
         if alert["eventtimestamp"][-1] == "Z":
             alert["eventtimestamp"] = alert["eventtimestamp"][:-1]
 
+        # This is the mapping I implemented on 2024-12-05 based on documentation at the FSC.
         packettypedict = {
             199: "svomgrmpreliminary",
             200: "svomeclairspreliminary",
@@ -244,6 +245,23 @@ def xmltodict(s):
             217: "svomgrmfinal",
             218: "svommxtfinal",
             219: "svomvtfinal",
+        }
+        # This is the mapping I implemented on 2026-02-07.
+        # - 199 and 200 are regularly seen
+        # - 201 to 205 and 209 to 211 are documented at https://fsc.svom.org/readthedocs/svom/notices_and_circulars/index.html#notices
+        # - 219 is a confirmed by Henri Louvin
+        packettypedict = {
+            199: "svomgrmpreliminary",
+            200: "svomeclairspreliminary",            
+            201: "svomgrmtrigger",
+            202: "svomeclairswakeup",
+            203: "svomeclairscatalog",
+            204: "svomslewing",
+            205: "svomnotslewing",
+            209: "svommxtinitialqfnumber",
+            210: "svommxtupdateqfnumber",
+            211: "svomvtcandidate",
+            219: "svomretraction",
         }
         packettypenumber = alert["packettypenumber"]
         if packettypenumber not in packettypedict:
@@ -321,28 +339,6 @@ def respond(alert):
 
     eventtimestamp = alert["eventtimestamp"]
     logresponse("event time stamp is %s." % eventtimestamp)
-
-    #        199: "svomgrmpreliminary",
-    #        200: "svomeclairspreliminary",
-    #        201: "svomgrmtrigger",
-    #        202: "svomeclairswakeup",
-    #        203: "svomeclairscatalog",
-    #        204: "svomslewing",
-    #        205: "svomnotslewing",
-    #        206: "svomeclairsrefined",
-    #        207: "svomgrmrefined",
-    #        208: "svomeclairsgrmhr",
-    #        209: "svommxtinitialqfnumber",
-    #        210: "svommxtupdateqfnumber",
-    #        211: "svomvtcandidate",
-    #        212: "svomcgftcandidate",
-    #        213: "svomgwaccandidate",
-    #        214: "svomfgftcandidate",
-    #        215: "svomretraction",
-    #        216: "svomeclairsfinal",
-    #        217: "svomgrmfinal",
-    #        218: "svommxtfinal",
-    #        219: "svomvtfinal",
 
     if alerttype == "svomeclairscatalog" or alerttype == "svomretraction":
         enabled = "false"

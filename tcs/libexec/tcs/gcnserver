@@ -640,6 +640,7 @@ def handlesvommessage(messagetype, messagevalue):
     value = xml.etree.ElementTree.fromstring(messagevalue)
 
     packettypenumber = int(value.find("./What/Param[@name='Packet_Type']").get("value"))
+    # This is the mapping I originall implemented based on documentation at the FSC.
     eventtypedict = {
         199: "svomgrmpreliminary",
         200: "svomeclairspreliminary",
@@ -662,6 +663,23 @@ def handlesvommessage(messagetype, messagevalue):
         217: "svomgrmfinal",
         218: "svommxtfinal",
         219: "svomvtfinal",
+    }
+    # This is the mapping I implemented on 2026-02-07.
+    # - 199 and 200 are regularly seen
+    # - 201 to 205 and 209 to 211 are documented at https://fsc.svom.org/readthedocs/svom/notices_and_circulars/index.html#notices
+    # - 219 is a confirmed by Henri Louvin
+    eventtypedict = {
+        199: "svomgrmpreliminary",
+        200: "svomeclairspreliminary",            
+        201: "svomgrmtrigger",
+        202: "svomeclairswakeup",
+        203: "svomeclairscatalog",
+        204: "svomslewing",
+        205: "svomnotslewing",
+        209: "svommxtinitialqfnumber",
+        210: "svommxtupdateqfnumber",
+        211: "svomvtcandidate",
+        219: "svomretraction",
     }
     if packettypenumber not in eventtypedict:
         eventtype = "svomunknown%d" % packettypenumber
