@@ -1152,50 +1152,62 @@ namespace eval "executor" {
   }
   
   proc resetactivitycommand {} {
-    variable instrument
+    variable instruments
     set start [utcclock::seconds]
     log::summary "resetting."
-    foreach server [list telescope $instrument] {
-      catch {client::waituntilstarted $server}
-      client::request $server "reset"
-      client::wait $server
+    foreach instrument $instruments {
+      catch {client::waituntilstarted $instrument}
+      client::request $instrument "reset"
+      client::wait $instrument
     }
+    catch {client::waituntilstarted telescope}
+    client::request telescope "reset"
+    client::wait telescope
     log::summary [format "finished resetting after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc recovertoclosedactivitycommand {} {
-    variable instrument
+    variable instruments
     set start [utcclock::seconds]
     log::summary "recovering to closed."
     catch {client::waituntilstarted "watchdog"}
     client::request "watchdog" "enable"
     client::wait "watchdog"
-    foreach server [list telescope $instrument] {
-      catch {client::waituntilstarted $server}
-      client::request $server "recover"
-      client::wait $server
+    foreach instrument $instruments {
+      catch {client::waituntilstarted $instrument}
+      client::request $instrument "recover"
+      client::wait $instrument
     }
+    catch {client::waituntilstarted telescope}
+    client::request telescope "recover"
+    client::wait telescope
     log::summary [format "finished recovering to closed after %.1f seconds." [utcclock::diff now $start]]
   }
 
   proc recovertoopenactivitycommand {} {
-    variable instrument
+    variable instruments
     set start [utcclock::seconds]
     log::summary "recovering to open."
     catch {client::waituntilstarted "watchdog"}
     client::request "watchdog" "enable"
     client::wait "watchdog"
-    foreach server [list telescope $instrument] {
-      catch {client::waituntilstarted $server}
-      client::request $server "recover"
-      client::wait $server
+    foreach instrument $instruments {
+      catch {client::waituntilstarted $instrument}
+      client::request $instrument "recover"
+      client::wait $instrument
     }
+    catch {client::waituntilstarted telescope}
+    client::request telescope "recover"
+    client::wait telescope
     log::summary "opening after recovery."
-    foreach server [list $instrument telescope] {
-      catch {client::waituntilstarted $server}
-      client::request $server "open"
-      client::wait $server
+    foreach instrument $instruments {
+      catch {client::waituntilstarted $instrument}
+      client::request $instrument "open"
+      client::wait $instrument
     }
+    catch {client::waituntilstarted telescope}
+    client::request telescope "open"
+    client::wait telescope
     log::summary [format "finished recovering to open after %.1f seconds." [utcclock::diff now $start]]
   }
 
