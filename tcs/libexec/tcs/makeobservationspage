@@ -161,20 +161,34 @@ for key in sorted(observationsdict.keys()):
     )
     writehtml("</tr>")
 
+
+totalexposurettime = {}
+for exposuresuffix in [ "", "C0", "C1", "C2", "C3", "B", "g", "r", "i", "gri", "z", "y", "zy"]:
+    totalexposurettime[exposuresuffix] = 0
+for key in sorted(observationsdict.keys()):
+    for exposuresuffix in [ "", "C0", "C1", "C2", "C3", "B", "g", "r", "i", "gri", "z", "y", "zy"]:
+        totalexposurettime[exposuresuffix] += observationsdict[key]["exposuretime" + exposuresuffix]
+writehtml("<tr>")
+writehtml(
+    '<td class="observationstable" colspan=\"2\">Total</td>'
+)
+for exposuresuffix in [ "", "C0", "C1", "C2", "C3", "B", "g", "r", "i", "gri", "z", "y", "zy"]:
+    writehtml(
+        '<td class="observationstable">%.0f</td>'
+        % totalexposurettime[exposuresuffix]
+    )
+writehtml("</tr>")
+
 writehtml(
     """
 </table>
 """
 )
 
-
 writehtml(
     """
-</div>
-
-<div>
 <hr/>
-Updated: %s UTC
+<p>Updated: %s UTC</p>
 </div>
 
 </body>
