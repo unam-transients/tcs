@@ -523,7 +523,7 @@ def writealertstable(alerts, name):
 
                 lsviewerurl = "https://www.legacysurvey.org/viewer?ra=%.5f&dec=%.5f&pixscale=0.500"
                 lsfitsurl = "https://www.legacysurvey.org/viewer/cutout.fits?ra=%.5f&dec=%.5f&pixscale=0.38&bands=%s&size=1200"
-                writealertpage("<li>Legacy Survey<ul>")
+                writealertpage("<li>Legacy Survey (DR10)<ul>")
                 writealertpage(
                     '<li><a href="%s">Viewer</a></li>' % (lsviewerurl % (alpha, delta))
                 )
@@ -552,7 +552,10 @@ def writealertstable(alerts, name):
                     '<li><a href="%s">Viewer</a></li>' % (psviewerurl % (pscoordinates))
                 )
                 writealertpage("</ul></li>")
-
+                writealertpage(
+                    '<li><a href="%s.reg">DS9 region file</a></li>'
+                    % alert["identifier"]
+                )
 
                 writealertpage(
                     """
@@ -561,6 +564,21 @@ def writealertstable(alerts, name):
 </body>
 </html>
                                    """
+                )
+
+            regionfilepath = os.path.join(
+                alertpagesdirectorypath, alert["identifier"] + ".reg"
+            )
+            with open(regionfilepath, "w") as regionfile:
+                print("icrs", file=regionfile)
+                print(
+                    'circle %s %s %.2f"'
+                    % (
+                        alert["alpha"],
+                        alert["delta"],
+                        uncertainty * 3600,
+                    ),
+                    file=regionfile,
                 )
 
 
