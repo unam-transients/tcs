@@ -116,7 +116,7 @@ do
   do
     if $deletefits
     then
-      $rsync -aR --bwlimit=25M --remove-source.files $file "$dst"
+      $rsync -aR --bwlimit=25M --remove-source-files $file "$dst"
     else
       $rsync -aR --bwlimit=25M $file "$dst"
     fi
