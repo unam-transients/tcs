@@ -566,7 +566,7 @@
     // Value at OAN for OGSE: "derotatoroffset": "9.27d",
     // Value at OAN for DDRAGO "derotatoroffset": "15.85d",
     // Value at OAN for DDRAGO with the detector axes rotated by 45 degrees: "29.15d"
-    // Value at OAN for DDRAGO observations of GRB 260207B with the detector axes about 15 degrees west of north "ddrago": "0d"
+    // Value at OAN for DDRAGO observations of GRB 260207B with the detector axes about 15 degrees east of north "ddrago": "0d"
     "derotatoroffsets": {
       "ddrago":  "-15.85d"
     },
