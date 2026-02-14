@@ -128,7 +128,7 @@ EOF
 *      *  *  *  *  rsync -a --include="*.fits.txt" --include="*/" --exclude="*" rsync://ddrago/tcs/latest/executor /usr/local/var/tcs/latest/
 *      *  *  *  *  rsync -a --include="*.fits.txt" --include="*/" --exclude="*" rsync://tequila/tcs/latest/executor /usr/local/var/tcs/latest/
 *      *  *  *  *  tcs makeobservationspage
-*/5    *  *  *  *  tcs makeobservationspage $(date +%%%m%d)
+*/5    *  *  *  *  tcs makeobservationspage $(date +%H%m%d)
 
 EOF
     ;;
