@@ -13,9 +13,10 @@ This is the mountain-top TCS web-site for the COLIBRÍ telescope at the [OAN/SPM
     * [Calendar](https://docs.google.com/spreadsheets/d/1NjtByyEY0vQNsOzBk9FyVZ3_SIjHwc7e9dA60l5Fm3U/edit?usp=sharing)
     * [Log](https://projets.lam.fr/projects/svom-colibri/wiki/Observations_Log)
     * [Weather Forecast](https://www.meteoblue.com/en/weather/forecast/meteogramweb/parque-nacional-san-pedro-m%c3%a1rtir_mexico_3983083)
-* Queues
+* Observations
     * [Alert Queue](/tcs/alerts.html)
     * [Block Queue](/tcs/blocks.html)
+    * [Observations by Date](/tcs/observations/)
 * Data
     * ASU pipeline:
         * [At OAN](nas/redux-colibri)
