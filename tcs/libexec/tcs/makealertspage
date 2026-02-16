@@ -508,9 +508,9 @@ def writealertstable(alerts, name):
                 writealertpage(
                     "<li>Position: %s %s</li>" % (alert["alpha"], alert["delta"])
                 )
-                writealertpage("<li>Position: %.5f %+.5f</li>" % (alpha, delta))
                 writealertpage("<li>Uncertainty: %s </li>" % (alert["uncertainty"]))
 
+                writealertpage("<li>Position: %.5f %+.5f deg</li>" % (alpha, delta))
                 if alert["uncertainty"].endswith("as"):
                     uncertainty = float(alert["uncertainty"][:-3]) / 3600
                 elif alert["uncertainty"].endswith("am"):
@@ -519,7 +519,25 @@ def writealertstable(alerts, name):
                     uncertainty = float(alert["uncertainty"][:-2])
                 else:
                     uncertainty = 0
-                writealertpage("<li>Uncertainty: %.5f </li>" % uncertainty)
+                writealertpage("<li>Uncertainty: %.5f deg</li>" % uncertainty)
+
+                if uncertainty <= 3 / 3600:
+                    sigmalevel = 3
+                elif uncertainty <= 12 / 60:
+                    sigmalevel = 5
+                else:
+                    sigmalevel = 10
+                writealertpage("<li>Conventional level for non-detections: %.0f sigma </li>" % sigmalevel)
+                writealertpage("<li>FAP:<ul>")
+                for sigmalevel in [3, 4, 5, 6, 10]:
+                    m = (uncertainty * 3600) ** 2
+                    p = math.erfc(sigmalevel / math.sqrt(2))
+                    if 1 - p == 1:
+                        P = p * m
+                    else:
+                        P = 1 - (1 - p) ** m
+                    writealertpage("<li>For %.0f sigma: %.4f </li>" % (sigmalevel, P))
+                writealertpage("</ul></li>")
 
                 lsviewerurl = "https://www.legacysurvey.org/viewer?ra=%.5f&dec=%.5f&pixscale=0.500"
                 lsfitsurl = "https://www.legacysurvey.org/viewer/cutout.fits?ra=%.5f&dec=%.5f&pixscale=0.38&bands=%s&size=1200"
