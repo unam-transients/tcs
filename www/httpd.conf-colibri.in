@@ -111,6 +111,15 @@ ServerName colibri-services
 
   ############################################################
 
+  <Location /redux-asu/>
+    ProxyPass         http://192.168.100.44/
+    ProxyPassReverse  /
+    ProxyHTMLEnable   On
+    ProxyHTMLURLMap   http://192.168.100.44/ /redux-asu/
+    ProxyHTMLURLMap   /                     /redux-asu/
+    RequestHeader     unset  Accept-Encoding
+  </Location>
+
   <Location /redux-cppm/>
     ProxyPass         http://192.168.100.61/shared/redux/
     ProxyPassReverse  /
