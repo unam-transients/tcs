@@ -34,7 +34,7 @@ package require "target"
 set detectortype [config::getvalue [config::getvalue "ccd" "identifier"] "detectortype"]
 switch -exact $detectortype {
   "andor" {
-    package require "detectorando"
+    package require "detectorandor"
   }
   "dummy" {
     package require "detectordummy"

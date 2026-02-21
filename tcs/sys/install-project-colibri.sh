@@ -198,9 +198,10 @@ EOF
   
   echo "service rsync start"
 
-  echo "tcs loop -d 600 'rsync -aH --exclude=\"*.tmp\" --exclude=\"*.jpg\" --exclude=\"*.fits\" --exclude=\"*.fits.*\" /usr/local/var/tcs/ rsync://colibri-rsync/colibri-raw/' &"
   echo "tcs loop -d 60  'rsync -aH --exclude=\"*.tmp\" --exclude=\"debug*.txt\" --include=\"*.txt\" --include=\"*/\" --exclude=\"*\" /usr/local/var/tcs/ rsync://colibri-rsync/colibri-raw/' &"
-  echo "tcs loop -d 10  'rsync -aH --exclude=\"*.tmp\" --include=\"*.fits.*\" --include=\"*/\" --exclude=\"*\" --remove-source-files /usr/local/var/tcs/ rsync://colibri-rsync/colibri-raw/' &"
+  echo "tcs loop -d 600 'rsync -aH --exclude=\"*.tmp\" --exclude=\"*.jpg\" --exclude=\"*.fits\" --exclude=\"*.fits.*\" /usr/local/var/tcs/ rsync://colibri-rsync/colibri-raw/' &"
+  echo "tcs loop -d 600 'rsync -aH --include=\"*.fits.txt\" --include=\"*/\" --exclude=\"*\"                       /usr/local/var/tcs/ rsync://colibri-rsync/colibri-raw/' &"
+  echo "tcs loop -d 600 'rsync -aH --include=\"*.fits.fz\"  --include=\"*/\" --exclude=\"*\" --remove-source-files /usr/local/var/tcs/ rsync://colibri-rsync/colibri-raw/' &"
 
   echo "tcs startserver -A &"
   

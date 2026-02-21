@@ -571,6 +571,7 @@
     "derotatoroffsets": {
       "ddrago":  "-15.85d"
     },
+    // Value at OAN for TEQUILA with column position angle - parallactic angle = 6.84 deg: "-90d"
     "derotatorpupiltrackingoffsets": {
       "2": "-90d",
       "3": "45d",

@@ -79,7 +79,7 @@ dst="$1"
 cd "$tcsprefix"/var/tcs
 while true
 do
-  # Assemble the FITS files from the .fits.hdr.tmp and .fits.px.tmp files.
+  # Assemble the FITS files from the .fits.hdr.tmp and .fits.pix.tmp files.
   find . -name "*C[0-9]?c.fits.hdr.tmp" |
   while read hdr
   do

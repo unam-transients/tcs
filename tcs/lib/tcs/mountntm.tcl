@@ -145,10 +145,10 @@ namespace eval "mount" {
     server::setdata "remainingtrackingseconds"    ""
 
 
-  server::setdata "requestedport"               ""
-  server::setdata "requestedportposition"       ""
-  server::setdata "portposition"                ""
-  server::setdata "port"                        ""    
+    server::setdata "requestedport"               ""
+    server::setdata "requestedportindex"          ""
+    server::setdata "port"                        ""    
+    server::setdata "portindex"                   ""
 
     variable hamotionstate    ""
     variable deltamotionstate ""
