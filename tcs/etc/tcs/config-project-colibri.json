@@ -567,6 +567,7 @@
     // Value at OAN for DDRAGO "derotatoroffset": "15.85d",
     // Value at OAN for DDRAGO with the detector axes rotated by 45 degrees: "29.15d"
     // Value at OAN for DDRAGO observations of GRB 260207B with the detector axes about 15 degrees east of north "ddrago": "0d"
+    // Value at OAN for TEQUILA observations and the detector rotated by 6.8 degrees wrt paralactic: "-90d"
     "derotatoroffsets": {
       "ddrago":  "-15.85d"
     },
@@ -574,7 +575,7 @@
       "2": "-90d",
       "3": "45d",
       "ddrago": "45d",
-      "tequila": "-90d",
+      "tequila": "-83.2d",
       "ogse": "-90d"
     },
     // When the PLC parks the telescope, it uses these positions. These are not
