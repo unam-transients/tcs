@@ -19,7 +19,7 @@ This is the mountain-top TCS web-site for the COLIBRÍ telescope at the [OAN/SPM
     * [Observations by Date](/tcs/observations/)
 * Data
     * ASU pipeline:
-        * [At OAN](nas/redux-colibri)
+        * [At OAN](redux-asu/)
     * CPPM pipeline:
         * [At OAN](redux-cppm/)
         * [At LAM](https://www.colibri-obs.org/wp-includes/redux/)
