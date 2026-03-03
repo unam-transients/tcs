@@ -854,9 +854,9 @@ else:
     consumerconfig = {}
     topics = [
         "gcn.heartbeat",
-        "gcn.notices.svom.voevent.grm",
-        "gcn.notices.svom.voevent.eclairs",
-        "gcn.notices.svom.voevent.mxt",
+        #"gcn.notices.svom.voevent.grm",
+        #"gcn.notices.svom.voevent.eclairs",
+        #"gcn.notices.svom.voevent.mxt",
         "gcn.notices.einstein_probe.wxt.alert",
         # IceCube. We used to use the gcn.classic streams for both tracks and
         # cascade events. However, tracks are now distributed via a gcn.notices
