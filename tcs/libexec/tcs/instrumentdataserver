@@ -36,7 +36,7 @@ optstring=fjzd
 compress="bzip2 -1kf"
 rsync="rsync"
 suffix="bz2"
-deletefits=false
+deleteargs=""
 if ! getopt -qQ -- "$optstring" "$@"
 then
   usageerror
@@ -61,7 +61,7 @@ do
     shift
     ;;
   -d)
-    deletefits=true
+    deleteargs="--remove-source-files"
     shift
     ;;
   *)
@@ -80,7 +80,7 @@ cd "$tcsprefix"/var/tcs
 while true
 do
   # Assemble the FITS files from the .fits.hdr.tmp and .fits.pix.tmp files.
-  find . -name "*C[0-9]?c.fits.hdr.tmp" |
+  find . -name "*C[0-9]?c.fits.hdr.tmp" | sort |
   while read hdr
   do
     fits=$(echo $hdr | sed 's/.hdr.tmp$//')
@@ -96,30 +96,23 @@ do
   (
     find . -name "*C[0-9]?.fits"
     find . -name "*C[0-9]?c.fits"
-  ) | 
+  ) | sort |
   while read fits
   do
     tcs fitsheader $fits >$fits.txt
     $compress $fits
-    $rsync -aR --bwlimit=25M $fits.txt $fits.$suffix "$dst"
+    $rsync -aR --bwlimit=25M $deleteargs $fits.txt $fits.$suffix "$dst"
   done
   # Copy any left-over .fits.txt and compressed files to the destination.
-  (
-    find . -name "*C[0-9]?.fits.txt"
-  ) | while read file
+  find . -name "*C[0-9]?.fits.txt" | sort |
+  while read file
   do
-    $rsync -aR --bwlimit=25M $file "$dst"
+    $rsync -aR --bwlimit=25M $deleteargs $file "$dst"
   done
-  (
-    find . -name "*C[0-9]?.fits.$suffix"
-  ) | while read file
+  find . -name "*C[0-9]?.fits.$suffix" | sort |
+  while read file
   do
-    if $deletefits
-    then
-      $rsync -aR --bwlimit=25M --remove-source-files $file "$dst"
-    else
-      $rsync -aR --bwlimit=25M $file "$dst"
-    fi
+    $rsync -aR --bwlimit=25M $deleteargs  $file "$dst"
   done
   rsync -l latest "$dst"
   sleep 5
