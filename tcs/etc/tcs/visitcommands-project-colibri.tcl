@@ -1092,6 +1092,9 @@ proc tokovinintestvisit {{exposures 1} {exposuretime 10} {filter {i z}} {absolut
   executor::setbinning "default"
   eval executor::movefilterwheel $filter
 
+  log::summary "tokovinintestvisit: initial image."
+  executor::expose object $exposuretime
+
   foreach {alphaoffsetfactor deltaoffsetfactor} {
     +0.0 +0.0
     +1.0 +0.0
