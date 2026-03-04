@@ -9,6 +9,7 @@ import sys
 import os
 import json
 
+archiveprefix = "/nas/archive-colibri/raw/"
 prefix = "/usr/local/var/"
 
 args = sys.argv[1:]
@@ -241,7 +242,7 @@ for date in args:
 
     observationsdict = {}
 
-    for path in glob.glob("%s/tcs/%s/executor/images/*/*/*/*fits.txt" % (prefix, date)):
+    for path in glob.glob("%s/%s/executor/images/*/*/*/*fits.txt" % (archiveprefix, date)):
         try:
             with open(path) as f:
                 s = f.read()

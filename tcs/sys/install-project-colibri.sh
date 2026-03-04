@@ -124,11 +124,8 @@ EOF
 *      *  *  *  *  tcs makeblockspage
 *      *  *  *  *  mkdir -p /usr/local/var/www/tcs/blocks/; rsync --delete --dirs /usr/local/var/tcs/blocks/ /usr/local/var/www/tcs/blocks/
 
-
-*      *  *  *  *  rsync -a --include="*.fits.txt" --include="*/" --exclude="*" rsync://ddrago/tcs/latest/executor /usr/local/var/tcs/latest/
-*      *  *  *  *  rsync -a --include="*.fits.txt" --include="*/" --exclude="*" rsync://tequila/tcs/latest/executor /usr/local/var/tcs/latest/
-*      *  *  *  *  tcs makeobservationspage
-*/5    *  *  *  *  tcs makeobservationspage $(date +%Y%m%d)
+00     *  *  *  *  tcs makeobservationspage $(date +\%Y\%m\%d)
+*/5    *  *  *  *  tcs makeobservationspage
 
 EOF
     ;;
