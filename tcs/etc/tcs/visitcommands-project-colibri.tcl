@@ -562,13 +562,7 @@ proc coarsefocusvisit {{exposuretime 5}} {
   if {[string equal $instrument "tequila"]} {
       log::summary "coarsefocusvisit: switching to ddrago for coarse focus."
       executor::setinstrument "ddrago"
-      coarsefocusvisit $exposuretime
-      log::summary "coarsefocusvisit: switching back to tequila."
-      executor::setinstrument "tequila"
-      return true
   }
-
-  setinstrument "ddrago"
 
   if {[string equal $instrument "ogse"]} {
     set window "2kx2k"
