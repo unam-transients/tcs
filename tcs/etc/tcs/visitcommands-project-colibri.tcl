@@ -592,7 +592,7 @@ proc coarsefocusvisit {{exposuretime 5}} {
     "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning %d." \
     $binning \
   ]
-  executor::focussecondary $detector $exposuretime 1000 100 false true
+  executor::focussecondary $detector $exposuretime 500 50 false true
 
   log::summary "coarsefocusvisit: finished."
 
