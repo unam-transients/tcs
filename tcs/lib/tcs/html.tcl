@@ -1604,17 +1604,17 @@ proc writeinfo {} {
     } else {
       if {[client::getdata "supervisor" "maybeopen"]} {
         set status "may be open"
+        set emph ""
       } elseif {[client::getdata "supervisor" "maybeopentoventilate"]} {
         set status "may be open to ventilate"
+        set emph ""
       } else {
         set status "must be closed"
+        set emph "warning"
       }
       set why [client::getdata "supervisor" "why"]
       if {![string equal $why ""]} {
         set status "$status ($why)"
-        set emph "warning"
-      } else {
-        set emph ""
       }
     }
     writehtmlfullrowwithemph "Supervisor" $emph $status

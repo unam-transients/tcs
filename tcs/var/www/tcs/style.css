@@ -45,7 +45,12 @@
 
   td.warning,
   emph.warning {
-    background: #ffd701;
+    background: #ffbc2e;
+  }
+
+  td.error,
+  emph.error {
+    background: #ff5f57;
   }
 
   td.warning,
@@ -57,7 +62,7 @@
 
   th.emergency,
   input.emergency {
-    color: #f5455a;
+    color: #ff5f57;
   }
 
   a {
@@ -82,6 +87,11 @@
   td.warning,
   emph.warning {
     background-color: #fea;
+  }
+
+  td.error,
+  emph.error {
+    background-color: #f99;
   }
 
   th.emergency,
@@ -286,9 +296,4 @@ input.text {
 td.summary,
 emph.summary {
   font-weight: bold;
-}
-
-td.error,
-emph.error {
-  background-color: #f99;
 }
