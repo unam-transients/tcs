@@ -161,8 +161,8 @@ namespace eval "mount" {
   variable pendingmountdelta               ""
   variable pendingmountst                  ""
   variable pendingtelescopemotionstate     ""
-  variable pendingportindex             ""
-  variable predingremainingtrackingseconds ""
+  variable pendingportindex                ""
+  variable pendingremainingtrackingseconds ""
 
   variable telescopemotionstate            ""
   variable ontarget                        ""
@@ -178,7 +178,7 @@ namespace eval "mount" {
     variable pendingmountst
     variable pendingtelescopemotionstate
     variable pendingportindex
-    variable predingremainingtrackingseconds
+    variable pendingremainingtrackingseconds
 
     variable telescopemotionstate
     variable ontarget
@@ -229,9 +229,9 @@ namespace eval "mount" {
     }
     if {[scan $response "%*d DATA INLINE CURRENT.TRACKTIME=%s" value] == 1} {
       if {[string equal $value "NULL"]} {
-        set predingremainingtrackingseconds ""
+        set pendingremainingtrackingseconds ""
       } else {
-        set predingremainingtrackingseconds $value
+        set pendingremainingtrackingseconds $value
       }
       return false
     }
@@ -266,7 +266,7 @@ namespace eval "mount" {
     set mountst                      $pendingmountst
     set mountha                      [astrometry::foldradsymmetric [expr {$mountst - $mountalpha}]]
     set portindex                    $pendingportindex
-    set remainingtrackingseconds     $predingremainingtrackingseconds
+    set remainingtrackingseconds     $pendingremainingtrackingseconds
 
     set telescopemotionstate         $pendingtelescopemotionstate
     if {($telescopemotionstate >> 3) & 1} {
@@ -309,7 +309,7 @@ namespace eval "mount" {
     server::setdata "mountdelta"          $mountdelta
     server::setdata "portindex"           $portindex
     server::setdata "port"                $port
-    server::setdata "remainingtrackingseconds"        $remainingtrackingseconds
+    server::setdata "remainingtrackingseconds" $remainingtrackingseconds
 
     updaterequestedpositiondata false
 
@@ -597,7 +597,13 @@ namespace eval "mount" {
     if {!$move && $interval >= 20} {
       log::warning [format "offsetting took %.1f seconds." $interval]
     }
-    log::info [format "%.0f seconds tracking remaining." [server::getdata "remainingtrackingseconds"]]
+    set remainingtrackingseconds [server::getdata "remainingtrackingseconds"]
+    while {[string equal $remainingtrackingseconds ""]} {
+      log::info [format "waiting for tracking time."]
+      coroutine::yield
+      set remainingtrackingseconds [server::getdata "remainingtrackingseconds"]
+    }
+    log::info [format "%.0f seconds tracking remaining." $remainingtrackingseconds]
     server::setactivity "tracking"
     server::clearactivitytimeout
   }

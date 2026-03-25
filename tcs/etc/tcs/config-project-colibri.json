@@ -569,7 +569,8 @@
     // Value at OAN for DDRAGO observations of GRB 260207B with the detector axes about 15 degrees east of north "ddrago": "0d"
     // Value at OAN for TEQUILA observations and the detector rotated by 6.8 degrees wrt paralactic: "-90d"
     "derotatoroffsets": {
-      "ddrago":  "-15.85d"
+      "ddrago":  "-15.85d",
+      "tequila": "0d"
     },
     // Value at OAN for TEQUILA with column position angle - parallactic angle = 6.84 deg: "-90d"
     "derotatorpupiltrackingoffsets": {
