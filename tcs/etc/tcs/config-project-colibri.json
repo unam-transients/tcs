@@ -706,7 +706,7 @@
     "initialz0": "22000",
     "minz": "0",
     "maxz": "40000",
-    "allowedzerror": "2",
+    "allowedzerror": "3",
     "zdeadzonewidth": "2",
     "dztweak": "-1000",
     "temperaturesensor": "telescope-M1-rear-temperature",

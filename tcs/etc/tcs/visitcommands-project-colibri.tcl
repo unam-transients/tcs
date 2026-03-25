@@ -405,6 +405,51 @@ proc tequilagridvisit {gridrepeats gridpoints exposurerepeats exposuretime {grid
   return true
 }
 
+proc tequilatrackinggridvisit {gridrepeats gridpoints exposurerepeats exposuretime {gridsize 30as}} {
+
+  log::summary "tequilatrackinggridvisit: starting."
+
+  executor::setinstrument "tequila"
+  executor::setpupiltracking false
+  executor::setsecondaryoffset +50
+
+  set track true
+
+  # Thus gives reasonable results for 1, 2, 4, 5, and 9 gridpoints.
+  if {$gridpoints == 1} {
+    set ditherofsetfactors { 0 0 }
+  } else {
+    set ditherofsetfactors [lrange {
+          +0.5 +0.5
+          -0.5 -0.5
+          +0.5 -0.5
+          -0.5 +0.5
+          +0.0 +0.0
+          +0.5 +0.0
+          -0.5 +0.0
+          +0.0 +0.5
+          +0.0 -0.5
+        } 0 [expr {$gridpoints * 2 - 1}]]
+  }
+  
+  set gridrepeat 0
+  while {$gridrepeat < $gridrepeats} {
+    foreach {eastoffsetfactor northoffsetfactor} $ditherofsetfactors {
+      gridvisitoffset $gridsize $eastoffsetfactor $northoffsetfactor $track
+      set track false
+      set exposure 0
+      while {$exposure < $exposurerepeats} {
+        executor::expose object $exposuretime
+        incr exposure
+      }
+    }
+    incr gridrepeat
+  }
+
+  log::summary "tequilatrackinggridvisit: finished."
+  return true
+}
+
 ########################################################################
 
 proc dithervisitoffset {diameter track} {

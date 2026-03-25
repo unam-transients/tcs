@@ -25,188 +25,275 @@
  ***********************************************************************
  */
 
-body, input, pre, table {
-  font-family:        "Verdana", sans-serif;
-  font-size:          10px;
-  line-height:        12px;
+:root {
+  color-scheme: light dark;
 }
 
-body        {
-  margin:             0.5em;
+@media (prefers-color-scheme: dark) {
+
+  body {
+    color: #d4d4d4;
+    background: #1e1e1e;
+    background-color: #1e1e1e;
+  }
+
+  table,
+  th,
+  td {
+    border-color: #1e1e1e;
+  }
+
+  td.warning,
+  emph.warning {
+    background: #ffbc2e;
+  }
+
+  td.error,
+  emph.error {
+    background: #ff5f57;
+  }
+
+  td.warning,
+  emph.warning,
+  td.error,
+  emph.error {
+    color: #1e1e1e;
+  }
+
+  th.emergency,
+  input.emergency {
+    color: #ff5f57;
+  }
+
+  a {
+    color: #9cdcf3;
+  }
+
+}
+
+@media (prefers-color-scheme: light) {
+
+  body {
+    color: #000;
+    background: #fff;
+  }
+
+  table,
+  th,
+  td {
+    border-color: #fff;
+  }
+
+  td.warning,
+  emph.warning {
+    background-color: #fea;
+  }
+
+  td.error,
+  emph.error {
+    background-color: #f99;
+  }
+
+  th.emergency,
+  input.emergency {
+    color: red;
+  }
+
+}
+
+body,
+input,
+pre,
+table {
+  font-family: "Verdana", sans-serif;
+  font-size: 10px;
+  line-height: 12px;
+}
+
+body {
+  margin: 0.5em;
 }
 
 h1 {
-  font-size:          16px;
-  margin:             0;
-  padding:            0;
+  font-size: 16px;
+  margin: 0;
+  padding: 0;
 }
 
 div {
-  margin:             0;
-  padding:            0;
+  margin: 0;
+  padding: 0;
 }
 
 div#images,
 div#navigation,
 div#title {
-  clear:              both;
-  padding:            0.5em;
-  padding-bottom:     0em;
+  clear: both;
+  padding: 0.5em;
+  padding-bottom: 0em;
 }
 
 div#webcam,
 div#instrument,
 div#allsky {
-  float:              left;
-  padding:            0.5em;
+  float: left;
+  padding: 0.5em;
 }
 
 div#controls {
-  float:              right;
-  padding:            0.5em;
+  float: right;
+  padding: 0.5em;
 }
 
 div#status {
-  padding:            0.5em;
-  width:              56em;
+  padding: 0.5em;
+  width: 56em;
 }
 
 div#log {
-  padding:            0.5em;
+  padding: 0.5em;
 }
 
-img.webcam-small, img.allsky-small, img.instrument-small {
-  height:             90px;
-  margin:             1px;
+img.webcam-small,
+img.allsky-small,
+img.instrument-small {
+  height: 90px;
+  margin: 1px;
 }
 
-img.webcam, img.allsky {
-  height:             512px;
-  margin:             1px;
+img.webcam,
+img.allsky {
+  height: 512px;
+  margin: 1px;
 }
 
 img.instrument {
-  height:             512px;
-  margin:             1px;
+  height: 512px;
+  margin: 1px;
 }
 
-pre, table, tbody, tr, td, form, input {
-  margin:             0;
-  padding:            0;
+pre,
+table,
+tbody,
+tr,
+td,
+form,
+input {
+  margin: 0;
+  padding: 0;
 }
 
-table, tbody, tr, td {
-  border:             none;
+table,
+tbody,
+tr,
+td {
+  border: none;
 }
 
 table {
-  border-collapse:    collapse;
+  border-collapse: collapse;
 }
 
-table.status, 
+table.status,
 table.control {
-  margin-bottom:      1em;
+  margin-bottom: 1em;
 }
 
 
 td.key {
-  padding-right:      0em;
-  width:              24em;
+  padding-right: 0em;
+  width: 24em;
 }
 
 td.field {
-  padding-left:       0em;
-  padding-right:      0em;
-  border-right:       0.5em;
-  border-left:        0.5em;
-  border-left-style:  solid;
-  border-right-style: solid;
-  border-color:       #fff;
-  width:              8em;
+  padding-left: 0em;
+  padding-right: 0em;
+  margin-right: 0.5em;
+  margin-left: 0.5em;
+  width: 8em;
 }
 
 th {
-  font-style:         bold;
-  border-bottom:      1em;
+  font-style: bold;
+  border-bottom: 1em;
 }
 
-th.emergency {
-  color:              red;
-}
 
 td.full {
-  width:              25em;
+  width: 25em;
 }
 
 pre.log {
-  white-space:        pre-wrap;
+  white-space: pre-wrap;
 }
 
 th.control,
 td.control {
-  padding:            0.2em;
+  padding: 0.2em;
 }
 
-table.blockstable, tr.blockstable, th.blockstable, td.blockstable {
-  padding-left:       0.5em;
-  padding-right:      0.5em;
-  padding-top:        0.2em;
-  padding-bottom:     0.2em;
-  line-height:        1.4;
+table.blockstable,
+tr.blockstable,
+th.blockstable,
+td.blockstable {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+  line-height: 1.4;
   text-align: left;
 }
 
-table.observationstable, tr.observationstable, th.observationstable, td.observationstable {
-  padding-left:       0.5em;
-  padding-right:      0.5em;
-  padding-top:        0.2em;
-  padding-bottom:     0.2em;
-  line-height:        1.4;
+table.observationstable,
+tr.observationstable,
+th.observationstable,
+td.observationstable {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+  line-height: 1.4;
   text-align: left;
 }
 
-table.alertstable, tr.alertstable, th.alertstable, td.alertstable {
-  padding-left:       0.5em;
-  padding-right:      0.5em;
-  padding-top:        0.2em;
-  padding-bottom:     0.2em;
-  line-height:        1.4;
+table.alertstable,
+tr.alertstable,
+th.alertstable,
+td.alertstable {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+  line-height: 1.4;
   text-align: left;
 }
 
-table.alertsinputs, tr.alertsinputs, th.alertsinputs, td.alertsinputs {
-  padding-left:       0.5em;
-  padding-right:      0.5em;
-  padding-top:        0.2em;
-  padding-bottom:     0.2em;
-} 
+table.alertsinputs,
+tr.alertsinputs,
+th.alertsinputs,
+td.alertsinputs {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+}
 
 input.alertstable {
-  width:              2em;
-  height:             1em;
+  width: 2em;
+  height: 1em;
 }
 
 input {
-  width:              14em;
-  font-size:          9px;
+  width: 14em;
+  font-size: 9px;
 }
 
 input.text {
-  width:              13.5em;
+  width: 13.5em;
 }
 
-input.emergency {
-  color:              red;
-}
 
-td.summary, emph.summary {
-  font-weight:        bold;
-}
-
-td.warning, emph.warning {
-  background-color:   #fea;
-}
-
-td.error, emph.error {
-  background-color:   #f99;
+td.summary,
+emph.summary {
+  font-weight: bold;
 }
