@@ -365,7 +365,7 @@ proc tequilagridvisit {gridrepeats gridpoints exposurerepeats exposuretime {grid
   log::summary "tequilagridvisit: starting."
 
   executor::setinstrument "tequila"
-  executor::setpupiltracking true
+  executor::setpupiltracking false
   executor::setsecondaryoffset +50
 
   set track true
