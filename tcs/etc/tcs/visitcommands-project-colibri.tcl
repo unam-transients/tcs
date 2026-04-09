@@ -692,6 +692,18 @@ proc focusvisit {{exposuretime 5}} {
   return true
 }
 
+proc tequilafocusvisit {{exposuretime 5}} {
+
+  log::summary "tequilafocusvisit: starting."
+  
+  executor::setinstrument "tequila"
+  focusvisit $exposuretime
+  
+  log::summary "tequilafocusvisit: finished."
+
+  return true  
+}
+
 ########################################################################
 
 proc focustiltvisit {{exposuretime 5} {filter {i z}}} {
