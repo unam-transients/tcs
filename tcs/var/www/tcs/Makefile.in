@@ -61,18 +61,10 @@ installs_project_coatli	:=		         \
 
 installs_project_ddoti	:=		         \
 	allsky-project-ddoti.html		     \
-	C0-project-ddoti.html  	     	     \
-	C1-project-ddoti.html  	     	     \
 	C2-project-ddoti.html  	     	     \
 	C3-project-ddoti.html  	     	     \
-	C4-project-ddoti.html  	     	     \
-	C5-project-ddoti.html  	     	     \
-	C0-focuswitness-project-ddoti.html   \
-	C1-focuswitness-project-ddoti.html   \
 	C2-focuswitness-project-ddoti.html   \
 	C3-focuswitness-project-ddoti.html   \
-	C4-focuswitness-project-ddoti.html   \
-	C5-focuswitness-project-ddoti.html   \
 	config-project-ddoti.js		         \
 	observations-project-ddoti.html      \
 	operations-project-ddoti.html  	     \

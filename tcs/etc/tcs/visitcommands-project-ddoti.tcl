@@ -24,7 +24,7 @@
 proc alertvisit {{filter "w"}} {
 
   log::summary "alertvisit: starting."
-  
+
   set alpha   [visit::alpha   [executor::visit]]
   set delta   [visit::delta   [executor::visit]]
   set equinox [visit::equinox [executor::visit]]
@@ -48,12 +48,12 @@ proc alertvisit {{filter "w"}} {
 
   if {[string equal "" [alert::eventtimestamp [executor::alert]]]} {
     log::summary [format "alertvisit: no event timestamp."]
-  } else {  
+  } else {
     log::summary [format "alertvisit: event timestamp is %s." [utcclock::format [alert::eventtimestamp [executor::alert]]]]
   }
   if {[string equal "" [alert::alerttimestamp [executor::alert]]]} {
     log::summary [format "alertvisit: no alert timestamp."]
-  } else {  
+  } else {
     log::summary [format "alertvisit: alert timestamp is %s." [utcclock::format [alert::alerttimestamp [executor::alert]]]]
   }
 
@@ -79,20 +79,14 @@ proc alertvisit {{filter "w"}} {
   if {$uncertainty <= [astrometry::parsedistance "1.65d"]} {
     log::summary "alertvisit: grid is 1 × 1 fields."
     set visits {
-      0 0.0d 0.0d
+      0 "0.0d" "0.0d"
     }
     set aperture "W"
-  } elseif {$uncertainty <= [astrometry::parsedistance "10d"]} {
-    log::summary "alertvisit: grid is 1 × 1 fields."
-    set visits {
-      0 0.0d 0.0d
-    }
-    set aperture "default"
   } else {
-    log::summary "alertvisit: grid is 2 × 1 fields."
+    log::summary "alertvisit: grid is 1 × 2 fields."
     set visits {
-      0 0d -3.3d
-      1 0d -3.3d
+      0 "-1.55d" "0d"
+      1 "+1.55d" "0d"
     }
     set aperture "default"
   }
@@ -106,14 +100,14 @@ proc alertvisit {{filter "w"}} {
   set dither 0
   set first true
   while {$dither < $dithersperfield} {
-    
-    set dithereastrange  "0.33d"
-    set dithernorthrange "0.33d"
-    
+
+    set dithereastrange  "0.3d"
+    set dithernorthrange "0.3d"
+
     set lastalpha   $alpha
     set lastdelta   $delta
     set lastequinox $equinox
-  
+
     if {![file exists [executor::filename]]} {
       log::summary "alertvisit: the alert is no longer in the queue."
       break
@@ -131,7 +125,7 @@ proc alertvisit {{filter "w"}} {
     set alpha   [alert::alpha [executor::alert]]
     set delta   [alert::delta [executor::alert]]
     set equinox [alert::equinox [executor::alert]]
-    
+
     log::summary [format "alertvisit: alert coordinates are %s %s %s." [astrometry::formatalpha $alpha]  [astrometry::formatdelta $delta] $equinox]
 
     if {$alpha != $lastalpha || $delta != $lastdelta || $equinox != $lastequinox} {
@@ -139,31 +133,31 @@ proc alertvisit {{filter "w"}} {
       log::summary [format "alertvisit: new alert coordinates are %s %s %s." [astrometry::formatalpha $alpha]  [astrometry::formatdelta $delta] $equinox]
       executor::setvisit [visit::updatevisittargetcoordinates [executor::visit] [visit::makeequatorialtargetcoordinates $alpha $delta $equinox]]
     }
-    
+
     set dithereastoffset  [expr {[astrometry::parsedistance $dithereastrange ] * (rand() - 0.5)}]
     set dithernorthoffset [expr {[astrometry::parsedistance $dithernorthrange] * (rand() - 0.5)}]
     log::info [format "alertvisit: dither %d is %+.2fd east and %+.2fd north." \
       $dither \
       [astrometry::radtodeg $dithereastoffset ] \
       [astrometry::radtodeg $dithernorthoffset] \
-    ]      
-    
+    ]
+
     set lastalpha   $alpha
     set lastdelta   $delta
     set lastequinox $equinox
 
     foreach {visitidentifier visiteastoffset visitnorthoffset} $visits {
-    
+
       executor::setvisit [visit::updatevisitidentifier [executor::visit] $visitidentifier]
 
       set eastoffset  [astrometry::parseoffset $visiteastoffset ]
       set northoffset [astrometry::parseoffset $visitnorthoffset]
-    
+
       set eastoffset [correctedeastoffset $eastoffset $northoffset $delta]
 
       set eastoffset  [expr {$eastoffset  + [astrometry::parseoffset $dithereastoffset ]}]
       set northoffset [expr {$northoffset + [astrometry::parseoffset $dithernorthoffset]}]
-            
+
       executor::track $eastoffset $northoffset $aperture
 
       set exposure 0
@@ -177,7 +171,7 @@ proc alertvisit {{filter "w"}} {
         executor::expose object $exposuretime
         incr exposure
       }
-      
+
     }
 
     incr dither
@@ -216,7 +210,7 @@ proc alertprologvisit {} {
   executor::setwindow "6kx6k"
   executor::setbinning "default"
   executor::correctpointing 4
-  
+
   log::summary "alertprologvisit: finished."
 
 }
@@ -231,7 +225,7 @@ proc correctedeastoffset {eastoffset northoffset delta} {
   # the field center. Therefore, we calculate the delta at the field edge
   # closest to the equator and multiply the nominal east offset by the ratio
   # of the cosine of delta at the field center to the field edge.
-  
+
   set eastoffset  [astrometry::parseoffset $eastoffset ]
   set northoffset [astrometry::parseoffset $northoffset]
   set delta       [astrometry::parsedelta $delta]
@@ -248,8 +242,8 @@ proc correctedeastoffset {eastoffset northoffset delta} {
     set edgedelta $northedgedelta
   } else {
     set edgedelta $southedgedelta
-  }  
-  
+  }
+
   set correctedeastoffset [expr {$eastoffset * cos($centerdelta) / cos($edgedelta)}]
 
   return $correctedeastoffset
@@ -263,13 +257,13 @@ proc starevisit {exposures exposuretime {filters "w"}} {
 
   executor::setwindow "default"
   executor::setbinning "default"
-  
+
   log::summary [format "starevisit: %d × %.0f second exposures." \
     $exposures $exposuretime \
   ]
 
   executor::track
-  
+
   set exposure 0
   while {$exposure < $exposures} {
     executor::expose object $exposuretime
@@ -289,7 +283,7 @@ proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime {filters 
 
   executor::setwindow "default"
   executor::setbinning "default"
-  
+
   log::summary [format "gridvisit: %d × %.0f second exposures." \
     [expr {$gridrepeats * $gridpoints * $exposuresperdither}] $exposuretime \
   ]
@@ -341,9 +335,9 @@ proc gridvisit {gridrepeats gridpoints exposuresperdither exposuretime {filters 
       }
     }
   }
-  
+
   executor::track
-  
+
   set gridrepeat 0
   while {$gridrepeat < $gridrepeats} {
     foreach {eastoffset northoffset} $dithers {
@@ -372,7 +366,7 @@ proc steppedgridvisit {gridrepeats exposuresperdither exposuretime} {
 
   executor::setwindow "default"
   executor::setbinning "default"
-  
+
   log::summary [format "steppedgridvisit: %d × %.0f second exposures." \
     [expr {$gridrepeats * 5 * $exposuresperdither}] $exposuretime \
   ]
@@ -387,9 +381,9 @@ proc steppedgridvisit {gridrepeats exposuresperdither exposuretime} {
     3 +3.4d -3.4d
     4 -3.4d +3.4d
   }
-  
+
   executor::track
-  
+
   set gridrepeat 0
   while {$gridrepeat < $gridrepeats} {
     foreach {visitidentifier eastoffset northoffset} $dithers {
@@ -417,14 +411,14 @@ proc allskyvisit {} {
 
   executor::setwindow "default"
   executor::setbinning "default"
-  
+
   set eastoffsets  {0.0d 0.85d 1.70d 2.55d}
   set northoffsets {0.0d 0.85d 1.70d 2.55d}
 
   set gridrepeats 1
   set exposuresperdither 1
   set exposuretime 60
-  set gridpoints [expr {[llength $eastoffsets] * [llength $northoffsets]}]  
+  set gridpoints [expr {[llength $eastoffsets] * [llength $northoffsets]}]
 
   log::summary [format "allskyvisit: %d × %.0f second exposures." \
     [expr {$gridrepeats * $gridpoints * $exposuresperdither}] $exposuretime \
@@ -434,7 +428,7 @@ proc allskyvisit {} {
   log::summary [format "allskyvisit: %d exposures per dither." $exposuresperdither]
 
   executor::track
-  
+
   set gridrepeat 0
   while {$gridrepeat < $gridrepeats} {
     foreach eastoffset $eastoffsets {
@@ -462,7 +456,7 @@ proc allskyprologvisit {} {
   executor::track
 
   # First refocus.
-  
+
   client::update "target"
   set zenithdistance [client::getdata "target" "observedzenithdistance"]
   if {$zenithdistance > [astrometry::parsedistance "45d"]} {
@@ -490,7 +484,7 @@ proc allskyprologvisit {} {
   executor::setwindow "6kx6k"
   executor::setbinning "default"
   executor::correctpointing 4
-  
+
   log::summary "allskyprologvisit: finished."
 
 }
@@ -504,9 +498,9 @@ proc trackingtestvisit {exposures exposuretime} {
 
   executor::setwindow "1kx1k"
   executor::setbinning "default"
-  
+
   executor::tracktopocentric
-  
+
   set exposure 0
   while {$exposure < $exposures} {
     executor::expose object $exposuretime
@@ -532,7 +526,7 @@ proc initialfocusvisit {} {
   executor::setwindow "2kx2k"
   executor::setbinning 8
   executor::focus 1 2000 250 false true
-    
+
   log::summary "initialfocusvisit: focusing with binning 1."
   executor::setwindow "1kx1k"
   executor::setbinning 1
@@ -580,7 +574,7 @@ proc focusvisit {} {
   executor::setbinning 4
   executor::expose "object" 1
   executor::analyze "fwhmwitness"
-    
+
   log::summary "focusvisit: focusing with binning 1."
   executor::setwindow "1kx1k"
   executor::setbinning 1
@@ -631,10 +625,10 @@ proc fullfocusvisit {range exposuretime} {
   executor::setreadmode 16MHz
   executor::setwindow "default"
   executor::setbinning 1
-  
+
   log::summary "fullfocusvisit: focusing with binning 1."
   executor::focus $exposuretime $range [expr {$range / 10}] false true
-  
+
   log::summary "fullfocusvisit: finished."
 
   return true
@@ -645,11 +639,11 @@ proc fullfocusvisit {range exposuretime} {
 proc focusmapvisit {} {
 
   log::summary "focusmapvisit: starting."
-   
+
   set ha    [visit::observedha    [executor::visit]]
   set delta [visit::observeddelta [executor::visit]]
   log::summary [format "focusmapvisit: focusing at %s %s." [astrometry::formatha $ha]  [astrometry::formatdelta $delta]]
-   
+
   executor::setreadmode 16MHz
 
   executor::tracktopocentric
@@ -663,7 +657,7 @@ proc focusmapvisit {} {
   executor::setbinning 8
   executor::expose "object" 1
   executor::analyze "fwhmwitness"
-    
+
   set worstfwhmarcsec [client::getdata "instrument" "worstfwhmarcsec"]
   if {[string equal $worstfwhmarcsec "unknown"] || $worstfwhmarcsec > 100} {
     log::summary "focusmapvisit: aborting with worst witness FWHM of ${worstfwhmarcsec}as."
@@ -686,7 +680,7 @@ proc focusmapvisit {} {
     log::summary "focusmapvisit: finished."
     return true
   }
-    
+
   log::summary "focusmapvisit: succeeded with worst witness FWHM is ${worstfwhmarcsec}as."
   log::summary "focusmapvisit: finished."
 
@@ -717,7 +711,7 @@ proc focuswitnessvisit {} {
     executor::expose "object" 4
     executor::analyze "fwhmwitness"
   }
-    
+
   log::summary "focuswitnessvisit: finished."
 
   return true
@@ -728,13 +722,13 @@ proc focuswitnessvisit {} {
 proc pointingmapvisit {} {
 
   log::summary "pointingmapvisit: starting."
-  
+
 #   set ha    [visit::ha]
 #   set delta [visit::delta]
-# 
+#
 #   log::summary "focusmapvisit: focusing at $ha $delta."
 #   visit::settargetcoordinates fixed $ha $delta now
-#   executor::tracktopocentric  
+#   executor::tracktopocentric
 #   executor::setwindow "6kx6k"
 #   executor::setbinning 1
 #   executor::expose object 4
@@ -783,7 +777,7 @@ proc twilightflatsvisit {} {
   }
   if {$ngood == 0} {
     log::summary [format "twilightflatsvisit: $ngood good flats with filter $filter."]
-  } else {      
+  } else {
     log::summary [format "twilightflatsvisit: $ngood good flats (%.0f to %.0f DN) with filter $filter." $mingoodlevel $maxgoodlevel]
   }
   if {$evening} {
@@ -839,7 +833,7 @@ proc domeflatsvisit {} {
   }
   if {$ngood == 0} {
     log::summary [format "domeflatsvisit: $ngood good flats."]
-  } else {      
+  } else {
     log::summary [format "domeflatsvisit: $ngood good flats (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
   }
   log::summary "domeflatsvisit: finished."

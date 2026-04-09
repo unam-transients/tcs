@@ -43,7 +43,7 @@ do
     lines=1
   fi
   
-  for component in weather sensors C0 C1 C2 C3 C4 C5
+  for component in weather sensors C2 C3
   do
     (
       cd /usr/local/var/tcs
@@ -174,32 +174,8 @@ EOF
     set key on
 
     plot \
-      "C0.dat"       using 1:2  title "C0 Detector" with lines linestyle 1, \
-      "C0.dat"       using 1:3  title "C0 Housing"  with lines linestyle 2, \
-      "weather.dat"  using 1:2  title "External"    with lines linestyle 3, \
-      "sensors.dat"  using 6:7  title "Enclosure"   with lines linestyle 4
-
-    plot \
-      "C1.dat"       using 1:2  title "C1 Detector" with lines linestyle 1, \
-      "C1.dat"       using 1:3  title "C1 Housing"  with lines linestyle 2, \
-      "weather.dat"  using 1:2  title "External"    with lines linestyle 3, \
-      "sensors.dat"  using 6:7  title "Enclosure"   with lines linestyle 4
-
-    plot \
       "C2.dat"       using 1:2  title "C2 Detector" with lines linestyle 1, \
       "C2.dat"       using 1:3  title "C2 Housing"  with lines linestyle 2, \
-      "weather.dat"  using 1:2  title "External"    with lines linestyle 3, \
-      "sensors.dat"  using 6:7  title "Enclosure"   with lines linestyle 4
-
-    plot \
-      "C3.dat"       using 1:2  title "C3 Detector" with lines linestyle 1, \
-      "C3.dat"       using 1:3  title "C3 Housing"  with lines linestyle 2, \
-      "weather.dat"  using 1:2  title "External"    with lines linestyle 3, \
-      "sensors.dat"  using 6:7  title "Enclosure"   with lines linestyle 4
-
-    plot \
-      "C4.dat"       using 1:2  title "C4 Detector" with lines linestyle 1, \
-      "C4.dat"       using 1:3  title "C4 Housing"  with lines linestyle 2, \
       "weather.dat"  using 1:2  title "External"    with lines linestyle 3, \
       "sensors.dat"  using 6:7  title "Enclosure"   with lines linestyle 4
 
@@ -208,8 +184,8 @@ EOF
     set xlabel "UTC"
 
     plot \
-      "C5.dat"       using 1:2  title "C5 Detector" with lines linestyle 1, \
-      "C5.dat"       using 1:3  title "C5 Housing"  with lines linestyle 2, \
+      "C3.dat"       using 1:2  title "C3 Detector" with lines linestyle 1, \
+      "C3.dat"       using 1:3  title "C3 Housing"  with lines linestyle 2, \
       "weather.dat"  using 1:2  title "External"    with lines linestyle 3, \
       "sensors.dat"  using 6:7  title "Enclosure"   with lines linestyle 4
 
