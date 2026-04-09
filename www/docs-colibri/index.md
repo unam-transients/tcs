@@ -1,7 +1,6 @@
-# COLIBRI
+# COLIBRÍ
 
 This is the mountain-top TCS web-site for the COLIBRÍ telescope at the [OAN/SPM](http://www.astrossp.unam.mx).
-
 
 ---
 
@@ -24,6 +23,7 @@ This is the mountain-top TCS web-site for the COLIBRÍ telescope at the [OAN/SPM
         * [At OAN](redux-cppm/)
         * [At LAM](https://www.colibri-obs.org/wp-includes/redux/)
         * [Light-curve Generator at OAN](redux-lam/lightcurve_generator.html)
+        * [Light-curve Generator at LAM](https://lightcurve-tool.colibri-obs.org/)
     * STDWeb:
         * [At LAM](https://stdweb.colibri-obs.org/)
     * [GRB Table](grb-table-lam/)
