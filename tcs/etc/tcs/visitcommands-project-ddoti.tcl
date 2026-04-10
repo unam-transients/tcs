@@ -85,9 +85,11 @@ proc alertvisit {{filter "w"}} {
     } else {
         log::summary "alertvisit: grid is 1 × 2 fields."
         set visits {
-      0 "0d" "-1.55d"
-      1 "0d" "+1.55d"
-    }
+          0 "+0.2d" "-1.6d"
+          1 "+0.2d" "+1.6d"
+          0 "-0.2d" "-1.6d"
+          1 "-0.2d" "+1.6d"
+        }
         set aperture "default"
     }
     set fields [expr {[llength $visits] / 3}]
