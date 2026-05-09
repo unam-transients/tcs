@@ -68,6 +68,8 @@ namespace eval "executor" {
 
   variable maxcorrection [astrometry::parseangle [config::getvalue "mount" "maxcorrection"]]
 
+  variable recovertoopen false
+
   ######################################################################
 
   
@@ -528,7 +530,7 @@ namespace eval "executor" {
       error "invalid instrument \"$newinstrument\"."
     }
   
-    recoverifnecessary true
+    recoverifnecessary
     foreach server [list telescope $instrument] {
       client::request $server "stop"
     }
@@ -544,7 +546,7 @@ namespace eval "executor" {
     set detectors [config::getvalue $instrument "detectors"]
     set pointingdetectors [config::getvalue $instrument "pointingdetectors"]
 
-    recoverifnecessary true
+    recoverifnecessary
     client::request telescope "setport $instrument"
     client::request $instrument "stop"
     client::wait telescope
@@ -952,7 +954,7 @@ namespace eval "executor" {
     set initialactivity [server::getactivity]
   }
   
-  proc recoverifnecessary {recovertoopen} {
+  proc recoverifnecessary {} {
 
     variable instrument
 
@@ -983,8 +985,9 @@ namespace eval "executor" {
 
     log::summary [format "finished recovering after %.1f seconds." [utcclock::diff now $start]]
 
+    variable recovertoopen
     if {$recovertoopen} {
-    set start [utcclock::seconds]
+      set start [utcclock::seconds]
       log::summary "opening after recovery."
       server::setactivity "opening"
       if {[catch {
@@ -1049,7 +1052,7 @@ namespace eval "executor" {
   
     variable instrument
 
-    recoverifnecessary true
+    recoverifnecessary
 
     set blockstart [utcclock::seconds]
 
@@ -1115,20 +1118,13 @@ namespace eval "executor" {
       set visitstart [utcclock::seconds]
       if {[catch {
         client::request $instrument "stop"
+        client::wait $instrument
         eval [visit::command [visit]]
-        client::wait $instrument        
+        client::wait $instrument
       } result]} {
         log::error "while executing visit: $result"
         log::summary "aborting block."
-        log::summary "recovering."
-        foreach server [list telescope $instrument] {
-          client::request $server "recover"
-          client::wait $server
-        }
-        foreach server [list $instrument telescope] {
-          client::request $server "open"
-          client::wait $server
-        }
+        recoverifnecessary
         break
       }
       log::summary [format "finished executing visit after %.1f seconds." [utcclock::diff now $visitstart]]
@@ -1279,10 +1275,12 @@ namespace eval "executor" {
   }
 
   proc openactivitycommand {} {
-    variable instruments
-    recoverifnecessary false
+    variable recovertoopen
+    set recovertoopen true
+    recoverifnecessary
     set start [utcclock::seconds]
     log::summary "opening."
+    variable instruments
     foreach server [concat $instruments telescope] {
       catch {client::waituntilstarted $server}
       client::request $server "open"
@@ -1292,10 +1290,12 @@ namespace eval "executor" {
   }
 
   proc opentoventilateactivitycommand {} {
-    variable instruments
-    recoverifnecessary false
+    variable recovertoopen
+    set recovertoopen false
+    recoverifnecessary
     set start [utcclock::seconds]
     log::summary "opening to ventilate."
+    variable instruments
     foreach server [concat $instruments telescope] {
       catch {client::waituntilstarted $server}
       client::request $server "opentoventilate"
@@ -1305,11 +1305,13 @@ namespace eval "executor" {
   }
 
   proc closeactivitycommand {} {
-    variable instruments
-    recoverifnecessary false
+    variable recovertoopen
+    set recovertoopen false
+    recoverifnecessary
     set start [utcclock::seconds]
     log::summary "closing."
     set error false
+    variable instruments
     foreach server [concat telescope $instruments] {
       if {[catch {
         client::waituntilstarted $server
@@ -1328,9 +1330,11 @@ namespace eval "executor" {
   }
 
   proc emergencycloseactivitycommand {} {
-    variable instruments
+    variable recovertoopen
+    set recovertoopen false
     set start [utcclock::seconds]
     log::summary "emergency closing."
+    variable instruments
     foreach server [concat telescope $instruments] {
       catch {client::waituntilstarted $server}
       catch {client::request $server "emergencyclose"}
@@ -1342,7 +1346,7 @@ namespace eval "executor" {
 
   proc parkactivitycommand {} {
     variable instrument
-    recoverifnecessary false
+    recoverifnecessary
     set start [utcclock::seconds]
     log::summary "parking."
     foreach server {telescope} {
@@ -1355,7 +1359,7 @@ namespace eval "executor" {
 
   proc unparkactivitycommand {} {
     variable instrument
-    recoverifnecessary false
+    recoverifnecessary
     set start [utcclock::seconds]
     log::summary "unparking."
     foreach server {telescope} {
@@ -1368,7 +1372,7 @@ namespace eval "executor" {
 
   proc idleactivitycommand {} {
     variable instrument
-    recoverifnecessary true
+    recoverifnecessary
     set start [utcclock::seconds]
     log::info "idling."
     foreach server [list telescope $instrument] {
