@@ -822,14 +822,13 @@ proc biasesvisit {{exposures 10} {binning "default"}} {
 
 ########################################################################
 
-proc darksvisit {{exposuretime 30} {exposures 10} {binning "default"}} {
+proc ddragodarksvisit {{exposuretime 30} {exposures 10} {binning "default"}} {
 
-  log::summary "darksvisit: starting."
+  log::summary "ddragodarksvisit: starting."
 
   executor::setinstrument "ddrago"
   executor::setpupiltracking false
   executor::setsecondaryoffset 0
-  executor::move
 
   executor::setwindow "default"
   executor::setbinning $binning
@@ -840,7 +839,30 @@ proc darksvisit {{exposuretime 30} {exposures 10} {binning "default"}} {
     incr exposure
   }
 
-  log::summary "darksvisit: finished."
+  log::summary "ddragodarksvisit: finished."
+  return true
+}
+
+########################################################################
+
+proc tequiladarksvisit {{exposuretime 30} {exposures 10} {binning "default"}} {
+
+  log::summary "tequiladarksvisit: starting."
+
+  executor::setinstrument "tequila"
+  executor::setpupiltracking false
+  executor::setsecondaryoffset 0
+
+  executor::setwindow "default"
+  executor::setbinning $binning
+
+  set exposure 0
+  while {$exposure < $exposures} {
+    executor::expose dark $exposuretime
+    incr exposure
+  }
+
+  log::summary "tequiladarksvisit: finished."
   return true
 }
 
@@ -1247,8 +1269,29 @@ proc addtopointingmodelvisit {{exposuretime 10} {filter {i z}}} {
   return true
 }
 
+
 ########################################################################
 
+proc tequilaopenvisit {} {
 
+  log::summary "tequilaopenvisit: starting."
 
+  client::request "tequila" "open"
+  client::wait "tequila"
 
+  log::summary "tequilaopenvisit: finished."
+  return true
+}
+
+proc tequilaclosevisit {} {
+
+  log::summary "tequilaclosevisit: starting."
+
+  client::request "tequila" "close"
+  client::wait "tequila"
+
+  log::summary "tequilaclosevisit: finished."
+  return true
+}
+
+########################################################################
