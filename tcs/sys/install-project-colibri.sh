@@ -127,6 +127,8 @@ EOF
 00     *  *  *  *  tcs makeobservationspage $(date +\%Y\%m\%d)
 */5    *  *  *  *  tcs makeobservationspage
 
+37    11  *  *  *  tcs request executor execute block /usr/local/var/www/tcs/blocks/z9-0003-darks-morning.json
+
 EOF
     ;;
   esac
