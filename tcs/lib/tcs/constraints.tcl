@@ -1109,7 +1109,7 @@ namespace eval "constraints" {
     if {![checkmindate $visit $constraints $seconds]} {
       return false
     }
-    if {![checkmindate $visit $constraints $seconds]} {
+    if {![checkmaxdate $visit $constraints $seconds]} {
       return false
     }
 
