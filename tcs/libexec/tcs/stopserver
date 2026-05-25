@@ -58,11 +58,11 @@ ddoti-platform)
   ALLARGS=""
   ;;
 ddoti-detectors0)
-  allargs="C2"
+  allargs="C0"
   ALLARGS=""
   ;;
 ddoti-detectors1)
-  allargs="C3"
+  allargs="C1"
   ALLARGS=""
   ;;
 colibri-control)

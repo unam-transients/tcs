@@ -23,8 +23,8 @@
 ////////////////////////////////////////////////////////////////////////
 
 {
-  "C2"         : { "host" : "detectors0", "port" : 5002 },
-  "C3"         : { "host" : "detectors1", "port" : 5003 },
+  "C0"         : { "host" : "detectors0", "port" : 5002 },
+  "C1"         : { "host" : "detectors1", "port" : 5003 },
   "covers"     : { "host" : "control"   , "port" : 5006 },
   "enclosure"  : { "host" : "control"   , "port" : 5007 },
   "executor"   : { "host" : "control"   , "port" : 5008 },
