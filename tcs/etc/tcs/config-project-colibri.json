@@ -588,8 +588,12 @@
     // Park to the north.
     "parkazimuth": "0d",
     "parkzenithdistance": "10d",
+
+    // We normally take TEQUILA flats at 0d. To take them at different derotator
+    // angles, change the "2" value below from 0d to -180d. We cannot use
+    // positive angles.
     "parkderotatorangles": {
-      "2": "0",
+      "2": "0d",
       "3": "-34.15d"
     },
     // Unpark to the north.
