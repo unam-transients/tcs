@@ -617,6 +617,23 @@ namespace eval "mount" {
     trackoroffsetactivitycommand false
   }
 
+  proc movederotatoractivitycommand {derotatorangle} {
+    set start [utcclock::seconds]
+    log::info [format "moving derotator to %+.0fd." [astrometry::radtodeg $derotatorangle]]
+    updaterequestedpositiondata
+    set port [server::getdata "requestedport"]
+    set portindex [server::getdata "requestedportindex"]
+    server::setdata "mountderotatoroffset" ""
+    opentsi::sendcommandandwait [format \
+      "SET POINTING.SETUP.DEROTATOR.SYNCMODE=0;POSITION.INSTRUMENTAL.DEROTATOR\[%s\].TARGETPOS=%.6f" \
+      $portindex \
+      [astrometry::radtodeg $derotatorangle] \
+    ]
+    waituntilontarget
+    set interval  [utcclock::diff now $start]
+    log::info [format "finished moving after %.1f seconds." $interval]
+  }
+
   proc addtopointingmodelactivitycommand {truealpha truedelta equinox} {
 
     log::info "adding to pointing model."

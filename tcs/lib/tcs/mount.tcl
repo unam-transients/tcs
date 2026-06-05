@@ -1134,6 +1134,15 @@ namespace eval "mount" {
     server::setdata "pupiltracking" $pupiltracking
   }
 
+  proc movederotator {derotatorangle} {
+    server::checkstatus
+    server::checkactivity "idle"
+    checkunparked
+    checkhardwarefor "move"
+    set derotatorangle [astrometry::parseangle $derotatorangle]
+    server::newactivitycommand "moving" "idle" "mount::movederotatoractivitycommand $derotatorangle" 120e3
+  }
+
   proc addtopointingmodel {truealpha truedelta equinox} {
     server::checkstatus
     checkunparked

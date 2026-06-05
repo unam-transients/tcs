@@ -985,78 +985,49 @@ proc tequilatwilightflatsvisit {} {
   executor::setwindow "default"
   executor::setbinning "default"
 
-  set targetngood 7
   set maxlevel 3000
-  set minlevel 1500
+  set minlevel 1000
   set exposuretime 10
-  
-  set filters3 {r}
-  
   set detector "C3"
 
-  set finished3     false
-  set ngood3        0
-  set mingoodlevel3 $maxlevel
-  set maxgoodlevel3 $minlevel
+  set mingoodlevel $maxlevel
+  set maxgoodlevel $minlevel
 
-  while {!$finished3} {
-
-    set filter3 [lindex $filters3 0]
-    log::info "tequilatwilightflatsvisit: filters is $filter3."
-    eval executor::movefilterwheel [list $filter3]
-
+  set i 0
+  while {$i < 8} {
+    if {$i == 0 || $i == 7} {
+      set derotatorangle -0d
+    } elseif {$i == 1 || $i == 6} {
+      set derotatorangle -45d
+    } elseif {$i == 2 || $i == 5} {
+      set derotatorangle -90d
+    } else {
+      set derotatorangle -135d
+    }
+    client::request "mount" "movederotator $derotatorangle"
+    client::wait "mount"
     executor::expose flat $exposuretime
     executor::analyze levels
-
-    foreach i {3} {
-
-      set finished     [set finished$i]
-      set filters      [set filters$i]
-      set ngood        [set ngood$i]
-      set mingoodlevel [set mingoodlevel$i]
-      set maxgoodlevel [set maxgoodlevel$i]
-
-      if {!$finished} {
-        set filter [lindex $filters 0]
-        set level [executor::exposureaverage "C$i"]
-        log::info [format "tequilatwilightflatsvisit: C$i: level is %.1f DN in $filter in $exposuretime seconds." $level]
-        if {$level > $maxlevel} {
-          log::info "tequilatwilightflatsvisit: C$i: level is too bright."
-        } elseif {$level < $minlevel} {
-          log::info "tequilatwilightflatsvisit: C$i: level is too faint."
-        } else {
-          log::info "tequilatwilightflatsvisit: C$i: level is good."
-          incr ngood
-          set mingoodlevel [expr {min($level,$mingoodlevel)}]
-          set maxgoodlevel [expr {max($level,$maxgoodlevel)}]
-        }
-
-        if {$level < $minlevel || $ngood == $targetngood} {
-          if {$ngood == 0} {
-            log::summary [format "tequilatwilightflatsvisit: C$i: $ngood good flats in filter $filter."]
-          } else {
-            log::summary [format "tequilatwilightflatsvisit: C$i: $ngood good flats in filter $filter (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
-          }
-          if {[llength $filters] > 1} {
-            set filters [lrange $filters 1 end]
-            set ngood 0
-            set mingoodlevel $maxlevel
-            set maxgoodlevel $minlevel
-          } else {
-            set finished true
-          }
-        }
-
-      }
-
-      set finished$i     $finished
-      set filters$i      $filters
-      set ngood$i        $ngood
-      set mingoodlevel$i $mingoodlevel
-      set maxgoodlevel$i $maxgoodlevel
-
+    set level [executor::exposureaverage "$detector"]
+    log::info [format "tequilatwilightflatsvisit: $detector: level is %.1f DN in $exposuretime seconds." $level]
+    if {$level > $maxlevel} {
+      log::info "tequilatwilightflatsvisit: $detector: level is too bright."
+    } elseif {$level < $minlevel} {
+      log::info "tequilatwilightflatsvisit: $detector: level is too faint."
+      break
+    } else {
+      log::info "tequilatwilightflatsvisit: $detector: level is good."
+      incr i
+      set mingoodlevel [expr {min($level,$mingoodlevel)}]
+      set maxgoodlevel [expr {max($level,$maxgoodlevel)}]
     }
+  }
 
+  set ngood $i
+  if {$ngood == 0} {
+    log::summary [format "tequilatwilightflatsvisit: C$i: $ngood good flats."]
+  } else {
+    log::summary [format "tequilatwilightflatsvisit: C$i: $ngood good flats (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
   }
 
   log::summary "tequilatwilightflatsvisit: finished."

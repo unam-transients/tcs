@@ -115,6 +115,10 @@ namespace eval "mountserver" {
     mount::setpupiltracking $value
     return
   }
+  proc slavemovederotator {derotatorangle} {
+    mount::movederotator $derotatorangle
+    return
+  }
 
   proc configureslave {slave} {
     interp alias $slave initialize          {} mountserver::slaveinitialize
@@ -134,6 +138,8 @@ namespace eval "mountserver" {
     interp alias $slave setMEtozero         {} mountserver::slavesetMEtozero
     interp alias $slave setport             {} mountserver::slavesetport
     interp alias $slave setpupiltracking    {} mountserver::slavesetpupiltracking
+    interp alias $slave movederotator       {} mountserver::slavemovederotator
+    
   }
 
   ######################################################################
