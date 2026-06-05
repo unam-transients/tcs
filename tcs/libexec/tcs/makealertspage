@@ -40,6 +40,16 @@ def writehtml(s):
     print(s, file=htmlfile)
 
 
+def formatlevel(s, level):
+    if level == "warning":
+        color = "darkorange"
+    elif level == "disabled":
+        color = "red"
+    else:
+        color = "black"
+    return '<font color="%s">%s</font>' % (color, s)
+
+
 def formattimestamp(timestamp):
     timestamp = re.sub(r"T", " ", timestamp)
     timestamp = re.sub(r"\.[0-9]*$", "", timestamp)
@@ -52,6 +62,35 @@ def formatage(age):
     else:
         return "%.1fd" % (age / 86400)
 
+
+def formatmaxage(maxage, age):
+    if age >= maxage:
+        level = "disabled"
+    elif age + 86400 >= maxage:
+        level = "warning"
+    else:
+        level = "enabled"
+    if maxage < 3600:
+        text = "%.1fm" % (maxage / 60)
+    elif maxage < 86400:
+        text = "%.1fh" % (maxage / 3600)
+    else:
+        text = "%.1fd" % (maxage / 86400)
+    return formatlevel(text, level)
+
+def formatenabled(enabled):
+    if enabled == "true":
+        return formatlevel("true", "enabled")
+    else:
+        return formatlevel("false", "disabled")
+
+
+def formatuncertainty(uncertainty, maxalertuncertainty):
+    if parseangle(uncertainty) > parseangle(maxalertuncertainty):
+        level = "disabled"
+    else:
+        level = "enabled"
+    return formatlevel(uncertainty, level)
 
 def parseangle(angle):
     if angle[-1:] == "r":
@@ -98,8 +137,7 @@ def maxage(alert):
 
 alerts = readjson(jsonfilename)
 
-writehtml(
-    """
+writehtml("""
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
@@ -121,12 +159,9 @@ writehtml(
 </div>
 
 <div id="body">
-"""
-    % (projectname, projectname)
-)
+""" % (projectname, projectname))
 
-writehtml(
-    """
+writehtml("""
 
 <p>
 <a href="/index.html">Home</a> |
@@ -199,26 +234,20 @@ writehtml(
 <td class="alertsinputs"><input type="text" id="modify-priority" name="modify-priority"></td>
 <td>(see <a href="https://github.com/unam-transients/tcs/wiki/Alert-Priorities">Alert Priorities</a>)</td>
 </tr>
-"""
-)
+""")
 
-writehtml(
-    """
+writehtml("""
 <tr class="alertsinputs">
 <td class="alertsinputs">Filters</td>
 <td class="alertsinputs"><select id="modify-filters" name="modify-filters">
     <option selected="selected"></option>
-"""
-)
+""")
 if project == "coatli":
-    writehtml(
-        """
+    writehtml("""
         <option>r</option>
-    """
-    )
+    """)
 elif project == "colibri":
-    writehtml(
-        """
+    writehtml("""
         <option>g/r/i/z/y</option>
         <option>g/r/i/z</option>
         <option>g/r/i/y</option>
@@ -257,25 +286,19 @@ elif project == "colibri":
         <option>gri/zy</option>
 
         <option>tequila</option>
-    """
-    )
+    """)
 elif project == "ddoti":
-    writehtml(
-        """
+    writehtml("""
         <option>w</option>
-    """
-    )
-writehtml(
-    """
+    """)
+writehtml("""
 </select></td>
 <td>(see <a href="https://github.com/unam-transients/tcs/wiki/Alert-Filters">Alert Filters</a>)</td>
 </tr>
 </table>
-"""
-)
+""")
 
-writehtml(
-    """
+writehtml("""
 <hr/>
 
 <table class="alertsinputs">
@@ -315,8 +338,7 @@ writehtml(
 
 
 <hr/>
-"""
-)
+""")
 
 alerts.sort(key=lambda x: x["eventtimestamp"], reverse=True)
 
@@ -424,7 +446,11 @@ def writealertstable(alerts, name):
                 if key == "age" and "eventtimestamp" in alert.keys():
                     writehtml(formatage(age(alert["eventtimestamp"])))
                 elif key == "maxage":
-                    writehtml(formatage(parseinterval(maxage(alert))))
+                    writehtml(
+                        formatmaxage(
+                            parseinterval(maxage(alert)), age(alert["eventtimestamp"])
+                        )
+                    )
                 elif key == "filters" and "command" in alert.keys():
                     filters = alert["command"].split()[1]
                     writehtml(filters)
@@ -449,6 +475,10 @@ def writealertstable(alerts, name):
                     )
                 elif key == "eventtimestamp":
                     writehtml(formattimestamp(alert[key]))
+                elif key == "enabled":
+                    writehtml(formatenabled(alert[key]))
+                elif key == "uncertainty":
+                    writehtml(formatuncertainty(alert["uncertainty"], alert["maxalertuncertainty"]))
                 elif alert[key] != "" and alert[key][0] == "-":
                     writehtml("&minus;%s" % alert[key][1:])
                 else:
@@ -467,8 +497,7 @@ def writealertstable(alerts, name):
                 def writealertpage(s):
                     print(s, file=alertpagefile)
 
-                writealertpage(
-                    """
+                writealertpage("""
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
@@ -487,9 +516,7 @@ def writealertstable(alerts, name):
 
 <div id="body">
 <ul>
-                                   """
-                    % (alert["identifier"], alert["identifier"])
-                )
+                                   """ % (alert["identifier"], alert["identifier"]))
 
                 writealertpage(
                     '<li><a href="../alerts/%s">Alert File</a></li>'
@@ -527,7 +554,10 @@ def writealertstable(alerts, name):
                     sigmalevel = 5
                 else:
                     sigmalevel = 10
-                writealertpage("<li>Conventional level for non-detections: %.0f sigma </li>" % sigmalevel)
+                writealertpage(
+                    "<li>Conventional level for non-detections: %.0f sigma </li>"
+                    % sigmalevel
+                )
                 writealertpage("<li>FAP:<ul>")
                 for sigmalevel in [3, 4, 5, 6, 10]:
                     m = (uncertainty * 3600) ** 2
@@ -575,14 +605,12 @@ def writealertstable(alerts, name):
                     % alert["identifier"]
                 )
 
-                writealertpage(
-                    """
+                writealertpage("""
 </ul>
 </div>
 </body>
 </html>
-                                   """
-                )
+                                   """)
 
             regionfilepath = os.path.join(
                 alertpagesdirectorypath, alert["identifier"] + ".reg"
@@ -619,6 +647,5 @@ Updated: %s UTC
 
 
 </html>
-"""
-    % datetime.now(timezone.utc).replace(tzinfo=None).isoformat(" ", timespec="seconds")
+""" % datetime.now(timezone.utc).replace(tzinfo=None).isoformat(" ", timespec="seconds")
 )
