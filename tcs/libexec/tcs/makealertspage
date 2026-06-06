@@ -41,13 +41,17 @@ def writehtml(s):
 
 
 def formatlevel(s, level):
+
     if level == "warning":
         color = "darkorange"
     elif level == "disabled":
         color = "red"
     else:
-        color = "black"
-    return '<font color="%s">%s</font>' % (color, s)
+        color = None
+    if color is None:
+        return s
+    else:
+        return '<font color="%s">%s</font>' % (color, s)
 
 
 def formattimestamp(timestamp):
