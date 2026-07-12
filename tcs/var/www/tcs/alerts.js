@@ -66,7 +66,7 @@ function quote(s) {
 
 $(function () {
   $("form#alert-rugby").submit(function () {
-    alert("France won the Six Nations trophy.");
+    alert("Mexico 2 — England 3.");
     return false;
   });
   $("form#alert-refresh").submit(function () {
@@ -88,7 +88,7 @@ $(function () {
     identifier = getidentifier()
     if (identifier !== undefined) {
       return submitrequest(
-        "selector modifyalert " + identifier + 
+        "selector modifyalert " + identifier +
         " " + quote($("input[name=\"modify-name\"]").val()) +
         " " + quote($("input[name=\"modify-alpha\"]").val()) +
         " " + quote($("input[name=\"modify-delta\"]").val()) +
@@ -98,9 +98,9 @@ $(function () {
         " " + quote($("input[name=\"modify-min-hour-angle\"]").val()) +
         " " + quote($("input[name=\"modify-max-hour-angle\"]").val()) +
         " " + quote($("input[name=\"modify-priority\"]").val()) +
-        " " + quote($("select[name=\"modify-filters\"] option:selected").val()), 
+        " " + quote($("select[name=\"modify-filters\"] option:selected").val()),
         true
-        );
+      );
     }
   });
   $("form#alert-create").submit(function () {
