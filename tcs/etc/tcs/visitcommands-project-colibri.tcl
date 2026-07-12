@@ -544,6 +544,8 @@ proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest false
 
   log::summary "quaddithervisit: starting."
 
+  variable instrument
+
   setinstrument "ddrago"
   if {[string equal $instrument "ogse"]} {
    set fieldsize [astrometry::parsedistance "13am"]
