@@ -84,9 +84,7 @@ sudo mv /etc/hosts.tmp /etc/hosts
 
   cat <<"EOF"
 
-00    18 *  *  1   reboot
-00    18 *  *  2-7 tcs stopserver -a
-01    18 *  *  2-7 tcs restartserver -A
+00    18 *  *  *   reboot
 
 00    17 *  *  *   tcs cleanfiles
 00    17 *  *  *   tcs updateiersfiles
@@ -105,7 +103,7 @@ EOF
   case $host in
   control)
     cat <<"EOF"
-
+    
 *      *  *  *  *  tcs updateseeingfiles-colibri
 *      *  *  *  *  tcs request plc special updateweather
 
@@ -132,6 +130,7 @@ EOF
 
 EOF
     ;;
+
   esac
 ) | sudo crontab
 
