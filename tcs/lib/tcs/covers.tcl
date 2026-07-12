@@ -36,7 +36,7 @@ namespace eval "covers" {
   }
 
   ########################################################################
-  
+
   proc waitwhilesettling {} {
     variable settlingseconds
     set start [utcclock::seconds]
@@ -44,7 +44,7 @@ namespace eval "covers" {
       coroutine::yield
     }
   }
-  
+
   proc waitwhilemoving {} {
     log::info "waiting while moving."
     while {[string equal [getrequestedcovers] ""]} {
@@ -52,11 +52,11 @@ namespace eval "covers" {
     }
     while {![string equal [getcovers] [getrequestedcovers]]} {
       coroutine::yield
-    }   
+    }
     waitwhilesettling
     log::info "finished waiting while moving."
   }
-  
+
   ######################################################################
 
   proc startactivitycommand {} {
@@ -68,7 +68,7 @@ namespace eval "covers" {
     set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
   }
-  
+
   proc initializeactivitycommand {} {
     set start [utcclock::seconds]
     log::info "initializing."
@@ -105,6 +105,29 @@ namespace eval "covers" {
     set end [utcclock::seconds]
     log::info [format "finished closing after %.1f seconds." [utcclock::diff $end $start]]
   }
+  proc openportactivitycommand {port} {
+    set start [utcclock::seconds]
+    log::info "opening port $port."
+    openporthardware $port
+    #waitwhilemoving
+    #if {![string equal [server::getdata "${port}cover"] "open"]} {
+    #  error "the cover did not open."
+    #}
+    #set end [utcclock::seconds]
+    #log::info [format "finished opening port $port after %.1f seconds." [utcclock::diff $end $start]]
+  }
+
+  proc closeportactivitycommand {port} {
+    set start [utcclock::seconds]
+    log::info "closing port $port."
+    closeporthardware $port
+    #waitwhilemoving
+    #if {![string equal [server::getdata "${port}cover"] "closed"]} {
+    #  error "the cover did not close."
+    #}
+    #set end [utcclock::seconds]
+    #log::info [format "finished closing port $port after %.1f seconds." [utcclock::diff $end $start]]
+  }
 
   proc stopactivitycommand {previousactivity} {
     set start [utcclock::seconds]
@@ -131,7 +154,7 @@ namespace eval "covers" {
     server::newactivitycommand "stopping" [server::getstoppedactivity] \
       "covers::stopactivitycommand [server::getactivity]"
   }
-  
+
   proc reset {} {
     server::checkstatus
     server::checkactivityforreset
@@ -156,4 +179,19 @@ namespace eval "covers" {
       covers::closeactivitycommand
   }
 
+  proc openport {port} {
+    server::checkstatus
+    server::checkactivityformove
+    checkhardwarefor "open"
+    server::newactivitycommand "opening" "idle" \
+      "covers::openportactivitycommand $port"
+  }
+
+  proc closeport {port} {
+    server::checkstatus
+    server::checkactivityformove
+    checkhardwarefor "close"
+    server::newactivitycommand "closing" "idle" \
+      "covers::closeportactivitycommand $port"
+  }
 }

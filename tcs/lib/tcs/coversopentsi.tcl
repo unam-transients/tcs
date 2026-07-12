@@ -47,7 +47,7 @@ namespace eval "covers" {
   server::setdata "timestamp"        [utcclock::combinedformat now]
 
   ######################################################################
-  
+
   set statuscommandlist "AUXILIARY.COVER.REALPOS"
   foreach portindex [dict values $ports] {
     lappend statuscommandlist [format "AUXILIARY.PORT_COVER\[%d\].REALPOS" $portindex]
@@ -59,8 +59,8 @@ namespace eval "covers" {
   variable covers ""
   variable requestedcovers ""
   variable primarycover ""
-  variable portcovers []
-  
+  variable portcovers {}
+
   proc coverstate {value} {
     if {$value == 0} {
       return "closed"
@@ -102,7 +102,7 @@ namespace eval "covers" {
 
     set timestamp [utcclock::combinedformat "now"]
 
-    set lastcover [server::getdata "primarycover"]    
+    set lastcover [server::getdata "primarycover"]
     set cover [set primarycover]
     if {![string equal $lastcover ""] && ![string equal $lastcover $cover]} {
       log::info "primary cover changed from \"$lastcover\" to \"$cover\"."
@@ -121,7 +121,7 @@ namespace eval "covers" {
     #    set covers "intermediate"
     #  }
     #}
-    
+
     server::setdata "timestamp"        $timestamp
     server::setdata "covers"           $covers
     server::setdata "primarycover"     $primarycover
@@ -135,9 +135,9 @@ namespace eval "covers" {
   }
 
   ######################################################################
-  
+
   proc checkhardwarefor {action} {
-    switch $action {
+    switch -- $action {
       "reset" -
       "stop" {
       }
@@ -146,18 +146,18 @@ namespace eval "covers" {
       }
     }
   }
-  
+
   proc initializehardware {} {
     closehardware
   }
-  
+
   proc stophardware {} {
     server::setdata "requestedcovers" ""
     if {[opentsi::isoperational]} {
       opentsi::sendcommandandwait "SET TELESCOPE.STOP=1"
     }
   }
-  
+
   proc openhardware {} {
     server::setdata "requestedcovers" "open"
     opentsi::sendcommand [format "SET AUXILIARY.COVER.TARGETPOS=1"]
@@ -166,7 +166,7 @@ namespace eval "covers" {
       opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[%d\].TARGETPOS=1" $portindex]
     }
   }
-  
+
   proc closehardware {} {
     server::setdata "requestedcovers" "closed"
     opentsi::sendcommand [format "SET AUXILIARY.COVER.TARGETPOS=0"]
@@ -176,9 +176,20 @@ namespace eval "covers" {
     #  opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[%d\].TARGETPOS=0" $portindex]
     #}
   }
-  
+  proc openporthardware {portname} {
+    variable ports
+    set portindex [dict get $ports $portname]
+    opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[%d\].TARGETPOS=1" $portindex]
+  }
+
+  proc closeporthardware {portname} {
+    variable ports
+    set portindex [dict get $ports $portname]
+    opentsi::sendcommand [format "SET AUXILIARY.PORT_COVER\[%d\].TARGETPOS=0" $portindex]
+  }
+
   ######################################################################
-  
+
   proc start {} {
     opentsi::start $covers::statuscommand covers::updatedata
     server::newactivitycommand "starting" "started" covers::startactivitycommand

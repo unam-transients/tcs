@@ -26,7 +26,7 @@ package require "log"
 package require "server"
 
 set coverstype [config::getvalue "covers" "type"]
-switch -exact $coverstype {
+switch -exact -- $coverstype {
   "opentsi" {
     package require "coversopentsi"
   }
@@ -61,12 +61,22 @@ namespace eval "coversserver" {
     covers::close
   }
 
+  proc slaveopenport {port} {
+    covers::openport $port
+  }
+
+  proc slavecloseport {port} {
+    covers::closeport $port
+  }
+
   proc configureslave {slave} {
     interp alias $slave initialize {} coversserver::slaveinitialize
     interp alias $slave stop       {} coversserver::slavestop
     interp alias $slave reset      {} coversserver::slavereset
     interp alias $slave open       {} coversserver::slaveopen
     interp alias $slave close      {} coversserver::slaveclose
+    interp alias $slave openport   {} coversserver::slaveopenport
+    interp alias $slave closeport  {} coversserver::slavecloseport
   }
 
   ######################################################################

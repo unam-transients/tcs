@@ -399,7 +399,7 @@
   "covers": {
     "type": "opentsi",
     "ports": {
-      "ogse": 2,
+      "tequila": 2,
       "ddrago": 3
     },
     "settlingseconds": 0
