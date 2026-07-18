@@ -103,7 +103,8 @@ EOF
   case $host in
   control)
     cat <<"EOF"
-    
+
+05     18 *  *  *  tcs rebootinstrument tequila
 *      *  *  *  *  tcs updateseeingfiles-colibri
 *      *  *  *  *  tcs request plc special updateweather
 
