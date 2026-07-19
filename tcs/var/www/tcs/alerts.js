@@ -66,7 +66,7 @@ function quote(s) {
 
 $(function () {
   $("form#alert-rugby").submit(function () {
-    alert("Mexico 2 — England 3.");
+    alert("Mexico 2 — England 3\nFrance 4 — England 6");
     return false;
   });
   $("form#alert-refresh").submit(function () {
