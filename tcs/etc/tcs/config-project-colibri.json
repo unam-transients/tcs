@@ -136,8 +136,8 @@
     "focuseridentifier": "null",
     "focuserinitialposition": 0,
     "focuserbacklashoffset": 0,
-    "focuserdzmodel": {},
-    "pointingmodelparameters": {},
+    "focuserdzmodel": { },
+    "pointingmodelparameters": { },
     "isstandalone": false,
     "fitsfwhmargs": {
       "1": "-A",
@@ -230,8 +230,8 @@
     "focuseridentifier": "null",
     "focuserinitialposition": 0,
     "focuserbacklashoffset": 0,
-    "focuserdzmodel": {},
-    "pointingmodelparameters": {},
+    "focuserdzmodel": { },
+    "pointingmodelparameters": { },
     "isstandalone": false,
     "fitsfwhmargs": {
       "1": "-m",
@@ -322,8 +322,8 @@
     "focuseridentifier": "null",
     "focuserinitialposition": 0,
     "focuserbacklashoffset": 0,
-    "focuserdzmodel": {},
-    "pointingmodelparameters": {},
+    "focuserdzmodel": { },
+    "pointingmodelparameters": { },
     "isstandalone": false,
     "fitsfwhmargs": {
       "1": "-m",
@@ -387,8 +387,8 @@
     "focuseridentifier": "null",
     "focuserinitialposition": 0,
     "focuserbacklashoffset": 0,
-    "focuserdzmodel": {},
-    "pointingmodelparameters": {},
+    "focuserdzmodel": { },
+    "pointingmodelparameters": { },
     "isstandalone": false,
     "fitsfwhmargs": {
       "1": "-m",
@@ -421,8 +421,7 @@
   "executor": {
     "type": "colibri",
     "instruments": [
-      "ddrago",
-      "tequila"
+      "ddrago"
     ],
     "initialinstrument": "ddrago"
   },
@@ -447,7 +446,6 @@
     "servers": [
       "C1",
       "C2",
-      "C3",
       "covers",
       "dome",
       "ddrago",
@@ -471,7 +469,6 @@
       "target",
       "telescope",
       "telescopecontroller",
-      "tequila",
       "watchdog",
       "weather"
     ]
@@ -486,14 +483,14 @@
     "activedetectors": [
       "C0"
     ],
-    "activefocusers": [],
+    "activefocusers": [ ],
     "idlefilterwheelpositions": [
       "0"
     ],
     "pointingdetectors": [
       "C0"
     ],
-    "outletgroups": []
+    "outletgroups": [ ]
   },
   "ddrago": {
     "detectors": [
@@ -508,7 +505,7 @@
       "C1",
       "C2"
     ],
-    "activefocusers": [],
+    "activefocusers": [ ],
     "idlefilterwheelpositions": [
       "0",
       "0"
@@ -516,7 +513,7 @@
     "pointingdetectors": [
       "C1"
     ],
-    "outletgroups": []
+    "outletgroups": [ ]
   },
   "tequila": {
     "detectors": [
@@ -528,14 +525,14 @@
     "activedetectors": [
       "C3"
     ],
-    "activefocusers": [],
+    "activefocusers": [ ],
     "idlefilterwheelpositions": [
       "0"
     ],
     "pointingdetectors": [
       "C3"
     ],
-    "outletgroups": []
+    "outletgroups": [ ]
   },
   "lights": {
     "type": "plc"
@@ -569,7 +566,7 @@
     // Value at OAN for DDRAGO observations of GRB 260207B with the detector axes about 15 degrees east of north "ddrago": "0d"
     // Value at OAN for TEQUILA observations and the detector rotated by 6.8 degrees wrt paralactic: "-90d"
     "derotatoroffsets": {
-      "ddrago":  "-15.85d",
+      "ddrago": "-15.85d",
       "tequila": "0d"
     },
     // Value at OAN for TEQUILA with column position angle - parallactic angle = 6.84 deg: "-90d"
@@ -718,7 +715,7 @@
       "position": {
         "dzdcoszenithdistance": -67
       },
-      "filter": {}
+      "filter": { }
     },
     "settlingseconds": 0
   },
@@ -2237,7 +2234,6 @@
       "target",
       "telescope",
       "telescopecontroller",
-      "tequila",
       "weather"
     ],
     "problemtoleranceseconds": 180
@@ -2341,8 +2337,8 @@
     "focuseridentifier": "null",
     "focuserinitialposition": 0,
     "focuserbacklashoffset": 0,
-    "focuserdzmodel": {},
-    "pointingmodelparameters": {},
+    "focuserdzmodel": { },
+    "pointingmodelparameters": { },
     "isstandalone": false,
     "fitsfwhmargs": {
       "1": "-A",
