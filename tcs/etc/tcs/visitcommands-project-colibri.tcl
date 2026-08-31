@@ -1,9 +1,6 @@
 ########################################################################
-
 # This file is part of the UNAM telescope control system.
-
 ########################################################################
-
 # Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
@@ -18,24 +15,23 @@
 # PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 # TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
-
 ########################################################################
-
 proc alertvisit {filters} {
-
   variable instrument
-  
+
   log::summary "alertvisit: starting."
- 
-  set alpha   [visit::alpha   [executor::visit]]
-  set delta   [visit::delta   [executor::visit]]
+
+  set alpha [visit::alpha   [executor::visit]]
+  set delta [visit::delta   [executor::visit]]
   set equinox [visit::equinox [executor::visit]]
 
-  log::summary [format "alertvisit: alert coordinates are %s %s %s." [astrometry::formatalpha $alpha]  [astrometry::formatdelta $delta] $equinox]
+  log::summary \
+    [format "alertvisit: alert coordinates are %s %s %s." [astrometry::formatalpha $alpha] \
+    [astrometry::formatdelta $delta] $equinox]
 
   setinstrument "ddrago"
   if {[string equal $instrument "ogse"]} {
-   set fieldsize [astrometry::parsedistance "13am"]
+    set fieldsize [astrometry::parsedistance "13am"]
   } elseif {[string equal $instrument "ddrago"]} {
     set fieldsize [astrometry::parsedistance "26am"]
   } else {
@@ -58,22 +54,20 @@ proc alertvisit {filters} {
   }
 
   set alertdelay [alert::delay [executor::alert]]
-  log::summary [format "alertvisit: alert delay at start of visit is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
+  log::summary \
+    [format "alertvisit: alert delay at start of visit is %.1f seconds (%.1f hours)." $alertdelay \
+    [expr {$alertdelay / 3600}]]
 
   set uncertainty [astrometry::parsedistance [alert::uncertainty [executor::alert]]]
   log::summary [format "alertvisit: uncertainty is %s." [astrometry::formatdistance $uncertainty 2]]
 
-
   if {[string equal $filters "tequila"]} {
-
     log::summary [format "alertvisit: observing with tequila."]
     set exposurerepeats 9
     set exposuretime 60
     log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
     tequilagridvisit 1 9 1 60
-
   } else {
-
     log::summary [format "alertvisit: filters are %s." $filters]
     set nfilters [llength [parsefilters $filters]]
     set exposurerepeats [expr {int(16 / $nfilters)}]
@@ -81,66 +75,54 @@ proc alertvisit {filters} {
     variable window
 
     if {$alertdelay <= 180 && $uncertainty <= [astrometry::parsedistance "3am"]} {
-
       set window "6am"
       set exposuretime 10
       log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
 
       log::summary "alertvisit: no dithering."
       gridvisit 1 1 $exposurerepeats $exposuretime $filters
-      
     } elseif {$alertdelay <= 180 && $uncertainty <= 0.5 * $fieldsize} {
-    
       set window "default"
       set exposuretime 10
       log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
 
       log::summary "alertvisit: no dithering."
       gridvisit 1 1 $exposurerepeats $exposuretime $filters
-    
     } elseif {$alertdelay <= 480 && $uncertainty <= 0.5 * $fieldsize} {
-    
       set window "default"
       set exposuretime 30
       log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
 
       log::summary "alertvisit: dithering 1 × 1 fields."
       dithervisit $exposurerepeats $exposuretime $filters
-    
     } elseif {$uncertainty <= 0.5 * $fieldsize} {
-
       set window "default"
       set exposuretime 60
       log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
-  
+
       log::summary "alertvisit: dithering 1 × 1 fields."
       dithervisit $exposurerepeats $exposuretime $filters
-      
     } else {
-
       set window "default"
       set exposuretime 60
       log::summary [format "alertvisit: exposures are %d x %.0f seconds." $exposurerepeats $exposuretime]
-  
+
       log::summary "alertvisit: dithering 2 × 2 fields."
       quaddithervisit $exposurerepeats $exposuretime $filters
-
     }
-
   }
-  
+
   set alertdelay [alert::delay [executor::alert]]
-  log::summary [format "alertvisit: alert delay at end of visit is %.1f seconds (%.1f hours)." $alertdelay [expr {$alertdelay / 3600}]]
+  log::summary \
+    [format "alertvisit: alert delay at end of visit is %.1f seconds (%.1f hours)." $alertdelay \
+    [expr {$alertdelay / 3600}]]
 
   return
-
 }
 
 ########################################################################
-
 proc parsefilters {filters} {
   switch $filters {
-
     "g/r/i/z/y" {
       set filters {{g z} {r y} {i y}}
     }
@@ -154,7 +136,6 @@ proc parsefilters {filters} {
     "g/r/i/zy" {
       set filters {{g zy} {r zy} {i zy}}
     }
-    
     "g/r/z/y" {
       set filters {{g z} {r y} {g y} {r z} {g y} {r y}}
     }
@@ -168,7 +149,6 @@ proc parsefilters {filters} {
     "g/r/zy" {
       set filters {{g zy} {r zy}}
     }
-
     "g/i/z/y" {
       set filters {{g z} {i y} {g y} {i z} {g y} {i y}}
     }
@@ -182,7 +162,6 @@ proc parsefilters {filters} {
     "g/i/zy" {
       set filters {{g zy} {i zy}}
     }
-
     "r/i/z/y" {
       set filters {{r z} {i y} {r y} {i z} {r y} {i y}}
     }
@@ -196,7 +175,6 @@ proc parsefilters {filters} {
     "r/i/zy" {
       set filters {{r zy} {i zy}}
     }
-
     "g/z/y" {
       set filters {{g z} {g y} {g y}}
     }
@@ -210,7 +188,6 @@ proc parsefilters {filters} {
     "g/zy" {
       set filters {{g zy}}
     }
-
     "r/z/y" {
       set filters {{r z} {r y} {r y}}
     }
@@ -224,7 +201,6 @@ proc parsefilters {filters} {
     "r/zy" {
       set filters {{r zy}}
     }
-
     "i/z/y" {
       set filters {{i z} {i y} {i z}}
     }
@@ -238,28 +214,23 @@ proc parsefilters {filters} {
     "i/zy" {
       set filters {{i zy}}
     }
-
     "gri" -
     "gri/zy" {
       set filters {{gri zy}}
     }
-
     "g/r/i/B" -
     "g/r/i/B/z" {
       set filters {{g z} {r z} {i z} {B z}}
     }
-
     "g/r/i/gri/B/z/y/zy" {
       set filters {{g z} {r y} {i y} {gri zy} {B zy}}
     }
-
   }
 
   return $filters
 }
 
 ########################################################################
-
 variable window "default"
 variable binning "default"
 
@@ -273,10 +244,9 @@ proc setdetector {} {
 }
 
 ########################################################################
-
 proc gridvisitoffset {gridsize eastoffsetfactor northoffsetfactor track} {
   set gridsize [astrometry::parseoffset $gridsize]
-  set eastoffset  [expr {$eastoffsetfactor  * $gridsize}]
+  set eastoffset [expr {$eastoffsetfactor  * $gridsize}]
   set northoffset [expr {$northoffsetfactor * $gridsize}]
   if {$track} {
     executor::track $eastoffset $northoffset "default"
@@ -286,7 +256,6 @@ proc gridvisitoffset {gridsize eastoffsetfactor northoffsetfactor track} {
 }
 
 proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {gridsize 1am} {offsetfastest false}} {
-
   log::summary "gridvisit: starting."
 
   set filters [parsefilters $filters]
@@ -322,7 +291,7 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {gr
           +0.0 -0.5
         } 0 [expr {$gridpoints * 2 - 1}]]
   }
-  
+
   set gridrepeat 0
   while {$gridrepeat < $gridrepeats} {
     if {$offsetfastest} {
@@ -359,9 +328,7 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {gr
   return true
 }
 
-
 proc tequilagridvisit {gridrepeats gridpoints exposurerepeats exposuretime {gridsize 30as}} {
-
   log::summary "tequilagridvisit: starting."
 
   executor::setinstrument "tequila"
@@ -386,7 +353,7 @@ proc tequilagridvisit {gridrepeats gridpoints exposurerepeats exposuretime {grid
           +0.0 -0.5
         } 0 [expr {$gridpoints * 2 - 1}]]
   }
-  
+
   set gridrepeat 0
   while {$gridrepeat < $gridrepeats} {
     foreach {eastoffsetfactor northoffsetfactor} $ditherofsetfactors {
@@ -406,7 +373,6 @@ proc tequilagridvisit {gridrepeats gridpoints exposurerepeats exposuretime {grid
 }
 
 proc tequilatrackinggridvisit {gridrepeats gridpoints exposurerepeats exposuretime {gridsize 30as}} {
-
   log::summary "tequilatrackinggridvisit: starting."
 
   executor::setinstrument "tequila"
@@ -431,7 +397,7 @@ proc tequilatrackinggridvisit {gridrepeats gridpoints exposurerepeats exposureti
           +0.0 -0.5
         } 0 [expr {$gridpoints * 2 - 1}]]
   }
-  
+
   set gridrepeat 0
   while {$gridrepeat < $gridrepeats} {
     foreach {eastoffsetfactor northoffsetfactor} $ditherofsetfactors {
@@ -451,11 +417,10 @@ proc tequilatrackinggridvisit {gridrepeats gridpoints exposurerepeats exposureti
 }
 
 ########################################################################
-
 proc dithervisitoffset {diameter track} {
   set diameter [astrometry::parseoffset $diameter]
   while {true} {
-    set eastoffset  [expr {(rand() - 0.5) * $diameter}]
+    set eastoffset [expr {(rand() - 0.5) * $diameter}]
     set northoffset [expr {(rand() - 0.5) * $diameter}]
     if {$eastoffset * $eastoffset + $northoffset * $northoffset < 0.25 * $diameter * $diameter} {
       break
@@ -469,7 +434,6 @@ proc dithervisitoffset {diameter track} {
 }
 
 proc dithervisit {dithers exposuretimes filters {diameter "1am"} {offsetfastest false}} {
-
   log::summary "dithervisit: starting."
 
   set filters [parsefilters $filters]
@@ -488,25 +452,25 @@ proc dithervisit {dithers exposuretimes filters {diameter "1am"} {offsetfastest 
   setdetector
 
   set track true
-  
+
   log::summary "dithervisit: dithering in a circle of diameter $diameter."
   if {$offsetfastest} {
-      set exposure 0
-      foreach filter $filters exposuretime $exposuretimes {
-        eval executor::movefilterwheel $filter
-        set dither 0
-        while {$dither < $dithers} {
-          dithervisitoffset $diameter $track
-          set track false
-          incr dither
-          executor::expose object $exposuretime
-          incr exposure
-        }
+    set exposure 0
+    foreach filter $filters exposuretime $exposuretimes {
+      eval executor::movefilterwheel $filter
+      set dither 0
+      while {$dither < $dithers} {
+        dithervisitoffset $diameter $track
+        set track false
+        incr dither
+        executor::expose object $exposuretime
+        incr exposure
       }
+    }
   } else {
     set exposure 0
     set dither 0
-    while {$dither < $dithers} {    
+    while {$dither < $dithers} {
       dithervisitoffset $diameter $track
       set track false
       incr dither
@@ -523,38 +487,36 @@ proc dithervisit {dithers exposuretimes filters {diameter "1am"} {offsetfastest 
 }
 
 ########################################################################
-
 proc quaddithervisitoffset {diameter eastcenteroffset northcenteroffset} {
   set diameter [astrometry::parseoffset $diameter]
-  set eastcenteroffset  [astrometry::parseoffset $eastcenteroffset ]
+  set eastcenteroffset [astrometry::parseoffset $eastcenteroffset ]
   set northcenteroffset [astrometry::parseoffset $northcenteroffset]
   while {true} {
-    set eastoffset  [expr {(rand() - 0.5) * $diameter}]
+    set eastoffset [expr {(rand() - 0.5) * $diameter}]
     set northoffset [expr {(rand() - 0.5) * $diameter}]
     if {$eastoffset * $eastoffset + $northoffset * $northoffset < 0.25 * $diameter * $diameter} {
       break
     }
   }
-  set eastoffset  [expr {$eastoffset  + $eastcenteroffset }]
-  set northoffset [expr {$northoffset + $northcenteroffset}]  
+  set eastoffset [expr {$eastoffset  + $eastcenteroffset }]
+  set northoffset [expr {$northoffset + $northcenteroffset}]
   executor::offset $eastoffset $northoffset "default"
 }
 
 proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest false} {diameter "1am"}} {
-
   log::summary "quaddithervisit: starting."
 
   variable instrument
 
   setinstrument "ddrago"
   if {[string equal $instrument "ogse"]} {
-   set fieldsize [astrometry::parsedistance "13am"]
+    set fieldsize [astrometry::parsedistance "13am"]
   } elseif {[string equal $instrument "ddrago"]} {
     set fieldsize [astrometry::parsedistance "26am"]
   } else {
     error "invalid instrument \"$instrument\"."
   }
-  
+
   set filters [parsefilters $filters]
   if {[llength $exposuretimes] == 1} {
     set exposuretimes [lrepeat [llength $filters] $exposuretimes]
@@ -563,7 +525,7 @@ proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest false
   } elseif {[llength $exposuretimes] != [llength $filters]} {
     error "the exposuretimes and filters arguments have different lengths."
   }
-  
+
   executor::setinstrument "ddrago"
   executor::setpupiltracking false
   executor::setsecondaryoffset 0
@@ -582,8 +544,7 @@ proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest false
         2 +0.45 -0.45
         3 -0.45 -0.45
       } {
-        variable fieldsize
-        set eastcenteroffset  [expr {$eastcenteroffsetfactor  * $fieldsize}]
+        set eastcenteroffset [expr {$eastcenteroffsetfactor  * $fieldsize}]
         set northcenteroffset [expr {$northcenteroffsetfactor * $fieldsize}]
         executor::setvisit [visit::updatevisitidentifier [executor::visit] $visitidentifier]
         quaddithervisitoffset $diameter $eastcenteroffset $northcenteroffset
@@ -595,20 +556,17 @@ proc quaddithervisit {exposurerepeats exposuretimes filters {offsetfastest false
 
   log::summary "quaddithervisit: finished."
   return true
-
 }
 
 ########################################################################
-
 proc coarsefocusvisit {{exposuretime 5}} {
-
   variable instrument
 
   log::summary "coarsefocusvisit: starting."
 
   if {[string equal $instrument "tequila"]} {
-      log::summary "coarsefocusvisit: switching to ddrago for coarse focus."
-      executor::setinstrument "ddrago"
+    log::summary "coarsefocusvisit: switching to ddrago for coarse focus."
+    executor::setinstrument "ddrago"
   }
 
   if {[string equal $instrument "ogse"]} {
@@ -635,10 +593,9 @@ proc coarsefocusvisit {{exposuretime 5}} {
   executor::setbinning $binning
   eval executor::movefilterwheel $filter
 
-  log::summary [format \
-    "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning %d." \
-    $binning \
-  ]
+  log::summary \
+    [format "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures and binning %d." \
+    $binning ]
   executor::focussecondary $detector $exposuretime 500 50 false true
 
   log::summary "coarsefocusvisit: finished."
@@ -647,11 +604,9 @@ proc coarsefocusvisit {{exposuretime 5}} {
 }
 
 ########################################################################
-
 proc focusvisit {{exposuretime 5}} {
-
   log::summary "focusvisit: starting."
-  
+
   variable instrument
   if {[string equal $instrument "ogse"]} {
     set window "1kx1k"
@@ -680,38 +635,33 @@ proc focusvisit {{exposuretime 5}} {
 
   executor::track
 
-  log::summary [format \
-    "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning %d." \
-    $binning \
-  ]
+  log::summary \
+    [format "focusvisit: focusing in filter $filter with $exposuretime second exposures and binning %d." $binning ]
   eval executor::movefilterwheel $filter
   executor::setwindow $window
   executor::setbinning $binning
   executor::focussecondary $detector $exposuretime 100 10 true false
-  
+
   log::summary "focusvisit: finished."
 
   return true
 }
 
 proc tequilafocusvisit {{exposuretime 5}} {
-
   log::summary "tequilafocusvisit: starting."
-  
+
   executor::setinstrument "tequila"
   focusvisit $exposuretime
-  
+
   log::summary "tequilafocusvisit: finished."
 
-  return true  
+  return true
 }
 
 ########################################################################
-
 proc focustiltvisit {{exposuretime 5} {filter {i z}}} {
-
   log::summary "focustiltvisit: starting."
-  
+
   variable instrument
   if {[string equal $instrument "ogse"]} {
     set binning 2
@@ -733,20 +683,19 @@ proc focustiltvisit {{exposuretime 5} {filter {i z}}} {
   eval executor::movefilterwheel "$filter"
 
   foreach detector $detectors {
-    log::summary "focustiltvisit: focusing $detector in filter $filter with $exposuretime second exposures and binning $binning."
+    log::summary \
+      "focustiltvisit: focusing $detector in filter $filter with $exposuretime second exposures and binning $binning."
     executor::focussecondary $detector $exposuretime 100 10 true false
   }
   executor::setunfocused
-  
+
   log::summary "focustiltvisit: finished."
 
   return true
 }
 
 ########################################################################
-
 proc focuswitnessvisit {{exposuretime 5} {filter {i z}}} {
-
   log::summary "focuswitnessvisit: starting."
 
   executor::setinstrument "ddrago"
@@ -757,7 +706,7 @@ proc focuswitnessvisit {{exposuretime 5} {filter {i z}}} {
   executor::setwindow "default"
   executor::setbinning "default"
   eval executor::movefilterwheel $filter
-  
+
   set dithers {
       0as   0as
     +30as +30as
@@ -778,9 +727,7 @@ proc focuswitnessvisit {{exposuretime 5} {filter {i z}}} {
 }
 
 ########################################################################
-
 proc pointingcorrectionvisit {{exposuretime 5} {filter {i z}}} {
-
   log::summary "correctpointingvisit: starting."
 
   executor::setinstrument "ddrago"
@@ -800,9 +747,7 @@ proc pointingcorrectionvisit {{exposuretime 5} {filter {i z}}} {
 }
 
 ########################################################################
-
 proc biasesvisit {{exposures 10} {binning "default"}} {
-
   log::summary "biasesvisit: starting."
 
   executor::setinstrument "ddrago"
@@ -823,9 +768,7 @@ proc biasesvisit {{exposures 10} {binning "default"}} {
 }
 
 ########################################################################
-
 proc ddragodarksvisit {{exposuretime 30} {exposures 10} {binning "default"}} {
-
   log::summary "ddragodarksvisit: starting."
 
   executor::setinstrument "ddrago"
@@ -846,9 +789,7 @@ proc ddragodarksvisit {{exposuretime 30} {exposures 10} {binning "default"}} {
 }
 
 ########################################################################
-
 proc tequiladarksvisit {{exposuretime 30} {exposures 10} {binning "default"}} {
-
   log::summary "tequiladarksvisit: starting."
 
   executor::setinstrument "tequila"
@@ -869,9 +810,7 @@ proc tequiladarksvisit {{exposuretime 30} {exposures 10} {binning "default"}} {
 }
 
 ########################################################################
-
 proc ddragotwilightflatsvisit {} {
-
   log::summary "ddragotwilightflatsvisit: starting."
 
   executor::setinstrument "ddrago"
@@ -887,10 +826,9 @@ proc ddragotwilightflatsvisit {} {
   # and 25k correspond to SNRs of 200 and 100. We set the upper limit to 30k in
   # order to change from i to g earlier. We take the flats in the order y, z, i,
   # g, and finally r.
-
   set targetngood 7
   set maxlevel 30000
-  set minlevel  5000
+  set minlevel 5000
   set exposuretime 5
 
   set filters1 {B i r g gri}
@@ -898,18 +836,17 @@ proc ddragotwilightflatsvisit {} {
 
   set detector "C1"
 
-  set finished1     false
-  set ngood1        0
+  set finished1 false
+  set ngood1 0
   set mingoodlevel1 $maxlevel
   set maxgoodlevel1 $minlevel
 
-  set finished2     false
-  set ngood2        0
+  set finished2 false
+  set ngood2 0
   set mingoodlevel2 $maxlevel
-  set maxgoodlevel2 $minlevel      
+  set maxgoodlevel2 $minlevel
 
   while {!$finished1 || !$finished2} {
-
     set filter1 [lindex $filters1 0]
     set filter2 [lindex $filters2 0]
     log::info "ddragotwilightflatsvisit: filters are $filter1/$filter2."
@@ -919,10 +856,9 @@ proc ddragotwilightflatsvisit {} {
     executor::analyze levels
 
     foreach i {1 2} {
-
-      set finished     [set finished$i]
-      set filters      [set filters$i]
-      set ngood        [set ngood$i]
+      set finished [set finished$i]
+      set filters [set filters$i]
+      set ngood [set ngood$i]
       set mingoodlevel [set mingoodlevel$i]
       set maxgoodlevel [set maxgoodlevel$i]
 
@@ -945,7 +881,9 @@ proc ddragotwilightflatsvisit {} {
           if {$ngood == 0} {
             log::summary [format "ddragotwilightflatsvisit: C$i: $ngood good flats in filter $filter."]
           } else {
-            log::summary [format "ddragotwilightflatsvisit: C$i: $ngood good flats in filter $filter (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
+            log::summary \
+              [format "ddragotwilightflatsvisit: C$i: $ngood good flats in filter $filter (%.0f to %.0f DN)." \
+              $mingoodlevel $maxgoodlevel]
           }
           if {[llength $filters] > 1} {
             set filters [lrange $filters 1 end]
@@ -956,17 +894,14 @@ proc ddragotwilightflatsvisit {} {
             set finished true
           }
         }
-
       }
 
-      set finished$i     $finished
-      set filters$i      $filters
-      set ngood$i        $ngood
+      set finished$i $finished
+      set filters$i $filters
+      set ngood$i $ngood
       set mingoodlevel$i $mingoodlevel
       set maxgoodlevel$i $maxgoodlevel
-
     }
-
   }
 
   log::summary "ddragotwilightflatsvisit: finished."
@@ -975,9 +910,7 @@ proc ddragotwilightflatsvisit {} {
 }
 
 ########################################################################
-
 proc tequilatwilightflatsvisit {} {
-
   log::summary "tequilatwilightflatsvisit: starting."
 
   executor::setinstrument "tequila"
@@ -1029,7 +962,8 @@ proc tequilatwilightflatsvisit {} {
   if {$ngood == 0} {
     log::summary [format "tequilatwilightflatsvisit: C$i: $ngood good flats."]
   } else {
-    log::summary [format "tequilatwilightflatsvisit: C$i: $ngood good flats (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
+    log::summary \
+      [format "tequilatwilightflatsvisit: C$i: $ngood good flats (%.0f to %.0f DN)." $mingoodlevel $maxgoodlevel]
   }
 
   log::summary "tequilatwilightflatsvisit: finished."
@@ -1038,11 +972,8 @@ proc tequilatwilightflatsvisit {} {
 }
 
 ########################################################################
-
 proc brightstarvisit {{offset 10am} {exposuretime 5} {filter {i z}}} {
-
   log::summary "brightstarvisit: starting."
-
 
   executor::setinstrument "ddrago"
   executor::setpupiltracking false
@@ -1054,18 +985,9 @@ proc brightstarvisit {{offset 10am} {exposuretime 5} {filter {i z}}} {
   eval executor::movefilterwheel $filter
 
   log::summary "brightstarvisit: offset is $offset."
-  
-  set dithers "       \
-     0am      0am     \
-     0am     +$offset \
-     0am     -$offset \
-    +$offset  0am     \
-    -$offset  0am     \
-    +$offset +$offset \
-    -$offset -$offset \
-    +$offset -$offset \
-    -$offset +$offset \
-  "
+
+  set dithers \
+    "        0am      0am      0am     +$offset  0am     -$offset  +$offset  0am      -$offset  0am      +$offset +$offset  -$offset -$offset  +$offset -$offset  -$offset +$offset  "
 
   foreach {eastoffset northoffset} $dithers {
     executor::offset $eastoffset $northoffset "default"
@@ -1078,15 +1000,14 @@ proc brightstarvisit {{offset 10am} {exposuretime 5} {filter {i z}}} {
 }
 
 ########################################################################
-
-proc hartmanntestvisit {secondaryoffset {eastoffset 0am} {northoffset 0am} {exposuretime 10} {filter {g z}} {exposures 10}} {
-
+proc hartmanntestvisit \
+  {secondaryoffset {eastoffset 0am} {northoffset 0am} {exposuretime 10} {filter {g z}} {exposures 10}} {
   log::summary "hartmanntestvisit: starting."
 
   executor::setinstrument "ddrago"
   executor::setpupiltracking false
   executor::setsecondaryoffset 0
-  
+
   log::summary "hartmanntestvisit: offset is $eastoffset $northoffset."
 
   executor::setwindow "default"
@@ -1097,13 +1018,13 @@ proc hartmanntestvisit {secondaryoffset {eastoffset 0am} {northoffset 0am} {expo
 
   executor::setsecondaryoffset +$secondaryoffset
   executor::track $eastoffset $northoffset
-  
+
   set exposure 0
   while {$exposure < $exposures} {
     executor::expose object $exposuretime
     incr exposure
   }
-  
+
   log::summary "hartmanntestvisit: intrafocal images: secondary offset is -$secondaryoffset."
 
   executor::setsecondaryoffset -$secondaryoffset
@@ -1118,22 +1039,20 @@ proc hartmanntestvisit {secondaryoffset {eastoffset 0am} {northoffset 0am} {expo
   executor::setsecondaryoffset 0
 
   log::summary "hartmanntestvisit: finished."
-  
 
   return true
 }
 
 ########################################################################
-
-proc tokovinintestvisit {{exposures 1} {exposuretime 10} {filter {i z}} {absolutesecondaryoffset 1000} {offsetsize 8am}} {
-
+proc tokovinintestvisit \
+  {{exposures 1} {exposuretime 10} {filter {i z}} {absolutesecondaryoffset 1000} {offsetsize 8am}} {
   log::summary "tokovinintestvisit: starting."
 
   executor::setinstrument "ddrago"
   executor::setpupiltracking true
   executor::setsecondaryoffset 0
   executor::track
-  
+
   executor::setwindow "default"
   executor::setbinning "default"
   eval executor::movefilterwheel $filter
@@ -1172,21 +1091,18 @@ proc tokovinintestvisit {{exposures 1} {exposuretime 10} {filter {i z}} {absolut
   executor::setsecondaryoffset 0
 
   log::summary "tokovinintestvisit: finished."
-  
 
   return true
 }
 
 ########################################################################
-
 proc nearfocustestvisit {{exposuretime 10} {filter {i z}} {exposures 3}} {
-
   log::summary "nearfocustestvisit: starting."
 
   executor::setinstrument "ddrago"
   executor::setpupiltracking false
   executor::setsecondaryoffset 0
-  
+
   executor::setwindow "default"
   executor::setbinning "default"
   eval executor::movefilterwheel $filter
@@ -1195,36 +1111,29 @@ proc nearfocustestvisit {{exposuretime 10} {filter {i z}} {exposures 3}} {
 
   #log::summary "tokovinintestvisit: correcting pointing."
   #executor::correctpointing $exposuretime
-
   foreach secondaryoffset {-90 -60 -30 -15 -10 -5 0 +5 +10 +15 +30 +60 +90} {
-
     log::summary "nearfocustestvisit: images with secondary offset of $secondaryoffset."
 
     executor::setsecondaryoffset $secondaryoffset
     executor::offset 0 0
-      
+
     set exposure 0
     while {$exposure < $exposures} {
       executor::expose object $exposuretime
       incr exposure
     }
-  
   }
 
   executor::setsecondaryoffset 0
 
   log::summary "nearfocustestvisit: finished."
-  
 
   return true
 }
 
 ########################################################################
-
 proc addtopointingmodelvisit {{exposuretime 10} {filter {i z}}} {
-
   log::summary "addtopointingmodelvisit: starting."
-
 
   executor::setinstrument "ddrago"
   executor::setpupiltracking false
@@ -1233,20 +1142,17 @@ proc addtopointingmodelvisit {{exposuretime 10} {filter {i z}}} {
 
   executor::setwindow "2kx2k"
   executor::setbinning "default"
-  
+
   eval executor::movefilterwheel $filter
-  
+
   executor::addtopointingmodel $exposuretime
 
   log::summary "addtopointingmodelvisit: finished."
   return true
 }
 
-
 ########################################################################
-
 proc tequilaopenvisit {} {
-
   log::summary "tequilaopenvisit: starting."
 
   client::request "tequila" "open"
@@ -1257,7 +1163,6 @@ proc tequilaopenvisit {} {
 }
 
 proc tequilaclosevisit {} {
-
   log::summary "tequilaclosevisit: starting."
 
   client::request "tequila" "close"
@@ -1266,5 +1171,4 @@ proc tequilaclosevisit {} {
   log::summary "tequilaclosevisit: finished."
   return true
 }
-
 ########################################################################
