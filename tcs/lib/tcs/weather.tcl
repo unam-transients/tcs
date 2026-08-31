@@ -54,13 +54,11 @@ namespace eval "weather" {
     set lastwindalarmseconds "unknown"
 
     foreach dataline $datalines {
-      log::debug "parsing data line."
-      log::debug [format "data line is \"%s\"." $dataline]
+      # noqa: W111
       if {
         [scan $dataline "b.0 %s %s %*s %*f %f %*f %*f %f %f %f %f %f %*f %*f %f %*f %*f %*f %*f %*f %*f %*f %*f %f %*f %*d %d %d %*d %*d %*d %d" pendingdate pendingtime pendingwindaverageazimuth pendingwindaveragespeed pendingwindgustspeed pendingtemperature pendinghumidity pendingpressure pendingrainrate pendingdewpoint pendingrainindex pendingcloudindex pendinglightindex] == 13
         || [scan $dataline "b.1 %s %s a %*s %*s %s %*s %*s %s %s %f %f %f %*f %*f %f %*f %*f %*f %*f %f %*f %*f %*f %f %*f %*d %d %d %*d %*d %*d %d" pendingdate pendingtime pendingwindaverageazimuth pendingwindaveragespeed pendingwindgustspeed pendingtemperature pendinghumidity pendingpressure pendingrainrate pendingskytemperature pendingdewpoint pendingrainindex pendingcloudindex pendinglightindex] == 14
       } {
-        log::debug [format "data line is from the COLIBRÍ PLC."]
         # This is the COLIBRI PLC
         switch $pendingcloudindex {
           1 {
@@ -251,18 +249,6 @@ namespace eval "weather" {
       }
       set previouspressure $pressure
 
-      variable windaveragespeedlimit
-
-      if {![string equal $windaveragespeedlimit ""]} {
-        if {
-          [string equal $lastwindalarmseconds "unknown"]
-          || [string equal $windaveragespeed "unknown"]
-          || $windaveragespeed >= $windaveragespeedlimit
-        } {
-          set lastwindalarmseconds $timestampseconds
-        }
-      }
-
       if {![string equal $windaverageazimuth "unknown"]} {
         set windaverageazimuth [astrometry::foldradpositive [expr {22.5 * round($windaverageazimuth / 22.5)}]]
       }
@@ -272,16 +258,33 @@ namespace eval "weather" {
       } elseif {$humidity >= 0.90 || [string equal $humiditytrend "unknown"]} {
         set humiditylimit 0.80
       }
+
+      if {$humidity >= $humiditylimit || ($humidity >= 0.85 && ![string equal $humiditytrend "falling"])} {
+        set humidityalarm true
+      } else {
+        set humidityalarm false
+      }
+
+      variable windaveragespeedlimit
+
+      if {[string equal $windaveragespeedlimit ""]} {
+        set windalarm false
+      } elseif {
+        [string equal $windaveragespeed "unknown"]
+        || $windaveragespeed >= $windaveragespeedlimit
+      } {
+        set windalarm true
+      } else {
+        set windalarm false
+      }
+
+      if {$rainalarm || $humidityalarm || $windalarm} {
+        set lastalarmseconds $timestampseconds
+      }
     }
 
     if {[string equal $previoustemperature "unknown"]} {
       error "no valid data."
-    }
-
-    if {[string equal $windaveragespeedlimit ""]} {
-      set lowwindspeedseconds 0
-    } else {
-      set lowwindspeedseconds [expr {$timestampseconds - $lastwindalarmseconds}]
     }
 
     server::setdata "timestamp" [utcclock::combinedformat $timestampseconds]
@@ -311,7 +314,6 @@ namespace eval "weather" {
     server::setdata "rainrate" $rainrate
     server::setdata "pressure" $pressure
     server::setdata "pressuretrend" $pressuretrend
-    server::setdata "lowwindspeedseconds" $lowwindspeedseconds
 
     set lastlightlevel [server::getdata "lightlevel"]
     server::setdata "lightlevel" $lightlevel
@@ -321,20 +323,6 @@ namespace eval "weather" {
       } else {
         log::summary "the light level has changed from $lastlightlevel to $lightlevel."
       }
-    }
-
-    if {$humidity >= $humiditylimit || ($humidity >= 0.85 && ![string equal $humiditytrend "falling"])} {
-      set humidityalarm true
-    } else {
-      set humidityalarm false
-    }
-
-    if {[string equal $windaveragespeedlimit ""]} {
-      set windalarm false
-    } elseif {$lowwindspeedseconds < 30 * 60} {
-      set windalarm true
-    } else {
-      set windalarm false
     }
 
     logalarm $humidityalarm [server::getdata "humidityalarm"] "humidity alarm"
@@ -357,11 +345,12 @@ namespace eval "weather" {
 
     set lastmustbeclosed [server::getdata "mustbeclosed"]
     variable forcemustbeclosed
+    set alarmdelay 900
+    set noalarmseconds [utcclock::diff $timestampseconds $lastalarmseconds]
+    server::setdata "noalarmseconds" $noalarmseconds
     if {
-      [server::getdata "windalarm"]
-      || [server::getdata "humidityalarm"]
-      || [server::getdata "rainalarm"]
-      || $forcemustbeclosed
+      $noalarmseconds < $alarmdelay ||
+      $forcemustbeclosed
     } {
       set mustbeclosed true
     } else {
@@ -384,7 +373,7 @@ namespace eval "weather" {
     humidity humiditytrend
     dewpoint dewpointtrend
     dewpointdepression dewpointdepressiontrend
-    windaveragespeed windgustspeed windaverageazimuth lowwindspeedseconds
+    windaveragespeed windgustspeed windaverageazimuth noalarmseconds
     rainrate
     pressure pressuretrend
     humidityalarm windalarm rainalarm mustbeclosed
