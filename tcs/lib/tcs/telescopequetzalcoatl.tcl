@@ -1,9 +1,6 @@
 ########################################################################
-
 # This file is part of the UNAM telescope control system.
-
 ########################################################################
-
 # Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
@@ -18,55 +15,39 @@
 # PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 # TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
-
 ########################################################################
-
 package require "astrometry"
 
-package provide "telescopecoatli" 0.0
+package provide "telescopequetzalcoatl" 0.0
 
 namespace eval "telescope" {
-
   ######################################################################
-  
   variable identifier "coatli"
 
   ######################################################################
-
-  variable mechanisms  { mount enclosure secondary }
-  variable withlights  true
-  variable withheater  true
+  variable mechanisms { mount enclosure secondary }
+  variable withlights true
+  variable withheater true
   variable withlouvers false
-  variable withfans    false
-    
-  ######################################################################
-
-  proc initializeprolog {} {
-  }
-
-  proc initializeepilog {} {
-  }
-
-  proc openprolog {} {
-  }
-
-  proc openepilog {} {
-  }
-
-  proc closeprolog {} {
-  }
-
-  proc closeepilog {} {
-  }
+  variable withfans false
 
   ######################################################################
+  proc initializeprolog {} {}
 
-  proc initializemechanismprolog {mechanism} {
-  }
+  proc initializeepilog {} {}
 
-  proc initializemechanismepilog {mechanism} {
-  }
+  proc openprolog {} {}
 
+  proc openepilog {} {}
+
+  proc closeprolog {} {}
+
+  proc closeepilog {} {}
+
+  ######################################################################
+  proc initializemechanismprolog {mechanism} {}
+
+  proc initializemechanismepilog {mechanism} {}
   ######################################################################
 }
 

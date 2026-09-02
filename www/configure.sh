@@ -25,8 +25,8 @@ autoconf
 
 host=$(uname -n | sed 's/\..*//')
 case $host in
-coatli-control)
-  ./configure SITE=coatli
+quetzalcoatl-control)
+  ./configure SITE=quetzalcoatl
   ;;
 ddoti-control)
   ./configure SITE=ddoti

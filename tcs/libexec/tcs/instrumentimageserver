@@ -67,6 +67,7 @@ if test -z "$host"
 then
   vartcsdir="$tcsprefix/var/tcs/$camera"
   varwwwdir="$tcsprefix/var/www/tcs/instrument/$camera"
+  mkdir -p "$vartcsdir"
   mkdir -p "$varwwwdir"
   cd "$varwwwdir"
   rm -f *.jpg

@@ -1,3 +1,3 @@
-install-coatli	:
-	chmod a+x coatli.sh
-	sudo cp coatli.sh /usr/local/bin/manualalert
+install-quetzalcoatl	:
+	chmod a+x quetzalcoatl.sh
+	sudo cp quetzalcoatl.sh /usr/local/bin/manualalert

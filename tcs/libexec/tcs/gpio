@@ -23,16 +23,16 @@
 
 ########################################################################
 
+set -x
+
 program="tcs $(basename "$0")"
 
 usageerror () {
-  echo 1>&2 "usage: $program -i"
   echo 1>&2 "usage: $program name [on|off]"
   exit 1
 }
 
-optstring=p:i
-init=false
+optstring=
 if ! getopt -qQ -- "$optstring" "$@"
 then
   usageerror
@@ -41,47 +41,18 @@ eval set -- "$(getopt -q -- "$optstring" "$@")"
 while test "$1" != "--"
 do
   case "$1" in
-  -i)
-    init=true
-    shift
-    ;;
   *)
     usageerror
     ;;
   esac
 done
 shift
-if $init && test $# != 0
-then
-  usageerror
-elif ! $init && test $# != 1 && test $# != 2
+if test $# != 1 && test $# != 2
 then
   usageerror
 fi
 
 host=$(uname -n | tr A-Z a-z | sed 's/\..*//')
-
-if $init
-then
-  case $host in
-  coatli-platform|ddoti-platform)
-    # Raspeberry Pi
-    gpios="19 26"
-    ;;
-  *)
-    # Assume Minnowboard
-    # 481 must be last as it is enable.
-    gpios="480 483 482 472 473 475 476 481"
-    ;;
-  esac
-  for gpio in $gpios
-  do
-    echo $gpio >/sys/class/gpio/export
-    echo out >/sys/class/gpio/gpio$gpio/direction
-    echo 0 >/sys/class/gpio/gpio$gpio/value
-  done
-  exit 0
-fi
 
 name="$1"
 value="$2"
@@ -89,16 +60,16 @@ case $name:$host in
 19:*|26:*|472:*|473:*|475:*|476:*|480:*|481:*|482:*|483:*)
   gpio=$name
   ;;
-enclosure-lights:coatli-platform|enclosure-lights:ddoti-platform)
+enclosure-lights:quetzalcoatl-platform|enclosure-lights:ddoti-platform)
   gpio=19
   ;;
-enclosure-heater:coatli-platform|enclosure-heater:ddoti-platform)
+enclosure-heater:quetzalcoatl-platform|enclosure-heater:ddoti-platform)
   gpio=26
   ;;
-enclosure-lights:coatli-c0|enclosure-lights:ddoti-c0|telescope-fans:ddoti-d0|telescope-fans:ddoti-e0)
+enclosure-lights:quetzalcoatl-c0|enclosure-lights:ddoti-c0|telescope-fans:ddoti-d0|telescope-fans:ddoti-e0)
   gpio=481
   ;;
-enclosure-heater:coatli-c0|enclosure-heater:ddoti-c0)
+enclosure-heater:quetzalcoatl-c0|enclosure-heater:ddoti-c0)
   gpio=476
   ;;
 *)
@@ -106,9 +77,10 @@ enclosure-heater:coatli-c0|enclosure-heater:ddoti-c0)
   exit 1
   ;;
 esac
+
 if test $# = 1
 then
-  if test $(cat /sys/class/gpio/gpio$gpio/value) = 0
+  if test $(gpioget gpiochip0 $gpio) = 0
   then
     echo "off"
   else
@@ -117,10 +89,10 @@ then
 else
   if test "$value" = "off"
   then
-    echo 0 >/sys/class/gpio/gpio$gpio/value
+    gpioset gpiochip0 $gpio=0
   elif test "$value" = "on"
   then
-    echo 1 >/sys/class/gpio/gpio$gpio/value
+    gpioset gpiochip0 $gpio=1
   else
     echo 1>&2 "$program: invalid value \"$value\"."
     exit 1

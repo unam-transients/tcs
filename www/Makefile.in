@@ -38,25 +38,25 @@ install						:	all install-$(SITE)
 	
 ########################################################################
 
-all-coatli				        :   \
-    docs-coatli/index.html		    \
-    docs-coatli/engineering.html	\
-	docs-coatli/license.html
-docs-coatli/index.html  		:	docs-coatli/index.md
-docs-coatli/engineering.html	:	docs-coatli/engineering.md
-docs-coatli/license.html		:	docs-coatli/license.md
+all-quetzalcoatl				        :   \
+    docs-quetzalcoatl/index.html		    \
+    docs-quetzalcoatl/engineering.html	\
+	docs-quetzalcoatl/license.html
+docs-quetzalcoatl/index.html  		:	docs-quetzalcoatl/index.md
+docs-quetzalcoatl/engineering.html	:	docs-quetzalcoatl/engineering.md
+docs-quetzalcoatl/license.html		:	docs-quetzalcoatl/license.md
 
-install-coatli			:	install-linux
+install-quetzalcoatl			:	install-linux
 
-clean-coatli			:
-	-rm -f docs-coatli/*.html
+clean-quetzalcoatl			:
+	-rm -f docs-quetzalcoatl/*.html
 	
 ########################################################################
 
 all-ddoti				        :	\
     docs-ddoti/index.html		    \
 	docs-ddoti/engineering.html	\
-	docs-coatli/license.html
+	docs-quetzalcoatl/license.html
 docs-ddoti/index.html	    	:	docs-ddoti/index.md
 docs-ddoti/engineering.html		:	docs-ddoti/engineering.md
 docs-ddoti/license.html			:	docs-ddoti/license.md
@@ -106,6 +106,7 @@ clean-test				:
 
 install-linux					:
 	sudo mkdir -p $(prefix)/var/www/
+	sudo mkdir -p $(prefix)/var/tcs/latest/webcam
 	sudo cp -r style.css docs-@SITE@/. $(prefix)/var/www/.
 	if test -d public-webcams-@SITE@/ ; then sudo cp -r public-webcams-@SITE@/. $(prefix)/var/www/public-webcams; else true; fi
 	sudo rm -f /etc/apache2/sites-enabled/*

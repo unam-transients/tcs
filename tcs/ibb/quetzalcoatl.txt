@@ -34,11 +34,11 @@ set time zone 0
 set time usents yes
 get time
 
-add user coatli
-set user coatli password coatli coatli
-set user coatli role admin
-set user coatli device #1 outlet all yes
-get user coatli
+add user quetzalcoatl
+set user quetzalcoatl password quetzalcoatl quetzalcoatl
+set user quetzalcoatl role admin
+set user quetzalcoatl device #1 outlet all yes
+get user quetzalcoatl
 
 set snmp 1 enable yes
 
@@ -69,11 +69,11 @@ set time zone 0
 set time usents yes
 get time
 
-add user coatli
-set user coatli password coatli coatli
-set user coatli role admin
-set user coatli device #1 outlet all yes
-get user coatli
+add user quetzalcoatl
+set user quetzalcoatl password quetzalcoatl quetzalcoatl
+set user quetzalcoatl role admin
+set user quetzalcoatl device #1 outlet all yes
+get user quetzalcoatl
 
 set snmp 1 enable yes
 

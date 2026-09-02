@@ -1,6 +1,6 @@
-# COATLI: Engineering
+# Quetzalcóatl: Engineering
 
-This is the engineering web-page for the COATLI telescope at the
+This is the engineering web-page for the Quetzalcóatl telescope at the
 [OAN/SPM](http://www.astrossp.unam.mx).
 
 ---

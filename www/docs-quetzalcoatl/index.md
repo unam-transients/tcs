@@ -1,6 +1,6 @@
-# COATLI
+# Quetzalcóatl
 
-This is the mountain-top web-site for the COATLI telescope at the [OAN/SPM](http://www.astrossp.unam.mx).
+This is the mountain-top web-site for the Quetzalcóatl telescope at the [OAN/SPM](http://www.astrossp.unam.mx).
 
 * Interfaces
     * [Observations Interface](/tcs/observations.html)
@@ -12,8 +12,8 @@ This is the mountain-top web-site for the COATLI telescope at the [OAN/SPM](http
     * [Block Queue](/tcs/blocks.html)
 * [Documentation](documentation.html)
 * Data
-    * [Raw](http://oan-data/archive-coatli/raw/)
-    * [Reduced](http://oan-data/redux-coatli/)
+    * [Raw](http://oan-data/archive-quetzalcoatl/raw/)
+    * [Reduced](http://oan-data/redux-quetzalcoatl/)
 * [Engineering](engineering.html)
 
 ---

@@ -1,9 +1,6 @@
 ########################################################################
-
 # This file is part of the UNAM telescope control system.
-
 ########################################################################
-
 # Copyright © 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
@@ -18,13 +15,10 @@
 # PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 # TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
-
 ########################################################################
-
 # This package implements the low-level communication with an Optec
 # TCF-S focuser. This type of focuser is used to focus the secondary of
-# the COATLI 50-cm telescope.
-
+# the Quetzalcóatl 50-cm telescope.
 package require "config"
 package require "controller"
 package require "client"
@@ -35,44 +29,38 @@ package require "server"
 package provide "secondaryoptec" 0.0
 
 namespace eval "secondary" {
+  ######################################################################
+  variable controllerhost [config::getvalue "secondary" "controllerhost"   ]
+  variable controllerport [config::getvalue "secondary" "controllerport"   ]
 
   ######################################################################
+  set controller::host $controllerhost
+  set controller::port $controllerport
+  set controller::connectiontype "persistent"
+  set controller::statuscommand "FPOSRO"
+  set controller::timeoutmilliseconds 5000
+  set controller::intervalmilliseconds 500
+  set controller::updatedata secondary::updatecontrollerdata
+  set controller::statusintervalmilliseconds 500
 
-  variable controllerhost    [config::getvalue "secondary" "controllerhost"   ]
-  variable controllerport    [config::getvalue "secondary" "controllerport"   ]
-  
-  ######################################################################
-
-  set controller::host                        $controllerhost
-  set controller::port                        $controllerport
-  set controller::connectiontype              "persistent"
-  set controller::statuscommand               "FPOSRO"
-  set controller::timeoutmilliseconds         5000
-  set controller::intervalmilliseconds        500
-  set controller::updatedata                  secondary::updatecontrollerdata
-  set controller::statusintervalmilliseconds  500
-  
-  set server::datalifeseconds                 30
+  set server::datalifeseconds 30
 
   # The focuser does not respond while it is moving. To avoid time outs,
   # we move in steps of at most dzsetp. The speed is about 100 steps per
   # second.
-
   variable dzstep [expr {int($controller::intervalmilliseconds * 0.1)}]
 
   ######################################################################
-
   variable moving true
-  
-  proc updatecontrollerdata {controllerresponse} {
 
+  proc updatecontrollerdata {controllerresponse} {
     set timestamp [utcclock::combinedformat now]
 
     if {
-      [string equal $controllerresponse "!"] ||
-      [string equal $controllerresponse "*"] ||
-      [string equal $controllerresponse ""] ||
-      [string match "=*" $controllerresponse]
+      [string equal $controllerresponse "!"]
+      || [string equal $controllerresponse "*"]
+      || [string equal $controllerresponse ""]
+      || [string match "=*" $controllerresponse]
     } {
       return false
     }
@@ -94,17 +82,17 @@ namespace eval "secondary" {
     # The focuser only returns a position when it has stopped moving.
     variable moving
     set moving false
-    
+
     server::setstatus "ok"
-    server::setdata "timestamp"        $timestamp
-    server::setdata "z"                $z
-    server::setdata "zlowerlimit"      $zlowerlimit
-    server::setdata "zupperlimit"      $zupperlimit
-    server::setdata "zerror"           $zerror
+    server::setdata "timestamp" $timestamp
+    server::setdata "z" $z
+    server::setdata "zlowerlimit" $zlowerlimit
+    server::setdata "zupperlimit" $zupperlimit
+    server::setdata "zerror" $zerror
 
     return true
   }
-  
+
   proc setmoving {} {
     variable moving
     set moving true
@@ -116,9 +104,8 @@ namespace eval "secondary" {
       coroutine::yield
     }
   }
-  
+
   ######################################################################
-    
   proc starthardware {} {
     controller::flushcommandqueue
     controller::sendcommand "FMMODE"
@@ -137,7 +124,7 @@ namespace eval "secondary" {
     controller::sendcommand "FI0000"
     waituntilnotmoving
   }
-  
+
   proc movehardwaresimple {requestedz} {
     controller::flushcommandqueue
     waituntilnotmoving
@@ -192,14 +179,13 @@ namespace eval "secondary" {
       checkzerror "after moving"
     }
   }
-  
+
   proc checkhardwarefor {action} {
     # Always available.
     return
   }
-  
+
   ######################################################################
-  
   proc startactivitycommand {} {
     set start [utcclock::seconds]
     log::info "starting."
@@ -207,9 +193,9 @@ namespace eval "secondary" {
     setrequestedz
     starthardware
     set end [utcclock::seconds]
-    log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]    
+    log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
   }
-  
+
   proc initializeactivitycommand {} {
     set start [utcclock::seconds]
     log::info "initializing."
@@ -217,22 +203,22 @@ namespace eval "secondary" {
     setrequestedz0 $initialz0
     setrequestedz
     log::info "moving to corrected position [server::getdata "requestedz0"]."
-    movehardware [server::getdata "requestedz"] true 
+    movehardware [server::getdata "requestedz"] true
     set end [utcclock::seconds]
-    log::info [format "finished initializing after %.1f seconds." [utcclock::diff $end $start]]    
+    log::info [format "finished initializing after %.1f seconds." [utcclock::diff $end $start]]
   }
 
   proc stopactivitycommand {previousactivity} {
     set start [utcclock::seconds]
     log::info "stopping."
     if {
-      [string equal $previousactivity "initializing"] ||
-      [string equal $previousactivity "moving"]
+      [string equal $previousactivity "initializing"]
+      || [string equal $previousactivity "moving"]
     } {
       stophardware
     }
     set end [utcclock::seconds]
-    log::info [format "finished stopping after %.1f seconds." [utcclock::diff $end $start]]    
+    log::info [format "finished stopping after %.1f seconds." [utcclock::diff $end $start]]
   }
 
   proc resetactivitycommand {} {
@@ -240,7 +226,7 @@ namespace eval "secondary" {
     log::info "resetting."
     stophardware
     set end [utcclock::seconds]
-    log::info [format "finished resetting after %.1f seconds." [utcclock::diff $end $start]]    
+    log::info [format "finished resetting after %.1f seconds." [utcclock::diff $end $start]]
   }
 
   proc moveactivitycommand {check} {
@@ -248,20 +234,18 @@ namespace eval "secondary" {
     log::info "moving."
     log::info "moving to corrected position [server::getdata "requestedz0"]."
     setrequestedz
-    movehardware [server::getdata "requestedz"] true 
+    movehardware [server::getdata "requestedz"] true
     set end [utcclock::seconds]
-    log::info [format "finished moving after %.1f seconds." [utcclock::diff $end $start]]    
+    log::info [format "finished moving after %.1f seconds." [utcclock::diff $end $start]]
   }
 
   ######################################################################
-  
   proc start {} {
     server::setactivity "starting"
     controller::startcommandloop
     controller::startstatusloop
     server::newactivitycommand "starting" "started" secondary::startactivitycommand
   }
-
 }
 
 source [file join [directories::prefix] "lib" "tcs" "secondary.tcl"]

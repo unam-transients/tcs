@@ -81,9 +81,9 @@
     "focuseridentifier": "/dev/serial/by-path/pci-0000:00:14.0-usb-0:5:1.0",
     "focuserinitialposition": 10000,
     "focuserbacklashoffset": "-100",
-    "focuserdzmodel": {},
+    "focuserdzmodel": { },
     "focusersoftoffset": 21000,
-    "pointingmodelparameters": {},
+    "pointingmodelparameters": { },
     "isstandalone": "false",
     "fitsfwhmargs": {
       "1": "-A",
@@ -158,9 +158,9 @@
     "focuserinitialposition": 30000,
     "focuserinitialposition": 10000,
     "focuserbacklashoffset": "-100",
-    "focuserdzmodel": {},
+    "focuserdzmodel": { },
     "focusersoftoffset": 21000,
-    "pointingmodelparameters": {},
+    "pointingmodelparameters": { },
     "isstandalone": "false",
     "fitsfwhmargs": {
       "1": "-A",
@@ -196,7 +196,7 @@
   },
   "heater": {
     "type": "gpio",
-    "gpiopath": "/sys/class/gpio/gpio26/value"
+    "gpio": "26"
   },
   "html": {
     "servers": [
@@ -243,11 +243,11 @@
       "C0",
       "C1"
     ],
-    "outletgroups": []
+    "outletgroups": [ ]
   },
   "lights": {
     "type": "gpio",
-    "gpiopath": "/sys/class/gpio/gpio19/value"
+    "gpio": "19"
   },
   "mount": {
     "type": "ntm",

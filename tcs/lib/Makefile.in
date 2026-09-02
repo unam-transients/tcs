@@ -78,6 +78,18 @@ installs_project_colibri	    :=	\
 	filterwheelfli.so               \
 	filterwheeldummy.so
 endif
+
+
+ifeq ($(UNAME_N),quetzalcoatl-detector)
+installs_project_quetzalcoatl   :=	\
+	detectorqhy.so			        \
+	detectordummy.so		        \
+	filterwheelfli.so               \
+	filterwheelnull.so              \
+	filterwheeldummy.so
+else
+installs_project_quetzalcoatl   :=
+endif
 	
 ########################################################################
 

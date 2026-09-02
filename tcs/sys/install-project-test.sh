@@ -67,12 +67,6 @@ EOF
     echo "test -w /etc || mount -o remount,rw /"
   fi
 
-  # Enable gpios on Minnowboards
-  if dmesg | grep -iq minnowboard
-  then
-    echo "gpio -i"
-  fi
-
   echo "tcs instrumentimageserver C0 &"
   echo "tcs instrumentimageserver C0 localhost &"
   echo "tcs instrumentimageserver C1 &"

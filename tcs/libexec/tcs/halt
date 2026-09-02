@@ -46,8 +46,8 @@ cd "$tcsprefix"/var/tcs/halt
 if test $# = 0
 then
   case "$host" in
-  coatli-*)
-    set control platform instrument
+  quetzalcoatl-*)
+    set control platform detector
     ;;
   ddoti-*)
     set control platform detectors0 detectors1

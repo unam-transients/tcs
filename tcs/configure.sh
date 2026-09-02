@@ -23,8 +23,8 @@
 
 host=$(uname -n | sed 's/\..*//')
 case $host in
-coatli-*)
-  ./configure --enable-project=coatli
+quetzalcoatl-*)
+  ./configure --enable-project=quetzalcoatl
   ;;
 ddoti-*)
   ./configure --enable-project=ddoti

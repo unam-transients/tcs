@@ -22,7 +22,7 @@
 ########################################################################
 
 ServerAdmin alan@astro.unam.mx
-ServerName coatli.astrossp.unam.mx
+ServerName quetzalcoatl.astrossp.unam.mx
 
 <Directory @prefix@/var/www/>
   Options Indexes FollowSymLinks
@@ -39,7 +39,7 @@ ServerName coatli.astrossp.unam.mx
 
 <VirtualHost *:80>
 
-  ServerName coatli.astrossp.unam.mx
+  ServerName quetzalcoatl.astrossp.unam.mx
   DocumentRoot /usr/local/var/www/
 
   ############################################################
@@ -65,22 +65,22 @@ ServerName coatli.astrossp.unam.mx
     Allow from 127.0.0
     Allow from ::1
     AuthType Basic
-    AuthName "COATLI Operations"
-    AuthUserFile @prefix@/etc/htpasswd/coatli-operations
+    AuthName "Quetzalcóatl Operations"
+    AuthUserFile @prefix@/etc/htpasswd/quetzalcoatl-operations
     Require valid-user
   </LocationMatch>
 
   <Location "/tcs/engineering.html">
     AuthType Basic
-    AuthName "COATLI Engineering"
-    AuthUserFile @prefix@/etc/htpasswd/coatli-engineering
+    AuthName "Quetzalcóatl Engineering"
+    AuthUserFile @prefix@/etc/htpasswd/quetzalcoatl-engineering
     Require valid-user
   </Location>
 
   <LocationMatch "^/proxy/">
     AuthType Basic
-    AuthName "COATLI Engineering"
-    AuthUserFile @prefix@/etc/htpasswd/coatli-engineering
+    AuthName "Quetzalcóatl Engineering"
+    AuthUserFile @prefix@/etc/htpasswd/quetzalcoatl-engineering
     Require valid-user
   </LocationMatch>
 

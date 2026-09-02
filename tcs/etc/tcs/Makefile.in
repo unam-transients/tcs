@@ -43,14 +43,14 @@ installs_project_test		:=		    \
 installbins_project_test	:=		    \
 	alertscript-project-test
 
-installs_project_coatli	:=		        \
-	alert-project-coatli		        \
-	config-project-coatli.json		    \
-	servers-project-coatli.json		    \
-	visitcommands-project-coatli.tcl
+installs_project_quetzalcoatl	:=		        \
+	alert-project-quetzalcoatl		        \
+	config-project-quetzalcoatl.json		    \
+	servers-project-quetzalcoatl.json		    \
+	visitcommands-project-quetzalcoatl.tcl
 
-installbins_project_coatli	:=		    \
-	alertscript-project-coatli	
+installbins_project_quetzalcoatl	:=		    \
+	alertscript-project-quetzalcoatl	
 
 installs_project_ddoti	:=		        \
 	alert-project-ddoti		            \

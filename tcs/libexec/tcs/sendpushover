@@ -68,7 +68,7 @@ to="$1"
 message="$2"
 
 case $(uname -n) in
-coatli-*)
+quetzalcoatl-*)
   from=abps4xgknzg4j9atufnjbnhkb68gc3
   ;;
 colibri-*)
@@ -87,7 +87,7 @@ case $(uname -n):$to in
 *:alan)
   to=uopAQF3pQRWhpJNCQgd2q8tGKDZRjW
   ;;
-coatli-*:emergency)
+quetzalcoatl-*:emergency)
   to=g7aded162wnz8gy82owkju5t5c7op5
   ;;
 colibri-*:emergency)

@@ -112,7 +112,7 @@ installbins_project_test :=       \
 	updateseeingfiles-oan         \
 	updateweatherfiles-oan
 	
-installbins_project_coatli :=     \
+installbins_project_quetzalcoatl :=     \
 	C0server                      \
 	enclosureserver               \
 	rebootmount                   \

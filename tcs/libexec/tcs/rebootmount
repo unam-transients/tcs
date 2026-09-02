@@ -33,7 +33,7 @@ export TCSLOGTOSTDERR=true
 
 host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
 case $host in
-coatli-control|ddoti-control)
+quetzalcoatl-control|ddoti-control)
   ;;
 *-control)
   echo 1>&2 "$program: error: rebootmount is not configured for this project." 

@@ -1,9 +1,6 @@
 ########################################################################
-
 # This file is part of the UNAM telescope control system.
-
 ########################################################################
-
 # Copyright © 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
@@ -18,17 +15,13 @@
 # PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 # TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
-
 ########################################################################
-
 package require "directories"
 
-package provide "executorcoatli" 0.0
+package provide "executorquetzalcoatl" 0.0
 
 namespace eval "executor" {
-
   proc focus {exposuretime range step {witness false} {initial false}} {
     focussecondary "C0" $exposuretime $range $step $witness $initial
   }
-
 }

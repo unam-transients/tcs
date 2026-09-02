@@ -44,8 +44,8 @@ esac
 if test $# = 0
 then
   case "$host" in
-  coatli-control)
-    instrument=huitzi
+  quetzalcoatl-control)
+    instrument=quetzalcoatl
     ;;
   ddoti-control)
     instrument=ddoti
@@ -67,9 +67,9 @@ else
 fi
 
 case "$instrument" in
-  huitzi)
-    hosts=instrument
-    powers=instrument
+  quetzalcoatl)
+    hosts=detector
+    powers=detector
     ;;
   ddoti)
     hosts="detectors0 detectors1"

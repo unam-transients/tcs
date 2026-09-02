@@ -31,7 +31,7 @@ AC_SUBST(SITE)
 
 AC_CONFIG_FILES(
   Makefile
-  httpd.conf-coatli
+  httpd.conf-quetzalcoatl
   httpd.conf-ddoti
   httpd.conf-colibri
   httpd.conf-tequila

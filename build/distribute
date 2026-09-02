@@ -11,8 +11,8 @@ echo "distribute: version is \"$version\"."
 echo "\"$version\"" >tcs/etc/tcs/version.json
 
 case $project in
-coatli)
-  hosts="coatli-control coatli-instrument coatli-platform"
+quetzalcoatl)
+  hosts="quetzalcoatl-control quetzalcoatl-detector quetzalcoatl-platform"
   ;;
 colibri)
   hosts="colibri-control colibri-ddrago colibri-tequila"

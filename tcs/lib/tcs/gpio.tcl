@@ -1,9 +1,6 @@
 ########################################################################
-
 # This file is part of the UNAM telescope control system.
-
 ########################################################################
-
 # Copyright © 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
@@ -18,21 +15,14 @@
 # PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 # TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
-
 ########################################################################
-
 package provide "gpio" 0.0
 
 namespace eval "gpio" {
-
-  proc get {path} {
-    if {[catch {::set channel [::open $path "r"]} why]} {
-      error "gpio::get: unable to open GPIO device \"$path\": $why."
-    } elseif {[catch {::set rawvalue [gets $channel]} why]} {
-      error "gpio::get: unable to read from GPIO device \"$path\": $why."
-      catch {close $channel}
+  proc get {gpio} {
+    if {[catch {::set rawvalue [exec gpioget gpiochip0 $gpio]} why]} {
+      error "gpio::get: unable to read from GPIO $gpio: $why."
     }
-    catch {close $channel}
     if {$rawvalue == 0} {
       ::set value "off"
     } else {
@@ -41,7 +31,7 @@ namespace eval "gpio" {
     return $value
   }
 
-  proc set {path value} {
+  proc set {gpio value} {
     if {[string equal $value "off"]} {
       ::set rawvalue 0
     } elseif {[string equal $value "on"]} {
@@ -49,14 +39,9 @@ namespace eval "gpio" {
     } else {
       error "gpio::set: invalid value \"$value\"."
     }
-    if {[catch {::set channel [::open $path "w"]} why]} {
-      error "gpio::set: unable to open GPIO device \"$path\": $why."
-    } elseif {[catch {puts $channel $rawvalue} why]} {
-      error "gpio::set: unable to write to GPIO device \"$path\": $why."
-      catch {close $channel}
+    if {[catch {exec gpioset gpiochip0 $gpio=$rawvalue} why]} {
+      error "gpio::set: unable to write to GPIO $gpio: $why."
     }
-    catch {close $channel}
     return $value
   }
-
 }

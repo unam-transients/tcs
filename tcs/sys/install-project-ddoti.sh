@@ -146,7 +146,6 @@ EOF
 
   case $host in
   platform)
-    echo "tcs gpio -i"
     echo "tcs gpio enclosure-lights off"
     echo "tcs gpio enclosure-heater off"
     ;;

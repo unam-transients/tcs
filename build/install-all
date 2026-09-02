@@ -3,7 +3,7 @@
 project=$(uname -n | sed 's/-.*//')
 
 case $project in
-coatli)
+quetzalcoatl)
   hosts="control instrument platform"
   ;;
 colibri)

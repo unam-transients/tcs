@@ -37,22 +37,21 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
   cat <<"EOF"
 # Start of tcs epilog.
 
-10.0.1.1        firewall                coatli-firewall
-10.0.1.2        console                 coatli-console
-10.0.1.4        ibb-220                 coatli-ibb-220
-10.0.1.5        ibb-127                 coatli-ibb-127
-10.0.1.6        mount                   coatli-mount
-10.0.1.7        serial                  coatli-serial
-10.0.1.9        control                 coatli-control
-10.0.1.10       platform                coatli-platform
-10.0.1.11       ib-detector             coatli-ib-detector
-10.0.1.12       instrument              coatli-instrument C0-host
-10.0.1.20       webcam-a                coatli-webcam-a
-10.0.1.21       webcam-b                coatli-webcam-b
-10.0.1.30       airport0                coatli-airport0
-10.0.1.31       airport1                coatli-airport1
+10.0.1.1        firewall                quetzalcoatl-firewall
+10.0.1.2        console                 quetzalcoatl-console
+10.0.1.4        ibb-220                 quetzalcoatl-ibb-220
+10.0.1.5        ibb-127                 quetzalcoatl-ibb-127
+10.0.1.6        mount                   quetzalcoatl-mount
+10.0.1.7        serial                  quetzalcoatl-serial
+10.0.1.9        control                 quetzalcoatl-control
+10.0.1.10       platform                quetzalcoatl-platform
+10.0.1.11       detector                quetzalcoatl-detector C0-host
+10.0.1.20       webcam-a                quetzalcoatl-webcam-a
+10.0.1.21       webcam-b                quetzalcoatl-webcam-b
+10.0.1.30       airport0                quetzalcoatl-airport0
+10.0.1.31       airport1                quetzalcoatl-airport1
 
-132.248.4.16    webcam-c                coatli-webcam-c
+132.248.4.16    webcam-c                quetzalcoatl-webcam-c
 132.248.4.22                            oan-rsync
 EOF
 ) | 
@@ -77,6 +76,7 @@ sudo mv /etc/hosts.tmp /etc/hosts
 00    17 *  *  *   tcs cleanfiles
 00    17 *  *  *   tcs updateiersfiles
 00    17 *  *  *   tcs updateleapsecondsfile
+*     *  *  *  *   test -d /usr/local/var/tcs/iers || (tcs updateiersfiles; tcs updateleapsecondsfile)
 
 *     *  *  *  *   tcs updatevarlatestlink
 
@@ -96,7 +96,7 @@ EOF
 *      *  *  *  *  tcs updateweatherfiles-oan
 00     18 *  *  *  tcs updateweatherfiles-oan -a
 
-*      *  *  *  *  sleep 10; tcs updatesensorsfiles control platform instrument
+*      *  *  *  *  sleep 10; tcs updatesensorsfiles control platform detector
 */5    *  *  *  *  tcs logsensors
 
 *      *  *  *  *  sh /usr/local/var/www/tcs/plots.sh
@@ -155,7 +155,6 @@ EOF
 
   case $host in
   platform)
-    echo "tcs gpio -i"
     echo "tcs gpio enclosure-lights off"
     echo "tcs gpio enclosure-heater off"
     ;;
@@ -164,8 +163,8 @@ EOF
   echo "owserver -c /etc/owfs.conf"
 
   case $host in
-  instrument)
-    echo "tcs instrumentdataserver -f -d rsync://oan-rsync/coatli-raw/ &"
+  detector)
+    #echo "tcs instrumentdataserver -f -d rsync://oan-rsync/quetzalcoatl-raw/ &"
     echo "tcs instrumentimageserver C0 control &"
     ;;
   control)
@@ -183,9 +182,9 @@ EOF
   
   echo "service rsync start"
 
-  echo "tcs loop -d 600 'rsync -aH --exclude=\"*.tmp\" --exclude=\"*.jpg\" --exclude=\"*.fits\" --exclude=\"*.fits.*\" /usr/local/var/tcs/ rsync://oan-rsync/coatli-raw/' &"
-  echo "tcs loop -d 60  'rsync -aH --exclude=\"*.tmp\" --exclude=\"debug*.txt\" --include=\"*.txt\" --include=\"*/\" --exclude=\"*\" /usr/local/var/tcs/ rsync://oan-rsync/coatli-raw/' &"
-  echo "tcs loop -d 10  'rsync -aH --exclude=\"*.tmp\" --include=\"*.fits.*\" --include=\"*/\" --exclude=\"*\" --remove-source-files /usr/local/var/tcs/ rsync://oan-rsync/coatli-raw/' &"
+#  echo "tcs loop -d 600 'rsync -aH --exclude=\"*.tmp\" --exclude=\"*.jpg\" --exclude=\"*.fits\" --exclude=\"*.fits.*\" /usr/local/var/tcs/ rsync://oan-rsync/quetzalcoatl-raw/' &"
+#  echo "tcs loop -d 60  'rsync -aH --exclude=\"*.tmp\" --exclude=\"debug*.txt\" --include=\"*.txt\" --include=\"*/\" --exclude=\"*\" /usr/local/var/tcs/ rsync://oan-rsync/quetzalcoatl-raw/' &"
+#  echo "tcs loop -d 10  'rsync -aH --exclude=\"*.tmp\" --include=\"*.fits.*\" --include=\"*/\" --exclude=\"*\" --remove-source-files /usr/local/var/tcs/ rsync://oan-rsync/quetzalcoatl-raw/' &"
   
   echo "tcs startserver -A &"
   
@@ -319,7 +318,6 @@ fi
 
 sudo rm -f /tmp/sudoers-tcs
 (
-  echo 'coatli ALL=(ALL) ALL'
   case $host in
   control)
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs reboot'

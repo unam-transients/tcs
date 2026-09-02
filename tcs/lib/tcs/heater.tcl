@@ -1,9 +1,6 @@
 ########################################################################
-
 # This file is part of the UNAM telescope control system.
-
 ########################################################################
-
 # Copyright © 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
@@ -18,9 +15,7 @@
 # PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 # TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
-
 ########################################################################
-
 package require "config"
 package require "gpio"
 package require "log"
@@ -30,51 +25,44 @@ package require "client"
 package provide "heater" 0.0
 
 namespace eval "heater" {
+  ######################################################################
+  variable gpio [config::getvalue "heater" "gpio"]
 
   ######################################################################
-
-  variable gpiopath [config::getvalue "heater" "gpiopath"]
-
-  ######################################################################
-
   set server::datalifeseconds 30
 
   ######################################################################
-
-  server::setdata "requestedheater"  ""
-  server::setdata "heater"           ""
-  server::setdata "timestamp"        ""
+  server::setdata "requestedheater" ""
+  server::setdata "heater" ""
+  server::setdata "timestamp" ""
 
   proc updatedata {} {
-
     log::debug "updating data."
 
     set timestamp [utcclock::combinedformat now]
-    
-    variable gpiopath
-    set heater [gpio::get $gpiopath]
+
+    variable gpio
+    set heater [gpio::get $gpio]
     log::debug "heater = \"$heater\"."
 
     server::setstatus "ok"
     server::setdata "timestamp" $timestamp
-    server::setdata "heater"    $heater
+    server::setdata "heater" $heater
 
     return true
   }
 
   ######################################################################
-  
   proc switchheater {state} {
     # Don't know why, but gpio::set sometimes fails, so loop until it succeeds.
-    variable gpiopath
-    while {![string equal [gpio::get $gpiopath] $state]} {
-      gpio::set $gpiopath $state
+    variable gpio
+    while {![string equal [gpio::get $gpio] $state]} {
+      gpio::set $gpio $state
       coroutine::after 100
     }
   }
-  
-  ######################################################################
 
+  ######################################################################
   proc startactivitycommand {} {
     set start [utcclock::seconds]
     log::info "starting."
@@ -82,7 +70,7 @@ namespace eval "heater" {
     updatedata
     log::info [format "finished starting after %.1f seconds." [utcclock::diff now $start]]
   }
-  
+
   proc switchactivitycommand {} {
     set start [utcclock::seconds]
     set requestedheater [server::getdata "requestedheater"]
@@ -96,7 +84,6 @@ namespace eval "heater" {
   }
 
   ######################################################################
-
   variable autoloopseconds 15
 
   proc autoloop {} {
@@ -120,8 +107,8 @@ namespace eval "heater" {
         continue
       }
       if {
-        [string equal [client::getdata "enclosure" "enclosure"] "closed"] &&
-        [client::getdata "sensors" "enclosure-humidity"] > 0.80
+        [string equal [client::getdata "enclosure" "enclosure"] "closed"]
+        && [client::getdata "sensors" "enclosure-humidity"] > 0.80
       } {
         set shouldbeon true
       } else {
@@ -144,7 +131,6 @@ namespace eval "heater" {
   }
 
   ######################################################################
-
   proc switchon {} {
     server::checkstatus
     server::checkactivityformove
@@ -158,7 +144,7 @@ namespace eval "heater" {
     server::setdata "requestedheater" "off"
     server::newactivitycommand "switching" "idle" heater::switchactivitycommand
   }
-  
+
   proc switchautomatically {} {
     log::info [format "switching automatically."]
     server::checkstatus
@@ -166,15 +152,11 @@ namespace eval "heater" {
     server::setdata "requestedheater" "automatic"
     return
   }
-  
-  ######################################################################
 
+  ######################################################################
   proc start {} {
     coroutine::every 1000 heater::updatedata
     server::newactivitycommand "starting" "idle" heater::startactivitycommand
-    after idle {
-      coroutine::create heater::autoloop
-    }
+    after idle { coroutine::create heater::autoloop }
   }
-
 }

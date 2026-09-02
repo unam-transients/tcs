@@ -87,12 +87,6 @@ EOF
     echo "test -w /etc || mount -o remount,rw /"
   fi
 
-  # Enable gpios on Minnowboards
-  if dmesg | grep -iq minnowboard
-  then
-    echo "gpio -i"
-  fi
-
   echo "owserver -c /etc/owfs.conf"
   
   case $host in

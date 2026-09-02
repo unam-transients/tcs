@@ -1684,7 +1684,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 ########################################################################
 
-ac_config_files="$ac_config_files Makefile httpd.conf-coatli httpd.conf-ddoti httpd.conf-colibri httpd.conf-test"
+ac_config_files="$ac_config_files Makefile httpd.conf-quetzalcoatl httpd.conf-ddoti httpd.conf-colibri httpd.conf-test"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -2392,7 +2392,7 @@ for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
-    "httpd.conf-coatli") CONFIG_FILES="$CONFIG_FILES httpd.conf-coatli" ;;
+    "httpd.conf-quetzalcoatl") CONFIG_FILES="$CONFIG_FILES httpd.conf-quetzalcoatl" ;;
     "httpd.conf-ddoti") CONFIG_FILES="$CONFIG_FILES httpd.conf-ddoti" ;;
     "httpd.conf-colibri") CONFIG_FILES="$CONFIG_FILES httpd.conf-colibri" ;;
     "httpd.conf-test") CONFIG_FILES="$CONFIG_FILES httpd.conf-test" ;;

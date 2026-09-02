@@ -20,6 +20,9 @@ elif platform.node().startswith("colibri"):
 elif platform.node().startswith("ddoti"):
     project = "ddoti"
     projectname = "DDOTI"
+elif platform.node().startswith("quetzalcoatl"):
+    project = "quetzalcoatl"
+    projectname = "Quetzalcóatl"
 else:
     raise RuntimeError("unknown project.")
 
@@ -82,6 +85,7 @@ def formatmaxage(maxage, age):
         text = "%.1fd" % (maxage / 86400)
     return formatlevel(text, level)
 
+
 def formatenabled(enabled):
     if enabled == "true":
         return formatlevel("true", "enabled")
@@ -95,6 +99,7 @@ def formatuncertainty(uncertainty, maxalertuncertainty):
     else:
         level = "enabled"
     return formatlevel(uncertainty, level)
+
 
 def parseangle(angle):
     if angle[-1:] == "r":
@@ -482,7 +487,11 @@ def writealertstable(alerts, name):
                 elif key == "enabled":
                     writehtml(formatenabled(alert[key]))
                 elif key == "uncertainty":
-                    writehtml(formatuncertainty(alert["uncertainty"], alert["maxalertuncertainty"]))
+                    writehtml(
+                        formatuncertainty(
+                            alert["uncertainty"], alert["maxalertuncertainty"]
+                        )
+                    )
                 elif alert[key] != "" and alert[key][0] == "-":
                     writehtml("&minus;%s" % alert[key][1:])
                 else:

@@ -1,9 +1,6 @@
 ########################################################################
-
 # This file is part of the UNAM telescope control system.
-
 ########################################################################
-
 # Copyright © 2019 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
@@ -18,9 +15,7 @@
 # PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 # TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
-
 ########################################################################
-
 package require "config"
 package require "gpio"
 package require "log"
@@ -29,44 +24,37 @@ package require "server"
 package provide "lightsgpio" 0.0
 
 namespace eval "lights" {
+  ######################################################################
+  variable gpio [config::getvalue "lights" "gpio"]
 
   ######################################################################
-
-  variable gpiopath [config::getvalue "lights" "gpiopath"]
-
-  ######################################################################
-
   proc updatedata {} {
-
     log::debug "updating data."
 
     set timestamp [utcclock::combinedformat now]
-    
-    variable gpiopath
-    set lights [gpio::get $gpiopath]
+
+    variable gpio
+    set lights [gpio::get $gpio]
     log::debug "lights = \"$lights\"."
 
     server::setstatus "ok"
     server::setdata "timestamp" $timestamp
-    server::setdata "lights"    $lights
+    server::setdata "lights" $lights
 
     return true
   }
 
   ######################################################################
-
   proc switchrequested {} {
     # Don't know why, but gpio::set sometimes fails, so loop until it succeeds.
-    variable gpiopath
+    variable gpio
     set requestedlights [server::getdata "requestedlights"]
-    while {![string equal [gpio::get $gpiopath] $requestedlights]} {
-      gpio::set $gpiopath $requestedlights
+    while {![string equal [gpio::get $gpio] $requestedlights]} {
+      gpio::set $gpio $requestedlights
       coroutine::after 100
     }
   }
-
   ######################################################################
-
 }
 
 source [file join [directories::prefix] "lib" "tcs" "lights.tcl"]

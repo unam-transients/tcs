@@ -43,21 +43,21 @@ installs			:=	                 \
 installbins			:=	                 \
 	request.cgi			                 \
 
-installs_project_coatli	:=		         \
-	allsky-project-coatli.html		     \
-	C0-project-coatli.html       	     \
-	C0-focuswitness-project-coatli.html  \
-	config-project-coatli.js		     \
-	observations-project-coatli.html	 \
-	operations-project-coatli.html	     \
-	engineering-project-coatli.html      \
+installs_project_quetzalcoatl	:=		         \
+	allsky-project-quetzalcoatl.html		     \
+	C0-project-quetzalcoatl.html       	     \
+	C0-focuswitness-project-quetzalcoatl.html  \
+	config-project-quetzalcoatl.js		     \
+	observations-project-quetzalcoatl.html	 \
+	operations-project-quetzalcoatl.html	     \
+	engineering-project-quetzalcoatl.html      \
 	interface.html                       \
-	webcam-a-project-coatli.html		 \
-	webcam-b-project-coatli.html		 \
-	webcam-c-project-coatli.html		 \
-	webcam-cz-project-coatli.html        \
-	plots-project-coatli.html            \
-	plots-project-coatli.sh
+	webcam-a-project-quetzalcoatl.html		 \
+	webcam-b-project-quetzalcoatl.html		 \
+	webcam-c-project-quetzalcoatl.html		 \
+	webcam-cz-project-quetzalcoatl.html        \
+	plots-project-quetzalcoatl.html            \
+	plots-project-quetzalcoatl.sh
 
 installs_project_ddoti	:=		         \
 	allsky-project-ddoti.html		     \
@@ -132,5 +132,5 @@ install-webcam-link		:
 	sudo rm -f $(INSTALL_DIR)/webcam
 	sudo ln -s $(prefix)/var/tcs/latest/webcam $(INSTALL_DIR)
 	
-plots-project-coatli.html    : plots-project-coatli.md
+plots-project-quetzalcoatl.html    : plots-project-quetzalcoatl.md
 
