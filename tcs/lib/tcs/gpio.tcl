@@ -33,13 +33,15 @@ namespace eval "gpio" {
 
   proc set {gpio value} {
     if {[string equal $value "off"]} {
+      ::set biasvalue "pull-down"
       ::set rawvalue 0
     } elseif {[string equal $value "on"]} {
+      ::set biasvalue "pull-up"
       ::set rawvalue 1
     } else {
       error "gpio::set: invalid value \"$value\"."
     }
-    if {[catch {exec gpioset gpiochip0 $gpio=$rawvalue} why]} {
+    if {[catch {exec gpioset --bias=$biasvalue gpiochip0 $gpio=$rawvalue} why]} {
       error "gpio::set: unable to write to GPIO $gpio: $why."
     }
     return $value

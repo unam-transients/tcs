@@ -89,10 +89,10 @@ then
 else
   if test "$value" = "off"
   then
-    gpioset gpiochip0 $gpio=0
+    gpioset --bias=pull-down gpiochip0 $gpio=0
   elif test "$value" = "on"
   then
-    gpioset gpiochip0 $gpio=1
+    gpioset --bias=pull-up gpiochip0 $gpio=1
   else
     echo 1>&2 "$program: invalid value \"$value\"."
     exit 1
