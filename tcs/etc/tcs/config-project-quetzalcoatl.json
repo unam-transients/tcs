@@ -120,6 +120,7 @@
   },
   "html": {
     "servers": [
+      "C0",
       "enclosure",
       "executor",
       "gcn",

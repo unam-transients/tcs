@@ -165,10 +165,10 @@ EOF
   case $host in
   detector)
     echo "tcs instrumentdataserver -f -d rsync://oan-rsync/quetzalcoatl-raw/ &"
-    echo "tcs instrumentimageserver C0 control &"
+    echo "tcs instrumentimageserver C0 &"
     ;;
   control)
-    echo "tcs instrumentimageserver C0 &"
+    echo "tcs instrumentimageserver C0 detector &"
     echo "tcs webcamimageserver a http://coatli:coatli@webcam-a/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver b http://coatli:coatli@webcam-b/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver c http://coatli:coatli@webcam-c/cgi-bin/viewer/video.jpg &"
