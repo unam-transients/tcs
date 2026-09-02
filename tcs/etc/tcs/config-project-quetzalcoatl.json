@@ -119,7 +119,7 @@
     "gpio": "26"
   },
   "html": {
-    "originalservers": [
+    "servers": [
       "enclosure",
       "executor",
       "gcn",
@@ -138,27 +138,6 @@
       "target",
       "telescope",
       "watchdog",
-      "weather"
-    ],
-    "servers": [
-      "C0",
-      "enclosure",
-      "executor",
-      "gcn",
-      "gcntan",
-      "heater",
-      "instrument",
-      "lights",
-      "moon",
-      "mount",
-      "power",
-      "secondary",
-      "selector",
-      "sensors",
-      "sun",
-      "supervisor",
-      "target",
-      "telescope",
       "weather"
     ]
   },
