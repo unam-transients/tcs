@@ -32,7 +32,7 @@ usageerror () {
 
 optstring=s:P:U:
 subject=""
-priority=0
+priority=normal
 url=""
 if ! getopt -qQ -- "$optstring" "$@"
 then
@@ -69,7 +69,7 @@ message="$2"
 
 case $(uname -n) in
 quetzalcoatl-*)
-  from=abps4xgknzg4j9atufnjbnhkb68gc3
+  from=aettyj7ixzu2esvxxfz46ks6k6p3tc
   ;;
 colibri-*)
   from=af9kucdjg9h8mz5qkczoxkcff8eph4
@@ -88,7 +88,7 @@ case $(uname -n):$to in
   to=uopAQF3pQRWhpJNCQgd2q8tGKDZRjW
   ;;
 quetzalcoatl-*:emergency)
-  to=g7aded162wnz8gy82owkju5t5c7op5
+  to=gmfh4zy6oyq1vbnevwafqrjseu9d9v
   ;;
 colibri-*:emergency)
   to=gp2n8mdxhgeygwzmsmwt8b6hdhzeg3
