@@ -580,8 +580,8 @@ namespace eval "html" {
       writehtmlrow "Standard rate (α,δ)" [formatrateifdouble [client::getdata "target" "standardalpharate"]] "" \
         [formatrateifdouble [client::getdata "target" "standarddeltarate"]]
       writehtmlrow "Standard equinox" [formatifok "%.2f" [client::getdata "target" "standardequinox"]]
-      writehtmlrow "Aperture offset (α,δ)" [formatoffsetifdouble [client::getdata "target" "aperturealphaoffset"]] "" \
-        [formatoffsetifdouble [client::getdata "target" "aperturedeltaoffset"]]
+      writehtmlrow "Aperture offset (α,δ)" [formatoffsetifdouble [client::getdata "target" "aperturealphaoffset"]] \
+        "" [formatoffsetifdouble [client::getdata "target" "aperturedeltaoffset"]]
       writehtmlrow "Observed position (α,HA,δ)" [formatalphaifdouble [client::getdata "target" "observedalpha"]] \
         [formathaifdouble    [client::getdata "target" "observedha"]] \
         [formatdeltaifdouble [client::getdata "target" "observeddelta"]]
@@ -840,17 +840,13 @@ namespace eval "html" {
       set startofnightseconds [utcclock::scan [client::getdata "sun" "startofnight"]]
       set endofnightseconds [utcclock::scan [client::getdata "sun" "endofnight"  ]]
       writehtmlfullrow "End of day" \
-        "[utcclock::format $endofdayseconds     0] (in \
-        [utcclock::formattime [expr {$endofdayseconds     - $seconds}] 0])"
+        "[utcclock::format $endofdayseconds     0] (in  [utcclock::formattime [expr {$endofdayseconds     - $seconds}] 0])"
       writehtmlfullrow "Start of night" \
-        "[utcclock::format $startofnightseconds 0] (in \
-        [utcclock::formattime [expr {$startofnightseconds - $seconds}] 0])"
+        "[utcclock::format $startofnightseconds 0] (in  [utcclock::formattime [expr {$startofnightseconds - $seconds}] 0])"
       writehtmlfullrow "End of night" \
-        "[utcclock::format $endofnightseconds   0] (in \
-        [utcclock::formattime [expr {$endofnightseconds   - $seconds}] 0])"
+        "[utcclock::format $endofnightseconds   0] (in  [utcclock::formattime [expr {$endofnightseconds   - $seconds}] 0])"
       writehtmlfullrow "Start of day" \
-        "[utcclock::format $startofdayseconds   0] (in \
-        [utcclock::formattime [expr {$startofdayseconds   - $seconds}] 0])"
+        "[utcclock::format $startofdayseconds   0] (in  [utcclock::formattime [expr {$startofdayseconds   - $seconds}] 0])"
     }
 
     putshtml "</table>"
@@ -949,7 +945,8 @@ namespace eval "html" {
         [formatradtodegifdouble "%+.2f°" [client::getdata "mount" "mountderotatorangle"]]
 
       if {[string equal [client::getdata "mount" "configuration"] "equatorial"]} {
-        writehtmlrow "Current mount error (α,HA,δ)" [formathaifdouble    [client::getdata "mount" "mountalphaerror"]] \
+        writehtmlrow "Current mount error (α,HA,δ)" \
+          [formathaifdouble    [client::getdata "mount" "mountalphaerror"]] \
           [formathaifdouble    [client::getdata "mount" "mounthaerror"]] \
           [formatdeltaifdouble [client::getdata "mount" "mountdeltaerror"]]
         writehtmlrow "Mean mount tracking error (α,δ)" \
@@ -968,8 +965,8 @@ namespace eval "html" {
       writehtmlrow "Pupil tracking" [client::getdata "mount" "pupiltracking"]
 
       writehtmltimestampedrow "Last correction" [client::getdata "mount" "lastcorrectiontimestamp"]
-      writehtmlrow "Last correction (α,δ)" [formatoffsetifdouble [client::getdata "mount" "lastcorrectiondalpha"]] "" \
-        [formatoffsetifdouble [client::getdata "mount" "lastcorrectionddelta"]]
+      writehtmlrow "Last correction (α,δ)" [formatoffsetifdouble [client::getdata "mount" "lastcorrectiondalpha"]] \
+        "" [formatoffsetifdouble [client::getdata "mount" "lastcorrectionddelta"]]
       writehtmlfullrow "Tracking remaining" \
         [formatifdouble "%.0f seconds" [client::getdata "mount" "remainingtrackingseconds"]]
     }
@@ -997,6 +994,10 @@ namespace eval "html" {
   }
 
   proc writetequila {} {
+    writeinstrument "ogse"
+  }
+
+  proc writeogse {} {
     writeinstrument "ogse"
   }
 
@@ -1566,20 +1567,16 @@ namespace eval "html" {
         set endofnightseconds [utcclock::scan [client::getdata "sun" "endofnight"  ]]
         if {[string equal $skystate "daylight"]} {
           writehtmlfullrow "End of day (UTC)" \
-            "[utcclock::format $endofdayseconds     0] (in \
-            [utcclock::formattime [expr {$endofdayseconds     - $seconds}] 0])"
+            "[utcclock::format $endofdayseconds     0] (in  [utcclock::formattime [expr {$endofdayseconds     - $seconds}] 0])"
         } elseif {[string equal $skystate "night"]} {
           writehtmlfullrow "End of night (UTC)" \
-            "[utcclock::format $endofnightseconds   0] (in \
-            [utcclock::formattime [expr {$endofnightseconds   - $seconds}] 0])"
+            "[utcclock::format $endofnightseconds   0] (in  [utcclock::formattime [expr {$endofnightseconds   - $seconds}] 0])"
         } elseif {$startofnightseconds < $startofdayseconds} {
           writehtmlfullrow "Start of night (UTC)" \
-            "[utcclock::format $startofnightseconds 0] (in \
-            [utcclock::formattime [expr {$startofnightseconds - $seconds}] 0])"
+            "[utcclock::format $startofnightseconds 0] (in  [utcclock::formattime [expr {$startofnightseconds - $seconds}] 0])"
         } else {
           writehtmlfullrow "Start of day (UTC)" \
-            "[utcclock::format $startofdayseconds   0] (in \
-            [utcclock::formattime [expr {$startofdayseconds   - $seconds}] 0])"
+            "[utcclock::format $startofdayseconds   0] (in  [utcclock::formattime [expr {$startofdayseconds   - $seconds}] 0])"
         }
       } else {
         writehtmlfullrow "Sky State"

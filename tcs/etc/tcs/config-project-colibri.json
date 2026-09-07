@@ -444,6 +444,7 @@
   },
   "html": {
     "servers": [
+      "C0",
       "C1",
       "C2",
       "covers",
@@ -469,6 +470,7 @@
       "target",
       "telescope",
       "telescopecontroller",
+      "ogse",
       "watchdog",
       "weather"
     ]
