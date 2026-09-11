@@ -43,6 +43,7 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 192.168.100.29    european-ups            colibri-european-ups
 192.168.100.30    american-ups            colibri-american-ups
 192.168.100.44    redux                   colibri-redux
+192.168.100.45    tequila                 colibri-tequila
 192.168.100.46    nas                     colibri-nas
 192.168.100.47    blue                    colibri-blue
 192.168.100.48    red                     colibri-red
@@ -169,20 +170,20 @@ EOF
   case $host in
   ddrago)
     echo "owserver -d /dev/ttyFTDI-ow-ddrago-close-electronics -d /dev/ttyFTDI-ow-ddrago-control-room -d /dev/ttyFTDI-ow-ogse"
-    echo "tcs instrumentimageserver C0 control &"
-    echo "tcs instrumentimageserver C1 control &"
-    echo "tcs instrumentimageserver C2 control &"
-    echo "tcs instrumentdataserver -f -d rsync://colibri-rsync/colibri-raw/ &"
-    ;;
-  tequila)
-    echo "tcs instrumentimageserver C3 control &"
-    echo "tcs instrumentdataserver -f -d rsync://colibri-rsync/colibri-raw/ &"
-    ;;
-  control)
     echo "tcs instrumentimageserver C0 &"
     echo "tcs instrumentimageserver C1 &"
     echo "tcs instrumentimageserver C2 &"
+    echo "tcs instrumentdataserver -f -d rsync://colibri-rsync/colibri-raw/ &"
+    ;;
+  tequila)
     echo "tcs instrumentimageserver C3 &"
+    echo "tcs instrumentdataserver -f -d rsync://colibri-rsync/colibri-raw/ &"
+    ;;
+  control)
+    echo "tcs instrumentimageserver C0 ddrago &"
+    echo "tcs instrumentimageserver C1 ddrago "
+    echo "tcs instrumentimageserver C2 ddrago &"
+    echo "tcs instrumentimageserver C3 tequila &"
     echo "tcs webcamimageserver -d '0 -0.1 0' a http://colibri:matpud-juxHe7-wiksym@webcam-a/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver b http://colibri:matpud-juxHe7-wiksym@webcam-b/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver c http://colibri:matpud-juxHe7-wiksym@webcam-c/cgi-bin/viewer/video.jpg &"
