@@ -54,20 +54,20 @@
       },
       // These windows are centered on the boresight.
       "3kx3k-boresight": {
-        "sx": 461,
-        "sy": 492,
+        "sx": 439,
+        "sy": 530,
         "nx": 3072,
         "ny": 3072
       },
       "2kx2k-boresight": {
-        "sx": 973,
-        "sy": 1004,
+        "sx": 951,
+        "sy": 1042,
         "nx": 2048,
         "ny": 2048
       },
       "1kx1k-boresight": {
-        "sx": 1485,
-        "sy": 1516,
+        "sx": 1463,
+        "sy": 1554,
         "nx": 1024,
         "ny": 1024
       },
@@ -116,8 +116,8 @@
     // (1996.5, 2029.2) in 1-based coordinates in the full window on 2024-06-21.
     // We need to give the corresponding 0-based coordinates here.
     "detectorboresight": {
-      "x": 1995.5,
-      "y": 2028.2
+      "x": 1975.2,
+      "y": 2065.8
     },
     "coolerstartsetting": "following",
     "cooleropensetting": "-20",
