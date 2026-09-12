@@ -421,7 +421,8 @@
   "executor": {
     "type": "colibri",
     "instruments": [
-      "ddrago"
+      "ddrago",
+      "ogse"
     ],
     "initialinstrument": "ddrago"
   },
@@ -2213,7 +2214,6 @@
     "monitoredservers": [
       "C1",
       "C2",
-      "C3",
       "covers",
       "dome",
       "executor",

@@ -1135,16 +1135,15 @@ proc nearfocustestvisit {{exposuretime 10} {filter {i z}} {exposures 3}} {
 proc addtopointingmodelvisit {{exposuretime 10} {filter {i z}}} {
   log::summary "addtopointingmodelvisit: starting."
 
-  executor::setinstrument "ddrago"
+  executor::setinstrument "ogse"
   executor::setpupiltracking false
   executor::setsecondaryoffset 0
   executor::track
 
-  executor::setwindow "2kx2k"
+  executor::setwindow "3kx3k-boresight"
   executor::setbinning "default"
 
-  eval executor::movefilterwheel $filter
-
+  #eval executor::movefilterwheel $filter
   executor::addtopointingmodel $exposuretime
 
   log::summary "addtopointingmodelvisit: finished."
