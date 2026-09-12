@@ -2212,6 +2212,7 @@
   },
   "watchdog": {
     "monitoredservers": [
+      "C0",
       "C1",
       "C2",
       "covers",
