@@ -74,7 +74,8 @@
       "640/10": "6",
       "w": "7",
       "initial": "dark",
-      "closed": "dark"
+      "closed": "dark",
+      "idle": "r"
     },
     "focusertype": "null",
     "focuseridentifier": "null",
