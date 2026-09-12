@@ -181,7 +181,7 @@ EOF
     ;;
   control)
     echo "tcs instrumentimageserver C0 ddrago &"
-    echo "tcs instrumentimageserver C1 ddrago "
+    echo "tcs instrumentimageserver C1 ddrago &"
     echo "tcs instrumentimageserver C2 ddrago &"
     echo "tcs instrumentimageserver C3 tequila &"
     echo "tcs webcamimageserver -d '0 -0.1 0' a http://colibri:matpud-juxHe7-wiksym@webcam-a/cgi-bin/viewer/video.jpg &"
