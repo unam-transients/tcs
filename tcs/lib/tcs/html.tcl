@@ -1511,12 +1511,13 @@ namespace eval "html" {
         }
         if {![string equal [client::getdata "weather" "windaveragespeed"] "unknown"]} {
           set text \
-            [format "%s (%.0f%% %s and %.0f km/h)" $text [expr {[client::getdata "weather" "humidity"] * 100}] \
-            [client::getdata "weather" "humiditytrend"] [client::getdata "weather" "windaveragespeed"]]
+            [format "%s (%.1f C, %.0f%% %s, and %.0f km/h)" $text [client::getdata "weather" "temperature"] \
+            [expr {[client::getdata "weather" "humidity"] * 100}] [client::getdata "weather" "humiditytrend"] \
+            [client::getdata "weather" "windaveragespeed"]]
         } else {
           set text \
-            [format "%s (%.0f%% %s)" $text [expr {[client::getdata "weather" "humidity"] * 100}] \
-            [client::getdata "weather" "humiditytrend"]]
+            [format "%s (%.f1 C and %.0f%% %s)" $text [expr {[client::getdata "weather" "humidity"] * 100}] \
+            [client::getdata "weather" "temperature"] [client::getdata "weather" "humiditytrend"]]
         }
       }
       writehtmlfullrowwithemph "Weather" $emph $text
@@ -1584,37 +1585,52 @@ namespace eval "html" {
     }
 
     if {[lsearch -exact $servers "dome"] != -1} {
-      set internalhumiditysensor [config::getvalue "supervisor" "internalhumiditysensor"]
-      if {[string equal $internalhumiditysensor ""]} {
-        set internalhumidity ""
+      set humiditysensor [config::getvalue "dome" "humiditysensor"]
+      if {[string equal $humiditysensor ""]} {
+        set humidity ""
       } else {
-        set internalhumidity [formatpercentifok "%.0f%%" [client::getdata "sensors" $internalhumiditysensor]]
+        set humidity [formatpercentifok "%.0f%%" [client::getdata "sensors" $humiditysensor]]
+      }
+      set temperaturesensor [config::getvalue "dome" "temperaturesensor"]
+      if {[string equal $temperaturesensor ""]} {
+        set temperature ""
+      } else {
+        set temperature [formatifok "%.1f C" [client::getdata "sensors" $temperaturesensor]]
       }
       if {![string equal [client::getstatus "dome"] "ok"]} {
         writehtmlfullrow "Dome"
       } else {
         set shutters [client::getdata "dome" "shutters"]
-        if {[string equal "$internalhumidity" ""]} {
+        if {[string equal "$temperature" ""] || [string equal "$humidity" ""]} {
           writehtmlfullrow "Dome" "$shutters"
         } else {
-          writehtmlfullrow "Dome" "$shutters ($internalhumidity)"
+          writehtmlfullrow "Dome" "$shutters ($temperature and $humidity)"
         }
       }
     }
 
     if {[lsearch -exact $servers "enclosure"] != -1} {
-      set internalhumiditysensor [config::getvalue "supervisor" "internalhumiditysensor"]
-      if {[string equal $internalhumiditysensor ""]} {
-        set internalhumidity ""
+      set humiditysensor [config::getvalue "enclosure" "humiditysensor"]
+      if {[string equal $humiditysensor ""]} {
+        set humidity ""
       } else {
-        set internalhumidity [formatpercentifok "%.0f%%" [client::getdata "sensors" $internalhumiditysensor]]
+        set humidity [formatpercentifok "%.0f%%" [client::getdata "sensors" $humiditysensor]]
+      }
+      set temperaturesensor [config::getvalue "enclosure" "temperaturesensor"]
+      if {[string equal $temperaturesensor ""]} {
+        set temperature ""
+      } else {
+        set temperature [formatifok "%.1f C" [client::getdata "sensors" $temperaturesensor]]
       }
       if {![string equal [client::getstatus "enclosure"] "ok"]} {
         writehtmlfullrow "Enclosure"
-      } elseif {[string equal "$internalhumidity" ""]} {
-        writehtmlfullrow "Enclosure" [client::getdata "enclosure" "enclosure"]
       } else {
-        writehtmlfullrow "Enclosure" "[client::getdata "enclosure" "enclosure"] ($internalhumidity)"
+        set enclosure [client::getdata "enclosure" "enclosure"]
+        if {[string equal "$temperature" ""] || [string equal "$humidity" ""]} {
+          writehtmlfullrow "Enclosure" "$enclosure"
+        } else {
+          writehtmlfullrow "Enclosure" "$enclosure ($temperature and $humidity)"
+        }
       }
     }
 
@@ -1640,6 +1656,18 @@ namespace eval "html" {
       } else {
         writehtmlfullrow "Covers"
       }
+    }
+
+    set temperaturesensor [config::getvalue "controlroom" "temperaturesensor"]
+    if {[string equal $temperaturesensor ""]} {
+      set temperature ""
+    } else {
+      set temperature [formatifok "%.1f C" [client::getdata "sensors" $temperaturesensor]]
+    }
+    if {[string equal "$temperature" ""]} {
+      writehtmlfullrow "Control Room" ""
+    } else {
+      writehtmlfullrow "Control Room" "($temperature)"
     }
 
     putshtml "</table>"

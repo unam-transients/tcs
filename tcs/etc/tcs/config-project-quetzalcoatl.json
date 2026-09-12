@@ -90,13 +90,18 @@
       "4": "-A"
     }
   },
+  "controlroom": {
+    "temperaturesensor": "shed-temperature"
+  },
   "enclosure": {
     "type": "arts",
     "controllerhost": "serial",
     "controllerport": "10003",
     "closeexplicitly": "true",
     "openposition": "180",
-    "opentoventilateposition": "60"
+    "opentoventilateposition": "60",
+    "temperaturesensor": "enclosure-temperature",
+    "humiditysensor": "enclosure-humidity"
   },
   "executor": {
     "type": "quetzalcoatl"

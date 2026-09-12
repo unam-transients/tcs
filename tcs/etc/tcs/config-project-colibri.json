@@ -396,6 +396,9 @@
       "4": "-A"
     }
   },
+  "controlroom": {
+    "temperaturesensor": "control-room-temperature"
+  },
   "covers": {
     "type": "opentsi",
     "ports": {
@@ -416,7 +419,9 @@
     // account for imperfections in the dome azimuth calibration.
     "trackingazimuthtolerance": "5d",
     "moveazimuthtolerance": "1d",
-    "settlingseconds": 1
+    "settlingseconds": 1,
+    "humiditysensor": "observing-room-comet1-humidity",
+    "temperaturesensor": "observing-room-comet1-temperature"
   },
   "executor": {
     "type": "colibri",
