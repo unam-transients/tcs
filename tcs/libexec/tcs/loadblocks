@@ -86,6 +86,9 @@ then
   colibri-*)
     url="https://github.com/unam-transients/colibri-blocks.git"
     ;;
+  quetzalcoatl-*)
+    url="https://github.com/alanwatsonatwork/quetzalcoatl-blocks.git"
+    ;;
   *)
     error "unable to determing URL."
     ;;
