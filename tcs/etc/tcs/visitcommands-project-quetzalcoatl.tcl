@@ -72,7 +72,6 @@ proc alertvisit {{filters "r"}} {
 
   executor::track
 
-  executor::movefocuser "center"
   executor::setreadmode "default"
   executor::setwindow "default"
   executor::movefilterwheel [lindex $filters 0]
@@ -175,7 +174,6 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
 
   executor::track
 
-  executor::movefocuser "center"
   executor::setreadmode "default"
 
   if {[llength $exposuretimes] == 1} {
@@ -240,7 +238,6 @@ proc coarsefocusvisit {{exposuretime 5} {filter "i"}} {
 
   executor::track
 
-  executor::movefocuser "center"
   executor::setreadmode "default"
   executor::setwindow "default"
   executor::movefilterwheel "$filter"
@@ -262,7 +259,6 @@ proc focusvisit {{exposuretime 5} {filter "i"}} {
 
   executor::track
 
-  executor::movefocuser "center"
   executor::setreadmode "default"
   executor::movefilterwheel $filter
   executor::setwindow "default"
@@ -284,7 +280,6 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"}} {
 
   executor::track
 
-  executor::movefocuser "center"
   executor::setreadmode "default"
   executor::setwindow "default"
 
@@ -359,7 +354,6 @@ proc initialpointingcorrectionvisit {{exposuretime 30} {filter "i"}} {
 
   executor::tracktopocentric
 
-  executor::movefocuser "center"
   executor::setreadmode "default"
   executor::setwindow "default"
   executor::movefilterwheel $filter
@@ -379,7 +373,6 @@ proc pointingcorrectionvisit {{exposuretime 15} {filter "i"}} {
 
   executor::track
 
-  executor::movefocuser "center"
   executor::setreadmode "default"
   executor::setwindow "default"
   executor::movefilterwheel $filter
@@ -406,7 +399,6 @@ proc donutvisit {{exposuretime 10} {filter "i"}} {
   set n 3
 
   log::summary "donutvisit: moving focuser to intrafocal position."
-  executor::movefocuser "minimum"
 
   log::summary "donutvisit: taking intrafocal images."
   set i 0
@@ -416,7 +408,6 @@ proc donutvisit {{exposuretime 10} {filter "i"}} {
   }
 
   log::summary "donutvisit: moving focuser to extrafocal position."
-  executor::movefocuser "maximum"
 
   log::summary "donutvisit: taking extrafocal images."
   set i 0
@@ -426,7 +417,6 @@ proc donutvisit {{exposuretime 10} {filter "i"}} {
   }
 
   log::summary "donutvisit: moving focuser to center position."
-  executor::movefocuser "center"
 
   log::summary "donutvisit: finished."
 
@@ -441,7 +431,6 @@ proc pointingmapvisit {{exposuretime 5} {filter "i"}} {
 
   executor::tracktopocentric
 
-  executor::movefocuser "center"
   executor::setwindow "default"
   executor::setreadmode "default"
   executor::movefilterwheel $filter
@@ -459,12 +448,11 @@ proc twilightflatsvisit {targetngood filter} {
   executor::setsecondaryoffset 0
   executor::move
 
-  executor::movefocuser "center"
   executor::setreadmode "default"
   executor::setwindow "default"
 
-  set maxlevel 16000
-  set minlevel 3500
+  set maxlevel 3000
+  set minlevel 1000
 
   set exposuretime 10
 
@@ -514,7 +502,6 @@ proc domeflatsvisit {} {
   executor::setsecondaryoffset 0
   executor::move
 
-  executor::movefocuser "center"
   executor::setreadmode "default"
   executor::setwindow "default"
 
@@ -586,7 +573,6 @@ proc biasesvisit {} {
   executor::setsecondaryoffset 0
   executor::move
 
-  executor::movefocuser "center"
   executor::movefilterwheel "dark"
 
   foreach {readmode binning visitidentifier} {
@@ -614,7 +600,6 @@ proc darksvisit {} {
   executor::setsecondaryoffset 0
   executor::move
 
-  executor::movefocuser "center"
   executor::movefilterwheel "dark"
 
   foreach {readmode binning visitidentifier} {
@@ -651,8 +636,6 @@ proc gainvisit {} {
   executor::setsecondaryoffset 0
   executor::move
 
-  executor::movefocuser "center"
-
 #     "1MHz-0"     1 0 "656/3"  0.1
 #     "1MHz-1"     1 1 "656/3"  0.1
 #     "em-10MHz-0" 1 2 "656/3"  1
@@ -687,7 +670,6 @@ proc readnoisevisit {} {
   executor::setsecondaryoffset 0
   executor::move
 
-  executor::movefocuser "center"
   executor::movefilterwheel "dark"
 
 #     "em-10MHz-0" 1 2 0
@@ -722,7 +704,6 @@ proc hartmanntestvisit {secondaryoffset {exposuretime 10} {filter "470/10"} {exp
 
   executor::setwindow "default"
   executor::movefilterwheel $filter
-  executor::movefocuser "center"
 
   log::summary "hartmanntestvisit: extrafocal images: secondary offset is +$secondaryoffset."
 
@@ -769,7 +750,6 @@ proc satellitevisit {start exposures exposuretime} {
 
   executor::track
 
-  executor::movefocuser "center"
   executor::movefilterwheel "g"
   executor::setreadmode "default"
   executor::setwindow "default"
