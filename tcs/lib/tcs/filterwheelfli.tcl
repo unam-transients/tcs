@@ -24,9 +24,9 @@ namespace eval "filterwheel" {
   variable settledelayseconds 0.5
 
   proc filterwheelrawstart {} {
-    #if {[catch {exec "sudo" "/sbin/modprobe" "fliusb" "buffersize=4194304"}]} {
-    #  error "unable to load the fliusb kernel module."
-    #}
+    if {[catch {exec "sudo" "/sbin/modprobe" "fliusb" "buffersize=4194304"}]} {
+      error "unable to load the fliusb kernel module."
+    }
     foreach file [glob "/dev/fliusb*"] {
       if {[catch {exec "sudo" "/bin/chmod" "a=rw" "$file"}]} {
         error "unable to change the permissions of $file."
