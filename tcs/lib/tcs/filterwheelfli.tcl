@@ -1,9 +1,6 @@
 ########################################################################
-
 # This file is part of the UNAM telescope control system.
-
 ########################################################################
-
 # Copyright © 2013, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
@@ -18,28 +15,25 @@
 # PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 # TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
-
 ########################################################################
-
 package provide "filterwheelfli" 0.0
 
 load [file join [directories::prefix] "lib" "filterwheelfli.so"] "filterwheel"
 
 namespace eval "filterwheel" {
-  
   variable settledelayseconds 0.5
 
   proc filterwheelrawstart {} {
-    if {[catch {exec "sudo" "/sbin/modprobe" "fliusb" "buffersize=4194304"}]} {
-      error "unable to load the fliusb kernel module."
-    }
+    #if {[catch {exec "sudo" "/sbin/modprobe" "fliusb" "buffersize=4194304"}]} {
+    #  error "unable to load the fliusb kernel module."
+    #}
     foreach file [glob "/dev/fliusb*"] {
       if {[catch {exec "sudo" "/bin/chmod" "a=rw" "$file"}]} {
         error "unable to change the permissions of $file."
-      }    
-    }  
+      }
+    }
   }
-  
+
   proc movesingle {index newposition} {
     log::debug "filterwheel: movesingle: moving filter wheel $index to $newposition."
     variable position
@@ -92,7 +86,6 @@ namespace eval "filterwheel" {
     coroutine::after 1000
     log::debug "filterwheel $index: home: done."
   }
-  
 }
 
 source [file join [directories::prefix] "lib" "tcs" "filterwheel.tcl"]

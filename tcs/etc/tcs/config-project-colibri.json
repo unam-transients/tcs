@@ -427,7 +427,7 @@
     "type": "colibri",
     "instruments": [
       "ddrago",
-      "ogse"
+      "tequila"
     ],
     "initialinstrument": "ddrago"
   },
@@ -450,9 +450,9 @@
   },
   "html": {
     "servers": [
-      "C0",
       "C1",
       "C2",
+      "C3",
       "covers",
       "dome",
       "ddrago",
@@ -476,7 +476,7 @@
       "target",
       "telescope",
       "telescopecontroller",
-      "ogse",
+      "tequila",
       "watchdog",
       "weather"
     ]
@@ -2217,9 +2217,9 @@
   },
   "watchdog": {
     "monitoredservers": [
-      "C0",
       "C1",
       "C2",
+      "C3",
       "covers",
       "dome",
       "executor",
@@ -2242,6 +2242,7 @@
       "target",
       "telescope",
       "telescopecontroller",
+      "tequila",
       "weather"
     ],
     "problemtoleranceseconds": 180

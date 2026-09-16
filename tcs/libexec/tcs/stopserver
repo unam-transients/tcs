@@ -70,7 +70,7 @@ colibri-control)
   ALLARGS="gcntan gcn svom"
   ;;
 colibri-ddrago)
-  allargs="ddrago C2 C1 ogse C0"
+  allargs="ddrago C2 C1"
   ALLARGS=""
   ;;
 colibri-tequila)
