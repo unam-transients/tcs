@@ -2248,7 +2248,8 @@
     "problemtoleranceseconds": 180
   },
   "weather": {
-    "windaveragespeedlimit": "55"
+    "windaveragespeedlimit": 55,
+    "noalarmsecondslimit": 1200
   },
   // To use the dummy telescope, remove the "dummy-" prefixes below.
   "dummy-telescope": {

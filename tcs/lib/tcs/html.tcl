@@ -16,6 +16,7 @@
 # TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 ########################################################################
+# tcl-lsp: disable=W108
 package require "alert"
 package require "astrometry"
 package require "config"
@@ -965,8 +966,8 @@ namespace eval "html" {
       writehtmlrow "Pupil tracking" [client::getdata "mount" "pupiltracking"]
 
       writehtmltimestampedrow "Last correction" [client::getdata "mount" "lastcorrectiontimestamp"]
-      writehtmlrow "Last correction (α,δ)" [formatoffsetifdouble [client::getdata "mount" "lastcorrectiondalpha"]] \
-        "" [formatoffsetifdouble [client::getdata "mount" "lastcorrectionddelta"]]
+      writehtmlrow "Last correction (α,δ)" [formatoffsetifdouble [client::getdata "mount" "lastcorrectiondalpha"]] "" \
+        [formatoffsetifdouble [client::getdata "mount" "lastcorrectionddelta"]]
       writehtmlfullrow "Tracking remaining" \
         [formatifdouble "%.0f seconds" [client::getdata "mount" "remainingtrackingseconds"]]
     }
@@ -1223,6 +1224,7 @@ namespace eval "html" {
       writealarm "Humidity alarm" [client::getdata "weather" "humidityalarm"]
       writealarm "Wind alarm" [client::getdata "weather" "windalarm"]
       writealarm "Rain alarm" [client::getdata "weather" "rainalarm"]
+      writehtmlrow "No alarm for" [format "%.2f h" [expr {[client::getdata "weather" "noalarmseconds"] / 3600.0}]]
     }
 
     putshtml "</table>"

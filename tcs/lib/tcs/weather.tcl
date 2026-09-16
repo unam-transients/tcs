@@ -29,12 +29,14 @@ package provide "weather" 0.0
 
 namespace eval "weather" {
   variable windaveragespeedlimit [config::getvalue "weather" "windaveragespeedlimit"]
+  variable noalarmsecondslimit [config::getvalue "weather" "noalarmsecondslimit"]
 
   set server::datalifeseconds 900
 
   variable forcemustbeclosed false
 
   server::setdata "windaveragespeedlimit" $windaveragespeedlimit
+  server::setdata "noalarmsecondslimit" $noalarmsecondslimit
   server::setdata "humidityalarm" "unknown"
   server::setdata "windalarm" "unknown"
   server::setdata "rainalarm" "unknown"
@@ -54,6 +56,7 @@ namespace eval "weather" {
     set lastwindalarmseconds "unknown"
 
     foreach dataline $datalines {
+      # noqa: W111
       # noqa: W111
       if {
         [scan $dataline "b.0 %s %s %*s %*f %f %*f %*f %f %f %f %f %f %*f %*f %f %*f %*f %*f %*f %*f %*f %*f %*f %f %*f %*d %d %d %*d %*d %*d %d" pendingdate pendingtime pendingwindaverageazimuth pendingwindaveragespeed pendingwindgustspeed pendingtemperature pendinghumidity pendingpressure pendingrainrate pendingdewpoint pendingrainindex pendingcloudindex pendinglightindex] == 13
@@ -281,6 +284,29 @@ namespace eval "weather" {
       if {$rainalarm || $humidityalarm || $windalarm} {
         set lastalarmseconds $timestampseconds
       }
+
+      if {$humidity >= $humiditylimit || ($humidity >= 0.85 && ![string equal $humiditytrend "falling"])} {
+        set humidityalarm true
+      } else {
+        set humidityalarm false
+      }
+
+      variable windaveragespeedlimit
+
+      if {[string equal $windaveragespeedlimit ""]} {
+        set windalarm false
+      } elseif {
+        [string equal $windaveragespeed "unknown"]
+        || $windaveragespeed >= $windaveragespeedlimit
+      } {
+        set windalarm true
+      } else {
+        set windalarm false
+      }
+
+      if {$rainalarm || $humidityalarm || $windalarm} {
+        set lastalarmseconds $timestampseconds
+      }
     }
 
     if {[string equal $previoustemperature "unknown"]} {
@@ -344,12 +370,12 @@ namespace eval "weather" {
     }
 
     set lastmustbeclosed [server::getdata "mustbeclosed"]
+    variable noalarmsecondslimit
     variable forcemustbeclosed
-    set alarmdelay 900
     set noalarmseconds [utcclock::diff $timestampseconds $lastalarmseconds]
     server::setdata "noalarmseconds" $noalarmseconds
     if {
-      $noalarmseconds < $alarmdelay ||
+      $noalarmseconds < $noalarmsecondslimit ||
       $forcemustbeclosed
     } {
       set mustbeclosed true

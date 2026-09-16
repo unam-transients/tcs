@@ -858,7 +858,7 @@ namespace eval "plc" {
     variable windspeedlimit
     server::setdata "windspeedlimit" $windspeedlimit
     controller::sendcommand "WindThreshold\{$windspeedlimit\}\n"
-    controller::sendcommand "UnsafeTimer\{10\}\n"
+    controller::sendcommand "UnsafeTimer\{20\}\n"
     controller::sendcommand "UpsThreshold\{85\}\n"
     set end [utcclock::seconds]
     log::info [format "finished starting after %.1f seconds." [utcclock::diff $end $start]]
