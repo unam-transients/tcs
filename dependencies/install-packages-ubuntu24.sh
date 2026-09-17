@@ -109,6 +109,7 @@ then
   cd sdk_*
   sudo sh uninstall.sh
   sudo sh install.sh
+  cd ..
 fi
 
 rm -rf sdk_*
@@ -132,23 +133,23 @@ rm -rf sdk_*
 
 # Install fliusb and libfli
 
-#if test "$(uname -m)" = "x86_64"
-#then
-#
-#  sudo apt-get -y install libelf-dev
-#  cd fliusb-1.3.2-mod/
-#  make
-#  sudo cp fliusb.ko /lib/modules/$(uname -r)/kernel
-#  sudo depmod
-#  cd ..
-#
-#  cd libfli/
-#  make
-#  sudo cp libfli.a $prefix/lib/
-#  sudo cp libfli.h $prefix/include/
-#  cd ..
-#  
-#fi
+if test "$(uname -m)" = "x86_64"
+then
+
+  sudo apt-get -y install libelf-dev
+  cd fliusb-4.18-modified/
+  make
+  sudo make install
+  sudo depmod
+  cd ..
+
+  cd libfli/
+  make
+  sudo cp libfli.a $prefix/lib/
+  sudo cp libfli.h $prefix/include/
+  cd ..
+  
+fi
 
 ########################################################################
 

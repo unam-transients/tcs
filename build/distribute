@@ -12,7 +12,7 @@ echo "\"$version\"" >tcs/etc/tcs/version.json
 
 case $project in
 quetzalcoatl)
-  hosts="quetzalcoatl-control quetzalcoatl-detector quetzalcoatl-platform"
+  hosts="quetzalcoatl-control quetzalcoatl-instrument quetzalcoatl-platform"
   ;;
 colibri)
   hosts="colibri-control colibri-ddrago colibri-tequila"
