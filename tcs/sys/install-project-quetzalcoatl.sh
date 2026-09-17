@@ -45,7 +45,7 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 10.0.1.7        serial                  quetzalcoatl-serial
 10.0.1.9        control                 quetzalcoatl-control
 10.0.1.10       platform                quetzalcoatl-platform
-10.0.1.11       detector                quetzalcoatl-detector C0-host
+10.0.1.11       instrument              quetzalcoatl-instrument C0-host
 10.0.1.20       webcam-a                quetzalcoatl-webcam-a
 10.0.1.21       webcam-b                quetzalcoatl-webcam-b
 10.0.1.30       airport0                quetzalcoatl-airport0
@@ -96,7 +96,7 @@ EOF
 *      *  *  *  *  tcs updateweatherfiles-oan
 00     18 *  *  *  tcs updateweatherfiles-oan -a
 
-*      *  *  *  *  sleep 10; tcs updatesensorsfiles control platform detector
+*      *  *  *  *  sleep 10; tcs updatesensorsfiles control platform instrumentor
 */5    *  *  *  *  tcs logsensors
 
 *      *  *  *  *  sh /usr/local/var/www/tcs/plots.sh
@@ -114,7 +114,7 @@ EOF
     ;;
   instrument)
     cat <<"EOF"
-00     00  *  *  *  tcs stopserver C0; tcs request power reboot detector; sleep 20; tcs startserver C0
+00     00  *  *  *  tcs stopserver C0; tcs request power reboot instrumentor; sleep 20; tcs startserver C0
 EOF
     ;;
   esac
@@ -163,12 +163,12 @@ EOF
   echo "owserver -c /etc/owfs.conf"
 
   case $host in
-  detector)
+  instrumentor)
     echo "tcs instrumentdataserver -f -d rsync://oan-rsync/quetzalcoatl-raw/ &"
     echo "tcs instrumentimageserver C0 &"
     ;;
   control)
-    echo "tcs instrumentimageserver C0 detector &"
+    echo "tcs instrumentimageserver C0 instrumentor &"
     echo "tcs webcamimageserver a http://coatli:coatli@webcam-a/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver b http://coatli:coatli@webcam-b/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver c http://coatli:coatli@webcam-c/cgi-bin/viewer/video.jpg &"

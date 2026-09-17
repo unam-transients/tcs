@@ -935,6 +935,7 @@
     "problemtoleranceseconds": 180
   },
   "weather": {
-    "windaveragespeedlimit": "35"
+    "windaveragespeedlimit": "35",
+    "noalarmsecondslimit": 1200
   }
 }

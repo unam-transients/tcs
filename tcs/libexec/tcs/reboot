@@ -46,8 +46,8 @@ cd "$tcsprefix"/var/tcs/reboot
 if test $# = 0
 then
   case "$host" in
-  coatli-*)
-    set control platform detector
+  quetzalcoatl-*)
+    set control platform instrument
     ;;
   ddoti-*)
     set control platform detectors0 detectors1

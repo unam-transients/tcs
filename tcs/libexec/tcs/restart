@@ -47,7 +47,7 @@ if test $# = 0
 then
   case "$host" in
   quetzalcoatl-*)
-    set control platform detector
+    set control platform instrument
     ;;
   ddoti-*)
     set control platform detectors0 detectors1

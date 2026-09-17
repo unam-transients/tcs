@@ -42,7 +42,7 @@ quetzalcoatl-control)
   allargs="html 1 sensors power weather 1 target 1 moon sun 1 secondary enclosure mount 1 telescope instrument 1 executor selector watchdog supervisor"
   ALLARGS="gcntan gcn"
   ;;
-quetzalcoatl-detector)
+quetzalcoatl-instrument)
   allargs="C0"
   ALLARGS=""
   ;;

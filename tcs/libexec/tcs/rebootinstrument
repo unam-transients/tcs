@@ -68,8 +68,8 @@ fi
 
 case "$instrument" in
   quetzalcoatl)
-    hosts=detector
-    powers=detector
+    hosts="instrument"
+    powers="instrument"
     ;;
   ddoti)
     hosts="detectors0 detectors1"

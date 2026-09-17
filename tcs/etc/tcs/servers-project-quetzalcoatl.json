@@ -24,7 +24,7 @@
 
 {
   "C0": {
-    "host": "detector",
+    "host": "instrument",
     "port": 5000
   },
   "enclosure": {
