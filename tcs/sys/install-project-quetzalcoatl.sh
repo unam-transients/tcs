@@ -96,7 +96,7 @@ EOF
 *      *  *  *  *  tcs updateweatherfiles-oan
 00     18 *  *  *  tcs updateweatherfiles-oan -a
 
-*      *  *  *  *  sleep 10; tcs updatesensorsfiles control platform instrumentor
+*      *  *  *  *  sleep 10; tcs updatesensorsfiles control platform instrument
 */5    *  *  *  *  tcs logsensors
 
 *      *  *  *  *  sh /usr/local/var/www/tcs/plots.sh
@@ -114,7 +114,7 @@ EOF
     ;;
   instrument)
     cat <<"EOF"
-00     00  *  *  *  tcs stopserver C0; tcs request power reboot instrumentor; sleep 20; tcs startserver C0
+00     00  *  *  *  tcs stopserver C0; tcs request power reboot instrument; sleep 20; tcs startserver C0
 EOF
     ;;
   esac
@@ -163,12 +163,12 @@ EOF
   echo "owserver -c /etc/owfs.conf"
 
   case $host in
-  instrumentor)
+  instrument)
     echo "tcs instrumentdataserver -f -d rsync://oan-rsync/quetzalcoatl-raw/ &"
     echo "tcs instrumentimageserver C0 &"
     ;;
   control)
-    echo "tcs instrumentimageserver C0 instrumentor &"
+    echo "tcs instrumentimageserver C0 instrument &"
     echo "tcs webcamimageserver a http://coatli:coatli@webcam-a/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver b http://coatli:coatli@webcam-b/cgi-bin/viewer/video.jpg &"
     echo "tcs webcamimageserver c http://coatli:coatli@webcam-c/cgi-bin/viewer/video.jpg &"

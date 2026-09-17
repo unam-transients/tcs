@@ -257,7 +257,7 @@
       "enclosure": [ [ "ibb-220", "a", "1" ] ],
       "secondary": [ [ "ibb-220", "a", "2" ] ],
       "platform": [ [ "ibb-127", "a", "1" ] ],
-      "detector": [ [ "ibb-127", "a", "3" ] ]
+      "instrument": [ [ "ibb-127", "a", "3" ] ]
     }
   },
   "safetyswitch": {
@@ -375,7 +375,7 @@
         "firmware": ""
       },
       "instrument-box-temperature": {
-        "file": "/usr/local/var/tcs/sensors/detector/ow/26.44A040010000/temperature",
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.44A040010000/temperature",
         "keyword": "BETM",
         "prettyname": "instrument box temperature",
         "group": "environmental-sensors",
@@ -423,7 +423,7 @@
         "firmware": ""
       },
       "instrument-box-humidity": {
-        "file": "/usr/local/var/tcs/sensors/detector/ow/26.44A040010000/HIH4000/humidity",
+        "file": "/usr/local/var/tcs/sensors/instrument/ow/26.44A040010000/HIH4000/humidity",
         "keyword": "BEHM",
         "prettyname": "instrument box relative humidity",
         "group": "environmental-sensors",
@@ -478,11 +478,11 @@
         "identifier": "",
         "firmware": ""
       },
-      "host-detector-load": {
-        "file": "/usr/local/var/tcs/sensors/detector/load",
+      "host-instrument-load": {
+        "file": "/usr/local/var/tcs/sensors/instrument/load",
         "keyword": "",
-        "prettyname": "load on host detector",
-        "group": "host-detector",
+        "prettyname": "load on host instrument",
+        "group": "host-instrument",
         "type": "float",
         "unit": "processes",
         "model": "",
@@ -511,11 +511,11 @@
         "identifier": "",
         "firmware": ""
       },
-      "host-detector-disk-space-used": {
-        "file": "/usr/local/var/tcs/sensors/detector/disk-space-used",
+      "host-instrument-disk-space-used": {
+        "file": "/usr/local/var/tcs/sensors/instrument/disk-space-used",
         "keyword": "",
-        "prettyname": "relative disk space used on host detector",
-        "group": "host-detector",
+        "prettyname": "relative disk space used on host instrument",
+        "group": "host-instrument",
         "type": "float",
         "unit": "",
         "model": "",
@@ -534,7 +534,7 @@
         "firmware": ""
       },
       "C0-detector-detector-temperature": {
-        "file": "/usr/local/var/tcs/sensors/detector/C0-detector-detector-temperature",
+        "file": "/usr/local/var/tcs/sensors/instrument/C0-detector-detector-temperature",
         "keyword": "",
         "prettyname": "C0 detector temperature",
         "subsystem": "instrument",
@@ -547,7 +547,7 @@
         "firmware": ""
       },
       "C0-detector-cooler-set-temperature": {
-        "file": "/usr/local/var/tcs/sensors/detector/C0-detector-cooler-set-temperature",
+        "file": "/usr/local/var/tcs/sensors/instrument/C0-detector-cooler-set-temperature",
         "keyword": "",
         "prettyname": "C0 cooler set temperature",
         "subsystem": "instrument",
@@ -560,7 +560,7 @@
         "firmware": ""
       },
       "C0-detector-cooler-state": {
-        "file": "/usr/local/var/tcs/sensors/detector/C0-detector-cooler-state",
+        "file": "/usr/local/var/tcs/sensors/instrument/C0-detector-cooler-state",
         "keyword": "",
         "prettyname": "C0 cooler state",
         "subsystem": "instrument",
@@ -573,7 +573,7 @@
         "firmware": ""
       },
       "C0-filter-wheel-position": {
-        "file": "/usr/local/var/tcs/sensors/detector/C0-filter-wheel-position",
+        "file": "/usr/local/var/tcs/sensors/instrument/C0-filter-wheel-position",
         "keyword": "",
         "prettyname": "C0 filter wheel position",
         "group": "detector-C0",
