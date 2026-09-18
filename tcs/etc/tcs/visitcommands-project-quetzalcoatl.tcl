@@ -567,64 +567,22 @@ proc domeflatsvisit {} {
 }
 
 ########################################################################
-proc biasesvisit {} {
-  log::summary "biasesvisit: starting."
-
-  executor::setsecondaryoffset 0
-  executor::move
-
-  executor::movefilterwheel "dark"
-
-  foreach {readmode binning visitidentifier} {
-     "1MHz-low"  1 0
-     "1MHz-high" 1 1
-  } {
-    executor::setreadmode $readmode
-    executor::setwindow "default"
-    executor::setvisit [visit::updatevisitidentifier [executor::visit] $visitidentifier]
-    set i 0
-    while {$i < 10} {
-      executor::expose bias 0
-      executor::analyze levels
-      incr i
-    }
-  }
-  log::summary "biasesvisit: finished."
-  return true
-}
-
-########################################################################
-proc darksvisit {} {
+proc darksvisit {exposurerepeats exposuretime} {
   log::summary "darksvisit: starting."
 
   executor::setsecondaryoffset 0
-  executor::move
+
+  executor::setreadmode "default"
+  executor::setwindow "default"
 
   executor::movefilterwheel "dark"
-
-  foreach {readmode binning visitidentifier} {
-     "1MHz-low"         1 0
-     "1MHz-high"        1 1
-     "em-10MHz-low"     1 2
-     "em-10MHz-high"    1 3
-     "em-20MHz-low"     1 4
-     "em-20MHz-high"    1 5
-     "em-30MHz-low"     1 6
-     "em-30MHz-high"    1 7
-     "em-10MHz-low-100" 1 8
-     "em-20MHz-low-100" 1 9
-     "em-30MHz-low-100" 1 10
-  } {
-    executor::setreadmode $readmode
-    executor::setwindow "default"
-    executor::setvisit [visit::updatevisitidentifier [executor::visit] $visitidentifier]
-    set i 0
-    while {$i < 5} {
-      executor::expose dark 15
-      executor::analyze levels
-      incr i
-    }
+  set exposure 0
+  while {$exposure < $exposurerepeats} {
+    executor::expose dark $exposuretime
+    executor::analyze levels
+    incr exposure
   }
+
   log::summary "darksvisit: finished."
   return true
 }
