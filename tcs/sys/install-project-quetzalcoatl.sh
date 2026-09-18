@@ -69,14 +69,11 @@ sudo mv /etc/hosts.tmp /etc/hosts
 
   cat <<"EOF"
 
-00    18 *  *  1   reboot
-00    18 *  *  2-7 tcs stopserver -a
-01    18 *  *  2-7 tcs restartserver -A
+00    18 *  *  *   reboot
 
 00    17 *  *  *   tcs cleanfiles
 00    17 *  *  *   tcs updateiersfiles
 00    17 *  *  *   tcs updateleapsecondsfile
-*     *  *  *  *   test -d /usr/local/var/tcs/iers || (tcs updateiersfiles; tcs updateleapsecondsfile)
 
 *     *  *  *  *   tcs updatevarlatestlink
 
@@ -92,6 +89,8 @@ EOF
   control)
     cat <<"EOF"
 
+05     18 *  *  *  tcs rebootinstrument
+
 *      *  *  *  *  tcs updateseeingfiles-oan
 *      *  *  *  *  tcs updateweatherfiles-oan
 00     18 *  *  *  tcs updateweatherfiles-oan -a
@@ -99,7 +98,7 @@ EOF
 *      *  *  *  *  sleep 10; tcs updatesensorsfiles control platform instrument
 */5    *  *  *  *  tcs logsensors
 
-*      *  *  *  *  sh /usr/local/var/www/tcs/plots.sh
+*      *  *  *  *  cd /usr/local/var/www/tcs/; sh plots.sh >plots.txt 2>&1
 
 *      *  *  *  *  mkdir -p /usr/local/var/tcs/alerts /usr/local/var/tcs/oldalerts; rsync -aH /usr/local/var/tcs/alerts/ /usr/local/var/tcs/oldalerts
 *      *  *  *  *  tcs request selector makealertspage
@@ -110,15 +109,12 @@ EOF
 *      *  *  *  *  tcs makeblockspage
 *      *  *  *  *  mkdir -p /usr/local/var/www/tcs/blocks/; rsync --delete --dirs /usr/local/var/tcs/blocks/ /usr/local/var/www/tcs/blocks/
 
-EOF
-    ;;
-  instrument)
-    cat <<"EOF"
-00     00  *  *  *  tcs stopserver C0; tcs request power reboot instrument; sleep 20; tcs startserver C0
+00     *  *  *  *  tcs makeobservationspage $(date +\%Y\%m\%d)
+*/5    *  *  *  *  tcs makeobservationspage
+
 EOF
     ;;
   esac
-
 ) | sudo crontab
 
 
