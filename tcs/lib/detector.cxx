@@ -45,7 +45,7 @@ static unsigned long pixny = 0;
 static unsigned long long pixnframe = 1;
 
 static unsigned long pixi = 0;
-static unsigned short *pix = NULL;
+static unsigned short **pix = NULL;
 
 static unsigned long long cubepixi = 0;
 static FILE *cubepixfp = NULL;
@@ -97,10 +97,19 @@ const char *
 detectorrawpixstart(void)
 {
   pixi = 0;
-  free(pix);
-  pix = (unsigned short *)malloc(pixnx * pixny * sizeof(*pix));
+  if (pix != 0)
+  {
+    free(pix[0]);
+    free(pix);
+  }
+  pix = (unsigned short **)malloc(pixny * sizeof(*pix));
   if (pix == 0)
     DETECTOR_ERROR("unable to allocate memory for the detector pixel values.");
+  pix[0] = (unsigned short *)malloc(pixnx * pixny * sizeof(*pix[0]));
+  if (pix[0] == 0)
+    DETECTOR_ERROR("unable to allocate memory for the detector pixel values.");
+  for (unsigned long iy = 1; iy < pixny; ++iy)
+    pix[iy] = pix[0] + iy * pixnx;
   DETECTOR_OK();
 }
 
@@ -111,12 +120,14 @@ detectorrawpixnext(const long *newpix, unsigned long n)
   {
     if (pixi == pixnx * pixny)
       DETECTOR_ERROR("too much pixel data.");
+    unsigned long iy = pixi / pixnx;
+    unsigned long ix = pixi % pixnx;
     if (newpix[i] < 0)
-      pix[pixi] = 0;
+      pix[iy][ix] = 0;
     else if (newpix[i] / softwaregain > USHRT_MAX)
-      pix[pixi] = USHRT_MAX;
+      pix[iy][ix] = USHRT_MAX;
     else
-      pix[pixi] = newpix[i] / softwaregain;
+      pix[iy][ix] = newpix[i] / softwaregain;
   }
   DETECTOR_OK();
 }
@@ -315,7 +326,7 @@ detectorrawupdatestatistics(void)
   {
     for (unsigned long ix = pixnx / 4; ix < 3 * pixnx / 4; ++ix)
     {
-      double z = pix[iy * pixnx + ix];
+      double z = pix[iy][ix];
       s0 += 1;
       s1 += z;
       s2 += z * z;
@@ -413,13 +424,13 @@ detectorrawappendfitsdata(
     }
   }
 
-  unsigned long pixn = pixnx * pixny;
-  for (unsigned long i = 0; i < pixn; ++i)
-  {
-    short s16 = floor(((double)pix[i] - bzero) / bscale);
-    fputs16(s16, fp);
-  }
-  for (unsigned long i = (pixn * 2) % 2880; i % 2880 != 0; ++i)
+  for (unsigned long iy = 0; iy < pixny; ++iy)
+    for (unsigned long ix = 0; ix < pixnx; ++ix)
+    {
+      short s16 = floor(((double)pix[iy][ix] - bzero) / bscale);
+      fputs16(s16, fp);
+    }
+  for (unsigned long i = (pixnx * pixny * 2) % 2880; i % 2880 != 0; ++i)
     fputc(0, fp);
 
   if (fclose(fp) != 0)
