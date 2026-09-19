@@ -55,8 +55,6 @@ static unsigned long unbinnedwindowsy = 0;
 static unsigned long unbinnedwindownx = 0;
 static unsigned long unbinnedwindowny = 0;
 
-static unsigned long binning = 1;
-
 static double minexposuretime = 0;
 static double maxexposuretime = 0;
 
@@ -295,7 +293,7 @@ detectorrawexpose(double exposuretime, const char *shutter)
     DETECTOR_ERROR("invalid shutter argument.");
 
   if (exposuretime < minexposuretime || exposuretime > maxexposuretime)
-      DETECTOR_ERROR("invalid exposure time argument.");
+    DETECTOR_ERROR("invalid exposure time argument.");
 
   if (CancelQHYCCDExposingAndReadout(handle) != QHYCCD_SUCCESS)
     DETECTOR_ERROR("unable to cancel exposure.");
@@ -356,13 +354,12 @@ detectorrawread(void)
     uint32_t nx, ny, nchannel, bpp;
     if (GetQHYCCDSingleFrame(handle, &nx, &ny, &bpp, &nchannel, (uint8_t *)data) != QHYCCD_SUCCESS)
       DETECTOR_ERROR("unable to read exposure.");
-    if (nx != detectorrawgetpixnx() || ny != detectorrawgetpixny())
-      DETECTOR_ERROR("format does not match.");
     fprintf(stderr, "detectorrawread: %lu x %lu x %lu x %lu\n", (unsigned long)nx, (unsigned long)ny, (unsigned long)bpp, (unsigned long)nchannel);
   }
 
-  unsigned long nx = detectorrawgetpixnx();
-  unsigned long ny = detectorrawgetpixny();
+  detectorrawpixstart();
+  unsigned long nx = detectorrawgetpixrawnx();
+  unsigned long ny = detectorrawgetpixrawny();
   fprintf(stderr, "detectorrawread: %lu x %lu\n", (unsigned long)nx, (unsigned long)ny);
   for (unsigned long iy = 0; iy < ny; ++iy)
   {
@@ -372,6 +369,7 @@ detectorrawread(void)
       lbuf[ix] = usbuf[ix];
     detectorrawpixnext(lbuf, nx);
   }
+  detectorrawpixend();
   fprintf(stderr, "detectorrawread: finished.\n");
   DETECTOR_OK();
 }
@@ -438,6 +436,7 @@ detectorrawsetunbinnedwindow(unsigned long newsx, unsigned long newsy, unsigned 
   unbinnedwindowsy = newsy;
   unbinnedwindownx = newnx;
   unbinnedwindowny = newny;
+  detectorrawsetsoftwarebinning(1);
   return detectorrawsetbinning(1);
 }
 
@@ -447,11 +446,10 @@ const char *
 detectorrawsetbinning(unsigned long newbinning)
 {
   DETECTOR_CHECK_OPEN();
-  if (SetQHYCCDBinMode(handle, newbinning, newbinning) != QHYCCD_SUCCESS)
-    DETECTOR_ERROR("unable to set binning.");
-  binning = newbinning;
-  detectorrawsetpixnx((unbinnedwindownx + binning - 1) / binning);
-  detectorrawsetpixny((unbinnedwindowny + binning - 1) / binning);
+  SetQHYCCDBinMode(handle, 1, 1);
+  detectorrawsetsoftwarebinning(newbinning);
+  detectorrawsetpixnx((unbinnedwindownx + newbinning - 1) / newbinning);
+  detectorrawsetpixny((unbinnedwindowny + newbinning - 1) / newbinning);
   DETECTOR_OK();
 }
 
@@ -514,7 +512,7 @@ detectorrawgetvalue(const char *name)
   else if (strcmp(name, "unbinnedwindowny") == 0)
     snprintf(value, sizeof(value), "%lu", unbinnedwindowny);
   else if (strcmp(name, "binning") == 0)
-    snprintf(value, sizeof(value), "%lu", binning);
+    snprintf(value, sizeof(value), "%lu", detectorrawgetsoftwarebinning());
   else if (strcmp(name, "minexposuretime") == 0)
     snprintf(value, sizeof(value), "%.6f", minexposuretime);
   else if (strcmp(name, "maxexposuretime") == 0)

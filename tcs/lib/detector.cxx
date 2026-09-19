@@ -40,12 +40,19 @@ static bool isopen = false;
 
 static unsigned short softwaregain = 1;
 
+static unsigned long softwarebinning = 1;
+
+static unsigned long pixrawnx = 0;
+static unsigned long pixrawny = 0;
+static unsigned short **pixraw = NULL;
+
 static unsigned long pixnx = 0;
 static unsigned long pixny = 0;
+static unsigned short **pix = NULL;
+
 static unsigned long long pixnframe = 1;
 
 static unsigned long pixi = 0;
-static unsigned short **pix = NULL;
 
 static unsigned long long cubepixi = 0;
 static FILE *cubepixfp = NULL;
@@ -96,20 +103,22 @@ bool detectorrawgetisopen(void)
 const char *
 detectorrawpixstart(void)
 {
+  fprintf(stderr, "detectorrawpixstart: start");
   pixi = 0;
-  if (pix != 0)
+  if (pixraw != 0)
   {
-    free(pix[0]);
-    free(pix);
+    free(*pixraw);
+    free(pixraw);
   }
-  pix = (unsigned short **)malloc(pixny * sizeof(*pix));
-  if (pix == 0)
+  pixraw = (unsigned short **)malloc(pixrawny * sizeof(*pixraw));
+  if (pixraw == 0)
     DETECTOR_ERROR("unable to allocate memory for the detector pixel values.");
-  pix[0] = (unsigned short *)malloc(pixnx * pixny * sizeof(*pix[0]));
-  if (pix[0] == 0)
+  *pixraw = (unsigned short *)malloc(pixrawnx * pixrawny * sizeof(**pixraw));
+  if (*pixraw == 0)
     DETECTOR_ERROR("unable to allocate memory for the detector pixel values.");
-  for (unsigned long iy = 1; iy < pixny; ++iy)
-    pix[iy] = pix[0] + iy * pixnx;
+  for (unsigned long iy = 1; iy < pixrawny; ++iy)
+    pixraw[iy] = *pixraw + iy * pixrawnx;
+  fprintf(stderr, "detectorrawpixstart: end");
   DETECTOR_OK();
 }
 
@@ -118,16 +127,16 @@ detectorrawpixnext(const long *newpix, unsigned long n)
 {
   for (unsigned long i = 0; i < n; ++i, ++pixi)
   {
-    if (pixi == pixnx * pixny)
+    if (pixi == pixrawnx * pixrawny)
       DETECTOR_ERROR("too much pixel data.");
-    unsigned long iy = pixi / pixnx;
-    unsigned long ix = pixi % pixnx;
+    unsigned long iy = pixi / pixrawnx;
+    unsigned long ix = pixi % pixrawnx;
     if (newpix[i] < 0)
-      pix[iy][ix] = 0;
-    else if (newpix[i] / softwaregain > USHRT_MAX)
-      pix[iy][ix] = USHRT_MAX;
+      pixraw[iy][ix] = 0;
+    else if (newpix[i] > USHRT_MAX)
+      pixraw[iy][ix] = USHRT_MAX;
     else
-      pix[iy][ix] = newpix[i] / softwaregain;
+      pixraw[iy][ix] = newpix[i];
   }
   DETECTOR_OK();
 }
@@ -251,18 +260,49 @@ detectorrawpixnexthex(const char *newhexpix)
 const char *
 detectorrawpixend(void)
 {
-  if (pixi < pixnx * pixny)
+  fprintf(stderr, "detectorrawpixend: start");
+  if (pixi < pixrawnx * pixrawny)
     DETECTOR_ERROR("too little pixel data.");
+
+  if (pix != 0)
+  {
+    free(*pix);
+    free(pix);
+  }
+  pix = (unsigned short **)malloc(pixny * sizeof(*pix));
+  if (pix == 0)
+    DETECTOR_ERROR("unable to allocate memory for the detector pixel values.");
+  *pix = (unsigned short *)malloc(pixnx * pixny * sizeof(**pix));
+  if (*pix == 0)
+    DETECTOR_ERROR("unable to allocate memory for the detector pixel values.");
+  for (unsigned long iy = 1; iy < pixny; ++iy)
+    pix[iy] = *pix + iy * pixnx;
+
+  // Do software binning.
+  for (unsigned long iy = 0; iy < pixny; ++iy)
+    for (unsigned long ix = 0; ix < pixnx; ++ix)
+    {
+      unsigned long sum = 0;
+      for (unsigned long jy = 0; jy < softwarebinning; ++jy)
+        for (unsigned long jx = 0; jx < softwarebinning; ++jx)
+          sum += pixraw[iy * softwarebinning + jy][ix * softwarebinning + jx];
+      if (sum / softwaregain > USHRT_MAX)
+        pix[iy][ix] = USHRT_MAX;
+      else
+        pix[iy][ix] = sum / softwaregain;
+    }
+
+  fprintf(stderr, "detectorrawpixend: end");
   DETECTOR_OK();
 }
 
 ////////////////////////////////////////////////////////////////////////
 
 const char *
-detectorrawsetsoftwaregain(unsigned long newdetectorsoftwaregain)
+detectorrawsetsoftwaregain(unsigned long newsoftwaregain)
 {
   DETECTOR_CHECK_OPEN();
-  softwaregain = newdetectorsoftwaregain;
+  softwaregain = newsoftwaregain;
   DETECTOR_OK();
 }
 
@@ -275,9 +315,26 @@ detectorrawgetsoftwaregain(void)
 ////////////////////////////////////////////////////////////////////////
 
 const char *
+detectorrawsetsoftwarebinning(unsigned long newsoftwarebinning)
+{
+  DETECTOR_CHECK_OPEN();
+  softwarebinning = newsoftwarebinning;
+  DETECTOR_OK();
+}
+
+unsigned long
+detectorrawgetsoftwarebinning(void)
+{
+  return softwarebinning;
+}
+
+////////////////////////////////////////////////////////////////////////
+
+const char *
 detectorrawsetpixnx(unsigned long nx)
 {
   pixnx = nx;
+  pixrawnx = nx * softwarebinning;
   DETECTOR_OK();
 }
 
@@ -285,6 +342,7 @@ const char *
 detectorrawsetpixny(unsigned long ny)
 {
   pixny = ny;
+  pixrawny = ny * softwarebinning;
   DETECTOR_OK();
 }
 
@@ -311,6 +369,18 @@ unsigned long
 detectorrawgetpixnframe(void)
 {
   return pixnframe;
+}
+
+unsigned long
+detectorrawgetpixrawny(void)
+{
+  return pixrawny;
+}
+
+unsigned long
+detectorrawgetpixrawnx(void)
+{
+  return pixrawnx;
 }
 
 ////////////////////////////////////////////////////////////////////////

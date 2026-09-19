@@ -80,7 +80,7 @@ installs_project_colibri	    :=	\
 endif
 
 
-ifeq ($(UNAME_N),quetzalcoatl-detector)
+ifeq ($(UNAME_N),quetzalcoatl-instrument)
 installs_project_quetzalcoatl   :=	\
 	detectorqhy.so			        \
 	detectordummy.so		        \

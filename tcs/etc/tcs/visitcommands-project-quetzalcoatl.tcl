@@ -74,6 +74,7 @@ proc alertvisit {{filters "r"}} {
 
   executor::setreadmode "default"
   executor::setwindow "default"
+  executor::setbinning "default"
   executor::movefilterwheel [lindex $filters 0]
 
   set lastalpha [alert::alpha [executor::alert]]
@@ -175,6 +176,8 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
   executor::track
 
   executor::setreadmode "default"
+  executor::setwindow "default"
+  executor::setbinning "default"
 
   if {[llength $exposuretimes] == 1} {
     set exposuretimes [lrepeat [llength $filters] $exposuretimes]
@@ -193,8 +196,6 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
          0as +5as
          0as -5as
       } 0 [expr {$gridpoints * 2 - 1}]]
-
-  executor::setwindow "default"
 
   set gridrepeat 0
   while {$gridrepeat < $gridrepeats} {
@@ -234,15 +235,18 @@ proc gridvisit {gridrepeats gridpoints exposurerepeats exposuretimes filters {of
 proc coarsefocusvisit {{exposuretime 5} {filter "i"}} {
   log::summary "coarsefocusvisit: starting."
 
+  set binning 8
+
   executor::setsecondaryoffset 0
 
   executor::track
 
   executor::setreadmode "default"
   executor::setwindow "default"
+  executor::setbinning $binning
   executor::movefilterwheel "$filter"
 
-  log::summary "coarsefocusvisit: focusing in filter $filter with $exposuretime second exposures."
+  log::summary "coarsefocusvisit: focusing in filter $filter with binning $binning and $exposuretime second exposures."
   executor::focus $exposuretime 300 30 false true
   executor::setfocused
 
@@ -255,15 +259,18 @@ proc coarsefocusvisit {{exposuretime 5} {filter "i"}} {
 proc focusvisit {{exposuretime 5} {filter "i"}} {
   log::summary "focusvisit: starting."
 
+  set binning 2
+
   executor::setsecondaryoffset 0
 
   executor::track
 
   executor::setreadmode "default"
   executor::movefilterwheel $filter
+  executor::setbinning $binning
   executor::setwindow "default"
 
-  log::summary "focusvisit: focusing in filter $filter with $exposuretime second exposures."
+  log::summary "focusvisit: focusing in filter $filter with binning $binning and $exposuretime second exposures."
   executor::focus $exposuretime 150 15 true false
   executor::setfocused
 
@@ -276,12 +283,15 @@ proc focusvisit {{exposuretime 5} {filter "i"}} {
 proc focuswitnessvisit {{exposuretime 5} {filter "i"}} {
   log::summary "focuswitnessvisit: starting."
 
+  set binning 2
+
   executor::setsecondaryoffset 0
 
   executor::track
 
   executor::setreadmode "default"
   executor::setwindow "default"
+  executor::setbinning $binning
 
   foreach filter {g r i z y w} {
     log::summary "focuswitnessvisit: taking images in $filter."
@@ -309,46 +319,10 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"}} {
 }
 
 ########################################################################
-proc coarsefocusinstrumentvisit {{exposuretime 5} {filter "i"}} {
-  log::summary "coarsefocusfocuservisit: starting."
-
-  executor::setsecondaryoffset 0
-
-  executor::track
-
-  executor::setreadmode "default"
-  executor::setwindow "default"
-  executor::movefilterwheel $filter
-
-  executor::focusinstrument $exposuretime 100000 10000 true true
-  executor::setfocused
-
-  log::summary "coarsefocusfocuservisit: finished."
-  return false
-}
-
-########################################################################
-proc focusinstrumentvisit {{exposuretime 5} {filter "i"}} {
-  log::summary "focusfocuservisit: starting."
-
-  executor::setsecondaryoffset 0
-
-  executor::track
-
-  executor::setreadmode "default"
-  executor::setwindow "default"
-  executor::movefilterwheel $filter
-
-  executor::focusinstrument $exposuretime 60000 6000 true false
-  executor::setfocused
-
-  log::summary "focusfocuservisit: finished."
-  return false
-}
-
-########################################################################
-proc initialpointingcorrectionvisit {{exposuretime 30} {filter "i"}} {
+proc initialpointingcorrectionvisit {{exposuretime 30} {filter "r"}} {
   log::summary "initialpointingcorrectionvisit: starting."
+
+  set binning 8
 
   executor::setsecondaryoffset 0
 
@@ -356,6 +330,7 @@ proc initialpointingcorrectionvisit {{exposuretime 30} {filter "i"}} {
 
   executor::setreadmode "default"
   executor::setwindow "default"
+  executor::setbinning $binning
   executor::movefilterwheel $filter
 
   log::summary "initialpointingcorrectionvisit: correcting pointing."
@@ -366,8 +341,10 @@ proc initialpointingcorrectionvisit {{exposuretime 30} {filter "i"}} {
 }
 
 ########################################################################
-proc pointingcorrectionvisit {{exposuretime 15} {filter "i"}} {
+proc pointingcorrectionvisit {{exposuretime 15} {filter "r"}} {
   log::summary "correctpointingvisit: starting."
+
+  set binning 2
 
   executor::setsecondaryoffset 0
 
@@ -375,6 +352,7 @@ proc pointingcorrectionvisit {{exposuretime 15} {filter "i"}} {
 
   executor::setreadmode "default"
   executor::setwindow "default"
+  executor::setbinning $binning
   executor::movefilterwheel $filter
 
   log::summary "correctpointingvisit: correcting pointing."
@@ -388,12 +366,15 @@ proc pointingcorrectionvisit {{exposuretime 15} {filter "i"}} {
 proc donutvisit {{exposuretime 10} {filter "i"}} {
   log::summary "donutvisit: starting."
 
+  set binning 2
+
   executor::setsecondaryoffset 0
 
   executor::track
 
   executor::setreadmode "default"
   executor::setwindow "default"
+  executor::setbinning $binning
   executor::movefilterwheel $filter
 
   set n 3
@@ -424,15 +405,18 @@ proc donutvisit {{exposuretime 10} {filter "i"}} {
 }
 
 ########################################################################
-proc pointingmapvisit {{exposuretime 5} {filter "i"}} {
+proc pointingmapvisit {{exposuretime 5} {filter "r"}} {
   log::summary "pointingmapvisit: starting."
+
+  set binning 3
 
   executor::setsecondaryoffset 0
 
   executor::tracktopocentric
 
-  executor::setwindow "default"
   executor::setreadmode "default"
+  executor::setwindow "default"
+  executor::setbinning $binning
   executor::movefilterwheel $filter
 
   executor::expose object $exposuretime
@@ -450,6 +434,7 @@ proc twilightflatsvisit {targetngood filter} {
 
   executor::setreadmode "default"
   executor::setwindow "default"
+  executor::setbinning "default"
 
   set maxlevel 3000
   set minlevel 1000
@@ -496,77 +481,6 @@ proc twilightflatsvisit {targetngood filter} {
 }
 
 ########################################################################
-proc domeflatsvisit {} {
-  log::summary "domeflatsvisit: starting."
-
-  executor::setsecondaryoffset 0
-  executor::move
-
-  executor::setreadmode "default"
-  executor::setwindow "default"
-
-  set maxlevel 16000
-  set minlevel 3500
-  set exposuretime 10
-  set filter "i"
-  executor::movefilterwheel $filter
-  set isevening [executor::isevening]
-  if {$isevening} {
-    set visits {
-     "1MHz-low"  0
-     "1MHz-high" 1
-    }
-  } else {
-    set visits {
-     "1MHz-high" 1
-     "1MHz-low"  0
-    }
-  }
-  foreach {readmode visitidentifier} $visits {
-    executor::setvisit [visit::updatevisitidentifier [executor::visit] $visitidentifier]
-    set ngood 0
-    set mingoodlevel $maxlevel
-    set maxgoodlevel $minlevel
-    executor::setreadmode $readmode
-    log::info [format "domeflatsvisit: starting flats in readmode $readmode."]
-    while {true} {
-      executor::expose flat $exposuretime
-      executor::analyze levels
-      set level [executor::exposureaverage C0]
-      log::info [format "domeflatsvisit: level is %.1f DN." $level]
-      if {$level > $maxlevel && $isevening} {
-        log::info "domeflatsvisit: waiting (too bright)."
-        coroutine::after 60000
-      } elseif {$level < $minlevel && !$isevening} {
-        log::info "domeflatsvisit: waiting (too faint)."
-        coroutine::after 60000
-      } elseif {$minlevel <= $level && $level <= $maxlevel} {
-        if {$ngood == 0} {
-          log::info "domeflatsvisit: first good flat in readmode $readmode."
-        }
-        incr ngood
-        set mingoodlevel [expr {min($level,$mingoodlevel)}]
-        set maxgoodlevel [expr {max($level,$maxgoodlevel)}]
-      } else {
-        break
-      }
-      if {$ngood == 10} {
-        break
-      }
-    }
-    if {$ngood == 0} {
-      log::summary [format "domeflatsvisit: $ngood good flats in readmode $readmode."]
-    } else {
-      log::summary \
-        [format "domeflatsvisit: $ngood good flats in readmode $readmode (%.0f to %.0f DN)." $mingoodlevel \
-        $maxgoodlevel]
-    }
-  }
-  log::summary "domeflatsvisit: finished."
-  return true
-}
-
-########################################################################
 proc darksvisit {exposurerepeats exposuretime} {
   log::summary "darksvisit: starting."
 
@@ -574,6 +488,7 @@ proc darksvisit {exposurerepeats exposuretime} {
 
   executor::setreadmode "default"
   executor::setwindow "default"
+  executor::setbinning "default"
 
   executor::movefilterwheel "dark"
   set exposure 0
@@ -588,79 +503,14 @@ proc darksvisit {exposurerepeats exposuretime} {
 }
 
 ########################################################################
-proc gainvisit {} {
-  log::summary "gainvisit: starting."
-
-  executor::setsecondaryoffset 0
-  executor::move
-
-#     "1MHz-0"     1 0 "656/3"  0.1
-#     "1MHz-1"     1 1 "656/3"  0.1
-#     "em-10MHz-0" 1 2 "656/3"  1
-#     "em-10MHz-1" 1 3 "656/3"  1
-#     "em-20MHz-0" 1 4 "640/10" 1
-#     "em-20MHz-1" 1 5 "640/10" 1
-#     "em-30MHz-0" 1 6 "640/10" 1
-#     "em-30MHz-1" 1 7 "640/10" 1
-  foreach {readmode binning visitidentifier filter exposuretime} {
-    "em-30MHz-0" 1 6 "z" 1
-  } {
-    executor::movefilterwheel $filter
-    executor::setreadmode $readmode
-    executor::setwindow "default"
-    executor::setvisit [visit::updatevisitidentifier [executor::visit] $visitidentifier]
-    set i 0
-    while {$i < 6} {
-      executor::expose flat $exposuretime
-      executor::analyze levels
-      coroutine::after 1000
-      incr i
-    }
-  }
-  log::summary "gainvisit: finished."
-  return true
-}
-
-########################################################################
-proc readnoisevisit {} {
-  log::summary "readnoisevisit: starting."
-
-  executor::setsecondaryoffset 0
-  executor::move
-
-  executor::movefilterwheel "dark"
-
-#     "em-10MHz-0" 1 2 0
-#     "em-10MHz-1" 1 3 0
-#     "em-20MHz-0" 1 4 0
-#     "em-20MHz-1" 1 5 0
-#     "em-30MHz-0" 1 6 0
-#     "em-30MHz-1" 1 7 0
-  foreach {readmode binning visitidentifier exposuretime} {
-     "1MHz-0"     1 0 0
-     "1MHz-1"     1 1 0
-
-  } {
-    executor::setreadmode $readmode
-    executor::setwindow "default"
-    executor::setvisit [visit::updatevisitidentifier [executor::visit] $visitidentifier]
-    set i 0
-    while {$i < 6} {
-      executor::expose bias $exposuretime
-      executor::analyze levels
-      coroutine::after 1000
-      incr i
-    }
-  }
-  log::summary "readnoisevisit: finished."
-  return true
-}
-
-########################################################################
-proc hartmanntestvisit {secondaryoffset {exposuretime 10} {filter "470/10"} {exposures 10} {dither "20as"}} {
+proc hartmanntestvisit {secondaryoffset {exposuretime 10} {filter "g"} {exposures 10} {dither "20as"}} {
   log::summary "hartmanntestvisit: starting."
 
+  set binning 2
+
+  executor::setreadmode "default"
   executor::setwindow "default"
+  executor::setbinning $binning
   executor::movefilterwheel $filter
 
   log::summary "hartmanntestvisit: extrafocal images: secondary offset is +$secondaryoffset."
@@ -697,39 +547,6 @@ proc hartmanntestvisit {secondaryoffset {exposuretime 10} {filter "470/10"} {exp
 
   log::summary "hartmanntestvisit: finished."
 
-  return true
-}
-
-########################################################################
-proc satellitevisit {start exposures exposuretime} {
-  log::summary "satellitevisit: starting."
-
-  executor::setsecondaryoffset 0
-
-  executor::track
-
-  executor::movefilterwheel "g"
-  executor::setreadmode "default"
-  executor::setwindow "default"
-
-  log::summary "satellitevisit: waiting until $start."
-
-  set startseconds [utcclock::scan $start]
-  while {[utcclock::seconds] <= $startseconds} {
-    coroutine::after 100
-  }
-
-  log::summary "satellitevisit: starting exposures."
-
-  set exposure 0
-  while {$exposure < $exposures} {
-    executor::expose object $exposuretime
-    incr exposure
-  }
-
-  log::summary "satellitevisit: finished exposures."
-
-  log::summary "satellitevisit: finished."
   return true
 }
 ########################################################################

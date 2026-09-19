@@ -26,19 +26,21 @@
 
 #define DETECTOR_STR_BUFFER_SIZE 1024
 
-#define DETECTOR_ERROR(s)   return (s)
-#define DETECTOR_OK()       return "ok"
+#define DETECTOR_ERROR(s) return (s)
+#define DETECTOR_OK() return "ok"
 
-#define DETECTOR_SHOULD_NOT_BE_CALLED() \
-  do { \
+#define DETECTOR_SHOULD_NOT_BE_CALLED()                                                           \
+  do                                                                                              \
+  {                                                                                               \
     fprintf(stderr, "ERROR: %s:%lu: raw detector function \"%s\" should not have been called.\n", \
-      __FILE__, (unsigned long) __LINE__, __FUNCTION__); \
-    abort(); \
-  } while(0)
+            __FILE__, (unsigned long)__LINE__, __FUNCTION__);                                     \
+    abort();                                                                                      \
+  } while (0)
 
-#define DETECTOR_CHECK_OPEN() \
-  do { \
-    if (!detectorrawgetisopen()) \
+#define DETECTOR_CHECK_OPEN()                           \
+  do                                                    \
+  {                                                     \
+    if (!detectorrawgetisopen())                        \
       DETECTOR_ERROR("no detector is currently open."); \
   } while (0)
 
@@ -62,7 +64,7 @@ extern const char *detectorrawsetbinning(unsigned long);
 
 extern const char *detectorrawexpose(double, const char *);
 extern const char *detectorrawcancel(void);
-extern bool        detectorrawgetreadytoberead(void);
+extern bool detectorrawgetreadytoberead(void);
 extern const char *detectorrawread(void);
 extern const char *detectorrawupdatestatistics(void);
 
@@ -75,15 +77,20 @@ extern const char *detectorrawfilterwheelgetvalue(const char *);
 extern const char *detectorrawgetdatavalue(const char *);
 
 extern const char *detectorrawsetisopen(bool);
-extern bool        detectorrawgetisopen(void);
+extern bool detectorrawgetisopen(void);
 
 extern const char *detectorrawsetsoftwaregain(unsigned long);
+extern const char *detectorrawsetsoftwarebinning(unsigned long);
 extern const char *detectorrawsetpixnx(unsigned long);
 extern const char *detectorrawsetpixny(unsigned long);
 extern const char *detectorrawsetpixnframe(unsigned long);
+extern unsigned long detectorrawgetsoftwaregain(void);
+extern unsigned long detectorrawgetsoftwarebinning(void);
 extern unsigned long detectorrawgetpixnx(void);
 extern unsigned long detectorrawgetpixny(void);
 extern unsigned long detectorrawgetpixnframe(void);
+extern unsigned long detectorrawgetpixrawnx(void);
+extern unsigned long detectorrawgetpixrawny(void);
 
 extern const char *detectorrawsetpixdatawindow(unsigned long, unsigned long, unsigned long, unsigned long);
 
