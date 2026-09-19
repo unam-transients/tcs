@@ -54,6 +54,7 @@ namespace eval "weather" {
     set previouspressure "unknown"
     set previoushumidityalarm "unknown"
     set lastwindalarmseconds "unknown"
+    set lastalarmseconds ""
 
     foreach dataline $datalines {
       # noqa: W111
@@ -266,6 +267,10 @@ namespace eval "weather" {
         set humidityalarm true
       } else {
         set humidityalarm false
+      }
+
+      if {[string equal $lastalarmseconds ""]} {
+        set lastalarmseconds $timestampseconds
       }
 
       variable windaveragespeedlimit
