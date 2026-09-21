@@ -38,7 +38,7 @@ usageerror () {
 host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
 case "$host" in
 quetzalcoatl-control)
-  allargs="sensors power supervisor watchdog selector executor instrument telescope mount enclosure secondary seeing weather sun moon target html"
+  allargs="sensors power supervisor watchdog selector executor instrument telescope mount enclosure secondary seeing weather sun moon target gcn html"
   ALLARGS="gcntan"
   ;;
 quetzalcoatl-instrument)
@@ -50,7 +50,7 @@ quetzalcoatl-platform)
   ALLARGS=""
   ;;
 ddoti-control)
-  allargs="sensors power supervisor watchdog selector executor instrument telescope mount enclosure weather sun moon target html"
+  allargs="sensors power supervisor watchdog selector executor instrument telescope mount enclosure weather sun moon target gcn html"
   ALLARGS="gcntan"
   ;;
 ddoti-platform)
@@ -66,8 +66,8 @@ ddoti-detectors1)
   ALLARGS=""
   ;;
 colibri-control)
-  allargs="supervisor watchdog selector executor telescope lights louvers fans mount secondary covers dome telescopecontroller sun moon target weather plc power seeing sensors html"
-  ALLARGS="gcntan gcn svom"
+  allargs="supervisor watchdog selector executor telescope lights louvers fans mount secondary covers dome telescopecontroller sun moon target weather plc power seeing sensors gcn svom html"
+  ALLARGS="gcntan"
   ;;
 colibri-ddrago)
   allargs="ddrago C2 C1"
