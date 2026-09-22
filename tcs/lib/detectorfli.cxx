@@ -292,6 +292,7 @@ detectorrawread(void)
   unsigned long ny = detectorrawgetpixny();
   unsigned short usbuf[fullnx];
   long lbuf[nx];
+  detectorrawpixstart();
   for (unsigned long iy = 0; iy < ny; ++iy) {
     CHECK_FLI_CALL(
       FLIGrabRow(device, usbuf, nx),
@@ -302,6 +303,7 @@ detectorrawread(void)
     }
     detectorrawpixnext(lbuf, nx);
   }
+  detectorrawpixend();
   DETECTOR_OK();
 }
 

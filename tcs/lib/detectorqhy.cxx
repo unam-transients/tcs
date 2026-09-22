@@ -357,10 +357,10 @@ detectorrawread(void)
     fprintf(stderr, "detectorrawread: %lu x %lu x %lu x %lu\n", (unsigned long)nx, (unsigned long)ny, (unsigned long)bpp, (unsigned long)nchannel);
   }
 
-  detectorrawpixstart();
   unsigned long nx = detectorrawgetpixrawnx();
   unsigned long ny = detectorrawgetpixrawny();
   fprintf(stderr, "detectorrawread: %lu x %lu\n", (unsigned long)nx, (unsigned long)ny);
+  detectorrawpixstart();
   for (unsigned long iy = 0; iy < ny; ++iy)
   {
     unsigned short *usbuf = data + iy * nx;

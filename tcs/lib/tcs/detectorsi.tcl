@@ -1136,6 +1136,7 @@ namespace eval "detector" {
     set start [utcclock::seconds]
     rawputsiimagecommandpacket "retrieveimage" 0
     log::debug "detectorrawread: getting packets."
+    detectorrawpixstart
     while {$rawretrieving} {
       set data [rawgetsiimageimagepacket]
       set result [detectorrawpixnexthex [binary encode hex $data]]
@@ -1143,6 +1144,7 @@ namespace eval "detector" {
         return $result
       }
     }
+    detectorrawpixend
     set end [utcclock::seconds]
     log::debug [format "detectorrawread: retrieving the image took %.2f seconds." [expr {$end - $start}]]
 

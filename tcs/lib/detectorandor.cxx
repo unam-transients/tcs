@@ -612,9 +612,11 @@ detectorrawread(void)
       
     detectorframeend();
 
+    detectorrawpixstart();
     for (unsigned long iy = 0; iy < ny; ++iy)
       detectorrawpixnext(&frame[iy][0], nx);
-    
+    detectorrawpixend();
+
   } else {
 
    log("detectorrawgetreadytoberead: reading exposure.");
@@ -625,6 +627,7 @@ detectorrawread(void)
     if (status != DRV_SUCCESS)
       DETECTOR_ERROR(msg("unable to get pixel data (nx is %lu ny is %lu status is %u).", nx, ny, status));
 
+    detectorrawpixstart();
     for (unsigned long iy = 0; iy < ny; ++iy) {
       if (flipped) {
         for (unsigned long ix = 0; ix < nx; ++ix)
@@ -635,6 +638,7 @@ detectorrawread(void)
       }
       detectorrawpixnext(&frame[iy][0], nx);
     }
+    detectorrawpixend();
 
     saasigmax = 0.0;
     saasigmay = 0.0;

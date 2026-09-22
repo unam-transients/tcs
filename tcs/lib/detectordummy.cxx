@@ -149,12 +149,14 @@ detectorrawread(void)
   long pix = 0;
   unsigned long nx = detectorrawgetpixnx();
   unsigned long ny = detectorrawgetpixny();
+  detectorrawpixstart();
   for (unsigned long iy = 0; iy < ny; ++iy) {
     for (unsigned long ix = 0; ix < nx; ++ix) {
       pix = ix;
       detectorrawpixnext(&pix, 1);
     }
   }
+  detectorrawpixend();
   DETECTOR_OK();
 }
 
