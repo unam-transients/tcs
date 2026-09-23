@@ -247,7 +247,7 @@ proc coarsefocusvisit {{exposuretime 5} {filter "i"}} {
   executor::movefilterwheel "$filter"
 
   log::summary "coarsefocusvisit: focusing in filter $filter with binning $binning and $exposuretime second exposures."
-  executor::focus $exposuretime 300 30 false true
+  executor::focus $exposuretime 500 50 false true
   executor::setfocused
 
   log::summary "coarsefocusvisit: finished."
