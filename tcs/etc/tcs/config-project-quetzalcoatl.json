@@ -595,7 +595,7 @@
   "supervisor": {
     "withplc": "false",
     "internalhumiditysensor": "enclosure-humidity",
-    "openoffsetseconds": "600",
+    "openoffsetseconds": "900",
     "opentoventilateoffsetseconds": "1800"
   },
   "target": {
