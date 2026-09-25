@@ -22,8 +22,6 @@
 
 ########################################################################
 
-export PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
-
 mkdir -p "$tcsprefix"/var/tcs/restart
 cd "$tcsprefix"/var/tcs/restart
 

@@ -22,8 +22,6 @@
 
 ########################################################################
 
-export PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
-
 # Try to work even if $tcsprefix is read-only.
 if test ! -w "$tcsprefix"
 then

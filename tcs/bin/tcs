@@ -50,7 +50,7 @@ shift
 bindir="$(dirname "$0")"
 export tcsprefix="$bindir/.."
 
-export PATH=/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:"$tcsprefix"/opt/conda/bin/
+export PATH="$tcsprefix"/libexec/tcs/conda/bin:"$tcsprefix"/opt/conda/condabin:"$tcsprefix"/opt/conda/bin:"$tcsprefix"/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 TCS_CONDA_PREFIX="$(cd "$tcsprefix/libexec/tcs/conda"; pwd)"
 
