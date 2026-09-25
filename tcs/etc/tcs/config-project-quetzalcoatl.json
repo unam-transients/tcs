@@ -165,7 +165,7 @@
       "C0"
     ],
     "outletgroups": [ ],
-    "restartdetectorstorecover": "true"
+    "rebootinstrumenttorecover": true
   },
   "lights": {
     "type": "gpio",

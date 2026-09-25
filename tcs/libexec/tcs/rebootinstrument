@@ -43,21 +43,7 @@ esac
 
 if test $# = 0
 then
-  case "$host" in
-  quetzalcoatl-control)
-    instrument=quetzalcoatl
-    ;;
-  ddoti-control)
-    instrument=ddoti
-    ;;
-  colibri-control)
-    instrument=tequila
-    ;;
-  *)
-    echo 2>&1 "$program: error: unknown host."
-    exit 1
-    ;;
-  esac
+  instrument="instrument"
 elif test $# = 1
 then
   instrument="$1"
@@ -66,21 +52,21 @@ else
   exit 1
 fi
 
-case "$instrument" in
-  quetzalcoatl)
+case "$host:$instrument" in
+  quetzalcoatl-control:instrument)
     hosts="instrument"
     powers="instrument"
     ;;
-  ddoti)
+  ddoti-control:instrument)
     hosts="detectors0 detectors1"
     powers="instrument"
     ;;
-  tequila)
+  colibri-control:tequila)
     hosts="tequila"
     powers="tequila"
     ;;
   *)
-    echo 2>&1 "$program: error: unknown instrument \"$instrument\"."
+    echo 2>&1 "$program: error: unknown host and instrument combination (\"$host\" and \"$instrument\")."
     exit 1
     ;;
 esac

@@ -1,9 +1,6 @@
 ########################################################################
-
 # This file is part of the RATTEL instrument control system.
-
 ########################################################################
-
 # Copyright © 2014, 2015, 2016, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
@@ -18,9 +15,7 @@
 # PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 # TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
-
 ########################################################################
-
 package require "astrometry"
 package require "client"
 package require "fitfocus"
@@ -29,23 +24,22 @@ package require "server"
 package provide "instrument" 0.0
 
 config::setdefaultvalue $instrumentname "restartdetectorstorecover" "false"
+config::setdefaultvalue $instrumentname "rebootinstrumenttorecover" "false"
 
 namespace eval "instrument" {
-
   global instrumentname
 
   ######################################################################
-
-  variable detectors                 [config::getvalue $instrumentname "detectors"]
-  variable monitoreddetectors        [config::getvalue $instrumentname "monitoreddetectors"]
-  variable activefocusers            [config::getvalue $instrumentname "activefocusers"]
-  variable activedetectors           [config::getvalue $instrumentname "activedetectors"]
-  variable pointingdetectors         [config::getvalue $instrumentname "pointingdetectors"]
-  variable outletgroups              [config::getvalue $instrumentname "outletgroups"]
+  variable detectors [config::getvalue $instrumentname "detectors"]
+  variable monitoreddetectors [config::getvalue $instrumentname "monitoreddetectors"]
+  variable activefocusers [config::getvalue $instrumentname "activefocusers"]
+  variable activedetectors [config::getvalue $instrumentname "activedetectors"]
+  variable pointingdetectors [config::getvalue $instrumentname "pointingdetectors"]
+  variable outletgroups [config::getvalue $instrumentname "outletgroups"]
   variable restartdetectorstorecover [config::getvalue $instrumentname "restartdetectorstorecover"]
-  
+  variable rebootinstrumenttorecover [config::getvalue $instrumentname "rebootinstrumenttorecover"]
+
   ######################################################################
-  
   proc isactivedetector {detector} {
     variable activedetectors
     if {[lsearch $activedetectors $detector] == -1} {
@@ -54,7 +48,7 @@ namespace eval "instrument" {
       return true
     }
   }
-  
+
   proc isactivefocuser {detector} {
     variable activefocusers
     if {[lsearch $activefocusers $detector] == -1 } {
@@ -63,7 +57,7 @@ namespace eval "instrument" {
       return [isactivedetector $detector]
     }
   }
-  
+
   proc linklatest {detector} {
     set fitsfilename [client::getdata $detector "fitsfilename"]
     if {![string equal $fitsfilename ""]} {
@@ -74,13 +68,12 @@ namespace eval "instrument" {
   }
 
   ######################################################################
-
   proc initializeactivitycommand {} {
     set start [utcclock::seconds]
     log::info "initializing."
     variable activedetectors
     foreach detector $activedetectors {
-      client::waituntilstarted $detector 
+      client::waituntilstarted $detector
       client::resetifnecessary $detector
       client::request $detector "initialize"
     }
@@ -156,18 +149,27 @@ namespace eval "instrument" {
       client::wait $detector
     }
     log::info [format "finished resetting after %.1f seconds." [utcclock::diff now $start]]
-  }    
+  }
 
   proc recoveractivitycommand {} {
     set start [utcclock::seconds]
     log::info "recovering."
     variable activedetectors
+    variable rebootinstrumenttorecover
+    if {$rebootinstrumenttorecover} {
+      global instrumentname
+      log::warning "rebooting $instrumentname."
+      exec tcs rebootinstrument $instrumentname &
+      coroutine::after 1000
+      log::info "waiting for $instrumentname to reboot."
+      coroutine::after 120000
+    }
     variable restartdetectorstorecover
     if {$restartdetectorstorecover} {
       foreach detector $activedetectors {
         if {
-          [catch {client::update $detector}] ||
-          [client::getdata $detector "timedout"]
+          [catch {client::update $detector}]
+          || [client::getdata $detector "timedout"]
         } {
           log::warning "restarting $detector."
           exec tcs stopserver $detector
@@ -177,7 +179,7 @@ namespace eval "instrument" {
           client::waituntilstarted $detector
         }
       }
-    }      
+    }
     foreach detector $activedetectors {
       client::waituntilstarted $detector
       client::request $detector "reset"
@@ -195,7 +197,7 @@ namespace eval "instrument" {
       initializeactivitycommand
     }
     log::info [format "finished recovering after %.1f seconds." [utcclock::diff now $start]]
-  }    
+  }
 
   proc closeactivitycommand {} {
     set start [utcclock::seconds]
@@ -230,15 +232,15 @@ namespace eval "instrument" {
     }
     log::info [format "finished closing after %.1f seconds." [utcclock::diff now $start]]
   }
-  
+
   proc emergencycloseactivitycommand {} {
     set start [utcclock::seconds]
     log::info "emergency closing."
-    catch {recoveractivitycommand}
-    catch {closeactivitycommand}
+    catch { recoveractivitycommand }
+    catch { closeactivitycommand }
     log::info [format "finished emergency closing after %.1f seconds." [utcclock::diff now $start]]
   }
-  
+
   proc idleactivitycommand {} {
     set start [utcclock::seconds]
     log::info "idling."
@@ -255,7 +257,7 @@ namespace eval "instrument" {
       }
     }
     log::info [format "finished idling after %.1f seconds." [utcclock::diff now $start]]
-  }  
+  }
 
   proc setreadmodeactivitycommand {args} {
     set start [utcclock::seconds]
@@ -416,7 +418,7 @@ namespace eval "instrument" {
     }
     log::info [format "finished exposing $type image after %.1f seconds." [utcclock::diff now $start]]
   }
-  
+
   proc analyzeactivitycommand {args} {
     set start [utcclock::seconds]
     log::info "analyzing last image."
@@ -437,13 +439,13 @@ namespace eval "instrument" {
       if {![string equal $type "none"] && [isactivedetector $detector]} {
         client::wait $detector
         if {[string equal $type "fwhmwitness"]} {
-          set fitsfilename    [file tail [client::getdata $detector "fitsfilename"]]
-          set fwhm            [client::getdata $detector "fwhm"]
-          set fwhmpixels      [client::getdata $detector "fwhmpixels"]
-          set binning         [client::getdata $detector "detectorbinning"]
-          set filter          [client::getdata $detector "filter"]
+          set fitsfilename [file tail [client::getdata $detector "fitsfilename"]]
+          set fwhm [client::getdata $detector "fwhm"]
+          set fwhmpixels [client::getdata $detector "fwhmpixels"]
+          set binning [client::getdata $detector "detectorbinning"]
+          set filter [client::getdata $detector "filter"]
           set focuserposition [client::getdata $detector "focuserposition"]
-          set exposuretime    [client::getdata $detector "exposuretime"]
+          set exposuretime [client::getdata $detector "exposuretime"]
           if {[string equal "$fwhm" ""]} {
             set fwhmarcsec "unknown"
             set fwhmpixels "unknown"
@@ -452,8 +454,8 @@ namespace eval "instrument" {
             set fwhmarcsec [format "%.2fas" [astrometry::radtoarcsec $fwhm]]
             set fwhmpixels [format "%.2f" $fwhmpixels]
             if {
-              [string equal $worstfwhm ""] ||
-              (![string equal $worstfwhm "unknown"] && $fwhm > $worstfwhm)
+              [string equal $worstfwhm ""]
+              || (![string equal $worstfwhm "unknown"] && $fwhm > $worstfwhm)
             } {
               set worstfwhm $fwhm
             }
@@ -469,17 +471,14 @@ namespace eval "instrument" {
               set dzposition 0
             }
             set channel [::open [file join [directories::vartoday] "fwhmwitness.csv"] "a"]
-            puts $channel [format \
-              "\"%s\",\"%s\",%.2f,%d,%.1f,\"%s\",%d,%.2f,%.0f,%.0f,%.0f" \
-              $detector $fitsfilename $fwhm $binning $exposuretime $filter $focuserposition \
-              $temperature $z $dztemperature $dzposition \
-            ]
+            puts $channel \
+              [format "\"%s\",\"%s\",%.2f,%d,%.1f,\"%s\",%d,%.2f,%.0f,%.0f,%.0f" $detector $fitsfilename $fwhm \
+              $binning $exposuretime $filter $focuserposition $temperature $z $dztemperature $dzposition ]
             ::close $channel
           }
-          log::summary [format \
-            "%s witness FWHM is %s (%s pixels with binning %s) in filter %s in %s seconds." \
-            $detector $fwhmarcsec $fwhmpixels $binning $filter $exposuretime \
-          ]
+          log::summary \
+            [format "%s witness FWHM is %s (%s pixels with binning %s) in filter %s in %s seconds." $detector \
+            $fwhmarcsec $fwhmpixels $binning $filter $exposuretime ]
         }
       }
     }
@@ -494,7 +493,7 @@ namespace eval "instrument" {
     }
     log::info [format "finished analyzing after %.1f seconds." [utcclock::diff now $start]]
   }
-  
+
   proc focusactivitycommand {fitsfiledir range step witness initial args} {
     set start [utcclock::seconds]
     log::info "focusing."
@@ -526,9 +525,9 @@ namespace eval "instrument" {
     set filenamelist {}
     file mkdir [file join [directories::var] "instrument"]
     foreach detector $detectors {
-        set filename [file join [directories::var] "instrument" "focus-$detector"]
-        file delete -force $filename
-        lappend filenamelist $filename
+      set filename [file join [directories::var] "instrument" "focus-$detector"]
+      file delete -force $filename
+      lappend filenamelist $filename
     }
     set dz 0
     while {$dz <= $range} {
@@ -584,7 +583,7 @@ namespace eval "instrument" {
           set channel [::open $filename "r"]
         }]} {
           log::warning "no focus data for $detector."
-            set z [expr {$zmin + $range / 2}]
+          set z [expr {$zmin + $range / 2}]
         } else {
           set zlist {}
           set wlist {}
@@ -646,26 +645,28 @@ namespace eval "instrument" {
       foreach detector $detectors exposuretime $exposuretimes {
         if {![string equal $exposuretime "none"] && [isactivefocuser $detector]} {
           set fitsfilename [file tail [client::getdata $detector "fitsfilename"]]
-          set fwhm         [client::getdata $detector "fwhm"]
-          set fwhmpixels   [client::getdata $detector "fwhmpixels"]
-          set binning      [client::getdata $detector "detectorbinning"]
-          set filter       [client::getdata $detector "filter"]
+          set fwhm [client::getdata $detector "fwhm"]
+          set fwhmpixels [client::getdata $detector "fwhmpixels"]
+          set binning [client::getdata $detector "detectorbinning"]
+          set filter [client::getdata $detector "filter"]
           set exposuretime [client::getdata $detector "exposuretime"]
-          set z            [client::getdata $detector "focuserposition"]
+          set z [client::getdata $detector "focuserposition"]
           if {[string equal "$fwhm" ""]} {
-            log::summary [format "$fitsfilename: $detector witness FWHM is unknown (with binning $binning) in filter $filter at focuser position $z in $exposuretime seconds."]
+            log::summary \
+              [format \
+              "$fitsfilename: $detector witness FWHM is unknown (with binning $binning) in filter $filter at focuser position $z in $exposuretime seconds."]
           } else {
-            log::summary [format \
-              "$fitsfilename: $detector witness FWHM is %.2fas (%.2f pixels with binning $binning) in filter $filter at focuser position $z in $exposuretime seconds." \
-              [astrometry::radtoarcsec $fwhm] $fwhmpixels \
-            ]
+            log::summary \
+              [format \
+              "$fitsfilename: $detector witness FWHM is %.2fas (%.2f pixels with binning $binning) in filter $filter at focuser position $z in $exposuretime seconds." [astrometry::radtoarcsec $fwhm] \
+              $fwhmpixels ]
           }
         }
       }
     }
     log::info [format "finished focusing after %.1f seconds." [utcclock::diff now $start]]
   }
-  
+
   proc mapfocusactivitycommand {fitsfileprefix range step args} {
     set start [utcclock::seconds]
     log::info "mapping focus."
@@ -686,71 +687,61 @@ namespace eval "instrument" {
     }
     log::info [format "finished mapping focus after %.1f seconds." [utcclock::diff now $start]]
   }
-  
-  ######################################################################
 
+  ######################################################################
   proc initialize {} {
     server::checkstatus
     server::checkactivityforinitialize
-    server::newactivitycommand "initializing" "idle" \
-      "instrument::initializeactivitycommand"
+    server::newactivitycommand "initializing" "idle" "instrument::initializeactivitycommand"
   }
-  
+
   proc open {} {
     server::checkstatus
     server::checkactivity "idle"
-    server::newactivitycommand "opening" "idle" \
-      "instrument::openactivitycommand"
+    server::newactivitycommand "opening" "idle" "instrument::openactivitycommand"
   }
-  
+
   proc opentoventilate {} {
     server::checkstatus
     server::checkactivity "idle"
-    server::newactivitycommand "opening" "idle" \
-      "instrument::opentoventilateactivitycommand"
+    server::newactivitycommand "opening" "idle" "instrument::opentoventilateactivitycommand"
   }
-  
+
   proc close {} {
     server::checkstatus
     server::checkactivity "idle"
-    server::newactivitycommand "closing" "idle" \
-      "instrument::closeactivitycommand"
+    server::newactivitycommand "closing" "idle" "instrument::closeactivitycommand"
   }
-  
+
   proc emergencyclose {} {
     # Do not check status or activity.
-    server::newactivitycommand "closing" "idle" \
-      "instrument::emergencycloseactivitycommand"
+    server::newactivitycommand "closing" "idle" "instrument::emergencycloseactivitycommand"
   }
-  
+
   proc stop {} {
     server::checkstatus
     server::checkactivityforstop
-    server::newactivitycommand "stopping" [server::getstoppedactivity] \
-      "instrument::stopactivitycommand"
+    server::newactivitycommand "stopping" [server::getstoppedactivity] "instrument::stopactivitycommand"
   }
 
   proc reset {} {
     server::checkstatus
     server::checkactivityforreset
-    server::newactivitycommand "resetting" [server::getstoppedactivity] \
-      "instrument::resetactivitycommand"
+    server::newactivitycommand "resetting" [server::getstoppedactivity] "instrument::resetactivitycommand"
   }
-  
+
   proc recover {} {
     server::checkstatus
     server::checkactivityforreset
-    server::newactivitycommand "recovering" "idle" \
-      "instrument::recoveractivitycommand"
+    server::newactivitycommand "recovering" "idle" "instrument::recoveractivitycommand"
   }
 
   proc idle {} {
     server::checkstatus
     server::checkactivityforreset
-    server::newactivitycommand "idling" "idle" \
-      "instrument::idleactivitycommand"
+    server::newactivitycommand "idling" "idle" "instrument::idleactivitycommand"
   }
-  
+
   proc setreadmode {args} {
     server::checkstatus
     server::checkactivity "idle"
@@ -762,10 +753,9 @@ namespace eval "instrument" {
     if {[llength $modes] != [llength $detectors]} {
       error "incorrect number of modes."
     }
-    server::newactivitycommand "setting" "idle" \
-      "instrument::setreadmodeactivitycommand $modes"
+    server::newactivitycommand "setting" "idle" "instrument::setreadmodeactivitycommand $modes"
   }
-  
+
   proc setwindow {args} {
     server::checkstatus
     server::checkactivity "idle"
@@ -777,10 +767,9 @@ namespace eval "instrument" {
     if {[llength $windows] != [llength $detectors]} {
       error "incorrect number of windows."
     }
-    server::newactivitycommand "setting" "idle" \
-      "instrument::setwindowactivitycommand $windows"
+    server::newactivitycommand "setting" "idle" "instrument::setwindowactivitycommand $windows"
   }
-  
+
   proc setbinning {args} {
     server::checkstatus
     server::checkactivity "idle"
@@ -792,10 +781,9 @@ namespace eval "instrument" {
     if {[llength $binnings] != [llength $detectors]} {
       error "incorrect number of binnings."
     }
-    server::newactivitycommand "setting" "idle" \
-      "instrument::setbinningactivitycommand $binnings"
+    server::newactivitycommand "setting" "idle" "instrument::setbinningactivitycommand $binnings"
   }
-  
+
   proc movefocuser {args} {
     server::checkstatus
     server::checkactivity "idle"
@@ -807,10 +795,9 @@ namespace eval "instrument" {
     if {[llength $positions] != [llength $detectors]} {
       error "incorrect number of positions."
     }
-    server::newactivitycommand "moving" "idle" \
-      "instrument::movefocuseractivitycommand $positions"
+    server::newactivitycommand "moving" "idle" "instrument::movefocuseractivitycommand $positions"
   }
-  
+
   proc setfocuser {args} {
     server::checkstatus
     server::checkactivity "idle"
@@ -822,10 +809,9 @@ namespace eval "instrument" {
     if {[llength $positions] != [llength $detectors]} {
       error "incorrect number of positions."
     }
-    server::newactivitycommand "setting" "idle" \
-      "instrument::setfocuseractivitycommand $positions"
+    server::newactivitycommand "setting" "idle" "instrument::setfocuseractivitycommand $positions"
   }
-  
+
   proc movefilterwheel {args} {
     server::checkstatus
     server::checkactivity "idle"
@@ -837,15 +823,14 @@ namespace eval "instrument" {
     if {[llength $positions] != [llength $detectors]} {
       error "incorrect number of positions."
     }
-    server::newactivitycommand "moving" "idle" \
-      "instrument::movefilterwheelactivitycommand $positions"
+    server::newactivitycommand "moving" "idle" "instrument::movefilterwheelactivitycommand $positions"
   }
-  
+
   proc expose {type args} {
     set fitsfileprefix [file join [directories::vartoday] "instrument" "images"]
     eval exposefull $type $fitsfileprefix "now" $args
   }
-  
+
   proc exposefull {type fitsfiledir starttime args} {
     server::checkstatus
     server::checkactivity "idle"
@@ -859,19 +844,19 @@ namespace eval "instrument" {
     }
     foreach exposuretime $exposuretimes {
       if {
-        ![string equal $exposuretime "none"] &&
-        !([string is double -strict $exposuretime] && $exposuretime >= 0)
+        ![string equal $exposuretime "none"]
+        && !([string is double -strict $exposuretime] && $exposuretime >= 0)
       } {
         error "invalid exposure time \"$exposuretime\"."
       }
     }
     if {
-      ![string equal $type "object"] &&
-      ![string equal $type "astrometry"] &&
-      ![string equal $type "focus"] &&
-      ![string equal $type "flat"] &&
-      ![string equal $type "dark"] &&
-      ![string equal $type "bias"]
+      ![string equal $type "object"]
+      && ![string equal $type "astrometry"]
+      && ![string equal $type "focus"]
+      && ![string equal $type "flat"]
+      && ![string equal $type "dark"]
+      && ![string equal $type "bias"]
     } {
       error "invalid exposure type \"$type\"."
     }
@@ -889,10 +874,9 @@ namespace eval "instrument" {
     set dateandtime [utcclock::combinedformat now 0 false]
     set fitsfileprefix "$fitsfiledir/$dateandtime"
     server::newactivitycommand "exposing" "idle" \
-      "instrument::exposeactivitycommand $type $fitsfileprefix $starttime $exposuretimes" \
-      $timeoutmilliseconds
+      "instrument::exposeactivitycommand $type $fitsfileprefix $starttime $exposuretimes" $timeoutmilliseconds
   }
-  
+
   proc analyze {args} {
     server::checkstatus
     server::checkactivity "idle"
@@ -906,20 +890,19 @@ namespace eval "instrument" {
     }
     foreach type $types {
       if {
-        ![string equal $type "none"] &&
-        ![string equal $type "levels"] &&
-        ![string equal $type "fwhm"] &&
-        ![string equal $type "fwhmwitness"] &&
-        ![string equal $type "center"] &&
-        ![string equal $type "astrometry"]
+        ![string equal $type "none"]
+        && ![string equal $type "levels"]
+        && ![string equal $type "fwhm"]
+        && ![string equal $type "fwhmwitness"]
+        && ![string equal $type "center"]
+        && ![string equal $type "astrometry"]
       } {
         error "invalid  type \"$type\"."
       }
     }
-    server::newactivitycommand "analyzing" "idle" \
-      "instrument::analyzeactivitycommand $types" \
+    server::newactivitycommand "analyzing" "idle" "instrument::analyzeactivitycommand $types"
   }
-  
+
   proc focus {fitsfiledir range step witness initial args} {
     server::checkstatus
     server::checkactivity "idle"
@@ -934,7 +917,7 @@ namespace eval "instrument" {
     server::newactivitycommand "focusing" "idle" \
       "instrument::focusactivitycommand $fitsfiledir $range $step $witness $initial $exposuretimes" false
   }
-  
+
   proc mapfocus {fitsfileprefix range step args} {
     server::checkstatus
     server::checkactivity "idle"
@@ -949,9 +932,8 @@ namespace eval "instrument" {
     server::newactivitycommand "mappingfocus" "idle" \
       "instrument::mapfocusactivitycommand $fitsfileprefix $range $step $exposuretimes" false
   }
-  
-  ######################################################################
 
+  ######################################################################
   set server::datalifeseconds 0
 
   proc start {} {
@@ -971,5 +953,4 @@ namespace eval "instrument" {
     server::setstatus "ok"
     log::info [format "finished starting after %.1f seconds." [utcclock::diff now $start]]
   }
-
 }

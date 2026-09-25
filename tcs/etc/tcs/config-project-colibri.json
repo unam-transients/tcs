@@ -540,7 +540,8 @@
     "pointingdetectors": [
       "C3"
     ],
-    "outletgroups": [ ]
+    "outletgroups": [ ],
+    "rebootinstrumenttorecover": true
   },
   "lights": {
     "type": "plc"
