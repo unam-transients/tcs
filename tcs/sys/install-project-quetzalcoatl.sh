@@ -176,7 +176,11 @@ EOF
     ;;
   esac
   
-  echo "service rsync start"
+  # On Ubuntu 24.04 LTS, when rsync is launched by systemd, it does not seem to
+  # be able to delete files. This is needed so that remote halts, reboots, and
+  # restarts can work. This problem does not appear if it is launched directly.
+  sudo systemctl disable rsync
+  echo "/usr/bin/rsync --daemon"
 
 echo "tcs loop -d 600 'rsync -aH --exclude=\"*.tmp\" --exclude=\"*.jpg\" --exclude=\"*.fits\" --exclude=\"*.fits.*\" /usr/local/var/tcs/ rsync://oan-rsync/quetzalcoatl-raw/' &"
 echo "tcs loop -d 60  'rsync -aH --exclude=\"*.tmp\" --exclude=\"debug*.txt\" --include=\"*.txt\" --include=\"*/\" --exclude=\"*\" /usr/local/var/tcs/ rsync://oan-rsync/quetzalcoatl-raw/' &"
@@ -227,8 +231,8 @@ sudo mv /etc/owfs.conf.tmp /etc/owfs.conf
 sudo cp /dev/stdin <<"EOF" /etc/rsyncd.conf.tmp
 uid = nobody
 gid = nogroup
-use chroot = yes
-read only = yes
+use chroot = true
+read only = true
 [ow]
         path = /var/ow/
         read only = true
@@ -250,7 +254,7 @@ sudo mv /etc/rsyncd.conf.tmp /etc/rsyncd.conf
 if test -f /etc/default/rsync
 then
   sudo cp /dev/stdin <<"EOF" /etc/default/rsync.tmp
-RSYNC_ENABLE=true
+RSYNC_ENABLE=false
 RSYNC_OPTS=''
 RSYNC_NICE=''
 EOF
