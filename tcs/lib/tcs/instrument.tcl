@@ -157,12 +157,23 @@ namespace eval "instrument" {
     variable activedetectors
     variable rebootinstrumenttorecover
     if {$rebootinstrumenttorecover} {
-      global instrumentname
-      log::warning "rebooting $instrumentname."
-      exec tcs rebootinstrument $instrumentname &
-      coroutine::after 1000
-      log::info "waiting for $instrumentname to reboot."
-      coroutine::after 120000
+      set mustreboot false
+      foreach detector $activedetectors {
+        if {
+          [catch {client::update $detector}]
+          || [client::getdata $detector "timedout"]
+        } {
+          set mustreboot true
+        }
+      }
+      if {$mustreboot} {
+        global instrumentname
+        log::warning "rebooting $instrumentname."
+        exec tcs rebootinstrument $instrumentname &
+        coroutine::after 1000
+        log::info "waiting for $instrumentname to reboot."
+        coroutine::after 120000
+      }
     }
     variable restartdetectorstorecover
     if {$restartdetectorstorecover} {
