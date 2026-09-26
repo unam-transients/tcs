@@ -66,15 +66,15 @@ ddoti-detectors1)
   ALLARGS=""
   ;;
 colibri-control)
-  allargs="supervisor watchdog selector executor telescope lights louvers fans mount secondary covers dome telescopecontroller sun moon target weather plc power seeing sensors gcn svom html"
+  allargs="supervisor watchdog selector executor ddrago tequila telescope lights louvers fans mount secondary covers dome telescopecontroller sun moon target weather plc power seeing sensors gcn svom html"
   ALLARGS="gcntan"
   ;;
 colibri-ddrago)
-  allargs="ddrago C2 C1"
+  allargs="C2 C1"
   ALLARGS=""
   ;;
 colibri-tequila)
-  allargs="tequila C3"
+  allargs="C3"
   ALLARGS=""
   ;;
 *)
