@@ -170,10 +170,9 @@ namespace eval "watchdog" {
   set server::datalifeseconds 120
 
   proc start {} {
-    coroutine::after 10000
     server::setrequestedactivity "idle"
     server::setactivity "idle"
     server::setstatus "ok"
-    coroutine::every 30000 watchdog::monitorservers
+    coroutine::afterandevery 30000 watchdog::monitorservers
   }
 }
