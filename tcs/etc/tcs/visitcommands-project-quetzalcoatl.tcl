@@ -280,7 +280,7 @@ proc focusvisit {{exposuretime 5} {filter "i"}} {
 }
 
 ########################################################################
-proc focuswitnessvisit {{exposuretime 5} {filter "i"}} {
+proc focuswitnessvisit {{exposuretime 5}} {
   log::summary "focuswitnessvisit: starting."
 
   set binning 2
@@ -293,7 +293,7 @@ proc focuswitnessvisit {{exposuretime 5} {filter "i"}} {
   executor::setwindow "default"
   executor::setbinning $binning
 
-  foreach filter {g r i z y w} {
+  foreach filter {g r i z w} {
     log::summary "focuswitnessvisit: taking images in $filter."
 
     executor::movefilterwheel $filter
