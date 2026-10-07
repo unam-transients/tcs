@@ -41,6 +41,7 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 192.168.100.28    plc                     colibri-plc
 192.168.100.29    european-ups            colibri-european-ups
 192.168.100.30    american-ups            colibri-american-ups
+192.168.100.40    seeing                  colibri-seeing
 192.168.100.44    redux                   colibri-redux
 192.168.100.45    tequila                 colibri-tequila
 192.168.100.46    nas                     colibri-nas
