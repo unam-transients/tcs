@@ -28,7 +28,7 @@
   //  "altitude": "2280.0",
   //  "civiltimezone": "America/Mexico_City"
   //},
-  
+
   "site": {
     "longitude": "+5.712393d",
     "latitude": "+43.932081d",
@@ -63,37 +63,37 @@
   },
 
   "power": {
-    "hosts": {},
-    "outletgroupaddresses": {}
+    "hosts": { },
+    "outletgroupaddresses": { }
   },
 
   "supervisor": {
     "internalhumiditysensor": ""
   },
 
-  "selector": {},
+  "selector": { },
 
   "gcntan": {
     "serverpacketport": "5351",
-    "swiftalertprojectidentifier"   : "1001",
-    "fermialertprojectidentifier"   : "1002",
-    "lvcalertprojectidentifier"     : "1003",
-    "hawcalertprojectidentifier"    : "1004",
-    "icecubealertprojectidentifier" : "1005",
-    "swiftbasepriority"             : "5",
-    "fermilatpriority"              : "5",
-    "fermisgrbpriority"             : "6",
-    "fermibasepriority"             : "10",
-    "lvcbasepriority"               : "10",
-    "hawcbasepriority"              : "10",
-    "icecubebasepriority"           : "10"
+    "swiftalertprojectidentifier": "1001",
+    "fermialertprojectidentifier": "1002",
+    "lvcalertprojectidentifier": "1003",
+    "hawcalertprojectidentifier": "1004",
+    "icecubealertprojectidentifier": "1005",
+    "swiftbasepriority": "5",
+    "fermilatpriority": "5",
+    "fermisgrbpriority": "6",
+    "fermibasepriority": "10",
+    "lvcbasepriority": "10",
+    "hawcbasepriority": "10",
+    "icecubebasepriority": "10"
   },
 
   "swift": {
     "pointingsource": "none"
   },
 
-  "executor": {},
+  "executor": { },
 
   "target": {
     "maxzenithdistancelimit": "75d",
@@ -146,7 +146,7 @@
     "pointingdetectors": [
       "C0"
     ],
-    "outletgroups": []
+    "outletgroups": [ ]
   },
 
   "C0": {
@@ -157,7 +157,7 @@
     "detectorunbinnedpixelscale": "0.381as",
     "detectorreadmodes": {
       "initial": "default",
-      "closed" : "default",
+      "closed": "default",
       "default": ""
     },
     "detectorboresight": "datawindowcenter",
@@ -210,29 +210,29 @@
     "filterwheelidentifier": [ "5" ],
     "filters": {
       "initial": "r",
-      "idle"   : "r",
-      "closed" : "r",
-      "g"      : "0",
-      "r"      : "1",
-      "i"      : "2",
-      "gri"    : "3",
-      "B"      : "4"
+      "idle": "r",
+      "closed": "r",
+      "g": "0",
+      "r": "1",
+      "i": "2",
+      "gri": "3",
+      "B": "4"
     },
 
     "focusertype": "null",
     "focuseridentifier": "null",
     "focuserinitialposition": 0,
     "focuserbacklashoffset": 0,
-    "focuserdzmodel": {},
+    "focuserdzmodel": { },
 
-    "pointingmodelparameters": {},
+    "pointingmodelparameters": { },
     "isstandalone": false,
     "fitsfwhmargs": {
       "1": "-m",
       "2": "-A",
       "4": "-A"
     }
-    
+
   },
 
   "C1": {
@@ -243,7 +243,7 @@
     "detectorunbinnedpixelscale": "0.381as",
     "detectorreadmodes": {
       "initial": "default",
-      "closed" : "default",
+      "closed": "default",
       "default": ""
     },
     "detectorboresight": "datawindowcenter",
@@ -295,29 +295,29 @@
     "filterwheelidentifier": [ "5" ],
     "filters": {
       "initial": "z",
-      "idle"   : "z",
-      "closed" : "z",
-      "z"      : "0",
-      "y"      : "1",
-      "zy"     : "2"
+      "idle": "z",
+      "closed": "z",
+      "z": "0",
+      "y": "1",
+      "zy": "2"
     },
 
     "focusertype": "null",
     "focuseridentifier": "null",
     "focuserinitialposition": 0,
     "focuserbacklashoffset": 0,
-    "focuserdzmodel": {},
+    "focuserdzmodel": { },
 
-    "pointingmodelparameters": {},
+    "pointingmodelparameters": { },
     "isstandalone": false,
     "fitsfwhmargs": {
       "1": "-m",
       "2": "-A",
       "4": "-A"
     }
-    
+
   },
-  
+
   "mount": {
     "maxcorrection": "10am"
   },
@@ -329,13 +329,13 @@
   "selector": {
     "priorities": {
       "*-*-electromagnetic/gravitational/*": 2,
-      "*-*-electromagnetic/*/neutrino"     : 2,
-      "*-*-*/gravitational/neutrino"       : 2,
-      "lvc*-*"          : 4,
-      "fermilat*-*"     : 5,
-      "fermigbm*-sgrb"  : 6,
-      "svom*-*"         : 7,
-      "swift*-*"        : 8
+      "*-*-electromagnetic/*/neutrino": 2,
+      "*-*-*/gravitational/neutrino": 2,
+      "lvc*-*": 4,
+      "fermilat*-*": 5,
+      "fermigbm*-sgrb": 6,
+      "svom*-*": 7,
+      "swift*-*": 8
     }
   },
 
