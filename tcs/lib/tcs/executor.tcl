@@ -517,7 +517,7 @@ namespace eval "executor" {
       error "invalid instrument \"$newinstrument\"."
     }
 
-    recoverifnecessary
+    recover
     foreach server [list telescope $instrument] {
       client::request $server "stop"
     }
@@ -533,7 +533,7 @@ namespace eval "executor" {
     set detectors [config::getvalue $instrument "detectors"]
     set pointingdetectors [config::getvalue $instrument "pointingdetectors"]
 
-    recoverifnecessary
+    recover
     client::request telescope "setport $instrument"
     client::request $instrument "stop"
     client::wait telescope
@@ -932,17 +932,9 @@ namespace eval "executor" {
     set initialactivity [server::getactivity]
   }
 
-  proc recoverifnecessary {} {
-    variable instrument
-
-    variable initialactivity
-    if {
-      ![string equal $initialactivity "error"] &&
-      ![string equal $initialactivity "started"]
-    } {
-      log::info "recovery is not necessary."
-      return
-    }
+  proc recover {} {
+    variable instruments
+    variable recovertoopen
 
     set start [utcclock::seconds]
     log::summary "recovering."
@@ -950,33 +942,29 @@ namespace eval "executor" {
 
     if {[catch {
       set start [utcclock::seconds]
-      log::summary [format "finished resetting after %.1f seconds." [utcclock::diff now $start]]
       server::setactivity "recovering"
-      foreach server [list telescope $instrument] {
-        client::request $server "recover"
+
+      foreach server [concat telescope $instruments] {
+        if {$recovertoopen} {
+          client::request $server "recovertoopen"
+        } else {
+          client::request $server "recovertoclosed"
+        }
+      }
+      foreach server [concat telescope $instruments] {
         client::wait $server
       }
     }]} {
       error "unable to recover."
     }
 
-    log::summary [format "finished recovering after %.1f seconds." [utcclock::diff now $start]]
-
-    variable recovertoopen
-    if {$recovertoopen} {
-      set start [utcclock::seconds]
-      log::summary "opening after recovery."
-      server::setactivity "opening"
-      if {[catch {
-        foreach server [list $instrument telescope] {
-          client::request $server "open"
-          client::wait $server
-        }
-      }]} {
-        error "unable to open."
-      }
-      log::summary [format "finished opening after %.1f seconds." [utcclock::diff now $start]]
+    catch {
+      client::waituntilstarted "watchdog"
+      client::request "watchdog" "enable"
+      client::wait "watchdog"
     }
+
+    log::summary [format "finished recovering after %.1f seconds." [utcclock::diff now $start]]
 
     server::setactivity $pendingactivity
   }
@@ -1025,7 +1013,7 @@ namespace eval "executor" {
   proc executeactivitycommand {filetype filename} {
     variable instrument
 
-    recoverifnecessary
+    recover
 
     set blockstart [utcclock::seconds]
 
@@ -1097,7 +1085,7 @@ namespace eval "executor" {
       } result]} {
         log::error "while executing visit: $result"
         log::summary "aborting block."
-        recoverifnecessary
+        recover
         break
       }
       log::summary [format "finished executing visit after %.1f seconds." [utcclock::diff now $visitstart]]
@@ -1141,17 +1129,17 @@ namespace eval "executor" {
     variable instruments
     set start [utcclock::seconds]
     log::summary "recovering to closed."
-    catch { client::waituntilstarted "watchdog" }
-    client::request "watchdog" "enable"
-    client::wait "watchdog"
-    foreach instrument $instruments {
-      catch { client::waituntilstarted $instrument }
-      client::request $instrument "recover"
-      client::wait $instrument
+    foreach server [concat telescope $instruments] {
+      client::request $server "recovertoclosed"
     }
-    catch { client::waituntilstarted telescope }
-    client::request telescope "recover"
-    client::wait telescope
+    foreach server [concat telescope $instruments] {
+      client::wait $server
+    }
+    catch {
+      client::waituntilstarted "watchdog"
+      client::request "watchdog" "enable"
+      client::wait "watchdog"
+    }
     log::summary [format "finished recovering to closed after %.1f seconds." [utcclock::diff now $start]]
   }
 
@@ -1159,26 +1147,17 @@ namespace eval "executor" {
     variable instruments
     set start [utcclock::seconds]
     log::summary "recovering to open."
-    catch { client::waituntilstarted "watchdog" }
-    client::request "watchdog" "enable"
-    client::wait "watchdog"
-    foreach instrument $instruments {
-      catch { client::waituntilstarted $instrument }
-      client::request $instrument "recover"
-      client::wait $instrument
+    foreach server [concat telescope $instruments] {
+      client::request $server "recovertoopen"
     }
-    catch { client::waituntilstarted telescope }
-    client::request telescope "recover"
-    client::wait telescope
-    log::summary "opening after recovery."
-    foreach instrument $instruments {
-      catch { client::waituntilstarted $instrument }
-      client::request $instrument "open"
-      client::wait $instrument
+    foreach server [concat telescope $instruments] {
+      client::wait $server
     }
-    catch { client::waituntilstarted telescope }
-    client::request telescope "open"
-    client::wait telescope
+    catch {
+      client::waituntilstarted "watchdog"
+      client::request "watchdog" "enable"
+      client::wait "watchdog"
+    }
     log::summary [format "finished recovering to open after %.1f seconds." [utcclock::diff now $start]]
   }
 
@@ -1247,7 +1226,7 @@ namespace eval "executor" {
   proc openactivitycommand {} {
     variable recovertoopen
     set recovertoopen true
-    recoverifnecessary
+    recover
     set start [utcclock::seconds]
     log::summary "opening."
     variable instruments
@@ -1262,7 +1241,7 @@ namespace eval "executor" {
   proc opentoventilateactivitycommand {} {
     variable recovertoopen
     set recovertoopen false
-    recoverifnecessary
+    recover
     set start [utcclock::seconds]
     log::summary "opening to ventilate."
     variable instruments
@@ -1277,7 +1256,7 @@ namespace eval "executor" {
   proc closeactivitycommand {} {
     variable recovertoopen
     set recovertoopen false
-    recoverifnecessary
+    recover
     set start [utcclock::seconds]
     log::summary "closing."
     set error false
@@ -1316,7 +1295,7 @@ namespace eval "executor" {
 
   proc parkactivitycommand {} {
     variable instrument
-    recoverifnecessary
+    recover
     set start [utcclock::seconds]
     log::summary "parking."
     foreach server {telescope} {
@@ -1329,7 +1308,7 @@ namespace eval "executor" {
 
   proc unparkactivitycommand {} {
     variable instrument
-    recoverifnecessary
+    recover
     set start [utcclock::seconds]
     log::summary "unparking."
     foreach server {telescope} {
@@ -1342,7 +1321,7 @@ namespace eval "executor" {
 
   proc idleactivitycommand {} {
     variable instrument
-    recoverifnecessary
+    recover
     set start [utcclock::seconds]
     log::info "idling."
     foreach server [list telescope $instrument] {
@@ -1362,7 +1341,6 @@ namespace eval "executor" {
   proc stop {} {
     server::checkstatus
     server::checkactivityforreset
-    setinitialactivity
     server::newactivitycommand "stopping" [server::getstoppedactivity] "executor::stopactivitycommand"
   }
 
@@ -1374,56 +1352,48 @@ namespace eval "executor" {
   proc interrupt {} {
     server::checkstatus
     server::checkactivityforreset
-    setinitialactivity
     server::newactivitycommand "stopping" [server::getstoppedactivity] "executor::interruptactivitycommand"
   }
 
   proc reset {} {
     server::checkstatus
     server::checkactivityforreset
-    setinitialactivity
     server::newactivitycommand "resetting" [server::getstoppedactivity] "executor::resetactivitycommand"
   }
 
   proc recovertoopen {} {
     server::checkstatus
     server::checkactivityforreset
-    setinitialactivity
     server::newactivitycommand "recovering" "idle" "executor::recovertoopenactivitycommand" 1800e3
   }
 
   proc recovertoclosed {} {
     server::checkstatus
     server::checkactivityforreset
-    setinitialactivity
     server::newactivitycommand "recovering" "idle" "executor::recovertoclosedactivitycommand" 1800e3
   }
 
   proc initialize {} {
     server::checkstatus
     server::checkactivityforreset
-    setinitialactivity
     server::newactivitycommand "initializing" "idle" "executor::initializeactivitycommand" 1800e3
   }
 
   proc open {} {
     server::checkstatus
     server::checkactivityforreset
-    setinitialactivity
     server::newactivitycommand "opening" "idle" "executor::openactivitycommand" 900e3
   }
 
   proc opentoventilate {} {
     server::checkstatus
     server::checkactivityforreset
-    setinitialactivity
     server::newactivitycommand "opening" "idle" "executor::opentoventilateactivitycommand" 900e3
   }
 
   proc close {} {
     server::checkstatus
     server::checkactivityforreset
-    setinitialactivity
     server::newactivitycommand "closing" "idle" "executor::closeactivitycommand" 900e3
   }
 
@@ -1435,35 +1405,30 @@ namespace eval "executor" {
   proc park {} {
     server::checkstatus
     server::checkactivityforreset
-    setinitialactivity
     server::newactivitycommand "parking" "idle" "executor::parkactivitycommand" 900e3
   }
 
   proc unpark {} {
     server::checkstatus
     server::checkactivityforreset
-    setinitialactivity
     server::newactivitycommand "unparking" "idle" "executor::unparkactivitycommand" 900e3
   }
 
   proc execute {filetype filename} {
     server::checkstatus
     server::checkactivityforreset
-    setinitialactivity
     server::newactivitycommand "executing" "idle" "executor::executeactivitycommand $filetype $filename" 7200e3
   }
 
   proc executecommand {command} {
     server::checkstatus
     server::checkactivityforreset
-    setinitialactivity
     server::newactivitycommand "executing" "idle" "executor::executecommandactivitycommand \"$command\"" 7200e3
   }
 
   proc idle {} {
     server::checkstatus
     server::checkactivityforreset
-    setinitialactivity
     server::newactivitycommand "executing" "idle" "executor::idleactivitycommand"
   }
 

@@ -151,7 +151,7 @@ namespace eval "instrument" {
     log::info [format "finished resetting after %.1f seconds." [utcclock::diff now $start]]
   }
 
-  proc recoveractivitycommand {} {
+  proc recoveractivitycommand {toopen} {
     set start [utcclock::seconds]
     log::info "recovering."
     variable activedetectors
@@ -206,6 +206,9 @@ namespace eval "instrument" {
     }
     if {$mustinitialize} {
       initializeactivitycommand
+      if {$toopen} {
+        openactivitycommand
+      }
     }
     log::info [format "finished recovering after %.1f seconds." [utcclock::diff now $start]]
   }
@@ -247,7 +250,7 @@ namespace eval "instrument" {
   proc emergencycloseactivitycommand {} {
     set start [utcclock::seconds]
     log::info "emergency closing."
-    catch { recoveractivitycommand }
+    catch { recoveractivitycommand false }
     catch { closeactivitycommand }
     log::info [format "finished emergency closing after %.1f seconds." [utcclock::diff now $start]]
   }
@@ -741,10 +744,16 @@ namespace eval "instrument" {
     server::newactivitycommand "resetting" [server::getstoppedactivity] "instrument::resetactivitycommand"
   }
 
-  proc recover {} {
+  proc recovertoopen {} {
     server::checkstatus
     server::checkactivityforreset
-    server::newactivitycommand "recovering" "idle" "instrument::recoveractivitycommand"
+    server::newactivitycommand "recovering" "idle" "instrument::recoveractivitycommand true"
+  }
+
+  proc recovertoclosed {} {
+    server::checkstatus
+    server::checkactivityforreset
+    server::newactivitycommand "recovering" "idle" "instrument::recoveractivitycommand false"
   }
 
   proc idle {} {

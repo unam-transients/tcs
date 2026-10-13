@@ -1,9 +1,6 @@
 ########################################################################
-
 # This file is part of the RATTEL instrument control system.
-
 ########################################################################
-
 # Copyright © 2014, 2016, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
@@ -18,9 +15,7 @@
 # PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 # TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
-
 ########################################################################
-
 package require "instrument"
 package require "log"
 package require "server"
@@ -28,9 +23,7 @@ package require "server"
 package provide "instrumentserver" 0.0
 
 namespace eval "instrumentserver" {
-
   ######################################################################
-
   proc slaveinitialize {} {
     instrument::initialize
     return
@@ -65,9 +58,14 @@ namespace eval "instrumentserver" {
     instrument::reset
     return
   }
-  
-  proc slaverecover {} {
-    instrument::recover
+
+  proc slaverecovertoopen {} {
+    instrument::recovertoopen
+    return
+  }
+
+  proc slaverecovertoclosed {} {
+    instrument::recovertoclosed
     return
   }
 
@@ -75,91 +73,89 @@ namespace eval "instrumentserver" {
     instrument::idle
     return
   }
-  
+
   proc slaveexpose {type args} {
     eval instrument::expose $type $args
   }
-  
+
   proc slaveexposefull {type fitsfiledir starttime args} {
     eval instrument::exposefull $type $fitsfiledir $starttime $args
   }
-  
+
   proc slaveanalyze {args} {
     eval instrument::analyze $args
   }
-  
+
   proc slavesetreadmode {args} {
     eval instrument::setreadmode $args
     return
   }
-  
+
   proc slavesetwindow {args} {
     eval instrument::setwindow $args
     return
   }
-  
+
   proc slavesetbinning {args} {
     eval instrument::setbinning $args
     return
   }
-  
+
   proc slavemovefocuser {args} {
     eval instrument::movefocuser $args
     return
   }
-  
+
   proc slavesetfocuser {args} {
     eval instrument::setfocuser $args
     return
   }
-  
+
   proc slavemovefilterwheel {args} {
     eval instrument::movefilterwheel $args
     return
   }
-  
+
   proc slavefocus {fitsfileprefix range step witness initial args} {
     eval instrument::focus $fitsfileprefix $range $step $witness $initial $args
     return
   }
-  
+
   proc slavemapfocus {fitsfileprefix range step args} {
     eval instrument::mapfocus $fitsfileprefix $range $step $args
     return
   }
-  
+
   proc configureslave {slave} {
-    interp alias $slave initialize           {} instrumentserver::slaveinitialize
-    interp alias $slave open                 {} instrumentserver::slaveopen
-    interp alias $slave opentoventilate      {} instrumentserver::slaveopentoventilate
-    interp alias $slave close                {} instrumentserver::slaveclose
-    interp alias $slave emergencyclose       {} instrumentserver::slaveemergencyclose
-    interp alias $slave stop                 {} instrumentserver::slavestop
-    interp alias $slave reset                {} instrumentserver::slavereset
-    interp alias $slave recover              {} instrumentserver::slaverecover 
-    interp alias $slave idle                 {} instrumentserver::slaveidle
-    interp alias $slave movefilterwheel      {} instrumentserver::slavemovefilterwheel
-    interp alias $slave expose               {} instrumentserver::slaveexpose
-    interp alias $slave exposefull           {} instrumentserver::slaveexposefull
-    interp alias $slave analyze              {} instrumentserver::slaveanalyze
-    interp alias $slave setreadmode          {} instrumentserver::slavesetreadmode
-    interp alias $slave setwindow            {} instrumentserver::slavesetwindow
-    interp alias $slave setbinning           {} instrumentserver::slavesetbinning
-    interp alias $slave movefocuser          {} instrumentserver::slavemovefocuser
-    interp alias $slave setfocuser           {} instrumentserver::slavesetfocuser
-    interp alias $slave movefilterwheel      {} instrumentserver::slavemovefilterwheel
-    interp alias $slave focus                {} instrumentserver::slavefocus
-    interp alias $slave mapfocus             {} instrumentserver::slavemapfocus
+    interp alias $slave initialize {} instrumentserver::slaveinitialize
+    interp alias $slave open {} instrumentserver::slaveopen
+    interp alias $slave opentoventilate {} instrumentserver::slaveopentoventilate
+    interp alias $slave close {} instrumentserver::slaveclose
+    interp alias $slave emergencyclose {} instrumentserver::slaveemergencyclose
+    interp alias $slave stop {} instrumentserver::slavestop
+    interp alias $slave reset {} instrumentserver::slavereset
+    interp alias $slave recovertoopen {} instrumentserver::slaverecovertoopen
+    interp alias $slave recovertoclosed {} instrumentserver::slaverecovertoclosed
+    interp alias $slave idle {} instrumentserver::slaveidle
+    interp alias $slave movefilterwheel {} instrumentserver::slavemovefilterwheel
+    interp alias $slave expose {} instrumentserver::slaveexpose
+    interp alias $slave exposefull {} instrumentserver::slaveexposefull
+    interp alias $slave analyze {} instrumentserver::slaveanalyze
+    interp alias $slave setreadmode {} instrumentserver::slavesetreadmode
+    interp alias $slave setwindow {} instrumentserver::slavesetwindow
+    interp alias $slave setbinning {} instrumentserver::slavesetbinning
+    interp alias $slave movefocuser {} instrumentserver::slavemovefocuser
+    interp alias $slave setfocuser {} instrumentserver::slavesetfocuser
+    interp alias $slave movefilterwheel {} instrumentserver::slavemovefilterwheel
+    interp alias $slave focus {} instrumentserver::slavefocus
+    interp alias $slave mapfocus {} instrumentserver::slavemapfocus
   }
 
   ######################################################################
-
   proc start {} {
     global instrumentname
     instrument::start
     server::listen $instrumentname instrumentserver::configureslave
   }
-
   ######################################################################
-
 }

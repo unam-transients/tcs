@@ -22,7 +22,7 @@ package provide "telescopequetzalcoatl" 0.0
 
 namespace eval "telescope" {
   ######################################################################
-  variable identifier "coatli"
+  variable identifier "quetzalcoatl"
 
   ######################################################################
   variable mechanisms { mount enclosure secondary }

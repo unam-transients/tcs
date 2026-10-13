@@ -1,9 +1,6 @@
 ########################################################################
-
 # This file is part of the UNAM telescope control system.
-
 ########################################################################
-
 # Copyright © 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2019 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
@@ -18,9 +15,7 @@
 # PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 # TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
-
 ########################################################################
-
 package require "config"
 package require "log"
 package require "server"
@@ -30,9 +25,7 @@ package require "telescope[config::getvalue "telescope" "type"]"
 package provide "telescopeserver" 0.0
 
 namespace eval "telescopeserver" {
-
   ######################################################################
-
   proc slavestartup {} {
     telescope::startup
   }
@@ -45,18 +38,22 @@ namespace eval "telescopeserver" {
     telescope::reset
   }
 
-  proc slaverecover {} {
-    telescope::recover
+  proc slaverecovertoopen {} {
+    telescope::recovertoopen
+  }
+
+  proc slaverecovertoclosed {} {
+    telescope::recovertoclosed
   }
 
   proc slavestop {} {
     telescope::stop
   }
-  
+
   proc slaveemergencystop {} {
     telescope::emergencystop
   }
-  
+
   proc slaveinitialize {} {
     telescope::initialize
   }
@@ -80,31 +77,33 @@ namespace eval "telescopeserver" {
   proc slavemove {coordinate0 coordinate1 {system "equatorial"}} {
     telescope::move $coordinate0 $coordinate1 $system
   }
-  
+
   proc slavemovetoidle {} {
     telescope::movetoidle
   }
-  
+
   proc slavemovetozenith {} {
     telescope::movetozenith
   }
-  
+
   proc slavemoveawayfromsun {} {
     telescope::moveawayfromsun
   }
-  
+
   proc slavepark {} {
     telescope::park
   }
-  
+
   proc slaveunpark {} {
     telescope::unpark
   }
-  
-  proc slavetrack {alpha delta equinox {alphaoffset 0} {deltaoffset 0} {epoch "now"} {alpharate 0} {deltarate 0} {aperture "default"}} {
+
+  proc slavetrack \
+    {alpha delta equinox {alphaoffset 0} {deltaoffset 0} {epoch "now"} {alpharate 0} {deltarate 0} {aperture "default"}} \
+    {
     telescope::track $alpha $delta $equinox $alphaoffset $deltaoffset $epoch $alpharate $deltarate $aperture
   }
-  
+
   proc slavetrackcatalogobject {catalogname objectname {aperture "default"}} {
     telescope::trackcatalogobject $catalogname $objectname $aperture
   }
@@ -112,11 +111,11 @@ namespace eval "telescopeserver" {
   proc slavetracktopocentric {ha delta {aperture "default"}} {
     telescope::tracktopocentric $ha $delta $aperture
   }
-  
+
   proc slaveoffset {{alphaoffset 0} {deltaoffset 0} {aperture "default"}} {
     telescope::offset $alphaoffset $deltaoffset $aperture
   }
-  
+
   proc slavesetpointingaperture {aperture} {
     telescope::setpointingaperture $aperture
   }
@@ -128,11 +127,11 @@ namespace eval "telescopeserver" {
   proc slaveaddtopointingmodel {{truemountalpha ""} {truemountdelta ""} {equinox ""}} {
     telescope::addtopointingmodel $truemountalpha $truemountdelta $equinox
   }
-  
+
   proc slavemovesecondary {{z0 "z0"} {setasinitial false}} {
     telescope::movesecondary $z0 $setasinitial
   }
-  
+
   proc slavesetsecondaryoffset {dz} {
     telescope::setsecondaryoffset $dz
   }
@@ -144,49 +143,44 @@ namespace eval "telescopeserver" {
   proc slavesetpupiltracking {value} {
     telescope::setpupiltracking $value
   }
-  
+
   ######################################################################
-
   proc configureslave {slave} {
-
-    interp alias $slave startup                     {} telescopeserver::slavestartup
-    interp alias $slave shutdown                    {} telescopeserver::slaveshutdown
-    interp alias $slave reset                       {} telescopeserver::slavereset
-    interp alias $slave recover                     {} telescopeserver::slaverecover
-    interp alias $slave stop                        {} telescopeserver::slavestop
-    interp alias $slave initialize                  {} telescopeserver::slaveinitialize
-    interp alias $slave open                        {} telescopeserver::slaveopen
-    interp alias $slave opentoventilate             {} telescopeserver::slaveopentoventilate
-    interp alias $slave close                       {} telescopeserver::slaveclose
-    interp alias $slave emergencyclose              {} telescopeserver::slaveemergencyclose
-    interp alias $slave move                        {} telescopeserver::slavemove
-    interp alias $slave movetoidle                  {} telescopeserver::slavemovetoidle
-    interp alias $slave movetozenith                {} telescopeserver::slavemovetozenith
-    interp alias $slave moveawayfromsun             {} telescopeserver::slavemoveawayfromsun
-    interp alias $slave park                        {} telescopeserver::slavepark
-    interp alias $slave unpark                      {} telescopeserver::slaveunpark
-    interp alias $slave track                       {} telescopeserver::slavetrack
-    interp alias $slave trackcatalogobject          {} telescopeserver::slavetrackcatalogobject
-    interp alias $slave tracktopocentric            {} telescopeserver::slavetracktopocentric
-    interp alias $slave offset                      {} telescopeserver::slaveoffset
-    interp alias $slave setpointingaperture         {} telescopeserver::slavesetpointingaperture
-    interp alias $slave correct                     {} telescopeserver::slavecorrect
-    interp alias $slave addtopointingmodel          {} telescopeserver::slaveaddtopointingmodel
-    interp alias $slave movesecondary               {} telescopeserver::slavemovesecondary
-    interp alias $slave setsecondaryoffset          {} telescopeserver::slavesetsecondaryoffset
-    interp alias $slave emergencystop               {} telescopeserver::slaveemergencystop
-    interp alias $slave setport                     {} telescopeserver::slavesetport
-    interp alias $slave setpupiltracking            {} telescopeserver::slavesetpupiltracking
-
+    interp alias $slave startup {} telescopeserver::slavestartup
+    interp alias $slave shutdown {} telescopeserver::slaveshutdown
+    interp alias $slave reset {} telescopeserver::slavereset
+    interp alias $slave recovertoopen {} telescopeserver::slaverecovertoopen
+    interp alias $slave recovertoclosed {} telescopeserver::slaverecovertoclosed
+    interp alias $slave stop {} telescopeserver::slavestop
+    interp alias $slave initialize {} telescopeserver::slaveinitialize
+    interp alias $slave open {} telescopeserver::slaveopen
+    interp alias $slave opentoventilate {} telescopeserver::slaveopentoventilate
+    interp alias $slave close {} telescopeserver::slaveclose
+    interp alias $slave emergencyclose {} telescopeserver::slaveemergencyclose
+    interp alias $slave move {} telescopeserver::slavemove
+    interp alias $slave movetoidle {} telescopeserver::slavemovetoidle
+    interp alias $slave movetozenith {} telescopeserver::slavemovetozenith
+    interp alias $slave moveawayfromsun {} telescopeserver::slavemoveawayfromsun
+    interp alias $slave park {} telescopeserver::slavepark
+    interp alias $slave unpark {} telescopeserver::slaveunpark
+    interp alias $slave track {} telescopeserver::slavetrack
+    interp alias $slave trackcatalogobject {} telescopeserver::slavetrackcatalogobject
+    interp alias $slave tracktopocentric {} telescopeserver::slavetracktopocentric
+    interp alias $slave offset {} telescopeserver::slaveoffset
+    interp alias $slave setpointingaperture {} telescopeserver::slavesetpointingaperture
+    interp alias $slave correct {} telescopeserver::slavecorrect
+    interp alias $slave addtopointingmodel {} telescopeserver::slaveaddtopointingmodel
+    interp alias $slave movesecondary {} telescopeserver::slavemovesecondary
+    interp alias $slave setsecondaryoffset {} telescopeserver::slavesetsecondaryoffset
+    interp alias $slave emergencystop {} telescopeserver::slaveemergencystop
+    interp alias $slave setport {} telescopeserver::slavesetport
+    interp alias $slave setpupiltracking {} telescopeserver::slavesetpupiltracking
   }
 
   ######################################################################
-
   proc start {} {
     telescope::start
     server::listen telescope telescopeserver::configureslave
   }
-
   ######################################################################
-
 }
