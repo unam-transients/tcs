@@ -37,6 +37,9 @@ switch -exact $executortype {
   "ddoti" {
     package require "executorddoti"
   }
+  "test" {
+    # There is no additional package.
+  }
   default {
     error "invalid executor type \"$executortype\"."
   }
