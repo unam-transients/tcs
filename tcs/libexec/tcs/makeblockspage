@@ -8,9 +8,9 @@ import re
 import platform
 import glob
 
-if platform.node().startswith("coatli"):
-    project = "coatli"
-    projectname = "COATLI"
+if platform.node().startswith("quetzalcoatl"):
+    project = "quetzalcoatl"
+    projectname = "Quetzalcoatl"
 elif platform.node().startswith("colibri"):
     project = "colibri"
     projectname = "COLIBRÍ"
@@ -41,9 +41,9 @@ def formattimestamp(timestamp):
     timestamp = re.sub(r"\.[0-9]*$", "", timestamp)
     return timestamp
 
+
 def writeprolog():
-    writehtml(
-        """
+    writehtml("""
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
@@ -66,12 +66,9 @@ def writeprolog():
 
 <div id="body">
 <table class="blockstable">
-"""
-        % (projectname, projectname)
-    )
+""" % (projectname, projectname))
 
-    writehtml(
-        """
+    writehtml("""
 
 <p>
 <a href="/index.html">Home</a> |
@@ -79,8 +76,7 @@ def writeprolog():
 </p>
 
 <hr/>
-"""
-    )
+""")
 
     writehtml("<tr>")
     for text in [
@@ -110,11 +106,14 @@ def writeepilog():
 
     </html>
     """
-        % datetime.now(timezone.utc).replace(tzinfo=None).isoformat(" ", timespec="seconds")
+        % datetime.now(timezone.utc)
+        .replace(tzinfo=None)
+        .isoformat(" ", timespec="seconds")
     )
 
+
 def writeblock(path, data):
-    writehtml('<tr>')
+    writehtml("<tr>")
     for key in [
         "projectidentifier",
         "blockidentifier",
@@ -134,10 +133,11 @@ def writeblock(path, data):
         elif key == "blockname":
             s = data["name"]
         if key == "projectname" or key == "blockname":
-          if not s[0].isupper():
-            s = s.capitalize()
+            if not s[0].isupper():
+                s = s.capitalize()
         writehtml('<td class="blockstable">%s</td>' % s)
-    writehtml('</tr>')
+    writehtml("</tr>")
+
 
 writeprolog()
 

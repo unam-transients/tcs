@@ -11,18 +11,15 @@ import urllib.parse
 
 import astropy.coordinates
 
-if platform.node().startswith("coatli"):
-    project = "coatli"
-    projectname = "COATLI"
+if platform.node().startswith("quetzalcoatl"):
+    project = "quetzalcoatl"
+    projectname = "Quetzalcóatl"
 elif platform.node().startswith("colibri"):
     project = "colibri"
     projectname = "COLIBRÍ"
 elif platform.node().startswith("ddoti"):
     project = "ddoti"
     projectname = "DDOTI"
-elif platform.node().startswith("quetzalcoatl"):
-    project = "quetzalcoatl"
-    projectname = "Quetzalcóatl"
 else:
     raise RuntimeError("unknown project.")
 

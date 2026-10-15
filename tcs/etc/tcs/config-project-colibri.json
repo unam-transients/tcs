@@ -451,7 +451,6 @@
   "html": {
     "servers": [
       "C1",
-      "C2",
       "C3",
       "covers",
       "dome",
@@ -506,12 +505,10 @@
       "C2"
     ],
     "monitoreddetectors": [
-      "C1",
-      "C2"
+      "C1"
     ],
     "activedetectors": [
-      "C1",
-      "C2"
+      "C1"
     ],
     "activefocusers": [ ],
     "idlefilterwheelpositions": [
@@ -2219,7 +2216,6 @@
   "watchdog": {
     "monitoredservers": [
       "C1",
-      "C2",
       "C3",
       "covers",
       "dome",
