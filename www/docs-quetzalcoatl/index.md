@@ -8,7 +8,6 @@ This is the mountain-top web-site for the Quetzalcóatl telescope at the [OAN/SP
 * Observations
     * [Weather Forecast](https://www.meteoblue.com/en/weather/forecast/meteogramweb/parque-nacional-san-pedro-m%c3%a1rtir_mexico_3983083)
 * Queues
-    * [Alert Queue](/tcs/alerts.html)
     * [Block Queue](/tcs/blocks.html)
 * [Documentation](documentation.html)
 * Data

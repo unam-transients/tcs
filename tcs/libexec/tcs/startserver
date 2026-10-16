@@ -39,8 +39,8 @@ usageerror () {
 host=$(uname -n | sed 's/\..*//' | tr '[A-Z]' '[a-z]')
 case "$host" in
 quetzalcoatl-control)
-  allargs="watchdog html 1 gcn weather sensors power 1 target 1 moon sun 1 secondary enclosure mount 1 telescope instrument 1 executor selector supervisor"
-  ALLARGS="gcntan"
+  allargs="watchdog html 1 weather sensors power 1 target 1 moon sun 1 secondary enclosure mount 1 telescope instrument 1 executor selector supervisor"
+  ALLARGS=""
   ;;
 quetzalcoatl-instrument)
   allargs="C0"

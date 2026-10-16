@@ -118,9 +118,6 @@
       "weather"
     ]
   },
-  "gcntan": {
-    "serverpacketport": "5349"
-  },
   "heater": {
     "type": "gpio",
     "gpio": "26"
@@ -130,8 +127,6 @@
       "C0",
       "enclosure",
       "executor",
-      "gcn",
-      "gcntan",
       "heater",
       "instrument",
       "lights",
@@ -624,8 +619,6 @@
     "monitoredservers": [
       "enclosure",
       "executor",
-      "gcn",
-      "gcntan",
       "heater",
       "instrument",
       "lights",
