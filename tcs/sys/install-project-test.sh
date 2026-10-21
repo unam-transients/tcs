@@ -60,12 +60,7 @@ EOF
   echo "#!/bin/sh"
   echo "PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
-  # The Minnowboard Turbos come up with / read-only after power cycling.
-  # Don't know why, but it causes all sorts of problems.
-  if dmesg | grep -iq minnowboard
-  then
-    echo "test -w /etc || mount -o remount,rw /"
-  fi
+  echo "tcs updatevarlatestlink"
 
   echo "tcs instrumentimageserver C0 &"
   echo "tcs instrumentimageserver C0 localhost &"
