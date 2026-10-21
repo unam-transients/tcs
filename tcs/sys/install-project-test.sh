@@ -60,8 +60,6 @@ EOF
   echo "#!/bin/sh"
   echo "PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
-  echo "tcs updatevarlatestlink"
-
   echo "tcs instrumentimageserver C0 &"
   echo "tcs instrumentimageserver C0 localhost &"
   echo "tcs instrumentimageserver C1 &"

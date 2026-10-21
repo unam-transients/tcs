@@ -127,8 +127,6 @@ EOF
 
   echo "#!/bin/sh"
   echo "PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
-
-  echo "tcs updatevarlatestlink"
   
   case $host in
   control)
