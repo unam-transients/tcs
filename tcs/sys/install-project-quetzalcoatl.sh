@@ -43,6 +43,7 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 10.0.1.5        ibb-127                 quetzalcoatl-ibb-127
 10.0.1.6        mount                   quetzalcoatl-mount
 10.0.1.7        serial                  quetzalcoatl-serial
+10.0.1.8        astelco                 quetzalcoatl-astelco
 10.0.1.9        control                 quetzalcoatl-control
 10.0.1.10       platform                quetzalcoatl-platform
 10.0.1.11       instrument              quetzalcoatl-instrument C0-host
