@@ -169,7 +169,6 @@ EOF
 
   case $host in
   ddrago)
-    echo "owserver -d /dev/ttyFTDI-ow-ddrago-close-electronics -d /dev/ttyFTDI-ow-ddrago-control-room -d /dev/ttyFTDI-ow-ogse"
     echo "tcs instrumentimageserver C0 &"
     echo "tcs instrumentimageserver C1 &"
     echo "tcs instrumentimageserver C2 &"
@@ -220,12 +219,21 @@ sudo mv /etc/rc.local.tmp /etc/rc.local
 
 # /etc/owfs
 
-sudo cp /dev/stdin <<"EOF" /etc/owfs.conf.tmp
-server: port = localhost:4304
-! server: server = localhost:4304
-EOF
-sudo chmod o=rw,go=r /etc/owfs.conf.tmp
-sudo mv /etc/owfs.conf.tmp /etc/owfs.conf
+(
+  echo "server: port = localhost:4304"
+  echo "! server: server = localhost:4304"
+  case $host in
+  ddrago)
+    echo "server: device = /dev/ttyFTDI-ow-ddrago-close-electronics"
+    echo "server: device = /dev/ttyFTDI-ow-ddrago-control-room"
+    echo "server: device = /dev/ttyFTDI-ow-ogse"
+    ;;
+  esac
+) > /tmp/owfs.conf
+sudo chmod o=rw,go=r /tmp/owfs.conf
+sudo mv /tmp/owfs.conf /etc/owfs.conf
+
+sudo systemctl enable owserver
 
 ################################################################################
 

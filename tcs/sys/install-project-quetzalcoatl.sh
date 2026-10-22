@@ -157,8 +157,6 @@ EOF
     ;;
   esac
   
-  echo "owserver -c /etc/owfs.conf"
-
   case $host in
   instrument)
     echo "tcs instrumentdataserver -f -d rsync://oan-rsync/quetzalcoatl-raw/ &"
@@ -177,6 +175,7 @@ EOF
     ;;
   esac
   
+
   # On Ubuntu 24.04 LTS, when rsync is launched by systemd, it does not seem to
   # be able to delete files. This is needed so that remote halts, reboots, and
   # restarts can work. This problem does not appear if it is launched directly.
@@ -199,31 +198,26 @@ sudo cp /dev/stdin /etc/rc.local.tmp
 sudo chmod o=rwx,go=rx /etc/rc.local.tmp
 sudo mv /etc/rc.local.tmp /etc/rc.local
 
-sudo update-rc.d owserver disable
-
 ################################################################################
 
 # /etc/owfs.conf
 
-case $host in
-control|platform)
-  sudo cp /dev/stdin <<"EOF" /etc/owfs.conf.tmp
-server: device = /dev/ttyFTDI
-server: port = localhost:4304
-! server: server = localhost:4304
-EOF
-  ;;
-*)
-  sudo cp /dev/stdin <<"EOF" /etc/owfs.conf.tmp
-server: link = /dev/ttyFTDI
-server: port = localhost:4304
-! server: server = localhost:4304
-EOF
-  ;;
-esac
-sudo chmod o=rw,go=r /etc/owfs.conf.tmp
-sudo mv /etc/owfs.conf.tmp /etc/owfs.conf
+(
+  echo "server: port = localhost:4304"
+  echo "! server: server = localhost:4304"
+  case $host in
+  control|platform)
+    echo "server: device = /dev/ttyFTDI"
+    ;;
+  *)
+    echo "server: link = /dev/ttyFTDI"
+    ;;
+  esac
+) > /tmp/owfs.conf
+sudo chmod o=rw,go=r /tmp/owfs.conf
+sudo mv /tmp/owfs.conf /etc/owfs.conf
 
+sudo systemctl enable owserver
 
 ################################################################################
 

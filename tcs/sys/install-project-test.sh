@@ -65,8 +65,6 @@ EOF
   echo "tcs instrumentimageserver C1 &"
   echo "tcs instrumentimageserver C1 localhost &"
 
-  echo "owserver -c /etc/owfs.conf"
-  
   echo "mkdir -p /usr/local/var/tcs/reboot"
   echo "mkdir -p /usr/local/var/tcs/restart"
   echo "mkdir -p /usr/local/var/tcs/halt"
@@ -89,6 +87,8 @@ server: port = localhost:4304
 EOF
 sudo chmod o=rw,go=r /etc/owfs.conf.tmp
 sudo mv /etc/owfs.conf.tmp /etc/owfs.conf
+
+sudo systemctl enable owserver
 
 ################################################################################
 
