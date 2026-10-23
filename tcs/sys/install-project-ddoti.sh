@@ -36,7 +36,7 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 # Start of tcs epilog.
 
 10.0.1.1        firewall                ddoti-firewall
-10.0.1.2        console                 ddoti-console
+10.0.1.3        host                    ddoti-host
 10.0.1.4        ibb-220                 ddoti-ibb-220
 10.0.1.5        ibb-127                 ddoti-ibb-127
 10.0.1.6        mount                   ddoti-mount

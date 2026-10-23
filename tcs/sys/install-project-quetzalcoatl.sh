@@ -38,7 +38,6 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 # Start of tcs epilog.
 
 10.0.1.1        firewall                quetzalcoatl-firewall
-10.0.1.2        console                 quetzalcoatl-console
 10.0.1.3        host                    quetzalcoatl-host
 10.0.1.4        ibb-220                 quetzalcoatl-ibb-220
 10.0.1.5        ibb-127                 quetzalcoatl-ibb-127
