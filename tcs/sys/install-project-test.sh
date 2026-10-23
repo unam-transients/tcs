@@ -179,6 +179,7 @@ fi
 
 sudo rm -f /tmp/sudoers-tcs
 (
+  echo '%sudo ALL=NOPASSWD: /usr/sbin/halt'
   echo 'test ALL=(ALL) ALL'
   echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs reboot'
   echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs restart'

@@ -308,6 +308,7 @@ fi
 
 sudo rm -f /tmp/sudoers-tcs
 (
+  echo '%sudo ALL=NOPASSWD: /usr/sbin/halt'
   echo 'ddoti ALL=(ALL) ALL'
   case $host in
   control)

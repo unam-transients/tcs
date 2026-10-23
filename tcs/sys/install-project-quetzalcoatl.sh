@@ -39,6 +39,7 @@ host=$(uname -n | sed 's/\..*//;s/.*-//')
 
 10.0.1.1        firewall                quetzalcoatl-firewall
 10.0.1.2        console                 quetzalcoatl-console
+10.0.1.3        host                    quetzalcoatl-host
 10.0.1.4        ibb-220                 quetzalcoatl-ibb-220
 10.0.1.5        ibb-127                 quetzalcoatl-ibb-127
 10.0.1.6        mount                   quetzalcoatl-mount
@@ -313,6 +314,7 @@ fi
 
 sudo rm -f /tmp/sudoers-tcs
 (
+  echo '%sudo ALL=NOPASSWD: /usr/sbin/halt'
   case $host in
   control)
     echo 'ALL ALL=(ALL) NOPASSWD: /usr/local/bin/tcs reboot'
