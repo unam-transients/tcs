@@ -244,11 +244,8 @@
       }
     },
     "outletgroupaddresses": {
-      "firewall": [ [ "ibb-127", "a", "5" ] ],
-      "access": [ [ "ibb-127", "a", "2" ] ],
-      "services": [ [ "ibb-127", "a", "6" ] ],
-      "control": [ [ "ibb-127", "a", "7" ] ],
-      "mount": [ [ "ibb-127", "a", "4" ] ],
+      "host": [ [ "ibb-127", "a", "7" ] ],
+      "mount": [ [ "ibb-127", "a", "5" ] ],
       "serial": [ [ "ibb-127", "a", "8" ] ],
       "enclosure": [ [ "ibb-220", "a", "1" ] ],
       "secondary": [ [ "ibb-220", "a", "2" ] ],
