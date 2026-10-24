@@ -1,9 +1,6 @@
 ########################################################################
-
 # This file is part of the UNAM telescope control system.
-
 ########################################################################
-
 # Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019 Alan M. Watson <alan@astro.unam.mx>
 #
 # Permission to use, copy, modify, and distribute this software for any
@@ -18,9 +15,7 @@
 # PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 # TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
-
 ########################################################################
-
 package require "astrometry"
 package require "config"
 package require "directories"
@@ -100,25 +95,23 @@ switch -exact $filterwheeltype {
 package provide "ccd" 0.0
 
 namespace eval "ccd" {
-
   ######################################################################
-
   variable identifier [config::getvalue "ccd" "identifier"]
-  
+
   config::setdefaultvalue $identifier "startoutletgroups" ""
   config::setdefaultvalue $identifier "lastcoolersetting" "off"
 
-  variable telescopedescription            [config::getvalue $identifier "telescopedescription"           ]
-  variable detectortype                    [config::getvalue $identifier "detectortype"                   ]
-  variable detectoridentifier              [config::getvalue $identifier "detectoridentifier"             ]
-  variable detectorinitialsoftwaregain     [config::getvalue $identifier "detectorinitialsoftwaregain"    ]
-  variable detectordefaultbinning          [config::getvalue $identifier "detectordefaultbinning"         ]
-  variable detectorfullunbinneddatawindow  [config::getvalue $identifier "detectorfullunbinneddatawindow" ]
-  variable detectorfullunbinnedbiaswindow  [config::getvalue $identifier "detectorfullunbinnedbiaswindow" ]
-  variable detectorwindows                 [config::getvalue $identifier "detectorwindows"                ]
-  variable detectorreadmodes               [config::getvalue $identifier "detectorreadmodes"              ]
+  variable telescopedescription [config::getvalue $identifier "telescopedescription"           ]
+  variable detectortype [config::getvalue $identifier "detectortype"                   ]
+  variable detectoridentifier [config::getvalue $identifier "detectoridentifier"             ]
+  variable detectorinitialsoftwaregain [config::getvalue $identifier "detectorinitialsoftwaregain"    ]
+  variable detectordefaultbinning [config::getvalue $identifier "detectordefaultbinning"         ]
+  variable detectorfullunbinneddatawindow [config::getvalue $identifier "detectorfullunbinneddatawindow" ]
+  variable detectorfullunbinnedbiaswindow [config::getvalue $identifier "detectorfullunbinnedbiaswindow" ]
+  variable detectorwindows [config::getvalue $identifier "detectorwindows"                ]
+  variable detectorreadmodes [config::getvalue $identifier "detectorreadmodes"              ]
 
-  variable detectorboresight               [config::getvalue $identifier "detectorboresight"              ]
+  variable detectorboresight [config::getvalue $identifier "detectorboresight"              ]
   if {[string equal $detectorboresight "datawindowcenter"]} {
     set sx [dict get $detectorfullunbinneddatawindow sx]
     set sy [dict get $detectorfullunbinneddatawindow sy]
@@ -129,79 +122,78 @@ namespace eval "ccd" {
     set detectorboresight [dict create "x" $x "y" $y]
   }
 
-  variable coolerstartsetting              [config::getvalue $identifier "coolerstartsetting"             ]
-  variable cooleropensetting               [config::getvalue $identifier "cooleropensetting"              ]
-  variable coolerclosedsetting             [config::getvalue $identifier "coolerclosedsetting"            ]
-  variable filterwheeltype                 [config::getvalue $identifier "filterwheeltype"                ]
-  variable filterwheelidentifier           [config::getvalue $identifier "filterwheelidentifier"          ]
-  variable filters                         [config::getvalue $identifier "filters"                        ]
-  variable focusertype                     [config::getvalue $identifier "focusertype"                    ]
-  variable focuseridentifier               [config::getvalue $identifier "focuseridentifier"              ]
-  variable focuserinitialposition          [config::getvalue $identifier "focuserinitialposition"         ]
-  variable focuserbacklashoffset           [config::getvalue $identifier "focuserbacklashoffset"          ]
-  variable focuserdzmodel                  [config::getvalue $identifier "focuserdzmodel"                 ]
-  variable allowedfocuserpositionerror     [config::getvalue $identifier "allowedfocuserpositionerror"    ]
-  variable isstandalone                    [config::getvalue $identifier "isstandalone"                   ]
-  variable detectorunbinnedpixelscale      [astrometry::parseangle [config::getvalue $identifier "detectorunbinnedpixelscale"]]
-  variable pointingmodelparameters         [config::getvalue $identifier "pointingmodelparameters"        ]
-  variable temperaturelimit                [config::getvalue $identifier "temperaturelimit"               ]
-  variable temperaturelimitoutletgroup     [config::getvalue $identifier "temperaturelimitoutletgroup"    ]
-  variable fitsfwhmargs                    [config::getvalue $identifier "fitsfwhmargs"                   ]
-  variable startoutletgroups               [config::getvalue $identifier "startoutletgroups"              ]
+  variable coolerstartsetting [config::getvalue $identifier "coolerstartsetting"             ]
+  variable cooleropensetting [config::getvalue $identifier "cooleropensetting"              ]
+  variable coolerclosedsetting [config::getvalue $identifier "coolerclosedsetting"            ]
+  variable filterwheeltype [config::getvalue $identifier "filterwheeltype"                ]
+  variable filterwheelidentifier [config::getvalue $identifier "filterwheelidentifier"          ]
+  variable filters [config::getvalue $identifier "filters"                        ]
+  variable focusertype [config::getvalue $identifier "focusertype"                    ]
+  variable focuseridentifier [config::getvalue $identifier "focuseridentifier"              ]
+  variable focuserinitialposition [config::getvalue $identifier "focuserinitialposition"         ]
+  variable focuserbacklashoffset [config::getvalue $identifier "focuserbacklashoffset"          ]
+  variable focuserdzmodel [config::getvalue $identifier "focuserdzmodel"                 ]
+  variable allowedfocuserpositionerror [config::getvalue $identifier "allowedfocuserpositionerror"    ]
+  variable isstandalone [config::getvalue $identifier "isstandalone"                   ]
+  variable detectorunbinnedpixelscale \
+    [astrometry::parseangle [config::getvalue $identifier "detectorunbinnedpixelscale"]]
+  variable pointingmodelparameters [config::getvalue $identifier "pointingmodelparameters"        ]
+  variable temperaturelimit [config::getvalue $identifier "temperaturelimit"               ]
+  variable temperaturelimitoutletgroup [config::getvalue $identifier "temperaturelimitoutletgroup"    ]
+  variable fitsfwhmargs [config::getvalue $identifier "fitsfwhmargs"                   ]
+  variable startoutletgroups [config::getvalue $identifier "startoutletgroups"              ]
 
   ######################################################################
-  
   set server::datalifeseconds 10
 
-  server::setdata "identifier"                        $identifier
-  server::setdata "telescopedescription"              $telescopedescription
-  server::setdata "detectortype"                      $detectortype
-  server::setdata "detectoridentifier"                $detectoridentifier
-  server::setdata "detectorwidth"                     ""  
-  server::setdata "detectorboresight"                 $detectorboresight
-  server::setdata "filterwheeltype"                   $filterwheeltype
-  server::setdata "filterwheelidentifier"             $filterwheelidentifier
-  server::setdata "focusertype"                       $focusertype
-  server::setdata "focuseridentifier"                 $focuseridentifier
-  server::setdata "timestamp"                         ""
-  server::setdata "filterwheelposition"               ""
-  server::setdata "lastfilterwheelposition"           ""
-  server::setdata "requestedfilterwheelposition"      ""
-  server::setdata "filter"                            ""
-  server::setdata "focuserposition"                   ""
-  server::setdata "focuserrawposition"                ""
-  server::setdata "requestedfocuserposition"          ""
-  server::setdata "requestedfocuserrawposition"       ""
-  server::setdata "focuserdz"                         0
-  server::setdata "focuserdzfilter"                   0
-  server::setdata "focuserdzposition"                 0
-  server::setdata "exposuretime"                      ""
-  server::setdata "fitsfilename"                      ""
-  server::setdata "lastcorrectiontimestamp"           ""
-  server::setdata "lastcorrectioneastoffset"          ""
-  server::setdata "lastcorrectionnorthoffset"         ""
-  server::setdata "solvedalpha"                       ""
-  server::setdata "solveddelta"                       ""
-  server::setdata "solvedequinox"                     ""
-  server::setdata "solvedobservedalpha"               ""
-  server::setdata "solvedobserveddelta"               ""
-  server::setdata "mountobservedalpha"                ""
-  server::setdata "mountobserveddelta"                ""
-  server::setdata "fwhm"                              ""
-  server::setdata "fwhmpixels"                        ""
-  server::setdata "average"                           ""
-  server::setdata "standarddeviation"                 ""
-  
+  server::setdata "identifier" $identifier
+  server::setdata "telescopedescription" $telescopedescription
+  server::setdata "detectortype" $detectortype
+  server::setdata "detectoridentifier" $detectoridentifier
+  server::setdata "detectorwidth" ""
+  server::setdata "detectorboresight" $detectorboresight
+  server::setdata "filterwheeltype" $filterwheeltype
+  server::setdata "filterwheelidentifier" $filterwheelidentifier
+  server::setdata "focusertype" $focusertype
+  server::setdata "focuseridentifier" $focuseridentifier
+  server::setdata "timestamp" ""
+  server::setdata "filterwheelposition" ""
+  server::setdata "lastfilterwheelposition" ""
+  server::setdata "requestedfilterwheelposition" ""
+  server::setdata "filter" ""
+  server::setdata "focuserposition" ""
+  server::setdata "focuserrawposition" ""
+  server::setdata "requestedfocuserposition" ""
+  server::setdata "requestedfocuserrawposition" ""
+  server::setdata "focuserdz" 0
+  server::setdata "focuserdzfilter" 0
+  server::setdata "focuserdzposition" 0
+  server::setdata "exposuretime" ""
+  server::setdata "fitsfilename" ""
+  server::setdata "lastcorrectiontimestamp" ""
+  server::setdata "lastcorrectioneastoffset" ""
+  server::setdata "lastcorrectionnorthoffset" ""
+  server::setdata "solvedalpha" ""
+  server::setdata "solveddelta" ""
+  server::setdata "solvedequinox" ""
+  server::setdata "solvedobservedalpha" ""
+  server::setdata "solvedobserveddelta" ""
+  server::setdata "mountobservedalpha" ""
+  server::setdata "mountobserveddelta" ""
+  server::setdata "fwhm" ""
+  server::setdata "fwhmpixels" ""
+  server::setdata "average" ""
+  server::setdata "standarddeviation" ""
+
   proc updatedata {} {
-  
     variable detectorunbinnedpixelscale
 
     set identifier [server::getdata "identifier"]
-    
+
     if {![detector::isopen] || ![focuser::opened]} {
       return
     }
-    
+
     if {[catch {detector::updatestatus} message]} {
       error "unable to update detector status: $message"
     }
@@ -209,19 +201,19 @@ namespace eval "ccd" {
     if {[catch {focuser::update} message]} {
       error "unable to update focuser data: $message"
     }
-    
-    set lasttimestamp                [server::getdata "timestamp"]
-    set timestamp                    [utcclock::combinedformat now]
 
-    set lastfilterwheelposition           [server::getdata "filterwheelposition"]
-    set filterwheelposition               [filterwheel::getposition]
-    set requestedfilterwheelposition      [server::getdata "requestedfilterwheelposition"]
-    
+    set lasttimestamp [server::getdata "timestamp"]
+    set timestamp [utcclock::combinedformat now]
+
+    set lastfilterwheelposition [server::getdata "filterwheelposition"]
+    set filterwheelposition [filterwheel::getposition]
+    set requestedfilterwheelposition [server::getdata "requestedfilterwheelposition"]
+
     set lastfocuserrawposition [server::getdata "focuserrawposition"]
-    set focuserrawposition     [focuser::getposition]
-    set lastfocuserposition    [server::getdata "focuserposition"]
-    set focuserdz              [server::getdata "focuserdz"]
-    set focuserposition        [expr {$focuserrawposition - $focuserdz}]
+    set focuserrawposition [focuser::getposition]
+    set lastfocuserposition [server::getdata "focuserposition"]
+    set focuserdz [server::getdata "focuserdz"]
+    set focuserposition [expr {$focuserrawposition - $focuserdz}]
 
     set requestedfocuserrawposition [server::getdata "requestedfocuserrawposition"]
     if {[catch {
@@ -231,13 +223,12 @@ namespace eval "ccd" {
     }
 
     set detectortemperature [detector::getdetectortemperature]
-    set housingtemperature  [detector::gethousingtemperature]
+    set housingtemperature [detector::gethousingtemperature]
 
     variable temperaturelimit
     if {![string equal "" $temperaturelimit]} {
-
       set toowarm false
-  
+
       if {$detectortemperature > $temperaturelimit} {
         log::error [format "switching off cooling as the detector is too warm (%+.1f C)." $detectortemperature]
         set toowarm true
@@ -258,71 +249,72 @@ namespace eval "ccd" {
         log::error "exiting."
         exit 1
       }
-      
     }
-    
+
     server::setstatus "ok"
 
-    server::setdata "timestamp"                        [utcclock::combinedformat $timestamp]
-    server::setdata "lasttimestamp"                    $lasttimestamp
-    server::setdata "detectordescription"              [detector::getdescription]
-    server::setdata "detectorsoftwaregain"             [detector::getsoftwaregain]
-    server::setdata "detectorsaturationlevel"          [detector::getsaturationlevel]
-    server::setdata "detectorunbinnedwindow"           [detector::getunbinnedwindow]
-    server::setdata "detectorwidth"                    [getwidth]
-    server::setdata "detectorbinning"                  [detector::getbinning]
-    server::setdata "detectorfullunbinneddatawindow"   [detector::getfullunbinneddatawindow]
-    server::setdata "detectorfullunbinnedbiaswindow"   [detector::getfullunbinnedbiaswindow]
-    server::setdata "detectordatawindow"               [detector::getdatawindow]
-    server::setdata "detectorbiaswindow"               [detector::getbiaswindow]
-    server::setdata "detectorreadmode"                 [detector::getreadmode]
-    server::setdata "detectoradc"                      [detector::getadc]
-    server::setdata "detectoramplifier"                [detector::getamplifier]
-    server::setdata "detectorvsspeed"                  [detector::getvsspeed]
-    server::setdata "detectorhsspeed"                  [detector::gethsspeed]
-    server::setdata "detectorgain"                     [detector::getgain]
-    server::setdata "detectoremgain"                   [detector::getemgain]
-    server::setdata "detectorframetime"                [detector::getframetime]
-    server::setdata "detectorcycletime"                [detector::getcycletime]
-    server::setdata "detectorminexposuretime"          [detector::getminexposuretime]
-    server::setdata "detectormaxexposuretime"          [detector::getmaxexposuretime]
-    server::setdata "detectordetectortemperature"      $detectortemperature
-    server::setdata "detectordetectorheatercurrent"    [detector::getdetectorheatercurrent]
-    server::setdata "detectorhousingtemperature"       $housingtemperature
-    server::setdata "detectorcoldendtemperature"       [detector::getcoldendtemperature]
-    server::setdata "detectorcoldendheatercurrent"     [detector::getcoldendheatercurrent]
-    server::setdata "detectorpowersupplytemperature"   [detector::getpowersupplytemperature]
-    server::setdata "detectorchamberpressure"          [detector::getchamberpressure]
+    server::setdata "timestamp" [utcclock::combinedformat $timestamp]
+    server::setdata "lasttimestamp" $lasttimestamp
+    server::setdata "detectordescription" [detector::getdescription]
+    server::setdata "detectorsoftwaregain" [detector::getsoftwaregain]
+    server::setdata "detectorsaturationlevel" [detector::getsaturationlevel]
+    server::setdata "detectorunbinnedwindow" [detector::getunbinnedwindow]
+    server::setdata "detectorwidth" [getwidth]
+    server::setdata "detectorbinning" [detector::getbinning]
+    server::setdata "detectorfullunbinneddatawindow" [detector::getfullunbinneddatawindow]
+    server::setdata "detectorfullunbinnedbiaswindow" [detector::getfullunbinnedbiaswindow]
+    server::setdata "detectordatawindow" [detector::getdatawindow]
+    server::setdata "detectorbiaswindow" [detector::getbiaswindow]
+    server::setdata "detectorreadmode" [detector::getreadmode]
+    server::setdata "detectoradc" [detector::getadc]
+    server::setdata "detectoramplifier" [detector::getamplifier]
+    server::setdata "detectorvsspeed" [detector::getvsspeed]
+    server::setdata "detectorhsspeed" [detector::gethsspeed]
+    server::setdata "detectorgain" [detector::getgain]
+    server::setdata "detectoremgain" [detector::getemgain]
+    server::setdata "detectorframetime" [detector::getframetime]
+    server::setdata "detectorcycletime" [detector::getcycletime]
+    server::setdata "detectorminexposuretime" [detector::getminexposuretime]
+    server::setdata "detectormaxexposuretime" [detector::getmaxexposuretime]
+    server::setdata "detectordetectortemperature" $detectortemperature
+    server::setdata "detectordetectorheatercurrent" [detector::getdetectorheatercurrent]
+    server::setdata "detectorhousingtemperature" $housingtemperature
+    server::setdata "detectorcoldendtemperature" [detector::getcoldendtemperature]
+    server::setdata "detectorcoldendheatercurrent" [detector::getcoldendheatercurrent]
+    server::setdata "detectorpowersupplytemperature" [detector::getpowersupplytemperature]
+    server::setdata "detectorchamberpressure" [detector::getchamberpressure]
     server::setdata "detectorcompressorsupplypressure" [detector::getcompressorsupplypressure]
     server::setdata "detectorcompressorreturnpressure" [detector::getcompressorreturnpressure]
-    server::setdata "detectorcompressorcurrent"        [detector::getcompressorcurrent]
-    server::setdata "detectorcoolerstate"              [detector::getcoolerstate]
-    server::setdata "detectorcoolersettemperature"     [detector::getcoolersettemperature]
-    server::setdata "detectorcoolerpower"              [detector::getcoolerpower]
-    server::setdata "detectorcoolerlowflow"            [detector::getcoolerlowflow]
+    server::setdata "detectorcompressorcurrent" [detector::getcompressorcurrent]
+    server::setdata "detectorcoolerstate" [detector::getcoolerstate]
+    server::setdata "detectorcoolersettemperature" [detector::getcoolersettemperature]
+    server::setdata "detectorcoolerpower" [detector::getcoolerpower]
+    server::setdata "detectorcoolerlowflow" [detector::getcoolerlowflow]
     if {![string equal "" [detector::getsaasigmax]]} {
-      server::setdata "detectorsaasigmax"                [expr {[detector::getsaasigmax] * [detector::getbinning] * $detectorunbinnedpixelscale}]
+      server::setdata "detectorsaasigmax" \
+        [expr {[detector::getsaasigmax] * [detector::getbinning] * $detectorunbinnedpixelscale}]
     }
     if {![string equal "" [detector::getsaasigmay]]} {
-      server::setdata "detectorsaasigmay"                [expr {[detector::getsaasigmay] * [detector::getbinning] * $detectorunbinnedpixelscale}]
+      server::setdata "detectorsaasigmay" \
+        [expr {[detector::getsaasigmay] * [detector::getbinning] * $detectorunbinnedpixelscale}]
     }
-    server::setdata "filterwheels"                     [llength [filterwheel::getdescription]]
+    server::setdata "filterwheels" [llength [filterwheel::getdescription]]
     set i 0
     while {$i < [llength [filterwheel::getdescription]]} {
-      server::setdata "filterwheeldescription$i"  [lindex [filterwheel::getdescription] $i]
+      server::setdata "filterwheeldescription$i" [lindex [filterwheel::getdescription] $i]
       incr i
     }
-    server::setdata "filterwheelposition"              $filterwheelposition
-    server::setdata "lastfilterwheelposition"          $lastfilterwheelposition
-    server::setdata "filterwheelmaxposition"           [filterwheel::getmaxposition]
-    server::setdata "filter"                           [getfilter $filterwheelposition]
-    server::setdata "focuserdescription"               [focuser::getdescription]
-    server::setdata "focuserposition"                  $focuserposition
-    server::setdata "focuserrawposition"               $focuserrawposition
-    server::setdata "focuserminposition"               [focuser::getminposition]
-    server::setdata "focusermaxposition"               [focuser::getmaxposition]
-    server::setdata "focuserpositionerror"             $focuserpositionerror
-    
+    server::setdata "filterwheelposition" $filterwheelposition
+    server::setdata "lastfilterwheelposition" $lastfilterwheelposition
+    server::setdata "filterwheelmaxposition" [filterwheel::getmaxposition]
+    server::setdata "filter" [getfilter $filterwheelposition]
+    server::setdata "focuserdescription" [focuser::getdescription]
+    server::setdata "focuserposition" $focuserposition
+    server::setdata "focuserrawposition" $focuserrawposition
+    server::setdata "focuserminposition" [focuser::getminposition]
+    server::setdata "focusermaxposition" [focuser::getmaxposition]
+    server::setdata "focuserpositionerror" $focuserpositionerror
+
     log::writedatalog $identifier {
       timestamp
       detectordetectortemperature 
@@ -336,7 +328,7 @@ namespace eval "ccd" {
       detectorcompressorreturnpressure
       detectorpowersupplytemperature
     }
-    
+
     foreach {sensorname dataname} {
       detector-detector-temperature       detectordetectortemperature 
       detector-housing-temperature        detectorhousingtemperature
@@ -354,9 +346,8 @@ namespace eval "ccd" {
     } {
       log::writesensorsfile "$identifier-$sensorname" [server::getdata $dataname] [server::getdata "timestamp"]
     }
-
   }
-  
+
   proc getfilter {filterwheelposition} {
     variable filters
     foreach filter [dict keys $filters] {
@@ -367,9 +358,8 @@ namespace eval "ccd" {
     }
     return ""
   }
-  
-  ######################################################################
 
+  ######################################################################
   variable pollmilliseconds 1000
 
   proc updatedataloop {} {
@@ -384,7 +374,6 @@ namespace eval "ccd" {
   }
 
   ######################################################################
-
   proc checkfocuserpositionerror {when} {
     updatedata
     set focuserpositionerror [server::getdata "focuserpositionerror"]
@@ -395,7 +384,6 @@ namespace eval "ccd" {
   }
 
   ######################################################################
-  
   proc mountdalpha {alpha delta} {
     set ha [astrometry::ha $alpha]
     variable pointingmodelparameters
@@ -416,7 +404,6 @@ namespace eval "ccd" {
   }
 
   ######################################################################
-  
   proc getfitsfilename {exposuretype fitsfileprefix} {
     variable identifier
     switch $exposuretype {
@@ -470,7 +457,6 @@ namespace eval "ccd" {
   }
 
   ######################################################################
-
   proc stopexposing {} {
     while {true} {
       if {[catch {detector::cancelexposure} result]} {
@@ -492,7 +478,7 @@ namespace eval "ccd" {
         log::warning "killing the solving process group failed: $message."
       }
     }
-    catch {close $solvingchannel}
+    catch { close $solvingchannel }
     set solvingchannel {}
   }
 
@@ -550,10 +536,10 @@ namespace eval "ccd" {
         set window [dict get $detectorwindows $window]
       }
       log::info [format "detector window \"%s\" is %s." $windowname $window]
-    }    
+    }
     log::info [format "finished starting after %.1f seconds." [utcclock::diff now $start]]
   }
-  
+
   proc initializeactivitycommand {} {
     set start [utcclock::seconds]
     log::info "initializing."
@@ -587,7 +573,7 @@ namespace eval "ccd" {
     movefilterwheelactivitycommand "initial" true
     log::info [format "finished initializing after %.1f seconds." [utcclock::diff now $start]]
   }
-  
+
   proc stopactivitycommand {} {
     set start [utcclock::seconds]
     log::info "stopping."
@@ -596,7 +582,7 @@ namespace eval "ccd" {
     stopsolving
     log::info [format "finished stopping after %.1f seconds." [utcclock::diff now $start]]
   }
-  
+
   proc resetactivitycommand {} {
     set start [utcclock::seconds]
     log::info "resetting."
@@ -606,7 +592,7 @@ namespace eval "ccd" {
     detector::reset
     log::info [format "finished resetting after %.1f seconds." [utcclock::diff now $start]]
   }
-  
+
   proc formatirafsection {window} {
     set sx [dict get $window sx]
     set sy [dict get $window sy]
@@ -614,73 +600,72 @@ namespace eval "ccd" {
     set ny [dict get $window ny]
     return [format "\[%d:%d,%d:%d\]" [expr {$sx + 1}] [expr {$sx + $nx}] [expr {$sy + 1}] [expr {$sy + $ny}]]
   }
-  
+
   proc writefitsheaderprolog {channel seconds fitsfilename exposuretime exposuretype} {
-    fitsheader::writekeyandvalue $channel "DATE-OBS" date    $seconds
-    fitsheader::writekeyandvalue $channel "MJD-OBS"  double  [format "%.8f" [utcclock::mjd $seconds]]
-    fitsheader::writekeyandvalue $channel "ORIGIN"   string  "OAN/SPM"
-    fitsheader::writekeyandvalue $channel "TELESCOP" string  [server::getdata "telescopedescription"]
-    fitsheader::writekeyandvalue $channel "INSTRUME" string  [server::getdata "identifier"]
-    fitsheader::writekeyandvalue $channel "ORIGNAME" string  [file tail $fitsfilename]
-    fitsheader::writekeyandvalue $channel "EXPTIME"  double  [expr {double($exposuretime)}]
-    fitsheader::writekeyandvalue $channel "NFRM"     integer [detector::getnframe]
+    fitsheader::writekeyandvalue $channel "DATE-OBS" date $seconds
+    fitsheader::writekeyandvalue $channel "MJD-OBS" double [format "%.8f" [utcclock::mjd $seconds]]
+    fitsheader::writekeyandvalue $channel "ORIGIN" string "OAN/SPM"
+    fitsheader::writekeyandvalue $channel "TELESCOP" string [server::getdata "telescopedescription"]
+    fitsheader::writekeyandvalue $channel "INSTRUME" string [server::getdata "identifier"]
+    fitsheader::writekeyandvalue $channel "ORIGNAME" string [file tail $fitsfilename]
+    fitsheader::writekeyandvalue $channel "EXPTIME" double [expr {double($exposuretime)}]
+    fitsheader::writekeyandvalue $channel "NFRM" integer [detector::getnframe]
     if {![string equal "" [server::getdata "detectorframetime"]]} {
-      fitsheader::writekeyandvalue $channel "FRMTIME"  double [server::getdata "detectorframetime"]
+      fitsheader::writekeyandvalue $channel "FRMTIME" double [server::getdata "detectorframetime"]
     }
     if {![string equal "" [server::getdata "detectorcycletime"]]} {
-      fitsheader::writekeyandvalue $channel "CYCTIME"  double [server::getdata "detectorcycletime"]
+      fitsheader::writekeyandvalue $channel "CYCTIME" double [server::getdata "detectorcycletime"]
     }
-    fitsheader::writekeyandvalue $channel "EXPTYPE"  string $exposuretype
+    fitsheader::writekeyandvalue $channel "EXPTYPE" string $exposuretype
     fitsheader::writekeyandvalue $channel "CCD_NAME" string [server::getdata "identifier"]
-    fitsheader::writekeyandvalue $channel "BINNING"  string [server::getdata "detectorbinning"]
+    fitsheader::writekeyandvalue $channel "BINNING" string [server::getdata "detectorbinning"]
     fitsheader::writekeyandvalue $channel "READMODE" string [server::getdata "detectorreadmode"]
     fitsheader::writekeyandvalue $channel "SOFTGAIN" double [server::getdata "detectorsoftwaregain"]
-    fitsheader::writekeyandvalue $channel "DATASAT"  double [server::getdata "detectorsaturationlevel"]
-    fitsheader::writekeyandvalue $channel "WINSEC"   string [formatirafsection [server::getdata "detectorunbinnedwindow"]]
-    fitsheader::writekeyandvalue $channel "CCDSEC"   string [formatirafsection [server::getdata "detectordatawindow"]]
-    fitsheader::writekeyandvalue $channel "DATASEC"  string [formatirafsection [server::getdata "detectordatawindow"]]
+    fitsheader::writekeyandvalue $channel "DATASAT" double [server::getdata "detectorsaturationlevel"]
+    fitsheader::writekeyandvalue $channel "WINSEC" string [formatirafsection [server::getdata "detectorunbinnedwindow"]]
+    fitsheader::writekeyandvalue $channel "CCDSEC" string [formatirafsection [server::getdata "detectordatawindow"]]
+    fitsheader::writekeyandvalue $channel "DATASEC" string [formatirafsection [server::getdata "detectordatawindow"]]
     if {![string equal "" [server::getdata "detectorbiaswindow"]]} {
-      fitsheader::writekeyandvalue $channel "BIASSEC"  string [formatirafsection [server::getdata "detectorbiaswindow"]]
+      fitsheader::writekeyandvalue $channel "BIASSEC" string [formatirafsection [server::getdata "detectorbiaswindow"]]
     }
 
-    set boresight      [server::getdata "detectorboresight"     ]
+    set boresight [server::getdata "detectorboresight"     ]
     set unbinnedwindow [server::getdata "detectorunbinnedwindow"]
-    set binning        [server::getdata "detectorbinning"       ]
+    set binning [server::getdata "detectorbinning"       ]
     set x [dict get $boresight "x"]
     set y [dict get $boresight "y"]
     set sx [dict get $unbinnedwindow "sx"]
     set sy [dict get $unbinnedwindow "sy"]
-    fitsheader::writekeyandvalue $channel "BSPIX1"   double [expr {($x - $sx) / $binning + 1}] "boresight"
-    fitsheader::writekeyandvalue $channel "BSPIX2"   double [expr {($y - $sy) / $binning + 1}] "boresight"
+    fitsheader::writekeyandvalue $channel "BSPIX1" double [expr {($x - $sx) / $binning + 1}] "boresight"
+    fitsheader::writekeyandvalue $channel "BSPIX2" double [expr {($y - $sy) / $binning + 1}] "boresight"
 
-    fitsheader::writekeyandvalue $channel "FILTER"   string [server::getdata "filter"]
-    fitsheader::writekeyandvalue $channel "FWPS"     string [server::getdata "filterwheelposition"]
-    fitsheader::writekeyandvalue $channel "DTDS"     string  [server::getdata "detectordescription"]
-    fitsheader::writekeyandvalue $channel "FCDS"     string  [server::getdata "focuserdescription"]
-    fitsheader::writekeyandvalue $channel "NFW "     integer  [server::getdata "filterwheels"]
+    fitsheader::writekeyandvalue $channel "FILTER" string [server::getdata "filter"]
+    fitsheader::writekeyandvalue $channel "FWPS" string [server::getdata "filterwheelposition"]
+    fitsheader::writekeyandvalue $channel "DTDS" string [server::getdata "detectordescription"]
+    fitsheader::writekeyandvalue $channel "FCDS" string [server::getdata "focuserdescription"]
+    fitsheader::writekeyandvalue $channel "NFW " integer [server::getdata "filterwheels"]
     set i 0
     while {$i < [server::getdata "filterwheels"]} {
       set iplus1 [expr {$i + 1}]
       fitsheader::writekeyandvalue $channel "FWDS$iplus1" string [server::getdata "filterwheeldescription$i"]
       incr i
-    }    
+    }
     fitsheader::writekeysandvaluesforproject $channel
     fitsheader::writeccdfitsheader $channel [server::getdata "identifier"] "S"
     fitsheader::writetcsfitsheader $channel "S"
   }
-  
+
   proc writefitsheaderepilog {channel} {
     fitsheader::writeccdfitsheader $channel [server::getdata "identifier"] "E"
-    fitsheader::writetcsfitsheader $channel "E"  
+    fitsheader::writetcsfitsheader $channel "E"
   }
-  
-  proc exposeactivitycommand {exposuretime exposuretype fitsfileprefix starttime} {
 
+  proc exposeactivitycommand {exposuretime exposuretype fitsfileprefix starttime} {
     set start [utcclock::seconds]
     coroutine::after 1
 
     variable identifier
-    
+
     if {![string equal $starttime "now"]} {
       set start [utcclock::seconds]
       log::info "waiting until [utcclock::format $starttime]."
@@ -695,12 +680,12 @@ namespace eval "ccd" {
 
     stopexposing
     stopsolving
-    
+
     switch $exposuretype {
       "object" -
       "focus" -
       "astrometry" -
-      "dark" - 
+      "dark" -
       "bias" {
         set amplifier [detector::getamplifier]
         if {[string equal $amplifier "conventional"]} {
@@ -720,14 +705,14 @@ namespace eval "ccd" {
     if {$withcube} {
       set finalfitscubefilename [getfitscubefilename $exposuretype $fitsfileprefix]
       log::info [format "FITS cube file is %s." $finalfitscubefilename]
-      set finalfitscubehdrfilename   "$finalfitscubefilename.hdr.tmp"
-      set finalfitscubepixfilename   "$finalfitscubefilename.pix.tmp"
+      set finalfitscubehdrfilename "$finalfitscubefilename.hdr.tmp"
+      set finalfitscubepixfilename "$finalfitscubefilename.pix.tmp"
       set partialfitscubehdrfilename "$finalfitscubefilename.hdr.partial.tmp"
       set partialfitscubepixfilename "$finalfitscubefilename.pix.partial.tmp"
     } else {
-      set finalfitscubefilename      ""
-      set finalfitscubehdrfilename   ""
-      set finalfitscubepixfilename   ""
+      set finalfitscubefilename ""
+      set finalfitscubehdrfilename ""
+      set finalfitscubepixfilename ""
       set partialfitscubehdrfilename ""
       set partialfitscubepixfilename ""
     }
@@ -744,26 +729,27 @@ namespace eval "ccd" {
     set currentfilename [file join [directories::var] $identifier "current.fits"]
     file delete -force -- $currentfilename
 
-    server::setdata "exposuretime"        $exposuretime
-    server::setdata "fitsfilename"        $finalfitsfilename
-    server::setdata "solvedalpha"         ""
-    server::setdata "solveddelta"         ""
-    server::setdata "solvedequinox"       ""
+    server::setdata "exposuretime" $exposuretime
+    server::setdata "fitsfilename" $finalfitsfilename
+    server::setdata "solvedalpha" ""
+    server::setdata "solveddelta" ""
+    server::setdata "solvedequinox" ""
     server::setdata "solvedobservedalpha" ""
     server::setdata "solvedobserveddelta" ""
-    server::setdata "mountobservedalpha"  ""
-    server::setdata "mountobserveddelta"  ""
-    server::setdata "fwhm"                ""
-    server::setdata "fwhmpixels"          ""
-    server::setdata "average"             ""
-    server::setdata "standarddeviation"   ""
-    server::setdata "alphaoffset"          ""
-    server::setdata "deltaoffset"         ""
+    server::setdata "mountobservedalpha" ""
+    server::setdata "mountobserveddelta" ""
+    server::setdata "fwhm" ""
+    server::setdata "fwhmpixels" ""
+    server::setdata "average" ""
+    server::setdata "standarddeviation" ""
+    server::setdata "alphaoffset" ""
+    server::setdata "deltaoffset" ""
 
-    if {[string equal $exposuretype "object"          ] || 
-        [string equal $exposuretype "flat"            ] || 
-        [string equal $exposuretype "astrometry"      ] ||
-        [string equal $exposuretype "focus"           ]
+    if {
+      [string equal $exposuretype "object" ]
+      || [string equal $exposuretype "flat" ]
+      || [string equal $exposuretype "astrometry" ]
+      || [string equal $exposuretype "focus" ]
     } {
       set shutter open
     } elseif {[string equal $exposuretype "bias"] ||
@@ -782,7 +768,7 @@ namespace eval "ccd" {
       writefitsheaderprolog $channel $seconds $finalfitsfilename $exposuretime $exposuretype
     } message]} {
       error "while writing FITS header: $message"
-      catch {close $channel}
+      catch { close $channel }
     }
 
     if {$withcube} {
@@ -791,8 +777,8 @@ namespace eval "ccd" {
         writefitsheaderprolog $cubehdrchannel $seconds $finalfitscubefilename $exposuretime $exposuretype
       } message]} {
         error "while writing FITS header: $message"
-        catch {close $channel}
-        catch {close $cubehdrchannel}
+        catch { close $channel }
+        catch { close $cubehdrchannel }
       }
     }
 
@@ -812,8 +798,8 @@ namespace eval "ccd" {
       detector::closefitsheader $channel
     } message]} {
       error "while writing FITS header: $message"
-      catch {close $channel}
-      catch {close $cubehdrchannel}
+      catch { close $channel }
+      catch { close $cubehdrchannel }
     }
     if {$withcube} {
       if {[catch {
@@ -822,7 +808,7 @@ namespace eval "ccd" {
         detector::closefitsheader $cubehdrchannel
       } message]} {
         error "while writing FITS header: $message"
-        catch {close $cubehdrchannel}
+        catch { close $cubehdrchannel }
       }
     }
 
@@ -830,25 +816,29 @@ namespace eval "ccd" {
     server::setactivity "reading"
     if {[catch {detector::readexposure} message]} {
       error "while reading exposure: $message"
-    }    
+    }
 
     log::info [format "started writing after %.1f seconds." [utcclock::diff now $start]]
     server::setactivity "writing"
-    if {[catch {detector::writeexposure $partialfitsfilename $finalfitsfilename $latestfilename $currentfilename $partialfitscubehdrfilename $finalfitscubehdrfilename $partialfitscubepixfilename $finalfitscubepixfilename false} message]} {
+    if \
+      {[catch {detector::writeexposure $partialfitsfilename $finalfitsfilename $latestfilename $currentfilename $partialfitscubehdrfilename $finalfitscubehdrfilename $partialfitscubepixfilename $finalfitscubepixfilename false} message]} \
+      {
       error "while writing FITS data: $message"
     }
-    
+
     if {$withcube} {
       if {[catch {updatedata} message]} {
         error "unable to update date: $message"
       }
       set saasigmax [server::getdata "detectorsaasigmax"]
       set saasigmay [server::getdata "detectorsaasigmay"]
-      log::info [format "SAA sigma are %.2fas in x and %.2fas in y." [astrometry::radtoarcsec $saasigmax] [astrometry::radtoarcsec $saasigmay]]
+      log::info \
+        [format "SAA sigma are %.2fas in x and %.2fas in y." [astrometry::radtoarcsec $saasigmax] \
+        [astrometry::radtoarcsec $saasigmay]]
     }
     log::info [format "finished exposing after %.1f seconds." [utcclock::diff now $start]]
   }
-  
+
   proc getfitsfwhmargs {} {
     variable fitsfwhmargs
     set binning [server::getdata "detectorbinning"]
@@ -875,15 +865,13 @@ namespace eval "ccd" {
       log::info [format "finished waiting for FITS file after %.1f seconds." [utcclock::diff now $start]]
     }
     if {[string equal $type "levels"]} {
-      server::setdata "average"           [detector::getaverage]
+      server::setdata "average" [detector::getaverage]
       server::setdata "standarddeviation" [detector::getstandarddeviation]
       log::info [format "level is %.1f ± %.1f DN." [detector::getaverage] [detector::getstandarddeviation]]
     } elseif {[string equal $type "fwhm"] || [string equal $type "fwhmwitness"]} {
       if {[string equal $type "fwhmwitness"]} {
         set latestfwhmwitnessfilename [file join [directories::var] $identifier "latest-fwhmwitness.fits"]
-        catch {
-          exec /bin/ln -f $currentfilename $latestfwhmwitnessfilename
-        }
+        catch { exec /bin/ln -f $currentfilename $latestfwhmwitnessfilename }
       }
       variable fitsfwhmchannel
       variable fitsfwhmargs
@@ -893,12 +881,15 @@ namespace eval "ccd" {
       } else {
         set fitsfwhmarg ""
       }
-      log::debug "command is [directories::bin]/tcs newpgrp [directories::bin]/tcs fitsfwhm $fitsfwhmarg -- \"$currentfilename\""
-      set fitsfwhmchannel [open "|[directories::bin]/tcs newpgrp [directories::bin]/tcs fitsfwhm $fitsfwhmarg -- \"$currentfilename\"" "r"]
+      log::debug \
+        "command is [directories::bin]/tcs newpgrp [directories::bin]/tcs fitsfwhm $fitsfwhmarg -- \"$currentfilename\""
+      set fitsfwhmchannel \
+        [open "|[directories::bin]/tcs newpgrp [directories::bin]/tcs fitsfwhm $fitsfwhmarg -- \"$currentfilename\"" \
+        "r"]
       chan configure $fitsfwhmchannel -buffering "line"
       chan configure $fitsfwhmchannel -encoding "ascii"
       set line [coroutine::gets $fitsfwhmchannel 0 100]
-      catch {close $fitsfwhmchannel}
+      catch { close $fitsfwhmchannel }
       set fitsfwhmchannel {}
       if {
         [string equal $line ""] ||
@@ -907,8 +898,8 @@ namespace eval "ccd" {
         log::debug "fitsfwhm failed: \"$line\"."
         log::info "unable to determine FWHM."
       } else {
-        set binning      [server::getdata "detectorbinning"]
-        set filter       [server::getdata "filter"]
+        set binning [server::getdata "detectorbinning"]
+        set filter [server::getdata "filter"]
         set exposuretime [server::getdata "exposuretime"]
         variable detectorunbinnedpixelscale
         set fwhm [expr {$fwhmpixels * $binning * $detectorunbinnedpixelscale}]
@@ -917,21 +908,23 @@ namespace eval "ccd" {
         set y [format "%.2f" $y]
         server::setdata "fwhm" $fwhm
         server::setdata "fwhmpixels" $fwhmpixels
-        log::info [format \
-          "FWHM is %.2fas (%.2f pixels with binning %d) in filter %s in %s seconds." \
-          [astrometry::radtoarcsec $fwhm] $fwhmpixels $binning $filter $exposuretime \
-        ]
+        log::info \
+          [format "FWHM is %.2fas (%.2f pixels with binning %d) in filter %s in %s seconds." \
+          [astrometry::radtoarcsec $fwhm] $fwhmpixels $binning $filter $exposuretime ]
       }
     } elseif {[string equal $type "center"]} {
       variable fitsfwhmchannel
       # Run fitsfwhm without arguments to get the coordinates of the brightest source.
       set fitsfwhmarg ""
-      log::debug "command is [directories::bin]/tcs newpgrp [directories::bin]/tcs fitsfwhm $fitsfwhmarg -- \"$currentfilename\""
-      set fitsfwhmchannel [open "|[directories::bin]/tcs newpgrp [directories::bin]/tcs fitsfwhm $fitsfwhmarg -- \"$currentfilename\"" "r"]
+      log::debug \
+        "command is [directories::bin]/tcs newpgrp [directories::bin]/tcs fitsfwhm $fitsfwhmarg -- \"$currentfilename\""
+      set fitsfwhmchannel \
+        [open "|[directories::bin]/tcs newpgrp [directories::bin]/tcs fitsfwhm $fitsfwhmarg -- \"$currentfilename\"" \
+        "r"]
       chan configure $fitsfwhmchannel -buffering "line"
       chan configure $fitsfwhmchannel -encoding "ascii"
       set line [coroutine::gets $fitsfwhmchannel 0 100]
-      catch {close $fitsfwhmchannel}
+      catch { close $fitsfwhmchannel }
       set fitsfwhmchannel {}
       if {
         [string equal $line ""] ||
@@ -946,12 +939,10 @@ namespace eval "ccd" {
         # This code currently had hard-wired constants for COATLI full-frame
         set dx [expr {($x * $binning - 512) * $detectorunbinnedpixelscale}]
         set dy [expr {($y * $binning - 512) * $detectorunbinnedpixelscale}]
-        log::info [format "dx is %s and dy is %s" \
-          [astrometry::formatoffset $dx] [astrometry::formatoffset $dy] \
-        ]
+        log::info [format "dx is %s and dy is %s" [astrometry::formatoffset $dx] [astrometry::formatoffset $dy] ]
         # We need to account for the current offsets from the target server.
-        catch {client::update "target"}
-        catch {client::update "mount"}
+        catch { client::update "target" }
+        catch { client::update "mount" }
         set mountrotation [client::getdata "mount" "mountrotation"]
         log::info [format "mountrotation is %.0fd." [astrometry::radtodeg $mountrotation]]
         if {$mountrotation == 0} {
@@ -961,31 +952,30 @@ namespace eval "ccd" {
           set dalphaoffset [expr {+($dy)}]
           set ddeltaoffset [expr {+($dx)}]
         }
-        log::info [format \
-          "relative offset to brightest source is %s E and %s N." \
-          [astrometry::formatoffset $dalphaoffset] [astrometry::formatoffset $ddeltaoffset] \
-        ]
+        log::info \
+          [format "relative offset to brightest source is %s E and %s N." [astrometry::formatoffset $dalphaoffset] \
+          [astrometry::formatoffset $ddeltaoffset] ]
         set alphaoffset [expr {[client::getdata "target" "requestedalphaoffset"] + $dalphaoffset}]
         set deltaoffset [expr {[client::getdata "target" "requesteddeltaoffset"] + $ddeltaoffset}]
-        log::info [format \
-          "offset to brightest source is %s E and %s N." \
-          [astrometry::formatoffset $alphaoffset] [astrometry::formatoffset $deltaoffset] \
-        ]
+        log::info \
+          [format "offset to brightest source is %s E and %s N." [astrometry::formatoffset $alphaoffset] \
+          [astrometry::formatoffset $deltaoffset] ]
         server::setdata "alphaoffset" $alphaoffset
         server::setdata "deltaoffset" $deltaoffset
       }
     } elseif {[string equal $type "astrometry"]} {
       variable solvingchannel
-      set solvingchannel [open "|[directories::bin]/tcs newpgrp [directories::bin]/tcs fitssolvewcs -c -f -- \"$currentfilename\"" "r"]
+      set solvingchannel \
+        [open "|[directories::bin]/tcs newpgrp [directories::bin]/tcs fitssolvewcs -c -f -- \"$currentfilename\"" "r"]
       chan configure $solvingchannel -buffering "line"
       chan configure $solvingchannel -encoding "ascii"
       set line [coroutine::gets $solvingchannel 0 100]
-      catch {close $solvingchannel}
+      catch { close $solvingchannel }
       set solvingchannel {}
       if {
-        [string equal $line ""] ||
-        [scan $line "%f %f %f" solvedalpha solveddelta solvedequinox] != 3 ||
-        $solvedequinox != 2000.0
+        [string equal $line ""]
+        || [scan $line "%f %f %f" solvedalpha solveddelta solvedequinox] != 3
+        || $solvedequinox != 2000.0
       } {
         log::debug "astrometry solving failed: \"$line\"."
         log::info "unable to determine astrometry."
@@ -993,26 +983,29 @@ namespace eval "ccd" {
         log::debug "astrometry solving succeeded: \"$line\"."
         set solvedalpha [astrometry::degtorad $solvedalpha]
         set solveddelta [astrometry::degtorad $solveddelta]
-        log::info "solved $identifier position is [astrometry::formatalpha $solvedalpha] [astrometry::formatdelta $solveddelta] $solvedequinox."
+        log::info \
+          "solved $identifier position is [astrometry::formatalpha $solvedalpha] [astrometry::formatdelta $solveddelta] $solvedequinox."
         set solvedobservedalpha [astrometry::observedalpha $solvedalpha $solveddelta $solvedequinox]
         set solvedobserveddelta [astrometry::observeddelta $solvedalpha $solveddelta $solvedequinox]
-        log::info "solved $identifier observed position is [astrometry::formatalpha $solvedobservedalpha] [astrometry::formatdelta $solvedobserveddelta]."
+        log::info \
+          "solved $identifier observed position is [astrometry::formatalpha $solvedobservedalpha] [astrometry::formatdelta $solvedobserveddelta]."
         set mountdalpha [mountdalpha $solvedobservedalpha $solvedobserveddelta]
         set mountddelta [mountddelta $solvedobservedalpha $solvedobserveddelta]
         set solvedmountobservedalpha [astrometry::foldradpositive [expr {$solvedobservedalpha + $mountdalpha}]]
         set solvedmountobserveddelta [expr {$solvedobserveddelta + $mountddelta}]
-        log::info "solved $identifier mount observed position is [astrometry::formatalpha $solvedmountobservedalpha] [astrometry::formatdelta $solvedmountobserveddelta]."
-        server::setdata "solvedalpha"         $solvedalpha
-        server::setdata "solveddelta"         $solveddelta
-        server::setdata "solvedequinox"       $solvedequinox
+        log::info \
+          "solved $identifier mount observed position is [astrometry::formatalpha $solvedmountobservedalpha] [astrometry::formatdelta $solvedmountobserveddelta]."
+        server::setdata "solvedalpha" $solvedalpha
+        server::setdata "solveddelta" $solveddelta
+        server::setdata "solvedequinox" $solvedequinox
         server::setdata "solvedobservedalpha" $solvedobservedalpha
         server::setdata "solvedobserveddelta" $solvedobserveddelta
-        server::setdata "mountobservedalpha"  $solvedmountobservedalpha
-        server::setdata "mountobserveddelta"  $solvedmountobserveddelta
+        server::setdata "mountobservedalpha" $solvedmountobservedalpha
+        server::setdata "mountobserveddelta" $solvedmountobserveddelta
       }
     }
   }
-  
+
   proc movefilterwheelactivitycommand {newfilter forcemove} {
     set start [utcclock::seconds]
     variable filters
@@ -1029,13 +1022,10 @@ namespace eval "ccd" {
     log::info [format "finished moving filter wheel after %.1f seconds." [utcclock::diff now $start]]
     movefocuseractivitycommand [server::getdata "requestedfocuserposition"]
   }
-  
+
   proc setfocuserdz {} {
-
-
     variable focuserdzmodel
     log::debug "focuser correction model is $focuserdzmodel."
-      
 
     set filter [server::getdata "filter"]
     if {[dict exists $focuserdzmodel "filter" $filter]} {
@@ -1045,16 +1035,11 @@ namespace eval "ccd" {
     }
 
     if {![server::withserver "target"]} {
-
       set dzposition 0
-
     } elseif {[catch {client::update "target"}]} {
-
       log::warning "unable to determine focuser position correction."
       set dzposition 0
-
     } else {
-
       set X [client::getdata "target" "observedairmass"]
       log::debug [format "determining focuser correction for X = %.2f." $X]
       set dzposition 0
@@ -1068,21 +1053,20 @@ namespace eval "ccd" {
         set dzposition [expr {$dzposition + [dict get $focuserdzmodel "position" "XM2"] * ($X - 1) * ($X - 1)}]
       }
       set dzposition [expr {int($dzposition)}]
-
     }
 
     set dz [expr {$dzfilter + $dzposition}]
     log::debug "focuser correction is $dz."
-    server::setdata "focuserdzfilter"   $dzfilter
+    server::setdata "focuserdzfilter" $dzfilter
     server::setdata "focuserdzposition" $dzposition
-    server::setdata "focuserdz"         $dz
+    server::setdata "focuserdz" $dz
 
     set requestedposition [server::getdata "requestedfocuserposition"]
     set requestedrawposition [expr {$requestedposition + $dz}]
     server::setdata "requestedfocuserrawposition" $requestedrawposition
     log::debug "focuser raw position is $requestedrawposition."
   }
-  
+
   proc movefocuseractivitycommand {newposition} {
     set start [utcclock::seconds]
     log::info "moving focuser to position $newposition."
@@ -1094,8 +1078,8 @@ namespace eval "ccd" {
     if {[server::getdata "focusermaxposition"] != 0 && $rawposition != $newrawposition} {
       variable focuserbacklashoffset
       if {
-        ($newrawposition > $rawposition && $focuserbacklashoffset > 0) ||
-        ($newrawposition < $rawposition && $focuserbacklashoffset < 0)
+        ($newrawposition > $rawposition && $focuserbacklashoffset > 0)
+        || ($newrawposition < $rawposition && $focuserbacklashoffset < 0)
       } {
         set minposition [focuser::getminposition]
         set maxposition [focuser::getmaxposition]
@@ -1111,7 +1095,7 @@ namespace eval "ccd" {
     }
     log::info [format "finished moving focuser after %.1f seconds." [utcclock::diff now $start]]
   }
-  
+
   proc setfocuseractivitycommand {newposition} {
     set start [utcclock::seconds]
     log::info "setting focuser to position $newposition."
@@ -1126,11 +1110,11 @@ namespace eval "ccd" {
     checkfocuserpositionerror "after setting focuser"
     log::info [format "finished setting focuser after %.1f seconds." [utcclock::diff now $start]]
   }
-  
+
   proc exposeforfocus {exposuretime fitsfileprefix} {
     exposeactivitycommand $exposuretime "focus" $fitsfileprefix/[utcclock::combinedformat now 0 false] "now"
   }
-  
+
   proc mapfocusactivitycommand {exposuretime fitsfileprefix range step} {
     set start [utcclock::seconds]
     log::info "mapping focus."
@@ -1148,7 +1132,6 @@ namespace eval "ccd" {
   }
 
   ######################################################################
-  
   proc initialize {} {
     server::checkstatus
     server::checkactivityforinitialize
@@ -1179,34 +1162,33 @@ namespace eval "ccd" {
       error "invalid exposure time \"$exposuretime\"."
     }
     if {
-      ![string equal $exposuretype "object"          ] &&
-      ![string equal $exposuretype "bias"            ] &&
-      ![string equal $exposuretype "dark"            ] &&
-      ![string equal $exposuretype "flat"            ] &&
-      ![string equal $exposuretype "astrometry"      ] &&
-      ![string equal $exposuretype "focus"           ]
+      ![string equal $exposuretype "object" ]
+      && ![string equal $exposuretype "bias" ]
+      && ![string equal $exposuretype "dark" ]
+      && ![string equal $exposuretype "flat" ]
+      && ![string equal $exposuretype "astrometry" ]
+      && ![string equal $exposuretype "focus" ]
     } {
       error "invalid exposure type \"$exposuretype\"."
     }
     if {$exposuretime < [server::getdata "detectorminexposuretime"]} {
       error "invalid exposure time \"$exposuretime\"."
     }
-    if {[server::getdata "detectormaxexposuretime"] > 0 && $exposuretime > [server::getdata "detectormaxexposuretime"]} {
+    if {
+      [server::getdata "detectormaxexposuretime"] > 0
+      && $exposuretime > [server::getdata "detectormaxexposuretime"]
+    } {
       error "invalid exposure time \"$exposuretime\"."
     }
     if {[string equal $fitsfileprefix ""]} {
       variable identifier
       set seconds [utcclock::seconds]
-      set fitsfileprefix [file join \
-        [directories::vartoday $seconds] \
-        $identifier \
-        "[utcclock::combinedformat $seconds 0 false]" \
-      ]
+      set fitsfileprefix \
+        [file join [directories::vartoday $seconds] $identifier "[utcclock::combinedformat $seconds 0 false]" ]
     }
     set timeoutmilliseconds [expr {1000 * ($exposuretime + 120)}]
     server::newactivitycommand "exposing" "idle" \
-      "ccd::exposeactivitycommand $exposuretime $exposuretype $fitsfileprefix $starttime" \
-      $timeoutmilliseconds
+      "ccd::exposeactivitycommand $exposuretime $exposuretype $fitsfileprefix $starttime" $timeoutmilliseconds
     return
   }
 
@@ -1214,22 +1196,21 @@ namespace eval "ccd" {
     server::checkstatus
     server::checkactivity "idle"
     if {
-      ![string equal $type "levels"         ] &&
-      ![string equal $type "fwhm"           ] &&
-      ![string equal $type "fwhmwitness"    ] &&
-      ![string equal $type "center"         ] &&
-      ![string equal $type "astrometry"     ]
+      ![string equal $type "levels" ]
+      && ![string equal $type "fwhm" ]
+      && ![string equal $type "fwhmwitness" ]
+      && ![string equal $type "center" ]
+      && ![string equal $type "astrometry" ]
     } {
       error "invalid analysis type \"$type\"."
     }
 #    if {[string equal [server::getdata "fitsfilename"] ""]} {
 #      error "no previous exposure to analyze."
 #    }
-    server::newactivitycommand "analyzing" "idle" \
-      "ccd::analyzeactivitycommand $type"
+    server::newactivitycommand "analyzing" "idle" "ccd::analyzeactivitycommand $type"
     return
   }
-  
+
   proc movefilterwheel {filter} {
     server::checkstatus
     server::checkactivity "idle"
@@ -1240,7 +1221,7 @@ namespace eval "ccd" {
     server::newactivitycommand "moving" "idle" "ccd::movefilterwheelactivitycommand $filter false"
     return
   }
-  
+
   proc movefocuser {position setasinitial} {
     variable focuserinitialposition
     server::checkstatus
@@ -1263,9 +1244,9 @@ namespace eval "ccd" {
       log::info "moving focuser to the maximum position."
       set position $maxposition
     } elseif {
-      ![string is integer -strict $position] ||
-      $position < $minposition ||
-      $position > $maxposition
+      ![string is integer -strict $position]
+      || $position < $minposition
+      || $position > $maxposition
     } {
       error "invalid focuser position \"$position\"."
     }
@@ -1283,9 +1264,9 @@ namespace eval "ccd" {
     server::checkstatus
     server::checkactivity "idle"
     if {
-      ![string is integer -strict $position] ||
-      $position < 0 ||
-      $position > [server::getdata "focusermaxposition"]
+      ![string is integer -strict $position]
+      || $position < 0
+      || $position > [server::getdata "focusermaxposition"]
     } {
       error "invalid focuser position \"$position\"."
     }
@@ -1301,14 +1282,16 @@ namespace eval "ccd" {
   proc setcoolerhelper {setting} {
     log::info "setting cooler to $setting."
     if {
-      ![string equal $setting "last"] && 
-      ![string equal $setting "on"] && 
-      ![string equal $setting "off"] &&
-      ![string equal $setting "following"] &&
-      ![string equal $setting "start"] &&
-      ![string equal $setting "open"] &&
-      ![string equal $setting "closed"] &&
-      ![string is double -strict $setting]} {
+      ![string equal $setting "last"]
+      && ![string equal $setting "on"]
+      && ![string equal $setting "off"]
+      && ![string equal $setting "following"]
+      && ![string equal $setting "start"]
+      && ![string equal $setting "open"]
+      && ![string equal $setting "closed"]
+      && ![string equal $setting "weathertemperature:-20:10"]
+      && ![string is double -strict $setting]
+    } {
       error "invalid cooler setting \"$setting\"."
     }
     if {[string equal $setting "start"]} {
@@ -1320,17 +1303,29 @@ namespace eval "ccd" {
       variable cooleropensetting
       set setting $cooleropensetting
       log::info "requested to set cooler to open setting which is \"$setting\"."
-    }    
+    }
     if {[string equal $setting "closed"]} {
       variable coolerclosedsetting
       set setting $coolerclosedsetting
       log::info "requested to set cooler to closed setting which is \"$setting\"."
+    }
+    if {[string equal $setting "weathertemperature:-20:10"]} {
+      log::info "requested to set cooler to \"$setting\"."
+      if {[catch {client::update "weather"}]} {
+        log::warning "unable to determine weather temperature; assuming 15 C."
+        set weathertemperature 15
+      } else {
+        set weathertemperature [client::getdata "weather" "temperature"]
+        log::info [format "weather temperature is %+.1f C." $weathertemperature]
+      }
+      set setting [expr {round(($weathertemperature - 20) / 10 + 0.5) * 10}]
     }
     variable identifier
     if {[string equal $setting "last"]} {
       set setting [config::getvalue $identifier "lastcoolersetting"]
       log::info "requested to set cooler to last setting which is \"$setting\"."
     }
+    log::info "requested to set cooler to \"$setting\"."
     detector::setcooler $setting
     config::setvarvalue $identifier "lastcoolersetting" $setting
     updatedata
@@ -1373,10 +1368,10 @@ namespace eval "ccd" {
     }
     if {![string equal $window "full"]} {
       if {
-        ![dict exists $window sx] ||
-        ![dict exists $window sy] ||
-        ![dict exists $window nx] ||
-        ![dict exists $window ny]
+        ![dict exists $window sx]
+        || ![dict exists $window sy]
+        || ![dict exists $window nx]
+        || ![dict exists $window ny]
       } {
         error "invalid detector window \"$window\"."
       }
@@ -1416,13 +1411,13 @@ namespace eval "ccd" {
     log::info [format "finished setting window after %.1f seconds." [utcclock::diff now $start]]
     return
   }
-  
+
   proc getwidth {} {
     variable detectorunbinnedpixelscale
     set window [detector::getunbinnedwindow]
     return [expr {$detectorunbinnedpixelscale * [dict get $window nx]}]
   }
-  
+
   proc setbinning {binning} {
     set start [utcclock::seconds]
     log::info "setting binning to $binning."
@@ -1443,7 +1438,7 @@ namespace eval "ccd" {
     log::info [format "finished setting binning after %.1f seconds." [utcclock::diff now $start]]
     return
   }
-  
+
   proc setreadmode {readmode} {
     set start [utcclock::seconds]
     log::info "setting read mode to $readmode."
@@ -1466,20 +1461,21 @@ namespace eval "ccd" {
     log::info [format "finished setting read mode after %.1f seconds." [utcclock::diff now $start]]
     return
   }
-  
+
   proc correct {truemountalpha truemountdelta equinox} {
     set start [utcclock::seconds]
     server::checkstatus
     server::checkactivity "idle"
     set truemountalpha [astrometry::parseangle $truemountalpha "hms"]
     set truemountdelta [astrometry::parseangle $truemountdelta "dms"]
-    log::info "correcting at [astrometry::radtohms $truemountalpha 2 false] [astrometry::radtodms $truemountdelta 1 true] $equinox"
+    log::info \
+      "correcting at [astrometry::radtohms $truemountalpha 2 false] [astrometry::radtodms $truemountdelta 1 true] $equinox"
     if {[string equal $equinox "observed"]} {
       set truemountobservedalpha $truemountalpha
       set truemountobserveddelta $truemountdelta
     } else {
       set truemountobservedalpha [astrometry::observedalpha $truemountalpha $truemountdelta $equinox]
-      set truemountobserveddelta [astrometry::observeddelta $truemountalpha $truemountdelta $equinox]    
+      set truemountobserveddelta [astrometry::observeddelta $truemountalpha $truemountdelta $equinox]
     }
     set observedmountalpha [server::getdata "mountobservedalpha"]
     set observedmountdelta [server::getdata "mountobserveddelta"]
@@ -1490,9 +1486,11 @@ namespace eval "ccd" {
     set ddelta [astrometry::foldradsymmetric [expr {$truemountobserveddelta - $observedmountdelta}]]
     set eastoffset [expr {$dalpha * cos($truemountobserveddelta)}]
     set northoffset $ddelta
-    log::info [format "correction is %s E and %s N." [astrometry::formatoffset $eastoffset] [astrometry::formatoffset $northoffset]]
+    log::info \
+      [format "correction is %s E and %s N." [astrometry::formatoffset $eastoffset] \
+      [astrometry::formatoffset $northoffset]]
     server::setdata "lastcorrectiontimestamp" [utcclock::format]
-    server::setdata "lastcorrectioneastoffset"  $eastoffset
+    server::setdata "lastcorrectioneastoffset" $eastoffset
     server::setdata "lastcorrectionnorthoffset" $northoffset
     set dCH [expr {-($eastoffset)}]
     set dID $northoffset
@@ -1502,12 +1500,8 @@ namespace eval "ccd" {
   }
 
   ######################################################################
-  
   proc start {} {
     server::newactivitycommand "starting" "started" ccd::startactivitycommand
-    after idle {
-      coroutine ::ccd::updatedataloopcoroutine ccd::updatedataloop      
-    }
+    after idle { coroutine ::ccd::updatedataloopcoroutine ccd::updatedataloop }
   }
-
 }
